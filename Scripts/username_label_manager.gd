@@ -3,9 +3,9 @@ extends Node
 # PixelMania Username Label Manager v2
 #
 # Renders the username above the player using a Label inside the UI CanvasLayer.
-# Automatically hides when any UI panel is open so it never bleeds through popups.
+# Automatically hides behind blocking UI panels so it never bleeds through popups.
 
-const LABEL_WIDTH = 420.0
+const LABEL_WIDTH = 300.0
 const LABEL_HEIGHT = 30.0
 const GROWTH_LABEL_WIDTH = 360.0
 const GROWTH_LABEL_HEIGHT = 24.0
@@ -94,6 +94,7 @@ func _create_label():
 
 
 func _process(delta):
+	update_text()
 	_update_label_style(delta)
 	update_position()
 
@@ -102,12 +103,40 @@ func update_text():
 	if label == null or world == null:
 		return
 
-	var username = ""
-	if world.has_method("get_current_profile_name"):
-		username = str(world.get_current_profile_name()).strip_edges()
+	var username = _get_canonical_username()
 
-	label.text = username
-	label.visible = username != "" and world.in_world
+	label.text = _format_username_display_name(username)
+	label.visible = label.text.strip_edges() != "" and world.in_world
+
+
+func _get_canonical_username() -> String:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network != null and network.has_method("get_active_session_username"):
+		var session_username = str(network.get_active_session_username()).strip_edges()
+		if session_username != "":
+			return session_username
+
+	if world.has_method("get_current_profile_name"):
+		return str(world.get_current_profile_name()).strip_edges()
+
+	return ""
+
+
+func _format_username_display_name(raw_username: String) -> String:
+	var clean_name = raw_username.strip_edges()
+	if clean_name == "":
+		return ""
+
+	if clean_name.length() > 24:
+		clean_name = clean_name.substr(0, 24)
+
+	if clean_name == clean_name.to_upper():
+		return clean_name
+
+	if clean_name.length() == 1:
+		return clean_name.to_upper()
+
+	return clean_name.substr(0, 1).to_upper() + clean_name.substr(1)
 
 
 func _hide_labels():
@@ -120,20 +149,22 @@ func _hide_labels():
 func _any_ui_open() -> bool:
 	if world == null:
 		return false
-	if world.has_method("is_major_ui_open") and world.is_major_ui_open(): return true
-	if world.has_method("is_inventory_open")    and world.is_inventory_open():    return true
+	if world.has_method("is_chat_open") and world.is_chat_open(): return true
+	if world.has_method("is_movement_blocking_ui_open") and world.is_movement_blocking_ui_open(): return true
 	if world.has_method("is_crafting_open")     and world.is_crafting_open():     return true
 	if world.has_method("is_furnace_open")      and world.is_furnace_open():      return true
 	if world.has_method("is_sign_open")         and world.is_sign_open():         return true
 	if world.has_method("is_shop_open")         and world.is_shop_open():         return true
-	if world.has_method("is_chat_open")         and world.is_chat_open():         return true
+	if world.has_method("is_notification_panel_open") and world.is_notification_panel_open(): return true
 	if world.has_method("is_player_menu_open")  and world.is_player_menu_open():  return true
 	if world.has_method("is_game_menu_open")    and world.is_game_menu_open():    return true
+	if world.has_method("is_friends_panel_open") and world.is_friends_panel_open(): return true
 	if world.has_method("is_world_menu_open")   and world.is_world_menu_open():   return true
 	if world.has_method("is_world_lock_ui_open") and world.is_world_lock_ui_open(): return true
 	if world.has_method("is_trade_open")        and world.is_trade_open():        return true
 	if world.has_method("is_vending_open")      and world.is_vending_open():      return true
 	if world.has_method("is_safe_open")         and world.is_safe_open():         return true
+	if world.has_method("is_fish_monger_open") and world.is_fish_monger_open(): return true
 	if world.has_method("is_developer_panel_open") and world.is_developer_panel_open(): return true
 	return false
 
@@ -154,7 +185,7 @@ func _update_role_style(delta: float):
 		return
 
 	if _is_admin_role():
-		rainbow_time = fmod(rainbow_time + delta * RAINBOW_SPEED, 1.0)
+		rainbow_time = fmod((float(Time.get_ticks_msec()) / 1000.0) * RAINBOW_SPEED, 1.0)
 		label.add_theme_color_override("font_color", Color.from_hsv(rainbow_time, 0.88, 1.0))
 	else:
 		rainbow_time = 0.0

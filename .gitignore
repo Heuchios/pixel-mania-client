@@ -1,0 +1,19 @@
+# Godot 4+ generated data
+.godot/
+/android/
+
+# Local runtime/config
+.env
+.env.*
+!.env.example
+*.log
+
+# Temporary/generated working files
+.codex_*
+*.tmp
+*.bak
+/Backups/
+/previews/
+
+# Backend lives in its own Git repository
+/backend/

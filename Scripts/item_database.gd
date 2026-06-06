@@ -14,15 +14,47 @@ extends Node
 # 2. Add item entry here.
 # 3. Add splice/crafting/furnace/shop entry if needed.
 # 4. Test with /give and save/load.
+#
+# Texture fields can be either a normal path string or an atlas spec:
+# "texture": {"atlas": "res://Assets/atlases/items.png", "region": [0, 0, 32, 32]}
+# Grid atlas specs are also supported:
+# "texture": {"atlas": "res://Assets/atlases/items.png", "cell_size": [32, 32], "cell": [2, 1]}
+# Or, for row-major sheets:
+# "texture": {"atlas": "res://Assets/atlases/items.png", "cell_size": [32, 32], "index": 5, "columns": 8}
 
 const CATEGORY_BLOCK = "block"
 const CATEGORY_SEED = "seed"
 const CATEGORY_TOOL = "tool"
 const CATEGORY_BACK = "back"
+const CATEGORY_HAIR = "hair"
+const CATEGORY_SHIRT = "shirt"
+const CATEGORY_PANTS = "pants"
+const CATEGORY_SHOES = "shoes"
 const CATEGORY_MATERIAL = "material"
 const CATEGORY_LURE = "lure"
 const CATEGORY_FISH = "fish"
 const CATEGORY_CURRENCY = "currency"
+
+const BASIC_ITEMS_PACK_REWARDS = [
+	"messy_brown_hair",
+	"basic_blue_shirt",
+	"basic_red_shirt",
+	"basic_white_shirt",
+	"basic_black_shirt",
+	"basic_heart_shirt",
+	"basic_gray_shirt",
+	"basic_maroon_shirt",
+	"basic_black_pants",
+	"basic_light_gray_pants",
+	"basic_navy_pants",
+	"basic_brown_pants",
+	"basic_green_pants",
+	"basic_pink_pants",
+	"basic_brown_shoes",
+	"basic_black_shoes",
+	"basic_red_shoes",
+	"basic_blue_shoes"
+]
 
 const ITEMS = {
 
@@ -84,6 +116,10 @@ const ITEMS = {
 		"block_health": 4,
 		"texture": "res://Assets/blocks/basic blocks/lava_block.png",
 		"seed": "lava_seed",
+		"lava_rebound": true,
+		"lava_top_velocity": -420.0,
+		"lava_side_knockback_velocity": 300.0,
+		"lava_bottom_knockback_velocity": 280.0,
 		"order": 5
 	},
 "sand": {
@@ -375,11 +411,11 @@ const ITEMS = {
 		"block_health": 2,
 		"texture": "res://Assets/blocks/Tier_1/mushroom_1.png",
 		"inventory_icon": "res://Assets/inventory_icons/mushroom.png",
-		"animation_frames": [
+		"springboard_animation_frames": [
 			"res://Assets/blocks/Tier_1/mushroom_1.png",
 			"res://Assets/blocks/Tier_1/mushroom_2.png"
 		],
-		"animation_frame_seconds": 0.20,
+		"springboard_animation_frame_seconds": 0.22,
 		"seed": "",
 		"collidable": true,
 		"springboard": true,
@@ -774,6 +810,19 @@ const ITEMS = {
 		"texture": "res://Assets/items/materials/metal_scrap.png",
 		"order": 102
 	},
+"basic_items_pack": {
+		"category": "material",
+		"display_name": "Basic Items Pack",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/messy_brown_hair.png",
+		"starting_count": 0,
+		"shop_pack": true,
+		"pack_rewards": BASIC_ITEMS_PACK_REWARDS,
+		"hidden": true,
+		"tradeable": false,
+		"dropable": false,
+		"order": 103
+	},
 
 	# ============================================================
 	# BACK ITEMS / EQUIPMENT
@@ -811,6 +860,424 @@ const ITEMS = {
 		"flap_pivot_offset_left": [0, 5],
 
 		"order": 200
+	},
+"evilangel_wings": {
+		"category": "back",
+		"display_name": "Evil Angel Wings",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/back_items/evilangel_wings.png",
+		"inventory_icon": "res://Assets/inventory_icons/evilangel_wings.png",
+		"starting_count": 0,
+		"equipable": true,
+		"tradeable": false,
+		"dropable": false,
+
+		"equipment_slot": "back",
+		"back_mode": "default_slot",
+		"sprite_folder": "res://Assets/items/back_items/",
+		"idle_sprite": "evilangel_wings.png",
+		"flap_frames": ["evilangel_wings.png", "evilangel_wings_2.png"],
+		"flap_animation": true,
+		"scan_flap_frames": false,
+		"flap_speed": 0.30,
+		"input_flap_time": 0.28,
+
+		"jump_type": "double",
+
+		"auto_scale_back_sprite": false,
+		"back_scale": 1.0,
+		"idle_sprite_offset": [0, 0],
+		"idle_sprite_offset_left": [0, 0],
+		"flap_sprite_offset": [0, 0],
+		"flap_sprite_offset_left": [0, 0],
+		"back_scale_multiplier": 1.0,
+		"back_flip_with_facing": false,
+
+		"order": 201
+	},
+"angel_wings": {
+		"category": "back",
+		"display_name": "Angel Wings",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/back_items/angel_wings_1.png",
+		"inventory_icon": "res://Assets/items/back_items/angel_wings_1.png",
+		"starting_count": 0,
+		"equipable": true,
+		"tradeable": true,
+		"dropable": true,
+
+		"equipment_slot": "back",
+		"back_mode": "default_slot",
+		"sprite_folder": "res://Assets/items/back_items/",
+		"idle_sprite": "angel_wings_1.png",
+		"flap_frames": ["angel_wings_1.png", "angel_wings_2.png"],
+		"flap_animation": true,
+		"scan_flap_frames": false,
+		"flap_speed": 0.30,
+		"input_flap_time": 0.28,
+
+		"jump_type": "double",
+
+		"auto_scale_back_sprite": false,
+		"back_scale": 1.0,
+		"idle_sprite_offset": [0, 0],
+		"idle_sprite_offset_left": [0, 0],
+		"flap_sprite_offset": [0, 0],
+		"flap_sprite_offset_left": [0, 0],
+		"back_scale_multiplier": 1.0,
+		"back_flip_with_facing": false,
+
+		"order": 202
+	},
+"evil_wings": {
+		"category": "back",
+		"display_name": "Evil Wings",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/back_items/evil_wings_1.png",
+		"inventory_icon": "res://Assets/items/back_items/evil_wings_1.png",
+		"starting_count": 0,
+		"equipable": true,
+		"tradeable": true,
+		"dropable": false,
+
+		"equipment_slot": "back",
+		"back_mode": "default_slot",
+		"sprite_folder": "res://Assets/items/back_items/",
+		"idle_sprite": "evil_wings_1.png",
+		"flap_frames": ["evil_wings_1.png", "evil_wings_2.png"],
+		"flap_animation": true,
+		"scan_flap_frames": false,
+		"flap_speed": 0.30,
+		"input_flap_time": 0.28,
+
+		"jump_type": "double",
+
+		"auto_scale_back_sprite": false,
+		"back_scale": 1.0,
+		"idle_sprite_offset": [0, 0],
+		"idle_sprite_offset_left": [0, 0],
+		"flap_sprite_offset": [0, 0],
+		"flap_sprite_offset_left": [0, 0],
+		"back_scale_multiplier": 1.0,
+		"back_flip_with_facing": false,
+
+		"order": 203
+	},
+
+"messy_brown_hair": {
+		"category": "hair",
+		"display_name": "Messy Brown Hair",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/messy_brown_hair.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 204
+	},
+
+"basic_blue_shirt": {
+		"category": "shirt",
+		"display_name": "Blue Shirt",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_blue_shirt_body.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_blue_shirt_icon.png",
+		"arm_texture": "res://Assets/items/basic_items_pack/basic_blue_shirt_arm.png",
+		"left_arm_texture": "res://Assets/items/basic_items_pack/basic_blue_shirt_arm_left.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [0, 0],
+		"right_arm_offset": [-7, -5],
+		"left_arm_offset": [6, -5],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"arm_z_index": 1,
+		"order": 212
+	},
+
+"basic_red_shirt": {
+		"category": "shirt",
+		"display_name": "Red Shirt",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_red_shirt_body.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_red_shirt_icon.png",
+		"arm_texture": "res://Assets/items/basic_items_pack/basic_red_shirt_arm.png",
+		"left_arm_texture": "res://Assets/items/basic_items_pack/basic_red_shirt_arm_left.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [0, 0],
+		"right_arm_offset": [-7, -5],
+		"left_arm_offset": [6, -5],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"arm_z_index": 1,
+		"order": 213
+	},
+
+"basic_white_shirt": {
+		"category": "shirt",
+		"display_name": "White Shirt",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_white_shirt_body.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_white_shirt_icon.png",
+		"arm_texture": "res://Assets/items/basic_items_pack/basic_white_shirt_arm.png",
+		"left_arm_texture": "res://Assets/items/basic_items_pack/basic_white_shirt_arm_left.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [0, 0],
+		"right_arm_offset": [-7, -5],
+		"left_arm_offset": [6, -5],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"arm_z_index": 1,
+		"order": 214
+	},
+
+"basic_black_shirt": {
+		"category": "shirt",
+		"display_name": "Black Shirt",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_black_shirt_body.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_black_shirt_icon.png",
+		"arm_texture": "res://Assets/items/basic_items_pack/basic_black_shirt_arm.png",
+		"left_arm_texture": "res://Assets/items/basic_items_pack/basic_black_shirt_arm_left.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [0, 0],
+		"right_arm_offset": [-7, -5],
+		"left_arm_offset": [6, -5],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"arm_z_index": 1,
+		"order": 215
+	},
+
+"basic_heart_shirt": {
+		"category": "shirt",
+		"display_name": "Heart Shirt",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_heart_shirt_body.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_heart_shirt_icon.png",
+		"arm_texture": "res://Assets/items/basic_items_pack/basic_heart_shirt_arm.png",
+		"left_arm_texture": "res://Assets/items/basic_items_pack/basic_heart_shirt_arm_left.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [0, 0],
+		"right_arm_offset": [-7, -5],
+		"left_arm_offset": [6, -5],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"arm_z_index": 1,
+		"order": 216
+	},
+
+"basic_gray_shirt": {
+		"category": "shirt",
+		"display_name": "Gray Shirt",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_gray_shirt_body.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_gray_shirt_icon.png",
+		"arm_texture": "res://Assets/items/basic_items_pack/basic_gray_shirt_arm.png",
+		"left_arm_texture": "res://Assets/items/basic_items_pack/basic_gray_shirt_arm_left.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [0, 0],
+		"right_arm_offset": [-7, -5],
+		"left_arm_offset": [6, -5],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"arm_z_index": 1,
+		"order": 217
+	},
+
+"basic_maroon_shirt": {
+		"category": "shirt",
+		"display_name": "Maroon Shirt",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_maroon_shirt_body.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_maroon_shirt_icon.png",
+		"arm_texture": "res://Assets/items/basic_items_pack/basic_maroon_shirt_arm.png",
+		"left_arm_texture": "res://Assets/items/basic_items_pack/basic_maroon_shirt_arm_left.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [0, 0],
+		"right_arm_offset": [-7, -5],
+		"left_arm_offset": [6, -5],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"arm_z_index": 1,
+		"order": 218
+	},
+
+"basic_black_pants": {
+		"category": "pants",
+		"display_name": "Black Pants",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_black_pants.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_black_pants_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "pants",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"order": 230
+	},
+
+"basic_light_gray_pants": {
+		"category": "pants",
+		"display_name": "Light Gray Pants",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_light_gray_pants.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_light_gray_pants_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "pants",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"order": 231
+	},
+
+"basic_navy_pants": {
+		"category": "pants",
+		"display_name": "Navy Pants",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_navy_pants.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_navy_pants_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "pants",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"order": 232
+	},
+
+"basic_brown_pants": {
+		"category": "pants",
+		"display_name": "Brown Pants",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_brown_pants.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_brown_pants_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "pants",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"order": 233
+	},
+
+"basic_green_pants": {
+		"category": "pants",
+		"display_name": "Green Pants",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_green_pants.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_green_pants_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "pants",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"order": 234
+	},
+
+"basic_pink_pants": {
+		"category": "pants",
+		"display_name": "Pink Pants",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_pink_pants.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_pink_pants_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "pants",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"order": 235
+	},
+
+"basic_brown_shoes": {
+		"category": "shoes",
+		"display_name": "Brown Shoes",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_brown_shoes.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_brown_shoes_icon.png",
+		"left_shoe_texture": "res://Assets/items/basic_items_pack/basic_brown_shoes_left.png",
+		"right_shoe_texture": "res://Assets/items/basic_items_pack/basic_brown_shoes_right.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shoes",
+		"left_shoe_offset": [-4, 8],
+		"right_shoe_offset": [4, 8],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 250
+	},
+
+"basic_black_shoes": {
+		"category": "shoes",
+		"display_name": "Black Shoes",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_black_shoes.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_black_shoes_icon.png",
+		"left_shoe_texture": "res://Assets/items/basic_items_pack/basic_black_shoes_left.png",
+		"right_shoe_texture": "res://Assets/items/basic_items_pack/basic_black_shoes_right.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shoes",
+		"left_shoe_offset": [-4, 8],
+		"right_shoe_offset": [4, 8],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 251
+	},
+
+"basic_red_shoes": {
+		"category": "shoes",
+		"display_name": "Red Shoes",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_red_shoes.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_red_shoes_icon.png",
+		"left_shoe_texture": "res://Assets/items/basic_items_pack/basic_red_shoes_left.png",
+		"right_shoe_texture": "res://Assets/items/basic_items_pack/basic_red_shoes_right.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shoes",
+		"left_shoe_offset": [-4, 8],
+		"right_shoe_offset": [4, 8],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 252
+	},
+
+"basic_blue_shoes": {
+		"category": "shoes",
+		"display_name": "Blue Shoes",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_blue_shoes.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_blue_shoes_icon.png",
+		"left_shoe_texture": "res://Assets/items/basic_items_pack/basic_blue_shoes_left.png",
+		"right_shoe_texture": "res://Assets/items/basic_items_pack/basic_blue_shoes_right.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shoes",
+		"left_shoe_offset": [-4, 8],
+		"right_shoe_offset": [4, 8],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 253
 	},
 
 "purple_shirt": {
@@ -924,34 +1391,62 @@ const ITEMS = {
 	# ============================================================
 "pond_fish": {
 		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "weight",
+		"unit": "lb",
 		"display_name": "Pond Fish",
 		"rarity": "common",
 		"texture": "res://Assets/items/fish/pond_fish.png",
 		"sell_value": 3,
+		"price_per_lb": 3,
+		"sell_price_per_lb": 3,
+		"min_weight_lb": 0.6,
+		"max_weight_lb": 2.4,
 		"order": 400
 	},
 "bluegill": {
 		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "weight",
+		"unit": "lb",
 		"display_name": "Bluegill",
 		"rarity": "uncommon",
 		"texture": "res://Assets/items/fish/bluegill.png",
 		"sell_value": 8,
+		"price_per_lb": 8,
+		"sell_price_per_lb": 8,
+		"min_weight_lb": 1.2,
+		"max_weight_lb": 4.5,
 		"order": 401
 	},
 "golden_carp": {
 		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "weight",
+		"unit": "lb",
 		"display_name": "Golden Carp",
 		"rarity": "rare",
 		"texture": "res://Assets/items/fish/golden_carp.png",
 		"sell_value": 25,
+		"price_per_lb": 25,
+		"sell_price_per_lb": 25,
+		"min_weight_lb": 3.0,
+		"max_weight_lb": 9.0,
 		"order": 402
 	},
 "crystal_fish": {
 		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "weight",
+		"unit": "lb",
 		"display_name": "Crystal Fish",
 		"rarity": "epic",
 		"texture": "res://Assets/items/fish/crystal_fish.png",
 		"sell_value": 75,
+		"price_per_lb": 75,
+		"sell_price_per_lb": 75,
+		"min_weight_lb": 6.0,
+		"max_weight_lb": 16.0,
 		"order": 403
 	},
 
@@ -1110,6 +1605,7 @@ const ITEMS = {
 		"animation_frame_seconds": 0.5,
 		"visual_size": Vector2i(64, 64),
 		"visual_offset": Vector2(16, -16),
+		"collidable": false,
 		"collision_size": Vector2i(64, 64),
 		"collision_offset": Vector2(16, -16),
 		"shadow_size": Vector2i(64, 64),

@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://cveoop3wly8g8"]
+
+[node name="FishingMinigame" type="Control" unique_id=1013374988]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Background" type="ColorRect" parent="." unique_id=427875192]
+layout_mode = 0
+offset_right = 240.0
+offset_bottom = 24.0
+color = Color(0, 0, 0, 0.36078432)
+
+[node name="GreenZone" type="ColorRect" parent="." unique_id=650097450]
+layout_mode = 0
+offset_left = 90.0
+offset_right = 160.0
+offset_bottom = 24.0
+color = Color(0, 1, 0, 0.5882353)
+
+[node name="Marker" type="ColorRect" parent="." unique_id=2097472243]
+layout_mode = 0
+offset_top = -3.0
+offset_right = 6.0
+offset_bottom = 27.0
+color = Color(0.94049776, 0.24379441, 0, 1)
+
+[node name="Label" type="Label" parent="." unique_id=1278630256]
+layout_mode = 0
+offset_left = 100.0
+offset_top = -26.0
+offset_right = 149.0
+offset_bottom = -3.0
+text = "Catch!"

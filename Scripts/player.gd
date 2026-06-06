@@ -10,16 +10,30 @@ const COYOTE_TIME = 0.10
 const FALL_GRAVITY_MULTIPLIER = 1.18
 const LOW_JUMP_GRAVITY_MULTIPLIER = 1.42
 const MAX_FALL_SPEED = 760.0
+const WATER_SPEED_MULTIPLIER = 0.55
+const WATER_ACCELERATION = 1200.0
+const WATER_FRICTION = 1600.0
+const WATER_GRAVITY_MULTIPLIER = 0.28
+const WATER_MAX_FALL_SPEED = 140.0
+const WATER_SWIM_JUMP_VELOCITY = -230.0
 const BASE_BODY_Z_INDEX = 0
 const BASE_BACK_Z_INDEX = -2
 const BASE_FRONT_Z_INDEX = 1
 const BASE_PANT_Z_INDEX = 1
+const BASE_HAIR_Z_INDEX = 2
+const BASE_SHOES_Z_INDEX = 2
 const BASE_TOOL_Z_INDEX = 2
 const BASE_PLAYER_Z_INDEX = 100
-const WATER_PLAYER_Z_INDEX_OFFSET = -100
-const WATER_CHILD_Z_INDEX_OFFSET = -120
+const WATER_PLAYER_Z_INDEX_OFFSET = 0
+const WATER_CHILD_Z_INDEX_OFFSET = 0
 const WATER_BLOCK_ID = "water"
 const SPRINGBOARD_DEFAULT_JUMP_VELOCITY = JUMP_VELOCITY
+const LAVA_BLOCK_ID = "lava"
+const LAVA_DEFAULT_TOP_VELOCITY = JUMP_VELOCITY
+const LAVA_DEFAULT_SIDE_KNOCKBACK_VELOCITY = 300.0
+const LAVA_DEFAULT_BOTTOM_KNOCKBACK_VELOCITY = 280.0
+const LAVA_REBOUND_NORMAL_THRESHOLD = 0.55
+const INVALID_LAVA_GRID_POS = Vector2i(-999999, -999999)
 
 # Back item jump rules:
 # - No back item = normal single jump
@@ -75,6 +89,7 @@ func _physics_process(delta):
 	apply_horizontal_movement(direction, delta)
 
 	move_and_slide()
+	update_lava_rebound()
 	update_springboard_bounce()
 	update_player_water_depth()
 
@@ -104,6 +119,9 @@ func update_springboard_bounce():
 	coyote_timer = 0.0
 
 	var world = get_world_controller()
+	if world != null and world.has_method("play_springboard_block_animation") and springboard_data.has("grid_pos"):
+		world.play_springboard_block_animation(springboard_data["grid_pos"])
+
 	if world != null and world.has_method("play_sound_jump"):
 		world.play_sound_jump()
 
@@ -147,6 +165,7 @@ func get_standing_springboard_data() -> Dictionary:
 			var result = item_data.duplicate(true)
 			if not result.has("springboard_velocity"):
 				result["springboard_velocity"] = SPRINGBOARD_DEFAULT_JUMP_VELOCITY
+			result["grid_pos"] = sample_grid
 			return result
 
 	return {}
@@ -168,6 +187,161 @@ func is_springboard_block_data(item_data: Dictionary, block_type: String) -> boo
 		return true
 
 	return block_type == "mushroom" or block_type == "mushroom_1" or block_type == "mushroom_2"
+
+
+func update_lava_rebound():
+	if is_on_floor():
+		var standing_lava_data = get_standing_lava_rebound_data()
+		if not standing_lava_data.is_empty():
+			apply_lava_rebound(Vector2.UP, standing_lava_data)
+			return
+
+	for i in range(get_slide_collision_count()):
+		var collision = get_slide_collision(i)
+		if collision == null:
+			continue
+
+		var lava_grid_pos = get_lava_grid_pos_from_collision(collision)
+		if lava_grid_pos == INVALID_LAVA_GRID_POS:
+			continue
+
+		var normal = collision.get_normal()
+		var block_type = get_block_type_at_grid(lava_grid_pos)
+		var item_data = get_world_item_data(get_world_controller(), block_type)
+		apply_lava_rebound(normal, item_data)
+		return
+
+
+func get_standing_lava_rebound_data() -> Dictionary:
+	var world = get_world_controller()
+	if world == null or not is_instance_valid(world):
+		return {}
+
+	var blocks = world.get("blocks")
+	if not blocks is Dictionary:
+		return {}
+
+	var block_size = get_world_block_size(world)
+	var half_extents = _get_collision_half_extents()
+	var feet_y = global_position.y + half_extents.y
+	var sample_y = feet_y + 2.0
+	var sample_x_offsets = [
+		-half_extents.x * 0.45,
+		0.0,
+		half_extents.x * 0.45
+	]
+
+	for x_offset in sample_x_offsets:
+		var sample_grid = Vector2i(
+			int(round((global_position.x + x_offset) / block_size)),
+			int(round(sample_y / block_size))
+		)
+
+		if not is_lava_rebound_block_at_grid(sample_grid):
+			continue
+
+		var block_type = get_block_type_at_grid(sample_grid)
+		return get_world_item_data(world, block_type)
+
+	return {}
+
+
+func get_lava_grid_pos_from_collision(collision) -> Vector2i:
+	var world = get_world_controller()
+	if world == null or not is_instance_valid(world):
+		return INVALID_LAVA_GRID_POS
+
+	var collider = collision.get_collider()
+	if collider == null:
+		return INVALID_LAVA_GRID_POS
+
+	var collider_node = collider
+	if collider_node is CollisionShape2D:
+		collider_node = collider_node.get_parent()
+
+	if not (collider_node is Node2D):
+		return INVALID_LAVA_GRID_POS
+
+	var block_size = get_world_block_size(world)
+	var grid_pos = Vector2i(
+		int(round(collider_node.global_position.x / block_size)),
+		int(round(collider_node.global_position.y / block_size))
+	)
+
+	if is_lava_rebound_block_at_grid(grid_pos):
+		return grid_pos
+
+	return INVALID_LAVA_GRID_POS
+
+
+func get_world_block_size(world) -> float:
+	var block_size = 32.0
+	if world == null:
+		return block_size
+
+	var block_size_value = world.get("BLOCK_SIZE")
+	if block_size_value is int or block_size_value is float:
+		block_size = float(block_size_value)
+
+	return block_size
+
+
+func get_block_type_at_grid(grid_pos: Vector2i) -> String:
+	var world = get_world_controller()
+	if world == null or not is_instance_valid(world):
+		return ""
+
+	var blocks = world.get("blocks")
+	if not blocks is Dictionary or not blocks.has(grid_pos):
+		return ""
+
+	return str(blocks[grid_pos].get("type", ""))
+
+
+func is_lava_rebound_block_at_grid(grid_pos: Vector2i) -> bool:
+	var block_type = get_block_type_at_grid(grid_pos)
+	if block_type == "":
+		return false
+
+	var item_data = get_world_item_data(get_world_controller(), block_type)
+	if bool(item_data.get("lava_rebound", false)):
+		return true
+
+	return block_type == LAVA_BLOCK_ID
+
+
+func apply_lava_rebound(normal: Vector2, item_data: Dictionary):
+	apply_lava_contact_damage()
+
+	if normal.y < -LAVA_REBOUND_NORMAL_THRESHOLD:
+		velocity.y = float(item_data.get("lava_top_velocity", LAVA_DEFAULT_TOP_VELOCITY))
+		air_jumps_used = 0
+		coyote_timer = 0.0
+		play_jump_sound()
+		return
+
+	if normal.y > LAVA_REBOUND_NORMAL_THRESHOLD:
+		velocity.y = float(item_data.get("lava_bottom_knockback_velocity", LAVA_DEFAULT_BOTTOM_KNOCKBACK_VELOCITY))
+		coyote_timer = 0.0
+		return
+
+	if abs(normal.x) > LAVA_REBOUND_NORMAL_THRESHOLD:
+		velocity.x = normal.x * float(item_data.get("lava_side_knockback_velocity", LAVA_DEFAULT_SIDE_KNOCKBACK_VELOCITY))
+		coyote_timer = 0.0
+
+
+func apply_lava_contact_damage():
+	var world = get_world_controller()
+	if world == null or not is_instance_valid(world):
+		return
+	if not world.has_method("damage_player"):
+		return
+
+	if float(world.lava_damage_timer) > 0.0:
+		return
+
+	world.damage_player(1)
+	world.lava_damage_timer = world.LAVA_DAMAGE_DELAY
 
 
 func is_standing_on_water() -> bool:
@@ -228,9 +402,6 @@ func _apply_player_visual_z_indices(in_water: bool):
 	var child_z_offset = WATER_CHILD_Z_INDEX_OFFSET if in_water else 0
 	var body_sprite = get_node_or_null("Sprite2D")
 	var back_sprite = get_node_or_null("BackSocket/BackSprite")
-	var front_sprite = get_node_or_null("FrontSocket/FrontSprite")
-	var pant_sprite = get_node_or_null("PantSlot/Sprite2D")
-	var tool_sprite = get_node_or_null("HandSocket/ToolSprite")
 
 	self.z_index = BASE_PLAYER_Z_INDEX + player_z_offset
 
@@ -238,16 +409,17 @@ func _apply_player_visual_z_indices(in_water: bool):
 		body_sprite.z_index = BASE_BODY_Z_INDEX + child_z_offset
 	if is_instance_valid(back_sprite):
 		back_sprite.z_index = BASE_BACK_Z_INDEX + child_z_offset
-	if is_instance_valid(front_sprite):
-		front_sprite.z_index = BASE_FRONT_Z_INDEX + child_z_offset
-	if is_instance_valid(pant_sprite):
-		pant_sprite.z_index = BASE_PANT_Z_INDEX + child_z_offset
-	if is_instance_valid(tool_sprite):
-		tool_sprite.z_index = BASE_TOOL_Z_INDEX + child_z_offset
 
 
 func apply_gravity(delta: float):
 	if is_on_floor():
+		return
+
+	if is_standing_on_water():
+		velocity.y = min(
+			velocity.y + gravity * WATER_GRAVITY_MULTIPLIER * delta,
+			WATER_MAX_FALL_SPEED
+		)
 		return
 
 	var gravity_multiplier = 1.0
@@ -260,11 +432,15 @@ func apply_gravity(delta: float):
 
 
 func apply_horizontal_movement(direction: float, delta: float):
-	var target_speed = direction * SPEED
+	var in_water = is_standing_on_water()
+	var target_speed = direction * SPEED * (WATER_SPEED_MULTIPLIER if in_water else 1.0)
 	var acceleration = GROUND_ACCELERATION if is_on_floor() else AIR_ACCELERATION
 
 	if direction == 0.0:
 		acceleration = GROUND_FRICTION if is_on_floor() else AIR_ACCELERATION
+
+	if in_water:
+		acceleration = WATER_FRICTION if direction == 0.0 else WATER_ACCELERATION
 
 	velocity.x = move_toward(velocity.x, target_speed, acceleration * delta)
 
@@ -320,6 +496,10 @@ func get_world_controller():
 
 
 func try_jump() -> bool:
+	if is_standing_on_water():
+		do_swim_jump()
+		return true
+
 	if is_on_floor() or coyote_timer > 0.0:
 		do_jump()
 		coyote_timer = 0.0
@@ -342,6 +522,15 @@ func try_jump() -> bool:
 
 func do_jump():
 	velocity.y = JUMP_VELOCITY
+	play_jump_sound()
+
+
+func do_swim_jump():
+	velocity.y = min(velocity.y, WATER_SWIM_JUMP_VELOCITY)
+	play_jump_sound()
+
+
+func play_jump_sound():
 	var w = get_node_or_null("../../World")
 	if w == null:
 		w = get_node_or_null("../World")
