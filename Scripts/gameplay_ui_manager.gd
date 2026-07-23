@@ -292,7 +292,9 @@ func get_notification_chat_ui():
 		setup_chat_ui()
 
 	if world.chat_ui != null and world.chat_ui.has_method("set_player") and "player" in world:
-		world.chat_ui.set_player(world.player)
+		var assigned_player: Variant = world.chat_ui.player if "player" in world.chat_ui else null
+		if assigned_player != world.player:
+			world.chat_ui.set_player(world.player)
 
 	return world.chat_ui
 
@@ -370,6 +372,9 @@ func should_ignore_notification(message: String) -> bool:
 	if lower == "":
 		return true
 
+	if is_silent_harvest_notification(lower):
+		return true
+
 	if is_routine_world_action_message(lower):
 		return true
 
@@ -395,6 +400,25 @@ func should_ignore_notification(message: String) -> bool:
 		return true
 
 	return false
+
+
+func is_silent_harvest_notification(lower_message: String) -> bool:
+	var clean_message := lower_message.strip_edges()
+	var mentions_silent_harvest_target := clean_message.find("tackle box") != -1 \
+		or clean_message.find("chicken") != -1 \
+		or clean_message.find("cow") != -1 \
+		or clean_message.find("tree") != -1
+	if not mentions_silent_harvest_target:
+		return false
+
+	return clean_message.begins_with("harvesting ") \
+		or clean_message.begins_with("harvested ") \
+		or clean_message.ends_with(" harvested") \
+		or clean_message.ends_with(" harvested.") \
+		or clean_message.ends_with(" ready to harvest") \
+		or clean_message.ends_with(" ready to harvest.") \
+		or clean_message.ends_with(" is ready to harvest") \
+		or clean_message.ends_with(" is ready to harvest.")
 
 
 func is_animal_status_notification(lower_message: String) -> bool:
