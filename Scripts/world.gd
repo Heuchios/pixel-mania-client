@@ -4953,6 +4953,14 @@ func get_current_break_power(block_type: String = "") -> int:
 
 	return 1
 
+
+func get_current_required_break_hits(block_type: String, base_max_hits: int) -> int:
+	if item_gameplay_manager != null and item_gameplay_manager.has_method("get_required_break_hits"):
+		return item_gameplay_manager.get_required_break_hits(block_type, base_max_hits)
+
+	return maxi(1, base_max_hits)
+
+
 func is_item_equipable(item_type: String, category: String) -> bool:
 	if item_gameplay_manager != null and item_gameplay_manager.has_method("is_item_equipable"):
 		return item_gameplay_manager.is_item_equipable(item_type, category)

@@ -118,6 +118,25 @@ func get_current_break_power(block_type: String = "") -> int:
 	return 1
 
 
+func get_current_break_hit_reduction() -> int:
+	if world == null:
+		return 0
+
+	var equipped_tool := str(world.get("equipped_tool")).strip_edges()
+	if equipped_tool == "" or not world.item_database.has(equipped_tool):
+		return 0
+
+	var tool_data: Variant = world.item_database[equipped_tool]
+	if not (tool_data is Dictionary):
+		return 0
+
+	return maxi(0, int((tool_data as Dictionary).get("break_hit_reduction", 0)))
+
+
+func get_required_break_hits(_block_type: String, base_max_hits: int) -> int:
+	return maxi(1, base_max_hits - get_current_break_hit_reduction())
+
+
 func is_item_equipable(item_type: String, category: String) -> bool:
 	if item_type == "" or category == "" or category == "empty":
 		return false

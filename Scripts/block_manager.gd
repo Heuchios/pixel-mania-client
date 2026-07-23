@@ -8427,10 +8427,14 @@ func setup_crack_textures():
 
 
 func get_block_max_hits(block_type: String) -> int:
+	var base_max_hits := int(world.BLOCK_MAX_HITS)
 	if world.item_database.has(block_type):
-		return max(1, int(world.item_database[block_type].get("block_health", world.BLOCK_MAX_HITS)))
+		base_max_hits = maxi(1, int(world.item_database[block_type].get("block_health", world.BLOCK_MAX_HITS)))
 
-	return world.BLOCK_MAX_HITS
+	if world.has_method("get_current_required_break_hits"):
+		return int(world.get_current_required_break_hits(block_type, base_max_hits))
+
+	return base_max_hits
 
 
 func get_crack_stage(current_hits: int, max_hits: int) -> int:
