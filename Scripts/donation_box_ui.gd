@@ -59,6 +59,11 @@ func setup(parent_world, ui_node):
 
 
 func _process(_delta):
+	if not donation_box_open_requested:
+		if visible:
+			visible = false
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		return
 	if visible:
 		update_position()
 
@@ -236,7 +241,22 @@ func update_position():
 		panel_shadow.position = position
 
 
+func has_donation_box_at_grid(grid_pos: Vector2i) -> bool:
+	if world == null or not ("blocks" in world) or not world.blocks.has(grid_pos):
+		return false
+	var block_data = world.blocks.get(grid_pos, {})
+	if not (block_data is Dictionary):
+		return false
+	var block_type := str(block_data.get("type", block_data.get("block_type", "")))
+	if world.has_method("is_donation_box_block_type"):
+		return bool(world.is_donation_box_block_type(block_type))
+	return block_type.strip_edges().to_lower() == "donation_box"
+
+
 func open_donation_box(grid_pos: Vector2i):
+	if not has_donation_box_at_grid(grid_pos):
+		close_donation_box()
+		return
 	donation_box_open_requested = true
 	current_grid = grid_pos
 	current_state = {}

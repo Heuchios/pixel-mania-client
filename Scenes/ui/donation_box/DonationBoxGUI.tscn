@@ -1,8 +1,9 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://c8otkc66akg76"]
 
-[ext_resource type="Script" path="res://Scripts/donation_box_ui.gd" id="1_donation_box"]
+[ext_resource type="Script" uid="uid://cbumxagrb1r6b" path="res://Scripts/donation_box_ui.gd" id="1_donation_box"]
 
-[node name="DonationBoxUI" type="Control"]
+[node name="DonationBoxUI" type="Control" unique_id=712850378]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
