@@ -30,6 +30,7 @@ var pending_join_world_name := ""
 var pending_join_profile_name := ""
 var pending_server_player_state := {}
 var pending_server_world_state: Dictionary = {}
+var pending_world_state_stream: Dictionary = {}
 var active_join_request_id := ""
 var active_join_world_name := ""
 var pending_player_state_requests := {}
@@ -79,7 +80,7 @@ var WORLD_ROUTE_WS_URLS: Array[String] = [
 	"wss://api.pixelmaniagame.com/ws-a",
 	"wss://api.pixelmaniagame.com/ws-b"
 ]
-const CLIENT_VERSION := "1.0.3"
+const CLIENT_VERSION := "1.0.4"
 const CLIENT_PLATFORM := "godot"
 const DEBUG_SERVER_PACKETS := false
 const DEBUG_ACTION_POSITION_FLOW := false
@@ -104,6 +105,11 @@ const MAX_BROADCAST_LENGTH := 260
 const MAX_SERVER_MESSAGE_TYPE_LENGTH := 64
 const MAX_CLIENT_MESSAGE_BYTES := 65536
 const MAX_SERVER_MESSAGE_BYTES := 1024 * 1024
+const WORLD_STATE_STREAM_VERSION := 1
+const MAX_WORLD_STATE_STREAM_CHUNKS := 256
+const MAX_WORLD_STATE_STREAM_SECTIONS := 64
+const MAX_WORLD_STATE_STREAM_ASSEMBLED_BYTES := 2 * 1024 * 1024
+const WORLD_STATE_STREAM_TIMEOUT_MS := 15000
 const MAX_WORLD_ROUTE_URL_LENGTH := 256
 const MAX_WORLD_ROUTE_REDIRECT_ATTEMPTS := 2
 const MAX_SERVER_PACKETS_PER_FRAME := 96
@@ -377,6 +383,7 @@ func _process(delta):
 
 	process_server_packets_with_budget()
 	process_world_event_tile_update_queue()
+	process_pending_world_state_stream_timeout()
 
 	apply_pending_server_world_state_if_ready()
 	apply_pending_server_player_state_if_ready()
@@ -969,6 +976,7 @@ func _end_authenticated_session(message: String, clear_saved_login: bool = false
 	pending_join_profile_name = ""
 	pending_server_player_state.clear()
 	pending_server_world_state.clear()
+	pending_world_state_stream.clear()
 	active_join_request_id = ""
 	active_join_world_name = ""
 	pending_player_state_requests.clear()
@@ -1530,6 +1538,7 @@ func set_pending_join(world_name: String, profile_name: String = "") -> void:
 		return
 	if active_join_world_name != clean_world:
 		pending_server_world_state.clear()
+		pending_world_state_stream.clear()
 		active_join_request_id = ""
 		active_join_world_name = ""
 	pending_join_enabled = true
@@ -1763,6 +1772,7 @@ func send_join_world(world_name: String) -> bool:
 		clean_world = "START"
 	var join_request_id: String = make_action_request_id("join_world")
 	pending_server_world_state.clear()
+	pending_world_state_stream.clear()
 	active_join_request_id = join_request_id
 	active_join_world_name = clean_world
 	current_world_name = clean_world
@@ -1787,6 +1797,7 @@ func send_join_world(world_name: String) -> bool:
 
 func cancel_active_join_request() -> void:
 	pending_server_world_state.clear()
+	pending_world_state_stream.clear()
 	# Keep a non-empty tombstone so late responses from the canceled attempt are
 	# rejected instead of being treated as legacy responses with no active join.
 	active_join_request_id = make_action_request_id("cancel_join")
@@ -3657,7 +3668,14 @@ func handle_server_message(raw: String) -> void:
 				world_node.handle_network_door_enter_ok(data)
 			if safe_world != "":
 				current_world_name = safe_world
+		"world_state_stream_begin":
+			_handle_world_state_stream_begin(data)
+		"world_state_stream_chunk":
+			_handle_world_state_stream_chunk(data)
+		"world_state_stream_end":
+			_handle_world_state_stream_end(data)
 		"world_state":
+			pending_world_state_stream.clear()
 			if not _is_message_for_active_join_request(data):
 				debug_action_position_flow("ignored stale world_state request", {
 					"incoming_join_request_id": _get_message_join_request_id(data),
@@ -4655,6 +4673,241 @@ func _is_message_for_active_join_request(data: Dictionary) -> bool:
 	return incoming_request_id == active_join_request_id
 
 
+func process_pending_world_state_stream_timeout() -> void:
+	if pending_world_state_stream.is_empty():
+		return
+	var started_at_msec: int = int(pending_world_state_stream.get("started_at_msec", 0))
+	if started_at_msec <= 0:
+		_fail_pending_world_state_stream("missing_start_time")
+		return
+	if Time.get_ticks_msec() - started_at_msec > WORLD_STATE_STREAM_TIMEOUT_MS:
+		_fail_pending_world_state_stream("timeout")
+
+
+func _handle_world_state_stream_begin(data: Dictionary) -> void:
+	if int(data.get("stream_version", 0)) != WORLD_STATE_STREAM_VERSION:
+		_fail_pending_world_state_stream("unsupported_version", data)
+		return
+	if not _is_message_for_active_join_request(data):
+		return
+	var stream_world: String = _get_message_world_name(data)
+	if stream_world == "":
+		_fail_pending_world_state_stream("missing_world", data)
+		return
+	if not is_message_for_active_world(data):
+		return
+
+	var snapshot_id: String = _safe_string(data.get("snapshot_id", ""), "", MAX_REQUEST_ID_LENGTH)
+	var chunk_count: int = int(data.get("chunk_count", -1))
+	var section_count: int = int(data.get("section_count", -1))
+	var snapshot_bytes: int = int(data.get("snapshot_bytes", 0))
+	var metadata_value: Variant = data.get("metadata", {})
+	var sections_value: Variant = data.get("sections", [])
+	if (
+		snapshot_id == ""
+		or chunk_count < 0
+		or chunk_count > MAX_WORLD_STATE_STREAM_CHUNKS
+		or section_count < 0
+		or section_count > MAX_WORLD_STATE_STREAM_SECTIONS
+		or snapshot_bytes <= 0
+		or snapshot_bytes > MAX_WORLD_STATE_STREAM_ASSEMBLED_BYTES
+		or not (metadata_value is Dictionary)
+		or not (sections_value is Array)
+		or sections_value.size() != section_count
+	):
+		_fail_pending_world_state_stream("invalid_begin", data)
+		return
+
+	var metadata: Dictionary = metadata_value.duplicate(true)
+	if str(metadata.get("type", "")) != "world_state":
+		_fail_pending_world_state_stream("invalid_metadata_type", data)
+		return
+	var metadata_world: String = _safe_world_name(str(metadata.get("world", "")))
+	if metadata_world != stream_world:
+		_fail_pending_world_state_stream("metadata_world_mismatch", data)
+		return
+
+	var section_descriptors: Array = []
+	var section_kinds: Dictionary = {}
+	for raw_descriptor in sections_value:
+		if not (raw_descriptor is Dictionary):
+			_fail_pending_world_state_stream("invalid_section_descriptor", data)
+			return
+		var descriptor: Dictionary = raw_descriptor
+		var section_name: String = _safe_string(descriptor.get("name", ""), "", MAX_SERVER_MESSAGE_TYPE_LENGTH)
+		var section_kind: String = _safe_string(descriptor.get("kind", ""), "", 16)
+		if (
+			section_name == ""
+			or (section_kind != "array" and section_kind != "dictionary")
+			or section_kinds.has(section_name)
+			or metadata.has(section_name)
+		):
+			_fail_pending_world_state_stream("invalid_section_descriptor", data)
+			return
+		section_descriptors.append({
+			"name": section_name,
+			"kind": section_kind
+		})
+		section_kinds[section_name] = section_kind
+
+	pending_world_state_stream = {
+		"snapshot_id": snapshot_id,
+		"world": stream_world,
+		"join_request_id": _get_message_join_request_id(data),
+		"chunk_count": chunk_count,
+		"snapshot_bytes": snapshot_bytes,
+		"metadata": metadata,
+		"section_descriptors": section_descriptors,
+		"section_kinds": section_kinds,
+		"chunks": {},
+		"received_count": 0,
+		"received_data_bytes": JSON.stringify(metadata).to_utf8_buffer().size(),
+		"started_at_msec": Time.get_ticks_msec()
+	}
+
+
+func _handle_world_state_stream_chunk(data: Dictionary) -> void:
+	if pending_world_state_stream.is_empty():
+		return
+	var snapshot_id: String = _safe_string(data.get("snapshot_id", ""), "", MAX_REQUEST_ID_LENGTH)
+	var chunk_index: int = int(data.get("chunk_index", -1))
+	var chunk_count: int = int(data.get("chunk_count", -1))
+	var section_name: String = _safe_string(data.get("section", ""), "", MAX_SERVER_MESSAGE_TYPE_LENGTH)
+	var section_kind: String = _safe_string(data.get("section_kind", ""), "", 16)
+	var expected_snapshot_id: String = str(pending_world_state_stream.get("snapshot_id", ""))
+	var expected_world: String = str(pending_world_state_stream.get("world", ""))
+	var expected_join_request_id: String = str(pending_world_state_stream.get("join_request_id", ""))
+	var expected_chunk_count: int = int(pending_world_state_stream.get("chunk_count", -1))
+	var section_kinds: Dictionary = pending_world_state_stream.get("section_kinds", {})
+	if (
+		int(data.get("stream_version", 0)) != WORLD_STATE_STREAM_VERSION
+		or snapshot_id != expected_snapshot_id
+		or _get_message_world_name(data) != expected_world
+		or _get_message_join_request_id(data) != expected_join_request_id
+		or chunk_count != expected_chunk_count
+		or chunk_index < 0
+		or chunk_index >= expected_chunk_count
+		or not section_kinds.has(section_name)
+		or str(section_kinds.get(section_name, "")) != section_kind
+	):
+		_fail_pending_world_state_stream("invalid_chunk", data)
+		return
+
+	var chunk_data: Variant = data.get("data")
+	if (
+		(section_kind == "array" and not (chunk_data is Array))
+		or (section_kind == "dictionary" and not (chunk_data is Dictionary))
+	):
+		_fail_pending_world_state_stream("invalid_chunk_data", data)
+		return
+
+	var chunks: Dictionary = pending_world_state_stream.get("chunks", {})
+	if chunks.has(chunk_index):
+		return
+	var next_data_bytes: int = int(pending_world_state_stream.get("received_data_bytes", 0))
+	next_data_bytes += JSON.stringify(chunk_data).to_utf8_buffer().size()
+	if next_data_bytes > MAX_WORLD_STATE_STREAM_ASSEMBLED_BYTES:
+		_fail_pending_world_state_stream("stream_too_large", data)
+		return
+	chunks[chunk_index] = {
+		"section": section_name,
+		"section_kind": section_kind,
+		"data": chunk_data.duplicate(true)
+	}
+	pending_world_state_stream["chunks"] = chunks
+	pending_world_state_stream["received_count"] = int(pending_world_state_stream.get("received_count", 0)) + 1
+	pending_world_state_stream["received_data_bytes"] = next_data_bytes
+
+
+func _handle_world_state_stream_end(data: Dictionary) -> void:
+	if pending_world_state_stream.is_empty():
+		return
+	var expected_snapshot_id: String = str(pending_world_state_stream.get("snapshot_id", ""))
+	var expected_world: String = str(pending_world_state_stream.get("world", ""))
+	var expected_join_request_id: String = str(pending_world_state_stream.get("join_request_id", ""))
+	var expected_chunk_count: int = int(pending_world_state_stream.get("chunk_count", -1))
+	var expected_snapshot_bytes: int = int(pending_world_state_stream.get("snapshot_bytes", 0))
+	if (
+		int(data.get("stream_version", 0)) != WORLD_STATE_STREAM_VERSION
+		or _safe_string(data.get("snapshot_id", ""), "", MAX_REQUEST_ID_LENGTH) != expected_snapshot_id
+		or _get_message_world_name(data) != expected_world
+		or _get_message_join_request_id(data) != expected_join_request_id
+		or int(data.get("chunk_count", -1)) != expected_chunk_count
+		or int(data.get("snapshot_bytes", 0)) != expected_snapshot_bytes
+		or int(pending_world_state_stream.get("received_count", 0)) != expected_chunk_count
+	):
+		_fail_pending_world_state_stream("incomplete_end", data)
+		return
+
+	var payload: Dictionary = pending_world_state_stream.get("metadata", {}).duplicate(true)
+	var section_descriptors: Array = pending_world_state_stream.get("section_descriptors", [])
+	for raw_descriptor in section_descriptors:
+		var descriptor: Dictionary = raw_descriptor
+		var section_name: String = str(descriptor.get("name", ""))
+		payload[section_name] = [] if str(descriptor.get("kind", "")) == "array" else {}
+
+	var chunks: Dictionary = pending_world_state_stream.get("chunks", {})
+	for chunk_index in range(expected_chunk_count):
+		if not chunks.has(chunk_index):
+			_fail_pending_world_state_stream("missing_chunk", data)
+			return
+		var chunk: Dictionary = chunks[chunk_index]
+		var section_name: String = str(chunk.get("section", ""))
+		var section_kind: String = str(chunk.get("section_kind", ""))
+		var chunk_data: Variant = chunk.get("data")
+		if section_kind == "array":
+			var target_array: Array = payload.get(section_name, [])
+			target_array.append_array(chunk_data)
+			payload[section_name] = target_array
+		else:
+			var target_dictionary: Dictionary = payload.get(section_name, {})
+			for key in chunk_data.keys():
+				target_dictionary[key] = chunk_data[key]
+			payload[section_name] = target_dictionary
+
+	var assembled_bytes: int = JSON.stringify(payload).to_utf8_buffer().size()
+	if assembled_bytes > MAX_WORLD_STATE_STREAM_ASSEMBLED_BYTES:
+		_fail_pending_world_state_stream("assembled_snapshot_too_large", data)
+		return
+
+	pending_world_state_stream.clear()
+	if not _is_message_for_active_join_request(payload):
+		return
+	if not is_message_for_active_world(payload):
+		return
+	debug_action_position_flow("received streamed world_state", {
+		"world": expected_world,
+		"chunks": expected_chunk_count,
+		"snapshot_bytes": assembled_bytes,
+		"world_state_reason": str(payload.get("world_state_reason", ""))
+	})
+	if not _is_valid_server_world_state_payload(payload):
+		_retry_invalid_server_world_state(payload)
+		return
+	var world_node: Node = get_world_node()
+	if not _world_node_can_apply_server_world_state(world_node):
+		_queue_pending_server_world_state(payload, "world_scene_not_ready")
+		return
+	_apply_server_world_state_payload(payload, world_node)
+
+
+func _fail_pending_world_state_stream(reason: String, data: Dictionary = {}) -> void:
+	var retry_payload: Dictionary = data.duplicate(true)
+	if not pending_world_state_stream.is_empty():
+		var metadata_value: Variant = pending_world_state_stream.get("metadata", {})
+		if metadata_value is Dictionary:
+			retry_payload = metadata_value.duplicate(true)
+		retry_payload["world"] = pending_world_state_stream.get("world", retry_payload.get("world", ""))
+		retry_payload["join_request_id"] = pending_world_state_stream.get("join_request_id", retry_payload.get("join_request_id", ""))
+	pending_world_state_stream.clear()
+	debug_action_position_flow("rejected world_state stream", {
+		"reason": reason,
+		"world": _get_message_world_name(retry_payload),
+		"join_request_id": _get_message_join_request_id(retry_payload)
+	})
+	_retry_invalid_server_world_state(retry_payload)
+
+
 func _is_valid_server_world_state_payload(data: Dictionary) -> bool:
 	if _get_message_world_name(data) == "":
 		return false
@@ -4692,6 +4945,7 @@ func _queue_pending_server_world_state(data: Dictionary, reason: String) -> void
 
 func _apply_server_world_state_payload(data: Dictionary, world_node: Node) -> void:
 	pending_server_world_state.clear()
+	pending_world_state_stream.clear()
 	clear_world_event_tile_update_queue()
 	var incoming_world: String = _get_message_world_name(data)
 	if incoming_world != "":
@@ -4702,6 +4956,7 @@ func _apply_server_world_state_payload(data: Dictionary, world_node: Node) -> vo
 
 
 func _retry_invalid_server_world_state(data: Dictionary) -> void:
+	pending_world_state_stream.clear()
 	debug_action_position_flow("rejected invalid world_state payload", {
 		"world": _get_message_world_name(data),
 		"join_request_id": _get_message_join_request_id(data)
