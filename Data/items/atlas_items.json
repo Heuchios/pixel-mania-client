@@ -862,6 +862,41 @@
         "gem_range": [0, 0]
       },
       "order": 413
+    },
+    {
+      "id": 39,
+      "item_key": "atm_machine",
+      "name": "ATM Machine",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [5, 16],
+      "alternative_tile": 0,
+      "texture": {"atlas": "res://image.png", "cell": [5, 16], "cell_size": [32, 32]},
+      "inventory_icon": {"atlas": "res://image.png", "cell": [5, 16], "cell_size": [32, 32]},
+      "collision": false,
+      "collision_type": "none",
+      "hardness": 4,
+      "rarity": "epic",
+      "instance_tracked": true,
+      "atm_machine_block": true,
+      "atm_machine_cooldown_seconds": 43200,
+      "atm_machine_reward_item_id": "gem",
+      "atm_machine_reward_item_category": "currency",
+      "atm_machine_reward_amount_range": [1, 100],
+      "atm_machine_ready_atlas_coords": [5, 16],
+      "atm_machine_producing_atlas_coords": [6, 16],
+      "interact_rules": {
+        "can_interact": true,
+        "interaction_message": "Harvest ATM gems."
+      },
+      "shop_price": 12500,
+      "break_return_to_inventory": true,
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0]
+      },
+      "order": 414
     }
   ]
 }

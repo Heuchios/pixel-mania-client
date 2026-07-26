@@ -3347,6 +3347,13 @@ func get_stateful_block_atlas_data(base_block_id: String, grid_pos: Vector2i, ba
 				"atlas_coords": parse_block_vector2i(item_data.get(water_well_atlas_key), Vector2i.ZERO)
 			}
 
+	if bool(item_data.get("atm_machine_block", false)):
+		var atm_atlas_key := "atm_machine_ready_atlas_coords" if tackle_box_is_ready(grid_pos) else "atm_machine_producing_atlas_coords"
+		if item_data.has(atm_atlas_key):
+			return {
+				"atlas_coords": parse_block_vector2i(item_data.get(atm_atlas_key), Vector2i.ZERO)
+			}
+
 	if bool(item_data.get("checkpoint_block", false)):
 		var atlas_key := "checkpoint_active_atlas_coords" if is_checkpoint_active(grid_pos) else "checkpoint_inactive_atlas_coords"
 		if item_data.has(atlas_key):
@@ -3680,6 +3687,11 @@ func get_water_well_timer_text(grid_pos: Vector2i) -> String:
 	return "Ready" if remaining_ms <= 0 else format_tackle_box_remaining_time(remaining_ms)
 
 
+func get_atm_machine_timer_text(grid_pos: Vector2i) -> String:
+	var remaining_ms := get_tackle_box_remaining_ms(grid_pos)
+	return "ATM Ready" if remaining_ms <= 0 else "ATM " + format_tackle_box_remaining_time(remaining_ms)
+
+
 func format_tackle_box_remaining_time(remaining_ms: int) -> String:
 	var total_seconds := int(ceil(float(max(0, remaining_ms)) / 1000.0))
 	var hours := int(float(total_seconds) / 3600.0)
@@ -3747,7 +3759,8 @@ func update_tackle_box_timer_hover() -> void:
 	var is_cow := is_cow_block_type(block_type)
 	var is_duck := is_duck_block_type(block_type)
 	var is_water_well := is_water_well_block_type(block_type)
-	if not is_tackle_box and not is_chicken and not is_cow and not is_duck and not is_water_well:
+	var is_atm_machine := is_atm_machine_block_type(block_type)
+	if not is_tackle_box and not is_chicken and not is_cow and not is_duck and not is_water_well and not is_atm_machine:
 		hide_tackle_box_timer_label()
 		return
 
@@ -3759,6 +3772,8 @@ func update_tackle_box_timer_hover() -> void:
 		tackle_box_timer_label.text = get_duck_timer_text(player_grid)
 	elif is_water_well:
 		tackle_box_timer_label.text = get_water_well_timer_text(player_grid)
+	elif is_atm_machine:
+		tackle_box_timer_label.text = get_atm_machine_timer_text(player_grid)
 	else:
 		var remaining_ms := get_tackle_box_remaining_ms(player_grid)
 		tackle_box_timer_label.text = "Tackle Box Ready" if remaining_ms <= 0 else "Tackle Box " + format_tackle_box_remaining_time(remaining_ms)
@@ -3871,6 +3886,12 @@ func is_water_well_block_type(block_type: String) -> bool:
 	if world != null and world.item_database.has(block_type):
 		return bool(world.item_database[block_type].get("water_well_block", false))
 	return block_type == "water_well"
+
+
+func is_atm_machine_block_type(block_type: String) -> bool:
+	if world != null and world.item_database.has(block_type):
+		return bool(world.item_database[block_type].get("atm_machine_block", false))
+	return block_type == "atm_machine"
 
 
 func is_dice_block_type(block_type: String) -> bool:
@@ -4104,13 +4125,14 @@ func initialize_tackle_box_cooldown_on_place(grid_pos: Vector2i, block_type: Str
 		if block_data is Dictionary:
 			clean_type = str(block_data.get("type", ""))
 	var is_water_well := is_water_well_block_type(clean_type)
-	if not is_tackle_box_block_type(clean_type) and not is_water_well:
+	var is_atm_machine := is_atm_machine_block_type(clean_type)
+	if not is_tackle_box_block_type(clean_type) and not is_water_well and not is_atm_machine:
 		return
 	if world.tackle_box_states.has(grid_pos):
 		return
 
-	var cooldown_seconds := 300.0 if is_water_well else 14400.0
-	var cooldown_key := "water_well_cooldown_seconds" if is_water_well else "tackle_box_cooldown_seconds"
+	var cooldown_seconds := 43200.0 if is_atm_machine else (300.0 if is_water_well else 14400.0)
+	var cooldown_key := "atm_machine_cooldown_seconds" if is_atm_machine else ("water_well_cooldown_seconds" if is_water_well else "tackle_box_cooldown_seconds")
 	if world.item_database.has(clean_type):
 		cooldown_seconds = maxf(0.0, float(world.item_database[clean_type].get(cooldown_key, cooldown_seconds)))
 	var cooldown_ms := int(round(cooldown_seconds * 1000.0))
@@ -5004,7 +5026,7 @@ func update_tackle_box_visual(grid_pos: Vector2i):
 	if not (block_data is Dictionary):
 		return
 	var block_type = str(block_data.get("type", ""))
-	if not is_tackle_box_block_type(block_type) and not is_water_well_block_type(block_type):
+	if not is_tackle_box_block_type(block_type) and not is_water_well_block_type(block_type) and not is_atm_machine_block_type(block_type):
 		return
 	if is_tackle_box_block_type(block_type):
 		clear_tackle_box_visual_animation(grid_pos)
@@ -5093,7 +5115,7 @@ func refresh_all_tackle_box_visuals():
 		var block_data = world.blocks.get(raw_grid_pos, {})
 		if block_data is Dictionary:
 			var block_type := str(block_data.get("type", ""))
-			if is_tackle_box_block_type(block_type) or is_water_well_block_type(block_type):
+			if is_tackle_box_block_type(block_type) or is_water_well_block_type(block_type) or is_atm_machine_block_type(block_type):
 				update_tackle_box_visual(raw_grid_pos)
 
 
@@ -6711,6 +6733,7 @@ func is_hybrid_interactive_tilemap_visual_candidate(block_type: String) -> bool:
 		or is_cow_block_type(clean_type) \
 		or is_duck_block_type(clean_type) \
 		or is_water_well_block_type(clean_type) \
+		or is_atm_machine_block_type(clean_type) \
 		or is_dice_block_type(clean_type) \
 		or is_checkpoint_block_type(clean_type) \
 		or is_display_block_type(clean_type) \
@@ -11590,6 +11613,10 @@ func hit_block_grid(grid_pos: Vector2i, force_punch_action: bool = false):
 		if try_harvest_water_well(grid_pos):
 			return
 
+	if is_atm_machine_block_type(str(block_type)):
+		if try_harvest_atm_machine(grid_pos):
+			return
+
 	if is_tackle_box_block_type(str(block_type)):
 		if try_harvest_tackle_box(grid_pos):
 			return
@@ -11837,6 +11864,11 @@ func try_punch_priority_block_at_player_grid(player_grid_pos: Vector2i) -> bool:
 			return true
 		hit_block_grid(player_grid_pos, true)
 		return true
+	if is_atm_machine_block_type(block_type):
+		if try_harvest_atm_machine(player_grid_pos):
+			return true
+		hit_block_grid(player_grid_pos, true)
+		return true
 
 	return false
 
@@ -12069,6 +12101,54 @@ func try_harvest_water_well(grid_pos: Vector2i) -> bool:
 		spawn_hand_item_swing_particles_at_grid(grid_pos)
 		if world.has_method("play_sound_punch"):
 			world.play_sound_punch(get_block_sound_position(grid_pos))
+	else:
+		world.show_notification("Almost ready. Try again in a moment.")
+	return true
+
+
+func try_harvest_atm_machine(grid_pos: Vector2i) -> bool:
+	if world == null:
+		return false
+	if not world.blocks.has(grid_pos):
+		return false
+
+	var block_data = world.blocks.get(grid_pos, {})
+	if not (block_data is Dictionary):
+		return false
+	var block_type := str(block_data.get("type", ""))
+	if not is_atm_machine_block_type(block_type):
+		return false
+
+	face_grid_for_block_punch(grid_pos)
+
+	if is_tackle_box_harvest_pending(grid_pos):
+		return false
+
+	var remaining_ms := get_tackle_box_remaining_ms(grid_pos)
+	if remaining_ms > 0:
+		return false
+
+	if is_waiting_for_server_sign_on():
+		show_server_sign_on_notice()
+		return true
+
+	var network = get_network_manager()
+	if network == null or not network.has_method("send_world_interaction_update"):
+		world.show_notification("Connection required.")
+		return true
+
+	var sent = bool(network.send_world_interaction_update({
+		"action": "tackle_box_state",
+		"x": grid_pos.x,
+		"y": grid_pos.y,
+		"operation": "harvest"
+	}, world.current_world_name))
+	if sent:
+		mark_tackle_box_harvest_pending(grid_pos)
+		spawn_hand_item_swing_particles_at_grid(grid_pos)
+		if world.has_method("play_sound_punch"):
+			world.play_sound_punch(get_block_sound_position(grid_pos))
+		world.show_notification("Harvesting ATM Machine...")
 	else:
 		world.show_notification("Almost ready. Try again in a moment.")
 	return true
@@ -12868,6 +12948,8 @@ func place_block_at_mouse():
 	if is_tackle_box_block_type(selected_block_type):
 		initialize_tackle_box_cooldown_on_place(grid_pos, selected_block_type)
 	if is_water_well_block_type(selected_block_type):
+		initialize_tackle_box_cooldown_on_place(grid_pos, selected_block_type)
+	if is_atm_machine_block_type(selected_block_type):
 		initialize_tackle_box_cooldown_on_place(grid_pos, selected_block_type)
 	if is_chicken_block_type(selected_block_type):
 		initialize_chicken_hunger_on_place(grid_pos, selected_block_type)

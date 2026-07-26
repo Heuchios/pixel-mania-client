@@ -2080,6 +2080,7 @@ func apply_network_world_interaction_update(data: Dictionary):
 		if is_local_confirmed_update and str(data.get("operation", "")).to_lower() == "harvest":
 			var tackle_block_type := str(data.get("block_type", "")).strip_edges().to_lower()
 			var water_well_harvest := false
+			var atm_machine_harvest := false
 			if world.has_method("is_water_well_block_type"):
 				water_well_harvest = bool(world.is_water_well_block_type(tackle_block_type))
 				if not water_well_harvest and world.blocks.has(tackle_grid_pos):
@@ -2087,7 +2088,14 @@ func apply_network_world_interaction_update(data: Dictionary):
 					if local_tackle_block_data is Dictionary:
 						var local_tackle_block_type := str(local_tackle_block_data.get("type", "")).strip_edges().to_lower()
 						water_well_harvest = bool(world.is_water_well_block_type(local_tackle_block_type))
-			if not water_well_harvest:
+			if world.has_method("is_atm_machine_block_type"):
+				atm_machine_harvest = bool(world.is_atm_machine_block_type(tackle_block_type))
+				if not atm_machine_harvest and world.blocks.has(tackle_grid_pos):
+					var local_atm_block_data = world.blocks.get(tackle_grid_pos, {})
+					if local_atm_block_data is Dictionary:
+						var local_atm_block_type := str(local_atm_block_data.get("type", "")).strip_edges().to_lower()
+						atm_machine_harvest = bool(world.is_atm_machine_block_type(local_atm_block_type))
+			if not water_well_harvest and not atm_machine_harvest:
 				world.show_notification("Tackle Box harvested.")
 
 	elif action == "chicken_state":

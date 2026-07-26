@@ -6720,6 +6720,38 @@ const ITEMS = {
 			},
 			"order": 413
 		},
+	"atm_machine": {
+			"category": "block",
+			"display_name": "ATM Machine",
+			"rarity": "epic",
+			"instance_tracked": true,
+			"block_health": 4,
+			"atlas_item_id": 39,
+			"atlas_source_id": 0,
+			"source_id": 0,
+			"atlas_coords": Vector2i(5, 16),
+			"alternative_tile": 0,
+			"texture": {"atlas": "res://image.png", "cell": [5, 16], "cell_size": [32, 32]},
+			"inventory_icon": {"atlas": "res://image.png", "cell": [5, 16], "cell_size": [32, 32]},
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"atm_machine_block": true,
+			"atm_machine_cooldown_seconds": 43200.0,
+			"atm_machine_reward_item_id": "gem",
+			"atm_machine_reward_item_category": "currency",
+			"atm_machine_reward_amount_range": [1, 100],
+			"atm_machine_ready_atlas_coords": Vector2i(5, 16),
+			"atm_machine_producing_atlas_coords": Vector2i(6, 16),
+			"interact_rules": true,
+			"shop_price": 12500,
+			"break_return_to_inventory": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0]
+			},
+			"order": 414
+		},
 	"cctv": {
 			"category": "block",
 			"display_name": "CCTV",
@@ -6747,7 +6779,7 @@ const ITEMS = {
 					{"item_id": "cctv", "item_category": "block", "amount": 1}
 				]
 			},
-			"order": 414
+			"order": 415
 		},
 	"oil_refinery": {
 			"category": "block",
@@ -6781,7 +6813,7 @@ const ITEMS = {
 					{"item_id": "oil_refinery", "item_category": "block", "amount": 1}
 				]
 			},
-			"order": 415
+			"order": 416
 		},
 	"battery_charger": {
 			"category": "block",

@@ -6223,6 +6223,11 @@ func is_water_well_block_type(block_type: String) -> bool:
 		return bool(item_database[block_type].get("water_well_block", false))
 	return block_type == "water_well"
 
+func is_atm_machine_block_type(block_type: String) -> bool:
+	if item_database.has(block_type):
+		return bool(item_database[block_type].get("atm_machine_block", false))
+	return block_type == "atm_machine"
+
 func is_dice_block_type(block_type: String) -> bool:
 	if item_database.has(block_type):
 		return bool(item_database[block_type].get("dice_block", false))
