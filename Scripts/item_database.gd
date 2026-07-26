@@ -26,17 +26,234 @@ const CATEGORY_BLOCK = "block"
 const CATEGORY_SEED = "seed"
 const CATEGORY_TOOL = "tool"
 const CATEGORY_BACK = "back"
+const CATEGORY_HAT = "hat"
 const CATEGORY_HAIR = "hair"
+const CATEGORY_EYEWEAR = "eyewear"
 const CATEGORY_SHIRT = "shirt"
 const CATEGORY_PANTS = "pants"
 const CATEGORY_SHOES = "shoes"
+const CATEGORY_RIDE = "ride"
 const CATEGORY_MATERIAL = "material"
 const CATEGORY_LURE = "lure"
 const CATEGORY_FISH = "fish"
 const CATEGORY_CURRENCY = "currency"
 
+const TIER_1_SPLICE_BALANCE = {
+	"pile_of_sand": {
+		"recipe": ["sand_seed", "stone_seed"],
+		"grow_time": 24.0,
+		"block_drop_chance": 0.85,
+		"seed_drop_chance": 0.55,
+		"tree_block_range": [4, 7],
+		"tree_seed_range": [2, 4]
+	},
+	"glass": {
+		"recipe": ["sand_seed", "lava_seed"],
+		"grow_time": 28.0,
+		"block_drop_chance": 0.75,
+		"seed_drop_chance": 0.45,
+		"tree_block_range": [4, 7],
+		"tree_seed_range": [2, 4]
+	},
+	"wood_plank": {
+		"recipe": ["wood_seed", "stone_seed"],
+		"grow_time": 32.0,
+		"block_drop_chance": 0.80,
+		"seed_drop_chance": 0.45,
+		"tree_block_range": [4, 7],
+		"tree_seed_range": [2, 4]
+	},
+	"vines": {
+		"recipe": ["grass_seed", "leaf_seed"],
+		"grow_time": 36.0,
+		"block_drop_chance": 0.80,
+		"seed_drop_chance": 0.45,
+		"tree_block_range": [4, 7],
+		"tree_seed_range": [2, 4]
+	},
+	"rose": {
+		"recipe": ["dirt_seed", "leaf_seed"],
+		"grow_time": 40.0,
+		"block_drop_chance": 0.75,
+		"seed_drop_chance": 0.40,
+		"tree_block_range": [4, 7],
+		"tree_seed_range": [2, 4]
+	},
+	"tulip": {
+		"recipe": ["sand_seed", "leaf_seed"],
+		"grow_time": 40.0,
+		"block_drop_chance": 0.75,
+		"seed_drop_chance": 0.40,
+		"tree_block_range": [4, 7],
+		"tree_seed_range": [2, 4]
+	},
+	"sun_flower": {
+		"recipe": ["grass_seed", "sand_seed"],
+		"grow_time": 46.0,
+		"block_drop_chance": 0.75,
+		"seed_drop_chance": 0.38,
+		"tree_block_range": [3, 6],
+		"tree_seed_range": [1, 4]
+	},
+	"apple": {
+		"recipe": ["wood_seed", "glass_seed"],
+		"grow_time": 52.0,
+		"block_drop_chance": 0.70,
+		"seed_drop_chance": 0.35,
+		"tree_block_range": [3, 6],
+		"tree_seed_range": [1, 4]
+	},
+	"climbing_vine": {
+		"recipe": ["vines_seed", "wood_seed"],
+		"grow_time": 58.0,
+		"block_drop_chance": 0.70,
+		"seed_drop_chance": 0.35,
+		"tree_block_range": [3, 6],
+		"tree_seed_range": [1, 4]
+	},
+	"vines_2": {
+		"recipe": ["vines_seed", "leaf_seed"],
+		"grow_time": 64.0,
+		"block_drop_chance": 0.68,
+		"seed_drop_chance": 0.32,
+		"tree_block_range": [3, 6],
+		"tree_seed_range": [1, 4]
+	},
+	"poppy": {
+		"recipe": ["rose_seed", "tulip_seed"],
+		"grow_time": 70.0,
+		"block_drop_chance": 0.68,
+		"seed_drop_chance": 0.30,
+		"tree_block_range": [3, 6],
+		"tree_seed_range": [1, 4]
+	},
+	"lily": {
+		"recipe": ["glass_seed", "grass_seed"],
+		"grow_time": 78.0,
+		"block_drop_chance": 0.65,
+		"seed_drop_chance": 0.28,
+		"tree_block_range": [3, 6],
+		"tree_seed_range": [1, 4]
+	},
+	"sand_castle": {
+		"recipe": ["sand_seed", "wood_plank_seed"],
+		"grow_time": 86.0,
+		"block_drop_chance": 0.65,
+		"seed_drop_chance": 0.25,
+		"tree_block_range": [3, 6],
+		"tree_seed_range": [1, 4]
+	},
+	"wood_platform": {
+		"recipe": ["wood_seed", "leaf_seed"],
+		"grow_time": 95.0,
+		"block_drop_chance": 0.65,
+		"seed_drop_chance": 0.25,
+		"tree_block_range": [3, 6],
+		"tree_seed_range": [1, 4]
+	},
+	"sign": {
+		"recipe": ["stone_seed", "cave_background_seed"],
+		"grow_time": 105.0,
+		"block_drop_chance": 0.62,
+		"seed_drop_chance": 0.22,
+		"tree_block_range": [2, 5],
+		"tree_seed_range": [0, 4]
+	},
+	"wooden_entrance": {
+		"recipe": ["leaf_seed", "wood_plank_seed"],
+		"grow_time": 115.0,
+		"block_drop_chance": 0.60,
+		"seed_drop_chance": 0.20,
+		"tree_block_range": [2, 5],
+		"tree_seed_range": [0, 4]
+	},
+	"wooden_block": {
+		"recipe": ["wood_plank_seed", "lava_seed"],
+		"grow_time": 125.0,
+		"block_drop_chance": 0.60,
+		"seed_drop_chance": 0.20,
+		"tree_block_range": [2, 5],
+		"tree_seed_range": [0, 4]
+	},
+	"wooden_background": {
+		"recipe": ["wood_plank_seed", "cave_background_seed"],
+		"grow_time": 135.0,
+		"block_drop_chance": 0.58,
+		"seed_drop_chance": 0.18,
+		"tree_block_range": [2, 5],
+		"tree_seed_range": [0, 4]
+	},
+	"wooden_fence": {
+		"recipe": ["wooden_block_seed", "leaf_seed"],
+		"grow_time": 150.0,
+		"block_drop_chance": 0.55,
+		"seed_drop_chance": 0.16,
+		"tree_block_range": [2, 5],
+		"tree_seed_range": [0, 4]
+	},
+	"wooden_ladder": {
+		"recipe": ["wood_platform_seed", "vines_seed"],
+		"grow_time": 160.0,
+		"block_drop_chance": 0.55,
+		"seed_drop_chance": 0.16,
+		"tree_block_range": [2, 5],
+		"tree_seed_range": [0, 4]
+	},
+	"wooden_door": {
+		"recipe": ["wooden_entrance_seed", "wood_plank_seed"],
+		"grow_time": 175.0,
+		"block_drop_chance": 0.52,
+		"seed_drop_chance": 0.14,
+		"tree_block_range": [2, 5],
+		"tree_seed_range": [0, 4]
+	},
+	"wooden_frame": {
+		"recipe": ["wooden_fence_seed", "wood_plank_seed"],
+		"grow_time": 190.0,
+		"block_drop_chance": 0.50,
+		"seed_drop_chance": 0.12,
+		"tree_block_range": [2, 5],
+		"tree_seed_range": [0, 4]
+	},
+	"mushroom": {
+		"recipe": ["dirt_seed", "vines_seed"],
+		"grow_time": 205.0,
+		"block_drop_chance": 0.48,
+		"seed_drop_chance": 0.10,
+		"tree_block_range": [1, 4],
+		"tree_seed_range": [0, 4]
+	},
+	"stone_brick": {
+		"recipe": ["lava_seed", "stone_seed"],
+		"grow_time": 225.0,
+		"block_drop_chance": 0.45,
+		"seed_drop_chance": 0.08,
+		"tree_block_range": [1, 4],
+		"tree_seed_range": [0, 4]
+	},
+	"glass_panel": {
+		"recipe": ["glass_seed", "stone_seed"],
+		"grow_time": 250.0,
+		"block_drop_chance": 0.42,
+		"seed_drop_chance": 0.07,
+		"tree_block_range": [1, 4],
+		"tree_seed_range": [0, 4]
+	},
+	"gem_block": {
+		"recipe": ["glass_seed", "lava_seed"],
+		"grow_time": 300.0,
+		"block_drop_chance": 0.35,
+		"seed_drop_chance": 0.05,
+		"tree_block_range": [1, 4],
+		"tree_seed_range": [0, 4]
+	}
+}
+
 const BASIC_ITEMS_PACK_REWARDS = [
 	"messy_brown_hair",
+	"blue_baseball_cap",
+	"green_baseball_cap",
+	"red_baseball_cap",
 	"basic_blue_shirt",
 	"basic_red_shirt",
 	"basic_white_shirt",
@@ -53,7 +270,35 @@ const BASIC_ITEMS_PACK_REWARDS = [
 	"basic_brown_shoes",
 	"basic_black_shoes",
 	"basic_red_shoes",
-	"basic_blue_shoes"
+	"basic_blue_shoes",
+	"basic_yellow_shoes"
+]
+
+const HAIR_PACK_REWARDS = [
+	{"item_id": "black_afro", "weight": 999},
+	{"item_id": "blonde_afro", "weight": 999},
+	{"item_id": "brown_afro", "weight": 999},
+	{"item_id": "pink_afro", "weight": 999},
+	{"item_id": "red_afro", "weight": 999},
+	{"item_id": "short_black_hair", "weight": 999},
+	{"item_id": "short_blonde_hair", "weight": 999},
+	{"item_id": "short_bron_hair", "weight": 999},
+	{"item_id": "short_pink_hair", "weight": 999},
+	{"item_id": "short_red_hair", "weight": 999},
+	{"item_id": "long_black_hair", "weight": 999},
+	{"item_id": "long_blonde_hair", "weight": 999},
+	{"item_id": "long_grey_hair", "weight": 999},
+	{"item_id": "long_pink_hair", "weight": 999},
+	{"item_id": "long_red_hair", "weight": 999},
+	{"item_id": "baby_hair", "weight": 15}
+]
+
+const PRESTIGE_COLOURED_BLOCK_PACK_REWARDS = [
+	"ps_blue_block",
+	"ps_green_block",
+	"ps_purple_block",
+	"ps_red_block",
+	"ps_yellow_block"
 ]
 
 const ITEMS = {
@@ -66,7 +311,8 @@ const ITEMS = {
 		"display_name": "Dirt",
 		"rarity": "common",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/basic blocks/dirt_block.png",
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/dirt_block.png",
+		"atlas_coords": Vector2i(0, 0),
 		"seed": "dirt_seed",
 		"order": 0
 	},
@@ -75,27 +321,87 @@ const ITEMS = {
 		"display_name": "Grass",
 		"rarity": "common",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/basic blocks/grass_block.png",
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/grass_block.png",
+		"atlas_coords": Vector2i(0, 0),
+		"animated": true,
+		"animation_frames": [
+			"res://Assets/blocks/Tier_1/basic blocks/grass_block.png",
+			"res://Assets/blocks/Tier_1/basic blocks/grass_block_2.png",
+			"res://Assets/blocks/Tier_1/basic blocks/grass_block_3.png",
+			"res://Assets/blocks/Tier_1/basic blocks/grass_block_2.png",
+			"res://Assets/blocks/Tier_1/basic blocks/grass_block.png"
+		],
+		"animation_frame_seconds": 0.24,
 		"seed": "grass_seed",
 		"Collidable": false,
 		"no_collision": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "grass", "item_category": "block", "amount": 1, "chance": 0.9},
+				{"item_id": "grass_seed", "item_category": "seed", "amount": 1, "chance": 0.8},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [0, 1]},
+				{"item_id": "grain", "item_category": "material", "amount": 1, "chance": 0.3}
+			]
+		},
 		"order": 1
+	},
+"hay": {
+		"category": "block",
+		"display_name": "Hay",
+		"rarity": "common",
+		"block_health": 3,
+		"texture": "res://image.png",
+		"atlas_item_id": 22,
+		"atlas_coords": Vector2i(0, 23),
+		"animated": true,
+		"animation_frames": [
+			Vector2i(0, 23),
+			Vector2i(1, 23),
+			Vector2i(2, 23),
+			Vector2i(1, 23),
+			Vector2i(0, 23)
+		],
+		"animation_atlas_coords": [
+			Vector2i(0, 23),
+			Vector2i(1, 23),
+			Vector2i(2, 23),
+			Vector2i(1, 23),
+			Vector2i(0, 23)
+		],
+		"animation_frame_seconds": 0.24,
+		"tileset_animation": false,
+		"seed": "",
+		"Collidable": false,
+		"no_collision": true,
+		"collidable": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "wheat", "item_category": "material", "amount": 1, "chance": 0.2}
+			]
+		},
+		"order": 2
 	},
 "stone": {
 		"category": "block",
 		"display_name": "Stone",
 		"rarity": "common",
 		"block_health": 4,
-		"texture": "res://Assets/blocks/basic blocks/stone_block.png",
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/stone_block.png",
+		"atlas_coords": Vector2i(0, 2),
 		"seed": "stone_seed",
 		"order": 2
 	},
 "wood": {
 		"category": "block",
-		"display_name": "Wood",
+		"display_name": "Tree Trunk",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/basic blocks/wood_block.png",
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/tree_trunk_bottom.png",
+		"atlas_coords": Vector2i(9, 4),
 		"seed": "wood_seed",
 		"no_collision": true,
 		"order": 3
@@ -105,7 +411,7 @@ const ITEMS = {
 		"display_name": "Leaf",
 		"rarity": "uncommon",
 		"block_health": 2,
-		"texture": "res://Assets/blocks/basic blocks/leaf_block.png",
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/leaf_block.png",
 		"seed": "leaf_seed",
 		"order": 4
 	},
@@ -114,12 +420,14 @@ const ITEMS = {
 		"display_name": "Lava",
 		"rarity": "rare",
 		"block_health": 4,
-		"texture": "res://Assets/blocks/basic blocks/lava_block.png",
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/lava_block.png",
+		"atlas_coords": Vector2i(0, 3),
 		"seed": "lava_seed",
 		"lava_rebound": true,
-		"lava_top_velocity": -420.0,
-		"lava_side_knockback_velocity": 300.0,
-		"lava_bottom_knockback_velocity": 280.0,
+		"lava_radial_knockback_velocity": 470.0,
+		"light_fx_scene": "res://Scenes/particles/LavaBlockGlowParticlesFX.tscn",
+		"light_fx_offset": Vector2.ZERO,
+		"light_fx_show_fixture": false,
 		"order": 5
 	},
 "sand": {
@@ -127,7 +435,8 @@ const ITEMS = {
 		"display_name": "Sand",
 		"rarity": "common",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/basic blocks/sand_block.png",
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/sand_block.png",
+		"atlas_coords": Vector2i(11, 5),
 		"seed": "sand_seed",
 		"order": 6
 	},
@@ -136,7 +445,8 @@ const ITEMS = {
 		"display_name": "Glass",
 		"rarity": "rare",
 		"block_health": 2,
-		"texture": "res://Assets/blocks/basic blocks/glass_block.png",
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/glass_block.png",
+		"atlas_coords": Vector2i(4, 12),
 		"seed": "glass_seed",
 		"order": 7
 	},
@@ -145,15 +455,387 @@ const ITEMS = {
 		"display_name": "Water",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/blocks/basic blocks/water_block.png",
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/water_block.png",
+		"atlas_coords": Vector2i(1, 3),
+		"water_lower_atlas_coords": Vector2i(5, 3),
+		"animated": true,
 		"animation_frames": [
-			"res://Assets/blocks/basic blocks/water_0.png",
-			"res://Assets/blocks/basic blocks/water_1.png",
-			"res://Assets/blocks/basic blocks/water_2.png",
-			"res://Assets/blocks/basic blocks/water_3.png"
+			"res://Assets/blocks/Tier_1/basic blocks/water_0.png",
+			"res://Assets/blocks/Tier_1/basic blocks/water_1.png",
+			"res://Assets/blocks/Tier_1/basic blocks/water_2.png",
+			"res://Assets/blocks/Tier_1/basic blocks/water_3.png"
 		],
 		"no_collision": true,
 		"order": 8
+	},
+"water_bucket": {
+		"category": "block",
+		"display_name": "Water Bucket",
+		"rarity": "common",
+		"block_health": 1,
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/water_bucket.png",
+		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/water_bucket.png",
+		"seed": "",
+		"placeable": false,
+		"water_bucket": true,
+		"order": 9
+	},
+"electric_wire": {
+		"category": "block",
+		"display_name": "Electric Wire",
+		"rarity": "uncommon",
+		"block_health": 1,
+		"texture": "res://Assets/blocks/electric/electric_wire.svg",
+		"inventory_icon": "res://Assets/blocks/electric/electric_wire.svg",
+		"seed": "",
+		"placeable": false,
+		"no_collision": true,
+		"collidable": false,
+		"visual_wire": true,
+		"electrical_device_type": "wire",
+		"signal_mode": "on_off",
+		"drop_gems": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"drops_self": true
+		},
+		"order": 10
+	},
+"metal_pad": {
+		"category": "block",
+		"display_name": "Metal Pad",
+		"rarity": "uncommon",
+		"block_health": 2,
+		"texture": "res://Assets/blocks/electric/metal_pad.png",
+		"atlas_coords": Vector2i(8, 17),
+		"inventory_icon": "res://Assets/blocks/electric/metal_pad.png",
+		"seed": "",
+		"place_layer": "background",
+		"background_block": true,
+		"electrical_device_type": "metal_pad",
+		"signal_mode": "power_storage",
+		"drop_gems": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"drops_self": true
+		},
+		"order": 10
+	},
+"generator": {
+		"category": "block",
+		"display_name": "Transformer",
+		"rarity": "rare",
+		"block_health": 4,
+		"texture": "res://Assets/blocks/electric/generator.png",
+		"atlas_coords": Vector2i(0, 17),
+		"inventory_icon": "res://Assets/blocks/electric/generator.png",
+		"animation_frames": [
+			"res://Assets/blocks/electric/generator_1.png",
+			"res://Assets/blocks/electric/generator_2.png",
+			"res://Assets/blocks/electric/generator_3.png"
+		],
+		"animation_frame_seconds": 0.18,
+		"seed": "",
+		"collidable": true,
+		"electrical_device_type": "generator",
+		"signal_mode": "power_storage",
+		"max_watts": 1000,
+		"server_triggered_animation": true,
+		"drop_gems": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"drops_self": true
+		},
+		"order": 11
+	},
+"electric_pole": {
+		"category": "block",
+		"display_name": "Electric Pole",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/electric/electric_pole.png",
+		"inventory_icon": "res://Assets/blocks/electric/electric_pole.png",
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"electrical_device_type": "electric_pole",
+		"signal_mode": "power_output",
+		"drop_gems": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"drops_self": true
+		},
+		"order": 12
+	},
+	"golden_statue": {
+		"category": "block",
+		"display_name": "Golden Statue",
+		"rarity": "legendary",
+		"block_health": 4,
+		"texture": "res://Assets/items/fish/golden_statue.png",
+		"inventory_icon": "res://Assets/items/fish/golden_statue.png",
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"drops_self": true,
+		"drop_gems": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"drops_self": true
+		},
+		"fishing_reward": true,
+		"sell_value": 0,
+		"order": 12
+	},
+
+	# ============================================================
+	# WORLD EVENT BLOCKS
+	# ============================================================
+"snow_dirt": {
+		"category": "block",
+		"display_name": "Snow Dirt",
+		"rarity": "common",
+		"block_health": 3,
+		"texture": "res://Assets/events/snow_storm/blocks/snow_dirt.png",
+		"atlas_coords": Vector2i(11, 3),
+		"seed": "",
+		"placeable": false,
+		"dropable": false,
+		"drop_gems": false,
+		"order": 130
+	},
+"ice_block": {
+		"category": "block",
+		"display_name": "Ice Block",
+		"rarity": "common",
+		"block_health": 3,
+		"texture": "res://Assets/events/snow_storm/blocks/ice_block.png",
+		"atlas_coords": Vector2i(12, 2),
+		"inventory_icon": "res://Assets/inventory_icons/ice_block.png",
+		"seed": "ice_block_seed",
+		"placeable": true,
+		"slippery": true,
+		"slippery_speed_multiplier": 1.65,
+		"slippery_acceleration": 280.0,
+		"slippery_friction": 18.0,
+		"drop_gems": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "ice_block", "item_category": "block", "amount_range": [1, 3]},
+				{"item_id": "ice_block_seed", "item_category": "seed", "amount_range": [0, 2]},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [0, 4]},
+			]
+		},
+		"order": 131
+	},
+"ice_block_2": {
+		"category": "block",
+		"display_name": "Treasure Ice",
+		"rarity": "rare",
+		"block_health": 4,
+		"texture": "res://Assets/events/snow_storm/blocks/ice_block_2.png",
+		"atlas_coords": Vector2i(14, 2),
+		"inventory_icon": "res://Assets/events/snow_storm/blocks/ice_block_2.png",
+		"seed": "",
+		"placeable": false,
+		"slippery": true,
+		"slippery_speed_multiplier": 1.65,
+		"slippery_acceleration": 280.0,
+		"slippery_friction": 18.0,
+		"dropable": false,
+		"drop_gems": false,
+		"order": 132
+	},
+"ice_fossil": {
+		"category": "block",
+		"display_name": "Ice Fossil",
+		"rarity": "rare",
+		"block_health": 4,
+		"texture": "res://Assets/events/snow_storm/blocks/ice_fossil.png",
+		"atlas_coords": Vector2i(13, 2),
+		"inventory_icon": "res://Assets/inventory_icons/ice_fossil.png",
+		"seed": "",
+		"placeable": false,
+		"slippery": true,
+		"slippery_speed_multiplier": 1.65,
+		"slippery_acceleration": 280.0,
+		"slippery_friction": 18.0,
+		"dropable": false,
+		"drop_gems": false,
+		"order": 133
+	},
+"frozen_treasure": {
+		"category": "block",
+		"display_name": "Frozen Treasure",
+		"rarity": "rare",
+		"block_health": 1,
+		"texture": "res://Assets/events/snow_storm/items/frozen_treasure_1.png",
+		"inventory_icon": "res://Assets/inventory_icons/frozen_treasure_1.png",
+		"seed": "",
+		"no_collision": true,
+		"dropable": false,
+		"drop_gems": false,
+		"placeable": true,
+		"order": 134
+	},
+"frozen_treasure_2": {
+		"category": "block",
+		"display_name": "Opened Frozen Treasure",
+		"rarity": "rare",
+		"block_health": 1,
+		"texture": "res://Assets/events/snow_storm/items/frozen_treasure_2.png",
+		"inventory_icon": "res://Assets/events/snow_storm/items/frozen_treasure_2.png",
+		"seed": "",
+		"no_collision": true,
+		"dropable": false,
+		"drop_gems": false,
+		"placeable": false,
+		"order": 135
+	},
+"snow_block": {
+		"category": "block",
+		"display_name": "Snow Block",
+		"rarity": "uncommon",
+		"block_health": 2,
+		"texture": "res://Assets/events/snow_storm/blocks/snow_block.png",
+		"atlas_coords": Vector2i(11, 2),
+		"inventory_icon": "res://Assets/inventory_icons/snow_block.png",
+		"seed": "",
+		"drops_self": true,
+		"drop_gems": false,
+		"order": 136
+	},
+"snow_leaf": {
+		"category": "block",
+		"display_name": "Snow Leaf",
+		"rarity": "uncommon",
+		"block_health": 2,
+		"texture": "res://Assets/events/snow_storm/blocks/snow_leaf.png",
+		"atlas_coords": Vector2i(15, 2),
+		"seed": "",
+		"placeable": false,
+		"dropable": false,
+		"drop_gems": false,
+		"order": 137
+	},
+"frozen_grass": {
+		"category": "block",
+		"display_name": "Frozen Grass",
+		"rarity": "common",
+		"block_health": 3,
+		"texture": "res://Assets/events/snow_storm/blocks/frozen_grass_1.png",
+		"inventory_icon": "res://Assets/inventory_icons/frozen_grass_1.png",
+		"animation_frames": [
+			"res://Assets/events/snow_storm/blocks/frozen_grass_1.png",
+			"res://Assets/events/snow_storm/blocks/frozen_grass_2.png",
+			"res://Assets/events/snow_storm/blocks/frozen_grass_3.png",
+			"res://Assets/events/snow_storm/blocks/frozen_grass_2.png",
+			"res://Assets/events/snow_storm/blocks/frozen_grass_1.png"
+		],
+		"animation_frame_seconds": 0.24,
+		"seed": "",
+		"no_collision": true,
+		"placeable": false,
+		"dropable": false,
+		"drop_gems": false,
+		"order": 138
+	},
+"frozen_grass_1": {
+		"category": "block",
+		"display_name": "Frozen Grass",
+		"rarity": "common",
+		"block_health": 3,
+		"texture": "res://Assets/events/snow_storm/blocks/frozen_grass_1.png",
+		"inventory_icon": "res://Assets/inventory_icons/frozen_grass_1.png",
+		"seed": "",
+		"no_collision": true,
+		"placeable": false,
+		"dropable": false,
+		"drop_gems": false,
+		"hidden": true,
+		"order": 139
+	},
+"frozen_grass_2": {
+		"category": "block",
+		"display_name": "Frozen Grass",
+		"rarity": "common",
+		"block_health": 3,
+		"texture": "res://Assets/events/snow_storm/blocks/frozen_grass_2.png",
+		"inventory_icon": "res://Assets/events/snow_storm/blocks/frozen_grass_2.png",
+		"seed": "",
+		"no_collision": true,
+		"placeable": false,
+		"dropable": false,
+		"drop_gems": false,
+		"hidden": true,
+		"order": 140
+	},
+"frozen_grass_3": {
+		"category": "block",
+		"display_name": "Frozen Grass",
+		"rarity": "common",
+		"block_health": 3,
+		"texture": "res://Assets/events/snow_storm/blocks/frozen_grass_3.png",
+		"inventory_icon": "res://Assets/events/snow_storm/blocks/frozen_grass_3.png",
+		"seed": "",
+		"no_collision": true,
+		"placeable": false,
+		"dropable": false,
+		"drop_gems": false,
+		"hidden": true,
+		"order": 141
+	},
+"pile_of_snow": {
+		"category": "block",
+		"display_name": "Pile of Snow",
+		"rarity": "common",
+		"block_health": 1,
+		"texture": "res://Assets/events/snow_storm/blocks/snow_bank.png",
+		"inventory_icon": "res://Assets/events/snow_storm/blocks/snow_bank.png",
+		"seed": "",
+		"no_collision": true,
+		"placeable": false,
+		"dropable": false,
+		"drop_gems": false,
+		"hidden": true,
+		"order": 142
+	},
+
+"snow_bank": {
+		"category": "block",
+		"display_name": "Snow Bank",
+		"rarity": "common",
+		"block_health": 3,
+		"texture": "res://Assets/events/snow_storm/blocks/snow_bank.png",
+		"inventory_icon": "res://Assets/events/snow_storm/blocks/snow_bank.png",
+		"seed": "",
+		"placeable": false,
+		"dropable": false,
+		"drop_gems": false,
+		"hidden": true,
+		"order": 143
+	},
+"snow_stone": {
+		"category": "block",
+		"display_name": "Snow Stone",
+		"rarity": "common",
+		"block_health": 4,
+		"texture": "res://Assets/events/snow_storm/blocks/snow_stone.png",
+		"atlas_coords": Vector2i(14, 4),
+		"inventory_icon": "res://Assets/events/snow_storm/blocks/snow_stone.png",
+		"seed": "",
+		"placeable": false,
+		"dropable": false,
+		"drop_gems": false,
+		"hidden": true,
+		"order": 144
 	},
 
 "cave_background": {
@@ -162,12 +844,181 @@ const ITEMS = {
 		"rarity": "common",
 		"block_health": 2,
 		"texture": "res://Assets/background/cave_background.png",
+		"atlas_coords": Vector2i(1, 0),
 		"seed": "cave_background_seed",
 		"background_block": true,
 		"place_layer": "background",
 		"no_collision": true,
 		"collidable": false,
 		"order": 9
+	},
+"white_bg": {
+		"category": "block",
+		"display_name": "White Background",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/background/colour_background/white_bg.png",
+		"atlas_coords": Vector2i(0, 10),
+		"seed": "",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
+		"order": 80
+	},
+"grey_bg": {
+		"category": "block",
+		"display_name": "Grey Background",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/background/colour_background/grey_bg.png",
+		"atlas_coords": Vector2i(0, 11),
+		"seed": "",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
+		"order": 81
+	},
+"black_bg": {
+		"category": "block",
+		"display_name": "Black Background",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/background/colour_background/black_bg.png",
+		"atlas_coords": Vector2i(0, 12),
+		"seed": "",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
+		"order": 82
+	},
+"red_bg": {
+		"category": "block",
+		"display_name": "Red Background",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/background/colour_background/red_bg.png",
+		"atlas_coords": Vector2i(1, 10),
+		"seed": "",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
+		"order": 83
+	},
+"orange_bg": {
+		"category": "block",
+		"display_name": "Orange Background",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/background/colour_background/orange_bg.png",
+		"atlas_coords": Vector2i(1, 11),
+		"seed": "",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
+		"order": 84
+	},
+"yellow_bg": {
+		"category": "block",
+		"display_name": "Yellow Background",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/background/colour_background/yellow_bg.png",
+		"atlas_coords": Vector2i(1, 12),
+		"seed": "",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
+		"order": 85
+	},
+"green_bg": {
+		"category": "block",
+		"display_name": "Green Background",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/background/colour_background/green_bg.png",
+		"atlas_coords": Vector2i(2, 10),
+		"seed": "",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
+		"order": 86
+	},
+"aqua_bg": {
+		"category": "block",
+		"display_name": "Aqua Background",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/background/colour_background/aqua_bg.png",
+		"atlas_coords": Vector2i(2, 11),
+		"seed": "",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
+		"order": 87
+	},
+"blue_bg": {
+		"category": "block",
+		"display_name": "Blue Background",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/background/colour_background/blue_bg.png",
+		"atlas_coords": Vector2i(2, 12),
+		"seed": "",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
+		"order": 88
+	},
+"purple_bg": {
+		"category": "block",
+		"display_name": "Purple Background",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/background/colour_background/purple_bg.png",
+		"atlas_coords": Vector2i(3, 11),
+		"seed": "",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
+		"order": 89
+	},
+"pink_bg": {
+		"category": "block",
+		"display_name": "Pink Background",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/background/colour_background/pink_bg.png",
+		"atlas_coords": Vector2i(3, 12),
+		"seed": "",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
+		"order": 90
+	},
+"brown_bg": {
+		"category": "block",
+		"display_name": "Brown Background",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/background/colour_background/brown_bg.png",
+		"atlas_coords": Vector2i(3, 10),
+		"seed": "",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
+		"order": 91
 	},
 "glowing_dirt": {
 		"category": "block",
@@ -188,7 +1039,8 @@ const ITEMS = {
 		"rarity": "uncommon",
 		"block_health": 3,
 		"texture": "res://Assets/blocks/colour_blocks/red_block.png",
-		"inventory_icon": "res://Assets/inventory_icons/red_block.png",
+		"atlas_coords": Vector2i(1, 7),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/red_block.png",
 		"seed": "red_block_seed",
 		"order": 11
 	},
@@ -198,6 +1050,7 @@ const ITEMS = {
 		"rarity": "uncommon",
 		"block_health": 3,
 		"texture": "res://Assets/blocks/colour_blocks/blue_block.png",
+		"atlas_coords": Vector2i(2, 9),
 		"inventory_icon": "res://Assets/blocks/colour_blocks/blue_block.png",
 		"seed": "blue_block_seed",
 		"order": 12
@@ -218,6 +1071,7 @@ const ITEMS = {
 		"rarity": "uncommon",
 		"block_health": 3,
 		"texture": "res://Assets/blocks/colour_blocks/purple_block.png",
+		"atlas_coords": Vector2i(3, 8),
 		"inventory_icon": "res://Assets/blocks/colour_blocks/purple_block.png",
 		"seed": "purple_block_seed",
 		"order": 14
@@ -227,17 +1081,353 @@ const ITEMS = {
 		"display_name": "Yellow Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/inventory_icons/yellow_block.png",
-		"inventory_icon": "res://Assets/inventory_icons/yellow_block.png",
+		"texture": "res://Assets/blocks/colour_blocks/yellow_block.png",
+		"atlas_coords": Vector2i(1, 9),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/yellow_block.png",
 		"seed": "yellow_block_seed",
 		"order": 15
+	},
+"aqua_block": {
+		"category": "block",
+		"display_name": "Aqua Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/aqua_block.png",
+		"atlas_coords": Vector2i(2, 8),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/aqua_block.png",
+		"seed": "aqua_block_seed",
+		"order": 100
+	},
+"black_block": {
+		"category": "block",
+		"display_name": "Black Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/black_block.png",
+		"atlas_coords": Vector2i(0, 9),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/black_block.png",
+		"seed": "black_block_seed",
+		"order": 101
+	},
+"blue_pastel_block": {
+		"category": "block",
+		"display_name": "Blue Pastel Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/blue_pastel_block.png",
+		"atlas_coords": Vector2i(8, 9),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/blue_pastel_block.png",
+		"seed": "blue_pastel_block_seed",
+		"order": 102
+	},
+"brown_block": {
+		"category": "block",
+		"display_name": "Brown Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/brown_block.png",
+		"atlas_coords": Vector2i(3, 7),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/brown_block.png",
+		"seed": "brown_block_seed",
+		"order": 103
+	},
+"dark_aqua_block": {
+		"category": "block",
+		"display_name": "Dark Aqua Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/dark_aqua_block.png",
+		"atlas_coords": Vector2i(5, 8),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_aqua_block.png",
+		"seed": "dark_aqua_block_seed",
+		"order": 104
+	},
+"dark_blue_block": {
+		"category": "block",
+		"display_name": "Dark Blue Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/dark_blue_block.png",
+		"atlas_coords": Vector2i(5, 9),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_blue_block.png",
+		"seed": "dark_blue_block_seed",
+		"order": 105
+	},
+"dark_brown_block": {
+		"category": "block",
+		"display_name": "Dark Brown Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/dark_brown_block.png",
+		"atlas_coords": Vector2i(6, 7),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_brown_block.png",
+		"seed": "dark_brown_block_seed",
+		"order": 106
+	},
+"dark_green_block": {
+		"category": "block",
+		"display_name": "Dark Green Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/dark_green_block.png",
+		"atlas_coords": Vector2i(5, 7),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_green_block.png",
+		"seed": "dark_green_block_seed",
+		"order": 107
+	},
+"dark_pink_block": {
+		"category": "block",
+		"display_name": "Dark Pink Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/dark_pink_block.png",
+		"atlas_coords": Vector2i(6, 9),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_pink_block.png",
+		"seed": "dark_pink_block_seed",
+		"order": 108
+	},
+"dark_purple_block": {
+		"category": "block",
+		"display_name": "Dark Purple Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/dark_purple_block.png",
+		"atlas_coords": Vector2i(6, 8),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_purple_block.png",
+		"seed": "dark_purple_block_seed",
+		"order": 109
+	},
+"dark_red_block": {
+		"category": "block",
+		"display_name": "Dark Red Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/dark_red_block.png",
+		"atlas_coords": Vector2i(4, 7),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_red_block.png",
+		"seed": "dark_red_block_seed",
+		"order": 110
+	},
+"dark_yellow_block": {
+		"category": "block",
+		"display_name": "Dark Yellow Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/dark_yellow_block.png",
+		"atlas_coords": Vector2i(4, 9),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_yellow_block.png",
+		"seed": "dark_yellow_block_seed",
+		"order": 111
+	},
+"green_pastel_block": {
+		"category": "block",
+		"display_name": "Green Pastel Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/green_pastel_block.png",
+		"atlas_coords": Vector2i(8, 7),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/green_pastel_block.png",
+		"seed": "green_pastel_block_seed",
+		"order": 112
+	},
+"grey_block": {
+		"category": "block",
+		"display_name": "Grey Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/grey_block.png",
+		"atlas_coords": Vector2i(0, 8),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/grey_block.png",
+		"seed": "grey_block_seed",
+		"order": 113
+	},
+"happy_block": {
+		"category": "block",
+		"display_name": "Happy Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/happy_block.png",
+		"atlas_coords": Vector2i(9, 8),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/happy_block.png",
+		"seed": "happy_block_seed",
+		"order": 114
+	},
+"light_brown_block": {
+		"category": "block",
+		"display_name": "Light Brown Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/light_brown_block.png",
+		"atlas_coords": Vector2i(4, 8),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/light_brown_block.png",
+		"seed": "light_brown_block_seed",
+		"order": 115
+	},
+"orange_block": {
+		"category": "block",
+		"display_name": "Orange Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/orange_block.png",
+		"atlas_coords": Vector2i(1, 8),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/orange_block.png",
+		"seed": "orange_block_seed",
+		"order": 116
+	},
+"orange_pastel_block": {
+		"category": "block",
+		"display_name": "Orange Pastel Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/orange_pastel_block.png",
+		"atlas_coords": Vector2i(8, 8),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/orange_pastel_block.png",
+		"seed": "orange_pastel_block_seed",
+		"order": 117
+	},
+"pastel_flower_block": {
+		"category": "block",
+		"display_name": "Pastel Flower Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/pastel_flower_block.png",
+		"atlas_coords": Vector2i(9, 9),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/pastel_flower_block.png",
+		"seed": "pastel_flower_block_seed",
+		"order": 118
+	},
+"pink_block": {
+		"category": "block",
+		"display_name": "Pink Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/pink_block.png",
+		"atlas_coords": Vector2i(3, 9),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/pink_block.png",
+		"seed": "pink_block_seed",
+		"order": 119
+	},
+"pink_pastel_block": {
+		"category": "block",
+		"display_name": "Pink Pastel Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/pink_pastel_block.png",
+		"atlas_coords": Vector2i(7, 9),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/pink_pastel_block.png",
+		"seed": "pink_pastel_block_seed",
+		"order": 120
+	},
+"purple_pastel_block": {
+		"category": "block",
+		"display_name": "Purple Pastel Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/purple_pastel_block.png",
+		"atlas_coords": Vector2i(9, 7),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/purple_pastel_block.png",
+		"seed": "purple_pastel_block_seed",
+		"order": 121
+	},
+"red_pastel_block": {
+		"category": "block",
+		"display_name": "Red Pastel Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/red_pastel_block.png",
+		"atlas_coords": Vector2i(7, 7),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/red_pastel_block.png",
+		"seed": "red_pastel_block_seed",
+		"order": 122
+	},
+"white_block": {
+		"category": "block",
+		"display_name": "White Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/white_block.png",
+		"atlas_coords": Vector2i(0, 7),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/white_block.png",
+		"seed": "white_block_seed",
+		"order": 123
+	},
+"yellow_pastel_block": {
+		"category": "block",
+		"display_name": "Yellow Pastel Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/colour_blocks/yellow_pastel_block.png",
+		"atlas_coords": Vector2i(7, 8),
+		"inventory_icon": "res://Assets/blocks/colour_blocks/yellow_pastel_block.png",
+		"seed": "yellow_pastel_block_seed",
+		"order": 124
+	},
+"ps_blue_block": {
+		"category": "block",
+		"display_name": "Prestige Blue Block",
+		"rarity": "epic",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/prestige_coloured_blocks/ps_blue_block.png",
+		"inventory_icon": "res://Assets/blocks/prestige_coloured_blocks/ps_blue_block.png",
+		"seed": "",
+		"drops_self": true,
+		"drop_gems": false,
+		"order": 125
+	},
+"ps_green_block": {
+		"category": "block",
+		"display_name": "Prestige Green Block",
+		"rarity": "epic",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/prestige_coloured_blocks/ps_green_block.png",
+		"inventory_icon": "res://Assets/blocks/prestige_coloured_blocks/ps_green_block.png",
+		"seed": "",
+		"drops_self": true,
+		"drop_gems": false,
+		"order": 126
+	},
+"ps_purple_block": {
+		"category": "block",
+		"display_name": "Prestige Purple Block",
+		"rarity": "epic",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/prestige_coloured_blocks/ps_purple_block.png",
+		"inventory_icon": "res://Assets/blocks/prestige_coloured_blocks/ps_purple_block.png",
+		"seed": "",
+		"drops_self": true,
+		"drop_gems": false,
+		"order": 127
+	},
+"ps_red_block": {
+		"category": "block",
+		"display_name": "Prestige Red Block",
+		"rarity": "epic",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/prestige_coloured_blocks/ps_red_block.png",
+		"inventory_icon": "res://Assets/blocks/prestige_coloured_blocks/ps_red_block.png",
+		"seed": "",
+		"drops_self": true,
+		"drop_gems": false,
+		"order": 128
+	},
+"ps_yellow_block": {
+		"category": "block",
+		"display_name": "Prestige Yellow Block",
+		"rarity": "epic",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/prestige_coloured_blocks/ps_yellow_block.png",
+		"inventory_icon": "res://Assets/blocks/prestige_coloured_blocks/ps_yellow_block.png",
+		"seed": "",
+		"drops_self": true,
+		"drop_gems": false,
+		"order": 129
 	},
 "rose": {
 		"category": "block",
 		"display_name": "Rose",
 		"rarity": "uncommon",
 		"block_health": 2,
-		"texture": "res://Assets/blocks/basic blocks/rose.png",
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/rose.png",
 		"inventory_icon": "res://Assets/inventory_icons/rose.png",
 		"seed": "rose_seed",
 		"no_collision": true,
@@ -248,7 +1438,7 @@ const ITEMS = {
 		"display_name": "Tulip",
 		"rarity": "uncommon",
 		"block_health": 2,
-		"texture": "res://Assets/blocks/basic blocks/tulip.png",
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/tulip.png",
 		"inventory_icon": "res://Assets/inventory_icons/tulip.png",
 		"seed": "tulip_seed",
 		"no_collision": true,
@@ -259,26 +1449,262 @@ const ITEMS = {
 		"display_name": "Vines",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/blocks/basic blocks/vines.png",
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/vines.png",
 		"inventory_icon": "res://Assets/inventory_icons/vines.png",
 		"seed": "vines_seed",
 		"no_collision": true,
 		"order": 18
 	},
+"apple": {
+		"category": "block",
+		"display_name": "Apple",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/apple.png",
+		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/apple.png",
+		"seed": "apple_seed",
+		"no_collision": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "apple", "item_category": "block", "amount_range": [1, 4]},
+				{"item_id": "apple_seed", "item_category": "seed", "amount_range": [0, 3]},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [0, 3]}
+			]
+		},
+		"order": 19
+	},
+"climbing_vine": {
+		"category": "block",
+		"display_name": "Climbing Vine",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/climbing_vine_1.png",
+		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/climbing_vine_1.png",
+		"seed": "climbing_vine_seed",
+		"platform_collision": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "climbing_vine", "item_category": "block", "amount_range": [1, 4]},
+				{"item_id": "climbing_vine_seed", "item_category": "seed", "amount_range": [0, 3]},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [0, 3]}
+			]
+		},
+		"order": 20
+	},
+"sun_flower": {
+		"category": "block",
+		"display_name": "Sun Flower",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/sun_flower.png",
+		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/sun_flower.png",
+		"seed": "sun_flower_seed",
+		"no_collision": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "sun_flower", "item_category": "block", "amount_range": [1, 4]},
+				{"item_id": "sun_flower_seed", "item_category": "seed", "amount_range": [0, 3]},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [0, 3]}
+			]
+		},
+		"order": 21
+	},
+"poppy": {
+		"category": "block",
+		"display_name": "Poppy",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/poppy.png",
+		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/poppy.png",
+		"seed": "poppy_seed",
+		"no_collision": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "poppy", "item_category": "block", "amount_range": [1, 4]},
+				{"item_id": "poppy_seed", "item_category": "seed", "amount_range": [0, 3]},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [0, 3]}
+			]
+		},
+		"order": 22
+	},
+"lily": {
+		"category": "block",
+		"display_name": "Lily",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/lily.png",
+		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/lily.png",
+		"seed": "lily_seed",
+		"no_collision": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "lily", "item_category": "block", "amount_range": [1, 4]},
+				{"item_id": "lily_seed", "item_category": "seed", "amount_range": [0, 3]},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [0, 3]}
+			]
+		},
+		"order": 23
+	},
+"sand_castle": {
+		"category": "block",
+		"display_name": "Sand Castle",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/sand_castle.png",
+		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/sand_castle.png",
+		"seed": "sand_castle_seed",
+		"no_collision": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "sand_castle", "item_category": "block", "amount_range": [1, 4]},
+				{"item_id": "sand_castle_seed", "item_category": "seed", "amount_range": [0, 3]},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [0, 3]}
+			]
+		},
+		"order": 24
+	},
+"pile_of_sand": {
+		"category": "block",
+		"display_name": "Pile Of Sand",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/pile_of_sand.png",
+		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/pile_of_sand.png",
+		"seed": "pile_of_sand_seed",
+		"no_collision": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "pile_of_sand", "item_category": "block", "amount_range": [1, 4]},
+				{"item_id": "pile_of_sand_seed", "item_category": "seed", "amount_range": [0, 3]},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [0, 3]}
+			]
+		},
+		"order": 25
+	},
+"vines_2": {
+		"category": "block",
+		"display_name": "Vines 2",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/vines_2.png",
+		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/vines_2.png",
+		"seed": "vines_2_seed",
+		"no_collision": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "vines_2", "item_category": "block", "amount_range": [1, 4]},
+				{"item_id": "vines_2_seed", "item_category": "seed", "amount_range": [0, 3]},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [0, 3]}
+			]
+		},
+		"order": 26
+	},
 
 	# ============================================================
 	# SYSTEM / HIDDEN WORLD BLOCKS
 	# ============================================================
-"world_lock": {
+	"small_lock": {
+		"category": "block",
+		"display_name": "Small Lock",
+		"rarity": "rare",
+		"block_health": 6,
+		"texture": "res://Assets/locks/small_lock.png",
+		"interaction_permission": "owner_only",
+		"seed": "",
+		"shop_price": 500,
+		"area_lock_tiles": 10,
+		"collidable": true,
+		"solid": true,
+		"collision_type": "custom",
+		"collision_size": Vector2i(24, 28),
+		"collision_offset": Vector2(0, 2),
+		"order": 16
+	},
+	"medium_lock": {
+		"category": "block",
+		"display_name": "Medium Lock",
+		"rarity": "epic",
+		"block_health": 7,
+		"texture": "res://Assets/locks/medium_lock.png",
+		"interaction_permission": "owner_only",
+		"seed": "",
+		"shop_price": 1000,
+		"area_lock_tiles": 48,
+		"collidable": true,
+		"solid": true,
+		"collision_type": "custom",
+		"collision_size": Vector2i(24, 28),
+		"collision_offset": Vector2(0, 2),
+		"order": 17
+	},
+	"big_lock": {
+		"category": "block",
+		"display_name": "Big Lock",
+		"rarity": "epic",
+		"block_health": 8,
+		"texture": "res://Assets/locks/big_lock.png",
+		"interaction_permission": "owner_only",
+		"seed": "",
+		"shop_price": 1500,
+		"area_lock_tiles": 80,
+		"collidable": true,
+		"solid": true,
+		"collision_type": "custom",
+		"collision_size": Vector2i(24, 28),
+		"collision_offset": Vector2(0, 2),
+		"order": 18
+	},
+	"world_lock": {
 		"category": "block",
 		"display_name": "World Lock",
 		"rarity": "legendary",
 		"block_health": 8,
 		"texture": "res://Assets/locks/world_lock.png",
+		"world_lock_access_texture": "res://Assets/locks/world_lock_access.png",
+		"world_lock_no_access_texture": "res://Assets/locks/world_lock_no_access.png",
 		"interaction_permission": "owner_only",
 		"seed": "",
 		"shop_price": 3500,
-		"order": 18
+		"collidable": true,
+		"solid": true,
+		"collision_type": "full",
+		"collision_size": Vector2i(32, 32),
+		"collision_offset": Vector2.ZERO,
+		"order": 19
+	},
+"super_world_lock": {
+		"category": "block",
+		"display_name": "Super World Lock",
+		"rarity": "legendary",
+		"block_health": 8,
+		"texture": "res://Assets/locks/super_world_lock.png",
+		"world_lock_access_texture": "res://Assets/locks/super_world_lock_access.png",
+		"world_lock_no_access_texture": "res://Assets/locks/super_world_lock_no_access.png",
+		"interaction_permission": "owner_only",
+		"seed": "",
+		"max_stack": 400,
+		"collidable": true,
+		"solid": true,
+		"collision_type": "full",
+		"collision_size": Vector2i(32, 32),
+		"collision_offset": Vector2.ZERO,
+		"order": 20
 	},
 "entrance_gate": {
 		"category": "block",
@@ -288,9 +1714,10 @@ const ITEMS = {
 		"texture": "res://Assets/blocks/entrance_gate/entrance_gate.png",
 		"animation_frames": [
 			"res://Assets/blocks/entrance_gate/entrance_gate.png",
-			"res://Assets/blocks/entrance_gate/entrance_gate_2.png"
+			"res://Assets/blocks/entrance_gate/entrance_gate_2.png",
+			"res://Assets/blocks/entrance_gate/entrance_gate_3.png"
 		],
-		"animation_frame_seconds": 0.2,
+		"animation_frame_seconds": 0.24,
 		"no_collision": true,
 		"unbreakable": true,
 		"hidden": true,
@@ -306,24 +1733,46 @@ const ITEMS = {
 		"rarity": "uncommon",
 		"block_health": 5,
 		"texture": "res://Assets/blocks/crafting_station/blocks/crafting_station.png",
-		"visual_size": Vector2i(64, 32),
-		"visual_offset": Vector2(16, 0),
-		"collision_size": Vector2i(64, 32),
-		"collision_offset": Vector2(16, 0),
-		"shadow_size": Vector2i(64, 32),
-		"shadow_visual_offset": Vector2(16, 0),
+		"visual_size": Vector2i(32, 32),
+		"visual_offset": Vector2.ZERO,
+		"no_collision": true,
+		"collidable": false,
+		"collision_size": Vector2i(32, 32),
+		"collision_offset": Vector2.ZERO,
+		"shadow_size": Vector2i(32, 32),
+		"shadow_visual_offset": Vector2.ZERO,
 		"order": 20
 	},
-"furnace": {
+"crafting_station_left": {
 		"category": "block",
-		"display_name": "Furnace",
-		"rarity": "rare",
-		"block_health": 6,
-		"texture": "res://Assets/blocks/crafting_station/blocks/furnace.png",
-		"craft_only": true,
-		"order": 33
+		"display_name": "Crafting Station Left",
+		"rarity": "uncommon",
+		"block_health": 5,
+		"texture": "res://Assets/blocks/crafting_station/blocks/crafting_station.png",
+		"seed": "",
+		"hidden": true,
+		"tradeable": false,
+		"dropable": false,
+		"admin_grantable": false,
+		"placeable": false,
+		"legacy_station_part": "left",
+		"order": 20
 	},
-
+"crafting_station_right": {
+		"category": "block",
+		"display_name": "Crafting Station Right",
+		"rarity": "uncommon",
+		"block_health": 5,
+		"texture": "res://Assets/blocks/crafting_station/blocks/crafting_station.png",
+		"seed": "",
+		"hidden": true,
+		"tradeable": false,
+		"dropable": false,
+		"admin_grantable": false,
+		"placeable": false,
+		"legacy_station_part": "right",
+		"order": 20
+	},
 	# ============================================================
 	# SPLICEABLE WORLD ITEMS
 	# ============================================================
@@ -352,8 +1801,13 @@ const ITEMS = {
 		"display_name": "Glass Panel",
 		"rarity": "rare",
 		"block_health": 2,
-		"texture": "res://Assets/blocks/crafting_station/blocks/glass_panel.png",
+		"texture": "res://Assets/blocks/Tier_1/basic blocks/glass_panel.png",
+		"atlas_coords": Vector2i(5, 12),
 		"seed": "glass_panel_seed",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
 		"craft_only": false,
 		"order": 32
 	},
@@ -372,8 +1826,14 @@ const ITEMS = {
 		"display_name": "Wood Platform",
 		"rarity": "uncommon",
 		"block_health": 2,
-		"texture": "res://Assets/blocks/crafting_station/blocks/wood_platform.png",
+		"texture": "res://Assets/blocks/Tier_1/wooden/wood_platform.png",
 		"seed": "wood_platform_seed",
+		"platform_collision": true,
+		"platform_variant_textures": {
+			"left": "res://Assets/blocks/Tier_1/wooden/wood_platform_left_end.png",
+			"middle": "res://Assets/blocks/Tier_1/wooden/wood_platform_middle.png",
+			"right": "res://Assets/blocks/Tier_1/wooden/wood_platform_right_end.png"
+		},
 		"craft_only": false,
 		"order": 36
 	},
@@ -382,14 +1842,27 @@ const ITEMS = {
 		"display_name": "Wooden Entrance",
 		"rarity": "rare",
 		"block_health": 4,
-		"texture": "res://Assets/blocks/Tier_1/wooden_entrance_1.png",
+		"texture": "res://Assets/blocks/Tier_1/wooden/wooden_entrance_1.png",
+		"atlas_coords": Vector2i(6, 5),
 		"inventory_icon": "res://Assets/inventory_icons/wooden_entrance.png",
 		"seed": "wooden_entrance_seed",
 		"no_collision": true,
+		"entrance_block": true,
+		"entrance_tilemap_collision": true,
+		"entrance_idle_texture": "res://Assets/blocks/Tier_1/wooden/wooden_entrance_1.png",
+		"entrance_idle_atlas_coords": Vector2i(6, 5),
+		"entrance_pass_atlas_frames": [
+			Vector2i(6, 5),
+			Vector2i(7, 5),
+			Vector2i(8, 5)
+		],
+		"entrance_pass_animation_columns": 3,
+		"solid": true,
+		"collision_type": "full",
 		"entrance_frames": [
-			"res://Assets/blocks/Tier_1/wooden_entrance_1.png",
-			"res://Assets/blocks/Tier_1/wooden_entrance_2.png",
-			"res://Assets/blocks/Tier_1/wooden_entrance_3.png"
+			"res://Assets/blocks/Tier_1/wooden/wooden_entrance_1.png",
+			"res://Assets/blocks/Tier_1/wooden/wooden_entrance_2.png",
+			"res://Assets/blocks/Tier_1/wooden/wooden_entrance_3.png"
 		],
 		"craft_only": false,
 		"order": 35
@@ -399,10 +1872,155 @@ const ITEMS = {
 		"display_name": "Sign",
 		"rarity": "uncommon",
 		"block_health": 2,
-		"texture": "res://Assets/blocks/Tier_1/sign.png",
+		"texture": "res://Assets/blocks/Tier_1/wooden/sign.png",
 		"seed": "sign_seed",
+		"sign_block": true,
+		"no_collision": true,
+		"collidable": false,
 		"splice_only": false,
 		"order": 37
+	},
+"mechanical_entrance": {
+		"category": "block",
+		"display_name": "Mechanical Entrance",
+		"rarity": "rare",
+		"block_health": 4,
+		"texture": "res://Assets/blocks/Tier_2/steel/mechanical_entrance_1.png",
+		"atlas_coords": Vector2i(8, 11),
+		"seed": "",
+		"no_collision": true,
+		"entrance_block": true,
+		"entrance_tilemap_collision": true,
+		"entrance_idle_texture": "res://Assets/blocks/Tier_2/steel/mechanical_entrance_1.png",
+		"entrance_idle_atlas_coords": Vector2i(8, 11),
+		"entrance_pass_atlas_coords": Vector2i(9, 11),
+		"entrance_pass_animation_columns": 3,
+		"solid": true,
+		"collision_type": "full",
+		"entrance_frames": [
+			"res://Assets/blocks/Tier_2/steel/mechanical_entrance_2.png",
+			"res://Assets/blocks/Tier_2/steel/mechanical_entrance_3.png",
+			"res://Assets/blocks/Tier_2/steel/mechanical_entrance_4.png"
+		],
+		"entrance_animation_frame_seconds": 0.065,
+		"craft_only": false,
+		"order": 140
+	},
+"ceiling_lamp": {
+		"category": "block",
+		"display_name": "Ceiling Lamp",
+		"rarity": "uncommon",
+		"block_health": 2,
+		"texture": "res://Assets/blocks/Tier_2/steel/ceiling_lamp_off.png",
+		"inventory_icon": "res://Assets/blocks/Tier_2/steel/ceiling_lamp_on.png",
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"toggle_block": true,
+		"toggle_state_key": "toggle_on",
+		"toggle_action": "ceiling_lamp_state",
+		"toggle_textures": {
+			"off": "res://Assets/blocks/Tier_2/steel/ceiling_lamp_off.png",
+			"on": "res://Assets/blocks/Tier_2/steel/ceiling_lamp_on.png"
+		},
+		"light_fx_scene": "res://Scenes/particles/CeilingLightParticlesFX.tscn",
+		"light_fx_when_on": true,
+		"light_fx_show_fixture": false,
+		"interact_rules": true,
+		"order": 141
+	},
+"steel_door": {
+		"category": "block",
+		"display_name": "Steel Door",
+		"rarity": "uncommon",
+		"block_health": 4,
+		"texture": "res://Assets/blocks/Tier_2/steel/steel_door.png",
+		"atlas_coords": Vector2i(7, 10),
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"door_block": true,
+		"interact_rules": true,
+		"order": 142
+	},
+"steel_block": {
+		"category": "block",
+		"display_name": "Steel Block",
+		"rarity": "uncommon",
+		"block_health": 5,
+		"texture": "res://Assets/blocks/Tier_2/steel/steel_block.png",
+		"atlas_coords": Vector2i(4, 10),
+		"seed": "",
+		"order": 143
+	},
+"screen_door": {
+		"category": "block",
+		"display_name": "Screen Door",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/Tier_2/steel/screen_door.png",
+		"atlas_coords": Vector2i(8, 10),
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"door_block": true,
+		"interact_rules": true,
+		"order": 144
+	},
+"steel_background": {
+		"category": "block",
+		"display_name": "Steel Background",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/Tier_2/steel/steel_background.png",
+		"atlas_coords": Vector2i(5, 10),
+		"seed": "",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
+		"order": 145
+	},
+"steel_sign": {
+		"category": "block",
+		"display_name": "Steel Sign",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/Tier_2/steel/steel_sign.png",
+		"seed": "",
+		"sign_block": true,
+		"no_collision": true,
+		"collidable": false,
+		"order": 146
+	},
+"steel_platform": {
+		"category": "block",
+		"display_name": "Steel Platform",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": {"atlas": "res://image.png", "cell": [6, 12], "cell_size": [32, 32]},
+		"inventory_icon": {"atlas": "res://image.png", "cell": [6, 12], "cell_size": [32, 32]},
+		"atlas_item_id": 33,
+		"atlas_coords": Vector2i(6, 12),
+		"seed": "",
+		"platform_collision": true,
+		"platform_variant_textures": {
+			"left": "res://Assets/blocks/Tier_2/steel/steel_platform_left.png",
+			"middle": "res://Assets/blocks/Tier_2/steel/steel_platform_middle.png",
+			"right": "res://Assets/blocks/Tier_2/steel/steel_platform_right.png"
+		},
+		"order": 147
+	},
+"steel_ladder": {
+		"category": "block",
+		"display_name": "Steel Ladder",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/Tier_2/steel/steel_ladder.png",
+		"atlas_coords": Vector2i(7, 11),
+		"seed": "",
+		"platform_collision": true,
+		"order": 148
 	},
 "mushroom": {
 		"category": "block",
@@ -416,11 +2034,129 @@ const ITEMS = {
 			"res://Assets/blocks/Tier_1/mushroom_2.png"
 		],
 		"springboard_animation_frame_seconds": 0.22,
-		"seed": "",
+		"seed": "mushroom_seed",
 		"collidable": true,
 		"springboard": true,
 		"springboard_velocity": -420.0,
 		"order": 38
+	},
+"wooden_door": {
+		"category": "block",
+		"display_name": "Wooden Door",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/Tier_1/wooden/door.png",
+		"inventory_icon": "res://Assets/inventory_icons/door.png",
+		"seed": "wooden_door_seed",
+		"no_collision": true,
+		"collidable": false,
+		"door_block": true,
+		"interact_rules": true,
+		"order": 39
+	},
+"wooden_block": {
+		"category": "block",
+		"display_name": "Wooden Block",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/Tier_1/wooden/wood_block.png",
+		"atlas_coords": Vector2i(0, 6),
+		"inventory_icon": "res://Assets/inventory_icons/wooden_block.png",
+		"seed": "wooden_block_seed",
+		"order": 40
+	},
+"wooden_background": {
+		"category": "block",
+		"display_name": "Wooden Background",
+		"rarity": "common",
+		"block_health": 2,
+		"texture": "res://Assets/blocks/Tier_1/wooden/wooden_background.png",
+		"atlas_coords": Vector2i(1, 6),
+		"inventory_icon": "res://Assets/inventory_icons/wooden_background.png",
+		"seed": "wooden_background_seed",
+		"background_block": true,
+		"place_layer": "background",
+		"no_collision": true,
+		"collidable": false,
+		"order": 41
+	},
+"wooden_fence": {
+		"category": "block",
+		"display_name": "Wooden Fence",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/Tier_1/wooden/wooden_fence.png",
+		"inventory_icon": "res://Assets/inventory_icons/wooden_fence.png",
+		"seed": "wooden_fence_seed",
+		"no_collision": true,
+		"collidable": false,
+		"foreground_over_player": true,
+		"order": 42
+	},
+"wooden_frame": {
+		"category": "block",
+		"display_name": "Wooden Frame",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/Tier_1/wooden/wooden_frame.png",
+		"atlas_coords": Vector2i(2, 6),
+		"inventory_icon": "res://Assets/inventory_icons/wooden_frame.png",
+		"seed": "wooden_frame_seed",
+		"order": 43
+	},
+"wooden_chair": {
+		"category": "block",
+		"display_name": "Wooden Chair",
+		"rarity": "uncommon",
+		"block_health": 2,
+		"atlas_coords": Vector2i(5, 6),
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "wooden_chair", "item_category": "block", "amount": 1}
+			]
+		},
+		"order": 44
+	},
+"wooden_table": {
+		"category": "block",
+		"display_name": "Wooden Table",
+		"rarity": "uncommon",
+		"block_health": 2,
+		"atlas_coords": Vector2i(6, 6),
+		"seed": "",
+		"platform_collision": true,
+		"platform_variant_atlas_coords": {
+			"left": Vector2i(7, 6),
+			"middle": Vector2i(8, 6),
+			"right": Vector2i(9, 6)
+		},
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "wooden_table", "item_category": "block", "amount": 1}
+			]
+		},
+		"order": 45
+	},
+"wooden_ladder": {
+		"category": "block",
+		"display_name": "Wooden Ladder",
+		"rarity": "uncommon",
+		"block_health": 2,
+		"texture": "res://Assets/blocks/Tier_1/wooden/wooden_ladder.png",
+		"atlas_coords": Vector2i(4, 5),
+		"inventory_icon": "res://Assets/inventory_icons/wooden_ladder.png",
+		"seed": "wooden_ladder_seed",
+		"platform_collision": true,
+		"order": 53
 	},
 
 	# ============================================================
@@ -470,7 +2206,7 @@ const ITEMS = {
 	},
 "wood_seed": {
 		"category": "seed",
-		"display_name": "Wood Seed",
+		"display_name": "Tree Trunk Seed",
 		"rarity": "uncommon",
 		"texture": "res://Assets/seeds/wood_seed.png",
 		"grows_into": "wood",
@@ -537,6 +2273,15 @@ const ITEMS = {
 			"res://Assets/seed_tree_sprites/glass_tree_stage2.png",
 			"res://Assets/seed_tree_sprites/glass_tree_mature.png"
 		]
+	},
+"ice_block_seed": {
+		"category": "seed",
+		"display_name": "Ice Block Seed",
+		"rarity": "common",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "ice_block",
+		"order": 8
 	},
 "cave_background_seed": {
 		"category": "seed",
@@ -622,6 +2367,236 @@ const ITEMS = {
 			"res://Assets/seed_tree_sprites/yellow_block_tree_mature.png"
 		]
 	},
+"black_block_seed": {
+		"category": "seed",
+		"display_name": "Black Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/black_block_seed.png",
+		"grows_into": "black_block",
+		"order": 14,
+		"tree_textures": [
+			"res://Assets/seed_tree_sprites/black_block_tree_stage0.png",
+			"res://Assets/seed_tree_sprites/black_block_tree_stage1.png",
+			"res://Assets/seed_tree_sprites/black_block_tree_stage2.png",
+			"res://Assets/seed_tree_sprites/black_block_tree_mature.png"
+		]
+	},
+"aqua_block_seed": {
+		"category": "seed",
+		"display_name": "Aqua Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "aqua_block",
+		"order": 100
+	},
+"blue_pastel_block_seed": {
+		"category": "seed",
+		"display_name": "Blue Pastel Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "blue_pastel_block",
+		"order": 102
+	},
+"brown_block_seed": {
+		"category": "seed",
+		"display_name": "Brown Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "brown_block",
+		"order": 103
+	},
+"dark_aqua_block_seed": {
+		"category": "seed",
+		"display_name": "Dark Aqua Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "dark_aqua_block",
+		"order": 104
+	},
+"dark_blue_block_seed": {
+		"category": "seed",
+		"display_name": "Dark Blue Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "dark_blue_block",
+		"order": 105
+	},
+"dark_brown_block_seed": {
+		"category": "seed",
+		"display_name": "Dark Brown Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "dark_brown_block",
+		"order": 106
+	},
+"dark_green_block_seed": {
+		"category": "seed",
+		"display_name": "Dark Green Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "dark_green_block",
+		"order": 107
+	},
+"dark_pink_block_seed": {
+		"category": "seed",
+		"display_name": "Dark Pink Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "dark_pink_block",
+		"order": 108
+	},
+"dark_purple_block_seed": {
+		"category": "seed",
+		"display_name": "Dark Purple Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "dark_purple_block",
+		"order": 109
+	},
+"dark_red_block_seed": {
+		"category": "seed",
+		"display_name": "Dark Red Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "dark_red_block",
+		"order": 110
+	},
+"dark_yellow_block_seed": {
+		"category": "seed",
+		"display_name": "Dark Yellow Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "dark_yellow_block",
+		"order": 111
+	},
+"green_pastel_block_seed": {
+		"category": "seed",
+		"display_name": "Green Pastel Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "green_pastel_block",
+		"order": 112
+	},
+"grey_block_seed": {
+		"category": "seed",
+		"display_name": "Grey Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "grey_block",
+		"order": 113
+	},
+"happy_block_seed": {
+		"category": "seed",
+		"display_name": "Happy Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "happy_block",
+		"order": 114
+	},
+"light_brown_block_seed": {
+		"category": "seed",
+		"display_name": "Light Brown Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "light_brown_block",
+		"order": 115
+	},
+"orange_block_seed": {
+		"category": "seed",
+		"display_name": "Orange Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "orange_block",
+		"order": 116
+	},
+"orange_pastel_block_seed": {
+		"category": "seed",
+		"display_name": "Orange Pastel Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "orange_pastel_block",
+		"order": 117
+	},
+"pastel_flower_block_seed": {
+		"category": "seed",
+		"display_name": "Pastel Flower Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "pastel_flower_block",
+		"order": 118
+	},
+"pink_block_seed": {
+		"category": "seed",
+		"display_name": "Pink Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "pink_block",
+		"order": 119
+	},
+"pink_pastel_block_seed": {
+		"category": "seed",
+		"display_name": "Pink Pastel Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "pink_pastel_block",
+		"order": 120
+	},
+"purple_pastel_block_seed": {
+		"category": "seed",
+		"display_name": "Purple Pastel Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "purple_pastel_block",
+		"order": 121
+	},
+"red_pastel_block_seed": {
+		"category": "seed",
+		"display_name": "Red Pastel Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "red_pastel_block",
+		"order": 122
+	},
+"white_block_seed": {
+		"category": "seed",
+		"display_name": "White Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "white_block",
+		"order": 123
+	},
+"yellow_pastel_block_seed": {
+		"category": "seed",
+		"display_name": "Yellow Pastel Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "yellow_pastel_block",
+		"order": 124
+	},
 "rose_seed": {
 		"category": "seed",
 		"display_name": "Rose Seed",
@@ -629,7 +2604,7 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/rose_seed.png",
 		"inventory_icon": "res://Assets/inventory_icons/rose_seed.png",
 		"grows_into": "rose",
-		"order": 14,
+		"order": 15,
 		"tree_textures": [
 			"res://Assets/seed_tree_sprites/rose_tree_stage0.png",
 			"res://Assets/seed_tree_sprites/rose_tree_stage1.png",
@@ -644,7 +2619,7 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/tulip_seed.png",
 		"inventory_icon": "res://Assets/inventory_icons/tulip_seed.png",
 		"grows_into": "tulip",
-		"order": 15,
+		"order": 16,
 		"tree_textures": [
 			"res://Assets/seed_tree_sprites/tulip_tree_stage0.png",
 			"res://Assets/seed_tree_sprites/tulip_tree_stage1.png",
@@ -659,7 +2634,7 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/vines_seed.png",
 		"inventory_icon": "res://Assets/inventory_icons/vines_seed.png",
 		"grows_into": "vines",
-		"order": 16,
+		"order": 17,
 		"tree_textures": [
 			"res://Assets/seed_tree_sprites/vines_tree_stage0.png",
 			"res://Assets/seed_tree_sprites/vines_tree_stage1.png",
@@ -667,7 +2642,29 @@ const ITEMS = {
 			"res://Assets/seed_tree_sprites/vines_tree_mature.png"
 		]
 	},
-		
+"sugar_cane_seed": {
+		"category": "seed",
+		"display_name": "Sugar Cane Seed",
+		"rarity": "common",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "sugar_cane",
+		"grow_time": 120.0,
+		"max_grow_time": 120.0,
+		"order": 18
+	},
+"barn_block_seed": {
+		"category": "seed",
+		"display_name": "Barn Block Seed",
+		"rarity": "common",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "barn_block",
+		"grow_time": 150.0,
+		"max_grow_time": 150.0,
+		"order": 19
+	},
+
 	# ============================================================
 	# SPLICED SEEDS
 	# ============================================================
@@ -675,14 +2672,14 @@ const ITEMS = {
 		"category": "seed",
 		"display_name": "Wood Plank Seed",
 		"rarity": "uncommon",
-		"texture": "res://Assets/seeds/special/wood_plank_seed.png",
+		"texture": "res://Assets/seeds/wood_plank_seed.png",
 		"grows_into": "wood_plank",
 		"order": 30,
 		"tree_textures": [
-			"res://Assets/seed_tree_sprites/special/wood_plank_tree_stage0.png",
-			"res://Assets/seed_tree_sprites/special/wood_plank_tree_stage1.png",
-			"res://Assets/seed_tree_sprites/special/wood_plank_tree_stage2.png",
-			"res://Assets/seed_tree_sprites/special/wood_plank_tree_stage3.png"
+			"res://Assets/seed_tree_sprites/wood_plank_tree_stage0.png",
+			"res://Assets/seed_tree_sprites/wood_plank_tree_stage1.png",
+			"res://Assets/seed_tree_sprites/wood_plank_tree_stage2.png",
+			"res://Assets/seed_tree_sprites/wood_plank_tree_mature.png"
 		]
 	},
 "wood_platform_seed": {
@@ -707,9 +2704,9 @@ const ITEMS = {
 		"grows_into": "wooden_entrance",
 		"order": 32,
 		"tree_textures": [
-			"res://Assets/blocks/Tier_1/wooden_entrance_1.png",
-			"res://Assets/blocks/Tier_1/wooden_entrance_2.png",
-			"res://Assets/blocks/Tier_1/wooden_entrance_3.png"
+			"res://Assets/blocks/Tier_1/wooden/wooden_entrance_1.png",
+			"res://Assets/blocks/Tier_1/wooden/wooden_entrance_2.png",
+			"res://Assets/blocks/Tier_1/wooden/wooden_entrance_3.png"
 		]
 	},
 "sign_seed": {
@@ -768,6 +2765,83 @@ const ITEMS = {
 			"res://Assets/seed_tree_sprites/special/gem_block_tree_stage3.png"
 		]
 	},
+"wooden_block_seed": {
+		"category": "seed",
+		"display_name": "Wooden Block Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "wooden_block",
+		"grow_time": 125.0,
+		"max_grow_time": 125.0,
+		"order": 37
+	},
+"wooden_background_seed": {
+		"category": "seed",
+		"display_name": "Wooden Background Seed",
+		"rarity": "common",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "wooden_background",
+		"grow_time": 135.0,
+		"max_grow_time": 135.0,
+		"order": 38
+	},
+"wooden_fence_seed": {
+		"category": "seed",
+		"display_name": "Wooden Fence Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "wooden_fence",
+		"grow_time": 150.0,
+		"max_grow_time": 150.0,
+		"order": 39
+	},
+"wooden_ladder_seed": {
+		"category": "seed",
+		"display_name": "Wooden Ladder Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "wooden_ladder",
+		"grow_time": 160.0,
+		"max_grow_time": 160.0,
+		"order": 40
+	},
+"wooden_door_seed": {
+		"category": "seed",
+		"display_name": "Wooden Door Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "wooden_door",
+		"grow_time": 175.0,
+		"max_grow_time": 175.0,
+		"order": 41
+	},
+"wooden_frame_seed": {
+		"category": "seed",
+		"display_name": "Wooden Frame Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "wooden_frame",
+		"grow_time": 190.0,
+		"max_grow_time": 190.0,
+		"order": 42
+	},
+"mushroom_seed": {
+		"category": "seed",
+		"display_name": "Mushroom Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "mushroom",
+		"grow_time": 205.0,
+		"max_grow_time": 205.0,
+		"order": 43
+	},
 
 	# ============================================================
 	# CURRENCY
@@ -810,6 +2884,161 @@ const ITEMS = {
 		"texture": "res://Assets/items/materials/metal_scrap.png",
 		"order": 102
 	},
+"crude_oil": {
+		"category": "material",
+		"display_name": "Crude Oil",
+		"rarity": "uncommon",
+		"texture": "res://Assets/blocks/special_blocks/oil_refinery/crude_oil.png",
+		"inventory_icon": "res://Assets/blocks/special_blocks/oil_refinery/crude_oil.png",
+		"order": 103
+	},
+"battery": {
+		"category": "material",
+		"display_name": "Battery",
+		"rarity": "uncommon",
+		"texture": "res://Assets/blocks/electric/battery.png",
+		"inventory_icon": "res://Assets/blocks/electric/battery.png",
+		"order": 104
+	},
+"grain": {
+		"category": "material",
+		"display_name": "Grain",
+		"rarity": "common",
+		"texture": "res://Assets/items/materials/grain.png",
+		"inventory_icon": "res://Assets/items/materials/grain.png",
+		"order": 105
+	},
+"egg": {
+		"category": "material",
+		"display_name": "Egg",
+		"rarity": "common",
+		"texture": "res://Assets/items/materials/egg.png",
+		"inventory_icon": "res://Assets/items/materials/egg.png",
+		"order": 106
+	},
+"golden_egg": {
+		"category": "material",
+		"display_name": "Golden Egg",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/materials/golden_egg.png",
+		"inventory_icon": "res://Assets/items/materials/golden_egg.png",
+		"order": 106
+	},
+"wheat": {
+		"category": "material",
+		"display_name": "Wheat",
+		"rarity": "common",
+		"texture": "res://Assets/items/materials/wheat.png",
+		"inventory_icon": "res://Assets/items/materials/wheat.png",
+		"order": 107
+	},
+"milk": {
+		"category": "material",
+		"display_name": "Milk",
+		"rarity": "common",
+		"texture": "res://Assets/items/materials/milk.png",
+		"inventory_icon": "res://Assets/items/materials/milk.png",
+		"order": 108
+	},
+"seaweed": {
+		"category": "material",
+		"display_name": "Seaweed",
+		"rarity": "common",
+		"texture": "res://Assets/items/materials/seaweed.png",
+		"inventory_icon": "res://Assets/items/materials/seaweed.png",
+		"fishing_material": true,
+		"order": 105
+	},
+"trash_can": {
+		"category": "material",
+		"display_name": "Trash Can",
+		"rarity": "common",
+		"texture": "res://Assets/items/materials/trash_can.png",
+		"inventory_icon": "res://Assets/items/materials/trash_can.png",
+		"fishing_material": true,
+		"order": 106
+	},
+"coral": {
+		"category": "material",
+		"display_name": "Coral",
+		"rarity": "uncommon",
+		"texture": "res://Assets/items/materials/coral.png",
+		"inventory_icon": "res://Assets/items/materials/coral.png",
+		"fishing_material": true,
+		"order": 107
+	},
+"clam": {
+		"category": "material",
+		"display_name": "Clam",
+		"rarity": "uncommon",
+		"texture": "res://Assets/items/materials/clam.png",
+		"inventory_icon": "res://Assets/items/materials/clam.png",
+		"fishing_material": true,
+		"order": 108
+	},
+"compass": {
+		"category": "material",
+		"display_name": "Compass",
+		"rarity": "rare",
+		"texture": "res://Assets/items/materials/compass.png",
+		"inventory_icon": "res://Assets/items/materials/compass.png",
+		"fishing_material": true,
+		"order": 109
+	},
+"pearl": {
+		"category": "material",
+		"display_name": "Pearl",
+		"rarity": "rare",
+		"texture": "res://Assets/items/materials/pearl.png",
+		"inventory_icon": "res://Assets/items/materials/pearl.png",
+		"fishing_material": true,
+		"order": 110
+	},
+"rusty_bicycle": {
+		"category": "material",
+		"display_name": "Rusty Bicycle",
+		"rarity": "rare",
+		"texture": "res://Assets/items/materials/rusty_bicycle.png",
+		"inventory_icon": "res://Assets/items/materials/rusty_bicycle.png",
+		"fishing_material": true,
+		"order": 111
+	},
+"lost_chapter": {
+		"category": "material",
+		"display_name": "Lost Chapter",
+		"rarity": "epic",
+		"texture": "res://Assets/items/materials/lost_chapter.png",
+		"inventory_icon": "res://Assets/items/materials/lost_chapter.png",
+		"fishing_material": true,
+		"order": 112
+	},
+"topaz_necklace": {
+		"category": "material",
+		"display_name": "Topaz Necklace",
+		"rarity": "epic",
+		"texture": "res://Assets/items/materials/topaz_necklace.png",
+		"inventory_icon": "res://Assets/items/materials/topaz_necklace.png",
+		"fishing_material": true,
+		"order": 113
+	},
+"toxic_waste": {
+		"category": "material",
+		"display_name": "Toxic Waste",
+		"rarity": "epic",
+		"texture": "res://Assets/items/materials/toxic_waste.png",
+		"inventory_icon": "res://Assets/items/materials/toxic_waste.png",
+		"fishing_material": true,
+		"order": 114
+	},
+"naval_mines": {
+		"category": "material",
+		"display_name": "Naval Mines",
+		"rarity": "epic",
+		"texture": "res://Assets/items/materials/naval_mines.png",
+		"inventory_icon": "res://Assets/items/materials/naval_mines.png",
+		"fishing_material": true,
+		"order": 115
+	},
 "basic_items_pack": {
 		"category": "material",
 		"display_name": "Basic Items Pack",
@@ -823,6 +3052,20 @@ const ITEMS = {
 		"dropable": false,
 		"order": 103
 	},
+"prestige_coloured_block_pack": {
+		"category": "material",
+		"display_name": "Prestige Coloured Block Pack",
+		"rarity": "epic",
+		"texture": "res://Assets/blocks/prestige_coloured_blocks/ps_purple_block.png",
+		"inventory_icon": "res://Assets/blocks/prestige_coloured_blocks/ps_purple_block.png",
+		"starting_count": 0,
+		"shop_pack": true,
+		"pack_rewards": PRESTIGE_COLOURED_BLOCK_PACK_REWARDS,
+		"hidden": true,
+		"tradeable": false,
+		"dropable": false,
+		"order": 104
+	},
 
 	# ============================================================
 	# BACK ITEMS / EQUIPMENT
@@ -831,19 +3074,24 @@ const ITEMS = {
 		"category": "back",
 		"display_name": "Legendary Wings",
 		"rarity": "legendary",
-		"texture": "res://Assets/player/back_item/legendary_wings/legendary_wings_idle.png",
+		"texture": "res://Assets/player/back_item/legendary_wings/legendary_wings_idle1.png",
 		"starting_count": 0,
 		"equipable": true,
 
 		"equipment_slot": "back",
 		"back_mode": "default_slot",
 		"sprite_folder": "res://Assets/player/back_item/legendary_wings/",
-		"idle_sprite": "legendary_wings_idle.png",
-		"flap_frames": ["legendary_wings_flap1.png", "legendary_wings_flap2.png"],
+		"idle_sprite": "legendary_wings_idle1.png",
+		"idle_frames": ["legendary_wings_idle1.png", "legendary_wings_idle2.png"],
+		"flap_frames": ["legendary_wings_jump1.png", "legendary_wings_jump2.png", "legendary_wings_jump3.png"],
+		"flap_frame_durations": [1.0, 1.0, 1.0],
 		"flap_animation": true,
-		"scan_flap_frames": true,
-		"flap_speed": 0.30,
+		"flap_animation_loop": false,
+		"flap_pose_hold_time": 0.75,
+		"scan_flap_frames": false,
+		"flap_speed": 0.32,
 		"input_flap_time": 0.28,
+		"animation_fps": 2.0,
 
 		"jump_type": "infinite",
 
@@ -858,6 +3106,10 @@ const ITEMS = {
 		"back_pivot_offset_left": [-2, 15],
 		"flap_pivot_offset": [0, 5],
 		"flap_pivot_offset_left": [0, 5],
+		"back_fx_scene": "res://Scenes/particles/WingPearlParticlesFX.tscn",
+		"back_fx_offset": [0, 8],
+		"back_fx_scale": [1.0, 1.0],
+		"back_fx_z_index": 72,
 
 		"order": 200
 	},
@@ -876,11 +3128,13 @@ const ITEMS = {
 		"back_mode": "default_slot",
 		"sprite_folder": "res://Assets/items/back_items/",
 		"idle_sprite": "evilangel_wings.png",
-		"flap_frames": ["evilangel_wings.png", "evilangel_wings_2.png"],
+		"idle_frames": ["evilangel_wings.png", "evilangel_wings_2.png"],
+		"flap_frames": ["evilangel_wings_jump_1.png", "evilangel_wings_jump_2.png", "evilangel_wings_jump_3.png"],
 		"flap_animation": true,
 		"scan_flap_frames": false,
 		"flap_speed": 0.30,
 		"input_flap_time": 0.28,
+		"animation_fps": 3.0,
 
 		"jump_type": "double",
 
@@ -892,6 +3146,10 @@ const ITEMS = {
 		"flap_sprite_offset_left": [0, 0],
 		"back_scale_multiplier": 1.0,
 		"back_flip_with_facing": false,
+		"back_fx_scene": "res://Scenes/particles/WingDualSparkleParticlesFX.tscn",
+		"back_fx_offset": [0, 8],
+		"back_fx_scale": [1.0, 1.0],
+		"back_fx_z_index": 72,
 
 		"order": 201
 	},
@@ -910,11 +3168,13 @@ const ITEMS = {
 		"back_mode": "default_slot",
 		"sprite_folder": "res://Assets/items/back_items/",
 		"idle_sprite": "angel_wings_1.png",
-		"flap_frames": ["angel_wings_1.png", "angel_wings_2.png"],
+		"idle_frames": ["angel_wings_1.png", "angel_wings_2.png"],
+		"flap_frames": ["angel_wings_jump1.png", "angel_wings_jump2.png"],
 		"flap_animation": true,
 		"scan_flap_frames": false,
 		"flap_speed": 0.30,
 		"input_flap_time": 0.28,
+		"animation_fps": 3.0,
 
 		"jump_type": "double",
 
@@ -926,6 +3186,10 @@ const ITEMS = {
 		"flap_sprite_offset_left": [0, 0],
 		"back_scale_multiplier": 1.0,
 		"back_flip_with_facing": false,
+		"back_fx_scene": "res://Scenes/particles/WingSparkleParticlesFX.tscn",
+		"back_fx_offset": [0, 8],
+		"back_fx_scale": [1.0, 1.0],
+		"back_fx_z_index": 72,
 
 		"order": 202
 	},
@@ -938,13 +3202,15 @@ const ITEMS = {
 		"starting_count": 0,
 		"equipable": true,
 		"tradeable": true,
-		"dropable": false,
+		"vendable": true,
+		"dropable": true,
 
 		"equipment_slot": "back",
 		"back_mode": "default_slot",
 		"sprite_folder": "res://Assets/items/back_items/",
 		"idle_sprite": "evil_wings_1.png",
-		"flap_frames": ["evil_wings_1.png", "evil_wings_2.png"],
+		"idle_frames": ["evil_wings_1.png", "evil_wings_2.png"],
+		"flap_frames": ["evil_wings_jump1.png", "evil_wings_jump2.png"],
 		"flap_animation": true,
 		"scan_flap_frames": false,
 		"flap_speed": 0.30,
@@ -963,12 +3229,347 @@ const ITEMS = {
 
 		"order": 203
 	},
+"void_aura": {
+		"category": "back",
+		"display_name": "Void Aura",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/back_items/void_aura_1.png",
+		"inventory_icon": "res://Assets/items/back_items/void_aura_1.png",
+		"starting_count": 0,
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+
+		"equipment_slot": "back",
+		"back_mode": "default_slot",
+		"sprite_folder": "res://Assets/items/back_items/",
+		"idle_sprite": "void_aura_1.png",
+		"idle_frames": ["void_aura_1.png", "void_aura_2.png", "void_aura_3.png", "void_aura_4.png"],
+		"flap_frames": ["void_aura_1.png", "void_aura_2.png", "void_aura_3.png", "void_aura_4.png"],
+		"flap_animation": true,
+		"scan_flap_frames": false,
+		"animation_fps": 6.0,
+		"flap_speed": 0.1667,
+		"input_flap_time": 0.28,
+
+		"jump_type": "double",
+
+		"auto_scale_back_sprite": false,
+		"back_scale": 1.0,
+		"idle_sprite_offset": [0, 0],
+		"idle_sprite_offset_left": [0, 0],
+		"flap_sprite_offset": [0, 0],
+		"flap_sprite_offset_left": [0, 0],
+		"back_scale_multiplier": 1.0,
+		"back_flip_with_facing": false,
+
+		"order": 204
+	},
+"susanoo_wings": {
+		"category": "back",
+		"display_name": "Susanoo Wings",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/back_items/susanoo_idle_1.png",
+		"inventory_icon": "res://Assets/items/back_items/susanoo_idle_1.png",
+		"starting_count": 0,
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+
+		"equipment_slot": "back",
+		"back_mode": "default_slot",
+		"sprite_folder": "res://Assets/items/back_items/",
+		"idle_sprite": "susanoo_idle_1.png",
+		"idle_frames": ["susanoo_idle_1.png", "susanoo_idle_2.png"],
+		"flap_frames": ["susanoo_jump.png"],
+		"flap_animation": true,
+		"scan_flap_frames": false,
+		"animation_fps": 3.0,
+		"flap_speed": 0.30,
+		"input_flap_time": 0.28,
+
+		"jump_type": "double",
+
+		"auto_scale_back_sprite": false,
+		"back_scale": 1.0,
+		"idle_sprite_offset": [0, 0],
+		"idle_sprite_offset_left": [0, 0],
+		"flap_sprite_offset": [0, 0],
+		"flap_sprite_offset_left": [0, 0],
+		"back_scale_multiplier": 1.0,
+		"back_flip_with_facing": false,
+		"back_fx_scene": "res://Scenes/particles/WingPurpleStardustParticlesFX.tscn",
+		"back_fx_offset": [0, 8],
+		"back_fx_scale": [1.0, 1.0],
+		"back_fx_z_index": 72,
+
+		"order": 205
+	},
+"flaming_wings": {
+		"category": "back",
+		"display_name": "Flaming Wings",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/back_items/flaming_wings_idle_1.png",
+		"inventory_icon": "res://Assets/items/back_items/flaming_wings_idle_1.png",
+		"starting_count": 0,
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+
+		"equipment_slot": "back",
+		"back_mode": "default_slot",
+		"sprite_folder": "res://Assets/items/back_items/",
+		"idle_sprite": "flaming_wings_idle_1.png",
+		"idle_frames": ["flaming_wings_idle_1.png", "flaming_wings_idle_2.png"],
+		"flap_frames": ["flaming_wings_jump_1.png", "flaming_wings_jump_2.png", "flaming_wings_jump_3.png"],
+		"flap_animation": true,
+		"scan_flap_frames": false,
+		"animation_fps": 3.0,
+		"flap_speed": 0.24,
+		"input_flap_time": 0.28,
+
+		"jump_type": "double",
+
+		"auto_scale_back_sprite": false,
+		"back_scale": 1.0,
+		"idle_sprite_offset": [0, 0],
+		"idle_sprite_offset_left": [0, 0],
+		"flap_sprite_offset": [0, 0],
+		"flap_sprite_offset_left": [0, 0],
+		"back_scale_multiplier": 1.0,
+		"back_flip_with_facing": false,
+		"back_fx_scene": "res://Scenes/particles/WingSparkleParticlesFX.tscn",
+		"back_fx_offset": [0, 8],
+		"back_fx_scale": [1.0, 1.0],
+		"back_fx_z_index": 72,
+
+		"order": 206
+	},
+"lucifer_wings": {
+		"category": "back",
+		"display_name": "Lucifer Wings",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/back_items/lucifer_wings_idle_1.png",
+		"inventory_icon": "res://Assets/items/back_items/lucifer_wings_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"tradeable": false,
+		"vendable": false,
+		"dropable": false,
+
+		"equipment_slot": "back",
+		"back_mode": "default_slot",
+		"sprite_folder": "res://Assets/items/back_items/",
+		"idle_sprite": "lucifer_wings_idle_1.png",
+		"idle_frames": ["lucifer_wings_idle_1.png", "lucifer_wings_idle_2.png"],
+		"flap_frames": ["lucifer_wings_jump_1.png", "lucifer_wings_jump_2.png", "lucifer_wings_jump_3.png"],
+		"flap_animation": true,
+		"scan_flap_frames": false,
+		"animation_fps": 3.0,
+		"flap_speed": 0.24,
+		"input_flap_time": 0.28,
+
+		"jump_type": "double",
+
+		"auto_scale_back_sprite": false,
+		"back_scale": 1.0,
+		"idle_sprite_offset": [0, 0],
+		"idle_sprite_offset_left": [0, 0],
+		"flap_sprite_offset": [0, 0],
+		"flap_sprite_offset_left": [0, 0],
+		"back_scale_multiplier": 1.0,
+		"back_flip_with_facing": false,
+		"back_fx_scene": "res://Scenes/particles/WingSparkleParticlesFX.tscn",
+		"back_fx_offset": [0, 8],
+		"back_fx_scale": [1.0, 1.0],
+		"back_fx_z_index": 72,
+
+		"order": 207
+	},
+"phoenix_wings": {
+		"category": "back",
+		"display_name": "Phoenix Wings",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/back_items/phoenix_wings_1.png",
+		"inventory_icon": "res://Assets/items/back_items/phoenix_wings_1.png",
+		"starting_count": 0,
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+
+		"equipment_slot": "back",
+		"back_mode": "default_slot",
+		"sprite_folder": "res://Assets/items/back_items/",
+		"idle_sprite": "phoenix_wings_1.png",
+		"idle_frames": ["phoenix_wings_1.png", "phoenix_wings_2.png", "phoenix_wings_3.png", "phoenix_wings_4.png"],
+		"flap_frames": ["phoenix_wings_jump.png"],
+		"flap_animation": true,
+		"flap_animation_loop": true,
+		"flap_pose_hold_time": 0.35,
+		"scan_flap_frames": false,
+		"animation_fps": 4.0,
+		"flap_speed": 0.24,
+		"input_flap_time": 0.28,
+
+		"jump_type": "double",
+
+		"auto_scale_back_sprite": false,
+		"back_scale": 1.0,
+		"idle_sprite_offset": [0, 0],
+		"idle_sprite_offset_left": [0, 0],
+		"flap_sprite_offset": [0, 0],
+		"flap_sprite_offset_left": [0, 0],
+		"back_scale_multiplier": 1.0,
+		"back_flip_with_facing": false,
+		"back_fx_scene": "res://Scenes/particles/WingSparkleParticlesFX.tscn",
+		"back_fx_offset": [0, 8],
+		"back_fx_scale": [1.0, 1.0],
+		"back_fx_z_index": 72,
+
+		"order": 208
+	},
+	"purple_jetpack": {
+		"category": "back",
+		"display_name": "Purple Jetpack",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/back_items/purple_jetpack.png",
+		"inventory_icon": "res://Assets/items/back_items/purple_jetpack_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"equipment_slot": "back",
+		"back_mode": "default_slot",
+		"sprite_folder": "res://Assets/items/back_items/",
+		"idle_sprite": "purple_jetpack.png",
+		"flap_frames": ["purple_jetpack_jump_1.png", "purple_jetpack_jump_2.png", "purple_jetpack_jump_3.png", "purple_jetpack_jump_4.png"],
+		"flap_animation": true,
+		"flap_animation_loop": true,
+		"flap_pose_hold_time": 0.0,
+		"scan_flap_frames": false,
+		"flap_speed": 0.14,
+		"input_flap_time": 0.28,
+		"auto_scale_back_sprite": false,
+		"back_scale": 1.0,
+		"idle_sprite_offset": [0, 0],
+		"idle_sprite_offset_left": [0, 0],
+		"flap_sprite_offset": [0, 0],
+		"flap_sprite_offset_left": [0, 0],
+		"back_scale_multiplier": 1.0,
+		"back_flip_with_facing": false,
+		"order": 209
+	},
+
+"blue_jetpack": {
+		"category": "back",
+		"display_name": "Blue Jetpack",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/back_items/blue_jetpack_idle.png",
+		"inventory_icon": "res://Assets/items/back_items/blue_jetpack_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"equipment_slot": "back",
+		"back_mode": "default_slot",
+		"sprite_folder": "res://Assets/items/back_items/",
+		"idle_sprite": "blue_jetpack_idle.png",
+		"flap_frames": ["blue_jetpack_jump_1.png", "blue_jetpack_jump_2.png", "blue_jetpack_jump_3.png"],
+		"flap_animation": true,
+		"flap_animation_loop": true,
+		"flap_pose_hold_time": 0.0,
+		"scan_flap_frames": false,
+		"flap_speed": 0.14,
+		"input_flap_time": 0.28,
+		"jump_type": "double",
+		"auto_scale_back_sprite": false,
+		"back_scale": 1.0,
+		"idle_sprite_offset": [0, 0],
+		"idle_sprite_offset_left": [0, 0],
+		"flap_sprite_offset": [0, 0],
+		"flap_sprite_offset_left": [0, 0],
+		"back_scale_multiplier": 1.0,
+		"back_flip_with_facing": false,
+		"order": 210
+	},
+
+"neptune_crown": {
+		"category": "hat",
+		"display_name": "Neptune Crown",
+		"rarity": "legendary",
+		"texture": "res://Assets/clothes/head/neptune_crown.png",
+		"inventory_icon": "res://Assets/clothes/head/neptune_crown_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hat",
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 208
+	},
+
+"blue_baseball_cap": {
+		"category": "hat",
+		"display_name": "Blue Baseball Cap",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/head/blue_baseball_cap.png",
+		"inventory_icon": "res://Assets/clothes/head/blue_baseball_cap_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hat",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 209
+	},
+
+"green_baseball_cap": {
+		"category": "hat",
+		"display_name": "Green Baseball Cap",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/head/green_baseball_cap.png",
+		"inventory_icon": "res://Assets/clothes/head/green_baseball_cap_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hat",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 210
+	},
+
+"red_baseball_cap": {
+		"category": "hat",
+		"display_name": "Red Baseball Cap",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/head/red_baseball_cap.png",
+		"inventory_icon": "res://Assets/clothes/head/red_baseball_cap_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hat",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 211
+	},
 
 "messy_brown_hair": {
 		"category": "hair",
 		"display_name": "Messy Brown Hair",
 		"rarity": "common",
 		"texture": "res://Assets/items/basic_items_pack/messy_brown_hair.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/messy_brown_hair_icon.png",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "hair",
@@ -978,7 +3579,309 @@ const ITEMS = {
 		"order": 204
 	},
 
-"basic_blue_shirt": {
+	"hairpack": {
+		"category": "material",
+		"display_name": "Hair Pack",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/black_afro.png",
+		"inventory_icon": "res://Assets/clothes/hair/black_afro_icon.png",
+		"starting_count": 0,
+		"shop_pack": true,
+		"pack_rewards": HAIR_PACK_REWARDS,
+		"hidden": true,
+		"tradeable": false,
+		"dropable": false,
+		"order": 105
+	},
+
+	"black_afro": {
+		"category": "hair",
+		"display_name": "Black Afro",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/black_afro.png",
+		"inventory_icon": "res://Assets/clothes/hair/black_afro_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 205
+	},
+
+	"blonde_afro": {
+		"category": "hair",
+		"display_name": "Blonde Afro",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/blonde_afro.png",
+		"inventory_icon": "res://Assets/clothes/hair/blonde_afro_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 206
+	},
+
+	"brown_afro": {
+		"category": "hair",
+		"display_name": "Brown Afro",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/brown_afro.png",
+		"inventory_icon": "res://Assets/clothes/hair/brown_afro_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 207
+	},
+
+	"pink_afro": {
+		"category": "hair",
+		"display_name": "Pink Afro",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/pink_afro.png",
+		"inventory_icon": "res://Assets/clothes/hair/pink_afro_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 208
+	},
+
+	"red_afro": {
+		"category": "hair",
+		"display_name": "Red Afro",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/red_afro.png",
+		"inventory_icon": "res://Assets/clothes/hair/red_afro_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 209
+	},
+
+	"short_black_hair": {
+		"category": "hair",
+		"display_name": "Short Black Hair",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/short_black_hair.png",
+		"inventory_icon": "res://Assets/clothes/hair/short_black_hair_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 210
+	},
+
+	"short_blonde_hair": {
+		"category": "hair",
+		"display_name": "Short Blonde Hair",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/short_blonde_hair.png",
+		"inventory_icon": "res://Assets/clothes/hair/short_blonde_hair_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 211
+	},
+
+	"short_bron_hair": {
+		"category": "hair",
+		"display_name": "Short Brown Hair",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/short_bron_hair.png",
+		"inventory_icon": "res://Assets/clothes/hair/short_bron_hair_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 212
+	},
+
+	"short_pink_hair": {
+		"category": "hair",
+		"display_name": "Short Pink Hair",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/short_pink_hair.png",
+		"inventory_icon": "res://Assets/clothes/hair/short_pink_hair_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 213
+	},
+
+	"short_red_hair": {
+		"category": "hair",
+		"display_name": "Short Red Hair",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/short_red_hair.png",
+		"inventory_icon": "res://Assets/clothes/hair/short_red_hair_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 214
+	},
+
+	"long_black_hair": {
+		"category": "hair",
+		"display_name": "Long Black Hair",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/long_black_hair.png",
+		"inventory_icon": "res://Assets/clothes/hair/long_black_hair_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 215
+	},
+
+	"long_blonde_hair": {
+		"category": "hair",
+		"display_name": "Long Blonde Hair",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/long_blonde_hair.png",
+		"inventory_icon": "res://Assets/clothes/hair/long_blonde_hair_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 216
+	},
+
+	"long_grey_hair": {
+		"category": "hair",
+		"display_name": "Long Grey Hair",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/long_grey_hair.png",
+		"inventory_icon": "res://Assets/clothes/hair/long_grey_hair_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 217
+	},
+
+	"long_pink_hair": {
+		"category": "hair",
+		"display_name": "Long Pink Hair",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/long_pink_hair.png",
+		"inventory_icon": "res://Assets/clothes/hair/long_pink_hair_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 218
+	},
+
+	"long_red_hair": {
+		"category": "hair",
+		"display_name": "Long Red Hair",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/hair/long_red_hair.png",
+		"inventory_icon": "res://Assets/clothes/hair/long_red_hair_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 219
+	},
+
+	"baby_hair": {
+		"category": "hair",
+		"display_name": "Baby Hair",
+		"rarity": "legendary",
+		"texture": "res://Assets/clothes/hair/baby_hair.png",
+		"inventory_icon": "res://Assets/clothes/hair/baby_hair_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"instance_tracked": true,
+		"order": 220
+	},
+
+	"void_visor": {
+		"category": "eyewear",
+		"display_name": "Void Visor",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/eye_ware/void_visor_1.png",
+		"inventory_icon": "res://Assets/clothes/eye_ware/void_visor_1.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "eyewear",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"animation_fps": 6.0,
+		"eyewear_animations": {
+			"idle": {
+				"frames": [
+					"res://Assets/clothes/eye_ware/void_visor_1.png",
+					"res://Assets/clothes/eye_ware/void_visor_2.png",
+					"res://Assets/clothes/eye_ware/void_visor_3.png",
+					"res://Assets/clothes/eye_ware/void_visor_4.png",
+					"res://Assets/clothes/eye_ware/void_visor_3.png",
+					"res://Assets/clothes/eye_ware/void_visor_2.png",
+					"res://Assets/clothes/eye_ware/void_visor_1.png"
+				],
+				"fps": 6.0,
+				"loop": true
+			}
+		},
+		"order": 205
+	},
+
+	"electric_goggles": {
+		"category": "eyewear",
+		"display_name": "Electric Goggles",
+		"rarity": "rare",
+		"texture": "res://Assets/blocks/electric/electric_goggles.png",
+		"inventory_icon": "res://Assets/blocks/electric/electric_goggles_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "eyewear",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 206
+	},
+
+	"basic_blue_shirt": {
 		"category": "shirt",
 		"display_name": "Blue Shirt",
 		"rarity": "common",
@@ -1213,14 +4116,14 @@ const ITEMS = {
 		"display_name": "Brown Shoes",
 		"rarity": "common",
 		"texture": "res://Assets/items/basic_items_pack/basic_brown_shoes.png",
-		"inventory_icon": "res://Assets/items/basic_items_pack/basic_brown_shoes_icon.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_brown_shoes.png",
 		"left_shoe_texture": "res://Assets/items/basic_items_pack/basic_brown_shoes_left.png",
 		"right_shoe_texture": "res://Assets/items/basic_items_pack/basic_brown_shoes_right.png",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "shoes",
-		"left_shoe_offset": [-4, 8],
-		"right_shoe_offset": [4, 8],
+		"left_shoe_offset": [0, 0],
+		"right_shoe_offset": [0, 0],
 		"slot_scale": 1.0,
 		"slot_z_index": 2,
 		"order": 250
@@ -1231,14 +4134,14 @@ const ITEMS = {
 		"display_name": "Black Shoes",
 		"rarity": "common",
 		"texture": "res://Assets/items/basic_items_pack/basic_black_shoes.png",
-		"inventory_icon": "res://Assets/items/basic_items_pack/basic_black_shoes_icon.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_black_shoes.png",
 		"left_shoe_texture": "res://Assets/items/basic_items_pack/basic_black_shoes_left.png",
 		"right_shoe_texture": "res://Assets/items/basic_items_pack/basic_black_shoes_right.png",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "shoes",
-		"left_shoe_offset": [-4, 8],
-		"right_shoe_offset": [4, 8],
+		"left_shoe_offset": [0, 0],
+		"right_shoe_offset": [0, 0],
 		"slot_scale": 1.0,
 		"slot_z_index": 2,
 		"order": 251
@@ -1249,14 +4152,14 @@ const ITEMS = {
 		"display_name": "Red Shoes",
 		"rarity": "common",
 		"texture": "res://Assets/items/basic_items_pack/basic_red_shoes.png",
-		"inventory_icon": "res://Assets/items/basic_items_pack/basic_red_shoes_icon.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_red_shoes.png",
 		"left_shoe_texture": "res://Assets/items/basic_items_pack/basic_red_shoes_left.png",
 		"right_shoe_texture": "res://Assets/items/basic_items_pack/basic_red_shoes_right.png",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "shoes",
-		"left_shoe_offset": [-4, 8],
-		"right_shoe_offset": [4, 8],
+		"left_shoe_offset": [0, 0],
+		"right_shoe_offset": [0, 0],
 		"slot_scale": 1.0,
 		"slot_z_index": 2,
 		"order": 252
@@ -1267,17 +4170,66 @@ const ITEMS = {
 		"display_name": "Blue Shoes",
 		"rarity": "common",
 		"texture": "res://Assets/items/basic_items_pack/basic_blue_shoes.png",
-		"inventory_icon": "res://Assets/items/basic_items_pack/basic_blue_shoes_icon.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_blue_shoes.png",
 		"left_shoe_texture": "res://Assets/items/basic_items_pack/basic_blue_shoes_left.png",
 		"right_shoe_texture": "res://Assets/items/basic_items_pack/basic_blue_shoes_right.png",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "shoes",
-		"left_shoe_offset": [-4, 8],
-		"right_shoe_offset": [4, 8],
+		"left_shoe_offset": [0, 0],
+		"right_shoe_offset": [0, 0],
 		"slot_scale": 1.0,
 		"slot_z_index": 2,
 		"order": 253
+	},
+
+"basic_yellow_shoes": {
+		"category": "shoes",
+		"display_name": "Yellow Shoes",
+		"rarity": "common",
+		"texture": "res://Assets/items/basic_items_pack/basic_yello_shoes.png",
+		"inventory_icon": "res://Assets/items/basic_items_pack/basic_yello_shoes.png",
+		"left_shoe_texture": "res://Assets/items/basic_items_pack/basic_yello_shoes_left.png",
+		"right_shoe_texture": "res://Assets/items/basic_items_pack/basic_yello_shoes_right.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shoes",
+		"left_shoe_offset": [0, 0],
+		"right_shoe_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 254
+	},
+
+"red_tractor": {
+		"category": "ride",
+		"display_name": "Red Tractor",
+		"rarity": "epic",
+		"description": "Automatically harvests ready seed-trees when you drive over them.",
+		"texture": "res://Assets/clothes/ride/red_tractor_icon.png",
+		"inventory_icon": "res://Assets/clothes/ride/red_tractor_icon.png",
+		"ride_texture": "res://Assets/clothes/ride/red_tractor_1.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "ride",
+		"ride_visual": true,
+		"ride_offset": [0, 0],
+		"ride_scale": 1.0,
+		"ride_z_index": 0,
+		"animation_fps": 8.0,
+		"animations": {
+			"idle": ["res://Assets/clothes/ride/red_tractor_1.png"],
+			"walk": [
+				"res://Assets/clothes/ride/red_tractor_1.png",
+				"res://Assets/clothes/ride/red_tractor_2.png",
+				"res://Assets/clothes/ride/red_tractor_3.png",
+				"res://Assets/clothes/ride/red_tractor_4.png"
+			],
+			"jump": ["res://Assets/clothes/ride/red_tractor_1.png"],
+			"fall": ["res://Assets/clothes/ride/red_tractor_1.png"]
+		},
+		"shop_price": 100000,
+		"order": 255
 	},
 
 "purple_shirt": {
@@ -1306,32 +4258,312 @@ const ITEMS = {
 		"order": 211
 	},
 
+"void_shirt": {
+		"category": "shirt",
+		"display_name": "Void Shirt",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/shirts/void_shirt_body.png",
+		"shirt_body_texture": "res://Assets/clothes/shirts/void_shirt_body.png",
+		"inventory_icon": "res://Assets/clothes/shirts/void_shirt_icon.png",
+		"arm_texture": "res://Assets/clothes/shirts/void_shirt_arm.png",
+		"right_arm_texture": "res://Assets/clothes/shirts/void_shirt_arm.png",
+		"left_arm_texture": "res://Assets/clothes/shirts/void_shirt_arm_left.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"order": 219
+	},
+
+"void_pants": {
+		"category": "pants",
+		"display_name": "Void Pants",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/pants/void_pants.png",
+		"left_pants_texture": "res://Assets/clothes/pants/void_leg_left.png",
+		"right_pants_texture": "res://Assets/clothes/pants/void_leg_right.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "pants",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"order": 236
+	},
+
+"void_shoes": {
+		"category": "shoes",
+		"display_name": "Void Shoes",
+		"rarity": "common",
+		"texture": "res://Assets/clothes/shoes/void_shoes.png",
+		"inventory_icon": "res://Assets/clothes/shoes/void_shoes.png",
+		"left_shoe_texture": "res://Assets/clothes/shoes/void_shoe_left.png",
+		"right_shoe_texture": "res://Assets/clothes/shoes/void_shoe_right.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shoes",
+		"left_shoe_offset": [0, 0],
+		"right_shoe_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 254
+	},
+
 	# ============================================================
 
 	# ============================================================
 	# FISHING ITEMS
 	# ============================================================
-"fishing_rod": {
+"bamboo_rod": {
 		"category": "tool",
-		"display_name": "Fishing Rod",
+		"display_name": "Bamboo Rod",
 		"rarity": "uncommon",
-		"texture": "res://Assets/items/fishing/fishing_rod.png",
+		"texture": "res://Assets/items/fishing/bamboo_rod.png",
+		"inventory_icon": "res://Assets/items/fishing/bamboo_rod.png",
 		"starting_count": 0,
 		"equipable": true,
-
-		# Hand Item Auto Anchor v1:
-		# 64x32 sprite = left 32px is held, right 32px overhangs outward.
+		"equipment_slot": "hand",
+		"fishing_rod": true,
 		"hand_item": true,
 		"hand_mode": "auto_anchor",
-		"hand_hold_point": [16, 16],
-
-		# Fishing rod uses the same default 64x32 hand anchor,
-		# with a small visual tune so it looks better in hand.
+		"hand_hold_point": [24, 45],
 		"hand_scale": 1.15,
 		"hand_rotation": -8,
 		"hand_rotation_left": 8,
+		"fishing_line_tip_offset": [50, 38],
 
 		"order": 40
+	},
+"refined_bamboo_rod": {
+		"category": "tool",
+		"display_name": "Refined Bamboo Rod",
+		"rarity": "rare",
+		"texture": "res://Assets/items/fishing/refined_bamboo_rod.png",
+		"inventory_icon": "res://Assets/items/fishing/refined_bamboo_rod.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"fishing_rod": true,
+		"hand_item": true,
+		"hand_mode": "auto_anchor",
+		"hand_hold_point": [24, 45],
+		"hand_scale": 1.15,
+		"hand_rotation": -8,
+		"hand_rotation_left": 8,
+		"fishing_line_tip_offset": [50, 38],
+		"order": 41
+	},
+"pristine_bamboo_rod": {
+		"category": "tool",
+		"display_name": "Pristine Bamboo Rod",
+		"rarity": "epic",
+		"texture": "res://Assets/items/fishing/pristige_bamboo_rod.png",
+		"inventory_icon": "res://Assets/items/fishing/pristige_bamboo_rod.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"fishing_rod": true,
+		"hand_item": true,
+		"hand_mode": "auto_anchor",
+		"hand_hold_point": [24, 45],
+		"hand_scale": 1.15,
+		"hand_rotation": -8,
+		"hand_rotation_left": 8,
+		"fishing_line_tip_offset": [54, 40],
+		"order": 42
+	},
+"fishing_rod": {
+		"category": "tool",
+		"display_name": "Bamboo Rod",
+		"rarity": "uncommon",
+		"texture": "res://Assets/items/fishing/bamboo_rod.png",
+		"inventory_icon": "res://Assets/items/fishing/bamboo_rod.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"fishing_rod": true,
+		"legacy_item_id": true,
+		"canonical_item_id": "bamboo_rod",
+		"hand_item": true,
+		"hand_mode": "auto_anchor",
+		"hand_hold_point": [24, 45],
+		"hand_scale": 1.15,
+		"hand_rotation": -8,
+		"hand_rotation_left": 8,
+		"fishing_line_tip_offset": [50, 38],
+		"order": 43
+	},
+"fiberglass_rod": {
+		"category": "tool",
+		"display_name": "Fiberglass Rod",
+		"rarity": "rare",
+		"texture": "res://Assets/items/fishing/fiberglass_rod.png",
+		"inventory_icon": "res://Assets/items/fishing/fiberglass_rod.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"fishing_rod": true,
+		"hand_item": true,
+		"hand_mode": "auto_anchor",
+		"hand_hold_point": [25, 46],
+		"hand_scale": 1.15,
+		"hand_rotation": -8,
+		"hand_rotation_left": 8,
+		"fishing_line_tip_offset": [53, 42],
+		"order": 44
+	},
+"refined_fiberglass_rod": {
+		"category": "tool",
+		"display_name": "Refined Fiberglass Rod",
+		"rarity": "epic",
+		"texture": "res://Assets/items/fishing/refined_fiberglass_rod.png",
+		"inventory_icon": "res://Assets/items/fishing/refined_fiberglass_rod.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"fishing_rod": true,
+		"hand_item": true,
+		"hand_mode": "auto_anchor",
+		"hand_hold_point": [25, 46],
+		"hand_scale": 1.15,
+		"hand_rotation": -8,
+		"hand_rotation_left": 8,
+		"fishing_line_tip_offset": [58, 40],
+		"order": 54
+	},
+"pristine_fiberglass_rod": {
+		"category": "tool",
+		"display_name": "Pristine Fiberglass Rod",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/fishing/pristine_fiberglass_rod.png",
+		"inventory_icon": "res://Assets/items/fishing/pristine_fiberglass_rod.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"fishing_rod": true,
+		"hand_item": true,
+		"hand_mode": "auto_anchor",
+		"hand_hold_point": [25, 47],
+		"hand_scale": 1.15,
+		"hand_rotation": -8,
+		"hand_rotation_left": 8,
+		"fishing_line_tip_offset": [59, 41],
+		"order": 46
+	},
+"tungsten_rod": {
+		"category": "tool",
+		"display_name": "Tungsten Rod",
+		"rarity": "epic",
+		"texture": "res://Assets/items/fishing/tungsten_rod.png",
+		"inventory_icon": "res://Assets/items/fishing/tungsten_rod.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"fishing_rod": true,
+		"hand_item": true,
+		"hand_mode": "auto_anchor",
+		"hand_hold_point": [26, 47],
+		"hand_scale": 1.15,
+		"hand_rotation": -8,
+		"hand_rotation_left": 8,
+		"fishing_line_tip_offset": [63, 38],
+		"order": 47
+	},
+"refined_tungsten_rod": {
+		"category": "tool",
+		"display_name": "Refined Tungsten Rod",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/fishing/refined_tungsten_rod.png",
+		"inventory_icon": "res://Assets/items/fishing/refined_tungsten_rod.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"fishing_rod": true,
+		"hand_item": true,
+		"hand_mode": "auto_anchor",
+		"hand_hold_point": [62, 80],
+		"hand_scale": 1.15,
+		"hand_rotation": -8,
+		"hand_rotation_left": 8,
+		"fishing_line_tip_offset": [100, 70],
+		"order": 48
+	},
+"pristine_tungsten_rod": {
+		"category": "tool",
+		"display_name": "Pristine Tungsten Rod",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/fishing/pristine_tungsten_rod.png",
+		"inventory_icon": "res://Assets/items/fishing/pristine_tungsten_rod.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"fishing_rod": true,
+		"hand_item": true,
+		"hand_mode": "auto_anchor",
+		"hand_hold_point": [62, 82],
+		"hand_scale": 1.15,
+		"hand_rotation": -8,
+		"hand_rotation_left": 8,
+		"fishing_line_tip_offset": [103, 68],
+		"order": 49
+	},
+"platinum_prestige_rod": {
+		"category": "tool",
+		"display_name": "Pristine Tungsten Rod",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/fishing/pristine_tungsten_rod.png",
+		"inventory_icon": "res://Assets/items/fishing/pristine_tungsten_rod.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"fishing_rod": true,
+		"legacy_item_id": true,
+		"canonical_item_id": "pristine_tungsten_rod",
+		"hand_item": true,
+		"hand_mode": "auto_anchor",
+		"hand_hold_point": [62, 82],
+		"hand_scale": 1.15,
+		"hand_rotation": -8,
+		"hand_rotation_left": 8,
+		"fishing_line_tip_offset": [103, 68],
+		"order": 50
+	},
+"neptune_rod": {
+		"category": "tool",
+		"display_name": "Neptune Rod",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/fishing/neptune_rod_1.png",
+		"inventory_icon": "res://Assets/items/fishing/neptune_rod_1.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"fishing_rod": true,
+		"hand_item": true,
+		"hand_mode": "auto_anchor",
+		"hand_hold_point": [16, 16],
+		"hand_scale": 1.15,
+		"hand_rotation": -8,
+		"hand_rotation_left": 8,
+		"fishing_line_tip_offset": [37, 10],
+		"animation_fps": 6.0,
+		"hand_item_animations": {
+			"idle": {
+				"frames": [
+					"res://Assets/items/fishing/neptune_rod_1.png",
+					"res://Assets/items/fishing/neptune_rod_2.png",
+					"res://Assets/items/fishing/neptune_rod_3.png",
+					"res://Assets/items/fishing/neptune_rod_4.png",
+					"res://Assets/items/fishing/neptune_rod_3.png",
+					"res://Assets/items/fishing/neptune_rod_2.png",
+					"res://Assets/items/fishing/neptune_rod_1.png"
+				],
+				"fps": 6.0,
+				"loop": true
+			}
+		},
+		"order": 51
 	},
 "sakura_sword": {
 		"category": "tool",
@@ -1343,7 +4575,8 @@ const ITEMS = {
 		"equipable": true,
 		"equipment_slot": "hand",
 		"hand_item": true,
-		"order": 41
+		"punch_animation": "punch_sword",
+		"order": 52
 	},
 "pulu_pulu": {
 		"category": "tool",
@@ -1354,123 +4587,97 @@ const ITEMS = {
 		"equipable": true,
 		"equipment_slot": "hand",
 		"hand_item": true,
-		"order": 42
+		"order": 44
 	},
-"worm_lure": {
-		"category": "lure",
-		"display_name": "Worm Lure",
-		"rarity": "common",
-		"texture": "res://Assets/items/lures/worm_lure.png",
-		"order": 300
-	},
-"shiny_lure": {
-		"category": "lure",
-		"display_name": "Shiny Lure",
-		"rarity": "uncommon",
-		"texture": "res://Assets/items/lures/shiny_lure.png",
-		"order": 301
-	},
-"golden_lure": {
-		"category": "lure",
-		"display_name": "Golden Lure",
-		"rarity": "rare",
-		"texture": "res://Assets/items/lures/golden_lure.png",
-		"order": 302
-	},
-"lure_pack": {
-		"category": "lure",
-		"display_name": "Lure Pack",
-		"rarity": "uncommon",
-		"texture": "res://Assets/items/lures/lure_pack.png",
-		"shop_pack": true,
-		"order": 303
-	},
-
-	# ============================================================
-	# FISH
-	# ============================================================
-"pond_fish": {
-		"category": "fish",
-		"is_fish": true,
-		"quantity_type": "weight",
-		"unit": "lb",
-		"display_name": "Pond Fish",
-		"rarity": "common",
-		"texture": "res://Assets/items/fish/pond_fish.png",
-		"sell_value": 3,
-		"price_per_lb": 3,
-		"sell_price_per_lb": 3,
-		"min_weight_lb": 0.6,
-		"max_weight_lb": 2.4,
-		"order": 400
-	},
-"bluegill": {
-		"category": "fish",
-		"is_fish": true,
-		"quantity_type": "weight",
-		"unit": "lb",
-		"display_name": "Bluegill",
-		"rarity": "uncommon",
-		"texture": "res://Assets/items/fish/bluegill.png",
-		"sell_value": 8,
-		"price_per_lb": 8,
-		"sell_price_per_lb": 8,
-		"min_weight_lb": 1.2,
-		"max_weight_lb": 4.5,
-		"order": 401
-	},
-"golden_carp": {
-		"category": "fish",
-		"is_fish": true,
-		"quantity_type": "weight",
-		"unit": "lb",
-		"display_name": "Golden Carp",
-		"rarity": "rare",
-		"texture": "res://Assets/items/fish/golden_carp.png",
-		"sell_value": 25,
-		"price_per_lb": 25,
-		"sell_price_per_lb": 25,
-		"min_weight_lb": 3.0,
-		"max_weight_lb": 9.0,
-		"order": 402
-	},
-"crystal_fish": {
-		"category": "fish",
-		"is_fish": true,
-		"quantity_type": "weight",
-		"unit": "lb",
-		"display_name": "Crystal Fish",
-		"rarity": "epic",
-		"texture": "res://Assets/items/fish/crystal_fish.png",
-		"sell_value": 75,
-		"price_per_lb": 75,
-		"sell_price_per_lb": 75,
-		"min_weight_lb": 6.0,
-		"max_weight_lb": 16.0,
-		"order": 403
-	},
-
-	# TOOLS / UTILITY ITEMS
-	# ============================================================
-"pickaxe": {
+"ant_sword": {
 		"category": "tool",
-		"display_name": "Pickaxe",
-		"rarity": "rare",
-		"texture": "res://Assets/items/special items/tools/pickaxe.png",
-		"starting_count": 1,
-		"break_power": 1,
-		"effective_break_power": 3,
-		"effective_blocks": ["stone", "glass", "lava"],
+		"display_name": "Ant Sword",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/swords/ant_sword_1.png",
+		"inventory_icon": "res://Assets/items/swords/ant_sword_1.png",
+		"starting_count": 0,
 		"equipable": true,
+		"equipment_slot": "hand",
 		"hand_item": true,
-		"hand_mode": "auto_anchor",
-		"hand_hold_point": [15, 27],
-		"hand_sprite_offset": [8, -3],
-		"hand_sprite_offset_left": [-8, -3],
-		"hand_scale": 1.0,
-		"hand_rotation": -72,
-		"hand_rotation_left": 72,
-		"order": 0
+		"punch_animation": "punch_sword",
+		"animation_fps": 6.0,
+		"hand_item_animations": {
+			"idle": {
+				"frames": [
+					"res://Assets/items/swords/ant_sword_1.png",
+					"res://Assets/items/swords/ant_sword_2.png",
+					"res://Assets/items/swords/ant_sword_3.png",
+					"res://Assets/items/swords/ant_sword_4.png"
+				],
+				"fps": 6.0,
+				"loop": true
+			}
+		},
+		"order": 53
+	},
+"neptune_trident": {
+		"category": "tool",
+		"display_name": "Neptune Trident",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/swords/neptune_trident.png",
+		"inventory_icon": "res://Assets/items/swords/neptune_trident.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"hand_item": true,
+		"order": 45
+	},
+"blue_saber": {
+		"category": "tool",
+		"display_name": "Blue Saber",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/swords/blue_saber.png",
+		"inventory_icon": "res://Assets/items/swords/blue_saber_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"hand_item": true,
+		"punch_animation": "punch_sword",
+		"order": 54
+	},
+"green_saber": {
+		"category": "tool",
+		"display_name": "Green Saber",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/swords/green_saber.png",
+		"inventory_icon": "res://Assets/items/swords/green_saber_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"hand_item": true,
+		"punch_animation": "punch_sword",
+		"order": 55
+	},
+"red_saber": {
+		"category": "tool",
+		"display_name": "Red Saber",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/swords/red_saber.png",
+		"inventory_icon": "res://Assets/items/swords/red_saber_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"hand_item": true,
+		"punch_animation": "punch_sword",
+		"order": 56
+	},
+"void_saber": {
+		"category": "tool",
+		"display_name": "Void Saber",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/swords/void_saber.png",
+		"inventory_icon": "res://Assets/items/swords/void_saber_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"hand_item": true,
+		"punch_animation": "punch_sword",
+		"order": 57
 	},
 "stone_pickaxe": {
 		"category": "tool",
@@ -1563,42 +4770,603 @@ const ITEMS = {
 		"instance_tracked": true,
 		"order": 63
 	},
-"axe": {
+"electric_tool": {
 		"category": "tool",
-		"display_name": "Axe",
-		"rarity": "uncommon",
-		"texture": "res://Assets/items/special items/tools/axe.png",
+		"display_name": "Electric Tool",
+		"rarity": "rare",
+		"texture": "res://Assets/blocks/electric/tool.png",
+		"inventory_icon": "res://Assets/blocks/electric/tool.png",
 		"starting_count": 0,
-		"break_power": 1,
-		"effective_break_power": 3,
-		"effective_blocks": ["wood", "leaf"],
 		"equipable": true,
+		"equipment_slot": "hand",
 		"hand_item": true,
 		"hand_mode": "auto_anchor",
-		"hand_hold_point": [12, 24],
-		"hand_scale": 0.95,
-		"hand_rotation": -18,
-		"hand_rotation_left": 18,
-		"order": 1
-	},
-"shovel": {
-		"category": "tool",
-		"display_name": "Shovel",
-		"rarity": "uncommon",
-		"texture": "res://Assets/items/special items/tools/shovel.png",
-		"starting_count": 0,
-		"break_power": 1,
-		"effective_break_power": 3,
-		"effective_blocks": ["dirt", "grass", "sand", "cave_background"],
-		"equipable": true,
-		"hand_item": true,
-		"hand_mode": "auto_anchor",
-		"hand_hold_point": [16, 25],
+		"hand_hold_point": [32, 32],
 		"hand_scale": 1.0,
-		"hand_rotation": -16,
-		"hand_rotation_left": 16,
-		"order": 2
+		"hand_rotation": -10,
+		"hand_rotation_left": 10,
+		"shop_price": 5000,
+		"order": 46
 	},
+"hook": {
+		"category": "lure",
+		"display_name": "Basic Hook",
+		"rarity": "common",
+		"texture": "res://Assets/items/lures/hook.png",
+		"order": 299
+	},
+"worm_lure": {
+		"category": "lure",
+		"display_name": "Worm Bait",
+		"rarity": "common",
+		"texture": "res://Assets/items/lures/worm_lure.png",
+		"order": 300
+	},
+"shiny_lure": {
+		"category": "lure",
+		"display_name": "Shiny Bait",
+		"rarity": "uncommon",
+		"texture": "res://Assets/items/lures/shiny_lure.png",
+		"order": 301
+	},
+"golden_lure": {
+		"category": "lure",
+		"display_name": "Golden Bait",
+		"rarity": "rare",
+		"texture": "res://Assets/items/lures/golden_lure.png",
+		"order": 302
+	},
+"bonito_lure": {
+		"category": "lure",
+		"display_name": "Bonito Bait",
+		"rarity": "epic",
+		"texture": "res://Assets/items/lures/Bonito_lure.png",
+		"order": 303
+	},
+"cotton_cordel_lure": {
+		"category": "lure",
+		"display_name": "Cotton Cordel Bait",
+		"rarity": "epic",
+		"texture": "res://Assets/items/lures/cotton_cordel_lure.png",
+		"order": 304
+	},
+"void_worm_lure": {
+		"category": "lure",
+		"display_name": "Void Worm Bait",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/lures/void_worm_lure.png",
+		"order": 305
+	},
+"magnet_lure": {
+		"category": "lure",
+		"display_name": "Magnetic Bait",
+		"rarity": "uncommon",
+		"texture": "res://Assets/items/lures/magnet_lure.png",
+		"material_fishing_lure": true,
+		"order": 306
+	},
+"lure_pack": {
+		"category": "lure",
+		"display_name": "Lure Pack",
+		"rarity": "uncommon",
+		"texture": "res://Assets/items/lures/lure_pack.png",
+		"shop_pack": true,
+		"order": 307
+	},
+
+	# ============================================================
+	# FISH
+	# ============================================================
+"pond_fish": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Pond Fish",
+		"rarity": "common",
+		"texture": "res://Assets/items/fish/pond_fish_large.png",
+		"sell_value": 3,
+		"order": 400
+	},
+"pond_fish_small": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Small Pond Fish",
+		"rarity": "common",
+		"texture": "res://Assets/items/fish/pond_fish_small.png",
+		"sell_value": 2,
+		"difficulty": 1,
+		"fish_family": "pond_fish",
+		"fish_size": "small",
+		"order": 401
+	},
+"pond_fish_med": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Medium Pond Fish",
+		"rarity": "common",
+		"texture": "res://Assets/items/fish/pond_fish_med.png",
+		"sell_value": 4,
+		"difficulty": 1,
+		"fish_family": "pond_fish",
+		"fish_size": "medium",
+		"order": 402
+	},
+"pond_fish_large": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Large Pond Fish",
+		"rarity": "common",
+		"texture": "res://Assets/items/fish/pond_fish_large.png",
+		"sell_value": 7,
+		"difficulty": 2,
+		"fish_family": "pond_fish",
+		"fish_size": "large",
+		"order": 403
+	},
+"bluegill": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Bluegill",
+		"rarity": "uncommon",
+		"texture": "res://Assets/items/fish/bluegill.png",
+		"sell_value": 8,
+		"difficulty": 2,
+		"order": 404
+	},
+"golden_carp": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Golden Carp",
+		"rarity": "rare",
+		"texture": "res://Assets/items/fish/golden_carp.png",
+		"sell_value": 25,
+		"difficulty": 4,
+		"order": 405
+	},
+"crystal_fish": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Crystal Fish",
+		"rarity": "epic",
+		"texture": "res://Assets/items/fish/crystal_fish.png",
+		"sell_value": 75,
+		"difficulty": 6,
+		"order": 406
+	},
+"cat_fish_small": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Small Cat Fish",
+		"rarity": "common",
+		"texture": "res://Assets/items/fish/cat_fish_small.png",
+		"sell_value": 4,
+		"difficulty": 1,
+		"fish_family": "cat_fish",
+		"fish_size": "small",
+		"order": 407
+	},
+"cat_fish_med": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Medium Cat Fish",
+		"rarity": "common",
+		"texture": "res://Assets/items/fish/cat_fish_med.png",
+		"sell_value": 8,
+		"difficulty": 2,
+		"fish_family": "cat_fish",
+		"fish_size": "medium",
+		"order": 408
+	},
+"cat_fish_large": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Large Cat Fish",
+		"rarity": "common",
+		"texture": "res://Assets/items/fish/cat_fish_large.png",
+		"sell_value": 14,
+		"difficulty": 3,
+		"fish_family": "cat_fish",
+		"fish_size": "large",
+		"order": 409
+	},
+"bone_fish_small": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Small Bone Fish",
+		"rarity": "uncommon",
+		"texture": "res://Assets/items/fish/bone_fish_small.png",
+		"sell_value": 6,
+		"difficulty": 2,
+		"fish_family": "bone_fish",
+		"fish_size": "small",
+		"order": 410
+	},
+"bone_fish_med": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Medium Bone Fish",
+		"rarity": "uncommon",
+		"texture": "res://Assets/items/fish/bone_fish_med.png",
+		"sell_value": 12,
+		"difficulty": 3,
+		"fish_family": "bone_fish",
+		"fish_size": "medium",
+		"order": 411
+	},
+"bone_fish_large": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Large Bone Fish",
+		"rarity": "uncommon",
+		"texture": "res://Assets/items/fish/bone_fish_large.png",
+		"sell_value": 20,
+		"difficulty": 4,
+		"fish_family": "bone_fish",
+		"fish_size": "large",
+		"order": 412
+	},
+"barracuda_small": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Small Barracuda",
+		"rarity": "epic",
+		"texture": "res://Assets/items/fish/barracuda_small.png",
+		"sell_value": 10,
+		"difficulty": 2,
+		"fish_family": "barracuda",
+		"fish_size": "small",
+		"order": 413
+	},
+"barracuda_med": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Medium Barracuda",
+		"rarity": "epic",
+		"texture": "res://Assets/items/fish/barracuda_med.png",
+		"sell_value": 18,
+		"difficulty": 3,
+		"fish_family": "barracuda",
+		"fish_size": "medium",
+		"order": 414
+	},
+"barracuda_large": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Large Barracuda",
+		"rarity": "epic",
+		"texture": "res://Assets/items/fish/barracuda_large.png",
+		"sell_value": 30,
+		"difficulty": 4,
+		"fish_family": "barracuda",
+		"fish_size": "large",
+		"order": 415
+	},
+"sea_horse_small": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Small Sea Horse",
+		"rarity": "common",
+		"texture": "res://Assets/items/fish/sea_horse_small.png",
+		"sell_value": 12,
+		"difficulty": 3,
+		"fish_family": "sea_horse",
+		"fish_size": "small",
+		"order": 416
+	},
+"sea_horse_med": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Medium Sea Horse",
+		"rarity": "common",
+		"texture": "res://Assets/items/fish/sea_horse_med.png",
+		"sell_value": 22,
+		"difficulty": 4,
+		"fish_family": "sea_horse",
+		"fish_size": "medium",
+		"order": 417
+	},
+"sea_horse_large": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Large Sea Horse",
+		"rarity": "common",
+		"texture": "res://Assets/items/fish/sea_horse_large.png",
+		"sell_value": 40,
+		"difficulty": 5,
+		"fish_family": "sea_horse",
+		"fish_size": "large",
+		"order": 418
+	},
+"stingray_small": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Small Stingray",
+		"rarity": "uncommon",
+		"texture": "res://Assets/items/fish/stingray_small.png",
+		"sell_value": 15,
+		"difficulty": 3,
+		"fish_family": "stingray",
+		"fish_size": "small",
+		"order": 419
+	},
+"stingray_med": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Medium Stingray",
+		"rarity": "uncommon",
+		"texture": "res://Assets/items/fish/stingray_med.png",
+		"sell_value": 28,
+		"difficulty": 4,
+		"fish_family": "stingray",
+		"fish_size": "medium",
+		"order": 420
+	},
+"stingray_large": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Large Stingray",
+		"rarity": "uncommon",
+		"texture": "res://Assets/items/fish/stingray_large.png",
+		"sell_value": 50,
+		"difficulty": 5,
+		"fish_family": "stingray",
+		"fish_size": "large",
+		"order": 421
+	},
+"shark_small": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Small Shark",
+		"rarity": "epic",
+		"texture": "res://Assets/items/fish/shark_small.png",
+		"sell_value": 20,
+		"difficulty": 4,
+		"fish_family": "shark",
+		"fish_size": "small",
+		"order": 422
+	},
+"shark_med": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Medium Shark",
+		"rarity": "epic",
+		"texture": "res://Assets/items/fish/shark_med.png",
+		"sell_value": 40,
+		"difficulty": 5,
+		"fish_family": "shark",
+		"fish_size": "medium",
+		"order": 423
+	},
+"shark_large": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Large Shark",
+		"rarity": "epic",
+		"texture": "res://Assets/items/fish/shark_large.png",
+		"sell_value": 75,
+		"difficulty": 6,
+		"fish_family": "shark",
+		"fish_size": "large",
+		"order": 424
+	},
+"lava_fish_small": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Small Lava Fish",
+		"rarity": "rare",
+		"texture": "res://Assets/items/fish/lava_fish_small.png",
+		"sell_value": 30,
+		"difficulty": 5,
+		"fish_family": "lava_fish",
+		"fish_size": "small",
+		"order": 425
+	},
+"lava_fish_med": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Medium Lava Fish",
+		"rarity": "rare",
+		"texture": "res://Assets/items/fish/lava_fish_med.png",
+		"sell_value": 60,
+		"difficulty": 6,
+		"fish_family": "lava_fish",
+		"fish_size": "medium",
+		"order": 426
+	},
+"lava_fish_large": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Large Lava Fish",
+		"rarity": "rare",
+		"texture": "res://Assets/items/fish/lava_fish_large.png",
+		"sell_value": 110,
+		"difficulty": 7,
+		"fish_family": "lava_fish",
+		"fish_size": "large",
+		"order": 427
+	},
+"alien_fish_small": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Small Alien Fish",
+		"rarity": "rare",
+		"texture": "res://Assets/items/fish/alien_fish_small.png",
+		"sell_value": 35,
+		"difficulty": 5,
+		"fish_family": "alien_fish",
+		"fish_size": "small",
+		"order": 428
+	},
+"alien_fish_med": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Medium Alien Fish",
+		"rarity": "rare",
+		"texture": "res://Assets/items/fish/alien_fish_med.png",
+		"sell_value": 70,
+		"difficulty": 6,
+		"fish_family": "alien_fish",
+		"fish_size": "medium",
+		"order": 429
+	},
+"alien_fish_large": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Large Alien Fish",
+		"rarity": "rare",
+		"texture": "res://Assets/items/fish/alien_fish_large.png",
+		"sell_value": 130,
+		"difficulty": 7,
+		"fish_family": "alien_fish",
+		"fish_size": "large",
+		"order": 430
+	},
+"mossy_chest": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Mossy Chest",
+		"rarity": "uncommon",
+		"texture": "res://Assets/items/fish/mossy_chest.png",
+		"sell_value": 100,
+		"difficulty": 5,
+		"fishing_treasure": true,
+		"order": 431
+	},
+"atlantic_chest": {
+		"category": "block",
+		"display_name": "Atlantic Chest",
+		"rarity": "epic",
+		"block_health": 4,
+		"texture": "res://Assets/items/fish/atlantic_chest.png",
+		"inventory_icon": "res://Assets/items/fish/atlantic_chest.png",
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"drop_gems": false,
+		"fishing_reward": true,
+		"fishing_treasure": true,
+		"sell_value": 0,
+		"difficulty": 6,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"loot_table": [
+				{"item_id": "neptune_trident", "item_category": "tool", "weight": 1, "amount": 1},
+				{"item_id": "treasure_chest", "item_category": "fish", "weight": 9, "amount": 1},
+				{"item_id": "mossy_chest", "item_category": "fish", "weight": 14, "amount": 1},
+				{"item_id": "golden_lure", "item_category": "lure", "weight": 10, "amount": 1},
+				{"item_id": "void_worm_lure", "item_category": "lure", "weight": 4, "amount": 1},
+				{"item_id": "coral", "item_category": "material", "weight": 12, "amount_range": [2, 5]},
+				{"item_id": "clam", "item_category": "material", "weight": 12, "amount_range": [2, 5]},
+				{"item_id": "seaweed", "item_category": "material", "weight": 14, "amount_range": [3, 8]},
+				{"item_id": "trash_can", "item_category": "material", "weight": 10, "amount_range": [2, 5]},
+				{"item_id": "rusty_bicycle", "item_category": "material", "weight": 8, "amount_range": [1, 2]},
+				{"item_id": "naval_mines", "item_category": "material", "weight": 6, "amount": 1}
+			]
+		},
+		"order": 432
+	},
+"treasure_chest": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Treasure Chest",
+		"rarity": "rare",
+		"texture": "res://Assets/items/fish/treasure_chest.png",
+		"sell_value": 300,
+		"difficulty": 8,
+		"fishing_treasure": true,
+		"order": 433
+	},
+"sea_eater": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Sea Eater",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/fish/sea_eater.png",
+		"sell_value": 250,
+		"difficulty": 9,
+		"order": 434
+	},
+"tail_of_trident": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Tail of Trident",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/fish/Tail_of_trident.png",
+		"sell_value": 225,
+		"difficulty": 8,
+		"order": 435
+	},
+"mermaid": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Mermaid",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/fish/mermaid.png",
+		"sell_value": 300,
+		"difficulty": 9,
+		"order": 436
+	},
+"megalodon": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Megalodon",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/fish/megalodon.png",
+		"sell_value": 450,
+		"difficulty": 10,
+		"order": 437
+	},
+"kraken": {
+		"category": "fish",
+		"is_fish": true,
+		"quantity_type": "count",
+		"display_name": "Kraken",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/fish/kraken.png",
+		"sell_value": 500,
+		"difficulty": 10,
+		"order": 438
+	},
+
+	# TOOLS / UTILITY ITEMS
+	# ============================================================
 "entrance_mover": {
 		"category": "tool",
 		"display_name": "Entrance Mover",
@@ -1611,6 +5379,56 @@ const ITEMS = {
 		"equipable": false,
 		"consumable": true,
 		"order": 4
+	},
+"lock_mover": {
+		"category": "tool",
+		"display_name": "Lock Mover",
+		"rarity": "epic",
+		"texture": "res://Assets/locks/lock_mover.png",
+		"inventory_icon": "res://Assets/locks/lock_mover.png",
+		"starting_count": 0,
+		"break_power": 1,
+		"effective_break_power": 1,
+		"effective_blocks": [],
+		"equipable": false,
+		"consumable": true,
+		"shop_price": 17000,
+		"order": 5
+	},
+"door_mover": {
+		"category": "tool",
+		"display_name": "Door Mover",
+		"rarity": "rare",
+		"texture": "res://Assets/inventory_icons/door.png",
+		"inventory_icon": "res://Assets/inventory_icons/door.png",
+		"starting_count": 0,
+		"break_power": 1,
+		"effective_break_power": 1,
+		"effective_blocks": [],
+		"equipable": false,
+		"consumable": true,
+		"shop_price": 500,
+		"order": 6
+	},
+"world_lock_key": {
+		"category": "material",
+		"display_name": "World Lock Key",
+		"rarity": "legendary",
+		"texture": "res://Assets/locks/world_lock_key.png",
+		"inventory_icon": "res://Assets/locks/world_lock_key.png",
+		"starting_count": 0,
+		"break_power": 1,
+		"effective_break_power": 1,
+		"effective_blocks": [],
+		"equipable": false,
+		"consumable": false,
+		"tradeable": true,
+		"dropable": false,
+		"vendable": false,
+		"instance_tracked": true,
+		"max_stack": 400,
+		"world_lock_key": true,
+		"order": 6
 	},
 "wrench": {
 		"category": "tool",
@@ -1631,17 +5449,19 @@ const ITEMS = {
 		"hand_rotation_left": 28,
 		"order": 3
 	},
-	
+
 	# ============================================================
 	# Shop Items
-	
+
 "vend_empty": {
 		"category": "block",
 		"display_name": "Vending Machine",
 		"rarity": "epic",
 		"block_health": 5,
 		"break_power": 5,
-		"texture": "res://Assets/items/special items/vend/vend_empty.png",
+		"texture": {"atlas": "res://image.png", "cell": [3, 1], "cell_size": [32, 32]},
+		"inventory_icon": {"atlas": "res://image.png", "cell": [3, 1], "cell_size": [32, 32]},
+		"atlas_coords": Vector2i(3, 1),
 		"placeable": true,
 		"tradeable": true,
 		"equipable": false,
@@ -1649,6 +5469,9 @@ const ITEMS = {
 		"shop_pack": true,
 		"no_collision": true,
 		"interact_rules": true,
+		"break_return_to_inventory": true,
+		"break_return_item_id": "vend_empty",
+		"drop_rules": {"seed_chance": 0, "gem_range": [0, 0]},
 	},
 "vend_pending": {
 		"category": "block",
@@ -1656,7 +5479,9 @@ const ITEMS = {
 		"rarity": "epic",
 		"block_health": 5,
 		"break_power": 5,
-		"texture": "res://Assets/items/special items/vend/vend_pending.png",
+		"texture": {"atlas": "res://image.png", "cell": [4, 1], "cell_size": [32, 32]},
+		"inventory_icon": {"atlas": "res://image.png", "cell": [4, 1], "cell_size": [32, 32]},
+		"atlas_coords": Vector2i(4, 1),
 		"placeable": false,
 		"tradeable": false,
 		"equipable": false,
@@ -1664,6 +5489,9 @@ const ITEMS = {
 		"hidden": true,
 		"no_collision": true,
 		"interact_rules": true,
+		"break_return_to_inventory": true,
+		"break_return_item_id": "vend_empty",
+		"drop_rules": {"seed_chance": 0, "gem_range": [0, 0]},
 	},
 "vend_sold": {
 		"category": "block",
@@ -1671,7 +5499,9 @@ const ITEMS = {
 		"rarity": "epic",
 		"block_health": 5,
 		"break_power": 5,
-		"texture": "res://Assets/items/special items/vend/vend_sold.png",
+		"texture": {"atlas": "res://image.png", "cell": [5, 1], "cell_size": [32, 32]},
+		"inventory_icon": {"atlas": "res://image.png", "cell": [5, 1], "cell_size": [32, 32]},
+		"atlas_coords": Vector2i(5, 1),
 		"placeable": false,
 		"tradeable": false,
 		"equipable": false,
@@ -1679,6 +5509,9 @@ const ITEMS = {
 		"hidden": true,
 		"no_collision": true,
 		"interact_rules": true,
+		"break_return_to_inventory": true,
+		"break_return_item_id": "vend_empty",
+		"drop_rules": {"seed_chance": 0, "gem_range": [0, 0]},
 	},
 "fish_monger": {
 		"category": "block",
@@ -1691,7 +5524,10 @@ const ITEMS = {
 		"animation_frames": [
 			"res://Assets/items/special items/fish_monger/fish_monger.png",
 			"res://Assets/items/special items/fish_monger/fish_monger_1.png",
-			"res://Assets/items/special items/fish_monger/fish_monger_2.png"
+			"res://Assets/items/special items/fish_monger/fish_monger_2.png",
+			"res://Assets/items/special items/fish_monger/fish_monger_3.png",
+			"res://Assets/items/special items/fish_monger/fish_monger_2.png",
+			"res://Assets/items/special items/fish_monger/fish_monger_1.png"
 		],
 		"animation_frame_seconds": 0.5,
 		"visual_size": Vector2i(64, 64),
@@ -1712,6 +5548,8 @@ const ITEMS = {
 		"requires_full_area_clear": true,
 		"occupies_collision_area": true,
 		"drop_gems": false,
+		"break_return_to_inventory": true,
+		"drop_rules": {"seed_chance": 0, "gem_range": [0, 0]},
 		"shop_price": 15000,
 		"order": 38
 	},
@@ -1728,9 +5566,1251 @@ const ITEMS = {
 		"equipable": false,
 		"starting_count": 0,
 		"shop_pack": true,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
 		"interact_rules": true,
+	},
+"big_spike": {
+		"category": "block",
+		"display_name": "Big Spike",
+		"rarity": "rare",
+		"block_health": 4,
+		"texture": "res://Assets/blocks/tier_3/big_spike.png",
+		"seed": "",
+		"collidable": true,
+		"instant_death": true,
+		"hazard_instant_death": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "big_spike", "item_category": "block", "amount": 1},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+			]
+		},
+		"order": 300
+	},
+"spike": {
+		"category": "block",
+		"display_name": "Spike",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/tier_3/spike.png",
+		"seed": "",
+		"collidable": true,
+		"instant_death": true,
+		"hazard_instant_death": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "spike", "item_category": "block", "amount": 1},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+			]
+		},
+		"order": 301
+	},
+"death_gate": {
+		"category": "block",
+		"display_name": "Death Gate",
+		"rarity": "rare",
+		"block_health": 4,
+		"atlas_coords": Vector2i(12, 13),
+		"seed": "",
+		"collidable": true,
+		"solid": true,
+		"collision_type": "full",
+		"punch_toggle_block": true,
+		"toggle_active_block": "death_gate_active",
+		"toggle_inactive_block": "death_gate",
+		"toggle_drop_block": "death_gate",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "death_gate", "item_category": "block", "amount": 1},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+			]
+		},
+		"order": 302
+	},
+"death_gate_active": {
+		"category": "block",
+		"display_name": "Death Gate",
+		"rarity": "rare",
+		"block_health": 4,
+		"atlas_coords": Vector2i(13, 13),
+		"seed": "",
+		"hidden": true,
+		"placeable": false,
+		"dropable": false,
+		"tradeable": false,
+		"admin_grantable": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"punch_toggle_block": true,
+		"toggle_active_block": "death_gate_active",
+		"toggle_inactive_block": "death_gate",
+		"toggle_drop_block": "death_gate",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "death_gate", "item_category": "block", "amount": 1},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+			]
+		},
+		"order": 303
+	},
+"biohazard_barrel": {
+		"category": "block",
+		"display_name": "Biohazard Barrel",
+		"rarity": "rare",
+		"block_health": 4,
+		"texture": "res://Assets/blocks/tier_3/biohazard_barrel.png",
+		"seed": "",
+		"collidable": true,
+		"break_effect_frames": [
+			"res://Assets/blocks/tier_3/biohazard_barrel_1.png",
+			"res://Assets/blocks/tier_3/biohazard_barrel_2.png"
+		],
+		"break_effect_frame_seconds": 0.28,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "biohazard_barrel", "item_category": "block", "amount": 1},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+			]
+		},
+		"order": 302
+	},
+"blue_mail_box": {
+		"category": "block",
+		"display_name": "Blue Mailbox",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/tier_3/blue_mail_box_empty.png",
+		"inventory_icon": "res://Assets/blocks/tier_3/blue_mail_box_full.png",
+		"mailbox_empty_texture": "res://Assets/blocks/tier_3/blue_mail_box_empty.png",
+		"mailbox_full_texture": "res://Assets/blocks/tier_3/blue_mail_box_full.png",
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"mailbox_block": true,
+		"mailbox_capacity": 20,
+		"interact_rules": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "blue_mail_box", "item_category": "block", "amount": 1},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+			]
+		},
+		"order": 303
+	},
+"bulletin_board": {
+		"category": "block",
+		"display_name": "Bulletin Board",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/tier_3/bulletin_board.png",
+		"seed": "",
+		"collidable": true,
+		"bulletin_board_block": true,
+		"bulletin_board_capacity": 30,
+		"interact_rules": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "bulletin_board", "item_category": "block", "amount": 1},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+			]
+		},
+		"order": 304
+	},
+"saw_blade": {
+		"category": "block",
+		"display_name": "Saw Blade",
+		"rarity": "rare",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/tier_3/saw_blade.png",
+		"atlas_coords": Vector2i(0, 13),
+		"animation_frames": [
+			"res://Assets/blocks/tier_3/saw_blade.png",
+			"res://Assets/blocks/tier_3/saw_blade_1.png",
+			"res://Assets/blocks/tier_3/saw_blade_2.png",
+			"res://Assets/blocks/tier_3/saw_blade_3.png"
+		],
+		"animation_frame_seconds": 0.045,
+		"seed": "",
+		"collidable": true,
+		"instant_death": true,
+		"hazard_instant_death": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "saw_blade", "item_category": "block", "amount": 1},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+			]
+		},
+		"order": 304
+	},
+"slime": {
+		"category": "block",
+		"display_name": "Slime",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/tier_3/slime.png",
+		"atlas_coords": Vector2i(5, 13),
+		"seed": "",
+		"collidable": true,
+		"slow_surface": true,
+		"movement_speed_multiplier": 0.55,
+		"jump_velocity_multiplier": 0.62,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "slime", "item_category": "block", "amount": 1},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+			]
+		},
+		"order": 305
+	},
+"pinball": {
+		"category": "block",
+		"display_name": "Pinball",
+		"rarity": "rare",
+		"block_health": 4,
+		"texture": "res://Assets/blocks/tier_3/pinball_1.png",
+		"atlas_coords": Vector2i(3, 13),
+		"inventory_icon": "res://Assets/blocks/tier_3/pinball_1.png",
+		"seed": "",
+		"collidable": true,
+		"pinball_block": true,
+		"pinball_knockback_velocity": 335.0,
+		"pinball_vertical_velocity": -335.0,
+		"springboard_animation_frames": [
+			"res://Assets/blocks/tier_3/pinball_1.png",
+			"res://Assets/blocks/tier_3/pinball_2.png",
+			"res://Assets/blocks/tier_3/pinball_1.png",
+			"res://Assets/blocks/tier_3/pinball_2.png",
+			"res://Assets/blocks/tier_3/pinball_1.png",
+			"res://Assets/blocks/tier_3/pinball_2.png",
+			"res://Assets/blocks/tier_3/pinball_1.png"
+		],
+		"springboard_animation_atlas_frames": [
+			Vector2i(3, 13),
+			Vector2i(4, 13),
+			Vector2i(3, 13),
+			Vector2i(4, 13),
+			Vector2i(3, 13),
+			Vector2i(4, 13),
+			Vector2i(3, 13)
+		],
+		"springboard_animation_frame_seconds": 0.07,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "pinball", "item_category": "block", "amount": 1},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+			]
+		},
+		"order": 306
+	},
+"mail_box": {
+		"category": "block",
+		"display_name": "Mailbox",
+		"rarity": "uncommon",
+		"block_health": 3,
+		"texture": "res://Assets/blocks/tier_3/mail_box_empty.png",
+		"inventory_icon": "res://Assets/blocks/tier_3/mail_box_full.png",
+		"mailbox_empty_texture": "res://Assets/blocks/tier_3/mail_box_empty.png",
+		"mailbox_full_texture": "res://Assets/blocks/tier_3/mail_box_full.png",
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"mailbox_block": true,
+		"mailbox_capacity": 20,
+		"interact_rules": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "mail_box", "item_category": "block", "amount": 1},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+			]
+		},
+		"order": 307
+	},
+"display_box": {
+		"category": "block",
+		"display_name": "Display Box",
+		"rarity": "rare",
+		"block_health": 4,
+		"texture": "res://Assets/blocks/tier_3/display_box.png",
+		"atlas_coords": Vector2i(0, 14),
+		"seed": "",
+		"collidable": true,
+		"display_block": true,
+		"display_preview_max_size": 25.0,
+		"display_preview_alpha": 1.0,
+		"display_glass_alpha": 0.0,
+		"display_glass_size": Vector2(27, 27),
+		"display_preview_offset": Vector2(0, 0),
+		"interact_rules": true,
+		"permissions": {"world_owner_only": true},
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "display_box", "item_category": "block", "amount": 1},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+			]
+		},
+		"order": 308
+	},
+	"display_case": {
+			"category": "block",
+			"display_name": "Display Case",
+			"rarity": "rare",
+		"block_health": 4,
+		"texture": "res://Assets/blocks/tier_3/display_case.png",
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"display_block": true,
+		"display_preview_max_size": 25.0,
+		"display_preview_alpha": 1.0,
+		"display_glass_alpha": 0.0,
+		"display_glass_size": Vector2(30, 30),
+		"display_preview_offset": Vector2(0, 0),
+		"interact_rules": true,
+		"permissions": {"world_owner_only": true},
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "display_case", "item_category": "block", "amount": 1},
+				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+			]
+			},
+			"order": 309
+		},
+	"tackle_box": {
+			"category": "block",
+			"display_name": "Tackle Box",
+			"rarity": "rare",
+			"block_health": 4,
+			"texture": "res://Assets/items/fishing/tackle_box_empty.png",
+			"inventory_icon": "res://Assets/items/fishing/tackle_box_full.png",
+			"tackle_box_empty_texture": "res://Assets/items/fishing/tackle_box_empty.png",
+			"tackle_box_full_texture": "res://Assets/items/fishing/tackle_box_full.png",
+			"seed": "",
+			"shop_price": 9500,
+			"no_collision": true,
+			"collidable": false,
+			"tackle_box_block": true,
+			"tackle_box_cooldown_seconds": 14400.0,
+			"tackle_box_reward_count": 5,
+			"interact_rules": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "tackle_box", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 310
+		},
+	"chicken": {
+			"category": "block",
+			"display_name": "Chicken",
+			"rarity": "rare",
+			"block_health": 3,
+			"texture": "res://image.png",
+			"atlas_item_id": 20,
+			"atlas_coords": Vector2i(7, 21),
+			"chicken_hungry_atlas_coords": Vector2i(9, 21),
+			"chicken_producing_atlas_coords": Vector2i(7, 21),
+			"chicken_ready_atlas_coords": Vector2i(8, 21),
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"chicken_block": true,
+			"chicken_feed_item_id": "grain",
+			"chicken_feed_item_category": "material",
+			"chicken_production_seconds": 43200.0,
+			"chicken_hunger_seconds": 604800.0,
+			"chicken_reward_item_id": "egg",
+			"chicken_golden_reward_item_id": "golden_egg",
+			"chicken_golden_reward_chance": 0.01,
+			"interact_rules": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "chicken", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 311
+		},
+	"cow": {
+			"category": "block",
+			"display_name": "Cow",
+			"rarity": "rare",
+			"block_health": 3,
+			"texture": "res://image.png",
+			"atlas_item_id": 21,
+			"atlas_coords": Vector2i(7, 22),
+			"cow_hungry_atlas_coords": Vector2i(9, 22),
+			"cow_producing_atlas_coords": Vector2i(7, 22),
+			"cow_ready_atlas_coords": Vector2i(8, 22),
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"cow_block": true,
+			"cow_feed_item_id": "wheat",
+			"cow_feed_item_category": "material",
+			"cow_production_seconds": 43200.0,
+			"cow_hunger_seconds": 604800.0,
+			"cow_reward_item_id": "milk",
+			"interact_rules": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "cow", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 312
+		},
+	"duck": {
+			"category": "block",
+			"display_name": "Duck",
+			"rarity": "rare",
+			"block_health": 3,
+			"texture": "res://image.png",
+			"atlas_item_id": 31,
+			"atlas_coords": Vector2i(10, 21),
+			"duck_hungry_atlas_coords": Vector2i(12, 21),
+			"duck_producing_atlas_coords": Vector2i(10, 21),
+			"duck_ready_atlas_coords": Vector2i(11, 21),
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"duck_block": true,
+			"duck_feed_item_id": "grain",
+			"duck_feed_item_category": "material",
+			"duck_production_seconds": 43200.0,
+			"duck_hunger_seconds": 604800.0,
+			"duck_reward_table": "fishing",
+			"interact_rules": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "duck", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 313
+		},
+		"bone": {
+			"category": "block",
+			"display_name": "Bone",
+			"rarity": "common",
+			"block_health": 1,
+			"texture": "res://image.png",
+			"atlas_item_id": 23,
+			"atlas_coords": Vector2i(6, 22),
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "bone", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 313
+		},
+	"white_fence": {
+			"category": "block",
+			"display_name": "White Fence",
+			"rarity": "common",
+			"block_health": 3,
+			"texture": "res://image.png",
+			"atlas_item_id": 24,
+			"atlas_coords": Vector2i(3, 22),
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"foreground_over_player": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "white_fence", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 314
+		},
+	"sugar_cane": {
+			"category": "block",
+			"display_name": "Sugar Cane",
+			"rarity": "common",
+			"block_health": 2,
+			"texture": "res://image.png",
+			"atlas_item_id": 25,
+			"atlas_coords": Vector2i(4, 22),
+			"vertical_variant_atlas_coords": {
+				"single": Vector2i(4, 22),
+				"top": Vector2i(5, 22),
+				"middle": Vector2i(5, 23),
+				"bottom": Vector2i(5, 24)
+			},
+			"seed": "sugar_cane_seed",
+			"no_collision": true,
+			"collidable": false,
+			"solid": false,
+			"collision_type": "none",
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "sugar_cane", "item_category": "block", "amount_range": [1, 5]},
+					{"item_id": "sugar_cane_seed", "item_category": "seed", "amount_range": [0, 3]},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [0, 10]}
+				]
+			},
+			"tree_drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "sugar_cane", "item_category": "block", "amount_range": [1, 5]},
+					{"item_id": "sugar_cane_seed", "item_category": "seed", "amount_range": [0, 3]},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [0, 10]}
+				]
+			},
+			"order": 315
+		},
+	"barn_block": {
+			"category": "block",
+			"display_name": "Barn Block",
+			"rarity": "common",
+			"block_health": 4,
+			"texture": {"atlas": "res://image.png", "cell": [0, 20], "cell_size": [32, 32]},
+			"inventory_icon": {"atlas": "res://image.png", "cell": [0, 20], "cell_size": [32, 32]},
+			"atlas_item_id": 26,
+			"atlas_coords": Vector2i(0, 20),
+			"connected_variant_atlas_coords": {
+				"single": Vector2i(0, 20),
+				"top": Vector2i(1, 20),
+				"middle": Vector2i(1, 21),
+				"top_left_corner": Vector2i(3, 20),
+				"top_right_corner": Vector2i(4, 20),
+				"horizontal_middle": Vector2i(2, 20),
+				"left": Vector2i(0, 21),
+				"right": Vector2i(2, 21),
+				"bottom_left_corner": Vector2i(3, 21),
+				"bottom_right_corner": Vector2i(4, 21),
+				"vertical_middle": Vector2i(0, 22),
+				"bottom": Vector2i(1, 22),
+				"tile_top_left_corner": Vector2i(0, 24),
+				"tile_top_middle": Vector2i(1, 24),
+				"tile_top_right_corner": Vector2i(2, 24),
+				"tile_middle_left": Vector2i(0, 25),
+				"tile_middle_middle": Vector2i(1, 25),
+				"tile_middle_right": Vector2i(2, 25),
+				"tile_bottom_left_corner": Vector2i(0, 26),
+				"tile_bottom_middle": Vector2i(1, 26),
+				"tile_bottom_right_corner": Vector2i(2, 26)
+			},
+			"seed": "barn_block_seed",
+			"collidable": true,
+			"solid": true,
+			"collision_type": "full",
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "barn_block", "item_category": "block", "amount_range": [0, 4]},
+					{"item_id": "barn_block_seed", "item_category": "seed", "amount_range": [0, 3]},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [0, 5]}
+				]
+			},
+			"tree_drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "barn_block", "item_category": "block", "amount_range": [0, 4]},
+					{"item_id": "barn_block_seed", "item_category": "seed", "amount_range": [0, 3]},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [0, 5]}
+				]
+			},
+			"order": 316
+		},
+	"barn_door": {
+			"category": "block",
+			"display_name": "Barn Door",
+			"rarity": "common",
+			"block_health": 3,
+			"texture": {"atlas": "res://image.png", "cell": [5, 21], "cell_size": [32, 32]},
+			"inventory_icon": {"atlas": "res://image.png", "cell": [5, 21], "cell_size": [32, 32]},
+			"atlas_item_id": 27,
+			"atlas_coords": Vector2i(5, 21),
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"solid": false,
+			"collision_type": "none",
+			"door_block": true,
+			"interact_rules": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "barn_door", "item_category": "block", "amount": 1}
+				]
+			},
+			"tree_drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "barn_door", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 317
+		},
+	"barn_background": {
+			"category": "block",
+			"display_name": "Barn Background",
+			"rarity": "common",
+			"block_health": 2,
+			"texture": {"atlas": "res://image.png", "cell": [2, 22], "cell_size": [32, 32]},
+			"inventory_icon": {"atlas": "res://image.png", "cell": [2, 22], "cell_size": [32, 32]},
+			"atlas_item_id": 28,
+			"atlas_coords": Vector2i(2, 22),
+			"seed": "",
+			"place_layer": "background",
+			"background_block": true,
+			"no_collision": true,
+			"collidable": false,
+			"solid": false,
+			"collision_type": "none",
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "barn_background", "item_category": "block", "amount": 1}
+				]
+			},
+			"tree_drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "barn_background", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 318
+		},
+	"barn_window": {
+			"category": "block",
+			"display_name": "Barn Window",
+			"rarity": "common",
+			"block_health": 2,
+			"texture": {"atlas": "res://image.png", "cell": [5, 20], "cell_size": [32, 32]},
+			"inventory_icon": {"atlas": "res://image.png", "cell": [5, 20], "cell_size": [32, 32]},
+			"atlas_item_id": 29,
+			"atlas_coords": Vector2i(5, 20),
+			"seed": "",
+			"place_layer": "background",
+			"background_block": true,
+			"no_collision": true,
+			"collidable": false,
+			"solid": false,
+			"collision_type": "none",
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "barn_window", "item_category": "block", "amount": 1}
+				]
+			},
+			"tree_drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "barn_window", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 319
+		},
+	"water_well": {
+			"category": "block",
+			"display_name": "Water Well",
+			"rarity": "rare",
+			"block_health": 3,
+			"texture": {"atlas": "res://image.png", "cell": [6, 20], "cell_size": [32, 32]},
+			"inventory_icon": {"atlas": "res://image.png", "cell": [6, 20], "cell_size": [32, 32]},
+			"atlas_item_id": 30,
+			"atlas_coords": Vector2i(6, 20),
+			"water_well_producing_atlas_coords": Vector2i(6, 20),
+			"water_well_ready_atlas_coords": Vector2i(7, 20),
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"water_well_block": true,
+			"water_well_cooldown_seconds": 300.0,
+			"water_well_reward_item_id": "water_bucket",
+			"water_well_reward_item_category": "block",
+			"water_well_reward_amount_range": [1, 15],
+			"interact_rules": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "water_well", "item_category": "block", "amount": 1}
+				]
+			},
+			"tree_drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "water_well", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 320
+		},
+	"checkpoint": {
+			"category": "block",
+			"display_name": "Checkpoint",
+			"rarity": "rare",
+			"block_health": 4,
+			"texture": "res://Assets/blocks/tier_4/checkpoint_1.png",
+			"atlas_coords": Vector2i(9, 14),
+			"checkpoint_inactive_atlas_coords": Vector2i(9, 14),
+			"checkpoint_active_atlas_coords": Vector2i(10, 14),
+			"inventory_icon": "res://Assets/blocks/tier_4/checkpoint_1.png",
+			"checkpoint_inactive_texture": "res://Assets/blocks/tier_4/checkpoint_1.png",
+			"checkpoint_active_texture": "res://Assets/blocks/tier_4/checkpoint_2.png",
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"checkpoint_block": true,
+			"interact_rules": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "checkpoint", "item_category": "block", "amount": 1},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+				]
+			},
+			"order": 399
+		},
+	"star_checkpoint": {
+			"category": "block",
+			"display_name": "Star Checkpoint",
+			"rarity": "rare",
+			"block_health": 4,
+			"texture": "res://Assets/blocks/tier_4/star_checkpoint_1.png",
+			"atlas_coords": Vector2i(11, 14),
+			"checkpoint_inactive_atlas_coords": Vector2i(11, 14),
+			"checkpoint_active_atlas_coords": Vector2i(12, 14),
+			"inventory_icon": "res://Assets/blocks/tier_4/star_checkpoint_1.png",
+			"checkpoint_inactive_texture": "res://Assets/blocks/tier_4/star_checkpoint_1.png",
+			"checkpoint_active_texture": "res://Assets/blocks/tier_4/star_checkpoint_2.png",
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"checkpoint_block": true,
+			"interact_rules": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "star_checkpoint", "item_category": "block", "amount": 1},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+				]
+			},
+			"order": 399
+		},
+	"dice_block": {
+			"category": "block",
+			"display_name": "Dice Block",
+			"rarity": "rare",
+			"block_health": 4,
+			"texture": "res://Assets/blocks/tier_4/dice_1.png",
+			"atlas_coords": Vector2i(9, 15),
+			"inventory_icon": "res://Assets/blocks/tier_4/dice_6.png",
+			"dice_face_textures": [
+				"res://Assets/blocks/tier_4/dice_1.png",
+				"res://Assets/blocks/tier_4/dice_2.png",
+				"res://Assets/blocks/tier_4/dice_3.png",
+				"res://Assets/blocks/tier_4/dice_4.png",
+				"res://Assets/blocks/tier_4/dice_5.png",
+				"res://Assets/blocks/tier_4/dice_6.png"
+			],
+			"dice_roll_frame_seconds": 0.08,
+			"dice_roll_duration_seconds": 1.05,
+			"seed": "",
+			"collidable": true,
+			"dice_block": true,
+			"interact_rules": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "dice_block", "item_category": "block", "amount": 1},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+				]
+			},
+			"order": 400
+		},
+	"blue_portal": {
+			"category": "block",
+			"display_name": "Blue Portal",
+			"rarity": "rare",
+			"block_health": 4,
+			"texture": "res://Assets/blocks/tier_4/blue_portal_1.png",
+			"inventory_icon": "res://Assets/blocks/tier_4/blue_portal_1.png",
+			"animation_frames": [
+				"res://Assets/blocks/tier_4/blue_portal_1.png",
+				"res://Assets/blocks/tier_4/blue_portal_2.png",
+				"res://Assets/blocks/tier_4/blue_portal_3.png",
+				"res://Assets/blocks/tier_4/blue_portal_4.png"
+			],
+			"animation_frame_seconds": 0.12,
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"door_block": true,
+			"portal_block": true,
+			"auto_door_enter": true,
+			"interact_rules": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "blue_portal", "item_category": "block", "amount": 1},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+				]
+			},
+			"order": 401
+		},
+	"yellow_portal": {
+			"category": "block",
+			"display_name": "Yellow Portal",
+			"rarity": "rare",
+			"block_health": 4,
+			"texture": "res://Assets/blocks/tier_4/yello_portal_1.png",
+			"inventory_icon": "res://Assets/blocks/tier_4/yello_portal_1.png",
+			"animation_frames": [
+				"res://Assets/blocks/tier_4/yello_portal_1.png",
+				"res://Assets/blocks/tier_4/yello_portal_2.png",
+				"res://Assets/blocks/tier_4/yello_portal_3.png",
+				"res://Assets/blocks/tier_4/yello_portal_4.png"
+			],
+			"animation_frame_seconds": 0.12,
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"door_block": true,
+			"portal_block": true,
+			"auto_door_enter": true,
+			"interact_rules": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "yellow_portal", "item_category": "block", "amount": 1},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+				]
+			},
+			"order": 402
+		},
+	"bomb": {
+			"category": "block",
+			"display_name": "Bomb",
+			"rarity": "rare",
+			"block_health": 4,
+			"texture": "res://Assets/blocks/tier_4/bomb.png",
+			"inventory_icon": "res://Assets/blocks/tier_4/bomb.png",
+			"seed": "",
+			"collidable": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "bomb", "item_category": "block", "amount": 1},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+				]
+			},
+			"order": 403
+		},
+	"display_shelf": {
+			"category": "block",
+			"display_name": "Display Shelf",
+			"rarity": "rare",
+			"block_health": 4,
+			"texture": "res://Assets/blocks/tier_4/display_shelf.png",
+			"atlas_coords": Vector2i(11, 13),
+			"inventory_icon": "res://Assets/blocks/tier_4/display_shelf.png",
+			"seed": "",
+			"collidable": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "display_shelf", "item_category": "block", "amount": 1},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+				]
+			},
+			"order": 404
+		},
+	"fish_hanger": {
+			"category": "block",
+			"display_name": "Fish Hanger",
+			"rarity": "rare",
+			"block_health": 4,
+			"texture": "res://image.png",
+			"inventory_icon": {"atlas": "res://image.png", "cell": Vector2i(10, 13), "cell_size": Vector2i(32, 32)},
+			"atlas_item_id": 34,
+			"atlas_source_id": 0,
+			"source_id": 0,
+			"atlas_coords": Vector2i(10, 13),
+			"alternative_tile": 0,
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"display_block": true,
+			"fish_hanger_block": true,
+			"display_preview_max_size": 18.0,
+			"display_preview_alpha": 1.0,
+			"display_preview_offset": Vector2(0, 2),
+			"display_glass_alpha": 0.0,
+			"interact_rules": true,
+			"permissions": {"world_owner_only": true},
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "fish_hanger", "item_category": "block", "amount": 1},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+				]
+			},
+			"order": 405
+		},
+	"password_door": {
+			"category": "block",
+			"display_name": "Password Door",
+			"rarity": "rare",
+			"block_health": 4,
+			"texture": "res://Assets/blocks/tier_4/password_door.png",
+			"atlas_coords": Vector2i(8, 15),
+			"inventory_icon": "res://Assets/blocks/tier_4/password_door.png",
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"door_block": true,
+			"password_door": true,
+			"interact_rules": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "password_door", "item_category": "block", "amount": 1},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+				]
+			},
+			"order": 406
+		},
+	"star_block": {
+			"category": "block",
+			"display_name": "Star Block",
+			"rarity": "rare",
+			"block_health": 4,
+			"texture": "res://Assets/blocks/tier_4/star_block.png",
+			"atlas_coords": Vector2i(9, 13),
+			"inventory_icon": "res://Assets/blocks/tier_4/star_block.png",
+			"seed": "",
+			"collidable": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "star_block", "item_category": "block", "amount": 1},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
+				]
+			},
+			"order": 407
+		},
+	"anti_punch": {
+			"category": "block",
+			"display_name": "Anti-Punch",
+			"rarity": "epic",
+			"block_health": 4,
+			"texture": "res://Assets/blocks/special_blocks/anti_punch/anti_punch_disabled.png",
+			"atlas_coords": Vector2i(14, 13),
+			"inventory_icon": "res://Assets/blocks/special_blocks/anti_punch/anti_punch_disabled.png",
+			"anti_punch_disabled_texture": "res://Assets/blocks/special_blocks/anti_punch/anti_punch_disabled.png",
+			"anti_punch_enabled_frames": [
+				"res://Assets/blocks/special_blocks/anti_punch/anti_punch_enabled_1.png",
+				"res://Assets/blocks/special_blocks/anti_punch/anti_punch_enabled_2.png"
+			],
+			"anti_punch_frame_seconds": 0.18,
+			"seed": "",
+			"collidable": true,
+			"anti_punch_block": true,
+			"interact_rules": true,
+			"shop_price": 25000,
+			"break_return_to_inventory": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0]
+			},
+			"order": 408
+		},
+	"anti_talk": {
+			"category": "block",
+			"display_name": "Anti-Talk",
+			"rarity": "epic",
+			"block_health": 4,
+			"texture": "res://Assets/blocks/special_blocks/anti_talk/anti_talk_disabled.png",
+			"atlas_coords": Vector2i(17, 13),
+			"inventory_icon": "res://Assets/blocks/special_blocks/anti_talk/anti_talk_disabled.png",
+			"anti_talk_disabled_texture": "res://Assets/blocks/special_blocks/anti_talk/anti_talk_disabled.png",
+			"anti_talk_enabled_frames": [
+				"res://Assets/blocks/special_blocks/anti_talk/anti_talk_enabled_1.png",
+				"res://Assets/blocks/special_blocks/anti_talk/anti_talk_enabled_2.png"
+			],
+			"anti_talk_frame_seconds": 0.18,
+			"seed": "",
+			"collidable": true,
+			"anti_talk_block": true,
+			"interact_rules": true,
+			"shop_price": 25000,
+			"break_return_to_inventory": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0]
+			},
+			"order": 409
+		},
+	"anti_gravity": {
+			"category": "block",
+			"display_name": "Anti-Gravity",
+			"rarity": "legendary",
+			"block_health": 4,
+			"texture": "res://Assets/blocks/special_blocks/anti_gravity/anti_gravity.png",
+			"inventory_icon": "res://Assets/blocks/special_blocks/anti_gravity/anti_gravity.png",
+			"anti_gravity_disabled_texture": "res://Assets/blocks/special_blocks/anti_gravity/anti_gravity.png",
+			"anti_gravity_enabled_frames": [
+				"res://Assets/blocks/special_blocks/anti_gravity/anti_gravity_1.png",
+				"res://Assets/blocks/special_blocks/anti_gravity/anti_gravity_2.png",
+				"res://Assets/blocks/special_blocks/anti_gravity/anti_gravity_3.png",
+				"res://Assets/blocks/special_blocks/anti_gravity/anti_gravity_4.png",
+				"res://Assets/blocks/special_blocks/anti_gravity/anti_gravity_5.png"
+			],
+			"anti_gravity_frame_seconds": 0.12,
+			"seed": "",
+			"collidable": true,
+			"anti_gravity_block": true,
+			"interact_rules": true,
+			"shop_price": 150000,
+			"break_return_to_inventory": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0]
+			},
+			"order": 410
+		},
+	"snow_repellent": {
+			"category": "block",
+			"display_name": "Snow Repellent",
+			"rarity": "legendary",
+			"block_health": 4,
+			"texture": "res://Assets/blocks/special_blocks/snow_repellent/snow_repellent.png",
+			"inventory_icon": "res://Assets/blocks/special_blocks/snow_repellent/snow_repellent.png",
+			"seed": "",
+			"collidable": true,
+			"snow_repellent_block": true,
+			"shop_price": 75000,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "snow_repellent", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 411
+		},
+	"night_theme_machine": {
+			"category": "block",
+			"display_name": "Night Theme Machine",
+			"rarity": "legendary",
+			"instance_tracked": true,
+			"block_health": 4,
+			"atlas_item_id": 37,
+			"atlas_source_id": 0,
+			"source_id": 0,
+			"atlas_coords": Vector2i(17, 7),
+			"alternative_tile": 0,
+			"texture": {"atlas": "res://image.png", "cell": [17, 7], "cell_size": [32, 32]},
+			"inventory_icon": {"atlas": "res://image.png", "cell": [17, 7], "cell_size": [32, 32]},
+			"theme_machine_enabled_frames": [
+				{"atlas": "res://image.png", "cell": [17, 7], "cell_size": [32, 32]},
+				{"atlas": "res://image.png", "cell": [18, 7], "cell_size": [32, 32]}
+			],
+			"theme_machine_frame_seconds": 0.45,
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"theme_machine_block": true,
+			"theme_machine_theme": "night",
+			"interact_rules": true,
+			"shop_price": 125000,
+			"break_return_to_inventory": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0]
+			},
+			"order": 412
+		},
+	"snow_theme_machine": {
+			"category": "block",
+			"display_name": "Snow Theme Machine",
+			"rarity": "legendary",
+			"instance_tracked": true,
+			"block_health": 4,
+			"atlas_item_id": 38,
+			"atlas_source_id": 0,
+			"source_id": 0,
+			"atlas_coords": Vector2i(17, 8),
+			"alternative_tile": 0,
+			"texture": {"atlas": "res://image.png", "cell": [17, 8], "cell_size": [32, 32]},
+			"inventory_icon": {"atlas": "res://image.png", "cell": [17, 8], "cell_size": [32, 32]},
+			"theme_machine_enabled_frames": [
+				{"atlas": "res://image.png", "cell": [17, 8], "cell_size": [32, 32]},
+				{"atlas": "res://image.png", "cell": [18, 8], "cell_size": [32, 32]}
+			],
+			"theme_machine_frame_seconds": 0.45,
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"theme_machine_block": true,
+			"theme_machine_theme": "snow",
+			"interact_rules": true,
+			"shop_price": 125000,
+			"break_return_to_inventory": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0]
+			},
+			"order": 413
+		},
+	"cctv": {
+			"category": "block",
+			"display_name": "CCTV",
+			"rarity": "epic",
+			"block_health": 4,
+			"texture": "res://Assets/blocks/special_blocks/cctv/cctv_off.png",
+			"inventory_icon": "res://Assets/blocks/special_blocks/cctv/cctv_off.png",
+			"cctv_1_texture": "res://Assets/blocks/special_blocks/cctv/cctv_off.png",
+			"cctv_2_texture": "res://Assets/blocks/special_blocks/cctv/cctv_on.png",
+			"animation_frames": [
+				"res://Assets/blocks/special_blocks/cctv/cctv_off.png",
+				"res://Assets/blocks/special_blocks/cctv/cctv_on.png"
+			],
+			"animation_frame_seconds": 0.4,
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"cctv_block": true,
+			"interact_rules": true,
+			"shop_price": 15000,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "cctv", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 414
+		},
+	"oil_refinery": {
+			"category": "block",
+			"display_name": "Oil Refinery",
+			"rarity": "legendary",
+			"block_health": 6,
+			"texture": "res://Assets/blocks/special_blocks/oil_refinery/oil_refinery.png",
+			"inventory_icon": "res://Assets/blocks/special_blocks/oil_refinery/oil_refinery.png",
+			"running_animation_frames": [
+				"res://Assets/blocks/special_blocks/oil_refinery/oil_refinery_1.png",
+				"res://Assets/blocks/special_blocks/oil_refinery/oil_refinery_2.png",
+				"res://Assets/blocks/special_blocks/oil_refinery/oil_refinery_3.png",
+				"res://Assets/blocks/special_blocks/oil_refinery/oil_refinery_4.png"
+			],
+			"animation_frame_seconds": 0.18,
+			"animation_loop_particle": "oil_refinery_smoke",
+			"animation_loop_particle_frame_index": 0,
+			"animation_loop_particle_texture": "res://Assets/blocks/special_blocks/oil_refinery/smoke.png",
+			"animation_loop_particle_offset": [-9, -13],
+			"animation_loop_particle_count": 3,
+			"animation_loop_particle_min_interval_ms": 900,
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"oil_refinery_block": true,
+			"interact_rules": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "oil_refinery", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 415
+		},
+	"battery_charger": {
+			"category": "block",
+			"display_name": "Battery Charger",
+			"rarity": "rare",
+			"block_health": 4,
+			"texture": {"atlas": "res://image.png", "cell": [4, 17], "cell_size": [32, 32]},
+			"inventory_icon": {"atlas": "res://image.png", "cell": [4, 17], "cell_size": [32, 32]},
+			"running_animation_frames": [
+				{"atlas": "res://image.png", "cell": [5, 17], "cell_size": [32, 32]},
+				{"atlas": "res://image.png", "cell": [6, 17], "cell_size": [32, 32]}
+			],
+			"running_animation_loop_frames": [1, 2],
+			"running_animation_frame_seconds": 0.22,
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"battery_charger_block": true,
+			"interact_rules": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "battery_charger", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 416
+		}
 	}
-}
 
 # ============================================================
 # SEED SPLICING RECIPES
@@ -1738,22 +6818,40 @@ const ITEMS = {
 # These are used for blocks, doors, signs, platforms, and world items.
 # ============================================================
 const SPLICE_RECIPES = {
-	"wood_seed+wood_seed": "wood_plank_seed",
-	"grass_seed+wood_seed": "wood_platform_seed",
-	"leaf_seed+wood_seed": "wooden_entrance_seed",
-	"stone_seed+cave_background_seed": "sign_seed",
-	"lava_seed+stone_seed": "glass_panel_seed",
+	"sand_seed+stone_seed": "pile_of_sand_seed",
+	"lava_seed+sand_seed": "glass_seed",
+	"stone_seed+wood_seed": "wood_plank_seed",
+	"grass_seed+leaf_seed": "vines_seed",
+	"dirt_seed+leaf_seed": "rose_seed",
+	"leaf_seed+sand_seed": "tulip_seed",
+	"grass_seed+sand_seed": "sun_flower_seed",
+	"glass_seed+wood_seed": "apple_seed",
+	"vines_seed+wood_seed": "climbing_vine_seed",
+	"leaf_seed+vines_seed": "vines_2_seed",
+	"rose_seed+tulip_seed": "poppy_seed",
+	"glass_seed+grass_seed": "lily_seed",
+	"sand_seed+wood_plank_seed": "sand_castle_seed",
+	"leaf_seed+wood_seed": "wood_platform_seed",
+	"leaf_seed+wood_plank_seed": "wooden_entrance_seed",
+	"lava_seed+wood_plank_seed": "wooden_block_seed",
+	"cave_background_seed+wood_plank_seed": "wooden_background_seed",
+	"leaf_seed+wooden_block_seed": "wooden_fence_seed",
+	"vines_seed+wood_platform_seed": "wooden_ladder_seed",
+	"wood_plank_seed+wooden_entrance_seed": "wooden_door_seed",
+	"wood_plank_seed+wooden_fence_seed": "wooden_frame_seed",
+	"dirt_seed+vines_seed": "mushroom_seed",
+	"cave_background_seed+stone_seed": "sign_seed",
+	"lava_seed+stone_seed": "stone_brick_seed",
+	"glass_seed+stone_seed": "glass_panel_seed",
 	"glass_seed+lava_seed": "gem_block_seed",
-	"dirt_seed+stone_seed": "grass_seed",
-	"dirt_seed+lava_seed": "wood_seed",
-	"sand_seed+lava_seed": "glass_seed",
 }
+
 
 # ============================================================
 # HELPER FUNCTIONS
 # ============================================================
 func get_item_data(item_id: String) -> Dictionary:
-	return ITEMS.get(item_id, {})
+	return ITEMS.get(item_id, { })
 
 
 func has_item(item_id: String) -> bool:

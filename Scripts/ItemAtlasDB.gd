@@ -246,6 +246,11 @@ static func get_item_database_entries() -> Dictionary:
 				entry["entrance_idle_atlas_coords"] = _to_vector2i(item.get("atlas_coords", Vector2i.ZERO))
 				entry["entrance_pass_atlas_frames"] = animation_frames
 		for passthrough_key in [
+			"rarity",
+			"instance_tracked",
+			"shop_price",
+			"break_return_to_inventory",
+			"order",
 			"checkpoint_block",
 			"checkpoint_inactive_atlas_coords",
 			"checkpoint_active_atlas_coords",
@@ -258,6 +263,10 @@ static func get_item_database_entries() -> Dictionary:
 			"entrance_pass_animation_columns",
 			"animation_trigger",
 			"animation_frame_seconds",
+			"theme_machine_block",
+			"theme_machine_theme",
+			"theme_machine_enabled_frames",
+			"theme_machine_frame_seconds",
 			"running_animation_frames",
 			"running_animation_loop_frames",
 			"running_animation_frame_seconds",

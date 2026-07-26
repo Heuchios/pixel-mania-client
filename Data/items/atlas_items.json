@@ -757,6 +757,111 @@
           {"item_id": "donation_box", "item_category": "block", "amount": 1}
         ]
       }
+    },
+    {
+      "id": 36,
+      "item_key": "city_theme_machine",
+      "name": "City Theme Machine",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [17, 9],
+      "alternative_tile": 0,
+      "texture": {"atlas": "res://image.png", "cell": [17, 9], "cell_size": [32, 32]},
+      "inventory_icon": {"atlas": "res://image.png", "cell": [17, 9], "cell_size": [32, 32]},
+      "theme_machine_enabled_frames": [
+        {"atlas": "res://image.png", "cell": [17, 9], "cell_size": [32, 32]},
+        {"atlas": "res://image.png", "cell": [18, 9], "cell_size": [32, 32]}
+      ],
+      "theme_machine_frame_seconds": 0.45,
+      "collision": false,
+      "collision_type": "none",
+      "hardness": 4,
+      "rarity": "legendary",
+      "instance_tracked": true,
+      "theme_machine_block": true,
+      "theme_machine_theme": "city",
+      "interact_rules": {
+        "can_interact": true,
+        "interaction_message": "Toggle city theme."
+      },
+      "shop_price": 125000,
+      "break_return_to_inventory": true,
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0]
+      },
+      "order": 417
+    },
+    {
+      "id": 37,
+      "item_key": "night_theme_machine",
+      "name": "Night Theme Machine",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [17, 7],
+      "alternative_tile": 0,
+      "texture": {"atlas": "res://image.png", "cell": [17, 7], "cell_size": [32, 32]},
+      "inventory_icon": {"atlas": "res://image.png", "cell": [17, 7], "cell_size": [32, 32]},
+      "theme_machine_enabled_frames": [
+        {"atlas": "res://image.png", "cell": [17, 7], "cell_size": [32, 32]},
+        {"atlas": "res://image.png", "cell": [18, 7], "cell_size": [32, 32]}
+      ],
+      "theme_machine_frame_seconds": 0.45,
+      "collision": false,
+      "collision_type": "none",
+      "hardness": 4,
+      "rarity": "legendary",
+      "instance_tracked": true,
+      "theme_machine_block": true,
+      "theme_machine_theme": "night",
+      "interact_rules": {
+        "can_interact": true,
+        "interaction_message": "Toggle night theme."
+      },
+      "shop_price": 125000,
+      "break_return_to_inventory": true,
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0]
+      },
+      "order": 412
+    },
+    {
+      "id": 38,
+      "item_key": "snow_theme_machine",
+      "name": "Snow Theme Machine",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [17, 8],
+      "alternative_tile": 0,
+      "texture": {"atlas": "res://image.png", "cell": [17, 8], "cell_size": [32, 32]},
+      "inventory_icon": {"atlas": "res://image.png", "cell": [17, 8], "cell_size": [32, 32]},
+      "theme_machine_enabled_frames": [
+        {"atlas": "res://image.png", "cell": [17, 8], "cell_size": [32, 32]},
+        {"atlas": "res://image.png", "cell": [18, 8], "cell_size": [32, 32]}
+      ],
+      "theme_machine_frame_seconds": 0.45,
+      "collision": false,
+      "collision_type": "none",
+      "hardness": 4,
+      "rarity": "legendary",
+      "instance_tracked": true,
+      "theme_machine_block": true,
+      "theme_machine_theme": "snow",
+      "interact_rules": {
+        "can_interact": true,
+        "interaction_message": "Toggle snow theme."
+      },
+      "shop_price": 125000,
+      "break_return_to_inventory": true,
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0]
+      },
+      "order": 413
     }
   ]
 }
