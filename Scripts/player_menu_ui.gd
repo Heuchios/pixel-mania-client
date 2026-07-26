@@ -764,7 +764,9 @@ func get_active_equipment_data(profile_data: Dictionary) -> Dictionary:
 		equipment_data = {
 			"hand": str(world.equipped_tool),
 			"back": str(world.equipped_back_item),
+			"hat": str(world.equipped_hat_item),
 			"hair": str(world.equipped_hair_item),
+			"eyewear": str(world.equipped_eyewear_item),
 			"shirt": str(world.equipped_shirt_item),
 			"pants": str(world.equipped_pants_item)
 		}
@@ -773,8 +775,12 @@ func get_active_equipment_data(profile_data: Dictionary) -> Dictionary:
 		equipment_data["hand"] = str(profile_data.get("equipped_tool", ""))
 	if not equipment_data.has("back"):
 		equipment_data["back"] = str(profile_data.get("equipped_back_item", ""))
+	if not equipment_data.has("hat"):
+		equipment_data["hat"] = str(profile_data.get("equipped_hat_item", ""))
 	if not equipment_data.has("hair"):
 		equipment_data["hair"] = str(profile_data.get("equipped_hair_item", ""))
+	if not equipment_data.has("eyewear"):
+		equipment_data["eyewear"] = str(profile_data.get("equipped_eyewear_item", ""))
 	if not equipment_data.has("shirt"):
 		equipment_data["shirt"] = str(profile_data.get("equipped_shirt_item", ""))
 	if not equipment_data.has("pants"):
@@ -1420,7 +1426,7 @@ func handle_player_state_lookup_result(request_id: String, data: Dictionary, req
 		remote_profile_data["username"] = response_username
 		remote_profile_data["name"] = response_username
 
-	for key: String in ["online", "world", "current_world", "last_seen_at", "player_id", "role", "friend_status"]:
+	for key: String in ["online", "world", "current_world", "last_seen_at", "created_at", "player_id", "role", "friend_status", "profile_bio"]:
 		if data.has(key):
 			remote_profile_data[key] = data[key]
 
@@ -1431,6 +1437,8 @@ func handle_player_state_lookup_result(request_id: String, data: Dictionary, req
 			remote_profile_data["name"] = account_username
 		if str(account_data.get("last_seen_at", "")).strip_edges() != "" and not remote_profile_data.has("last_seen_at"):
 			remote_profile_data["last_seen_at"] = str(account_data.get("last_seen_at", "")).strip_edges()
+		if str(account_data.get("created_at", "")).strip_edges() != "" and not remote_profile_data.has("created_at"):
+			remote_profile_data["created_at"] = str(account_data.get("created_at", "")).strip_edges()
 
 	var equipment_slots = data.get("equipment_slots", {})
 	if equipment_slots is Dictionary:

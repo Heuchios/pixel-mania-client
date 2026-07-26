@@ -8893,7 +8893,7 @@ func handle_player_state_lookup_result(request_id: String, data: Dictionary, req
 			area_lock_ui.handle_player_state_lookup_result(request_id, data, request_context)
 		return
 
-	if purpose == "remote_player_profile":
+	if purpose == "remote_player_profile" or purpose == "local_player_profile":
 		if player_menu_ui != null and player_menu_ui.has_method("handle_player_state_lookup_result"):
 			player_menu_ui.handle_player_state_lookup_result(request_id, data, request_context)
 		return

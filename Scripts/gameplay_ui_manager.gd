@@ -11,6 +11,7 @@ const OIL_REFINERY_SCENE_PATH = "res://Scenes/ui/oil_refinery/OilRefineryGUI.tsc
 const BATTERY_CHARGER_SCENE_PATH = "res://Scenes/ui/battery_charger/BatteryChargerGUI.tscn"
 const SETTINGS_PANEL_SCENE_PATH = "res://Scenes/ui/settings/SettingsPanel.tscn"
 const WORLD_LOCK_SCENE_PATH = "res://Scenes/ui/locks/WorldLockGUI.tscn"
+const PLAYER_PROFILE_SCENE_PATH = "res://Scenes/ui/player_profile/PlayerProfileScene.tscn"
 const SIGN_HOVER_LABEL_WIDTH = 380.0
 const SIGN_HOVER_LABEL_HEIGHT = 54.0
 const SIGN_HOVER_WORLD_OFFSET = Vector2(0.0, -40.0)
@@ -525,14 +526,28 @@ func setup_player_menu_ui():
 	if world.ui_layer == null:
 		return
 
-	world.player_menu_ui = world.ui_layer.get_node_or_null("PlayerMenuUI")
+	var parent_node: Node = world.ui_layer
+	if world.has_method("get_ui_modal_layer"):
+		var modal_parent = world.get_ui_modal_layer()
+		if modal_parent != null:
+			parent_node = modal_parent
+
+	world.player_menu_ui = parent_node.get_node_or_null("PlayerMenuUI")
+	if world.player_menu_ui != null and world.player_menu_ui.scene_file_path != PLAYER_PROFILE_SCENE_PATH:
+		parent_node.remove_child(world.player_menu_ui)
+		world.player_menu_ui.queue_free()
+		world.player_menu_ui = null
 
 	if world.player_menu_ui == null:
-		var menu_script = preload("res://Scripts/player_menu_ui.gd")
-		world.player_menu_ui = Control.new()
+		var profile_scene = load(PLAYER_PROFILE_SCENE_PATH)
+		if profile_scene is PackedScene:
+			world.player_menu_ui = profile_scene.instantiate()
+		else:
+			var menu_script = preload("res://Scripts/player_menu_ui.gd")
+			world.player_menu_ui = Control.new()
+			world.player_menu_ui.set_script(menu_script)
 		world.player_menu_ui.name = "PlayerMenuUI"
-		world.player_menu_ui.set_script(menu_script)
-		world.ui_layer.add_child(world.player_menu_ui)
+		parent_node.add_child(world.player_menu_ui)
 
 	if world.player_menu_ui.has_method("setup"):
 		world.player_menu_ui.setup(world)

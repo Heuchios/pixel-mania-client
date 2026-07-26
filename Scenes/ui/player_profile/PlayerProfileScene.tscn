@@ -1,0 +1,1072 @@
+[gd_scene format=3 uid="uid://qif2xvwq5ogd"]
+
+[ext_resource type="FontFile" uid="uid://e0ivgh0c6uck" path="res://Assets/font/font.ttf" id="1_font"]
+[ext_resource type="Texture2D" uid="uid://bgt0geyx2l4kd" path="res://Assets/ui/login/outer_panel.png" id="1_kd858"]
+[ext_resource type="Texture2D" uid="uid://cwt3wjfewbxrf" path="res://Assets/ui/lobby/inner_panel.png" id="2_dxium"]
+[ext_resource type="Texture2D" uid="uid://ch2qryxhnpu18" path="res://Assets/ui/close_button.png" id="5_5rsf5"]
+[ext_resource type="Texture2D" uid="uid://s2qd6aym6sau" path="res://Assets/ui/fill_bar_full.png" id="5_dxium"]
+[ext_resource type="Texture2D" uid="uid://b26xvfc2ty1no" path="res://Assets/ui/login/sign_on_normal.png" id="5_k7k66"]
+[ext_resource type="Texture2D" uid="uid://chootb3uj6qh6" path="res://Assets/ui/login/register_normal.png" id="6_5rsf5"]
+[ext_resource type="Texture2D" uid="uid://ba1rutvybyvf2" path="res://Assets/ui/close_button_pressed_69x69.png" id="6_lvkcs"]
+[ext_resource type="Texture2D" uid="uid://cho1iwl84l4pf" path="res://Assets/ui/close_button_hover_69x69.png" id="7_3ir0m"]
+[ext_resource type="Script" uid="uid://bqqp7buhb2yw7" path="res://Scripts/ui/player_profile_scene.gd" id="7_profile_script"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_81mko"]
+texture = ExtResource("5_5rsf5")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uo7ej"]
+texture = ExtResource("6_lvkcs")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_10n2d"]
+texture = ExtResource("7_3ir0m")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_button"]
+
+[node name="PlayerProfileScene" type="Control" unique_id=1595202202]
+editor_description = "Player profile UI. The controller populates public profile data and connects the existing profile, friend, trade, and world-navigation flows."
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_profile_script")
+
+[node name="Dimmer" type="ColorRect" parent="." unique_id=647110101]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.008, 0.014, 0.027, 0.72)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=716529873]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ProfileWindow" type="NinePatchRect" parent="CenterContainer" unique_id=1739291164]
+unique_name_in_owner = true
+editor_description = "Main window skin. Replace this texture with your own stretchable panel artwork."
+texture_filter = 1
+custom_minimum_size = Vector2(1060, 620)
+layout_mode = 2
+texture = ExtResource("1_kd858")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+
+[node name="HeaderPanel" type="NinePatchRect" parent="CenterContainer/ProfileWindow" unique_id=914151316]
+editor_description = "Header panel NinePatchRect. ProfileBannerTexture is an empty image placeholder."
+texture_filter = 1
+layout_mode = 0
+offset_left = 18.0
+offset_top = 18.0
+offset_right = 1042.0
+offset_bottom = 92.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="ProfileBannerTexture" type="TextureRect" parent="CenterContainer/ProfileWindow/HeaderPanel" unique_id=7458144]
+unique_name_in_owner = true
+editor_description = "Empty profile banner image placeholder. Assign a texture when artwork is ready."
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/ProfileWindow/HeaderPanel" unique_id=641132064]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 8.0
+offset_right = 324.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0.91, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 25
+text = "PLAYER PROFILE"
+vertical_alignment = 1
+
+[node name="ProfileHandleLabel" type="Label" parent="CenterContainer/ProfileWindow/HeaderPanel" unique_id=2117259004]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 26.0
+offset_top = 41.0
+offset_right = 430.0
+offset_bottom = 64.0
+theme_override_colors/font_color = Color(0.55, 0.7, 0.83, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 13
+text = "@PLAYER_HANDLE"
+vertical_alignment = 1
+
+[node name="OnlineStatusLabel" type="Label" parent="CenterContainer/ProfileWindow/HeaderPanel" unique_id=120573761]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 760.0
+offset_top = 20.0
+offset_right = 924.0
+offset_bottom = 54.0
+theme_override_colors/font_color = Color(0.44, 0.94, 0.66, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 15
+text = "STATUS"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="CloseButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/HeaderPanel" unique_id=1702160657]
+editor_description = "NinePatchRect skin for the close button. The Button child has no signal connection."
+texture_filter = 1
+layout_mode = 0
+offset_left = 1007.0
+offset_top = -43.0
+offset_right = 1069.0
+offset_bottom = 15.0
+mouse_filter = 1
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="CloseButton" type="Button" parent="CenterContainer/ProfileWindow/HeaderPanel/CloseButtonSkin" unique_id=665515580]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_top = -6.0
+offset_right = 5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.92, 0.96, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.64, 0.76, 0.88, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxTexture_81mko")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_uo7ej")
+theme_override_styles/hover = SubResource("StyleBoxTexture_10n2d")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
+
+[node name="PortraitPanel" type="NinePatchRect" parent="CenterContainer/ProfileWindow" unique_id=1307962214]
+editor_description = "Portrait panel NinePatchRect. Assign player art to PortraitTexture."
+texture_filter = 1
+layout_mode = 0
+offset_left = 18.0
+offset_top = 108.0
+offset_right = 322.0
+offset_bottom = 419.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="PortraitFrame" type="NinePatchRect" parent="CenterContainer/ProfileWindow/PortraitPanel" unique_id=1296162088]
+texture_filter = 1
+layout_mode = 0
+offset_left = 18.0
+offset_top = 18.0
+offset_right = 286.0
+offset_bottom = 250.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 18
+patch_margin_top = 18
+patch_margin_right = 18
+patch_margin_bottom = 18
+
+[node name="PortraitViewport" type="SubViewport" parent="CenterContainer/ProfileWindow/PortraitPanel/PortraitFrame"]
+unique_name_in_owner = true
+transparent_bg = true
+size = Vector2i(244, 208)
+render_target_update_mode = 4
+
+[node name="PortraitPreviewRoot" type="Node2D" parent="CenterContainer/ProfileWindow/PortraitPanel/PortraitFrame/PortraitViewport"]
+unique_name_in_owner = true
+position = Vector2(122, 136)
+
+[node name="PortraitTexture" type="TextureRect" parent="CenterContainer/ProfileWindow/PortraitPanel/PortraitFrame" unique_id=2134946702]
+unique_name_in_owner = true
+editor_description = "Empty player portrait image placeholder."
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PortraitPlaceholderLabel" type="Label" parent="CenterContainer/ProfileWindow/PortraitPanel/PortraitFrame" unique_id=512068618]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.33, 0.44, 0.56, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 16
+text = "PORTRAIT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DisplayNameLabel" type="Label" parent="CenterContainer/ProfileWindow/PortraitPanel" unique_id=250720838]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 18.0
+offset_top = 250.0
+offset_right = 286.0
+offset_bottom = 282.0
+theme_override_colors/font_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.75)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 22
+text = "PLAYER NAME"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TitleValueLabel" type="Label" parent="CenterContainer/ProfileWindow/PortraitPanel" unique_id=1515838720]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 18.0
+offset_top = 279.0
+offset_right = 286.0
+offset_bottom = 307.0
+theme_override_colors/font_color = Color(0.48, 0.77, 0.95, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 14
+text = "PLAYER TITLE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="IdentityPanel" type="NinePatchRect" parent="CenterContainer/ProfileWindow" unique_id=909067203]
+texture_filter = 1
+layout_mode = 0
+offset_left = 18.0
+offset_top = 426.0
+offset_right = 322.0
+offset_bottom = 536.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 22
+patch_margin_top = 22
+patch_margin_right = 22
+patch_margin_bottom = 22
+
+[node name="AccountIdCaption" type="Label" parent="CenterContainer/ProfileWindow/IdentityPanel" unique_id=954911989]
+visible = false
+layout_mode = 0
+offset_left = 18.0
+offset_top = 12.0
+offset_right = 128.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.49, 0.61, 0.72, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 12
+text = "PLAYER ID"
+
+[node name="AccountIdValueLabel" type="Label" parent="CenterContainer/ProfileWindow/IdentityPanel" unique_id=183087611]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 142.0
+offset_top = 12.0
+offset_right = 286.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.84, 0.9, 0.96, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 12
+text = "--"
+horizontal_alignment = 2
+
+[node name="PlayerAgeCaption" type="Label" parent="CenterContainer/ProfileWindow/IdentityPanel" unique_id=72518778]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 31.0
+offset_right = 140.0
+offset_bottom = 53.0
+theme_override_colors/font_color = Color(0.49, 0.61, 0.72, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 12
+text = "PLAYER AGE"
+
+[node name="PlayerAgeValueLabel" type="Label" parent="CenterContainer/ProfileWindow/IdentityPanel" unique_id=1209955657]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 142.0
+offset_top = 30.0
+offset_right = 286.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(0.84, 0.9, 0.96, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 12
+text = "--"
+horizontal_alignment = 2
+
+[node name="LastSeenCaption" type="Label" parent="CenterContainer/ProfileWindow/IdentityPanel" unique_id=2077102427]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 72.0
+offset_right = 128.0
+offset_bottom = 94.0
+theme_override_colors/font_color = Color(0.49, 0.61, 0.72, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 12
+text = "LAST SEEN"
+
+[node name="LastSeenValueLabel" type="Label" parent="CenterContainer/ProfileWindow/IdentityPanel" unique_id=184495100]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 142.0
+offset_top = 72.0
+offset_right = 286.0
+offset_bottom = 94.0
+theme_override_colors/font_color = Color(0.84, 0.9, 0.96, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 12
+text = "--"
+horizontal_alignment = 2
+
+[node name="StatsPanel" type="NinePatchRect" parent="CenterContainer/ProfileWindow" unique_id=430594069]
+texture_filter = 1
+layout_mode = 0
+offset_left = 338.0
+offset_top = 108.0
+offset_right = 1042.0
+offset_bottom = 258.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="StatsTitleLabel" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel" unique_id=331655496]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 10.0
+offset_right = 212.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.71, 0.83, 0.93, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 15
+text = "PLAYER STATS"
+
+[node name="LevelCell" type="NinePatchRect" parent="CenterContainer/ProfileWindow/StatsPanel" unique_id=669502596]
+texture_filter = 1
+layout_mode = 0
+offset_left = 18.0
+offset_top = 42.0
+offset_right = 180.0
+offset_bottom = 100.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 14
+
+[node name="Caption" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/LevelCell" unique_id=1594407220]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 7.0
+offset_right = 152.0
+offset_bottom = 25.0
+theme_override_colors/font_color = Color(0.45, 0.59, 0.71, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 11
+text = "LEVEL"
+horizontal_alignment = 1
+
+[node name="LevelValueLabel" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/LevelCell" unique_id=1483798792]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 10.0
+offset_top = 25.0
+offset_right = 152.0
+offset_bottom = 51.0
+theme_override_colors/font_color = Color(0.95, 0.81, 0.28, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 20
+text = "--"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WorldsCell" type="NinePatchRect" parent="CenterContainer/ProfileWindow/StatsPanel" unique_id=192474257]
+texture_filter = 1
+layout_mode = 0
+offset_left = 186.0
+offset_top = 42.0
+offset_right = 348.0
+offset_bottom = 100.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 14
+
+[node name="Caption" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/WorldsCell" unique_id=8346493]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 7.0
+offset_right = 152.0
+offset_bottom = 25.0
+theme_override_colors/font_color = Color(0.45, 0.59, 0.71, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 11
+text = "WORLDS"
+horizontal_alignment = 1
+
+[node name="WorldsValueLabel" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/WorldsCell" unique_id=944264614]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 10.0
+offset_top = 25.0
+offset_right = 152.0
+offset_bottom = 51.0
+theme_override_colors/font_color = Color(0.84, 0.91, 0.97, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 20
+text = "--"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FriendsCell" type="NinePatchRect" parent="CenterContainer/ProfileWindow/StatsPanel" unique_id=1682037219]
+texture_filter = 1
+layout_mode = 0
+offset_left = 354.0
+offset_top = 42.0
+offset_right = 516.0
+offset_bottom = 100.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 14
+
+[node name="Caption" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/FriendsCell" unique_id=270148575]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 7.0
+offset_right = 152.0
+offset_bottom = 25.0
+theme_override_colors/font_color = Color(0.45, 0.59, 0.71, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 11
+text = "FRIENDS"
+horizontal_alignment = 1
+
+[node name="FriendsValueLabel" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/FriendsCell" unique_id=1137473997]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 10.0
+offset_top = 25.0
+offset_right = 152.0
+offset_bottom = 51.0
+theme_override_colors/font_color = Color(0.84, 0.91, 0.97, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 20
+text = "--"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AchievementsCell" type="NinePatchRect" parent="CenterContainer/ProfileWindow/StatsPanel" unique_id=120837031]
+texture_filter = 1
+layout_mode = 0
+offset_left = 522.0
+offset_top = 42.0
+offset_right = 686.0
+offset_bottom = 100.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 14
+
+[node name="Caption" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/AchievementsCell" unique_id=1515202805]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 7.0
+offset_right = 154.0
+offset_bottom = 25.0
+theme_override_colors/font_color = Color(0.45, 0.59, 0.71, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 11
+text = "ACHIEVEMENTS"
+horizontal_alignment = 1
+
+[node name="AchievementsValueLabel" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/AchievementsCell" unique_id=1862545780]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 10.0
+offset_top = 25.0
+offset_right = 154.0
+offset_bottom = 51.0
+theme_override_colors/font_color = Color(0.84, 0.91, 0.97, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 20
+text = "--"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="XpCaption" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel" unique_id=975011453]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 111.0
+offset_right = 115.0
+offset_bottom = 134.0
+theme_override_colors/font_color = Color(0.5, 0.64, 0.76, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 11
+text = "EXPERIENCE"
+vertical_alignment = 1
+
+[node name="XpTrack" type="NinePatchRect" parent="CenterContainer/ProfileWindow/StatsPanel" unique_id=2092749664]
+texture_filter = 1
+clip_contents = true
+layout_mode = 0
+offset_left = 164.0
+offset_top = 112.0
+offset_right = 686.0
+offset_bottom = 134.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="XpFill" type="NinePatchRect" parent="CenterContainer/ProfileWindow/StatsPanel/XpTrack" unique_id=1894602595]
+unique_name_in_owner = true
+editor_description = "Placeholder XP fill. Change anchor_right later to represent progress, or replace with your own logic."
+texture_filter = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 0.35
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = -20.0
+offset_right = 76.000015
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_dxium")
+patch_margin_left = 9
+patch_margin_top = 9
+patch_margin_right = 9
+patch_margin_bottom = 9
+
+[node name="XpValueLabel" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/XpTrack" unique_id=1029366838]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 11
+text = "-- / --"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AboutPanel" type="NinePatchRect" parent="CenterContainer/ProfileWindow" unique_id=185282013]
+texture_filter = 1
+layout_mode = 0
+offset_left = 338.0
+offset_top = 274.0
+offset_right = 1042.0
+offset_bottom = 404.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="AboutTitleLabel" type="Label" parent="CenterContainer/ProfileWindow/AboutPanel" unique_id=1958369906]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 12.0
+offset_right = 210.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(0.71, 0.83, 0.93, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 15
+text = "ABOUT"
+
+[node name="BioLabel" type="Label" parent="CenterContainer/ProfileWindow/AboutPanel" unique_id=440250727]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 18.0
+offset_top = 42.0
+offset_right = 686.0
+offset_bottom = 112.0
+theme_override_colors/font_color = Color(0.64, 0.72, 0.81, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 13
+text = "Player bio"
+autowrap_mode = 2
+
+[node name="EditBioButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/AboutPanel" unique_id=1765885200]
+unique_name_in_owner = true
+editor_description = "NinePatchRect skin for the owner-only bio edit button."
+texture_filter = 1
+layout_mode = 0
+offset_left = 580.0
+offset_top = 7.0
+offset_right = 686.0
+offset_bottom = 37.0
+mouse_filter = 1
+texture = ExtResource("5_k7k66")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+
+[node name="EditBioButton" type="Button" parent="CenterContainer/ProfileWindow/AboutPanel/EditBioButtonSkin" unique_id=511039285]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.87, 0.93, 0.98, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxEmpty_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
+text = "EDIT"
+
+[node name="BioEditorSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/AboutPanel" unique_id=341082762]
+unique_name_in_owner = true
+editor_description = "NinePatchRect skin for the profile bio editor."
+visible = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 14.0
+offset_top = 38.0
+offset_right = 690.0
+offset_bottom = 116.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 14
+
+[node name="BioTextEdit" type="TextEdit" parent="CenterContainer/ProfileWindow/AboutPanel/BioEditorSkin" unique_id=1040161778]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 5.0
+offset_right = 520.0
+offset_bottom = 71.0
+focus_mode = 1
+theme_override_colors/font_color = Color(0.82, 0.88, 0.94, 1)
+theme_override_colors/font_placeholder_color = Color(0.42, 0.51, 0.62, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxEmpty_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
+placeholder_text = "Write a short bio..."
+wrap_mode = 1
+
+[node name="BioSaveButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/AboutPanel/BioEditorSkin" unique_id=1856681870]
+unique_name_in_owner = true
+editor_description = "NinePatchRect skin for the bio save button."
+texture_filter = 1
+layout_mode = 0
+offset_left = 526.0
+offset_top = 4.0
+offset_right = 590.0
+offset_bottom = 35.0
+mouse_filter = 1
+texture = ExtResource("6_5rsf5")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="BioSaveButton" type="Button" parent="CenterContainer/ProfileWindow/AboutPanel/BioEditorSkin/BioSaveButtonSkin" unique_id=1280301876]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBoxEmpty_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
+text = "SAVE"
+
+[node name="BioCancelButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/AboutPanel/BioEditorSkin" unique_id=2017811525]
+unique_name_in_owner = true
+editor_description = "NinePatchRect skin for the bio cancel button."
+texture_filter = 1
+layout_mode = 0
+offset_left = 596.0
+offset_top = 4.0
+offset_right = 666.0
+offset_bottom = 35.0
+mouse_filter = 1
+texture = ExtResource("5_k7k66")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="BioCancelButton" type="Button" parent="CenterContainer/ProfileWindow/AboutPanel/BioEditorSkin/BioCancelButtonSkin" unique_id=1579223150]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 9
+theme_override_styles/normal = SubResource("StyleBoxEmpty_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
+text = "CANCEL"
+
+[node name="BioCharacterCountLabel" type="Label" parent="CenterContainer/ProfileWindow/AboutPanel/BioEditorSkin" unique_id=653815551]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 526.0
+offset_top = 45.0
+offset_right = 660.0
+offset_bottom = 68.0
+theme_override_colors/font_color = Color(0.49, 0.61, 0.72, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 10
+text = "0 / 160"
+horizontal_alignment = 2
+
+[node name="ShowcasePanel" type="NinePatchRect" parent="CenterContainer/ProfileWindow" unique_id=973228508]
+texture_filter = 1
+layout_mode = 0
+offset_left = 338.0
+offset_top = 420.0
+offset_right = 1042.0
+offset_bottom = 536.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="ShowcaseTitleLabel" type="Label" parent="CenterContainer/ProfileWindow/ShowcasePanel" unique_id=429078343]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 10.0
+offset_right = 190.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.71, 0.83, 0.93, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 15
+text = "SHOWCASE"
+
+[node name="BadgeSlot" type="NinePatchRect" parent="CenterContainer/ProfileWindow/ShowcasePanel" unique_id=490852295]
+texture_filter = 1
+layout_mode = 0
+offset_left = 165.0
+offset_top = 14.0
+offset_right = 333.0
+offset_bottom = 102.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 14
+
+[node name="BadgeTexture" type="TextureRect" parent="CenterContainer/ProfileWindow/ShowcasePanel/BadgeSlot" unique_id=1583968128]
+unique_name_in_owner = true
+editor_description = "Empty badge image placeholder."
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 80.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="CenterContainer/ProfileWindow/ShowcasePanel/BadgeSlot" unique_id=596697920]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 16.0
+offset_right = 160.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(0.46, 0.59, 0.71, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 11
+text = "BADGE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FavoriteItemSlot" type="NinePatchRect" parent="CenterContainer/ProfileWindow/ShowcasePanel" unique_id=1112143362]
+texture_filter = 1
+layout_mode = 0
+offset_left = 340.0
+offset_top = 14.0
+offset_right = 508.0
+offset_bottom = 102.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 14
+
+[node name="FavoriteItemTexture" type="TextureRect" parent="CenterContainer/ProfileWindow/ShowcasePanel/FavoriteItemSlot" unique_id=1690388174]
+unique_name_in_owner = true
+editor_description = "Empty favorite-item image placeholder."
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 80.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="CenterContainer/ProfileWindow/ShowcasePanel/FavoriteItemSlot" unique_id=1449321084]
+layout_mode = 0
+offset_left = 76.0
+offset_top = 16.0
+offset_right = 160.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(0.46, 0.59, 0.71, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 11
+text = "ITEM"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FavoriteWorldSlot" type="NinePatchRect" parent="CenterContainer/ProfileWindow/ShowcasePanel" unique_id=1464043641]
+texture_filter = 1
+layout_mode = 0
+offset_left = 515.0
+offset_top = 14.0
+offset_right = 686.0
+offset_bottom = 102.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 14
+
+[node name="FavoriteWorldTexture" type="TextureRect" parent="CenterContainer/ProfileWindow/ShowcasePanel/FavoriteWorldSlot" unique_id=1902865144]
+unique_name_in_owner = true
+editor_description = "Empty favorite-world image placeholder."
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 84.0
+offset_bottom = 80.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="FavoriteWorldNameLabel" type="Label" parent="CenterContainer/ProfileWindow/ShowcasePanel/FavoriteWorldSlot" unique_id=988005692]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 88.0
+offset_top = 14.0
+offset_right = 164.0
+offset_bottom = 74.0
+theme_override_colors/font_color = Color(0.46, 0.59, 0.71, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 11
+text = "WORLD"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FooterPanel" type="NinePatchRect" parent="CenterContainer/ProfileWindow" unique_id=616499403]
+texture_filter = 1
+layout_mode = 0
+offset_left = 18.0
+offset_top = 552.0
+offset_right = 1042.0
+offset_bottom = 602.0
+mouse_filter = 1
+texture = ExtResource("2_dxium")
+patch_margin_left = 18
+patch_margin_top = 18
+patch_margin_right = 18
+patch_margin_bottom = 18
+
+[node name="MessageButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/FooterPanel" unique_id=745069565]
+editor_description = "NinePatchRect skin for MessageButton. Replace its texture to customize the button background."
+texture_filter = 1
+layout_mode = 0
+offset_left = 388.0
+offset_top = 6.0
+offset_right = 584.0
+offset_bottom = 44.0
+mouse_filter = 1
+texture = ExtResource("5_k7k66")
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 14
+
+[node name="MessageButton" type="Button" parent="CenterContainer/ProfileWindow/FooterPanel/MessageButtonSkin" unique_id=1478023771]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.87, 0.93, 0.98, 1)
+theme_override_colors/font_pressed_color = Color(0.64, 0.76, 0.88, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxEmpty_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
+text = "MESSAGE"
+
+[node name="VisitWorldButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/FooterPanel" unique_id=801462392]
+editor_description = "NinePatchRect skin for VisitWorldButton. Replace its texture to customize the button background."
+texture_filter = 1
+layout_mode = 0
+offset_left = 594.0
+offset_top = 6.0
+offset_right = 790.0
+offset_bottom = 44.0
+mouse_filter = 1
+texture = ExtResource("5_k7k66")
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 14
+
+[node name="VisitWorldButton" type="Button" parent="CenterContainer/ProfileWindow/FooterPanel/VisitWorldButtonSkin" unique_id=776326308]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.87, 0.93, 0.98, 1)
+theme_override_colors/font_pressed_color = Color(0.64, 0.76, 0.88, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxEmpty_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
+text = "VISIT WORLD"
+
+[node name="PrimaryActionButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/FooterPanel" unique_id=1999918361]
+editor_description = "NinePatchRect skin for PrimaryActionButton. Replace its texture to customize the button background."
+texture_filter = 1
+layout_mode = 0
+offset_left = 800.0
+offset_top = 6.0
+offset_right = 1008.0
+offset_bottom = 44.0
+mouse_filter = 1
+texture = ExtResource("6_5rsf5")
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 14
+
+[node name="PrimaryActionButton" type="Button" parent="CenterContainer/ProfileWindow/FooterPanel/PrimaryActionButtonSkin" unique_id=1731526311]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.77, 0.9, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxEmpty_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
+text = "ADD FRIEND"

@@ -150,6 +150,7 @@ const MAX_PLAYER_PUNCH_RATE_PER_SECOND := 8
 const MAX_NETFOX_STATE_BRIDGE_RATE_PER_SECOND := 20
 const MAX_TRADE_RATE_PER_SECOND := 14
 const MAX_FRIEND_RATE_PER_SECOND := 8
+const MAX_PLAYER_PROFILE_RATE_PER_SECOND := 2
 const MAX_TRADE_SLOT_INDEX := 31
 const MAX_TRADE_ID_LENGTH := 96
 const MAX_WORLD_POPULATION_RATE_PER_SECOND := 10
@@ -1445,6 +1446,42 @@ func send_player_state_request_with_context(username: String = "", context: Dict
 		"purpose": str(request_entry.get("purpose", "")),
 		"timeout_ms": request_entry["timeout_ms"]
 	})
+	return request_id
+
+
+func send_player_profile_update(profile_bio: String, context: Dictionary = {}) -> String:
+	if not is_server_session_authenticated():
+		return ""
+	if not _can_send_rate_limited("player_profile_update", MAX_PLAYER_PROFILE_RATE_PER_SECOND):
+		return ""
+
+	var clean_bio := profile_bio.replace("\r\n", "\n").replace("\r", "\n").strip_edges()
+	if clean_bio.length() > 160:
+		clean_bio = clean_bio.left(160)
+	var request_id := make_auth_request_id()
+	var request_started_ms := Time.get_ticks_msec()
+	var request_context := context.duplicate(true)
+	request_context["purpose"] = "local_player_profile"
+	request_context["username"] = session_username
+	request_context["requested_username"] = session_username
+
+	var request_sent := send_message(attach_session_auth({
+		"type": "player_profile_update",
+		"request_id": request_id,
+		"username": session_username,
+		"profile_bio": clean_bio
+	}))
+	if not request_sent:
+		return ""
+
+	pending_player_state_requests[request_id] = {
+		"username": session_username,
+		"requested_username": session_username,
+		"purpose": "local_player_profile",
+		"context": request_context,
+		"created_at_ms": request_started_ms,
+		"timeout_ms": request_started_ms + PLAYER_STATE_REQUEST_TIMEOUT_MS
+	}
 	return request_id
 
 
@@ -5027,6 +5064,8 @@ func _is_player_state_lookup_related_action(action: String) -> bool:
 	if normalized == "area_lock_access_check":
 		return true
 	if normalized == "remote_player_profile":
+		return true
+	if normalized == "player_profile_update":
 		return true
 	if normalized == "admin_inventory_lookup":
 		return true
