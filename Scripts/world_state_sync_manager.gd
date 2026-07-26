@@ -33,6 +33,9 @@ const WORLD_STATE_OVERLAY_DRAW_FRAMES := 2
 
 var world_state_apply_generation: int = 0
 var active_world_state_apply_generation: int = 0
+var block_revision_world: String = ""
+var latest_block_revision: int = 0
+var block_cell_revisions: Dictionary = {}
 
 
 func _safe_int(value, fallback: int, min_value: int = -2147483648, max_value: int = 2147483647) -> int:
@@ -100,6 +103,34 @@ func _safe_string(value, fallback: String = "", max_length: int = 0) -> String:
 	if max_length > 0 and text.length() > max_length:
 		text = text.substr(0, max_length)
 	return text
+
+
+func _block_cell_revision_key(layer: String, grid_pos: Vector2i) -> String:
+	var clean_layer := layer.strip_edges().to_lower()
+	if clean_layer != "background":
+		clean_layer = "foreground"
+	return "%s:%d:%d" % [clean_layer, grid_pos.x, grid_pos.y]
+
+
+func _reset_block_revision_tracking(world_name: String, world_revision: int = 0) -> void:
+	block_revision_world = _safe_world_name(world_name)
+	latest_block_revision = maxi(0, world_revision)
+	block_cell_revisions.clear()
+
+
+func _record_block_revision(layer: String, grid_pos: Vector2i, revision: int) -> void:
+	if revision <= 0:
+		return
+	var key := _block_cell_revision_key(layer, grid_pos)
+	block_cell_revisions[key] = maxi(int(block_cell_revisions.get(key, 0)), revision)
+	latest_block_revision = maxi(latest_block_revision, revision)
+
+
+func _should_ignore_stale_block_update(layer: String, grid_pos: Vector2i, revision: int, is_from_world_state: bool) -> bool:
+	if revision <= 0 or is_from_world_state:
+		return false
+	var key := _block_cell_revision_key(layer, grid_pos)
+	return revision <= int(block_cell_revisions.get(key, 0))
 
 
 func is_toggle_block_type(block_type: String) -> bool:
@@ -1039,6 +1070,21 @@ func _refresh_world_state_visuals_after_reveal(apply_generation: int) -> void:
 func apply_network_world_state(data: Dictionary):
 	if not _is_current_world_message(data):
 		return
+	var incoming_world := _get_message_world_name(data)
+	if incoming_world == "":
+		incoming_world = _safe_world_name(world.current_world_name)
+	var incoming_block_revision := _safe_int(data.get("block_revision", 0), 0, 0)
+	var same_revision_world := block_revision_world != "" and block_revision_world == incoming_world
+	if same_revision_world and not is_waiting_for_server_world_entry() and latest_block_revision > 0:
+		if incoming_block_revision <= 0 or incoming_block_revision < latest_block_revision:
+			debug_action_position_flow("ignored stale world block snapshot", {
+				"world": incoming_world,
+				"incoming_block_revision": incoming_block_revision,
+				"latest_block_revision": latest_block_revision,
+				"world_state_reason": str(data.get("world_state_reason", ""))
+			})
+			return
+	_reset_block_revision_tracking(incoming_world, incoming_block_revision)
 
 	world_state_apply_generation += 1
 	var apply_generation: int = world_state_apply_generation
@@ -1160,6 +1206,8 @@ func apply_network_world_state(data: Dictionary):
 					"y": _safe_int(entry.get("y", 0), 0, 0, MAX_WORLD_COORD),
 					"block_type": foreground_block_type,
 					"item_id": _safe_int(entry.get("item_id", ITEM_ATLAS_DB.get_item_id_for_key(foreground_block_type)), 0, 0, MAX_WORLD_COORD),
+					"block_revision": _safe_int(entry.get("block_revision", 0), 0, 0),
+					"placement_request_id": _safe_string(entry.get("placement_request_id", ""), "", 96),
 					"entrance_locked": _safe_bool(entry.get("entrance_locked", false), false),
 					"sign_text": _safe_string(entry.get("sign_text", ""), "", MAX_SIGN_TEXT_LENGTH),
 					"toggle_on": _safe_bool(entry.get("toggle_on", false), false),
@@ -1198,7 +1246,9 @@ func apply_network_world_state(data: Dictionary):
 					"x": _safe_int(entry.get("x", 0), 0, 0, MAX_WORLD_COORD),
 					"y": _safe_int(entry.get("y", 0), 0, 0, MAX_WORLD_COORD),
 					"block_type": background_block_type,
-					"item_id": _safe_int(entry.get("item_id", ITEM_ATLAS_DB.get_item_id_for_key(background_block_type)), 0, 0, MAX_WORLD_COORD)
+					"item_id": _safe_int(entry.get("item_id", ITEM_ATLAS_DB.get_item_id_for_key(background_block_type)), 0, 0, MAX_WORLD_COORD),
+					"block_revision": _safe_int(entry.get("block_revision", 0), 0, 0),
+					"placement_request_id": _safe_string(entry.get("placement_request_id", ""), "", 96)
 				})
 				processed += 1
 				entries_since_yield += 1
@@ -1221,11 +1271,14 @@ func apply_network_world_state(data: Dictionary):
 			if entry is Dictionary:
 				apply_network_block_update({
 					"world": world.current_world_name,
+					"_from_world_state": true,
 					"action": "break",
 					"layer": "foreground",
 					"x": _safe_int(entry.get("x", 0), 0, 0, MAX_WORLD_COORD),
 					"y": _safe_int(entry.get("y", 0), 0, 0, MAX_WORLD_COORD),
-					"block_type": _safe_string(entry.get("block_type", ""), "", 64)
+					"block_type": _safe_string(entry.get("block_type", ""), "", 64),
+					"block_revision": _safe_int(entry.get("block_revision", 0), 0, 0),
+					"mutation_request_id": _safe_string(entry.get("mutation_request_id", ""), "", 96)
 				})
 				processed += 1
 				entries_since_yield += 1
@@ -1248,11 +1301,14 @@ func apply_network_world_state(data: Dictionary):
 			if entry is Dictionary:
 				apply_network_block_update({
 					"world": world.current_world_name,
+					"_from_world_state": true,
 					"action": "break",
 					"layer": "background",
 					"x": _safe_int(entry.get("x", 0), 0, 0, MAX_WORLD_COORD),
 					"y": _safe_int(entry.get("y", 0), 0, 0, MAX_WORLD_COORD),
-					"block_type": _safe_string(entry.get("block_type", ""), "", 64)
+					"block_type": _safe_string(entry.get("block_type", ""), "", 64),
+					"block_revision": _safe_int(entry.get("block_revision", 0), 0, 0),
+					"mutation_request_id": _safe_string(entry.get("mutation_request_id", ""), "", 96)
 				})
 				processed += 1
 				entries_since_yield += 1
@@ -1262,6 +1318,9 @@ func apply_network_world_state(data: Dictionary):
 					if not is_world_state_apply_current(apply_generation):
 						_clear_world_state_apply_if_current(apply_generation)
 						return
+
+	if world.block_manager != null and world.block_manager.has_method("reconcile_authoritative_place_predictions_after_snapshot"):
+		world.block_manager.reconcile_authoritative_place_predictions_after_snapshot(foreground, background)
 
 	var seeds = data.get("seeds", [])
 	if seeds is Array:
@@ -1467,6 +1526,55 @@ func apply_network_world_state(data: Dictionary):
 	})
 
 
+func apply_network_block_reconcile(data: Dictionary) -> void:
+	if not _is_current_world_message(data):
+		return
+
+	var outcome := "unmatched"
+	if world != null and world.block_manager != null and world.block_manager.has_method("handle_authoritative_place_reconcile"):
+		outcome = str(world.block_manager.handle_authoritative_place_reconcile(data))
+	if outcome == "pending" or outcome == "mismatched":
+		return
+
+	var incoming_world := _get_message_world_name(data)
+	if incoming_world == "":
+		incoming_world = _safe_world_name(world.current_world_name)
+	var global_revision := _safe_int(data.get("block_revision", 0), 0, 0)
+	if block_revision_world == "" or block_revision_world != incoming_world:
+		_reset_block_revision_tracking(incoming_world, global_revision)
+	else:
+		latest_block_revision = maxi(latest_block_revision, global_revision)
+
+	var layer := _safe_string(data.get("layer", "foreground"), "foreground", 16).to_lower()
+	if layer != "background":
+		layer = "foreground"
+	var grid_pos := _safe_grid_position(data.get("x", 0), data.get("y", 0))
+	var cell_revision := _safe_int(data.get("cell_revision", 0), 0, 0)
+	if outcome == "confirmed":
+		_record_block_revision(layer, grid_pos, cell_revision)
+		return
+
+	var requested_block_type := _safe_string(data.get("requested_block_type", ""), "", 64)
+	var authoritative_block_type := _safe_string(data.get("authoritative_block_type", ""), "", 64)
+	if authoritative_block_type == "":
+		authoritative_block_type = ITEM_ATLAS_DB.resolve_item_key(data.get("authoritative_item_id", ""))
+	var authoritative_present := _safe_bool(data.get("authoritative_present", false), false)
+	var update := {
+		"world": incoming_world,
+		"_from_reconcile": true,
+		"action": "place" if authoritative_present else "break",
+		"layer": layer,
+		"x": grid_pos.x,
+		"y": grid_pos.y,
+		"block_type": authoritative_block_type if authoritative_present else requested_block_type,
+		"item_id": _safe_int(data.get("authoritative_item_id", ITEM_ATLAS_DB.get_item_id_for_key(authoritative_block_type)), 0, 0, MAX_WORLD_COORD),
+		"block_revision": cell_revision,
+		"request_id": _safe_string(data.get("authoritative_placement_request_id", data.get("request_id", "")), "", 96),
+	}
+	apply_network_block_update(update)
+	latest_block_revision = maxi(latest_block_revision, global_revision)
+
+
 func apply_network_block_update(data: Dictionary):
 	if not _is_current_world_message(data):
 		return
@@ -1485,6 +1593,20 @@ func apply_network_block_update(data: Dictionary):
 		return
 
 	var grid_pos = _safe_grid_position(data.get("x", 0), data.get("y", 0))
+	var incoming_world := _get_message_world_name(data)
+	if incoming_world == "":
+		incoming_world = _safe_world_name(world.current_world_name)
+	if block_revision_world == "" or block_revision_world != incoming_world:
+		_reset_block_revision_tracking(incoming_world, 0)
+	var block_revision := _safe_int(data.get("block_revision", 0), 0, 0)
+	var is_from_world_state := _safe_bool(data.get("_from_world_state", false), false)
+	var is_from_world_event := _safe_bool(data.get("_from_world_event", false), false)
+	var is_from_reconcile := _safe_bool(data.get("_from_reconcile", false), false)
+	if _should_ignore_stale_block_update(layer, grid_pos, block_revision, is_from_world_state):
+		if action == "place" and world != null and world.block_manager != null and world.block_manager.has_method("confirm_predicted_authoritative_place"):
+			world.block_manager.confirm_predicted_authoritative_place(data)
+		world.applying_network_world_update = old_flag
+		return
 	var block_type = _safe_string(data.get("block_type", ""), "", 64)
 	if block_type == "":
 		block_type = ITEM_ATLAS_DB.resolve_item_key(data.get("item_id", ""))
@@ -1504,14 +1626,17 @@ func apply_network_block_update(data: Dictionary):
 	var should_emit_confirmed_particles := true
 	var confirmation_was_predicted := false
 	var confirmed_place_already_applied := false
-	var is_from_world_state := _safe_bool(data.get("_from_world_state", false), false)
-	var is_from_world_event := _safe_bool(data.get("_from_world_event", false), false)
-	var is_bulk_network_update := is_from_world_state or is_from_world_event
+	var is_bulk_network_update := is_from_world_state or is_from_world_event or is_from_reconcile
 	if is_bulk_network_update:
 		should_emit_confirmed_particles = false
 	var is_local_confirmed_update := _is_local_player_confirmed_update(data)
-	if is_local_confirmed_update and world != null and world.block_manager != null and world.block_manager.has_method("confirm_predicted_authoritative_place"):
+	# The authoritative placement echo always carries the exact request ID, but
+	# older/public payloads do not consistently include an actor username. Exact
+	# membership in this client's pending map is sufficient to identify its ack.
+	if action == "place" and world != null and world.block_manager != null and world.block_manager.has_method("confirm_predicted_authoritative_place"):
 		confirmation_was_predicted = bool(world.block_manager.confirm_predicted_authoritative_place(data))
+		if confirmation_was_predicted:
+			is_local_confirmed_update = true
 	if confirmation_was_predicted:
 		confirmed_place_already_applied = action == "place" and block_type != "" and get_existing_network_block_type(layer, grid_pos).strip_edges().to_lower() == block_type.strip_edges().to_lower()
 		should_emit_confirmed_particles = false
@@ -1525,8 +1650,10 @@ func apply_network_block_update(data: Dictionary):
 			"block_type": block_type,
 			"item_id": atlas_item_id,
 			"request_id": _safe_string(data.get("request_id", data.get("action_id", "")), "", 96),
+			"block_revision": block_revision,
 			"from_world_state": is_from_world_state,
 			"from_world_event": is_from_world_event,
+			"from_reconcile": is_from_reconcile,
 			"local_confirmed_update": is_local_confirmed_update,
 			"confirmation_was_predicted": confirmation_was_predicted,
 			"confirmed_place_already_applied": confirmed_place_already_applied,
@@ -1663,6 +1790,8 @@ func apply_network_block_update(data: Dictionary):
 
 	if should_claim_world_lock_place:
 		world.on_world_lock_block_placed(grid_pos, block_type)
+	if action == "break" or action == "place":
+		_record_block_revision(layer, grid_pos, block_revision)
 
 	if trace_enabled:
 		trace_world_block_apply_event("network_block_update_done", {
@@ -1672,8 +1801,10 @@ func apply_network_block_update(data: Dictionary):
 			"block_type": block_type,
 			"item_id": atlas_item_id,
 			"request_id": _safe_string(data.get("request_id", data.get("action_id", "")), "", 96),
+			"block_revision": block_revision,
 			"from_world_state": is_from_world_state,
 			"from_world_event": is_from_world_event,
+			"from_reconcile": is_from_reconcile,
 			"local_confirmed_update": is_local_confirmed_update,
 			"confirmation_was_predicted": confirmation_was_predicted,
 			"confirmed_place_already_applied": confirmed_place_already_applied,

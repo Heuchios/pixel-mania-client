@@ -74,6 +74,7 @@ var block_light_fx_scene_cache: Dictionary = {}
 const AUTHORITATIVE_REQUEST_REPEAT_MS := 120
 const AUTHORITATIVE_PLACE_GLOBAL_REPEAT_MS := 150
 const AUTHORITATIVE_PLACE_PREDICTION_TIMEOUT_MS := 10000
+const AUTHORITATIVE_PLACE_RECONCILE_REPEAT_MS := 2500
 const BLOCK_BREAK_INPUT_INTERVAL_MSEC := 300
 const DEBUG_ACTION_POSITION_FLOW := false
 const PLACE_TRACE_ARG := "--pm-place-trace"
@@ -991,10 +992,12 @@ func get_request_id_from_block_payload(data: Dictionary) -> String:
 	return ""
 
 
-func get_predicted_authoritative_place_request_key(data: Dictionary) -> String:
+func get_predicted_authoritative_place_request_key(data: Dictionary, allow_cell_fallback: bool = false) -> String:
 	var request_id := get_request_id_from_block_payload(data)
 	if request_id != "" and predicted_authoritative_place_requests.has(request_id):
 		return request_id
+	if not allow_cell_fallback:
+		return ""
 
 	var layer := str(data.get("layer", "foreground")).strip_edges().to_lower()
 	if layer != "background":
@@ -1285,13 +1288,16 @@ func apply_predicted_authoritative_place(request_id: String, layer: String, grid
 
 	predicted_authoritative_place_requests[clean_request] = {
 		"request_id": clean_request,
+		"world": str(world.current_world_name).strip_edges().to_upper(),
 		"layer": clean_layer,
 		"grid_pos": grid_pos,
 		"block_type": clean_block,
 		"category": clean_category,
 		"reserved_amount": 1,
 		"spent_amount": 0,
-		"created_at_ms": Time.get_ticks_msec()
+		"created_at_ms": Time.get_ticks_msec(),
+		"last_reconcile_request_ms": 0,
+		"reconcile_attempts": 0
 	}
 
 	if clean_layer == "background":
@@ -1343,7 +1349,7 @@ func confirm_predicted_authoritative_place(data: Dictionary) -> bool:
 	var action := str(data.get("action", "")).strip_edges().to_lower()
 	if action != "place":
 		return false
-	var request_key := get_predicted_authoritative_place_request_key(data)
+	var request_key := get_predicted_authoritative_place_request_key(data, false)
 	if request_key == "" or not predicted_authoritative_place_requests.has(request_key):
 		trace_authoritative_place_event("prediction_confirm_unmatched", {
 			"reason": "no_matching_pending_prediction",
@@ -1378,8 +1384,8 @@ func confirm_predicted_authoritative_place(data: Dictionary) -> bool:
 	return true
 
 
-func rollback_predicted_authoritative_place(data: Dictionary) -> bool:
-	var request_key := get_predicted_authoritative_place_request_key(data)
+func rollback_predicted_authoritative_place(data: Dictionary, allow_cell_fallback: bool = false) -> bool:
+	var request_key := get_predicted_authoritative_place_request_key(data, allow_cell_fallback)
 	if request_key == "" or not predicted_authoritative_place_requests.has(request_key):
 		trace_authoritative_place_event("prediction_rollback_unmatched", {
 			"reason": "no_matching_pending_prediction",
@@ -1440,20 +1446,64 @@ func rollback_predicted_authoritative_place(data: Dictionary) -> bool:
 	return true
 
 
+func request_authoritative_place_reconciliation(request_id: String) -> bool:
+	var clean_request := request_id.strip_edges()
+	if clean_request == "" or not predicted_authoritative_place_requests.has(clean_request):
+		return false
+	var pending_value: Variant = predicted_authoritative_place_requests.get(clean_request, {})
+	if not (pending_value is Dictionary):
+		predicted_authoritative_place_requests.erase(clean_request)
+		return false
+	var pending: Dictionary = pending_value
+	var network = get_network_manager()
+	if network == null or not network.has_method("send_world_block_reconcile_request"):
+		return false
+	var grid_pos: Vector2i = pending.get("grid_pos", NO_VARIANT_GRID_POS)
+	if grid_pos == NO_VARIANT_GRID_POS:
+		predicted_authoritative_place_requests.erase(clean_request)
+		return false
+	var sent := bool(network.send_world_block_reconcile_request(
+		clean_request,
+		"place",
+		str(pending.get("layer", "foreground")),
+		grid_pos,
+		str(pending.get("block_type", "")),
+		str(pending.get("world", world.current_world_name if world != null else ""))
+	))
+	var now_ms := Time.get_ticks_msec()
+	pending["last_reconcile_request_ms"] = now_ms
+	if sent:
+		pending["reconcile_attempts"] = int(pending.get("reconcile_attempts", 0)) + 1
+		trace_authoritative_place_event("prediction_reconcile_requested", {
+			"request_id": clean_request,
+			"age_ms": now_ms - int(pending.get("created_at_ms", now_ms)),
+			"attempt": int(pending.get("reconcile_attempts", 0)),
+			"layer": str(pending.get("layer", "foreground")),
+			"grid_pos": grid_pos,
+			"block_type": str(pending.get("block_type", ""))
+		})
+	predicted_authoritative_place_requests[clean_request] = pending
+	return sent
+
+
 func cleanup_expired_authoritative_place_predictions() -> void:
 	if predicted_authoritative_place_requests.is_empty():
 		return
 	var now_ms := Time.get_ticks_msec()
-	var expired_requests: Array = []
+	var malformed_requests: Array = []
+	var reconcile_requests: Array = []
 	for request_id in predicted_authoritative_place_requests.keys():
 		var pending_value: Variant = predicted_authoritative_place_requests.get(request_id, {})
 		if not (pending_value is Dictionary):
-			expired_requests.append(request_id)
+			malformed_requests.append(request_id)
 			continue
 		var pending: Dictionary = pending_value
 		var created_at := int(pending.get("created_at_ms", now_ms))
 		if now_ms - created_at > AUTHORITATIVE_PLACE_PREDICTION_TIMEOUT_MS:
-			trace_authoritative_place_event("prediction_expired", {
+			var last_reconcile_request_ms := int(pending.get("last_reconcile_request_ms", 0))
+			if last_reconcile_request_ms > 0 and now_ms - last_reconcile_request_ms < AUTHORITATIVE_PLACE_RECONCILE_REPEAT_MS:
+				continue
+			trace_authoritative_place_event("prediction_reconcile_due", {
 				"request_id": str(request_id),
 				"age_ms": now_ms - created_at,
 				"layer": str(pending.get("layer", "foreground")),
@@ -1461,10 +1511,158 @@ func cleanup_expired_authoritative_place_predictions() -> void:
 				"block_type": str(pending.get("block_type", "")),
 				"category": str(pending.get("category", ""))
 			})
-			expired_requests.append(request_id)
+			reconcile_requests.append(request_id)
 
-	for request_id in expired_requests:
-		rollback_predicted_authoritative_place({"request_id": str(request_id)})
+	for request_id in malformed_requests:
+		predicted_authoritative_place_requests.erase(request_id)
+	for request_id in reconcile_requests:
+		request_authoritative_place_reconciliation(str(request_id))
+
+
+func handle_authoritative_place_reconcile(data: Dictionary) -> String:
+	var request_id := get_request_id_from_block_payload(data)
+	if request_id == "" or not predicted_authoritative_place_requests.has(request_id):
+		return "unmatched"
+
+	var pending_value: Variant = predicted_authoritative_place_requests.get(request_id, {})
+	if not (pending_value is Dictionary):
+		predicted_authoritative_place_requests.erase(request_id)
+		return "unmatched"
+	var pending: Dictionary = pending_value
+	var pending_layer := str(pending.get("layer", "foreground")).strip_edges().to_lower()
+	var pending_grid: Vector2i = pending.get("grid_pos", NO_VARIANT_GRID_POS)
+	var pending_block := str(pending.get("block_type", "")).strip_edges().to_lower()
+	var pending_world := str(pending.get("world", "")).strip_edges().to_upper()
+	var response_world := str(data.get("world", data.get("current_world", ""))).strip_edges().to_upper()
+	var response_layer := str(data.get("layer", "foreground")).strip_edges().to_lower()
+	var response_grid := Vector2i(
+		int(data.get("x", data.get("target_x", 0))),
+		int(data.get("y", data.get("target_y", 0)))
+	)
+	if response_layer != "background":
+		response_layer = "foreground"
+
+	if (pending_world != "" and response_world != "" and pending_world != response_world) or response_layer != pending_layer or response_grid != pending_grid:
+		trace_authoritative_place_event("prediction_reconcile_mismatch", {
+			"request_id": request_id,
+			"pending_world": pending_world,
+			"response_world": response_world,
+			"pending_layer": pending_layer,
+			"response_layer": response_layer,
+			"pending_grid": pending_grid,
+			"response_grid": response_grid
+		})
+		return "mismatched"
+
+	if bool(data.get("authoritative_pending", false)):
+		pending["last_reconcile_request_ms"] = Time.get_ticks_msec()
+		predicted_authoritative_place_requests[request_id] = pending
+		return "pending"
+
+	var authoritative_present := bool(data.get("authoritative_present", false))
+	var authoritative_matches_request := bool(data.get("authoritative_matches_request", false))
+	var authoritative_block := str(data.get("authoritative_block_type", "")).strip_edges().to_lower()
+	if authoritative_present and authoritative_matches_request and authoritative_block == pending_block:
+		confirm_predicted_authoritative_place({
+			"action": "place",
+			"request_id": request_id,
+			"layer": pending_layer,
+			"x": pending_grid.x,
+			"y": pending_grid.y,
+			"block_type": authoritative_block
+		})
+		return "confirmed"
+
+	rollback_predicted_authoritative_place({
+		"action": "place",
+		"request_id": request_id,
+		"layer": pending_layer,
+		"x": pending_grid.x,
+		"y": pending_grid.y,
+		"block_type": pending_block,
+		"reason": str(data.get("reason", "authoritative_reconcile")),
+		"message": "Authoritative placement reconciliation did not confirm this request."
+	}, false)
+	return "rolled_back"
+
+
+func reconcile_authoritative_place_predictions_after_snapshot(foreground_entries: Array, background_entries: Array) -> void:
+	if predicted_authoritative_place_requests.is_empty() or world == null:
+		return
+
+	var snapshot_cells := {}
+	for raw_entry in foreground_entries:
+		if not (raw_entry is Dictionary):
+			continue
+		var entry: Dictionary = raw_entry
+		var entry_grid := Vector2i(int(entry.get("x", 0)), int(entry.get("y", 0)))
+		snapshot_cells["foreground:%d:%d" % [entry_grid.x, entry_grid.y]] = entry
+	for raw_entry in background_entries:
+		if not (raw_entry is Dictionary):
+			continue
+		var entry: Dictionary = raw_entry
+		var entry_grid := Vector2i(int(entry.get("x", 0)), int(entry.get("y", 0)))
+		snapshot_cells["background:%d:%d" % [entry_grid.x, entry_grid.y]] = entry
+
+	var current_world := str(world.current_world_name).strip_edges().to_upper()
+	var requests_to_remove: Array[String] = []
+	var requests_to_reconcile: Array[String] = []
+	for raw_request_id in predicted_authoritative_place_requests.keys():
+		var request_id := str(raw_request_id)
+		var pending_value: Variant = predicted_authoritative_place_requests.get(request_id, {})
+		if not (pending_value is Dictionary):
+			requests_to_remove.append(request_id)
+			continue
+		var pending: Dictionary = pending_value
+		var pending_world := str(pending.get("world", "")).strip_edges().to_upper()
+		var layer := str(pending.get("layer", "foreground")).strip_edges().to_lower()
+		if layer != "background":
+			layer = "foreground"
+		var grid_pos: Vector2i = pending.get("grid_pos", NO_VARIANT_GRID_POS)
+		var block_type := str(pending.get("block_type", "")).strip_edges().to_lower()
+		if grid_pos == NO_VARIANT_GRID_POS or block_type == "" or (pending_world != "" and pending_world != current_world):
+			requests_to_remove.append(request_id)
+			continue
+
+		var cell_key := "%s:%d:%d" % [layer, grid_pos.x, grid_pos.y]
+		var authoritative_entry_value: Variant = snapshot_cells.get(cell_key, null)
+		if authoritative_entry_value is Dictionary:
+			var authoritative_entry: Dictionary = authoritative_entry_value
+			var snapshot_request_id := str(authoritative_entry.get("placement_request_id", "")).strip_edges()
+			var snapshot_block := str(authoritative_entry.get("block_type", authoritative_entry.get("type", ""))).strip_edges().to_lower()
+			if snapshot_block == "":
+				snapshot_block = ITEM_ATLAS_DB.resolve_item_key(authoritative_entry.get("item_id", authoritative_entry.get("id", ""))).strip_edges().to_lower()
+			if snapshot_request_id == request_id and snapshot_block == block_type:
+				confirm_predicted_authoritative_place({
+					"action": "place",
+					"request_id": request_id,
+					"layer": layer,
+					"x": grid_pos.x,
+					"y": grid_pos.y,
+					"block_type": snapshot_block
+				})
+				continue
+		else:
+			if layer == "background":
+				create_background_block(grid_pos, block_type)
+			else:
+				create_block(grid_pos, block_type)
+			mark_predicted_authoritative_place_visual(layer, grid_pos, request_id)
+
+		requests_to_reconcile.append(request_id)
+
+	for request_id in requests_to_remove:
+		var pending_value: Variant = predicted_authoritative_place_requests.get(request_id, {})
+		if pending_value is Dictionary:
+			var pending: Dictionary = pending_value
+			authoritative_place_request_times.erase(get_authoritative_place_key(
+				str(pending.get("layer", "foreground")),
+				pending.get("grid_pos", Vector2i.ZERO),
+				str(pending.get("block_type", ""))
+			))
+		predicted_authoritative_place_requests.erase(request_id)
+	for request_id in requests_to_reconcile:
+		request_authoritative_place_reconciliation(request_id)
 
 
 func should_server_create_break_drops() -> bool:
@@ -3053,11 +3251,14 @@ func get_stateful_block_texture_path(base_block_id: String, grid_pos: Vector2i, 
 		return str(item_data.get("anti_gravity_disabled_texture", item_data.get("texture", ""))).strip_edges()
 
 	if bool(item_data.get("theme_machine_block", false)):
+		var texture_spec = item_data.get("theme_machine_disabled_texture", item_data.get("texture", ""))
 		if is_theme_machine_grid_enabled(grid_pos):
 			var frames = item_data.get("theme_machine_enabled_frames", [])
 			if frames is Array and not frames.is_empty():
-				return str(frames[0]).strip_edges()
-		return str(item_data.get("theme_machine_disabled_texture", item_data.get("texture", ""))).strip_edges()
+				texture_spec = frames[0]
+		if texture_spec is String or texture_spec is StringName:
+			return str(texture_spec).strip_edges()
+		return ""
 
 	return ""
 
@@ -4562,7 +4763,7 @@ func get_theme_machine_enabled_frames(block_type: String) -> Array[Texture2D]:
 		return frames
 
 	for frame_path in frame_paths:
-		var texture = AtlasTextureFactory.load_texture(str(frame_path))
+		var texture = AtlasTextureFactory.load_texture(frame_path)
 		if texture != null:
 			frames.append(texture)
 
@@ -8140,6 +8341,7 @@ func clear_all_authoritative_break_state() -> void:
 func handle_rejected_block_update(data: Dictionary) -> bool:
 	var reason := str(data.get("reason", "")).strip_edges().to_lower()
 	var message := str(data.get("message", "")).strip_edges().to_lower()
+	var request_id := get_request_id_from_block_payload(data)
 	trace_authoritative_place_event("server_rejected_block_update", {
 		"reason": reason,
 		"message": message,
@@ -8151,7 +8353,16 @@ func handle_rejected_block_update(data: Dictionary) -> bool:
 		"block_type": str(data.get("block_type", data.get("item_id", ""))),
 		"payload": data
 	})
-	var rolled_back_prediction := rollback_predicted_authoritative_place(data)
+	var exact_pending_request := get_predicted_authoritative_place_request_key(data, false)
+	var is_duplicate_notice := reason.contains("duplicate") or message.contains("duplicate request")
+	if is_duplicate_notice:
+		if exact_pending_request != "":
+			request_authoritative_place_reconciliation(exact_pending_request)
+		# A duplicate notice is not proof that the original placement failed.
+		return true
+	var rolled_back_prediction := false
+	if request_id != "" and exact_pending_request != "":
+		rolled_back_prediction = rollback_predicted_authoritative_place(data, false)
 	if rolled_back_prediction and world != null and world.has_method("end_fast_block_place_hold"):
 		world.end_fast_block_place_hold(-1)
 	if reason != "break_rate_limited" and reason != "rate_limited" and not message.contains("slow down"):
@@ -8186,7 +8397,6 @@ func clear_background_blocks():
 	authoritative_break_request_keys.clear()
 	authoritative_place_request_times.clear()
 	authoritative_place_last_request_ms = 0
-	predicted_authoritative_place_requests.clear()
 
 
 func clear_background_crack_visual_for_data(block_data: Dictionary) -> void:
@@ -8680,6 +8890,11 @@ func is_foreground_tilemap_collision_candidate(grid_pos: Vector2i, block_data: D
 		return false
 	# Area locks keep node collision for their owner/access interaction state.
 	if is_area_lock_block_type(clean_type):
+		return false
+	# Lava keeps a live block node for rebound lookup, light effects, and visuals.
+	# Keep its collider on that same node so streamed TileMap collision chunks
+	# cannot temporarily remove or replace the hazard's physical boundary.
+	if is_hybrid_hazard_tilemap_visual_candidate(clean_type):
 		return false
 
 	var visual_block_type := get_snow_storm_visual_block_type(block_type, grid_pos, false)
@@ -12534,6 +12749,9 @@ func place_block_at_mouse():
 				world.show_notification("Placing " + world.get_item_display_name(selected_block_type, selected_block_category) + "...")
 				return
 			var background_request_id := make_authoritative_place_request_id("background", grid_pos, selected_block_type)
+			var background_prediction_applied := false
+			if should_predict_authoritative_place(selected_block_type, "background"):
+				background_prediction_applied = apply_predicted_authoritative_place(background_request_id, "background", grid_pos, selected_block_type, selected_block_category)
 			if send_network_block_update("place", "background", grid_pos, selected_block_type, {"request_id": background_request_id}):
 				trace_authoritative_place_event("authoritative_place_sent", {
 					"request_id": background_request_id,
@@ -12544,9 +12762,15 @@ func place_block_at_mouse():
 				})
 				mark_authoritative_place_request(background_place_key)
 				mark_authoritative_place_send()
-				if not apply_predicted_authoritative_place(background_request_id, "background", grid_pos, selected_block_type, selected_block_category):
+				if should_predict_authoritative_place(selected_block_type, "background") and not background_prediction_applied:
 					world.show_notification("Placing " + world.get_item_display_name(selected_block_type, selected_block_category) + "...")
 			else:
+				if background_prediction_applied:
+					rollback_predicted_authoritative_place({
+						"request_id": background_request_id,
+						"reason": "client_send_failed",
+						"message": "Placement request was not sent."
+					}, false)
 				trace_authoritative_place_event("authoritative_place_send_failed", {
 					"request_id": background_request_id,
 					"layer": "background",
@@ -12602,6 +12826,9 @@ func place_block_at_mouse():
 			world.show_notification("Placing " + world.get_item_display_name(selected_block_type, selected_block_category) + "...")
 			return
 		var foreground_request_id := make_authoritative_place_request_id("foreground", grid_pos, selected_block_type)
+		var foreground_prediction_applied := false
+		if should_predict_authoritative_place(selected_block_type, "foreground"):
+			foreground_prediction_applied = apply_predicted_authoritative_place(foreground_request_id, "foreground", grid_pos, selected_block_type, selected_block_category)
 		if send_network_block_update("place", "foreground", grid_pos, selected_block_type, {"request_id": foreground_request_id}):
 			trace_authoritative_place_event("authoritative_place_sent", {
 				"request_id": foreground_request_id,
@@ -12612,9 +12839,15 @@ func place_block_at_mouse():
 			})
 			mark_authoritative_place_request(foreground_place_key)
 			mark_authoritative_place_send()
-			if not apply_predicted_authoritative_place(foreground_request_id, "foreground", grid_pos, selected_block_type, selected_block_category):
+			if should_predict_authoritative_place(selected_block_type, "foreground") and not foreground_prediction_applied:
 				world.show_notification("Placing " + world.get_item_display_name(selected_block_type, selected_block_category) + "...")
 		else:
+			if foreground_prediction_applied:
+				rollback_predicted_authoritative_place({
+					"request_id": foreground_request_id,
+					"reason": "client_send_failed",
+					"message": "Placement request was not sent."
+				}, false)
 			trace_authoritative_place_event("authoritative_place_send_failed", {
 				"request_id": foreground_request_id,
 				"layer": "foreground",

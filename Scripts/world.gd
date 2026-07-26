@@ -103,6 +103,7 @@ const WATER_MIN_POOL_SPACING = 13
 
 const ENTRANCE_GATE_TYPE = "entrance_gate"
 const ENTRANCE_GATE_CLEAR_RADIUS = 3
+const CITY_THEME_RAIN_FX_SCENE_PATH = "res://Scenes/particles/RainParticlesFX.tscn"
 const SNOW_STORM_FX_SCENE_PATH = "res://Scenes/particles/SnowStormFX.tscn"
 const SNOW_STORM_WIND_FX_SCENE_PATH = "res://Scenes/particles/WindGustFX.tscn"
 const ROTATING_SWORD_SLASH_FX_SCENE_PATH = "res://Scenes/particles/RotatingSwordSlashFX.tscn"
@@ -412,6 +413,7 @@ var ui_hud_layer: Control = null
 var ui_panel_layer: Control = null
 var ui_modal_layer: Control = null
 var ui_system_layer: Control = null
+var city_theme_rain_fx = null
 var snow_storm_fx = null
 var snow_storm_wind_fx = null
 var applying_network_world_update = false
@@ -2320,6 +2322,8 @@ func update_fast_block_place_hold(delta: float) -> void:
 
 
 func _input(event):
+	if is_item_action_popup_event(event):
+		return
 	update_fast_block_place_hold_input(event)
 	if input_manager != null and input_manager.has_method("handle_input"):
 		input_manager.handle_input(event)
@@ -2341,6 +2345,9 @@ func handle_mobile_back_request() -> bool:
 
 
 func _unhandled_input(event):
+	if is_item_action_popup_event(event):
+		get_viewport().set_input_as_handled()
+		return
 	if input_manager != null and input_manager.has_method("handle_unhandled_input"):
 		input_manager.handle_unhandled_input(event)
 
@@ -2410,6 +2417,20 @@ func is_inventory_ui_at_point(point: Vector2) -> bool:
 func is_inventory_control_at_point(point: Vector2) -> bool:
 	if inventory_manager != null and inventory_manager.has_method("is_inventory_control_at_point"):
 		return bool(inventory_manager.is_inventory_control_at_point(point))
+
+	return false
+
+
+func is_item_action_popup_at_point(point: Vector2) -> bool:
+	if inventory_manager != null and inventory_manager.has_method("is_item_action_popup_at_point"):
+		return bool(inventory_manager.is_item_action_popup_at_point(point))
+
+	return false
+
+
+func is_item_action_popup_event(event: InputEvent) -> bool:
+	if inventory_manager != null and inventory_manager.has_method("is_item_action_popup_event"):
+		return bool(inventory_manager.is_item_action_popup_event(event))
 
 	return false
 
@@ -2545,6 +2566,9 @@ func is_gameplay_ui_node_at_point(ui_node, point: Vector2, hit_property_names: A
 
 
 func is_gameplay_ui_at_point(point: Vector2) -> bool:
+	if is_item_action_popup_at_point(point):
+		return true
+
 	if is_mobile_gameplay_control_at_point(point):
 		return true
 
@@ -3799,6 +3823,34 @@ func apply_world_background_theme(theme_name: String):
 	active_world_theme = clean_theme
 	if background_manager != null and background_manager.has_method("set_theme"):
 		background_manager.set_theme(clean_theme)
+	set_city_theme_rain_active(clean_theme == "city")
+
+
+func set_city_theme_rain_active(active: bool):
+	if active:
+		if city_theme_rain_fx == null or not is_instance_valid(city_theme_rain_fx):
+			if not ResourceLoader.exists(CITY_THEME_RAIN_FX_SCENE_PATH):
+				return
+
+			var rain_scene := load(CITY_THEME_RAIN_FX_SCENE_PATH) as PackedScene
+			if rain_scene == null:
+				return
+
+			city_theme_rain_fx = rain_scene.instantiate()
+			add_child(city_theme_rain_fx)
+
+		if city_theme_rain_fx.has_method("start"):
+			city_theme_rain_fx.start()
+		else:
+			city_theme_rain_fx.visible = true
+		return
+
+	if city_theme_rain_fx != null and is_instance_valid(city_theme_rain_fx):
+		if city_theme_rain_fx.has_method("stop"):
+			city_theme_rain_fx.stop()
+		else:
+			city_theme_rain_fx.visible = false
+
 
 func reset_world_background_theme():
 	apply_world_background_theme("")
@@ -8958,6 +9010,11 @@ func apply_network_world_state(data: Dictionary):
 func apply_network_block_update(data: Dictionary):
 	if world_state_sync_manager != null and world_state_sync_manager.has_method("apply_network_block_update"):
 		world_state_sync_manager.apply_network_block_update(data)
+
+
+func apply_network_block_reconcile(data: Dictionary):
+	if world_state_sync_manager != null and world_state_sync_manager.has_method("apply_network_block_reconcile"):
+		world_state_sync_manager.apply_network_block_reconcile(data)
 
 
 func apply_network_world_interaction_update(data: Dictionary):

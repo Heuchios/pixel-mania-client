@@ -132,6 +132,7 @@ const MAX_ITEM_PRICE := 999999
 const MAX_INVENTORY_TRANSACTION_RATE_PER_SECOND := 20
 const MAX_INVENTORY_UPGRADE_RATE_PER_SECOND := 4
 const MAX_WORLD_BLOCK_RATE_PER_SECOND := 30
+const MAX_WORLD_BLOCK_RECONCILE_RATE_PER_SECOND := 8
 const MAX_WORLD_ELECTRICAL_RATE_PER_SECOND := 30
 const MAX_WORLD_SEED_RATE_PER_SECOND := 20
 const MAX_WORLD_INTERACTION_RATE_PER_SECOND := 20
@@ -2032,6 +2033,41 @@ func send_world_block_update(action: String, layer: String, grid_pos: Vector2i, 
 	return sent
 
 
+func send_world_block_reconcile_request(request_id: String, block_action: String, layer: String, grid_pos: Vector2i, block_type: String, world_name: String) -> bool:
+	if not is_server_session_authenticated():
+		return false
+	if not _can_send_rate_limited("world_block_reconcile_request", MAX_WORLD_BLOCK_RECONCILE_RATE_PER_SECOND):
+		return false
+
+	var clean_request_id := _safe_string(request_id, "", MAX_REQUEST_ID_LENGTH)
+	var clean_action := _safe_string(block_action, "place", MAX_ITEM_ID_LENGTH).to_lower()
+	var clean_layer := _safe_string(layer, "foreground", MAX_ITEM_ID_LENGTH).to_lower()
+	var clean_world := _safe_world_name(world_name)
+	if clean_request_id == "":
+		return false
+	if not WORLD_BLOCK_ACTIONS.has(clean_action):
+		return false
+	if not WORLD_BLOCK_LAYERS.has(clean_layer):
+		return false
+	if clean_world == "":
+		clean_world = _safe_world_name(current_world_name)
+	if clean_world == "":
+		return false
+
+	var payload := {
+		"type": "world_block_reconcile_request",
+		"request_id": clean_request_id,
+		"action_id": clean_request_id,
+		"block_action": clean_action,
+		"layer": clean_layer,
+		"x": clamp(grid_pos.x, -MAX_COORDINATE, MAX_COORDINATE),
+		"y": clamp(grid_pos.y, -MAX_COORDINATE, MAX_COORDINATE),
+		"requested_block_type": _safe_string(block_type, "", MAX_ITEM_ID_LENGTH),
+		"world": clean_world
+	}
+	return send_message(attach_session_auth(payload))
+
+
 func send_electrical_layer_update(action: String, grid_pos: Vector2i, item_id: String, world_name: String, extra_data: Dictionary = {}) -> bool:
 	if not is_server_session_authenticated():
 		return false
@@ -3504,6 +3540,11 @@ func handle_world_update_payload(data: Dictionary) -> void:
 				world_node = get_world_node()
 				if world_node != null and is_world_node_active() and world_node.has_method("apply_network_block_update"):
 					world_node.apply_network_block_update(data)
+		"world_block_reconcile":
+			apply_player_state_payload_if_present(data)
+			world_node = get_world_node()
+			if world_node != null and is_world_node_active() and world_node.has_method("apply_network_block_reconcile"):
+				world_node.apply_network_block_reconcile(data)
 		"electrical_layer_update":
 			world_node = get_world_node()
 			if world_node != null and is_world_node_active() and world_node.has_method("apply_network_electrical_layer_update"):
@@ -3714,6 +3755,11 @@ func handle_server_message(raw: String) -> void:
 				world_node = get_world_node()
 				if world_node != null and is_world_node_active() and world_node.has_method("apply_network_block_update"):
 					world_node.apply_network_block_update(data)
+		"world_block_reconcile":
+			apply_player_state_payload_if_present(data)
+			world_node = get_world_node()
+			if world_node != null and is_world_node_active() and world_node.has_method("apply_network_block_reconcile"):
+				world_node.apply_network_block_reconcile(data)
 		"electrical_layer_update":
 			world_node = get_world_node()
 			if world_node != null and is_world_node_active() and world_node.has_method("apply_network_electrical_layer_update"):
@@ -5711,7 +5757,7 @@ func sync_current_world_population_from_players(world_name: String, players_data
 
 
 func _apply_world_population_payload(raw_counts: Dictionary, clear_unreported: bool = false) -> void:
-	if raw_counts.is_empty():
+	if raw_counts.is_empty() and not clear_unreported:
 		return
 
 	var incoming_keys = {}
