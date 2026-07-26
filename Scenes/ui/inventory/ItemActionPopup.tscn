@@ -1,0 +1,309 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://865jvb4pwc0h" path="res://Scripts/ui/item_action_popup.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/ui/inventory/panel_inner_2_920x569.png" id="2_panel"]
+[ext_resource type="Texture2D" path="res://Assets/ui/hotbar/slot_normal.png" id="3_slot"]
+[ext_resource type="Texture2D" path="res://Assets/ui/hotbar/slot_selected.png" id="4_selected"]
+[ext_resource type="Texture2D" path="res://Assets/ui/pixelmania/close_button.png" id="5_close"]
+[ext_resource type="Texture2D" path="res://Assets/ui/login/input_box.png" id="6_input"]
+[ext_resource type="Texture2D" path="res://Assets/ui/pixelmania/button_normal.png" id="7_yellow_normal"]
+[ext_resource type="Texture2D" path="res://Assets/ui/pixelmania/button_pressed.png" id="8_yellow_pressed"]
+[ext_resource type="Texture2D" path="res://Assets/ui/pixelmania/button_hover.png" id="9_yellow_hover"]
+[ext_resource type="Texture2D" path="res://Assets/ui/pixelmania/drop_button_normal.png" id="10_red_normal"]
+[ext_resource type="Texture2D" path="res://Assets/ui/pixelmania/drop_button_pressed.png" id="11_red_pressed"]
+[ext_resource type="Texture2D" path="res://Assets/ui/pixelmania/drop_button_hover.png" id="12_red_hover"]
+[ext_resource type="Texture2D" path="res://Assets/ui/inventory/button_blue_normal.png" id="13_blue_normal"]
+[ext_resource type="Texture2D" path="res://Assets/ui/inventory/button_blue_pressed.png" id="14_blue_pressed"]
+[ext_resource type="Texture2D" path="res://Assets/ui/inventory/button_blue_hover.png" id="15_blue_hover"]
+[ext_resource type="Texture2D" path="res://Assets/ui/inventory/slider_button.png" id="16_slider"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dismiss"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_input"]
+texture = ExtResource("6_input")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yellow_normal"]
+texture = ExtResource("7_yellow_normal")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yellow_pressed"]
+texture = ExtResource("8_yellow_pressed")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yellow_hover"]
+texture = ExtResource("9_yellow_hover")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_red_normal"]
+texture = ExtResource("10_red_normal")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_red_pressed"]
+texture = ExtResource("11_red_pressed")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_red_hover"]
+texture = ExtResource("12_red_hover")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_normal"]
+texture = ExtResource("13_blue_normal")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_pressed"]
+texture = ExtResource("14_blue_pressed")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_hover"]
+texture = ExtResource("15_blue_hover")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slider_track"]
+bg_color = Color(0.0352941, 0.0117647, 0.0470588, 0.82)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slider_fill"]
+bg_color = Color(0.219608, 0.807843, 0.94902, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="ItemActionPopup" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("1_script")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.0117647, 0, 0.0196078, 0.26)
+
+[node name="DismissArea" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dismiss")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_dismiss")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_dismiss")
+
+[node name="Window" type="NinePatchRect" parent="."]
+layout_mode = 0
+offset_right = 430.0
+offset_bottom = 326.0
+mouse_filter = 0
+texture = ExtResource("2_panel")
+patch_margin_left = 28
+patch_margin_top = 28
+patch_margin_right = 28
+patch_margin_bottom = 28
+
+[node name="HeaderLabel" type="Label" parent="Window"]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 17.0
+offset_right = 382.0
+offset_bottom = 48.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.92549, 0.972549, 1, 1)
+theme_override_font_sizes/font_size = 21
+text = "ITEM ACTIONS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Window"]
+layout_mode = 0
+offset_left = 390.0
+offset_top = -8.0
+offset_right = 438.0
+offset_bottom = 40.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dismiss")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_dismiss")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_dismiss")
+icon = ExtResource("5_close")
+expand_icon = true
+
+[node name="PreviewSlot" type="Control" parent="Window"]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 68.0
+offset_right = 125.0
+offset_bottom = 168.0
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="Window/PreviewSlot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_slot")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="SelectedFrame" type="TextureRect" parent="Window/PreviewSlot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_selected")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="IconShadow" type="TextureRect" parent="Window/PreviewSlot"]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 20.0
+offset_top = 19.0
+offset_right = 84.0
+offset_bottom = 83.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Window/PreviewSlot"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 15.0
+offset_right = 81.0
+offset_bottom = 79.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemName" type="Label" parent="Window"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 66.0
+offset_right = 394.0
+offset_bottom = 112.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 19
+text = "Item Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ItemCount" type="Label" parent="Window"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 113.0
+offset_right = 394.0
+offset_bottom = 139.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.862745, 0.301961, 1)
+theme_override_font_sizes/font_size = 14
+text = "AVAILABLE  x1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AmountInput" type="LineEdit" parent="Window"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 147.0
+offset_right = 215.0
+offset_bottom = 181.0
+theme_override_colors/font_color = Color(0.95, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_input")
+text = "1"
+alignment = 1
+
+[node name="AmountLabel" type="Label" parent="Window"]
+layout_mode = 0
+offset_left = 223.0
+offset_top = 149.0
+offset_right = 394.0
+offset_bottom = 179.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.760784, 0.941176, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "AMOUNT  1 / 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AmountSlider" type="HSlider" parent="Window"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 184.0
+offset_right = 394.0
+offset_bottom = 210.0
+focus_mode = 0
+theme_override_icons/grabber = ExtResource("16_slider")
+theme_override_icons/grabber_highlight = ExtResource("16_slider")
+theme_override_styles/slider = SubResource("StyleBoxFlat_slider_track")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_slider_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_slider_fill")
+min_value = 1.0
+max_value = 1.0
+step = 1.0
+value = 1.0
+rounded = true
+
+[node name="UseButton" type="Button" parent="Window"]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 218.0
+offset_right = 207.0
+offset_bottom = 262.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_yellow_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_yellow_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_yellow_hover")
+text = "USE"
+
+[node name="DropButton" type="Button" parent="Window"]
+layout_mode = 0
+offset_left = 223.0
+offset_top = 218.0
+offset_right = 405.0
+offset_bottom = 262.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_red_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_red_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_red_hover")
+text = "DROP"
+
+[node name="InfoButton" type="Button" parent="Window"]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 270.0
+offset_right = 207.0
+offset_bottom = 314.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+text = "INFO"
+
+[node name="TrashButton" type="Button" parent="Window"]
+layout_mode = 0
+offset_left = 223.0
+offset_top = 270.0
+offset_right = 405.0
+offset_bottom = 314.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_red_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_red_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_red_hover")
+text = "TRASH"

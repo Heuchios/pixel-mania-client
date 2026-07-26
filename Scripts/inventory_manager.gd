@@ -6,6 +6,7 @@ const TouchInputGuard = preload("res://Scripts/touch_input_guard.gd")
 const HOTBAR_SCENE = preload("res://Scenes/ui/hotbar/Hotbar.tscn")
 const INVENTORY_SCENE = preload("res://Scenes/ui/inventory/InventoryScene.tscn")
 const INVENTORY_UPGRADE_CONFIRM_SCENE = preload("res://Scenes/ui/inventory/InventoryUpgradeConfirm.tscn")
+const ITEM_ACTION_POPUP_SCENE = preload("res://Scenes/ui/inventory/ItemActionPopup.tscn")
 const HOTBAR_SLOT_COUNT = 6
 const HOTBAR_HEIGHT = 104.0
 const HOTBAR_SLOT_SIZE = 96
@@ -23,6 +24,7 @@ const HOTBAR_Z_INDEX = 176
 const INVENTORY_BUTTON_Z_INDEX = 178
 const INVENTORY_WINDOW_Z_INDEX = 175
 const INVENTORY_MODAL_Z_INDEX = 240
+const ITEM_ACTION_POPUP_Z_INDEX = 245
 const INVENTORY_DRAWER_BASE_WIDTH = 1100.0
 const INVENTORY_DRAWER_BASE_HEIGHT = 560.0
 const INVENTORY_DRAWER_EXTRA_COLUMNS = 2.0
@@ -112,6 +114,7 @@ var gem_count_label = null
 
 var inventory_window = null
 var inventory_upgrade_popup = null
+var item_action_popup = null
 var inventory_tab = "all"
 var inventory_scroll_container = null
 var inventory_grid_root = null
@@ -866,6 +869,7 @@ func setup(world_node, ui_node):
 	setup_inventory_button()
 	setup_gem_counter()
 	setup_inventory_window()
+	_ensure_item_action_popup()
 	update_all_ui()
 
 
@@ -2552,18 +2556,23 @@ func _on_hotbar_slot_gui_input(event: InputEvent, slot_index: int):
 				select_hotbar_item(item_type, category)
 			mark_inventory_input_as_handled()
 			return
-		if event is InputEventScreenTouch and event.pressed:
-			var now_touch = Time.get_ticks_msec()
-			var is_double_touch = hotbar_slot_zero_last_tap_ms > 0 and now_touch - hotbar_slot_zero_last_tap_ms <= TOUCH_EQUIP_DOUBLE_TAP_TIME_MS
-			hotbar_slot_zero_last_tap_ms = 0 if is_double_touch else now_touch
-			if is_double_touch and world.has_method("toggle_primary_hotbar_tool"):
-				mark_manual_hotbar_selection()
-				world.toggle_primary_hotbar_tool()
+		if event is InputEventScreenTouch:
+			if event.pressed:
+				var now_touch = Time.get_ticks_msec()
+				var is_double_touch = hotbar_slot_zero_last_tap_ms > 0 and now_touch - hotbar_slot_zero_last_tap_ms <= TOUCH_EQUIP_DOUBLE_TAP_TIME_MS
+				hotbar_slot_zero_last_tap_ms = 0 if is_double_touch else now_touch
+				if is_double_touch and world.has_method("toggle_primary_hotbar_tool"):
+					cancel_item_hold()
+					mark_manual_hotbar_selection()
+					world.toggle_primary_hotbar_tool()
+				else:
+					start_item_hold(item_type, category, slot, false, "hotbar")
 			else:
-				select_hotbar_item(item_type, category)
+				finish_item_hold(item_type, category)
 			mark_inventory_input_as_handled()
 			return
 		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			show_item_context_menu(item_type, category, slot)
 			mark_inventory_input_as_handled()
 			return
 	if event is InputEventMouseButton:
@@ -3183,6 +3192,10 @@ func connect_inventory_scene_signals() -> void:
 	if not inventory_window.trash_requested.is_connected(trash_callback):
 		inventory_window.trash_requested.connect(trash_callback)
 
+	var popup_callback: Callable = Callable(self, "_on_inventory_scene_item_action_popup_requested")
+	if inventory_window.has_signal("item_action_popup_requested") and not inventory_window.item_action_popup_requested.is_connected(popup_callback):
+		inventory_window.item_action_popup_requested.connect(popup_callback)
+
 	var upgrade_callback: Callable = Callable(self, "_on_inventory_scene_inventory_upgrade_requested")
 	if inventory_window.has_signal("inventory_upgrade_requested") and not inventory_window.inventory_upgrade_requested.is_connected(upgrade_callback):
 		inventory_window.inventory_upgrade_requested.connect(upgrade_callback)
@@ -3452,6 +3465,102 @@ func _on_inventory_scene_trash_requested(item: Dictionary) -> void:
 	trash_inventory_item(item_type, category, float(stack_amount))
 	refresh_inventory_scene_window()
 	update_hotbar()
+
+
+func _on_inventory_scene_item_action_popup_requested(item: Dictionary, screen_position: Vector2) -> void:
+	var item_type: String = _get_inventory_scene_item_type(item)
+	var category: String = _get_inventory_scene_item_category(item)
+	if item_type == "" or category == "":
+		return
+	if is_item_selection_mode_active() and not _can_inventory_scene_select_item(item_type, category):
+		if world != null and world.has_method("show_notification"):
+			world.show_notification("That item cannot be selected.")
+		return
+	_show_item_action_popup(_build_item_action_payload(item_type, category, item), screen_position)
+
+
+func _ensure_item_action_popup() -> Control:
+	if item_action_popup != null and is_instance_valid(item_action_popup):
+		return item_action_popup as Control
+	if ui_layer_ref == null:
+		return null
+
+	item_action_popup = ITEM_ACTION_POPUP_SCENE.instantiate()
+	item_action_popup.name = "ItemActionPopup"
+	ui_layer_ref.add_child(item_action_popup)
+	if item_action_popup is Control:
+		var popup_control: Control = item_action_popup as Control
+		popup_control.set_anchors_preset(Control.PRESET_FULL_RECT)
+		popup_control.offset_left = 0.0
+		popup_control.offset_top = 0.0
+		popup_control.offset_right = 0.0
+		popup_control.offset_bottom = 0.0
+		popup_control.z_index = ITEM_ACTION_POPUP_Z_INDEX
+
+	_connect_item_action_popup_signal("use_requested", "_on_inventory_scene_primary_action_requested")
+	_connect_item_action_popup_signal("drop_requested", "_on_inventory_scene_drop_requested")
+	_connect_item_action_popup_signal("info_requested", "_on_inventory_scene_info_requested")
+	_connect_item_action_popup_signal("trash_requested", "_on_inventory_scene_trash_requested")
+	_connect_item_action_popup_signal("closed", "_on_item_action_popup_closed")
+	return item_action_popup as Control
+
+
+func _connect_item_action_popup_signal(signal_name: StringName, method_name: StringName) -> void:
+	if item_action_popup == null or not item_action_popup.has_signal(signal_name):
+		return
+	var callback: Callable = Callable(self, method_name)
+	if not item_action_popup.is_connected(signal_name, callback):
+		item_action_popup.connect(signal_name, callback)
+
+
+func _on_item_action_popup_closed() -> void:
+	cancel_item_hold()
+
+
+func _build_item_action_payload(item_type: String, category: String, base_item: Dictionary = {}) -> Dictionary:
+	var payload: Dictionary = base_item.duplicate(true)
+	var available_count: int = get_item_count(item_type, category)
+	if is_reserved_hotbar_tool(item_type, category):
+		available_count = maxi(1, available_count)
+	payload["id"] = item_type
+	payload["type"] = item_type
+	payload["item_type"] = item_type
+	payload["category"] = category
+	payload["item_category"] = category
+	payload["display_name"] = get_item_display_name(item_type, category)
+	payload["count"] = maxi(1, available_count)
+	payload["available_count"] = maxi(1, available_count)
+	payload["rarity"] = get_item_rarity(item_type, category)
+	payload["can_use"] = true
+	payload["can_drop"] = can_drop_item_from_inventory(item_type, category)
+	payload["can_trash"] = item_type != "punch"
+	return payload
+
+
+func _show_item_action_popup(item: Dictionary, screen_position: Vector2 = Vector2.ZERO) -> void:
+	var popup: Control = _ensure_item_action_popup()
+	if popup == null:
+		return
+	var item_type: String = _get_inventory_scene_item_type(item)
+	var category: String = _get_inventory_scene_item_category(item)
+	if item_type == "" or category == "" or category == "empty":
+		return
+	if get_item_count(item_type, category) <= 0 and not is_reserved_hotbar_tool(item_type, category):
+		return
+	hold_item_type = item_type
+	hold_item_category = category
+	if popup.has_method("open_popup"):
+		popup.open_popup(item, get_item_texture(item_type, category), screen_position)
+	else:
+		popup.visible = true
+
+
+func _item_context_anchor_position(slot) -> Vector2:
+	if slot is Vector2:
+		return slot as Vector2
+	if slot is Control and is_instance_valid(slot):
+		return (slot as Control).get_global_rect().get_center()
+	return Vector2.ZERO
 
 
 func _on_inventory_scene_inventory_upgrade_requested(upgrade_data: Dictionary) -> void:
@@ -5537,15 +5646,23 @@ func configure_context_menu_for_trade_mode():
 func show_item_context_menu(item_type: String, category: String, slot):
 	if item_type == "" or category == "empty":
 		return
+	if is_item_selection_mode_active() and not can_select_item_for_active_mode(item_type, category):
+		if world != null and world.has_method("show_notification"):
+			world.show_notification("That item cannot be selected.")
+		return
 	hold_item_type = item_type
 	hold_item_category = category
 	hold_slot = slot
-	if inventory_window != null and inventory_drawer_target <= 0.05 and inventory_drawer_amount <= 0.05:
-		open_inventory_window()
-	select_inventory_detail_item(item_type, category)
+	var payload: Dictionary = _build_item_action_payload(item_type, category)
+	_show_item_action_popup(payload, _item_context_anchor_position(slot))
 
 
 func hide_item_context_menu():
+	if item_action_popup != null and is_instance_valid(item_action_popup):
+		if item_action_popup.has_method("close_popup"):
+			item_action_popup.close_popup(false)
+		else:
+			item_action_popup.visible = false
 	if item_context_menu != null:
 		item_context_menu.visible = false
 
