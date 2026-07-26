@@ -247,6 +247,7 @@ static func get_item_database_entries() -> Dictionary:
 				entry["entrance_pass_atlas_frames"] = animation_frames
 		for passthrough_key in [
 			"rarity",
+			"seed",
 			"instance_tracked",
 			"shop_price",
 			"break_return_to_inventory",

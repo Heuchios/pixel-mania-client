@@ -897,6 +897,435 @@
         "gem_range": [0, 0]
       },
       "order": 414
+    },
+    {
+      "id": 40,
+      "item_key": "red_brick",
+      "name": "Red Brick",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [17, 5],
+      "alternative_tile": 0,
+      "collision": true,
+      "collision_type": "full",
+      "hardness": 5,
+      "rarity": "uncommon",
+      "seed": "red_brick_seed",
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "red_brick", "item_category": "block", "amount": 1, "chance": 0.45},
+          {"item_id": "red_brick_seed", "item_category": "seed", "amount": 1, "chance": 0.08},
+          {"item_id": "gem", "item_category": "currency", "amount_range": [1, 5]}
+        ]
+      },
+      "tree_drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "red_brick", "item_category": "block", "amount_range": [1, 4]},
+          {"item_id": "red_brick_seed", "item_category": "seed", "amount_range": [0, 4]}
+        ]
+      },
+      "order": 415
+    },
+    {
+      "id": 41,
+      "item_key": "stone_brick",
+      "name": "Stone Brick",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [18, 5],
+      "alternative_tile": 0,
+      "collision": true,
+      "collision_type": "full",
+      "hardness": 5,
+      "rarity": "uncommon",
+      "seed": "stone_brick_seed",
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "stone_brick", "item_category": "block", "amount": 1, "chance": 0.45},
+          {"item_id": "stone_brick_seed", "item_category": "seed", "amount": 1, "chance": 0.08},
+          {"item_id": "gem", "item_category": "currency", "amount_range": [1, 5]}
+        ]
+      },
+      "tree_drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "stone_brick", "item_category": "block", "amount_range": [1, 4]},
+          {"item_id": "stone_brick_seed", "item_category": "seed", "amount_range": [0, 4]}
+        ]
+      },
+      "order": 31
+    },
+    {
+      "id": 42,
+      "item_key": "green_brick",
+      "name": "Green Brick",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [19, 5],
+      "alternative_tile": 0,
+      "collision": true,
+      "collision_type": "full",
+      "hardness": 5,
+      "rarity": "uncommon",
+      "seed": "green_brick_seed",
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "green_brick", "item_category": "block", "amount": 1, "chance": 0.45},
+          {"item_id": "green_brick_seed", "item_category": "seed", "amount": 1, "chance": 0.08},
+          {"item_id": "gem", "item_category": "currency", "amount_range": [1, 5]}
+        ]
+      },
+      "tree_drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "green_brick", "item_category": "block", "amount_range": [1, 4]},
+          {"item_id": "green_brick_seed", "item_category": "seed", "amount_range": [0, 4]}
+        ]
+      },
+      "order": 416
+    },
+    {
+      "id": 43,
+      "item_key": "green_moss_brick",
+      "name": "Green Moss Brick",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [20, 5],
+      "alternative_tile": 0,
+      "collision": true,
+      "collision_type": "full",
+      "hardness": 5,
+      "rarity": "uncommon",
+      "seed": "green_moss_brick_seed",
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "green_moss_brick", "item_category": "block", "amount": 1, "chance": 0.45},
+          {"item_id": "green_moss_brick_seed", "item_category": "seed", "amount": 1, "chance": 0.08},
+          {"item_id": "gem", "item_category": "currency", "amount_range": [1, 5]}
+        ]
+      },
+      "tree_drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "green_moss_brick", "item_category": "block", "amount_range": [1, 4]},
+          {"item_id": "green_moss_brick_seed", "item_category": "seed", "amount_range": [0, 4]}
+        ]
+      },
+      "order": 417
+    },
+    {
+      "id": 44,
+      "item_key": "red_brick_wall",
+      "name": "Red Brick Wall",
+      "type": "block",
+      "layer": "background",
+      "source_id": 0,
+      "atlas_coords": [17, 6],
+      "alternative_tile": 0,
+      "collision": false,
+      "collision_type": "none",
+      "hardness": 3,
+      "rarity": "uncommon",
+      "seed": "red_brick_wall_seed",
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "red_brick_wall", "item_category": "block", "amount": 1, "chance": 0.45},
+          {"item_id": "red_brick_wall_seed", "item_category": "seed", "amount": 1, "chance": 0.08},
+          {"item_id": "gem", "item_category": "currency", "amount_range": [1, 5]}
+        ]
+      },
+      "tree_drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "red_brick_wall", "item_category": "block", "amount_range": [1, 4]},
+          {"item_id": "red_brick_wall_seed", "item_category": "seed", "amount_range": [0, 4]}
+        ]
+      },
+      "order": 418
+    },
+    {
+      "id": 45,
+      "item_key": "stone_brick_wall",
+      "name": "Stone Brick Wall",
+      "type": "block",
+      "layer": "background",
+      "source_id": 0,
+      "atlas_coords": [18, 6],
+      "alternative_tile": 0,
+      "collision": false,
+      "collision_type": "none",
+      "hardness": 3,
+      "rarity": "uncommon",
+      "seed": "stone_brick_wall_seed",
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "stone_brick_wall", "item_category": "block", "amount": 1, "chance": 0.45},
+          {"item_id": "stone_brick_wall_seed", "item_category": "seed", "amount": 1, "chance": 0.08},
+          {"item_id": "gem", "item_category": "currency", "amount_range": [1, 5]}
+        ]
+      },
+      "tree_drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "stone_brick_wall", "item_category": "block", "amount_range": [1, 4]},
+          {"item_id": "stone_brick_wall_seed", "item_category": "seed", "amount_range": [0, 4]}
+        ]
+      },
+      "order": 419
+    },
+    {
+      "id": 46,
+      "item_key": "green_brick_wall",
+      "name": "Green Brick Wall",
+      "type": "block",
+      "layer": "background",
+      "source_id": 0,
+      "atlas_coords": [19, 6],
+      "alternative_tile": 0,
+      "collision": false,
+      "collision_type": "none",
+      "hardness": 3,
+      "rarity": "uncommon",
+      "seed": "green_brick_wall_seed",
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "green_brick_wall", "item_category": "block", "amount": 1, "chance": 0.45},
+          {"item_id": "green_brick_wall_seed", "item_category": "seed", "amount": 1, "chance": 0.08},
+          {"item_id": "gem", "item_category": "currency", "amount_range": [1, 5]}
+        ]
+      },
+      "tree_drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "green_brick_wall", "item_category": "block", "amount_range": [1, 4]},
+          {"item_id": "green_brick_wall_seed", "item_category": "seed", "amount_range": [0, 4]}
+        ]
+      },
+      "order": 420
+    },
+    {
+      "id": 47,
+      "item_key": "green_moss_brick_wall",
+      "name": "Green Moss Brick Wall",
+      "type": "block",
+      "layer": "background",
+      "source_id": 0,
+      "atlas_coords": [20, 6],
+      "alternative_tile": 0,
+      "collision": false,
+      "collision_type": "none",
+      "hardness": 3,
+      "rarity": "uncommon",
+      "seed": "green_moss_brick_wall_seed",
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "green_moss_brick_wall", "item_category": "block", "amount": 1, "chance": 0.45},
+          {"item_id": "green_moss_brick_wall_seed", "item_category": "seed", "amount": 1, "chance": 0.08},
+          {"item_id": "gem", "item_category": "currency", "amount_range": [1, 5]}
+        ]
+      },
+      "tree_drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "green_moss_brick_wall", "item_category": "block", "amount_range": [1, 4]},
+          {"item_id": "green_moss_brick_wall_seed", "item_category": "seed", "amount_range": [0, 4]}
+        ]
+      },
+      "order": 421
+    },
+    {
+      "id": 48,
+      "item_key": "gold_block",
+      "name": "Gold Block",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [21, 5],
+      "alternative_tile": 0,
+      "collision": true,
+      "collision_type": "full",
+      "hardness": 6,
+      "rarity": "epic",
+      "seed": "gold_block_seed",
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "gold_block", "item_category": "block", "amount_range": [0, 3]},
+          {"item_id": "gold_block_seed", "item_category": "seed", "amount_range": [0, 1]},
+          {"item_id": "gem", "item_category": "currency", "amount_range": [20, 60]}
+        ]
+      },
+      "tree_drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "gold_block", "item_category": "block", "amount_range": [0, 3]},
+          {"item_id": "gold_block_seed", "item_category": "seed", "amount_range": [0, 1]}
+        ]
+      },
+      "order": 422
+    },
+    {
+      "id": 49,
+      "item_key": "emerald_block",
+      "name": "Emerald Block",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [22, 5],
+      "alternative_tile": 0,
+      "collision": true,
+      "collision_type": "full",
+      "hardness": 6,
+      "rarity": "epic",
+      "seed": "emerald_block_seed",
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "emerald_block", "item_category": "block", "amount_range": [0, 3]},
+          {"item_id": "emerald_block_seed", "item_category": "seed", "amount_range": [0, 1]},
+          {"item_id": "gem", "item_category": "currency", "amount_range": [20, 60]}
+        ]
+      },
+      "tree_drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "emerald_block", "item_category": "block", "amount_range": [0, 3]},
+          {"item_id": "emerald_block_seed", "item_category": "seed", "amount_range": [0, 1]}
+        ]
+      },
+      "order": 423
+    },
+    {
+      "id": 50,
+      "item_key": "ruby_block",
+      "name": "Ruby Block",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [23, 5],
+      "alternative_tile": 0,
+      "collision": true,
+      "collision_type": "full",
+      "hardness": 6,
+      "rarity": "epic",
+      "seed": "ruby_block_seed",
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "ruby_block", "item_category": "block", "amount_range": [0, 3]},
+          {"item_id": "ruby_block_seed", "item_category": "seed", "amount_range": [0, 1]},
+          {"item_id": "gem", "item_category": "currency", "amount_range": [20, 60]}
+        ]
+      },
+      "tree_drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "ruby_block", "item_category": "block", "amount_range": [0, 3]},
+          {"item_id": "ruby_block_seed", "item_category": "seed", "amount_range": [0, 1]}
+        ]
+      },
+      "order": 424
+    },
+    {
+      "id": 51,
+      "item_key": "diamond_block",
+      "name": "Diamond Block",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [24, 5],
+      "alternative_tile": 0,
+      "collision": true,
+      "collision_type": "full",
+      "hardness": 6,
+      "rarity": "epic",
+      "seed": "diamond_block_seed",
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "diamond_block", "item_category": "block", "amount_range": [0, 3]},
+          {"item_id": "diamond_block_seed", "item_category": "seed", "amount_range": [0, 1]},
+          {"item_id": "gem", "item_category": "currency", "amount_range": [20, 60]}
+        ]
+      },
+      "tree_drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "diamond_block", "item_category": "block", "amount_range": [0, 3]},
+          {"item_id": "diamond_block_seed", "item_category": "seed", "amount_range": [0, 1]}
+        ]
+      },
+      "order": 425
+    },
+    {
+      "id": 52,
+      "item_key": "amethyst_block",
+      "name": "Amethyst Block",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [25, 5],
+      "alternative_tile": 0,
+      "collision": true,
+      "collision_type": "full",
+      "hardness": 6,
+      "rarity": "epic",
+      "seed": "amethyst_block_seed",
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "amethyst_block", "item_category": "block", "amount_range": [0, 3]},
+          {"item_id": "amethyst_block_seed", "item_category": "seed", "amount_range": [0, 1]},
+          {"item_id": "gem", "item_category": "currency", "amount_range": [20, 60]}
+        ]
+      },
+      "tree_drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "amethyst_block", "item_category": "block", "amount_range": [0, 3]},
+          {"item_id": "amethyst_block_seed", "item_category": "seed", "amount_range": [0, 1]}
+        ]
+      },
+      "order": 426
     }
   ]
 }

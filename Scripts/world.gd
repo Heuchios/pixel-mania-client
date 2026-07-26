@@ -805,25 +805,36 @@ func make_coloured_block_drop_rules(block_id: String, seed_id: String, gem_max: 
 	}
 
 
-func make_configured_seed_drop_rules(block_id: String, seed_id: String, block_chance: float, seed_chance: float) -> Dictionary:
+func make_configured_seed_drop_rules(block_id: String, seed_id: String, block_chance: float, seed_chance: float, gem_range: Array = [], block_range: Array = [], seed_range: Array = []) -> Dictionary:
+	var fixed_drops := []
+	if block_range.size() >= 2:
+		fixed_drops.append({"item_id": block_id, "item_category": "block", "amount_range": block_range})
+	else:
+		fixed_drops.append({"item_id": block_id, "item_category": "block", "amount": 1, "chance": clamp(block_chance, 0.0, 1.0)})
+	if seed_range.size() >= 2:
+		fixed_drops.append({"item_id": seed_id, "item_category": "seed", "amount_range": seed_range})
+	else:
+		fixed_drops.append({"item_id": seed_id, "item_category": "seed", "amount": 1, "chance": clamp(seed_chance, 0.0, 1.0)})
+	if gem_range.size() >= 2:
+		fixed_drops.append({"item_id": GEM_CURRENCY_ITEM_ID, "item_category": "currency", "amount_range": gem_range})
 	return {
 		"seed_chance": 0,
 		"gem_range": [0, 0],
-		"fixed_drops": [
-			{"item_id": block_id, "item_category": "block", "amount": 1, "chance": clamp(block_chance, 0.0, 1.0)},
-			{"item_id": seed_id, "item_category": "seed", "amount": 1, "chance": clamp(seed_chance, 0.0, 1.0)}
-		]
+		"fixed_drops": fixed_drops
 	}
 
 
-func make_configured_tree_drop_rules(block_id: String, seed_id: String, block_range: Array, seed_range: Array) -> Dictionary:
+func make_configured_tree_drop_rules(block_id: String, seed_id: String, block_range: Array, seed_range: Array, gem_range: Array = []) -> Dictionary:
+	var fixed_drops := [
+		{"item_id": block_id, "item_category": "block", "amount_range": block_range},
+		{"item_id": seed_id, "item_category": "seed", "amount_range": seed_range}
+	]
+	if gem_range.size() >= 2:
+		fixed_drops.append({"item_id": GEM_CURRENCY_ITEM_ID, "item_category": "currency", "amount_range": gem_range})
 	return {
 		"seed_chance": 0,
 		"gem_range": [0, 0],
-		"fixed_drops": [
-			{"item_id": block_id, "item_category": "block", "amount_range": block_range},
-			{"item_id": seed_id, "item_category": "seed", "amount_range": seed_range}
-		]
+		"fixed_drops": fixed_drops
 	}
 
 
@@ -849,13 +860,17 @@ func apply_tier_1_splice_balance():
 			str(block_id),
 			seed_id,
 			float(balance.get("block_drop_chance", 1.0)),
-			float(balance.get("seed_drop_chance", 1.0))
+			float(balance.get("seed_drop_chance", 1.0)),
+			balance.get("break_gem_range", []),
+			balance.get("break_block_range", []),
+			balance.get("break_seed_range", [])
 		)
 		block_data["tree_drop_rules"] = make_configured_tree_drop_rules(
 			str(block_id),
 			seed_id,
 			balance.get("tree_block_range", [1, 1]),
-			balance.get("tree_seed_range", [0, 0])
+			balance.get("tree_seed_range", [0, 0]),
+			balance.get("tree_gem_range", [])
 		)
 
 		var seed_data: Dictionary = {}
