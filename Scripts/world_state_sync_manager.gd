@@ -28,6 +28,7 @@ const DUCK_DEFAULT_PRODUCTION_MS := 43200000
 const DUCK_DEFAULT_HUNGER_MS := 604800000
 const DEBUG_ACTION_POSITION_FLOW := false
 const WORLD_STATE_APPLY_BATCH_SIZE := 512
+const WORLD_STATE_SPAWN_PRIORITY_RADIUS := 12
 # Give the loading CanvasLayer a chance to draw before heavy world-state work.
 const WORLD_STATE_OVERLAY_DRAW_FRAMES := 2
 
@@ -221,7 +222,10 @@ func _normalize_world_layer_entries(raw_layer) -> Array:
 	if raw_layer is Array:
 		for raw_entry in raw_layer:
 			if raw_entry is Dictionary:
-				entries.append((raw_entry as Dictionary).duplicate(true))
+				# Stream payloads are immutable for the lifetime of a full-state apply.
+				# Keep references here instead of cloning every block before immediately
+				# reading it into the authoritative world rebuild.
+				entries.append(raw_entry)
 		return entries
 
 	if raw_layer is Dictionary:
@@ -241,6 +245,49 @@ func _normalize_world_layer_entries(raw_layer) -> Array:
 				entry["item_id"] = raw_value
 			entries.append(entry)
 	return entries
+
+
+func _prioritize_world_layer_entries_for_spawn(entries: Array, data: Dictionary) -> Array:
+	if entries.size() <= 1 or not data.has("spawn_grid_x") or not data.has("spawn_grid_y"):
+		return entries
+
+	var spawn_grid := Vector2i(
+		_safe_int(data.get("spawn_grid_x", 0), 0, 0, MAX_WORLD_COORD),
+		_safe_int(data.get("spawn_grid_y", 0), 0, 0, MAX_WORLD_COORD)
+	)
+	var nearby_entries: Array = []
+	var remaining_entries: Array = []
+	nearby_entries.resize(0)
+	remaining_entries.resize(0)
+	for raw_entry in entries:
+		if raw_entry is Dictionary:
+			var entry := raw_entry as Dictionary
+			var entry_x := _safe_int(entry.get("x", 0), 0, 0, MAX_WORLD_COORD)
+			var entry_y := _safe_int(entry.get("y", 0), 0, 0, MAX_WORLD_COORD)
+			if absi(entry_x - spawn_grid.x) <= WORLD_STATE_SPAWN_PRIORITY_RADIUS and absi(entry_y - spawn_grid.y) <= WORLD_STATE_SPAWN_PRIORITY_RADIUS:
+				nearby_entries.append(entry)
+				continue
+		remaining_entries.append(raw_entry)
+
+	if nearby_entries.is_empty() or remaining_entries.is_empty():
+		return entries
+	nearby_entries.append_array(remaining_entries)
+	return nearby_entries
+
+
+func _profile_world_entry_stage(stage: String, extra: Dictionary = {}) -> void:
+	var network = null
+	if world != null:
+		network = world.get_node_or_null("/root/NetworkManager")
+	if network != null and network.has_method("record_world_entry_stage"):
+		network.record_world_entry_stage(stage, extra)
+
+
+func _update_world_build_progress(applied: int, total: int) -> void:
+	if world == null or not world.has_method("update_smooth_world_load_message"):
+		return
+	var percent := 100 if total <= 0 else clampi(int(floor(float(applied) * 100.0 / float(total))), 0, 100)
+	world.update_smooth_world_load_message("Building world " + str(percent) + "%")
 
 
 func _resolve_block_type_from_entry(entry: Dictionary) -> String:
@@ -1090,11 +1137,16 @@ func apply_network_world_state(data: Dictionary):
 	var apply_generation: int = world_state_apply_generation
 	active_world_state_apply_generation = apply_generation
 	var entries_since_yield: int = 0
+	var apply_started_usec: int = Time.get_ticks_usec()
 	# Claim the full-state apply before the first await. NetworkManager pauses
 	# packet dispatch while this flag is set, so another snapshot cannot begin a
 	# competing clear/rebuild during the loading-overlay draw wait.
 	world.applying_network_world_update = true
 	_set_world_bulk_load_active(true, "applying_network_world_state")
+	_profile_world_entry_stage("client_world_apply_start", {
+		"block_revision": incoming_block_revision,
+		"world_revision": _safe_int(data.get("world_revision", 0), 0, 0)
+	})
 
 	debug_action_position_flow("world_state apply start", {
 		"respawn_player": data.get("respawn_player", null),
@@ -1166,9 +1218,26 @@ func apply_network_world_state(data: Dictionary):
 	world.active_checkpoint_grid = world.INVALID_GRID_POS
 	world.active_checkpoint_world = ""
 	world.clear_world()
+	_profile_world_entry_stage("client_old_world_cleared")
 
-	var foreground: Array = _normalize_world_layer_entries(data.get("foreground", []))
-	var background: Array = _normalize_world_layer_entries(data.get("background", []))
+	var raw_foreground = data.get("foreground", [])
+	var raw_background = data.get("background", [])
+	var foreground: Array = _normalize_world_layer_entries(raw_foreground)
+	var background: Array = _normalize_world_layer_entries(raw_background)
+	# Compact dictionary snapshots contain one authoritative value per grid cell,
+	# so they can be safely reordered for progressive construction. Legacy arrays
+	# retain their original ordering in case they contain duplicate coordinates.
+	if raw_foreground is Dictionary:
+		foreground = _prioritize_world_layer_entries_for_spawn(foreground, data)
+	if raw_background is Dictionary:
+		background = _prioritize_world_layer_entries_for_spawn(background, data)
+	var build_entry_total: int = foreground.size() + background.size()
+	var build_entry_applied: int = 0
+	_update_world_build_progress(0, build_entry_total)
+	_profile_world_entry_stage("client_world_payload_normalized", {
+		"foreground_count": foreground.size(),
+		"background_count": background.size()
+	})
 	var has_explicit_foreground: bool = not foreground.is_empty()
 	var has_explicit_background: bool = not background.is_empty()
 	var server_cleared_world: bool = bool(data.get("cleared", data.get("world_cleared", data.get("clear_generated", false))))
@@ -1220,13 +1289,20 @@ func apply_network_world_state(data: Dictionary):
 					foreground_block_update["door_name"] = _safe_string(entry.get("door_name", entry.get("name", "")), "", MAX_DOOR_NAME_LENGTH)
 				apply_network_block_update(foreground_block_update)
 				processed += 1
+				build_entry_applied += 1
 				entries_since_yield += 1
 				if entries_since_yield >= WORLD_STATE_APPLY_BATCH_SIZE:
 					entries_since_yield = 0
+					_update_world_build_progress(build_entry_applied, build_entry_total)
 					await world.get_tree().process_frame
 					if not is_world_state_apply_current(apply_generation):
 						_clear_world_state_apply_if_current(apply_generation)
 						return
+
+	_profile_world_entry_stage("client_foreground_built", {
+		"count": foreground.size(),
+		"elapsed_ms": snappedf(float(Time.get_ticks_usec() - apply_started_usec) / 1000.0, 0.001)
+	})
 
 	if background is Array:
 		var processed = 0
@@ -1251,13 +1327,21 @@ func apply_network_world_state(data: Dictionary):
 					"placement_request_id": _safe_string(entry.get("placement_request_id", ""), "", 96)
 				})
 				processed += 1
+				build_entry_applied += 1
 				entries_since_yield += 1
 				if entries_since_yield >= WORLD_STATE_APPLY_BATCH_SIZE:
 					entries_since_yield = 0
+					_update_world_build_progress(build_entry_applied, build_entry_total)
 					await world.get_tree().process_frame
 					if not is_world_state_apply_current(apply_generation):
 						_clear_world_state_apply_if_current(apply_generation)
 						return
+
+	_update_world_build_progress(build_entry_applied, build_entry_total)
+	_profile_world_entry_stage("client_background_built", {
+		"count": background.size(),
+		"elapsed_ms": snappedf(float(Time.get_ticks_usec() - apply_started_usec) / 1000.0, 0.001)
+	})
 
 	var removed_foreground = data.get("removed_foreground", [])
 	if removed_foreground is Array:
@@ -1384,7 +1468,7 @@ func apply_network_world_state(data: Dictionary):
 			if processed >= MAX_WORLD_NETWORK_ENTRIES_PER_SECTION:
 				break
 			if entry is Dictionary:
-				var interaction_entry: Dictionary = entry.duplicate(true)
+				var interaction_entry: Dictionary = entry.duplicate(false)
 				interaction_entry["_from_world_state"] = true
 				apply_network_world_interaction_update(interaction_entry)
 				processed += 1
@@ -1497,12 +1581,16 @@ func apply_network_world_state(data: Dictionary):
 		# initial placement branch did not succeed.
 		debug_action_position_flow("world_state fallback entry spawn", get_world_state_debug_summary(data))
 		world.force_place_player_at_current_entrance_gate(true)
+	_profile_world_entry_stage("client_world_objects_applied", {
+		"elapsed_ms": snappedf(float(Time.get_ticks_usec() - apply_started_usec) / 1000.0, 0.001)
+	})
 
 	# Bulk loading skipped per-block neighbor variant refreshes. Fix stacked dirt,
 	# water depth, tree/vine top-middle-bottom, and horizontal platform joins before
 	# the loading overlay is allowed to fade out.
 	if world.has_method("update_smooth_world_load_message"):
-		world.update_smooth_world_load_message("Polishing " + str(world.current_world_name).to_upper() + "...")
+		world.update_smooth_world_load_message("Entering world...")
+	_profile_world_entry_stage("client_world_finalize_start")
 	if world.block_manager != null and world.block_manager.has_method("finalize_world_load_block_variants"):
 		await world.block_manager.finalize_world_load_block_variants()
 	elif world.block_manager != null and world.block_manager.has_method("refresh_all_foreground_block_textures"):
@@ -1511,8 +1599,21 @@ func apply_network_world_state(data: Dictionary):
 	if not is_world_state_apply_current(apply_generation) or not _is_current_world_message(data):
 		_clear_world_state_apply_if_current(apply_generation)
 		return
+	_profile_world_entry_stage("client_world_finalize_complete", {
+		"elapsed_ms": snappedf(float(Time.get_ticks_usec() - apply_started_usec) / 1000.0, 0.001)
+	})
+	# finalize_world_load_block_variants() ends after a process frame and a forced
+	# active-chunk refresh, so this is the first frame with the authoritative
+	# foreground/background visuals reconciled. The loading overlay can still be
+	# visible; controls are measured separately when it is actually dismissed.
+	_profile_world_entry_stage("client_first_built_frame", {
+		"elapsed_ms": snappedf(float(Time.get_ticks_usec() - apply_started_usec) / 1000.0, 0.001)
+	})
 
 	notify_world_collision_snapshot_rebuilt("world-state-rebuild-complete")
+	_profile_world_entry_stage("client_collision_ready", {
+		"elapsed_ms": snappedf(float(Time.get_ticks_usec() - apply_started_usec) / 1000.0, 0.001)
+	})
 	_clear_world_state_apply_if_current(apply_generation)
 	if world.save_manager != null and world.save_manager.has_method("finish_world_entry_after_load"):
 		world.save_manager.finish_world_entry_after_load(false, true, true)

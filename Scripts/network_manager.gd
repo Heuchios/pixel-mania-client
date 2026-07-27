@@ -31,6 +31,7 @@ var pending_join_profile_name := ""
 var pending_server_player_state := {}
 var pending_server_world_state: Dictionary = {}
 var pending_world_state_stream: Dictionary = {}
+var world_entry_profile: Dictionary = {}
 var active_join_request_id := ""
 var active_join_world_name := ""
 var pending_player_state_requests := {}
@@ -90,6 +91,9 @@ const NETFOX_IDENTITY_DEBUG_ARG := "--netfox-identity-debug"
 const NETFOX_IDENTITY_DEBUG_ENV := "NETFOX_IDENTITY_DEBUG"
 const NETFOX_TRUSTED_POSITION_DEBUG_ARG := "--netfox-trusted-position-debug"
 const NETFOX_TRUSTED_POSITION_DEBUG_ENV := "NETFOX_TRUSTED_POSITION_DEBUG"
+const WORLD_ENTRY_PROFILE_ARG := "--world-entry-profile"
+const WORLD_ENTRY_PROFILE_ENV := "PIXELMANIA_WORLD_ENTRY_PROFILE"
+const WORLD_ENTRY_FRAME_STALL_THRESHOLD_MS := 33.334
 const PLAYER_STATE_REQUEST_TIMEOUT_MS := 15000
 var SERVER_URLS: Array[String] = WORLD_ROUTE_WS_URLS.duplicate()
 const NETWORK_API_OVERRIDE_SETTING := "pixelmania/network/api_base"
@@ -109,6 +113,7 @@ const WORLD_STATE_STREAM_VERSION := 1
 const MAX_WORLD_STATE_STREAM_CHUNKS := 256
 const MAX_WORLD_STATE_STREAM_SECTIONS := 64
 const MAX_WORLD_STATE_STREAM_ASSEMBLED_BYTES := 2 * 1024 * 1024
+const MAX_WORLD_STATE_STREAM_WIRE_BYTES := 4 * 1024 * 1024
 const WORLD_STATE_STREAM_TIMEOUT_MS := 15000
 const MAX_WORLD_ROUTE_URL_LENGTH := 256
 const MAX_WORLD_ROUTE_REDIRECT_ATTEMPTS := 2
@@ -316,6 +321,147 @@ func is_netfox_trusted_position_debug_enabled() -> bool:
 	return ["1", "true", "yes", "on", "debug"].has(env_value)
 
 
+func is_world_entry_profile_enabled() -> bool:
+	if not OS.is_debug_build():
+		return false
+	if WORLD_ENTRY_PROFILE_ARG in OS.get_cmdline_args() or WORLD_ENTRY_PROFILE_ARG in OS.get_cmdline_user_args():
+		return true
+	var env_value := OS.get_environment(WORLD_ENTRY_PROFILE_ENV).strip_edges().to_lower()
+	return ["1", "true", "yes", "on", "debug"].has(env_value)
+
+
+func _sample_world_entry_memory_bytes() -> int:
+	return maxi(0, int(Performance.get_monitor(Performance.MEMORY_STATIC)))
+
+
+func begin_world_entry_profile(world_name: String, request_id: String) -> void:
+	if not is_world_entry_profile_enabled():
+		world_entry_profile.clear()
+		return
+	var now_usec := Time.get_ticks_usec()
+	var memory_bytes := _sample_world_entry_memory_bytes()
+	world_entry_profile = {
+		"active": true,
+		"world": _safe_world_name(world_name),
+		"request_id": _safe_string(request_id, "", MAX_REQUEST_ID_LENGTH),
+		"started_usec": now_usec,
+		"last_stage_usec": now_usec,
+		"first_response_usec": 0,
+		"first_world_byte_usec": 0,
+		"wire_bytes": 0,
+		"packet_count": 0,
+		"parse_usec": 0,
+		"peak_memory_bytes": memory_bytes,
+		"max_frame_delta_ms": 0.0,
+		"frame_stall_count": 0,
+		"last_loading_percent": -1
+	}
+	record_world_entry_stage("client_join_request")
+
+
+func record_world_entry_stage(stage: String, extra: Dictionary = {}) -> void:
+	if world_entry_profile.is_empty() or not bool(world_entry_profile.get("active", false)):
+		return
+	var now_usec := Time.get_ticks_usec()
+	var started_usec := int(world_entry_profile.get("started_usec", now_usec))
+	var last_stage_usec := int(world_entry_profile.get("last_stage_usec", started_usec))
+	var memory_bytes := _sample_world_entry_memory_bytes()
+	var peak_memory_bytes := maxi(memory_bytes, int(world_entry_profile.get("peak_memory_bytes", memory_bytes)))
+	world_entry_profile["last_stage_usec"] = now_usec
+	world_entry_profile["peak_memory_bytes"] = peak_memory_bytes
+	var event := {
+		"event": "world_entry_stage",
+		"stage": stage,
+		"world": str(world_entry_profile.get("world", "")),
+		"request_id": str(world_entry_profile.get("request_id", "")),
+		"total_ms": snappedf(float(now_usec - started_usec) / 1000.0, 0.001),
+		"stage_ms": snappedf(float(now_usec - last_stage_usec) / 1000.0, 0.001),
+		"wire_bytes": int(world_entry_profile.get("wire_bytes", 0)),
+		"packet_count": int(world_entry_profile.get("packet_count", 0)),
+		"parse_ms": snappedf(float(world_entry_profile.get("parse_usec", 0)) / 1000.0, 0.001),
+		"memory_bytes": memory_bytes,
+		"peak_memory_bytes": peak_memory_bytes,
+		"max_frame_delta_ms": snappedf(float(world_entry_profile.get("max_frame_delta_ms", 0.0)), 0.001),
+		"frame_stall_count": int(world_entry_profile.get("frame_stall_count", 0))
+	}
+	for key in extra.keys():
+		event[key] = extra[key]
+	print("[world-entry] " + JSON.stringify(event))
+
+
+func _record_world_entry_packet(message_type: String, wire_bytes: int, parse_usec: int) -> void:
+	if world_entry_profile.is_empty() or not bool(world_entry_profile.get("active", false)):
+		return
+	if not ["join_world_ok", "world_state", "world_state_stream_begin", "world_state_stream_chunk", "world_state_stream_end"].has(message_type):
+		return
+	world_entry_profile["wire_bytes"] = int(world_entry_profile.get("wire_bytes", 0)) + maxi(0, wire_bytes)
+	world_entry_profile["packet_count"] = int(world_entry_profile.get("packet_count", 0)) + 1
+	world_entry_profile["parse_usec"] = int(world_entry_profile.get("parse_usec", 0)) + maxi(0, parse_usec)
+	if int(world_entry_profile.get("first_response_usec", 0)) <= 0:
+		world_entry_profile["first_response_usec"] = Time.get_ticks_usec()
+		record_world_entry_stage("client_first_response", {
+			"message_type": message_type,
+			"ttfb_ms": snappedf(float(int(world_entry_profile.get("first_response_usec", 0)) - int(world_entry_profile.get("started_usec", 0))) / 1000.0, 0.001)
+		})
+	if message_type != "join_world_ok" and int(world_entry_profile.get("first_world_byte_usec", 0)) <= 0:
+		world_entry_profile["first_world_byte_usec"] = Time.get_ticks_usec()
+		record_world_entry_stage("client_first_world_byte", {
+			"message_type": message_type,
+			"ttfwb_ms": snappedf(float(int(world_entry_profile.get("first_world_byte_usec", 0)) - int(world_entry_profile.get("started_usec", 0))) / 1000.0, 0.001)
+		})
+
+
+func _get_world_entry_transfer_ms() -> float:
+	var first_world_byte_usec := int(world_entry_profile.get("first_world_byte_usec", 0))
+	if first_world_byte_usec <= 0:
+		return 0.0
+	return snappedf(float(Time.get_ticks_usec() - first_world_byte_usec) / 1000.0, 0.001)
+
+
+func _sample_world_entry_frame(delta: float) -> void:
+	if world_entry_profile.is_empty() or not bool(world_entry_profile.get("active", false)):
+		return
+	var delta_ms := maxf(0.0, delta * 1000.0)
+	world_entry_profile["max_frame_delta_ms"] = maxf(
+		float(world_entry_profile.get("max_frame_delta_ms", 0.0)),
+		delta_ms
+	)
+	if delta_ms >= WORLD_ENTRY_FRAME_STALL_THRESHOLD_MS:
+		world_entry_profile["frame_stall_count"] = int(world_entry_profile.get("frame_stall_count", 0)) + 1
+	var memory_bytes := _sample_world_entry_memory_bytes()
+	world_entry_profile["peak_memory_bytes"] = maxi(
+		memory_bytes,
+		int(world_entry_profile.get("peak_memory_bytes", memory_bytes))
+	)
+
+
+func update_world_entry_loading_progress(received_count: int, chunk_count: int) -> void:
+	if chunk_count <= 0:
+		return
+	var percent := clampi(int(floor(float(received_count) * 100.0 / float(chunk_count))), 0, 100)
+	if not world_entry_profile.is_empty():
+		if percent == int(world_entry_profile.get("last_loading_percent", -1)):
+			return
+		world_entry_profile["last_loading_percent"] = percent
+	var world_node: Node = get_world_node() as Node
+	if world_node != null and world_node.has_method("update_smooth_world_load_message"):
+		world_node.update_smooth_world_load_message("Loading world data " + str(percent) + "%")
+
+
+func complete_world_entry_profile(extra: Dictionary = {}) -> void:
+	if world_entry_profile.is_empty() or not bool(world_entry_profile.get("active", false)):
+		return
+	record_world_entry_stage("client_controls_enabled", extra)
+	world_entry_profile["active"] = false
+
+
+func cancel_world_entry_profile(reason: String) -> void:
+	if world_entry_profile.is_empty() or not bool(world_entry_profile.get("active", false)):
+		return
+	record_world_entry_stage("client_join_canceled", {"reason": reason})
+	world_entry_profile["active"] = false
+
+
 func _ready():
 	configure_network_urls()
 	if not MovementMode.should_run_websocket_backend():
@@ -331,7 +477,8 @@ func _ready():
 	connect_to_server()
 
 
-func _process(delta):
+func _process(delta: float) -> void:
+	_sample_world_entry_frame(delta)
 	if not MovementMode.should_run_websocket_backend():
 		return
 
@@ -399,8 +546,9 @@ func process_server_packets_with_budget() -> void:
 	var started_usec: int = Time.get_ticks_usec()
 
 	while socket.get_available_packet_count() > 0 and processed < MAX_SERVER_PACKETS_PER_FRAME:
-		var packet: String = socket.get_packet().get_string_from_utf8()
-		handle_server_message(packet)
+		var packet_bytes: PackedByteArray = socket.get_packet()
+		var packet: String = packet_bytes.get_string_from_utf8()
+		handle_server_message(packet, packet_bytes.size())
 		processed += 1
 
 		if is_world_state_apply_in_progress():
@@ -1814,6 +1962,10 @@ func send_join_world(world_name: String) -> bool:
 	active_join_request_id = join_request_id
 	active_join_world_name = clean_world
 	current_world_name = clean_world
+	begin_world_entry_profile(clean_world, join_request_id)
+	var world_node: Node = get_world_node() as Node
+	if world_node != null and world_node.has_method("update_smooth_world_load_message"):
+		world_node.update_smooth_world_load_message("Finding world...")
 	movement_sequence = 0
 	last_accepted_position_sequence = 0
 	last_rejected_position_sequence = 0
@@ -1828,6 +1980,7 @@ func send_join_world(world_name: String) -> bool:
 		"join_request_id": join_request_id
 	}))
 	if not sent:
+		cancel_world_entry_profile("join_request_send_failed")
 		active_join_request_id = ""
 		active_join_world_name = ""
 	return sent
@@ -1836,6 +1989,7 @@ func send_join_world(world_name: String) -> bool:
 func cancel_active_join_request() -> void:
 	pending_server_world_state.clear()
 	pending_world_state_stream.clear()
+	cancel_world_entry_profile("join_request_canceled")
 	# Keep a non-empty tombstone so late responses from the canceled attempt are
 	# rejected instead of being treated as legacy responses with no active join.
 	active_join_request_id = make_action_request_id("cancel_join")
@@ -3650,14 +3804,18 @@ func handle_world_update_payload(data: Dictionary) -> void:
 				world_node.apply_network_item_drop_remove(pickup_remove_payload)
 
 
-func handle_server_message(raw: String) -> void:
+func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 	if raw == "":
 		return
-	if raw.to_utf8_buffer().size() > MAX_SERVER_MESSAGE_BYTES:
+	if wire_bytes <= 0:
+		wire_bytes = raw.to_utf8_buffer().size()
+	if wire_bytes > MAX_SERVER_MESSAGE_BYTES:
 		return
 
+	var parse_started_usec := Time.get_ticks_usec()
 	var json = JSON.new()
 	var error = json.parse(raw)
+	var parse_usec := Time.get_ticks_usec() - parse_started_usec
 	if error != OK:
 		return
 	var data = json.data
@@ -3669,6 +3827,7 @@ func handle_server_message(raw: String) -> void:
 	var message_type = _safe_string(data.get("type", ""), "", MAX_SERVER_MESSAGE_TYPE_LENGTH).to_lower()
 	if message_type == "":
 		return
+	_record_world_entry_packet(message_type, wire_bytes, parse_usec)
 	update_developer_pin_state_from_message(data)
 	var world_node = null
 	var safe_world = _get_message_world_name(data)
@@ -3747,11 +3906,11 @@ func handle_server_message(raw: String) -> void:
 			if safe_world != "":
 				current_world_name = safe_world
 		"world_state_stream_begin":
-			_handle_world_state_stream_begin(data)
+			_handle_world_state_stream_begin(data, wire_bytes)
 		"world_state_stream_chunk":
-			_handle_world_state_stream_chunk(data)
+			_handle_world_state_stream_chunk(data, wire_bytes)
 		"world_state_stream_end":
-			_handle_world_state_stream_end(data)
+			_handle_world_state_stream_end(data, wire_bytes)
 		"world_state":
 			pending_world_state_stream.clear()
 			if not _is_message_for_active_join_request(data):
@@ -3777,6 +3936,11 @@ func handle_server_message(raw: String) -> void:
 			if not _is_valid_server_world_state_payload(data):
 				_retry_invalid_server_world_state(data)
 				return
+			record_world_entry_stage("client_world_data_received", {
+				"transport": "legacy",
+				"wire_bytes": wire_bytes,
+				"transfer_ms": _get_world_entry_transfer_ms()
+			})
 			world_node = get_world_node()
 			if not _world_node_can_apply_server_world_state(world_node):
 				_queue_pending_server_world_state(data, "world_scene_not_ready")
@@ -4767,7 +4931,7 @@ func process_pending_world_state_stream_timeout() -> void:
 		_fail_pending_world_state_stream("timeout")
 
 
-func _handle_world_state_stream_begin(data: Dictionary) -> void:
+func _handle_world_state_stream_begin(data: Dictionary, wire_bytes: int = 0) -> void:
 	if int(data.get("stream_version", 0)) != WORLD_STATE_STREAM_VERSION:
 		_fail_pending_world_state_stream("unsupported_version", data)
 		return
@@ -4801,7 +4965,7 @@ func _handle_world_state_stream_begin(data: Dictionary) -> void:
 		_fail_pending_world_state_stream("invalid_begin", data)
 		return
 
-	var metadata: Dictionary = metadata_value.duplicate(true)
+	var metadata: Dictionary = metadata_value
 	if str(metadata.get("type", "")) != "world_state":
 		_fail_pending_world_state_stream("invalid_metadata_type", data)
 		return
@@ -4844,12 +5008,18 @@ func _handle_world_state_stream_begin(data: Dictionary) -> void:
 		"section_kinds": section_kinds,
 		"chunks": {},
 		"received_count": 0,
-		"received_data_bytes": JSON.stringify(metadata).to_utf8_buffer().size(),
+		"received_wire_bytes": maxi(0, wire_bytes),
 		"started_at_msec": Time.get_ticks_msec()
 	}
+	update_world_entry_loading_progress(0, chunk_count)
+	record_world_entry_stage("client_world_stream_begin", {
+		"chunk_count": chunk_count,
+		"section_count": section_count,
+		"snapshot_bytes": snapshot_bytes
+	})
 
 
-func _handle_world_state_stream_chunk(data: Dictionary) -> void:
+func _handle_world_state_stream_chunk(data: Dictionary, wire_bytes: int = 0) -> void:
 	if pending_world_state_stream.is_empty():
 		return
 	var snapshot_id: String = _safe_string(data.get("snapshot_id", ""), "", MAX_REQUEST_ID_LENGTH)
@@ -4887,22 +5057,22 @@ func _handle_world_state_stream_chunk(data: Dictionary) -> void:
 	var chunks: Dictionary = pending_world_state_stream.get("chunks", {})
 	if chunks.has(chunk_index):
 		return
-	var next_data_bytes: int = int(pending_world_state_stream.get("received_data_bytes", 0))
-	next_data_bytes += JSON.stringify(chunk_data).to_utf8_buffer().size()
-	if next_data_bytes > MAX_WORLD_STATE_STREAM_ASSEMBLED_BYTES:
+	var next_wire_bytes: int = int(pending_world_state_stream.get("received_wire_bytes", 0)) + maxi(0, wire_bytes)
+	if next_wire_bytes > MAX_WORLD_STATE_STREAM_WIRE_BYTES:
 		_fail_pending_world_state_stream("stream_too_large", data)
 		return
 	chunks[chunk_index] = {
 		"section": section_name,
 		"section_kind": section_kind,
-		"data": chunk_data.duplicate(true)
+		"data": chunk_data
 	}
 	pending_world_state_stream["chunks"] = chunks
 	pending_world_state_stream["received_count"] = int(pending_world_state_stream.get("received_count", 0)) + 1
-	pending_world_state_stream["received_data_bytes"] = next_data_bytes
+	pending_world_state_stream["received_wire_bytes"] = next_wire_bytes
+	update_world_entry_loading_progress(int(pending_world_state_stream.get("received_count", 0)), expected_chunk_count)
 
 
-func _handle_world_state_stream_end(data: Dictionary) -> void:
+func _handle_world_state_stream_end(data: Dictionary, wire_bytes: int = 0) -> void:
 	if pending_world_state_stream.is_empty():
 		return
 	var expected_snapshot_id: String = str(pending_world_state_stream.get("snapshot_id", ""))
@@ -4910,6 +5080,7 @@ func _handle_world_state_stream_end(data: Dictionary) -> void:
 	var expected_join_request_id: String = str(pending_world_state_stream.get("join_request_id", ""))
 	var expected_chunk_count: int = int(pending_world_state_stream.get("chunk_count", -1))
 	var expected_snapshot_bytes: int = int(pending_world_state_stream.get("snapshot_bytes", 0))
+	var received_wire_bytes: int = int(pending_world_state_stream.get("received_wire_bytes", 0)) + maxi(0, wire_bytes)
 	if (
 		int(data.get("stream_version", 0)) != WORLD_STATE_STREAM_VERSION
 		or _safe_string(data.get("snapshot_id", ""), "", MAX_REQUEST_ID_LENGTH) != expected_snapshot_id
@@ -4918,16 +5089,20 @@ func _handle_world_state_stream_end(data: Dictionary) -> void:
 		or int(data.get("chunk_count", -1)) != expected_chunk_count
 		or int(data.get("snapshot_bytes", 0)) != expected_snapshot_bytes
 		or int(pending_world_state_stream.get("received_count", 0)) != expected_chunk_count
+		or received_wire_bytes > MAX_WORLD_STATE_STREAM_WIRE_BYTES
 	):
 		_fail_pending_world_state_stream("incomplete_end", data)
 		return
 
-	var payload: Dictionary = pending_world_state_stream.get("metadata", {}).duplicate(true)
+	var payload: Dictionary = pending_world_state_stream.get("metadata", {}).duplicate(false)
 	var section_descriptors: Array = pending_world_state_stream.get("section_descriptors", [])
 	for raw_descriptor in section_descriptors:
 		var descriptor: Dictionary = raw_descriptor
 		var section_name: String = str(descriptor.get("name", ""))
-		payload[section_name] = [] if str(descriptor.get("kind", "")) == "array" else {}
+		if str(descriptor.get("kind", "")) == "array":
+			payload[section_name] = []
+		else:
+			payload[section_name] = {}
 
 	var chunks: Dictionary = pending_world_state_stream.get("chunks", {})
 	for chunk_index in range(expected_chunk_count):
@@ -4948,11 +5123,6 @@ func _handle_world_state_stream_end(data: Dictionary) -> void:
 				target_dictionary[key] = chunk_data[key]
 			payload[section_name] = target_dictionary
 
-	var assembled_bytes: int = JSON.stringify(payload).to_utf8_buffer().size()
-	if assembled_bytes > MAX_WORLD_STATE_STREAM_ASSEMBLED_BYTES:
-		_fail_pending_world_state_stream("assembled_snapshot_too_large", data)
-		return
-
 	pending_world_state_stream.clear()
 	if not _is_message_for_active_join_request(payload):
 		return
@@ -4961,8 +5131,14 @@ func _handle_world_state_stream_end(data: Dictionary) -> void:
 	debug_action_position_flow("received streamed world_state", {
 		"world": expected_world,
 		"chunks": expected_chunk_count,
-		"snapshot_bytes": assembled_bytes,
+		"snapshot_bytes": expected_snapshot_bytes,
 		"world_state_reason": str(payload.get("world_state_reason", ""))
+	})
+	record_world_entry_stage("client_world_data_received", {
+		"chunks": expected_chunk_count,
+		"snapshot_bytes": expected_snapshot_bytes,
+		"wire_bytes": received_wire_bytes,
+		"transfer_ms": _get_world_entry_transfer_ms()
 	})
 	if not _is_valid_server_world_state_payload(payload):
 		_retry_invalid_server_world_state(payload)
