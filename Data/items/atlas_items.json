@@ -1341,7 +1341,7 @@
       "hardness": 3,
       "rarity": "uncommon",
       "seed": "street_lamp_seed",
-      "foreground_over_player": true,
+      "foreground_over_player": false,
       "vertical_variant_atlas_coords": {
         "single": [16, 31],
         "top": [15, 29],

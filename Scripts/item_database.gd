@@ -6411,7 +6411,7 @@ const ITEMS = {
 			"collidable": false,
 			"solid": false,
 			"collision_type": "none",
-			"foreground_over_player": true,
+			"foreground_over_player": false,
 			"drop_rules": {
 				"seed_chance": 0,
 				"gem_range": [0, 0],
