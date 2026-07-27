@@ -6391,6 +6391,47 @@ const ITEMS = {
 			},
 			"order": 315
 		},
+	"street_lamp": {
+			"category": "block",
+			"display_name": "Street Lamp",
+			"rarity": "uncommon",
+			"block_health": 3,
+			"texture": "res://image.png",
+			"inventory_icon": "res://image.png",
+			"atlas_item_id": 53,
+			"atlas_coords": Vector2i(16, 31),
+			"vertical_variant_atlas_coords": {
+				"single": Vector2i(16, 31),
+				"top": Vector2i(15, 29),
+				"middle": Vector2i(15, 30),
+				"bottom": Vector2i(15, 31)
+			},
+			"seed": "street_lamp_seed",
+			"no_collision": true,
+			"collidable": false,
+			"solid": false,
+			"collision_type": "none",
+			"foreground_over_player": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "street_lamp", "item_category": "block", "amount_range": [1, 3]},
+					{"item_id": "street_lamp_seed", "item_category": "seed", "amount_range": [0, 2]},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [0, 5]}
+				]
+			},
+			"tree_drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "street_lamp", "item_category": "block", "amount_range": [1, 3]},
+					{"item_id": "street_lamp_seed", "item_category": "seed", "amount_range": [0, 2]},
+					{"item_id": "gem", "item_category": "currency", "amount_range": [0, 5]}
+				]
+			},
+			"order": 427
+		},
 	"barn_block": {
 			"category": "block",
 			"display_name": "Barn Block",
