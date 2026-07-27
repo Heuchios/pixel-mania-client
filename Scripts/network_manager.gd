@@ -4535,7 +4535,7 @@ func apply_player_position_correction(data: Dictionary) -> bool:
 	if accepted_sequence > 0:
 		if last_accepted_position_sequence > 0 and accepted_sequence < last_accepted_position_sequence:
 			return false
-	elif rejected_sequence > 0 and last_rejected_position_sequence > 0 and rejected_sequence <= last_rejected_position_sequence:
+	if rejected_sequence > 0 and last_rejected_position_sequence > 0 and rejected_sequence <= last_rejected_position_sequence:
 		return false
 
 	var world_node = get_world_node()

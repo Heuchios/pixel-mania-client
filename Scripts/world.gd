@@ -66,6 +66,7 @@ const WORLD_PIXEL_HEIGHT = WORLD_HEIGHT * BLOCK_SIZE
 const PLAYER_BOUND_MARGIN = BLOCK_SIZE * 0.5
 const SERVER_POSITION_CORRECTION_SNAP_DISTANCE := 160.0
 const SERVER_POSITION_CORRECTION_DEFAULT_SMOOTH_MS := 80
+const SERVER_POSITION_CORRECTION_PRESENTATION_THRESHOLD := 0.35
 
 const CAMERA_ZOOM_MIN = 1.5
 const CAMERA_ZOOM_MAX = 7.0
@@ -6898,24 +6899,47 @@ func apply_server_player_position_correction(data: Dictionary):
 
 	target_position.x = clamp(target_position.x, 0.0, float((WORLD_WIDTH - 1) * BLOCK_SIZE))
 	target_position.y = clamp(target_position.y, 0.0, float((WORLD_HEIGHT - 1) * BLOCK_SIZE))
-	var correction_distance: float = player.global_position.distance_to(target_position)
+	var previous_root_position: Vector2 = player.global_position
+	var correction_distance: float = previous_root_position.distance_to(target_position)
 	var correction_smoothing_ms := int(data.get("correction_smoothing_ms", SERVER_POSITION_CORRECTION_DEFAULT_SMOOTH_MS))
 	var should_snap := bool(data.get("correction_snap", false)) \
 		or correction_smoothing_ms <= 0 \
 		or correction_distance >= SERVER_POSITION_CORRECTION_SNAP_DISTANCE
+	var correction_count := int(get_meta("server_position_correction_count", 0)) + 1
+	set_meta("server_position_correction_count", correction_count)
+	set_meta("server_position_correction_last_distance_px", correction_distance)
+	set_meta("server_position_correction_total_distance_px", float(get_meta("server_position_correction_total_distance_px", 0.0)) + correction_distance)
+	if should_snap:
+		set_meta("server_position_correction_snap_count", int(get_meta("server_position_correction_snap_count", 0)) + 1)
+	if MovementMode.has_method("has_launch_arg") and bool(MovementMode.has_launch_arg("--movement-sync-debug")):
+		print("[MovementSync][Local] correction=%d distance_px=%.2f snap=%s accepted_sequence=%d rejected_sequence=%d" % [
+			correction_count,
+			correction_distance,
+			str(should_snap),
+			int(data.get("accepted_sequence", 0)),
+			int(data.get("rejected_sequence", 0))
+		])
 
 	if server_position_correction_tween != null and server_position_correction_tween.is_valid():
 		server_position_correction_tween.kill()
 		server_position_correction_tween = null
 
+	var presentation_nodes := _get_server_correction_presentation_nodes()
+	player.global_position = target_position
 	if should_snap:
-		player.global_position = target_position
+		_restore_server_correction_presentation_nodes(presentation_nodes)
 	else:
 		var duration := clampf(float(correction_smoothing_ms) / 1000.0, 0.016, 0.18)
-		server_position_correction_tween = create_tween()
+		var presentation_delta := previous_root_position - target_position
+		server_position_correction_tween = create_tween().set_parallel(true)
 		server_position_correction_tween.set_trans(Tween.TRANS_SINE)
 		server_position_correction_tween.set_ease(Tween.EASE_OUT)
-		server_position_correction_tween.tween_property(player, "global_position", target_position, duration)
+		for presentation_node in presentation_nodes:
+			var base_value = presentation_node.get_meta("server_correction_base_position", presentation_node.position)
+			var base_position: Vector2 = base_value if base_value is Vector2 else presentation_node.position
+			if correction_distance >= SERVER_POSITION_CORRECTION_PRESENTATION_THRESHOLD:
+				presentation_node.position += presentation_delta
+			server_position_correction_tween.tween_property(presentation_node, "position", base_position, duration)
 
 	if data.has("server_facing"):
 		set_player_facing_direction(int(data.get("server_facing", player_facing_direction)), false)
@@ -6933,6 +6957,30 @@ func apply_server_player_position_correction(data: Dictionary):
 	var camera: Node = get_player_camera()
 	if should_snap and camera != null and camera.has_method("reset_smoothing"):
 		camera.reset_smoothing()
+
+
+func _get_server_correction_presentation_nodes() -> Array[Node2D]:
+	var result: Array[Node2D] = []
+	if player == null:
+		return result
+	for node_path in ["PlayerVisual", "Camera2D"]:
+		var candidate = player.get_node_or_null(node_path)
+		if candidate == null or not (candidate is Node2D):
+			continue
+		var presentation_node := candidate as Node2D
+		if not presentation_node.has_meta("server_correction_base_position"):
+			presentation_node.set_meta("server_correction_base_position", presentation_node.position)
+		result.append(presentation_node)
+	return result
+
+
+func _restore_server_correction_presentation_nodes(presentation_nodes: Array[Node2D]) -> void:
+	for presentation_node in presentation_nodes:
+		if presentation_node == null or not is_instance_valid(presentation_node):
+			continue
+		var base_value = presentation_node.get_meta("server_correction_base_position", presentation_node.position)
+		if base_value is Vector2:
+			presentation_node.position = base_value
 
 
 func handle_network_door_enter_ok(data: Dictionary):
