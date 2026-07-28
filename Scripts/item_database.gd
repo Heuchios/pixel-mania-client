@@ -6449,7 +6449,7 @@ const ITEMS = {
 				"horizontal_middle": Vector2i(18, 29),
 				"right": Vector2i(19, 29),
 				"top": Vector2i(16, 30),
-				"vertical_middle": Vector2i(18, 30),
+				"vertical_middle": Vector2i(16, 30),
 				"bottom": Vector2i(16, 29),
 				"top_left_corner": Vector2i(17, 30),
 				"top_right_corner": Vector2i(19, 30),
@@ -6474,6 +6474,28 @@ const ITEMS = {
 				]
 			},
 			"order": 428
+		},
+	"city_fence": {
+			"category": "block",
+			"display_name": "City Fence",
+			"rarity": "uncommon",
+			"block_health": 3,
+			"texture": "res://image.png",
+			"inventory_icon": "res://image.png",
+			"atlas_item_id": 55,
+			"atlas_coords": Vector2i(20, 29),
+			"seed": "",
+			"no_collision": true,
+			"collidable": false,
+			"foreground_over_player": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "city_fence", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 429
 		},
 	"barn_block": {
 			"category": "block",
