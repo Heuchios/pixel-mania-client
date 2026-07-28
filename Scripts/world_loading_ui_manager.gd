@@ -10,6 +10,10 @@ const WORLD_READY_CHECK_INTERVAL_MSEC := 50
 const WORLD_LOADING_MIN_VISIBLE_MSEC := 0
 const WORLD_LOADING_READY_HOLD_MSEC := 0
 const WORLD_LOADING_DOTS_INTERVAL := 0.32
+const WORLD_LOADING_INITIAL_PROGRESS := 8.0
+const WORLD_LOADING_PASSIVE_PROGRESS_MAX := 88.0
+const WORLD_LOADING_PASSIVE_PROGRESS_PER_SECOND := 7.5
+const WORLD_LOADING_PROGRESS_APPROACH_SPEED := 42.0
 const DEBUG_WORLD_LOADING_UI := true
 const WORLD_LOADING_CANVAS_LAYER := 4096
 
@@ -32,6 +36,9 @@ var world_loading_root: Control = null
 var world_loading_title_label: Label = null
 var world_loading_label: Label = null
 var world_loading_dots_label: Label = null
+var world_loading_progress_bar: TextureProgressBar = null
+var world_loading_progress_label: Label = null
+var world_loading_version_label: Label = null
 var world_loading_fade_tween = null
 var waiting_for_server_state := false
 var loading_started_msec := 0
@@ -42,6 +49,8 @@ var finish_wait_running := false
 var pending_finish_smooth_load := false
 var loading_dot_timer := 0.0
 var loading_dot_count := 0
+var loading_progress_value := 0.0
+var loading_progress_target := 0.0
 
 
 func _debug(message: String) -> void:
@@ -59,6 +68,8 @@ func _process(delta: float) -> void:
 		return
 	if not bool(world_loading_overlay.visible):
 		return
+
+	_update_loading_progress(delta)
 
 	loading_dot_timer += delta
 	if loading_dot_timer < WORLD_LOADING_DOTS_INTERVAL:
@@ -268,6 +279,9 @@ func _cache_overlay_nodes() -> void:
 	world_loading_title_label = null
 	world_loading_label = null
 	world_loading_dots_label = null
+	world_loading_progress_bar = null
+	world_loading_progress_label = null
+	world_loading_version_label = null
 
 	if world_loading_overlay == null or not is_instance_valid(world_loading_overlay):
 		return
@@ -297,6 +311,24 @@ func _cache_overlay_nodes() -> void:
 		if dots_node is Label:
 			world_loading_dots_label = dots_node
 
+		var progress_bar_node = world_loading_root.get_node_or_null("Center/Box/ProgressBar")
+		if progress_bar_node == null:
+			progress_bar_node = world_loading_root.find_child("ProgressBar", true, false)
+		if progress_bar_node is TextureProgressBar:
+			world_loading_progress_bar = progress_bar_node
+
+		var progress_label_node = world_loading_root.get_node_or_null("Center/Box/ProgressPercent")
+		if progress_label_node == null:
+			progress_label_node = world_loading_root.find_child("ProgressPercent", true, false)
+		if progress_label_node is Label:
+			world_loading_progress_label = progress_label_node
+
+		var version_node = world_loading_root.get_node_or_null("Version")
+		if version_node == null:
+			version_node = world_loading_root.find_child("Version", true, false)
+		if version_node is Label:
+			world_loading_version_label = version_node
+
 
 func _ensure_overlay_content() -> void:
 	if world_loading_overlay == null or not is_instance_valid(world_loading_overlay):
@@ -316,6 +348,7 @@ func _ensure_overlay_content() -> void:
 	world_loading_root.modulate = Color(1, 1, 1, 1)
 
 	var shade = world_loading_root.get_node_or_null("Shade")
+	var created_shade := false
 	if shade == null or not (shade is ColorRect):
 		if shade != null:
 			shade.queue_free()
@@ -323,13 +356,15 @@ func _ensure_overlay_content() -> void:
 		shade.name = "Shade"
 		world_loading_root.add_child(shade)
 		world_loading_root.move_child(shade, 0)
+		created_shade = true
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	shade.offset_left = 0.0
 	shade.offset_top = 0.0
 	shade.offset_right = 0.0
 	shade.offset_bottom = 0.0
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	shade.color = Color(0.02, 0.05, 0.08, 0.94)
+	if created_shade:
+		shade.color = Color(0.02, 0.05, 0.08, 0.94)
 
 	var center = world_loading_root.get_node_or_null("Center")
 	if center == null or not (center is CenterContainer):
@@ -347,59 +382,76 @@ func _ensure_overlay_content() -> void:
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var box = center.get_node_or_null("Box")
+	var created_box := false
 	if box == null or not (box is VBoxContainer):
 		box = VBoxContainer.new()
 		box.name = "Box"
 		center.add_child(box)
-	box.custom_minimum_size = Vector2(620, 230)
+		created_box = true
+	if created_box:
+		box.custom_minimum_size = Vector2(620, 230)
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 12)
+	if created_box:
+		box.add_theme_constant_override("separation", 12)
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var title = box.get_node_or_null("Title")
+	var created_title := false
 	if title == null or not (title is Label):
 		title = Label.new()
 		title.name = "Title"
 		box.add_child(title)
+		created_title = true
 	world_loading_title_label = title
 	title.text = "LOADING WORLD"
-	title.custom_minimum_size = Vector2(620, 70)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title.add_theme_font_size_override("font_size", 56)
-	title.add_theme_color_override("font_color", Color(1, 1, 1, 1))
-	title.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
-	title.add_theme_constant_override("shadow_offset_x", 4)
-	title.add_theme_constant_override("shadow_offset_y", 5)
+	if created_title:
+		title.custom_minimum_size = Vector2(620, 70)
+		title.add_theme_font_size_override("font_size", 56)
+		title.add_theme_color_override("font_color", Color(1, 1, 1, 1))
+		title.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
+		title.add_theme_constant_override("shadow_offset_x", 4)
+		title.add_theme_constant_override("shadow_offset_y", 5)
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	world_loading_label = box.get_node_or_null("Message")
+	var created_message := false
 	if world_loading_label == null or not (world_loading_label is Label):
 		world_loading_label = Label.new()
 		world_loading_label.name = "Message"
 		box.add_child(world_loading_label)
+		created_message = true
 	world_loading_label.text = "Loading world..."
 	world_loading_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	world_loading_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	world_loading_label.add_theme_font_size_override("font_size", 24)
-	world_loading_label.add_theme_color_override("font_color", Color(0.86, 0.96, 1.0, 1))
-	world_loading_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
-	world_loading_label.add_theme_constant_override("shadow_offset_x", 2)
-	world_loading_label.add_theme_constant_override("shadow_offset_y", 2)
+	if created_message:
+		world_loading_label.add_theme_font_size_override("font_size", 24)
+		world_loading_label.add_theme_color_override("font_color", Color(0.86, 0.96, 1.0, 1))
+		world_loading_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
+		world_loading_label.add_theme_constant_override("shadow_offset_x", 2)
+		world_loading_label.add_theme_constant_override("shadow_offset_y", 2)
 	world_loading_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	world_loading_dots_label = box.get_node_or_null("Dots")
+	var created_dots := false
 	if world_loading_dots_label == null or not (world_loading_dots_label is Label):
 		world_loading_dots_label = Label.new()
 		world_loading_dots_label.name = "Dots"
 		box.add_child(world_loading_dots_label)
+		created_dots = true
 	world_loading_dots_label.text = "..."
 	world_loading_dots_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	world_loading_dots_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	world_loading_dots_label.add_theme_font_size_override("font_size", 28)
-	world_loading_dots_label.add_theme_color_override("font_color", Color(0.86, 0.96, 1.0, 1))
+	if created_dots:
+		world_loading_dots_label.add_theme_font_size_override("font_size", 28)
+		world_loading_dots_label.add_theme_color_override("font_color", Color(0.86, 0.96, 1.0, 1))
 	world_loading_dots_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	_cache_overlay_nodes()
+	_refresh_loading_version_label()
+	_apply_loading_progress_visuals()
 
 
 func _set_overlay_visible(is_visible: bool) -> void:
@@ -471,6 +523,7 @@ func begin_smooth_world_load(world_name: String, wait_for_server_state: bool = t
 		world_loading_root.modulate = Color(1, 1, 1, 1)
 		world_loading_root.mouse_filter = Control.MOUSE_FILTER_STOP
 
+	_set_loading_progress(WORLD_LOADING_INITIAL_PROGRESS, true)
 	update_title_for_world(clean_world_name)
 	update_message("Loading " + clean_world_name + "...")
 	_set_loading_dots_text("...")
@@ -501,6 +554,7 @@ func update_message(message: String):
 	if world_loading_label == null or not is_instance_valid(world_loading_label):
 		return
 	world_loading_label.text = message
+	_advance_loading_progress_for_message(message)
 
 
 func _set_loading_dots_text(text: String) -> void:
@@ -509,6 +563,70 @@ func _set_loading_dots_text(text: String) -> void:
 	if world_loading_dots_label == null or not is_instance_valid(world_loading_dots_label):
 		return
 	world_loading_dots_label.text = text
+
+
+func _update_loading_progress(delta: float) -> void:
+	if loading_started_msec > 0 and loading_progress_target < 100.0:
+		var elapsed_seconds: float = maxf(0.0, float(Time.get_ticks_msec() - loading_started_msec) / 1000.0)
+		var passive_target: float = minf(
+			WORLD_LOADING_PASSIVE_PROGRESS_MAX,
+			WORLD_LOADING_INITIAL_PROGRESS + elapsed_seconds * WORLD_LOADING_PASSIVE_PROGRESS_PER_SECOND
+		)
+		loading_progress_target = maxf(loading_progress_target, passive_target)
+
+	var next_value: float = move_toward(
+		loading_progress_value,
+		loading_progress_target,
+		WORLD_LOADING_PROGRESS_APPROACH_SPEED * delta
+	)
+	if is_equal_approx(next_value, loading_progress_value):
+		return
+	loading_progress_value = next_value
+	_apply_loading_progress_visuals()
+
+
+func _advance_loading_progress_for_message(message: String) -> void:
+	var lower_message := message.strip_edges().to_lower()
+	var stage_target := 42.0
+	if "retry" in lower_message or "waiting" in lower_message:
+		stage_target = 30.0
+	elif "building" in lower_message:
+		stage_target = 62.0
+	elif "preparing" in lower_message:
+		stage_target = 88.0
+	elif "entering" in lower_message:
+		stage_target = 96.0
+	elif "loading" in lower_message:
+		stage_target = 38.0
+	_set_loading_progress(maxf(loading_progress_target, stage_target), false)
+
+
+func _set_loading_progress(value: float, immediate: bool = false) -> void:
+	loading_progress_target = clampf(value, 0.0, 100.0)
+	if immediate:
+		loading_progress_value = loading_progress_target
+		_apply_loading_progress_visuals()
+
+
+func _apply_loading_progress_visuals() -> void:
+	var rounded_progress := clampi(int(round(loading_progress_value)), 0, 100)
+	if world_loading_progress_bar != null and is_instance_valid(world_loading_progress_bar):
+		world_loading_progress_bar.max_value = 100.0
+		world_loading_progress_bar.value = float(rounded_progress)
+	if world_loading_progress_label != null and is_instance_valid(world_loading_progress_label):
+		world_loading_progress_label.text = str(rounded_progress) + "%"
+
+
+func _refresh_loading_version_label() -> void:
+	if world_loading_version_label == null or not is_instance_valid(world_loading_version_label):
+		return
+	var client_version := "1.0.4"
+	var network_manager := get_node_or_null("/root/NetworkManager")
+	if network_manager != null and network_manager.has_method("get_client_version"):
+		var reported_version := str(network_manager.call("get_client_version")).strip_edges()
+		if reported_version != "":
+			client_version = reported_version
+	world_loading_version_label.text = "Alpha-" + client_version
 
 
 func is_overlay_visible() -> bool:
@@ -576,6 +694,7 @@ func _finish_smooth_world_load_when_ready() -> void:
 
 	pending_finish_smooth_load = false
 	finish_wait_running = false
+	_set_loading_progress(100.0, true)
 	_fade_out_loading_overlay()
 
 

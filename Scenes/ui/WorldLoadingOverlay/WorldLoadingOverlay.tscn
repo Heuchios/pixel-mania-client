@@ -1,0 +1,238 @@
+[gd_scene format=3 uid="uid://c365a6veur3ka"]
+
+[ext_resource type="Texture2D" path="res://Assets/background/space_theme/star_1.png" id="1_bg_base"]
+[ext_resource type="Texture2D" path="res://Assets/background/space_theme/star_2.png" id="2_bg_far"]
+[ext_resource type="Texture2D" path="res://Assets/background/space_theme/star_3.png" id="3_bg_mid"]
+[ext_resource type="Texture2D" path="res://Assets/background/space_theme/star_4.png" id="4_bg_front"]
+[ext_resource type="Texture2D" path="res://Assets/ui/logo/Logo_6.png" id="5_logo"]
+[ext_resource type="FontFile" path="res://Assets/font/font.ttf" id="6_font"]
+[ext_resource type="Texture2D" path="res://Assets/ui/fill_bar_empty.png" id="7_bar_empty"]
+[ext_resource type="Texture2D" path="res://Assets/ui/fill_bar_full.png" id="8_bar_full"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_logo"]
+atlas = ExtResource("5_logo")
+region = Rect2(54, 144, 406, 222)
+
+[node name="WorldLoadingOverlay" type="Node2D" unique_id=2067188574]
+
+[node name="LoadingCanvas" type="CanvasLayer" parent="." unique_id=1019727842]
+layer = 4096
+
+[node name="Root" type="Control" parent="LoadingCanvas" unique_id=1436696041]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="ParallaxBG" type="Control" parent="LoadingCanvas/Root" unique_id=721702493]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Bg_Base" type="TextureRect" parent="LoadingCanvas/Root/ParallaxBG"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -34.0
+offset_top = -34.0
+offset_right = 34.0
+offset_bottom = 34.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("1_bg_base")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Bg_Far" type="TextureRect" parent="LoadingCanvas/Root/ParallaxBG" unique_id=412163514]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = -42.0
+offset_right = 42.0
+offset_bottom = 42.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_bg_far")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Bg_Mid" type="TextureRect" parent="LoadingCanvas/Root/ParallaxBG" unique_id=325665116]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_bg_mid")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Bg_Front" type="TextureRect" parent="LoadingCanvas/Root/ParallaxBG" unique_id=1230387944]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -58.0
+offset_top = -58.0
+offset_right = 58.0
+offset_bottom = 58.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_bg_front")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Shade" type="ColorRect" parent="LoadingCanvas/Root" unique_id=543123872]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.0156863, 0.00784314, 0.027451, 0.12)
+
+[node name="Center" type="CenterContainer" parent="LoadingCanvas/Root" unique_id=771392514]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -36.0
+offset_bottom = -36.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Box" type="VBoxContainer" parent="LoadingCanvas/Root/Center" unique_id=1215251502]
+custom_minimum_size = Vector2(680, 520)
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Logo" type="TextureRect" parent="LoadingCanvas/Root/Center/Box"]
+custom_minimum_size = Vector2(620, 300)
+layout_mode = 2
+mouse_filter = 2
+texture = SubResource("AtlasTexture_logo")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="LoadingCanvas/Root/Center/Box" unique_id=1420801407]
+visible = false
+layout_mode = 2
+theme_override_fonts/font = ExtResource("6_font")
+theme_override_font_sizes/font_size = 36
+text = "LOADING WORLD"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Gap" type="Control" parent="LoadingCanvas/Root/Center/Box"]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Message" type="Label" parent="LoadingCanvas/Root/Center/Box" unique_id=600682404]
+custom_minimum_size = Vector2(680, 34)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.9, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("6_font")
+theme_override_font_sizes/font_size = 24
+text = "Loading world..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressPercent" type="Label" parent="LoadingCanvas/Root/Center/Box"]
+custom_minimum_size = Vector2(680, 30)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("6_font")
+theme_override_font_sizes/font_size = 24
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressBar" type="TextureProgressBar" parent="LoadingCanvas/Root/Center/Box"]
+texture_filter = 1
+custom_minimum_size = Vector2(620, 20)
+layout_mode = 2
+mouse_filter = 2
+value = 8.0
+show_percentage = false
+texture_under = ExtResource("7_bar_empty")
+texture_progress = ExtResource("8_bar_full")
+nine_patch_stretch = true
+stretch_margin_left = 8
+stretch_margin_top = 4
+stretch_margin_right = 8
+stretch_margin_bottom = 4
+
+[node name="Dots" type="Label" parent="LoadingCanvas/Root/Center/Box" unique_id=78898817]
+visible = false
+layout_mode = 2
+theme_override_fonts/font = ExtResource("6_font")
+theme_override_font_sizes/font_size = 24
+text = "..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Tip" type="Label" parent="LoadingCanvas/Root/Center/Box"]
+custom_minimum_size = Vector2(680, 36)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.9, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("6_font")
+theme_override_font_sizes/font_size = 24
+text = "Pro-tip: Use a pickaxe for efficiency!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Version" type="Label" parent="LoadingCanvas/Root"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -290.0
+offset_top = -70.0
+offset_right = -34.0
+offset_bottom = -30.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.9, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("6_font")
+theme_override_font_sizes/font_size = 18
+text = "Alpha-1.0.4"
+horizontal_alignment = 2
+vertical_alignment = 1
