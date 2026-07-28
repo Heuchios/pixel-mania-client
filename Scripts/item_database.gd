@@ -6450,11 +6450,11 @@ const ITEMS = {
 				"right": Vector2i(19, 29),
 				"top": Vector2i(16, 30),
 				"vertical_middle": Vector2i(18, 30),
-				"bottom": Vector2i(18, 30),
+				"bottom": Vector2i(16, 29),
 				"top_left_corner": Vector2i(17, 30),
 				"top_right_corner": Vector2i(19, 30),
-				"bottom_left_corner": Vector2i(17, 30),
-				"bottom_right_corner": Vector2i(19, 30),
+				"bottom_left_corner": Vector2i(17, 29),
+				"bottom_right_corner": Vector2i(19, 29),
 				"middle": Vector2i(18, 30),
 				"tile_top_left_corner": Vector2i(17, 30),
 				"tile_top_middle": Vector2i(18, 30),
@@ -6462,9 +6462,9 @@ const ITEMS = {
 				"tile_middle_left": Vector2i(17, 30),
 				"tile_middle_middle": Vector2i(18, 30),
 				"tile_middle_right": Vector2i(19, 30),
-				"tile_bottom_left_corner": Vector2i(17, 30),
-				"tile_bottom_middle": Vector2i(18, 30),
-				"tile_bottom_right_corner": Vector2i(19, 30)
+				"tile_bottom_left_corner": Vector2i(17, 29),
+				"tile_bottom_middle": Vector2i(18, 29),
+				"tile_bottom_right_corner": Vector2i(19, 29)
 			},
 			"drop_rules": {
 				"seed_chance": 0,

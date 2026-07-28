@@ -1389,11 +1389,11 @@
         "right": [19, 29],
         "top": [16, 30],
         "vertical_middle": [18, 30],
-        "bottom": [18, 30],
+        "bottom": [16, 29],
         "top_left_corner": [17, 30],
         "top_right_corner": [19, 30],
-        "bottom_left_corner": [17, 30],
-        "bottom_right_corner": [19, 30],
+        "bottom_left_corner": [17, 29],
+        "bottom_right_corner": [19, 29],
         "middle": [18, 30],
         "tile_top_left_corner": [17, 30],
         "tile_top_middle": [18, 30],
@@ -1401,9 +1401,9 @@
         "tile_middle_left": [17, 30],
         "tile_middle_middle": [18, 30],
         "tile_middle_right": [19, 30],
-        "tile_bottom_left_corner": [17, 30],
-        "tile_bottom_middle": [18, 30],
-        "tile_bottom_right_corner": [19, 30]
+        "tile_bottom_left_corner": [17, 29],
+        "tile_bottom_middle": [18, 29],
+        "tile_bottom_right_corner": [19, 29]
       },
       "drop_rules": {
         "seed_chance": 0,
