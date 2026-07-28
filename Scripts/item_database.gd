@@ -6432,6 +6432,31 @@ const ITEMS = {
 			},
 			"order": 427
 		},
+	"fire_escape": {
+			"category": "block",
+			"display_name": "Fire Escape",
+			"rarity": "uncommon",
+			"block_health": 3,
+			"texture": "res://image.png",
+			"inventory_icon": "res://image.png",
+			"atlas_item_id": 54,
+			"atlas_coords": Vector2i(16, 30),
+			"seed": "",
+			"platform_collision": true,
+			"platform_variant_atlas_coords": {
+				"left": Vector2i(17, 30),
+				"middle": Vector2i(18, 30),
+				"right": Vector2i(19, 30)
+			},
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "fire_escape", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 428
+		},
 	"barn_block": {
 			"category": "block",
 			"display_name": "Barn Block",
