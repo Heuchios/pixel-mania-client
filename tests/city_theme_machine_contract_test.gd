@@ -9,6 +9,8 @@ const ItemAtlasDB = preload("res://Scripts/ItemAtlasDB.gd")
 class MockWorld:
 	extends Node
 	var item_database: Dictionary = {}
+	var in_world := false
+	var player = null
 
 
 func _ready() -> void:
@@ -53,9 +55,38 @@ func _ready() -> void:
 	_expect(city_speeds == [0.0, 0.05, 0.12, 0.22, 0.34], "City theme parallax speeds must remain far-to-near.")
 	for path_value in city_paths:
 		_expect(ResourceLoader.exists(str(path_value)), "Missing city parallax layer: " + str(path_value))
+	await _verify_background_theme_transitions()
 
 	print("[theme-machine-atlas] success")
 	get_tree().quit(0)
+
+
+func _verify_background_theme_transitions() -> void:
+	var transition_world := MockWorld.new()
+	add_child(transition_world)
+	var background_manager := BackgroundManager.new()
+	transition_world.add_child(background_manager)
+	background_manager.setup(transition_world)
+
+	_expect(background_manager.background_drawers.size() == 1, "Background setup must create one steady-state drawer.")
+	background_manager.set_theme("night", true, 0.04)
+	_expect(background_manager.is_theme_transition_active(), "Changing themes must begin a crossfade.")
+	_expect(background_manager.background_drawers.size() == 2, "A crossfade must retain the previous and next theme drawers.")
+	await get_tree().create_timer(0.15).timeout
+	_expect(not background_manager.is_theme_transition_active(), "A completed crossfade must release its previous drawer.")
+	_expect(background_manager.background_drawers.size() == 1, "Only the active theme drawer may remain after a crossfade.")
+
+	background_manager.set_theme("snow", true, 0.12)
+	background_manager.set_theme("city", true, 0.04)
+	_expect(background_manager.background_drawers.size() >= 3, "Rapid theme switches must preserve the current composite while retargeting.")
+	await get_tree().create_timer(0.15).timeout
+	_expect(background_manager.active_theme == "city", "The newest rapid theme request must remain authoritative.")
+	_expect(background_manager.background_drawers.size() == 1, "The newest completed crossfade must clean up every stale drawer.")
+
+	background_manager.set_theme("", false)
+	_expect(background_manager.active_theme == "", "Immediate reset must restore the default theme.")
+	_expect(background_manager.background_drawers.size() == 1, "Immediate reset must not leave transition drawers behind.")
+	transition_world.queue_free()
 
 
 func _verify_machine_definition(entries: Dictionary, block_manager: Node, machine_case: Dictionary) -> void:

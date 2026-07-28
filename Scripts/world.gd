@@ -105,6 +105,7 @@ const WATER_MIN_POOL_SPACING = 13
 const ENTRANCE_GATE_TYPE = "entrance_gate"
 const ENTRANCE_GATE_CLEAR_RADIUS = 3
 const CITY_THEME_RAIN_FX_SCENE_PATH = "res://Scenes/particles/RainParticlesFX.tscn"
+const WORLD_THEME_TRANSITION_SECONDS := 0.85
 const SNOW_STORM_FX_SCENE_PATH = "res://Scenes/particles/SnowStormFX.tscn"
 const SNOW_STORM_WIND_FX_SCENE_PATH = "res://Scenes/particles/WindGustFX.tscn"
 const ROTATING_SWORD_SLASH_FX_SCENE_PATH = "res://Scenes/particles/RotatingSwordSlashFX.tscn"
@@ -415,6 +416,9 @@ var ui_panel_layer: Control = null
 var ui_modal_layer: Control = null
 var ui_system_layer: Control = null
 var city_theme_rain_fx = null
+var city_theme_rain_tween: Tween = null
+var city_theme_rain_requested := false
+var city_theme_rain_transition_generation := 0
 var snow_storm_fx = null
 var snow_storm_wind_fx = null
 var applying_network_world_update = false
@@ -3834,16 +3838,31 @@ func setup_background_manager():
 	if background_manager.has_method("setup"):
 		background_manager.setup(self)
 
-func apply_world_background_theme(theme_name: String):
+func apply_world_background_theme(theme_name: String, smooth: bool = true):
 	var clean_theme := theme_name.strip_edges().to_lower()
 	active_world_theme = clean_theme
 	if background_manager != null and background_manager.has_method("set_theme"):
-		background_manager.set_theme(clean_theme)
-	set_city_theme_rain_active(clean_theme == "city")
+		background_manager.set_theme(clean_theme, smooth, WORLD_THEME_TRANSITION_SECONDS)
+	set_city_theme_rain_active(clean_theme == "city", smooth)
 
 
-func set_city_theme_rain_active(active: bool):
+func set_city_theme_rain_active(active: bool, smooth: bool = true):
+	var rain_is_visible: bool = city_theme_rain_fx != null and is_instance_valid(city_theme_rain_fx) and bool(city_theme_rain_fx.visible)
+	if active == city_theme_rain_requested:
+		if city_theme_rain_tween != null and city_theme_rain_tween.is_valid():
+			return
+		if rain_is_visible == active:
+			return
+
+	city_theme_rain_requested = active
+	city_theme_rain_transition_generation += 1
+	var transition_generation := city_theme_rain_transition_generation
+	if city_theme_rain_tween != null and city_theme_rain_tween.is_valid():
+		city_theme_rain_tween.kill()
+	city_theme_rain_tween = null
+
 	if active:
+		var created_rain_fx := false
 		if city_theme_rain_fx == null or not is_instance_valid(city_theme_rain_fx):
 			if not ResourceLoader.exists(CITY_THEME_RAIN_FX_SCENE_PATH):
 				return
@@ -3854,22 +3873,61 @@ func set_city_theme_rain_active(active: bool):
 
 			city_theme_rain_fx = rain_scene.instantiate()
 			add_child(city_theme_rain_fx)
+			created_rain_fx = true
 
+		var starting_alpha := clampf(city_theme_rain_fx.modulate.a, 0.0, 1.0)
+		if created_rain_fx or not city_theme_rain_fx.visible:
+			starting_alpha = 0.0
+		city_theme_rain_fx.modulate.a = starting_alpha if smooth else 1.0
 		if city_theme_rain_fx.has_method("start"):
 			city_theme_rain_fx.start()
 		else:
 			city_theme_rain_fx.visible = true
+
+		if smooth and city_theme_rain_fx.modulate.a < 1.0:
+			city_theme_rain_tween = create_tween()
+			city_theme_rain_tween.tween_property(city_theme_rain_fx, "modulate:a", 1.0, WORLD_THEME_TRANSITION_SECONDS).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			city_theme_rain_tween.tween_callback(Callable(self, "_finish_city_theme_rain_fade_in").bind(transition_generation))
+		else:
+			city_theme_rain_fx.modulate.a = 1.0
 		return
 
 	if city_theme_rain_fx != null and is_instance_valid(city_theme_rain_fx):
-		if city_theme_rain_fx.has_method("stop"):
-			city_theme_rain_fx.stop()
+		if smooth and city_theme_rain_fx.visible and city_theme_rain_fx.modulate.a > 0.0:
+			city_theme_rain_tween = create_tween()
+			city_theme_rain_tween.tween_property(city_theme_rain_fx, "modulate:a", 0.0, WORLD_THEME_TRANSITION_SECONDS).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			city_theme_rain_tween.tween_callback(Callable(self, "_finish_city_theme_rain_fade_out").bind(transition_generation))
 		else:
-			city_theme_rain_fx.visible = false
+			_stop_city_theme_rain_immediately()
+
+
+func _finish_city_theme_rain_fade_in(transition_generation: int) -> void:
+	if transition_generation != city_theme_rain_transition_generation or not city_theme_rain_requested:
+		return
+	city_theme_rain_tween = null
+	if city_theme_rain_fx != null and is_instance_valid(city_theme_rain_fx):
+		city_theme_rain_fx.modulate.a = 1.0
+
+
+func _finish_city_theme_rain_fade_out(transition_generation: int) -> void:
+	if transition_generation != city_theme_rain_transition_generation or city_theme_rain_requested:
+		return
+	city_theme_rain_tween = null
+	_stop_city_theme_rain_immediately()
+
+
+func _stop_city_theme_rain_immediately() -> void:
+	if city_theme_rain_fx == null or not is_instance_valid(city_theme_rain_fx):
+		return
+	if city_theme_rain_fx.has_method("stop"):
+		city_theme_rain_fx.stop()
+	else:
+		city_theme_rain_fx.visible = false
+	city_theme_rain_fx.modulate.a = 1.0
 
 
 func reset_world_background_theme():
-	apply_world_background_theme("")
+	apply_world_background_theme("", false)
 
 
 func setup_sound_manager():
