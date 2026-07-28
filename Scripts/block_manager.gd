@@ -9,7 +9,11 @@ const DEFAULT_BACKGROUND_TILEMAP_ONLY_ENABLED := true
 const DEFAULT_FOREGROUND_TILEMAP_ONLY_ENABLED := true
 const DEFAULT_FOREGROUND_TILEMAP_COLLISION_ENABLED := true
 const DEFAULT_FOREGROUND_TILEMAP_COLLISION_REPLACES_NODES_ENABLED := true
-const SPRINGBOARD_WATER_SPLASH_DEDUPE_MS := 120
+const SPRINGBOARD_WATER_SPLASH_DEDUPE_MS := 340
+const SPRINGBOARD_WATER_SPLASH_INTENSITY := 0.80
+const SPRINGBOARD_WATER_SPLASH_BODY_OFFSET_RATIO := 0.25
+const SPRINGBOARD_WATER_SPLASH_SURFACE_OFFSET_RATIO := 0.15
+const SPRINGBOARD_WATER_SPLASH_HALF_WIDTH_RATIO := 0.35
 
 var world = null
 var background_blocks: Dictionary = {}
@@ -2034,7 +2038,7 @@ func has_tilemap_animation_metadata(item_data: Dictionary) -> bool:
 	var animation_frames = item_data.get("animation_frames", [])
 	if animation_frames is Array and animation_frames.size() > 1:
 		return true
-	return item_data.has("running_animation_frames") or item_data.has("springboard_animation_frames") or item_data.has("toggle_textures") or item_data.has("entrance_frames")
+	return item_data.has("running_animation_frames") or has_springboard_animation_metadata(item_data) or item_data.has("toggle_textures") or item_data.has("entrance_frames")
 
 
 func is_animation_atlas_frame_spec(value) -> bool:
@@ -6617,7 +6621,7 @@ func is_tilemap_visual_candidate(block_type: String, visual_block_type: String, 
 		if item_data.has("entrance_frames"):
 			if not (is_wooden_entrance_block_type(clean_type) and entrance_frames_are_tilemap_sized(clean_visual_type)):
 				return false
-		if item_data.has("springboard_animation_frames") and not keep_triggered_springboard_node:
+		if has_springboard_animation_metadata(item_data) and not keep_triggered_springboard_node:
 			return false
 		if item_data.has("break_effect_frames"):
 			return false
@@ -6667,6 +6671,10 @@ func is_tilemap_visual_candidate(block_type: String, visual_block_type: String, 
 
 
 func springboard_frames_are_tilemap_sized(block_type: String) -> bool:
+	var atlas_frames := get_springboard_animation_atlas_frames(block_type)
+	if atlas_frames.size() > 1:
+		return true
+
 	var frames := get_springboard_animation_frames(block_type)
 	if frames.is_empty():
 		return false
@@ -6811,7 +6819,7 @@ func is_tilemap_only_background_candidate(block_type: String, visual_block_type:
 	var animation_frames = item_data.get("animation_frames", [])
 	if animation_frames is Array and animation_frames.size() > 1 and not uses_tileset_animation:
 		return false
-	if item_data.has("toggle_textures") or item_data.has("entrance_frames") or item_data.has("springboard_animation_frames"):
+	if item_data.has("toggle_textures") or item_data.has("entrance_frames") or has_springboard_animation_metadata(item_data):
 		return false
 	if str(item_data.get("light_fx_scene", "")).strip_edges() != "":
 		return false
@@ -6940,7 +6948,7 @@ func is_tilemap_only_foreground_visual_candidate(block_type: String, visual_bloc
 			return false
 	if item_data.has("toggle_textures") or item_data.has("entrance_frames"):
 		return false
-	if item_data.has("springboard_animation_frames") and not is_tilemap_trigger_collision_block(clean_type):
+	if has_springboard_animation_metadata(item_data) and not is_tilemap_trigger_collision_block(clean_type):
 		return false
 	if str(item_data.get("light_fx_scene", "")).strip_edges() != "":
 		return false
@@ -7551,7 +7559,7 @@ func get_tilemap_metadata_rejection_reason(item_data: Dictionary, tilemap_metada
 		if metadata_has_visual_tileset_animation(tilemap_metadata):
 			return ""
 		return "animated"
-	if item_data.has("toggle_textures") or item_data.has("entrance_frames") or item_data.has("springboard_animation_frames"):
+	if item_data.has("toggle_textures") or item_data.has("entrance_frames") or has_springboard_animation_metadata(item_data):
 		return "interactive anim"
 	if item_data.has("break_effect_frames") \
 		or bool(item_data.get("mailbox_block", false)) \
@@ -7596,7 +7604,7 @@ func is_simple_tilemap_animation_metadata(block_type: String, item_data: Diction
 		return false
 	if block_requires_full_area_clear(clean_type) or block_occupies_collision_area(clean_type):
 		return false
-	if item_data.has("toggle_textures") or item_data.has("entrance_frames") or item_data.has("springboard_animation_frames"):
+	if item_data.has("toggle_textures") or item_data.has("entrance_frames") or has_springboard_animation_metadata(item_data):
 		return false
 	if item_data.has("break_effect_frames") \
 		or bool(item_data.get("mailbox_block", false)) \
@@ -8884,7 +8892,7 @@ func is_simple_full_solid_foreground_collision_block(block_type: String) -> bool
 	if animation_frames is Array and animation_frames.size() > 1:
 		if get_simple_tilemap_animation_frames(clean_type, clean_type).size() <= 1 and get_tilemap_animation_atlas_frames(clean_type, clean_type).size() <= 1:
 			return false
-	if item_data.has("toggle_textures") or item_data.has("entrance_frames") or item_data.has("springboard_animation_frames"):
+	if item_data.has("toggle_textures") or item_data.has("entrance_frames") or has_springboard_animation_metadata(item_data):
 		return false
 	if str(item_data.get("light_fx_scene", "")).strip_edges() != "":
 		return false
@@ -9581,7 +9589,16 @@ func is_triggered_springboard_animation_block(block_type: String) -> bool:
 		return false
 
 	var item_data = world.item_database[block_type]
-	return (bool(item_data.get("springboard", false)) or bool(item_data.get("pinball_block", false))) and item_data.has("springboard_animation_frames")
+	return (bool(item_data.get("springboard", false)) or bool(item_data.get("pinball_block", false))) and has_springboard_animation_metadata(item_data)
+
+
+func has_springboard_animation_metadata(item_data: Dictionary) -> bool:
+	var texture_frames = item_data.get("springboard_animation_frames", [])
+	if texture_frames is Array and texture_frames.size() > 1:
+		return true
+
+	var atlas_frames = item_data.get("springboard_animation_atlas_frames", [])
+	return atlas_frames is Array and atlas_frames.size() > 1
 
 
 func is_server_triggered_animation_block(block_type: String) -> bool:
@@ -10091,7 +10108,7 @@ func spawn_springboard_water_splash_if_needed(grid_pos: Vector2i, block_type: St
 	var item_data = world.item_database[clean_type]
 	if not bool(item_data.get("springboard_water_splash", false)):
 		return
-	if not world.has_method("spawn_water_splash_particles"):
+	if not world.has_method("spawn_player_water_splash_particles"):
 		return
 
 	var now_msec := Time.get_ticks_msec()
@@ -10101,13 +10118,23 @@ func spawn_springboard_water_splash_if_needed(grid_pos: Vector2i, block_type: St
 		return
 
 	springboard_water_splash_last_emit_msec[splash_key] = now_msec
-	var splash_position := get_block_sound_position(grid_pos)
+	var block_center_position := get_block_sound_position(grid_pos)
 	var block_size := 32.0
 	var world_block_size = world.get("BLOCK_SIZE")
 	if world_block_size is int or world_block_size is float:
 		block_size = float(world_block_size)
-	splash_position.y -= block_size * 0.35
-	world.spawn_water_splash_particles(splash_position, 1.15)
+	var splash_body_position := block_center_position - Vector2(0.0, block_size * SPRINGBOARD_WATER_SPLASH_BODY_OFFSET_RATIO)
+	var splash_surface_y := block_center_position.y + block_size * SPRINGBOARD_WATER_SPLASH_SURFACE_OFFSET_RATIO
+	var splash_half_extents := Vector2(
+		block_size * SPRINGBOARD_WATER_SPLASH_HALF_WIDTH_RATIO,
+		block_size * 0.5
+	)
+	world.spawn_player_water_splash_particles(
+		splash_body_position,
+		splash_half_extents,
+		splash_surface_y,
+		SPRINGBOARD_WATER_SPLASH_INTENSITY
+	)
 
 
 func play_tilemap_springboard_animation(grid_pos: Vector2i, block_type: String) -> void:
