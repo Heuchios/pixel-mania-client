@@ -27,7 +27,10 @@ const COW_DEFAULT_HUNGER_MS := 604800000
 const DUCK_DEFAULT_PRODUCTION_MS := 43200000
 const DUCK_DEFAULT_HUNGER_MS := 604800000
 const DEBUG_ACTION_POSITION_FLOW := false
-const WORLD_STATE_APPLY_BATCH_SIZE := 512
+const WORLD_STATE_APPLY_MIN_BATCH_SIZE := 128
+const WORLD_STATE_APPLY_MAX_BATCH_SIZE := 2048
+const WORLD_STATE_APPLY_DESKTOP_BUDGET_USEC := 6000
+const WORLD_STATE_APPLY_MOBILE_BUDGET_USEC := 3500
 const WORLD_STATE_SPAWN_PRIORITY_RADIUS := 12
 # Give the loading CanvasLayer a chance to draw before heavy world-state work.
 const WORLD_STATE_OVERLAY_DRAW_FRAMES := 2
@@ -37,6 +40,7 @@ var active_world_state_apply_generation: int = 0
 var block_revision_world: String = ""
 var latest_block_revision: int = 0
 var block_cell_revisions: Dictionary = {}
+var world_state_apply_batch_started_usec: int = 0
 
 
 func _safe_int(value, fallback: int, min_value: int = -2147483648, max_value: int = 2147483647) -> int:
@@ -104,6 +108,25 @@ func _safe_string(value, fallback: String = "", max_length: int = 0) -> String:
 	if max_length > 0 and text.length() > max_length:
 		text = text.substr(0, max_length)
 	return text
+
+
+func _get_world_state_apply_budget_usec() -> int:
+	if OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios"):
+		return WORLD_STATE_APPLY_MOBILE_BUDGET_USEC
+	return WORLD_STATE_APPLY_DESKTOP_BUDGET_USEC
+
+
+func _should_yield_world_state_apply(entries_since_yield: int) -> bool:
+	if entries_since_yield < WORLD_STATE_APPLY_MIN_BATCH_SIZE:
+		return false
+	var now_usec: int = Time.get_ticks_usec()
+	if (
+		entries_since_yield < WORLD_STATE_APPLY_MAX_BATCH_SIZE
+		and now_usec - world_state_apply_batch_started_usec < _get_world_state_apply_budget_usec()
+	):
+		return false
+	world_state_apply_batch_started_usec = now_usec
+	return true
 
 
 func _block_cell_revision_key(layer: String, grid_pos: Vector2i) -> String:
@@ -1138,6 +1161,8 @@ func apply_network_world_state(data: Dictionary):
 	active_world_state_apply_generation = apply_generation
 	var entries_since_yield: int = 0
 	var apply_started_usec: int = Time.get_ticks_usec()
+	var first_built_frame_recorded: bool = false
+	world_state_apply_batch_started_usec = apply_started_usec
 	# Claim the full-state apply before the first await. NetworkManager pauses
 	# packet dispatch while this flag is set, so another snapshot cannot begin a
 	# competing clear/rebuild during the loading-overlay draw wait.
@@ -1291,13 +1316,36 @@ func apply_network_world_state(data: Dictionary):
 				processed += 1
 				build_entry_applied += 1
 				entries_since_yield += 1
-				if entries_since_yield >= WORLD_STATE_APPLY_BATCH_SIZE:
+				if _should_yield_world_state_apply(entries_since_yield):
 					entries_since_yield = 0
 					_update_world_build_progress(build_entry_applied, build_entry_total)
 					await world.get_tree().process_frame
 					if not is_world_state_apply_current(apply_generation):
 						_clear_world_state_apply_if_current(apply_generation)
 						return
+					if not first_built_frame_recorded:
+						first_built_frame_recorded = true
+						_profile_world_entry_stage("client_first_built_frame", {
+							"applied_entries": build_entry_applied,
+							"total_entries": build_entry_total,
+							"elapsed_ms": snappedf(float(Time.get_ticks_usec() - apply_started_usec) / 1000.0, 0.001)
+						})
+
+	# Small worlds may fit inside one frame-budget batch. Yield once here so the
+	# spawn-prioritized foreground can be presented while the rest of the
+	# authoritative snapshot continues under the loading overlay.
+	if not first_built_frame_recorded:
+		_update_world_build_progress(build_entry_applied, build_entry_total)
+		await world.get_tree().process_frame
+		if not is_world_state_apply_current(apply_generation):
+			_clear_world_state_apply_if_current(apply_generation)
+			return
+		first_built_frame_recorded = true
+		_profile_world_entry_stage("client_first_built_frame", {
+			"applied_entries": build_entry_applied,
+			"total_entries": build_entry_total,
+			"elapsed_ms": snappedf(float(Time.get_ticks_usec() - apply_started_usec) / 1000.0, 0.001)
+		})
 
 	_profile_world_entry_stage("client_foreground_built", {
 		"count": foreground.size(),
@@ -1329,7 +1377,7 @@ func apply_network_world_state(data: Dictionary):
 				processed += 1
 				build_entry_applied += 1
 				entries_since_yield += 1
-				if entries_since_yield >= WORLD_STATE_APPLY_BATCH_SIZE:
+				if _should_yield_world_state_apply(entries_since_yield):
 					entries_since_yield = 0
 					_update_world_build_progress(build_entry_applied, build_entry_total)
 					await world.get_tree().process_frame
@@ -1366,7 +1414,7 @@ func apply_network_world_state(data: Dictionary):
 				})
 				processed += 1
 				entries_since_yield += 1
-				if entries_since_yield >= WORLD_STATE_APPLY_BATCH_SIZE:
+				if _should_yield_world_state_apply(entries_since_yield):
 					entries_since_yield = 0
 					await world.get_tree().process_frame
 					if not is_world_state_apply_current(apply_generation):
@@ -1396,7 +1444,7 @@ func apply_network_world_state(data: Dictionary):
 				})
 				processed += 1
 				entries_since_yield += 1
-				if entries_since_yield >= WORLD_STATE_APPLY_BATCH_SIZE:
+				if _should_yield_world_state_apply(entries_since_yield):
 					entries_since_yield = 0
 					await world.get_tree().process_frame
 					if not is_world_state_apply_current(apply_generation):
@@ -1429,7 +1477,7 @@ func apply_network_world_state(data: Dictionary):
 				})
 				processed += 1
 				entries_since_yield += 1
-				if entries_since_yield >= WORLD_STATE_APPLY_BATCH_SIZE:
+				if _should_yield_world_state_apply(entries_since_yield):
 					entries_since_yield = 0
 					await world.get_tree().process_frame
 					if not is_world_state_apply_current(apply_generation):
@@ -1473,7 +1521,7 @@ func apply_network_world_state(data: Dictionary):
 				apply_network_world_interaction_update(interaction_entry)
 				processed += 1
 				entries_since_yield += 1
-				if entries_since_yield >= WORLD_STATE_APPLY_BATCH_SIZE:
+				if _should_yield_world_state_apply(entries_since_yield):
 					entries_since_yield = 0
 					await world.get_tree().process_frame
 					if not is_world_state_apply_current(apply_generation):
@@ -1545,7 +1593,7 @@ func apply_network_world_state(data: Dictionary):
 				world.apply_network_item_drop_create(drop_payload)
 				processed += 1
 				entries_since_yield += 1
-				if entries_since_yield >= WORLD_STATE_APPLY_BATCH_SIZE:
+				if _should_yield_world_state_apply(entries_since_yield):
 					entries_since_yield = 0
 					await world.get_tree().process_frame
 					if not is_world_state_apply_current(apply_generation):
@@ -1606,7 +1654,7 @@ func apply_network_world_state(data: Dictionary):
 	# active-chunk refresh, so this is the first frame with the authoritative
 	# foreground/background visuals reconciled. The loading overlay can still be
 	# visible; controls are measured separately when it is actually dismissed.
-	_profile_world_entry_stage("client_first_built_frame", {
+	_profile_world_entry_stage("client_full_built_frame", {
 		"elapsed_ms": snappedf(float(Time.get_ticks_usec() - apply_started_usec) / 1000.0, 0.001)
 	})
 
@@ -1615,10 +1663,22 @@ func apply_network_world_state(data: Dictionary):
 		"elapsed_ms": snappedf(float(Time.get_ticks_usec() - apply_started_usec) / 1000.0, 0.001)
 	})
 	_clear_world_state_apply_if_current(apply_generation)
-	if world.save_manager != null and world.save_manager.has_method("finish_world_entry_after_load"):
-		world.save_manager.finish_world_entry_after_load(false, true, true)
+	var requires_server_ready: bool = _safe_bool(data.get("world_entry_requires_ready", false), false)
+	if requires_server_ready:
+		var network: Node = world.get_node_or_null("/root/NetworkManager")
+		var ready_sent := false
+		if network != null and network.has_method("notify_world_entry_spawn_ready"):
+			ready_sent = bool(network.notify_world_entry_spawn_ready(data))
+		if not ready_sent:
+			if world.has_method("update_smooth_world_load_message"):
+				world.update_smooth_world_load_message("Confirming world state...")
+			if network != null and network.has_method("request_current_world_entry_snapshot_restart"):
+				network.request_current_world_entry_snapshot_restart("client_ready_validation_failed")
 	else:
-		world.finish_smooth_world_load()
+		if world.save_manager != null and world.save_manager.has_method("finish_world_entry_after_load"):
+			world.save_manager.finish_world_entry_after_load(false, true, true)
+		else:
+			world.finish_smooth_world_load()
 	call_deferred("_refresh_world_state_visuals_after_reveal", apply_generation)
 
 	debug_action_position_flow("world_state apply end", {

@@ -34,6 +34,14 @@ var pending_world_state_stream: Dictionary = {}
 var world_entry_profile: Dictionary = {}
 var active_join_request_id := ""
 var active_join_world_name := ""
+var active_world_entry_session_id := ""
+var active_world_entry_revision := 0
+var active_world_entry_block_revision := 0
+var world_entry_requires_ready := false
+var world_entry_ready_sent := false
+var world_entry_active := false
+var pending_world_entry_ready: Dictionary = {}
+var world_entry_ready_retry_at_msec := 0
 var pending_player_state_requests := {}
 var world_population_counts := {}
 var world_population_players := {}
@@ -115,6 +123,7 @@ const MAX_WORLD_STATE_STREAM_SECTIONS := 64
 const MAX_WORLD_STATE_STREAM_ASSEMBLED_BYTES := 2 * 1024 * 1024
 const MAX_WORLD_STATE_STREAM_WIRE_BYTES := 4 * 1024 * 1024
 const WORLD_STATE_STREAM_TIMEOUT_MS := 15000
+const WORLD_ENTRY_READY_RETRY_MS := 1000
 const MAX_WORLD_ROUTE_URL_LENGTH := 256
 const MAX_WORLD_ROUTE_REDIRECT_ATTEMPTS := 2
 const MAX_SERVER_PACKETS_PER_FRAME := 96
@@ -127,6 +136,7 @@ const MAX_USERNAME_LENGTH := 64
 const MAX_WORLD_NAME_LENGTH := 64
 const MAX_ITEM_ID_LENGTH := 64
 const MAX_REQUEST_ID_LENGTH := 64
+const MAX_WORLD_ENTRY_SESSION_ID_LENGTH := 128
 const MAX_DROP_ID_LENGTH := 96
 const MAX_COORDINATE := 1000000
 const MAX_ITEM_CATEGORY_LENGTH := 64
@@ -533,6 +543,7 @@ func _process(delta: float) -> void:
 	process_server_packets_with_budget()
 	process_world_event_tile_update_queue()
 	process_pending_world_state_stream_timeout()
+	process_pending_world_entry_ready_retry()
 
 	apply_pending_server_world_state_if_ready()
 	apply_pending_server_player_state_if_ready()
@@ -1129,6 +1140,7 @@ func _end_authenticated_session(message: String, clear_saved_login: bool = false
 	pending_world_state_stream.clear()
 	active_join_request_id = ""
 	active_join_world_name = ""
+	_reset_world_entry_session()
 	pending_player_state_requests.clear()
 	world_population_counts.clear()
 	world_population_players.clear()
@@ -1727,9 +1739,42 @@ func set_pending_join(world_name: String, profile_name: String = "") -> void:
 		pending_world_state_stream.clear()
 		active_join_request_id = ""
 		active_join_world_name = ""
+		_reset_world_entry_session()
 	pending_join_enabled = true
 	pending_join_world_name = clean_world
 	pending_join_profile_name = profile_name.strip_edges()
+
+
+func schedule_pending_join_profile_persist(world_name: String, profile_name: String = "") -> void:
+	call_deferred("_persist_pending_join_profile_fallback", world_name, profile_name)
+
+
+func _persist_pending_join_profile_fallback(world_name: String, profile_name: String) -> void:
+	var clean_world := _safe_world_name(world_name)
+	if clean_world == "":
+		return
+	if not pending_join_enabled or pending_join_world_name != clean_world:
+		return
+
+	var cfg := ConfigFile.new()
+	cfg.load(profile_path)
+	var old_recent = cfg.get_value("profile", "recent_worlds", [])
+	var recent_worlds: Array = [clean_world]
+	if old_recent is Array:
+		for old_world_value in old_recent:
+			var old_world := _safe_world_name(str(old_world_value))
+			if old_world != "" and old_world != clean_world:
+				recent_worlds.append(old_world)
+			if recent_worlds.size() >= 4:
+				break
+	cfg.set_value("profile", "recent_worlds", recent_worlds)
+	cfg.set_value("profile", "last_world", clean_world)
+	cfg.set_value("pending_join", "enabled", true)
+	cfg.set_value("pending_join", "world_name", clean_world)
+	cfg.set_value("pending_join", "profile_name", profile_name.strip_edges())
+	var save_error := cfg.save(profile_path)
+	if save_error != OK:
+		push_warning("Could not persist pending world join fallback: " + error_string(save_error))
 
 
 func has_pending_join() -> bool:
@@ -1959,6 +2004,7 @@ func send_join_world(world_name: String) -> bool:
 	var join_request_id: String = make_action_request_id("join_world")
 	pending_server_world_state.clear()
 	pending_world_state_stream.clear()
+	_reset_world_entry_session()
 	active_join_request_id = join_request_id
 	active_join_world_name = clean_world
 	current_world_name = clean_world
@@ -1977,18 +2023,21 @@ func send_join_world(world_name: String) -> bool:
 		"type": "join_world",
 		"world": current_world_name,
 		"request_id": join_request_id,
-		"join_request_id": join_request_id
+		"join_request_id": join_request_id,
+		"world_entry_ready_v1": true
 	}))
 	if not sent:
 		cancel_world_entry_profile("join_request_send_failed")
 		active_join_request_id = ""
 		active_join_world_name = ""
+		_reset_world_entry_session()
 	return sent
 
 
 func cancel_active_join_request() -> void:
 	pending_server_world_state.clear()
 	pending_world_state_stream.clear()
+	_reset_world_entry_session()
 	cancel_world_entry_profile("join_request_canceled")
 	# Keep a non-empty tombstone so late responses from the canceled attempt are
 	# rejected instead of being treated as legacy responses with no active join.
@@ -3881,6 +3930,15 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 					"current_world": current_world_name
 				})
 				return
+			if not _accept_world_entry_session_from_join_ack(data):
+				_handle_world_entry_rejected_message({
+					"type": "world_entry_rejected",
+					"reason": "missing_world_entry_session",
+					"message": "The world entry session was incomplete. Please try again.",
+					"world": guided_world,
+					"join_request_id": _get_message_join_request_id(data)
+				})
+				return
 			apply_server_movement_guidance(guided_world, data.get("network_movement_guidance", {}))
 			current_world_name = guided_world
 			store_netfox_spawn_route_from_message(data)
@@ -3911,8 +3969,13 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 			_handle_world_state_stream_chunk(data, wire_bytes)
 		"world_state_stream_end":
 			_handle_world_state_stream_end(data, wire_bytes)
+		"world_entry_snapshot_restart":
+			_handle_world_entry_snapshot_restart(data)
+		"world_entry_active":
+			_handle_world_entry_active(data)
+		"world_entry_rejected":
+			_handle_world_entry_rejected_message(data)
 		"world_state":
-			pending_world_state_stream.clear()
 			if not _is_message_for_active_join_request(data):
 				debug_action_position_flow("ignored stale world_state request", {
 					"incoming_join_request_id": _get_message_join_request_id(data),
@@ -3920,6 +3983,14 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 					"world": safe_world
 				})
 				return
+			if not _is_message_for_active_world_entry_session(data):
+				debug_action_position_flow("ignored stale world_state entry session", {
+					"incoming_world_entry_session_id": _get_message_world_entry_session_id(data),
+					"active_world_entry_session_id": active_world_entry_session_id,
+					"world": safe_world
+				})
+				return
+			pending_world_state_stream.clear()
 			if safe_world != "" and not is_message_for_active_world(data):
 				debug_action_position_flow("ignored stale world_state", {
 					"incoming_world": safe_world,
@@ -3935,6 +4006,8 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 			})
 			if not _is_valid_server_world_state_payload(data):
 				_retry_invalid_server_world_state(data)
+				return
+			if not _accept_world_entry_snapshot_metadata(data):
 				return
 			record_world_entry_stage("client_world_data_received", {
 				"transport": "legacy",
@@ -4913,6 +4986,224 @@ func _get_message_join_request_id(data: Dictionary) -> String:
 	return _safe_string(data.get("join_request_id", ""), "", MAX_REQUEST_ID_LENGTH)
 
 
+func _get_message_world_entry_session_id(data: Dictionary) -> String:
+	return _safe_string(data.get("world_entry_session_id", ""), "", MAX_WORLD_ENTRY_SESSION_ID_LENGTH)
+
+
+func _reset_world_entry_session() -> void:
+	active_world_entry_session_id = ""
+	active_world_entry_revision = 0
+	active_world_entry_block_revision = 0
+	world_entry_requires_ready = false
+	world_entry_ready_sent = false
+	world_entry_active = false
+	pending_world_entry_ready.clear()
+	world_entry_ready_retry_at_msec = 0
+
+
+func _accept_world_entry_session_from_join_ack(data: Dictionary) -> bool:
+	var requires_ready: bool = bool(data.get("world_entry_requires_ready", false))
+	var incoming_session_id: String = _get_message_world_entry_session_id(data)
+	if requires_ready and incoming_session_id == "":
+		return false
+	if not requires_ready:
+		_reset_world_entry_session()
+		return true
+	active_world_entry_session_id = incoming_session_id
+	active_world_entry_revision = 0
+	active_world_entry_block_revision = 0
+	world_entry_requires_ready = true
+	world_entry_ready_sent = false
+	world_entry_active = false
+	pending_world_entry_ready.clear()
+	world_entry_ready_retry_at_msec = 0
+	return true
+
+
+func _is_message_for_active_world_entry_session(data: Dictionary) -> bool:
+	var incoming_session_id: String = _get_message_world_entry_session_id(data)
+	if incoming_session_id == "":
+		return not world_entry_requires_ready and active_world_entry_session_id == ""
+	if active_world_entry_session_id == "":
+		return false
+	return incoming_session_id == active_world_entry_session_id
+
+
+func _accept_world_entry_snapshot_metadata(data: Dictionary) -> bool:
+	if not _is_message_for_active_world_entry_session(data):
+		return false
+	if not world_entry_requires_ready:
+		return true
+	active_world_entry_revision = _safe_int(data.get("world_revision", 0), 0, 0)
+	active_world_entry_block_revision = _safe_int(data.get("block_revision", 0), 0, 0)
+	world_entry_ready_sent = false
+	world_entry_active = false
+	pending_world_entry_ready.clear()
+	world_entry_ready_retry_at_msec = 0
+	return true
+
+
+func notify_world_entry_spawn_ready(data: Dictionary) -> bool:
+	if not world_entry_requires_ready:
+		return false
+	if world_entry_active or active_world_entry_session_id == "":
+		return false
+	if not _is_message_for_active_join_request(data):
+		return false
+	if not _is_message_for_active_world_entry_session(data):
+		return false
+	var incoming_world: String = _get_message_world_name(data)
+	if incoming_world == "" or incoming_world != active_join_world_name:
+		return false
+	var incoming_revision: int = _safe_int(data.get("world_revision", 0), 0, 0)
+	var incoming_block_revision: int = _safe_int(data.get("block_revision", 0), 0, 0)
+	if incoming_revision != active_world_entry_revision or incoming_block_revision != active_world_entry_block_revision:
+		return false
+	pending_world_entry_ready = attach_session_auth({
+		"type": "world_entry_ready",
+		"world": incoming_world,
+		"join_request_id": active_join_request_id,
+		"world_entry_session_id": active_world_entry_session_id,
+		"world_revision": incoming_revision,
+		"block_revision": incoming_block_revision
+	})
+	return _send_pending_world_entry_ready()
+
+
+func _send_pending_world_entry_ready() -> bool:
+	if pending_world_entry_ready.is_empty() or world_entry_active:
+		return false
+	var sent: bool = send_message(pending_world_entry_ready)
+	if sent:
+		world_entry_ready_sent = true
+		world_entry_ready_retry_at_msec = Time.get_ticks_msec() + WORLD_ENTRY_READY_RETRY_MS
+		record_world_entry_stage("client_spawn_safe_ready_sent", {
+			"world_revision": active_world_entry_revision,
+			"block_revision": active_world_entry_block_revision
+		})
+	return sent
+
+
+func process_pending_world_entry_ready_retry() -> void:
+	if pending_world_entry_ready.is_empty() or world_entry_active:
+		return
+	if Time.get_ticks_msec() < world_entry_ready_retry_at_msec:
+		return
+	_send_pending_world_entry_ready()
+
+
+func _request_world_entry_snapshot_restart(reason: String) -> bool:
+	if not world_entry_requires_ready or active_world_entry_session_id == "":
+		return false
+	var restart_payload: Dictionary = attach_session_auth({
+		"type": "world_entry_ready",
+		"world": active_join_world_name,
+		"join_request_id": active_join_request_id,
+		"world_entry_session_id": active_world_entry_session_id,
+		# Deliberately differ from the accepted snapshot revision. The server keeps
+		# the same admission/session and responds with a fresh authoritative stream.
+		"world_revision": active_world_entry_revision + 1,
+		"block_revision": active_world_entry_block_revision
+	})
+	debug_action_position_flow("requested current-session world snapshot restart", {
+		"world": active_join_world_name,
+		"world_entry_session_id": active_world_entry_session_id,
+		"reason": reason
+	})
+	return send_message(restart_payload)
+
+
+func request_current_world_entry_snapshot_restart(reason: String = "client_snapshot_restart") -> bool:
+	return _request_world_entry_snapshot_restart(reason)
+
+
+func _handle_world_entry_snapshot_restart(data: Dictionary) -> void:
+	if not world_entry_requires_ready or world_entry_active:
+		return
+	if not _is_message_for_active_join_request(data):
+		return
+	if not _is_message_for_active_world_entry_session(data):
+		return
+	var incoming_world: String = _get_message_world_name(data)
+	if incoming_world == "" or incoming_world != active_join_world_name:
+		return
+
+	pending_world_state_stream.clear()
+	pending_server_world_state.clear()
+	pending_world_entry_ready.clear()
+	world_entry_ready_sent = false
+	world_entry_ready_retry_at_msec = 0
+	active_world_entry_revision = _safe_int(data.get("world_revision", 0), 0, 0)
+	active_world_entry_block_revision = _safe_int(data.get("block_revision", 0), 0, 0)
+	record_world_entry_stage("client_snapshot_restart_requested", {
+		"reason": str(data.get("reason", "world_revision_advanced_during_load")),
+		"world_revision": active_world_entry_revision,
+		"block_revision": active_world_entry_block_revision
+	})
+	var world_node: Node = get_world_node()
+	if world_node != null and world_node.has_method("update_smooth_world_load_message"):
+		world_node.update_smooth_world_load_message("World changed while loading. Refreshing...")
+
+
+func _handle_world_entry_active(data: Dictionary) -> void:
+	if not world_entry_requires_ready:
+		return
+	if not _is_message_for_active_join_request(data):
+		return
+	if not _is_message_for_active_world_entry_session(data):
+		return
+	var incoming_world: String = _get_message_world_name(data)
+	if incoming_world == "" or incoming_world != active_join_world_name:
+		return
+	if world_entry_active:
+		return
+	if not world_entry_ready_sent:
+		_request_world_entry_snapshot_restart("active_before_client_ready")
+		return
+	var incoming_revision: int = _safe_int(data.get("world_revision", 0), 0, 0)
+	var incoming_block_revision: int = _safe_int(data.get("block_revision", 0), 0, 0)
+	if incoming_revision != active_world_entry_revision or incoming_block_revision != active_world_entry_block_revision:
+		_request_world_entry_snapshot_restart("active_revision_mismatch")
+		return
+	if not bool(data.get("controls_unlocked", false)):
+		return
+
+	world_entry_active = true
+	pending_world_entry_ready.clear()
+	world_entry_ready_retry_at_msec = 0
+	record_world_entry_stage("client_world_entry_activated", {
+		"world_revision": incoming_revision,
+		"block_revision": incoming_block_revision
+	})
+	var world_node: Node = get_world_node()
+	if world_node != null and is_instance_valid(world_node):
+		var save_manager_value: Variant = world_node.get("save_manager") if "save_manager" in world_node else null
+		if save_manager_value != null and save_manager_value.has_method("finish_world_entry_after_load"):
+			save_manager_value.finish_world_entry_after_load(false, true, true)
+		elif world_node.has_method("finish_smooth_world_load"):
+			world_node.finish_smooth_world_load()
+	complete_world_entry_profile({
+		"world_revision": incoming_revision,
+		"block_revision": incoming_block_revision,
+		"entry_session_confirmed": true
+	})
+
+
+func _handle_world_entry_rejected_message(data: Dictionary) -> void:
+	if not _is_message_for_active_join_request(data):
+		return
+	var incoming_session_id: String = _get_message_world_entry_session_id(data)
+	if incoming_session_id != "" and active_world_entry_session_id != "" and incoming_session_id != active_world_entry_session_id:
+		return
+	cancel_world_entry_profile(str(data.get("reason", "world_entry_rejected")))
+	var world_node: Node = get_world_node()
+	if world_node == null or not is_instance_valid(world_node):
+		return
+	var save_manager_value: Variant = world_node.get("save_manager") if "save_manager" in world_node else null
+	if save_manager_value != null and save_manager_value.has_method("handle_server_world_entry_rejected"):
+		save_manager_value.handle_server_world_entry_rejected(data)
+
+
 func _is_message_for_active_join_request(data: Dictionary) -> bool:
 	var incoming_request_id: String = _get_message_join_request_id(data)
 	if incoming_request_id == "" or active_join_request_id == "":
@@ -4932,6 +5223,8 @@ func process_pending_world_state_stream_timeout() -> void:
 
 
 func _handle_world_state_stream_begin(data: Dictionary, wire_bytes: int = 0) -> void:
+	if not _is_message_for_active_world_entry_session(data):
+		return
 	if int(data.get("stream_version", 0)) != WORLD_STATE_STREAM_VERSION:
 		_fail_pending_world_state_stream("unsupported_version", data)
 		return
@@ -4973,6 +5266,10 @@ func _handle_world_state_stream_begin(data: Dictionary, wire_bytes: int = 0) -> 
 	if metadata_world != stream_world:
 		_fail_pending_world_state_stream("metadata_world_mismatch", data)
 		return
+	if not _is_message_for_active_join_request(metadata):
+		return
+	if not _accept_world_entry_snapshot_metadata(metadata):
+		return
 
 	var section_descriptors: Array = []
 	var section_kinds: Dictionary = {}
@@ -5001,6 +5298,7 @@ func _handle_world_state_stream_begin(data: Dictionary, wire_bytes: int = 0) -> 
 		"snapshot_id": snapshot_id,
 		"world": stream_world,
 		"join_request_id": _get_message_join_request_id(data),
+		"world_entry_session_id": _get_message_world_entry_session_id(data),
 		"chunk_count": chunk_count,
 		"snapshot_bytes": snapshot_bytes,
 		"metadata": metadata,
@@ -5030,8 +5328,11 @@ func _handle_world_state_stream_chunk(data: Dictionary, wire_bytes: int = 0) -> 
 	var expected_snapshot_id: String = str(pending_world_state_stream.get("snapshot_id", ""))
 	var expected_world: String = str(pending_world_state_stream.get("world", ""))
 	var expected_join_request_id: String = str(pending_world_state_stream.get("join_request_id", ""))
+	var expected_world_entry_session_id: String = str(pending_world_state_stream.get("world_entry_session_id", ""))
 	var expected_chunk_count: int = int(pending_world_state_stream.get("chunk_count", -1))
 	var section_kinds: Dictionary = pending_world_state_stream.get("section_kinds", {})
+	if _get_message_world_entry_session_id(data) != expected_world_entry_session_id:
+		return
 	if (
 		int(data.get("stream_version", 0)) != WORLD_STATE_STREAM_VERSION
 		or snapshot_id != expected_snapshot_id
@@ -5078,9 +5379,12 @@ func _handle_world_state_stream_end(data: Dictionary, wire_bytes: int = 0) -> vo
 	var expected_snapshot_id: String = str(pending_world_state_stream.get("snapshot_id", ""))
 	var expected_world: String = str(pending_world_state_stream.get("world", ""))
 	var expected_join_request_id: String = str(pending_world_state_stream.get("join_request_id", ""))
+	var expected_world_entry_session_id: String = str(pending_world_state_stream.get("world_entry_session_id", ""))
 	var expected_chunk_count: int = int(pending_world_state_stream.get("chunk_count", -1))
 	var expected_snapshot_bytes: int = int(pending_world_state_stream.get("snapshot_bytes", 0))
 	var received_wire_bytes: int = int(pending_world_state_stream.get("received_wire_bytes", 0)) + maxi(0, wire_bytes)
+	if _get_message_world_entry_session_id(data) != expected_world_entry_session_id:
+		return
 	if (
 		int(data.get("stream_version", 0)) != WORLD_STATE_STREAM_VERSION
 		or _safe_string(data.get("snapshot_id", ""), "", MAX_REQUEST_ID_LENGTH) != expected_snapshot_id
@@ -5126,6 +5430,8 @@ func _handle_world_state_stream_end(data: Dictionary, wire_bytes: int = 0) -> vo
 	pending_world_state_stream.clear()
 	if not _is_message_for_active_join_request(payload):
 		return
+	if not _is_message_for_active_world_entry_session(payload):
+		return
 	if not is_message_for_active_world(payload):
 		return
 	debug_action_position_flow("received streamed world_state", {
@@ -5158,6 +5464,7 @@ func _fail_pending_world_state_stream(reason: String, data: Dictionary = {}) -> 
 			retry_payload = metadata_value.duplicate(true)
 		retry_payload["world"] = pending_world_state_stream.get("world", retry_payload.get("world", ""))
 		retry_payload["join_request_id"] = pending_world_state_stream.get("join_request_id", retry_payload.get("join_request_id", ""))
+		retry_payload["world_entry_session_id"] = pending_world_state_stream.get("world_entry_session_id", retry_payload.get("world_entry_session_id", ""))
 	pending_world_state_stream.clear()
 	debug_action_position_flow("rejected world_state stream", {
 		"reason": reason,
@@ -5194,7 +5501,11 @@ func _world_node_can_apply_server_world_state(world_node: Node) -> bool:
 func _queue_pending_server_world_state(data: Dictionary, reason: String) -> void:
 	if not _is_message_for_active_join_request(data):
 		return
-	pending_server_world_state = data.duplicate(true)
+	if not _is_message_for_active_world_entry_session(data):
+		return
+	# The parsed snapshot is immutable while queued. A shallow container copy avoids
+	# cloning every block and interaction when the world scene is one frame late.
+	pending_server_world_state = data.duplicate(false)
 	debug_action_position_flow("queued pending world_state", {
 		"world": _get_message_world_name(data),
 		"join_request_id": _get_message_join_request_id(data),
@@ -5220,6 +5531,11 @@ func _retry_invalid_server_world_state(data: Dictionary) -> void:
 		"world": _get_message_world_name(data),
 		"join_request_id": _get_message_join_request_id(data)
 	})
+	if _request_world_entry_snapshot_restart("invalid_world_state"):
+		var restart_world_node: Node = get_world_node()
+		if restart_world_node != null and restart_world_node.has_method("update_smooth_world_load_message"):
+			restart_world_node.update_smooth_world_load_message("Refreshing world data...")
+		return
 	var world_node: Node = get_world_node()
 	if world_node == null or not is_instance_valid(world_node):
 		return
@@ -5700,10 +6016,13 @@ func apply_pending_server_world_state_if_ready() -> void:
 	if is_world_state_apply_in_progress():
 		return
 
-	# Dictionaries are reference types. Keep an owned copy because the apply
-	# helper clears the queue before handing the snapshot to the World node.
-	var pending_data: Dictionary = pending_server_world_state.duplicate(true)
+	# Keep the outer container owned without duplicating every immutable snapshot
+	# entry. Deep-copying a large world here caused a visible pre-build stall.
+	var pending_data: Dictionary = pending_server_world_state.duplicate(false)
 	if not _is_message_for_active_join_request(pending_data):
+		pending_server_world_state.clear()
+		return
+	if not _is_message_for_active_world_entry_session(pending_data):
 		pending_server_world_state.clear()
 		return
 	if not is_message_for_active_world(pending_data):
