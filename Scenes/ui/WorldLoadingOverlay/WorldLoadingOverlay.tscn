@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://c365a6veur3ka"]
 
-[ext_resource type="Texture2D" path="res://Assets/background/space_theme/star_1.png" id="1_bg_base"]
-[ext_resource type="Texture2D" path="res://Assets/background/space_theme/star_2.png" id="2_bg_far"]
-[ext_resource type="Texture2D" path="res://Assets/background/space_theme/star_3.png" id="3_bg_mid"]
-[ext_resource type="Texture2D" path="res://Assets/background/space_theme/star_4.png" id="4_bg_front"]
-[ext_resource type="Texture2D" path="res://Assets/ui/logo/Logo_6.png" id="5_logo"]
-[ext_resource type="FontFile" path="res://Assets/font/font.ttf" id="6_font"]
-[ext_resource type="Texture2D" path="res://Assets/ui/fill_bar_empty.png" id="7_bar_empty"]
-[ext_resource type="Texture2D" path="res://Assets/ui/fill_bar_full.png" id="8_bar_full"]
+[ext_resource type="Texture2D" uid="uid://c4k867krp3wli" path="res://Assets/background/space_theme/star_1.png" id="1_bg_base"]
+[ext_resource type="Texture2D" uid="uid://cvjfqv4kccwo0" path="res://Assets/background/space_theme/star_2.png" id="2_bg_far"]
+[ext_resource type="Texture2D" uid="uid://dsnopy0fnnne2" path="res://Assets/background/space_theme/star_3.png" id="3_bg_mid"]
+[ext_resource type="Texture2D" uid="uid://bd6iwmw6k8s4x" path="res://Assets/background/space_theme/star_4.png" id="4_bg_front"]
+[ext_resource type="Texture2D" uid="uid://dnuvhhyohskng" path="res://Assets/ui/logo/Logo_6.png" id="5_logo"]
+[ext_resource type="FontFile" uid="uid://e0ivgh0c6uck" path="res://Assets/font/font.ttf" id="6_font"]
+[ext_resource type="Texture2D" uid="uid://bwpihua7lc7dd" path="res://Assets/ui/fill_bar_empty.png" id="7_bar_empty"]
+[ext_resource type="Texture2D" uid="uid://s2qd6aym6sau" path="res://Assets/ui/fill_bar_full.png" id="8_bar_full"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_logo"]
 atlas = ExtResource("5_logo")
@@ -25,7 +25,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 0
 
 [node name="ParallaxBG" type="Control" parent="LoadingCanvas/Root" unique_id=721702493]
 clip_contents = true
@@ -37,7 +36,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Bg_Base" type="TextureRect" parent="LoadingCanvas/Root/ParallaxBG"]
+[node name="Bg_Base" type="TextureRect" parent="LoadingCanvas/Root/ParallaxBG" unique_id=1016749875]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -128,7 +127,7 @@ layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Logo" type="TextureRect" parent="LoadingCanvas/Root/Center/Box"]
+[node name="Logo" type="TextureRect" parent="LoadingCanvas/Root/Center/Box" unique_id=1605238068]
 custom_minimum_size = Vector2(620, 300)
 layout_mode = 2
 mouse_filter = 2
@@ -145,12 +144,13 @@ text = "LOADING WORLD"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Gap" type="Control" parent="LoadingCanvas/Root/Center/Box"]
+[node name="Gap" type="Control" parent="LoadingCanvas/Root/Center/Box" unique_id=235270364]
 custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 mouse_filter = 2
 
 [node name="Message" type="Label" parent="LoadingCanvas/Root/Center/Box" unique_id=600682404]
+visible = false
 custom_minimum_size = Vector2(680, 34)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.94, 0.9, 1, 1)
@@ -163,7 +163,7 @@ text = "Loading world..."
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ProgressPercent" type="Label" parent="LoadingCanvas/Root/Center/Box"]
+[node name="ProgressPercent" type="Label" parent="LoadingCanvas/Root/Center/Box" unique_id=285007639]
 custom_minimum_size = Vector2(680, 30)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -176,20 +176,19 @@ text = "0%"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ProgressBar" type="TextureProgressBar" parent="LoadingCanvas/Root/Center/Box"]
+[node name="ProgressBar" type="TextureProgressBar" parent="LoadingCanvas/Root/Center/Box" unique_id=1208102426]
 texture_filter = 1
 custom_minimum_size = Vector2(620, 20)
 layout_mode = 2
 mouse_filter = 2
 value = 8.0
-show_percentage = false
-texture_under = ExtResource("7_bar_empty")
-texture_progress = ExtResource("8_bar_full")
 nine_patch_stretch = true
 stretch_margin_left = 8
 stretch_margin_top = 4
 stretch_margin_right = 8
 stretch_margin_bottom = 4
+texture_under = ExtResource("7_bar_empty")
+texture_progress = ExtResource("8_bar_full")
 
 [node name="Dots" type="Label" parent="LoadingCanvas/Root/Center/Box" unique_id=78898817]
 visible = false
@@ -200,7 +199,7 @@ text = "..."
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Tip" type="Label" parent="LoadingCanvas/Root/Center/Box"]
+[node name="Tip" type="Label" parent="LoadingCanvas/Root/Center/Box" unique_id=892119588]
 custom_minimum_size = Vector2(680, 36)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.94, 0.9, 1, 1)
@@ -213,7 +212,7 @@ text = "Pro-tip: Use a pickaxe for efficiency!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Version" type="Label" parent="LoadingCanvas/Root"]
+[node name="Version" type="Label" parent="LoadingCanvas/Root" unique_id=682017944]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -226,7 +225,6 @@ offset_right = -34.0
 offset_bottom = -30.0
 grow_horizontal = 0
 grow_vertical = 0
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.94, 0.9, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
 theme_override_constants/shadow_offset_x = 2
