@@ -1436,6 +1436,36 @@
         ]
       },
       "order": 429
+    },
+    {
+      "id": 56,
+      "item_key": "fire_hydrant",
+      "name": "Fire Hydrant",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [17, 31],
+      "alternative_tile": 0,
+      "collision": true,
+      "collision_type": "full",
+      "hardness": 2,
+      "rarity": "uncommon",
+      "springboard": true,
+      "springboard_velocity": -420,
+      "springboard_animation_atlas_frames": [
+        [17, 31],
+        [18, 31]
+      ],
+      "springboard_animation_frame_seconds": 0.22,
+      "springboard_water_splash": true,
+      "drop_rules": {
+        "seed_chance": 0,
+        "gem_range": [0, 0],
+        "fixed_drops": [
+          {"item_id": "fire_hydrant", "item_category": "block", "amount": 1}
+        ]
+      },
+      "order": 430
     }
   ]
 }

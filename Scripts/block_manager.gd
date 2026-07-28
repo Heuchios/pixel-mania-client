@@ -9,6 +9,7 @@ const DEFAULT_BACKGROUND_TILEMAP_ONLY_ENABLED := true
 const DEFAULT_FOREGROUND_TILEMAP_ONLY_ENABLED := true
 const DEFAULT_FOREGROUND_TILEMAP_COLLISION_ENABLED := true
 const DEFAULT_FOREGROUND_TILEMAP_COLLISION_REPLACES_NODES_ENABLED := true
+const SPRINGBOARD_WATER_SPLASH_DEDUPE_MS := 120
 
 var world = null
 var background_blocks: Dictionary = {}
@@ -24,6 +25,7 @@ var animation_loop_particle_last_emit_msec: Dictionary = {}
 var tilemap_animation_frame_cache: Dictionary = {}
 var oil_refinery_running_frame_cache: Dictionary = {}
 var tilemap_springboard_active_cells: Dictionary = {}
+var springboard_water_splash_last_emit_msec: Dictionary = {}
 var wooden_entrance_active_visuals: Dictionary = {}
 var springboard_active_visuals: Dictionary = {}
 var server_triggered_animation_tokens: Dictionary = {}
@@ -10048,6 +10050,8 @@ func play_springboard_block_animation(grid_pos: Vector2i):
 	if not is_triggered_springboard_animation_block(block_type):
 		return
 
+	spawn_springboard_water_splash_if_needed(grid_pos, block_type)
+
 	var block_node = block_data.get("node", null)
 	if block_node == null or not is_instance_valid(block_node):
 		if bool(block_data.get("tilemap_only", false)):
@@ -10077,6 +10081,33 @@ func play_springboard_block_animation(grid_pos: Vector2i):
 		"tilemap_visual": block_node.has_meta("tilemap_visual")
 	}
 	apply_springboard_animation_frame(visual, frames, 0, grid_pos, block_type, block_node.has_meta("tilemap_visual"), atlas_frames)
+
+
+func spawn_springboard_water_splash_if_needed(grid_pos: Vector2i, block_type: String) -> void:
+	var clean_type := str(block_type).strip_edges().to_lower()
+	if clean_type == "" or world == null or not world.item_database.has(clean_type):
+		return
+
+	var item_data = world.item_database[clean_type]
+	if not bool(item_data.get("springboard_water_splash", false)):
+		return
+	if not world.has_method("spawn_water_splash_particles"):
+		return
+
+	var now_msec := Time.get_ticks_msec()
+	var splash_key := "%d,%d" % [grid_pos.x, grid_pos.y]
+	var last_emit_msec := int(springboard_water_splash_last_emit_msec.get(splash_key, -SPRINGBOARD_WATER_SPLASH_DEDUPE_MS))
+	if now_msec - last_emit_msec < SPRINGBOARD_WATER_SPLASH_DEDUPE_MS:
+		return
+
+	springboard_water_splash_last_emit_msec[splash_key] = now_msec
+	var splash_position := get_block_sound_position(grid_pos)
+	var block_size := 32.0
+	var world_block_size = world.get("BLOCK_SIZE")
+	if world_block_size is int or world_block_size is float:
+		block_size = float(world_block_size)
+	splash_position.y -= block_size * 0.35
+	world.spawn_water_splash_particles(splash_position, 1.15)
 
 
 func play_tilemap_springboard_animation(grid_pos: Vector2i, block_type: String) -> void:

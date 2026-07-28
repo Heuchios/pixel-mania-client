@@ -6497,6 +6497,34 @@ const ITEMS = {
 			},
 			"order": 429
 		},
+	"fire_hydrant": {
+			"category": "block",
+			"display_name": "Fire Hydrant",
+			"rarity": "uncommon",
+			"block_health": 2,
+			"texture": "res://image.png",
+			"inventory_icon": "res://image.png",
+			"atlas_item_id": 56,
+			"atlas_coords": Vector2i(17, 31),
+			"seed": "",
+			"collidable": true,
+			"springboard": true,
+			"springboard_velocity": -420.0,
+			"springboard_animation_atlas_frames": [
+				Vector2i(17, 31),
+				Vector2i(18, 31)
+			],
+			"springboard_animation_frame_seconds": 0.22,
+			"springboard_water_splash": true,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "fire_hydrant", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 430
+		},
 	"barn_block": {
 			"category": "block",
 			"display_name": "Barn Block",
