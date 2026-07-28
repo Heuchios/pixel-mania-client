@@ -1752,8 +1752,6 @@ func remote_grid_position_has_lava_or_fire(grid_pos: Vector2i) -> bool:
 	for block_type in get_remote_grid_block_types(grid_pos):
 		if block_type == "lava" or block_type == "fire":
 			return true
-		if block_type.contains("lava") or block_type.contains("fire"):
-			return true
 		if is_remote_lava_rebound_block_type(block_type):
 			return true
 
