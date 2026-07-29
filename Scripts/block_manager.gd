@@ -98,7 +98,7 @@ const NORMAL_BLOCK_Z_INDEX := 0
 const WATER_OVERLAY_Z_INDEX := 4050
 const WATER_VISUAL_Z_INDEX := 0
 const FOREGROUND_OVER_PLAYER_Z_INDEX := 4020
-const COLOUR_CYCLE_BLOCK_UPDATE_SECONDS := 0.066
+const COLOUR_CYCLE_BLOCK_UPDATE_SECONDS := 0.033
 const SNOW_STORM_ICE_VARIANT_SALT := 9047
 const FOREGROUND_TEXTURE_REFRESH_BATCH_SIZE := 1024
 const FOREGROUND_TEXTURE_REFRESH_PROCESS_USEC := 2500
@@ -6615,6 +6615,10 @@ func sync_colour_cycle_block_visual(block_type: String, grid_pos: Vector2i, back
 			visual.self_modulate = Color.WHITE
 		return
 	register_colour_cycle_block_visual(grid_pos, block_type, visual)
+	if world != null and world.blocks.has(grid_pos):
+		var block_data_value: Variant = world.blocks.get(grid_pos, {})
+		if block_data_value is Dictionary:
+			sync_foreground_tilemap_collision_for_block(grid_pos, block_data_value)
 
 
 func update_colour_cycle_block_visuals_throttled(delta: float) -> void:

@@ -2016,35 +2016,15 @@ func get_colour_cycle_icon_modulate(item_type: String, phase_seed: float = 0.0) 
 	return ColourCycleModulation.get_colour_cycle_modulate(item_data, phase_seed)
 
 
-func apply_colour_cycle_icon_modulation(icon: TextureRect, item_type: String, category: String, phase_seed: float = 0.0) -> void:
+func apply_colour_cycle_icon_modulation(icon: TextureRect, _item_type: String, _category: String, _phase_seed: float = 0.0) -> void:
 	if icon == null:
 		return
-	if is_colour_cycle_icon_item(item_type, category):
-		icon.self_modulate = get_colour_cycle_icon_modulate(item_type, phase_seed)
-	else:
-		icon.self_modulate = Color.WHITE
+	icon.self_modulate = Color.WHITE
 
 
-func update_hotbar_colour_cycle_icons_throttled(delta: float) -> void:
-	if hotbar_slots.is_empty() or world == null:
-		colour_cycle_hotbar_update_elapsed = 0.0
-		return
-	var has_colour_cycle_item := false
-	for slot_index in hotbar_slots.keys():
-		var slot = hotbar_slots[slot_index]
-		if slot == null or not is_instance_valid(slot):
-			continue
-		if is_colour_cycle_icon_item(str(slot.get_meta("item_type", "")), str(slot.get_meta("category", ""))):
-			has_colour_cycle_item = true
-			break
-	if not has_colour_cycle_item:
-		colour_cycle_hotbar_update_elapsed = 0.0
-		return
-	colour_cycle_hotbar_update_elapsed += delta
-	if colour_cycle_hotbar_update_elapsed < COLOUR_CYCLE_HOTBAR_UPDATE_SECONDS:
-		return
+func update_hotbar_colour_cycle_icons_throttled(_delta: float) -> void:
 	colour_cycle_hotbar_update_elapsed = 0.0
-	update_hotbar_colour_cycle_icons()
+	return
 
 
 func update_hotbar_colour_cycle_icons() -> void:

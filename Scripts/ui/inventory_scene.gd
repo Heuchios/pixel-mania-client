@@ -1657,33 +1657,23 @@ func _colour_cycle_icon_modulate(item: Dictionary, phase_seed: float = 0.0) -> C
 	return ColourCycleModulation.get_colour_cycle_modulate(item_data, phase_seed)
 
 
-func _apply_colour_cycle_icon_modulation(icon: TextureRect, item: Dictionary, phase_seed: float = 0.0) -> void:
+func _apply_colour_cycle_icon_modulation(icon: TextureRect, _item: Dictionary, _phase_seed: float = 0.0) -> void:
 	if icon == null:
 		return
-	if _is_colour_cycle_item(item):
-		icon.self_modulate = _colour_cycle_icon_modulate(item, phase_seed)
-	else:
-		icon.self_modulate = Color.WHITE
+	icon.self_modulate = Color.WHITE
 
 
-func track_colour_cycle_slot(slot_key: String, item: Dictionary) -> void:
+func track_colour_cycle_slot(slot_key: String, _item: Dictionary) -> void:
 	if slot_key == "":
 		return
-	if _is_colour_cycle_item(item):
-		colour_cycle_slot_keys[slot_key] = true
-	else:
-		colour_cycle_slot_keys.erase(slot_key)
+	colour_cycle_slot_keys.erase(slot_key)
 
 
-func update_colour_cycle_icon_modulation_throttled(delta: float) -> void:
-	if not visible or colour_cycle_slot_keys.is_empty():
-		colour_cycle_icon_update_elapsed = 0.0
-		return
-	colour_cycle_icon_update_elapsed += delta
-	if colour_cycle_icon_update_elapsed < COLOUR_CYCLE_ICON_UPDATE_SECONDS:
-		return
+func update_colour_cycle_icon_modulation_throttled(_delta: float) -> void:
+	if not colour_cycle_slot_keys.is_empty():
+		update_colour_cycle_icon_modulation()
+		colour_cycle_slot_keys.clear()
 	colour_cycle_icon_update_elapsed = 0.0
-	update_colour_cycle_icon_modulation()
 
 
 func update_colour_cycle_icon_modulation() -> void:

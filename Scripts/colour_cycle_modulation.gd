@@ -1,8 +1,10 @@
 extends RefCounted
 
-const DEFAULT_SPEED := 0.25
+const DEFAULT_SPEED := 0.08
 const DEFAULT_SATURATION := 0.85
 const DEFAULT_VALUE := 1.0
+const GRID_FLOW_X := 0.015
+const GRID_FLOW_Y := 0.008
 
 
 static func is_colour_cycle_item(item_data: Dictionary) -> bool:
@@ -20,5 +22,4 @@ static func get_colour_cycle_modulate(item_data: Dictionary, phase_seed := 0.0) 
 
 
 static func get_grid_phase_seed(grid_pos: Vector2i) -> float:
-	var hash_value := int(abs(grid_pos.x * 928371 + grid_pos.y * 689287 + 137))
-	return float(hash_value % 1000) / 1000.0
+	return fposmod(float(grid_pos.x) * GRID_FLOW_X + float(grid_pos.y) * GRID_FLOW_Y, 1.0)
