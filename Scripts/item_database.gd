@@ -6525,6 +6525,30 @@ const ITEMS = {
 			},
 			"order": 430
 		},
+	"shift_block": {
+			"category": "block",
+			"display_name": "Shift Block",
+			"rarity": "rare",
+			"block_health": 3,
+			"texture": "res://image.png",
+			"inventory_icon": "res://image.png",
+			"atlas_item_id": 57,
+			"atlas_coords": Vector2i(10, 8),
+			"seed": "",
+			"collidable": true,
+			"colour_cycle_block": true,
+			"colour_cycle_speed": 0.25,
+			"colour_cycle_saturation": 0.85,
+			"colour_cycle_value": 1.0,
+			"drop_rules": {
+				"seed_chance": 0,
+				"gem_range": [0, 0],
+				"fixed_drops": [
+					{"item_id": "shift_block", "item_category": "block", "amount": 1}
+				]
+			},
+			"order": 431
+		},
 	"barn_block": {
 			"category": "block",
 			"display_name": "Barn Block",

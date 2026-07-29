@@ -2,6 +2,7 @@ extends Control
 class_name InventoryScene
 
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
+const ColourCycleModulation = preload("res://Scripts/colour_cycle_modulation.gd")
 
 signal item_selected(item: Dictionary)
 signal item_double_action_requested(item: Dictionary)
@@ -37,6 +38,7 @@ const INVENTORY_EMPTY_SLOT_PREFIX := "empty_slot_"
 const INVENTORY_UPGRADE_SLOT_ID := "slot_upgrade"
 const INVENTORY_UPGRADE_SLOT_TEXTURE := "slot_upgrade.png"
 const SLOT_TEMPLATE_LAYOUT_NODES := ["Frame", "SelectedFrame", "IconShadow", "Icon", "Count", "Equipped"]
+const COLOUR_CYCLE_ICON_UPDATE_SECONDS := 0.10
 
 const TABS := [
 	{"id": "all", "label": "ALL"},
@@ -66,6 +68,8 @@ var selected_item: Dictionary = {}
 var tab_buttons: Dictionary = {}
 var slot_nodes: Dictionary = {}
 var slot_template_nodes: Array[Button] = []
+var colour_cycle_slot_keys: Dictionary = {}
+var colour_cycle_icon_update_elapsed: float = 0.0
 var syncing_inventory_scroll_slider: bool = false
 var syncing_drop_amount_controls: bool = false
 var drop_amount: int = DROP_AMOUNT_MIN
@@ -157,7 +161,8 @@ func _notification(what: int) -> void:
 		call_deferred("_fit_window_to_viewport")
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	update_colour_cycle_icon_modulation_throttled(delta)
 	if active_slot_touch_index < 0 or active_slot_touch_key == "":
 		return
 	if active_slot_touch_scrolled or active_slot_long_press_opened:
@@ -1009,6 +1014,8 @@ func _create_slot(item: Dictionary, item_index: int = 0) -> Button:
 	icon.texture = _item_icon_texture(item)
 	icon.visible = icon.texture != null and not _is_inventory_upgrade_slot(item)
 	_update_seed_box_icon_overlay(icon, item)
+	track_colour_cycle_slot(slot_key, item)
+	_apply_colour_cycle_icon_modulation(icon, item, float(slot_key.hash() % 1000) / 1000.0)
 
 	var count_text: String = _slot_count_text(item)
 	var label: Label = slot.get_node_or_null("Count") as Label
@@ -1074,6 +1081,7 @@ func _update_detail() -> void:
 	detail_icon.texture = icon_texture
 	detail_icon.visible = icon_texture != null and not (has_selection and _is_inventory_upgrade_slot(selected_item))
 	_update_seed_box_icon_overlay(detail_icon, selected_item if has_selection else {})
+	_apply_colour_cycle_icon_modulation(detail_icon, selected_item if has_selection else {}, 0.0)
 	_sync_drop_amount_controls()
 
 
@@ -1123,6 +1131,7 @@ func _remove_stale_slot_nodes() -> void:
 			continue
 		var stale_slot: Node = slot_nodes[slot_key] as Node
 		slot_nodes.erase(slot_key)
+		colour_cycle_slot_keys.erase(slot_key)
 		if stale_slot != null and is_instance_valid(stale_slot):
 			if stale_slot.get_parent() == inventory_grid:
 				inventory_grid.remove_child(stale_slot)
@@ -1623,6 +1632,77 @@ func _load_ui_texture(file_name: String) -> Texture2D:
 	if resource is Texture2D:
 		return resource
 	return null
+
+
+func _colour_cycle_item_data(item: Dictionary) -> Dictionary:
+	if item.is_empty():
+		return {}
+	if ColourCycleModulation.is_colour_cycle_item(item):
+		return item
+	if inventory_source != null and is_instance_valid(inventory_source) and inventory_source.has_method("get_item_data"):
+		var source_item_data: Variant = inventory_source.call("get_item_data", str(item.get("id", "")))
+		if source_item_data is Dictionary and ColourCycleModulation.is_colour_cycle_item(source_item_data):
+			return source_item_data
+	return {}
+
+
+func _is_colour_cycle_item(item: Dictionary) -> bool:
+	return str(item.get("category", "")).strip_edges().to_lower() == "block" and not _colour_cycle_item_data(item).is_empty()
+
+
+func _colour_cycle_icon_modulate(item: Dictionary, phase_seed: float = 0.0) -> Color:
+	var item_data := _colour_cycle_item_data(item)
+	if item_data.is_empty():
+		return Color.WHITE
+	return ColourCycleModulation.get_colour_cycle_modulate(item_data, phase_seed)
+
+
+func _apply_colour_cycle_icon_modulation(icon: TextureRect, item: Dictionary, phase_seed: float = 0.0) -> void:
+	if icon == null:
+		return
+	if _is_colour_cycle_item(item):
+		icon.self_modulate = _colour_cycle_icon_modulate(item, phase_seed)
+	else:
+		icon.self_modulate = Color.WHITE
+
+
+func track_colour_cycle_slot(slot_key: String, item: Dictionary) -> void:
+	if slot_key == "":
+		return
+	if _is_colour_cycle_item(item):
+		colour_cycle_slot_keys[slot_key] = true
+	else:
+		colour_cycle_slot_keys.erase(slot_key)
+
+
+func update_colour_cycle_icon_modulation_throttled(delta: float) -> void:
+	if not visible or colour_cycle_slot_keys.is_empty():
+		colour_cycle_icon_update_elapsed = 0.0
+		return
+	colour_cycle_icon_update_elapsed += delta
+	if colour_cycle_icon_update_elapsed < COLOUR_CYCLE_ICON_UPDATE_SECONDS:
+		return
+	colour_cycle_icon_update_elapsed = 0.0
+	update_colour_cycle_icon_modulation()
+
+
+func update_colour_cycle_icon_modulation() -> void:
+	for slot_key in colour_cycle_slot_keys.keys():
+		var slot: Control = slot_nodes.get(slot_key, null)
+		if slot == null or not is_instance_valid(slot):
+			colour_cycle_slot_keys.erase(slot_key)
+			continue
+		var item: Dictionary = _get_item_for_slot_key(str(slot_key))
+		if not _is_colour_cycle_item(item):
+			colour_cycle_slot_keys.erase(slot_key)
+			var stale_icon := slot.get_node_or_null("Icon") as TextureRect
+			if stale_icon != null:
+				stale_icon.self_modulate = Color.WHITE
+			continue
+		var icon := slot.get_node_or_null("Icon") as TextureRect
+		_apply_colour_cycle_icon_modulation(icon, item, float(str(slot_key).hash() % 1000) / 1000.0)
+	if detail_icon != null:
+		_apply_colour_cycle_icon_modulation(detail_icon, selected_item, 0.0)
 
 
 func _item_icon_texture(item: Dictionary) -> Texture2D:

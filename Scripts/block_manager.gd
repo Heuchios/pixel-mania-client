@@ -3,6 +3,7 @@ extends Node
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 const WorldTileMapRenderer = preload("res://Scripts/world_tilemap_renderer.gd")
 const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
+const ColourCycleModulation = preload("res://Scripts/colour_cycle_modulation.gd")
 
 const TILEMAP_ENV_DISABLED_VALUES := ["0", "false", "no", "off"]
 const DEFAULT_BACKGROUND_TILEMAP_ONLY_ENABLED := true
@@ -38,6 +39,7 @@ var dice_active_rolls: Dictionary = {}
 var anti_punch_active_visuals: Dictionary = {}
 var anti_talk_active_visuals: Dictionary = {}
 var anti_gravity_active_visuals: Dictionary = {}
+var colour_cycle_block_visuals: Dictionary = {}
 var springboard_frame_cache: Dictionary = {}
 var dice_frame_cache: Dictionary = {}
 var wooden_entrance_frame_cache: Dictionary = {}
@@ -77,6 +79,7 @@ var pending_foreground_texture_refresh: Array = []
 var pending_anti_control_visual_refresh := false
 var water_overlay_draw_order_refresh_pending := true
 var block_light_fx_scene_cache: Dictionary = {}
+var colour_cycle_block_update_elapsed: float = 0.0
 const AUTHORITATIVE_REQUEST_REPEAT_MS := 120
 const AUTHORITATIVE_PLACE_GLOBAL_REPEAT_MS := 150
 const AUTHORITATIVE_PLACE_PREDICTION_TIMEOUT_MS := 10000
@@ -95,6 +98,7 @@ const NORMAL_BLOCK_Z_INDEX := 0
 const WATER_OVERLAY_Z_INDEX := 4050
 const WATER_VISUAL_Z_INDEX := 0
 const FOREGROUND_OVER_PLAYER_Z_INDEX := 4020
+const COLOUR_CYCLE_BLOCK_UPDATE_SECONDS := 0.066
 const SNOW_STORM_ICE_VARIANT_SALT := 9047
 const FOREGROUND_TEXTURE_REFRESH_BATCH_SIZE := 1024
 const FOREGROUND_TEXTURE_REFRESH_PROCESS_USEC := 2500
@@ -314,6 +318,7 @@ func clear_all_tilemap_cells() -> void:
 	server_triggered_animation_tokens.clear()
 	clear_connected_variant_component_cache()
 	clear_display_preview_visuals()
+	clear_colour_cycle_block_visuals()
 	var preview_manager = world.get("vending_preview_manager") if world != null else null
 	if preview_manager != null and preview_manager.has_method("clear_vending_machine_previews"):
 		preview_manager.clear_vending_machine_previews()
@@ -567,6 +572,7 @@ func _process(delta):
 	update_due_chicken_visuals()
 	update_due_cow_visuals()
 	update_due_duck_visuals()
+	update_colour_cycle_block_visuals_throttled(delta)
 	process_pending_foreground_texture_refresh()
 	process_pending_anti_control_visual_refresh()
 	cleanup_expired_authoritative_place_predictions()
@@ -6550,6 +6556,108 @@ func apply_block_visual_layout(visual: Sprite2D, block_type: String):
 	visual.z_as_relative = true
 
 
+func get_colour_cycle_block_data(block_type: String) -> Dictionary:
+	var clean_type := str(block_type).strip_edges().to_lower()
+	if clean_type == "" or world == null or not world.item_database.has(clean_type):
+		return {}
+	var item_data: Variant = world.item_database.get(clean_type, {})
+	if item_data is Dictionary and ColourCycleModulation.is_colour_cycle_item(item_data):
+		return item_data
+	return {}
+
+
+func is_colour_cycle_block_type(block_type: String) -> bool:
+	return not get_colour_cycle_block_data(block_type).is_empty()
+
+
+func get_colour_cycle_block_modulate(block_type: String, grid_pos: Vector2i) -> Color:
+	var item_data := get_colour_cycle_block_data(block_type)
+	if item_data.is_empty():
+		return Color.WHITE
+	return ColourCycleModulation.get_colour_cycle_modulate(item_data, ColourCycleModulation.get_grid_phase_seed(grid_pos))
+
+
+func register_colour_cycle_block_visual(grid_pos: Vector2i, block_type: String, visual: Sprite2D) -> void:
+	if visual == null or grid_pos == NO_VARIANT_GRID_POS:
+		return
+	var clean_type := str(block_type).strip_edges().to_lower()
+	if clean_type == "" or not is_colour_cycle_block_type(clean_type):
+		unregister_colour_cycle_block_visual(grid_pos)
+		visual.self_modulate = Color.WHITE
+		return
+	colour_cycle_block_visuals[grid_pos] = {
+		"block_type": clean_type,
+		"visual": visual
+	}
+	visual.self_modulate = get_colour_cycle_block_modulate(clean_type, grid_pos)
+
+
+func unregister_colour_cycle_block_visual(grid_pos: Vector2i) -> void:
+	var previous: Variant = colour_cycle_block_visuals.get(grid_pos, null)
+	if previous is Dictionary:
+		var previous_visual: Variant = (previous as Dictionary).get("visual", null)
+		if previous_visual is Sprite2D and is_instance_valid(previous_visual):
+			(previous_visual as Sprite2D).self_modulate = Color.WHITE
+	colour_cycle_block_visuals.erase(grid_pos)
+
+
+func clear_colour_cycle_block_visuals() -> void:
+	for grid_pos in colour_cycle_block_visuals.keys():
+		unregister_colour_cycle_block_visual(grid_pos)
+	colour_cycle_block_visuals.clear()
+
+
+func sync_colour_cycle_block_visual(block_type: String, grid_pos: Vector2i, background: bool, visual: Sprite2D) -> void:
+	if background or grid_pos == NO_VARIANT_GRID_POS or visual == null or not is_colour_cycle_block_type(block_type):
+		if not background and grid_pos != NO_VARIANT_GRID_POS:
+			unregister_colour_cycle_block_visual(grid_pos)
+		if visual != null:
+			visual.self_modulate = Color.WHITE
+		return
+	register_colour_cycle_block_visual(grid_pos, block_type, visual)
+
+
+func update_colour_cycle_block_visuals_throttled(delta: float) -> void:
+	if colour_cycle_block_visuals.is_empty():
+		colour_cycle_block_update_elapsed = 0.0
+		return
+	colour_cycle_block_update_elapsed += delta
+	if colour_cycle_block_update_elapsed < COLOUR_CYCLE_BLOCK_UPDATE_SECONDS:
+		return
+	colour_cycle_block_update_elapsed = 0.0
+	update_colour_cycle_block_visuals()
+
+
+func update_colour_cycle_block_visuals() -> void:
+	if colour_cycle_block_visuals.is_empty():
+		return
+	if world == null:
+		clear_colour_cycle_block_visuals()
+		return
+	for grid_pos in colour_cycle_block_visuals.keys():
+		var entry_value: Variant = colour_cycle_block_visuals.get(grid_pos, {})
+		if not (entry_value is Dictionary):
+			colour_cycle_block_visuals.erase(grid_pos)
+			continue
+		var entry: Dictionary = entry_value
+		var visual_value: Variant = entry.get("visual", null)
+		if not (visual_value is Sprite2D) or not is_instance_valid(visual_value):
+			colour_cycle_block_visuals.erase(grid_pos)
+			continue
+		if not world.blocks.has(grid_pos):
+			unregister_colour_cycle_block_visual(grid_pos)
+			continue
+		var block_data_value: Variant = world.blocks.get(grid_pos, {})
+		if not (block_data_value is Dictionary):
+			unregister_colour_cycle_block_visual(grid_pos)
+			continue
+		var block_type := str((block_data_value as Dictionary).get("type", entry.get("block_type", ""))).strip_edges().to_lower()
+		if not is_colour_cycle_block_type(block_type):
+			unregister_colour_cycle_block_visual(grid_pos)
+			continue
+		(visual_value as Sprite2D).self_modulate = get_colour_cycle_block_modulate(block_type, grid_pos)
+
+
 func is_tilemap_visual_candidate(block_type: String, visual_block_type: String, grid_pos: Vector2i, background := false, visual: Sprite2D = null) -> bool:
 	if world == null or grid_pos == NO_VARIANT_GRID_POS or visual == null:
 		return false
@@ -6560,6 +6668,8 @@ func is_tilemap_visual_candidate(block_type: String, visual_block_type: String, 
 		return false
 
 	if clean_visual_type == "water" or clean_type == "water":
+		return false
+	if not background and (is_colour_cycle_block_type(clean_type) or is_colour_cycle_block_type(clean_visual_type)):
 		return false
 
 	# Platform blocks must keep their Sprite2D on the same node that owns their
@@ -6887,6 +6997,8 @@ func is_tilemap_only_foreground_visual_candidate(block_type: String, visual_bloc
 	var clean_type := str(block_type).strip_edges().to_lower()
 	var clean_visual_type := str(visual_block_type).strip_edges().to_lower()
 	if clean_type == "" or clean_visual_type == "":
+		return false
+	if is_colour_cycle_block_type(clean_type) or is_colour_cycle_block_type(clean_visual_type):
 		return false
 	var metadata := get_block_tilemap_metadata(clean_type, clean_visual_type, NO_VARIANT_GRID_POS, false)
 	var has_visual_atlas := metadata_has_tilemap_atlas_coords(metadata)
@@ -7554,6 +7666,8 @@ func get_background_tilemap_rejection_reason(block_type: String, visual_block_ty
 
 
 func get_tilemap_metadata_rejection_reason(item_data: Dictionary, tilemap_metadata: Dictionary = {}) -> String:
+	if bool(item_data.get("colour_cycle_block", false)):
+		return "colour cycle"
 	var animation_frames = item_data.get("animation_frames", [])
 	if animation_frames is Array and animation_frames.size() > 1:
 		if metadata_has_visual_tileset_animation(tilemap_metadata):
@@ -9261,6 +9375,7 @@ func can_place_full_collision_area(grid_pos: Vector2i, block_type: String) -> bo
 func remove_block_without_drop(grid_pos: Vector2i):
 	if not world.blocks.has(grid_pos):
 		remove_display_preview_visual(grid_pos)
+		unregister_colour_cycle_block_visual(grid_pos)
 		clear_tilemap_cell(grid_pos, false)
 		clear_foreground_tilemap_collision_cell(grid_pos)
 		return
@@ -9280,6 +9395,7 @@ func remove_block_without_drop(grid_pos: Vector2i):
 	remove_display_preview_visual(grid_pos)
 	clear_foreground_crack_visual_for_data(block_data)
 	spawn_block_break_effect(grid_pos, block_type)
+	unregister_colour_cycle_block_visual(grid_pos)
 	clear_tilemap_cell(grid_pos, false)
 	clear_foreground_tilemap_collision_cell(grid_pos)
 
@@ -9574,6 +9690,7 @@ func set_block_texture(block, block_type: String, grid_pos: Vector2i = NO_VARIAN
 		setup_block_animation(block, visual_block_type, visual)
 
 	apply_area_lock_visual_modulation(visual, block_type, grid_pos, background)
+	sync_colour_cycle_block_visual(block_type, grid_pos, background, visual)
 	update_block_texture_shadow(block, block_type, visual, background)
 	sync_tilemap_visual_for_block(block, grid_pos, block_type, visual_block_type, background, visual)
 	if not background:

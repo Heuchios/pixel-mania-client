@@ -7,6 +7,7 @@ const HOTBAR_SCENE = preload("res://Scenes/ui/hotbar/Hotbar.tscn")
 const INVENTORY_SCENE = preload("res://Scenes/ui/inventory/InventoryScene.tscn")
 const INVENTORY_UPGRADE_CONFIRM_SCENE = preload("res://Scenes/ui/inventory/InventoryUpgradeConfirm.tscn")
 const ITEM_ACTION_POPUP_SCENE = preload("res://Scenes/ui/inventory/ItemActionPopup.tscn")
+const ColourCycleModulation = preload("res://Scripts/colour_cycle_modulation.gd")
 const HOTBAR_SLOT_COUNT = 6
 const HOTBAR_HEIGHT = 104.0
 const HOTBAR_SLOT_SIZE = 96
@@ -99,6 +100,7 @@ const PICKUP_BULK_QUEUE_FREE_BUDGET_PER_FRAME := 48
 const INVENTORY_UPDATE_SOURCE_LOCAL := "local"
 const INVENTORY_UPDATE_SOURCE_SERVER := "server"
 const INVENTORY_UPDATE_SOURCE_REMOTE := "remote"
+const COLOUR_CYCLE_HOTBAR_UPDATE_SECONDS := 0.066
 
 var world = null
 var ui_layer_ref = null
@@ -135,6 +137,7 @@ var inventory_window_live_cache_valid = false
 var inventory_window_structure_dirty = true
 var inventory_last_structure_check_ms = 0
 var inventory_scene_cache_signature = ""
+var colour_cycle_hotbar_update_elapsed: float = 0.0
 
 var item_context_menu = null
 var context_amount_input = null
@@ -898,6 +901,7 @@ func _process(delta):
 	update_inventory_window_position()
 	process_dirty_inventory_slots()
 	process_queued_inventory_hud_refresh()
+	update_hotbar_colour_cycle_icons_throttled(delta)
 	update_inventory_ambient(delta)
 
 
@@ -1991,6 +1995,71 @@ func get_inventory_icon_texture(item_type: String, category: String):
 	return null
 
 
+func get_colour_cycle_item_data(item_type: String) -> Dictionary:
+	var clean_item := str(item_type).strip_edges().to_lower()
+	if clean_item == "" or world == null or not world.item_database.has(clean_item):
+		return {}
+	var item_data: Variant = world.item_database.get(clean_item, {})
+	if item_data is Dictionary and ColourCycleModulation.is_colour_cycle_item(item_data):
+		return item_data
+	return {}
+
+
+func is_colour_cycle_icon_item(item_type: String, category: String) -> bool:
+	return str(category).strip_edges().to_lower() == "block" and not get_colour_cycle_item_data(item_type).is_empty()
+
+
+func get_colour_cycle_icon_modulate(item_type: String, phase_seed: float = 0.0) -> Color:
+	var item_data := get_colour_cycle_item_data(item_type)
+	if item_data.is_empty():
+		return Color.WHITE
+	return ColourCycleModulation.get_colour_cycle_modulate(item_data, phase_seed)
+
+
+func apply_colour_cycle_icon_modulation(icon: TextureRect, item_type: String, category: String, phase_seed: float = 0.0) -> void:
+	if icon == null:
+		return
+	if is_colour_cycle_icon_item(item_type, category):
+		icon.self_modulate = get_colour_cycle_icon_modulate(item_type, phase_seed)
+	else:
+		icon.self_modulate = Color.WHITE
+
+
+func update_hotbar_colour_cycle_icons_throttled(delta: float) -> void:
+	if hotbar_slots.is_empty() or world == null:
+		colour_cycle_hotbar_update_elapsed = 0.0
+		return
+	var has_colour_cycle_item := false
+	for slot_index in hotbar_slots.keys():
+		var slot = hotbar_slots[slot_index]
+		if slot == null or not is_instance_valid(slot):
+			continue
+		if is_colour_cycle_icon_item(str(slot.get_meta("item_type", "")), str(slot.get_meta("category", ""))):
+			has_colour_cycle_item = true
+			break
+	if not has_colour_cycle_item:
+		colour_cycle_hotbar_update_elapsed = 0.0
+		return
+	colour_cycle_hotbar_update_elapsed += delta
+	if colour_cycle_hotbar_update_elapsed < COLOUR_CYCLE_HOTBAR_UPDATE_SECONDS:
+		return
+	colour_cycle_hotbar_update_elapsed = 0.0
+	update_hotbar_colour_cycle_icons()
+
+
+func update_hotbar_colour_cycle_icons() -> void:
+	if hotbar_slots.is_empty() or world == null:
+		return
+	for slot_index in hotbar_slots.keys():
+		var slot = hotbar_slots[slot_index]
+		if slot == null or not is_instance_valid(slot):
+			continue
+		var item_type := str(slot.get_meta("item_type", "")).strip_edges().to_lower()
+		var category := str(slot.get_meta("category", "")).strip_edges().to_lower()
+		var icon := slot.get_node_or_null("Icon") as TextureRect
+		apply_colour_cycle_icon_modulation(icon, item_type, category, float(int(slot_index)) / 12.0)
+
+
 func is_seed_item(item_type: String, category: String) -> bool:
 	return category == "seed" or item_type.ends_with("_seed")
 
@@ -2353,6 +2422,7 @@ func update_scene_hotbar_slot_icon(slot: Control, item_type: String, category: S
 		icon.visible = has_texture
 		icon.texture = icon_texture
 		icon.modulate = Color(1.0, 1.0, 1.0, 0.96)
+		apply_colour_cycle_icon_modulation(icon, item_type, category, 0.0)
 		if has_texture and category != "tool":
 			update_seed_box_icon_overlay(icon, item_type, category)
 		else:
