@@ -184,7 +184,8 @@
       "alternative_tile": 0,
       "collision": true,
       "collision_type": "full",
-      "hardness": 2
+      "hardness": 2,
+      "admin_grantable": false
     },
     {
       "id": 14,
@@ -197,7 +198,8 @@
       "alternative_tile": 0,
       "collision": true,
       "collision_type": "full",
-      "hardness": 2
+      "hardness": 2,
+      "admin_grantable": false
     },
     {
       "id": 15,
@@ -210,7 +212,27 @@
       "alternative_tile": 0,
       "collision": true,
       "collision_type": "full",
-      "hardness": 2
+      "hardness": 2,
+      "admin_grantable": false
+    },
+    {
+      "id": 58,
+      "item_key": "pillar",
+      "name": "Pillar",
+      "type": "block",
+      "layer": "foreground",
+      "source_id": 0,
+      "atlas_coords": [15, 19],
+      "alternative_tile": 0,
+      "collision": true,
+      "collision_type": "full",
+      "hardness": 2,
+      "vertical_variant_atlas_coords": {
+        "single": [15, 19],
+        "top": [15, 20],
+        "middle": [15, 21],
+        "bottom": [15, 22]
+      }
     },
     {
       "id": 16,

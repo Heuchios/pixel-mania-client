@@ -1886,6 +1886,8 @@ func normalize_legacy_block_id(block_type: String) -> String:
 		return ""
 	if block_type == "wood_block":
 		return "wood"
+	if block_type == "pillar_top" or block_type == "pillar_middle" or block_type == "pillar_bottom":
+		return "pillar"
 	return block_type
 
 
@@ -1909,7 +1911,7 @@ func get_foreground_block_type_at(grid_pos: Vector2i) -> String:
 	if world == null or not world.blocks.has(grid_pos):
 		return ""
 
-	return str(world.blocks[grid_pos].get("type", ""))
+	return normalize_legacy_block_id(str(world.blocks[grid_pos].get("type", "")).strip_edges().to_lower())
 
 
 func is_lower_water_layer_cell(grid_pos: Vector2i) -> bool:
@@ -1920,7 +1922,7 @@ func is_lower_water_layer_cell(grid_pos: Vector2i) -> bool:
 
 
 func get_block_item_data(block_type: String) -> Dictionary:
-	var clean_type := str(block_type).strip_edges().to_lower()
+	var clean_type := normalize_legacy_block_id(str(block_type).strip_edges().to_lower())
 	if world != null and world.item_database.has(clean_type):
 		return world.item_database[clean_type]
 
@@ -3281,7 +3283,7 @@ func get_stateful_block_atlas_data(base_block_id: String, grid_pos: Vector2i, ba
 	if world == null:
 		return {}
 
-	var clean_base_id := str(base_block_id).strip_edges().to_lower()
+	var clean_base_id := normalize_legacy_block_id(str(base_block_id).strip_edges().to_lower())
 	if clean_base_id == "" or not world.item_database.has(clean_base_id):
 		return {}
 

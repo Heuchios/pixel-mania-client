@@ -630,6 +630,8 @@ func search_items():
 	if world != null and "item_database" in world:
 		for item_id in world.item_database.keys():
 			var data = world.item_database[item_id]
+			if data is Dictionary and bool(data.get("admin_grantable", true)) == false:
+				continue
 			var display_name = str(data.get("display_name", item_id))
 			if str(item_id).to_lower().find(query) != -1 or display_name.to_lower().find(query) != -1:
 				matches.append(str(item_id))
