@@ -262,6 +262,7 @@ static func get_item_database_entries() -> Dictionary:
 			"entrance_pass_atlas_coords",
 			"entrance_pass_atlas_frames",
 			"entrance_pass_animation_columns",
+			"entrance_animation_frame_seconds",
 			"animation_trigger",
 			"animation_frame_seconds",
 			"theme_machine_block",

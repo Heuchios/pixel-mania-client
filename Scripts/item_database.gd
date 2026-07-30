@@ -2951,6 +2951,72 @@ const ITEMS = {
 		"max_grow_time": 150.0,
 		"order": 19
 	},
+"royal_door_seed": {
+		"category": "seed",
+		"display_name": "Royal Door Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "royal_door",
+		"grow_time": 175.0,
+		"max_grow_time": 175.0,
+		"order": 20
+	},
+"royal_entrance_seed": {
+		"category": "seed",
+		"display_name": "Royal Entrance Seed",
+		"rarity": "rare",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "royal_entrance",
+		"grow_time": 175.0,
+		"max_grow_time": 175.0,
+		"order": 21
+	},
+"lamp_seed": {
+		"category": "seed",
+		"display_name": "Lamp Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "lamp",
+		"grow_time": 150.0,
+		"max_grow_time": 150.0,
+		"order": 22
+	},
+"royal_window_seed": {
+		"category": "seed",
+		"display_name": "Royal Window Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "royal_window",
+		"grow_time": 150.0,
+		"max_grow_time": 150.0,
+		"order": 23
+	},
+"fish_bowl_seed": {
+		"category": "seed",
+		"display_name": "Fish Bowl Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "fish_bowl",
+		"grow_time": 150.0,
+		"max_grow_time": 150.0,
+		"order": 24
+	},
+"tv_seed": {
+		"category": "seed",
+		"display_name": "TV Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "tv",
+		"grow_time": 150.0,
+		"max_grow_time": 150.0,
+		"order": 25
+	},
 
 	# ============================================================
 	# SPLICED SEEDS
