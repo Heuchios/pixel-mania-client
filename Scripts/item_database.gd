@@ -3017,6 +3017,28 @@ const ITEMS = {
 		"max_grow_time": 150.0,
 		"order": 25
 	},
+"purple_curtains_seed": {
+		"category": "seed",
+		"display_name": "Purple Curtains Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "purple_curtains",
+		"grow_time": 150.0,
+		"max_grow_time": 150.0,
+		"order": 26
+	},
+"pink_curtains_seed": {
+		"category": "seed",
+		"display_name": "Pink Curtains Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "pink_curtains",
+		"grow_time": 150.0,
+		"max_grow_time": 150.0,
+		"order": 27
+	},
 
 	# ============================================================
 	# SPLICED SEEDS
