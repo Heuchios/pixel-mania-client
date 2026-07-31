@@ -432,6 +432,8 @@ var reach_indicator_manager = null
 var sound_manager = null
 var world_loading_ui_manager = null
 var world_state_sync_manager = null
+var optional_world_ui_warmup_started := false
+var optional_world_resource_warmup_running := false
 var netfox_real_manager = null
 var custom_authoritative_movement_manager = null
 var ui_overhead_layer: Control = null
@@ -1713,7 +1715,6 @@ func _ready():
 	setup_command_manager()
 	setup_chat_ui()
 	setup_notification_ui()
-	_warm_optional_world_ui()
 
 	if _is_netfox_real_server_launch():
 		_finish_netfox_real_server_startup()
@@ -1731,6 +1732,9 @@ func _ready():
 
 
 func _warm_optional_world_ui() -> void:
+	if optional_world_ui_warmup_started:
+		return
+	optional_world_ui_warmup_started = true
 	var scene_tree := get_tree()
 	if scene_tree == null:
 		return
@@ -1751,6 +1755,27 @@ func _warm_optional_world_ui_step(setup_index: int) -> void:
 			_warm_optional_world_ui_step.bind(setup_index + 1),
 			CONNECT_ONE_SHOT
 		)
+
+
+func start_optional_world_resource_warmup() -> void:
+	_warm_optional_world_ui()
+	if optional_world_resource_warmup_running:
+		return
+	WorldScenePreloader.start_optional_warmup()
+	optional_world_resource_warmup_running = true
+	call_deferred("_pump_optional_world_resource_warmup")
+
+
+func _pump_optional_world_resource_warmup() -> void:
+	while is_inside_tree():
+		WorldScenePreloader.pump()
+		if WorldScenePreloader.is_fully_warmed():
+			break
+		var scene_tree := get_tree()
+		if scene_tree == null:
+			break
+		await scene_tree.create_timer(0.05).timeout
+	optional_world_resource_warmup_running = false
 
 
 func show_pending_join_loading_overlay_early() -> void:
@@ -3128,7 +3153,7 @@ func break_block_grid(grid_pos: Vector2i):
 
 func setup_drop_manager():
 	if drop_manager == null:
-		var drop_script = preload("res://Scripts/drop_manager.gd")
+		var drop_script = load("res://Scripts/drop_manager.gd")
 		drop_manager = Node.new()
 		drop_manager.name = "DropManager"
 		drop_manager.set_script(drop_script)
@@ -3140,7 +3165,7 @@ func setup_drop_manager():
 
 func setup_world_generation_manager():
 	if world_generation_manager == null:
-		var generation_script = preload("res://Scripts/world_generation_manager.gd")
+		var generation_script = load("res://Scripts/world_generation_manager.gd")
 		world_generation_manager = Node.new()
 		world_generation_manager.name = "WorldGenerationManager"
 		world_generation_manager.set_script(generation_script)
@@ -3152,7 +3177,7 @@ func setup_world_generation_manager():
 
 func setup_block_manager():
 	if block_manager == null:
-		var block_script = preload("res://Scripts/block_manager.gd")
+		var block_script = load("res://Scripts/block_manager.gd")
 		block_manager = Node.new()
 		block_manager.name = "BlockManager"
 		block_manager.set_script(block_script)
@@ -3164,7 +3189,7 @@ func setup_block_manager():
 
 func setup_electricity_manager():
 	if electricity_manager == null:
-		var electricity_script = preload("res://Scripts/electricity_manager.gd")
+		var electricity_script = load("res://Scripts/electricity_manager.gd")
 		electricity_manager = Node2D.new()
 		electricity_manager.name = "ElectricityManager"
 		electricity_manager.set_script(electricity_script)
@@ -3176,7 +3201,7 @@ func setup_electricity_manager():
 
 func setup_particle_manager():
 	if particle_manager == null:
-		var particle_script = preload("res://Scripts/particle_manager.gd")
+		var particle_script = load("res://Scripts/particle_manager.gd")
 		particle_manager = Node2D.new()
 		particle_manager.name = "ParticleManager"
 		particle_manager.set_script(particle_script)
@@ -3194,7 +3219,7 @@ func setup_block_shadow_manager():
 
 func setup_interaction_manager():
 	if interaction_manager == null:
-		var interaction_script = preload("res://Scripts/interaction_manager.gd")
+		var interaction_script = load("res://Scripts/interaction_manager.gd")
 		interaction_manager = Node.new()
 		interaction_manager.name = "InteractionManager"
 		interaction_manager.set_script(interaction_script)
@@ -3233,7 +3258,7 @@ func setup_netfox_real_manager():
 		return
 
 	if netfox_real_manager == null:
-		var manager_script = preload("res://Scripts/networking/netfox_real_manager.gd")
+		var manager_script = load("res://Scripts/networking/netfox_real_manager.gd")
 		netfox_real_manager = Node.new()
 		netfox_real_manager.name = "NetfoxRealManager"
 		netfox_real_manager.set_script(manager_script)
@@ -3248,7 +3273,7 @@ func setup_custom_authoritative_movement_manager():
 		return
 
 	if custom_authoritative_movement_manager == null:
-		var manager_script = preload("res://Scripts/networking/custom_authoritative_movement_manager.gd")
+		var manager_script = load("res://Scripts/networking/custom_authoritative_movement_manager.gd")
 		custom_authoritative_movement_manager = Node.new()
 		custom_authoritative_movement_manager.name = "CustomAuthoritativeMovementManager"
 		custom_authoritative_movement_manager.set_script(manager_script)
@@ -3676,7 +3701,7 @@ func _finish_custom_authoritative_server_startup() -> void:
 
 func setup_gameplay_ui_manager():
 	if gameplay_ui_manager == null:
-		var ui_script = preload("res://Scripts/gameplay_ui_manager.gd")
+		var ui_script = load("res://Scripts/gameplay_ui_manager.gd")
 		gameplay_ui_manager = Node.new()
 		gameplay_ui_manager.name = "GameplayUIManager"
 		gameplay_ui_manager.set_script(ui_script)
@@ -3755,7 +3780,7 @@ func get_ui_system_layer() -> Node:
 
 func setup_fishing_manager():
 	if fishing_manager == null:
-		var fishing_script = preload("res://Scripts/fishing_manager.gd")
+		var fishing_script = load("res://Scripts/fishing_manager.gd")
 		fishing_manager = Node.new()
 		fishing_manager.name = "FishingManager"
 		fishing_manager.set_script(fishing_script)
@@ -3767,7 +3792,7 @@ func setup_fishing_manager():
 
 func setup_fish_monger_manager():
 	if fish_monger_manager == null:
-		var fish_monger_script = preload("res://Scripts/fish_monger_manager.gd")
+		var fish_monger_script = load("res://Scripts/fish_monger_manager.gd")
 		fish_monger_manager = Node.new()
 		fish_monger_manager.name = "FishMongerManager"
 		fish_monger_manager.set_script(fish_monger_script)
@@ -3779,7 +3804,7 @@ func setup_fish_monger_manager():
 
 func setup_item_gameplay_manager():
 	if item_gameplay_manager == null:
-		var item_script = preload("res://Scripts/item_gameplay_manager.gd")
+		var item_script = load("res://Scripts/item_gameplay_manager.gd")
 		item_gameplay_manager = Node.new()
 		item_gameplay_manager.name = "ItemGameplayManager"
 		item_gameplay_manager.set_script(item_script)
@@ -3790,7 +3815,7 @@ func setup_item_gameplay_manager():
 
 func setup_vending_preview_manager():
 	if vending_preview_manager == null:
-		var preview_script = preload("res://Scripts/vending_preview_manager.gd")
+		var preview_script = load("res://Scripts/vending_preview_manager.gd")
 		vending_preview_manager = Node.new()
 		vending_preview_manager.name = "VendingPreviewManager"
 		vending_preview_manager.set_script(preview_script)
@@ -3801,7 +3826,7 @@ func setup_vending_preview_manager():
 
 func setup_environment_manager():
 	if environment_manager == null:
-		var environment_script = preload("res://Scripts/environment_manager.gd")
+		var environment_script = load("res://Scripts/environment_manager.gd")
 		environment_manager = Node.new()
 		environment_manager.name = "EnvironmentManager"
 		environment_manager.set_script(environment_script)
@@ -3812,7 +3837,7 @@ func setup_environment_manager():
 
 func setup_input_manager():
 	if input_manager == null:
-		var input_script = preload("res://Scripts/input_manager.gd")
+		var input_script = load("res://Scripts/input_manager.gd")
 		input_manager = Node.new()
 		input_manager.name = "InputManager"
 		input_manager.set_script(input_script)
@@ -3831,7 +3856,7 @@ func setup_mobile_controls():
 		controls = ui_layer.get_node_or_null("MobileControls")
 
 	if controls == null:
-		var controls_script = preload("res://Scripts/mobile_controls.gd")
+		var controls_script = load("res://Scripts/mobile_controls.gd")
 		controls = Control.new()
 		controls.name = "MobileControls"
 		controls.set_script(controls_script)
@@ -3847,7 +3872,7 @@ func setup_mobile_controls():
 
 func setup_account_manager():
 	if account_manager == null:
-		var account_script = preload("res://Scripts/account_manager.gd")
+		var account_script = load("res://Scripts/account_manager.gd")
 		account_manager = Node.new()
 		account_manager.name = "AccountManager"
 		account_manager.set_script(account_script)
@@ -3859,7 +3884,7 @@ func setup_account_manager():
 
 func setup_background_manager():
 	if background_manager == null:
-		var bg_script = preload("res://Scripts/background_manager.gd")
+		var bg_script = load("res://Scripts/background_manager.gd")
 		background_manager = Node.new()
 		background_manager.name = "BackgroundManager"
 		background_manager.set_script(bg_script)
@@ -3961,7 +3986,7 @@ func reset_world_background_theme():
 
 func setup_sound_manager():
 	if sound_manager == null:
-		var snd_script = preload("res://Scripts/sound_manager.gd")
+		var snd_script = load("res://Scripts/sound_manager.gd")
 		sound_manager = Node.new()
 		sound_manager.name = "SoundManager"
 		sound_manager.set_script(snd_script)
@@ -3972,7 +3997,7 @@ func setup_sound_manager():
 
 func setup_world_loading_ui_manager():
 	if world_loading_ui_manager == null:
-		var loading_script = preload("res://Scripts/world_loading_ui_manager.gd")
+		var loading_script = load("res://Scripts/world_loading_ui_manager.gd")
 		world_loading_ui_manager = Node.new()
 		world_loading_ui_manager.name = "WorldLoadingUIManager"
 		world_loading_ui_manager.set_script(loading_script)
@@ -3984,7 +4009,7 @@ func setup_world_loading_ui_manager():
 
 func setup_world_state_sync_manager():
 	if world_state_sync_manager == null:
-		var state_sync_script = preload("res://Scripts/world_state_sync_manager.gd")
+		var state_sync_script = load("res://Scripts/world_state_sync_manager.gd")
 		world_state_sync_manager = Node.new()
 		world_state_sync_manager.name = "WorldStateSyncManager"
 		world_state_sync_manager.set_script(state_sync_script)
@@ -4525,7 +4550,7 @@ func spawn_oil_refinery_smoke_particles(world_position: Vector2, count: int = 5,
 
 func setup_reach_indicator_manager():
 	if reach_indicator_manager == null:
-		var ri_script = preload("res://Scripts/reach_indicator_manager.gd")
+		var ri_script = load("res://Scripts/reach_indicator_manager.gd")
 		reach_indicator_manager = Node2D.new()
 		reach_indicator_manager.name = "ReachIndicatorManager"
 		reach_indicator_manager.set_script(ri_script)
@@ -4536,7 +4561,7 @@ func setup_reach_indicator_manager():
 
 func setup_username_label_manager():
 	if username_label_manager == null:
-		var ul_script = preload("res://Scripts/username_label_manager.gd")
+		var ul_script = load("res://Scripts/username_label_manager.gd")
 		username_label_manager = Node.new()
 		username_label_manager.name = "UsernameLabelManager"
 		username_label_manager.set_script(ul_script)
@@ -4579,7 +4604,7 @@ func setup_world_lock_ui():
 		world_lock_ui.queue_free()
 		world_lock_ui = null
 	if world_lock_ui == null:
-		var world_lock_scene = preload("res://Scenes/ui/locks/WorldLockGUI.tscn")
+		var world_lock_scene = load("res://Scenes/ui/locks/WorldLockGUI.tscn")
 		world_lock_ui = world_lock_scene.instantiate()
 		world_lock_ui.name = "WorldLockUI"
 		ui_layer.add_child(world_lock_ui)
@@ -4976,7 +5001,7 @@ func setup_player_animation_manager():
 		return
 
 	if player_animation_manager == null:
-		var animation_script = preload("res://Scripts/player_animation_manager.gd")
+		var animation_script = load("res://Scripts/player_animation_manager.gd")
 		player_animation_manager = Node.new()
 		player_animation_manager.name = "PlayerAnimationManager"
 		player_animation_manager.set_script(animation_script)
@@ -5001,7 +5026,7 @@ func setup_equipment_manager():
 		return
 
 	if equipment_manager == null:
-		var equipment_script = preload("res://Scripts/equipment_manager.gd")
+		var equipment_script = load("res://Scripts/equipment_manager.gd")
 		equipment_manager = Node.new()
 		equipment_manager.name = "EquipmentManager"
 		equipment_manager.set_script(equipment_script)
@@ -5594,7 +5619,7 @@ func plant_seed_at_mouse():
 
 func setup_seed_system():
 	if seed_system == null:
-		var seed_script = preload("res://Scripts/seed_system.gd")
+		var seed_script = load("res://Scripts/seed_system.gd")
 		seed_system = Node.new()
 		seed_system.name = "SeedSystem"
 		seed_system.set_script(seed_script)
@@ -6207,7 +6232,7 @@ func setup_inventory_manager():
 	inventory_manager = ui_layer.get_node_or_null("InventoryManager")
 
 	if inventory_manager == null:
-		var inventory_script = preload("res://Scripts/inventory_manager.gd")
+		var inventory_script = load("res://Scripts/inventory_manager.gd")
 		inventory_manager = Control.new()
 		inventory_manager.name = "InventoryManager"
 		inventory_manager.set_script(inventory_script)
@@ -6874,7 +6899,7 @@ func add_inventory_item_to_oil_refinery(item_type: String, category: String, amo
 
 func setup_command_manager():
 	if command_manager == null:
-		var command_script = preload("res://Scripts/command_manager.gd")
+		var command_script = load("res://Scripts/command_manager.gd")
 		command_manager = Node.new()
 		command_manager.name = "CommandManager"
 		command_manager.set_script(command_script)
@@ -7682,7 +7707,7 @@ func setup_generator_ui():
 		generator_ui = null
 
 	if generator_ui == null:
-		var generator_scene = preload("res://Scenes/ui/generator/GeneratorGUI.tscn")
+		var generator_scene = load("res://Scenes/ui/generator/GeneratorGUI.tscn")
 		generator_ui = generator_scene.instantiate()
 		generator_ui.name = "GeneratorUI"
 		parent_node.add_child(generator_ui)
@@ -8613,7 +8638,7 @@ func is_world_name_input_focused() -> bool:
 
 func setup_save_manager():
 	if save_manager == null:
-		var save_script = preload("res://Scripts/save_manager.gd")
+		var save_script = load("res://Scripts/save_manager.gd")
 		save_manager = Node.new()
 		save_manager.name = "SaveManager"
 		save_manager.set_script(save_script)

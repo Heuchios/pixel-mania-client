@@ -1078,38 +1078,6 @@ func _get_recent_world_names() -> Array:
 	return results
 
 
-func _save_recent_world_name(world_name: String) -> void:
-	var clean_name: String = _normalize_world_name(world_name)
-
-	if clean_name == "":
-		return
-
-	var cfg = ConfigFile.new()
-	cfg.load(PROFILE_PATH)
-
-	var old_recent = cfg.get_value("profile", "recent_worlds", [])
-	var new_recent: Array = [clean_name]
-
-	if old_recent is Array:
-		for value in old_recent:
-			var old_name: String = _normalize_world_name(str(value))
-
-			if old_name == "":
-				continue
-
-			if old_name == clean_name:
-				continue
-
-			if not new_recent.has(old_name):
-				new_recent.append(old_name)
-
-			if new_recent.size() >= 8:
-				break
-
-	cfg.set_value("profile", "recent_worlds", new_recent)
-	cfg.save(PROFILE_PATH)
-
-
 func _normalize_world_name(world_name: String) -> String:
 	var clean = world_name.strip_edges().to_lower()
 	var allowed = "abcdefghijklmnopqrstuvwxyz0123456789_-"
@@ -1682,30 +1650,25 @@ func _join_world_name(raw_world_name: String) -> void:
 		status_label.text = "Enter a world name first."
 		return
 
-	world_input.text = world_name
-	_save_recent_world_name(world_name)
+	WorldScenePreloader.pause_optional_warmup()
+	var preload_error := WorldScenePreloader.start()
+	if preload_error != OK:
+		status_label.text = "Could not start world loading."
+		return
 
-	var cfg := ConfigFile.new()
-	cfg.load(PROFILE_PATH)
+	world_entry_in_progress = true
+	world_input.text = world_name
+	status_label.text = "Loading " + world_name + "..."
 
 	var profile_name := _get_network_session_username()
-	if profile_name == "":
-		profile_name = str(cfg.get_value("profile", "username", "")).strip_edges()
 	if profile_name == "" and username_label != null:
 		profile_name = username_label.text.strip_edges()
 
 	var network = get_node_or_null("/root/NetworkManager")
 	if network != null and network.has_method("set_pending_join"):
 		network.set_pending_join(world_name, profile_name)
-
-	cfg.set_value("profile", "last_world", world_name)
-	cfg.set_value("pending_join", "enabled", true)
-	cfg.set_value("pending_join", "world_name", world_name)
-	cfg.set_value("pending_join", "profile_name", profile_name)
-	cfg.save(PROFILE_PATH)
-
-	world_entry_in_progress = true
-	status_label.text = "Loading " + world_name + "..."
+		if network.has_method("send_join_world_if_needed"):
+			network.send_join_world_if_needed(world_name)
 	_enter_preloaded_world()
 
 
@@ -1717,11 +1680,11 @@ func _enter_preloaded_world() -> void:
 		return
 
 	while is_inside_tree():
-		WorldScenePreloader.pump()
-		var packed_world := WorldScenePreloader.get_loaded_scene()
-		if packed_world != null:
-			get_tree().change_scene_to_packed(packed_world)
-			return
+		if WorldScenePreloader.is_ready():
+			var packed_world := WorldScenePreloader.get_loaded_scene()
+			if packed_world != null:
+				get_tree().change_scene_to_packed(packed_world)
+				return
 		if WorldScenePreloader.get_last_error() != OK:
 			world_entry_in_progress = false
 			status_label.text = "Could not load world scene."

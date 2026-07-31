@@ -34,6 +34,7 @@ var pending_world_state_stream: Dictionary = {}
 var world_entry_profile: Dictionary = {}
 var active_join_request_id := ""
 var active_join_world_name := ""
+var active_join_request_pending := false
 var active_world_entry_session_id := ""
 var active_world_entry_revision := 0
 var active_world_entry_block_revision := 0
@@ -1140,6 +1141,7 @@ func _end_authenticated_session(message: String, clear_saved_login: bool = false
 	pending_world_state_stream.clear()
 	active_join_request_id = ""
 	active_join_world_name = ""
+	active_join_request_pending = false
 	_reset_world_entry_session()
 	pending_player_state_requests.clear()
 	world_population_counts.clear()
@@ -1739,22 +1741,25 @@ func set_pending_join(world_name: String, profile_name: String = "") -> void:
 		pending_world_state_stream.clear()
 		active_join_request_id = ""
 		active_join_world_name = ""
+		active_join_request_pending = false
 		_reset_world_entry_session()
 	pending_join_enabled = true
 	pending_join_world_name = clean_world
 	pending_join_profile_name = profile_name.strip_edges()
 
 
-func schedule_pending_join_profile_persist(world_name: String, profile_name: String = "") -> void:
-	call_deferred("_persist_pending_join_profile_fallback", world_name, profile_name)
-
-
-func _persist_pending_join_profile_fallback(world_name: String, profile_name: String) -> void:
+func persist_completed_world_join(world_name: String, profile_name: String = "") -> void:
 	var clean_world := _safe_world_name(world_name)
 	if clean_world == "":
 		return
-	if not pending_join_enabled or pending_join_world_name != clean_world:
-		return
+
+	var clean_profile := profile_name.strip_edges()
+	if clean_profile == "":
+		clean_profile = pending_join_profile_name.strip_edges()
+	if clean_profile == "":
+		clean_profile = session_username.strip_edges()
+	if clean_profile == "":
+		clean_profile = player_name.strip_edges()
 
 	var cfg := ConfigFile.new()
 	cfg.load(profile_path)
@@ -1765,16 +1770,16 @@ func _persist_pending_join_profile_fallback(world_name: String, profile_name: St
 			var old_world := _safe_world_name(str(old_world_value))
 			if old_world != "" and old_world != clean_world:
 				recent_worlds.append(old_world)
-			if recent_worlds.size() >= 4:
+			if recent_worlds.size() >= 8:
 				break
 	cfg.set_value("profile", "recent_worlds", recent_worlds)
 	cfg.set_value("profile", "last_world", clean_world)
-	cfg.set_value("pending_join", "enabled", true)
-	cfg.set_value("pending_join", "world_name", clean_world)
-	cfg.set_value("pending_join", "profile_name", profile_name.strip_edges())
+	cfg.set_value("pending_join", "enabled", false)
+	cfg.set_value("pending_join", "world_name", "")
+	cfg.set_value("pending_join", "profile_name", clean_profile)
 	var save_error := cfg.save(profile_path)
 	if save_error != OK:
-		push_warning("Could not persist pending world join fallback: " + error_string(save_error))
+		push_warning("Could not persist completed world join: " + error_string(save_error))
 
 
 func has_pending_join() -> bool:
@@ -1994,6 +1999,30 @@ func consume_pending_join() -> Dictionary:
 	return data
 
 
+func has_active_join_request_for_world(world_name: String) -> bool:
+	var clean_world: String = _safe_world_name(world_name)
+	if clean_world == "":
+		clean_world = "START"
+	return (
+		active_join_request_pending
+		and active_join_request_id != ""
+		and active_join_world_name == clean_world
+	)
+
+
+func send_join_world_if_needed(world_name: String) -> bool:
+	if has_active_join_request_for_world(world_name):
+		return true
+	return send_join_world(world_name)
+
+
+func mark_active_join_request_complete(world_name: String = "") -> void:
+	var clean_world: String = _safe_world_name(world_name)
+	if clean_world != "" and active_join_world_name != "" and clean_world != active_join_world_name:
+		return
+	active_join_request_pending = false
+
+
 func send_join_world(world_name: String) -> bool:
 	if not is_server_session_authenticated():
 		return false
@@ -2007,6 +2036,7 @@ func send_join_world(world_name: String) -> bool:
 	_reset_world_entry_session()
 	active_join_request_id = join_request_id
 	active_join_world_name = clean_world
+	active_join_request_pending = true
 	current_world_name = clean_world
 	begin_world_entry_profile(clean_world, join_request_id)
 	var world_node: Node = get_world_node() as Node
@@ -2030,6 +2060,7 @@ func send_join_world(world_name: String) -> bool:
 		cancel_world_entry_profile("join_request_send_failed")
 		active_join_request_id = ""
 		active_join_world_name = ""
+		active_join_request_pending = false
 		_reset_world_entry_session()
 	return sent
 
@@ -2043,6 +2074,7 @@ func cancel_active_join_request() -> void:
 	# rejected instead of being treated as legacy responses with no active join.
 	active_join_request_id = make_action_request_id("cancel_join")
 	active_join_world_name = ""
+	active_join_request_pending = false
 
 
 func play_local_join_world_sound(world_node = null) -> void:
@@ -4512,14 +4544,14 @@ func handle_account_auth_ok(data: Dictionary) -> void:
 			world_node.request_network_player_state()
 		_seed_netfox_real_launch_pending_join(username)
 		if has_pending_join():
-			send_join_world(pending_join_world_name)
+			send_join_world_if_needed(pending_join_world_name)
 		elif world_node != null and is_world_node_active():
 			var active_world_name = current_world_name
 			if "current_world_name" in world_node:
 				active_world_name = _safe_world_name(world_node.get("current_world_name"))
 			if active_world_name == "":
 				active_world_name = current_world_name
-			send_join_world(active_world_name)
+			send_join_world_if_needed(active_world_name)
 	server_auth_finished.emit(data)
 
 
@@ -5195,6 +5227,7 @@ func _handle_world_entry_rejected_message(data: Dictionary) -> void:
 	var incoming_session_id: String = _get_message_world_entry_session_id(data)
 	if incoming_session_id != "" and active_world_entry_session_id != "" and incoming_session_id != active_world_entry_session_id:
 		return
+	active_join_request_pending = false
 	cancel_world_entry_profile(str(data.get("reason", "world_entry_rejected")))
 	var world_node: Node = get_world_node()
 	if world_node == null or not is_instance_valid(world_node):

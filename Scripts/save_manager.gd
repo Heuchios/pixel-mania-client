@@ -557,8 +557,15 @@ func close_all_gameplay_popups():
 
 func notify_network_join_current_world():
 	var network = world.get_node_or_null("/root/NetworkManager")
-	if network != null and network.has_method("send_join_world"):
-		var sent = bool(network.send_join_world(world.current_world_name))
+	if network != null and (
+		network.has_method("send_join_world_if_needed")
+		or network.has_method("send_join_world")
+	):
+		var sent := false
+		if network.has_method("send_join_world_if_needed"):
+			sent = bool(network.send_join_world_if_needed(world.current_world_name))
+		else:
+			sent = bool(network.send_join_world(world.current_world_name))
 		if not sent and network.has_method("set_pending_join"):
 			network.set_pending_join(world.current_world_name, get_current_player_profile_name())
 
@@ -701,17 +708,26 @@ func enter_world_by_name(raw_name: String):
 	finish_world_entry_after_load(true, true)
 
 
-func finish_world_entry_after_load(save_after_finish: bool = true, announce_enter: bool = true):
+func finish_world_entry_after_load(
+	save_after_finish: bool = true,
+	announce_enter: bool = true,
+	defer_noncritical_work: bool = false
+):
+	var completed_world_name: String = world.current_world_name
+	var should_announce: bool = announce_enter and world_entry_pending_announce
 	debug_action_position_flow("finish_world_entry_after_load start", {
 		"save_after_finish": save_after_finish,
 		"announce_enter": announce_enter,
+		"defer_noncritical_work": defer_noncritical_work,
 		"was_waiting_for_server_world_state": waiting_for_server_world_state
 	})
 	waiting_for_server_world_state = false
 	world.set_meta("world_entry_in_progress", false)
+	var network = world.get_node_or_null("/root/NetworkManager")
+	if network != null and network.has_method("mark_active_join_request_complete"):
+		network.mark_active_join_request_complete(world.current_world_name)
 
 	set_gameplay_world_active(true)
-	close_all_gameplay_popups()
 	set_gameplay_ui_visible(true)
 
 	if world.world_menu_ui != null and world.world_menu_ui.has_method("close_menu"):
@@ -721,29 +737,68 @@ func finish_world_entry_after_load(save_after_finish: bool = true, announce_ente
 		world.player.visible = true
 		world.player.set_physics_process(true)
 
-	world.restore_chat_ui_after_world_enter()
 	world.setup_world_camera_limits()
 	world.set_default_camera_zoom_silent()
 	world.clamp_player_to_world()
 	world.update_equipment_visual()
-	world.update_all_ui()
+	world_entry_pending_announce = false
 
 	if world.has_method("finish_smooth_world_load"):
 		world.finish_smooth_world_load()
 
-	if announce_enter and world_entry_pending_announce:
-		world.show_notification("Entered world: " + world.current_world_name)
+	debug_action_position_flow("finish_world_entry_after_load end", {
+		"save_after_finish": save_after_finish,
+		"announce_enter": announce_enter,
+		"defer_noncritical_work": defer_noncritical_work
+	})
+
+	if defer_noncritical_work:
+		call_deferred(
+			"_finish_world_entry_noncritical_after_frame",
+			save_after_finish,
+			should_announce,
+			completed_world_name
+		)
+	else:
+		_finish_world_entry_noncritical(save_after_finish, should_announce, completed_world_name)
+
+
+func _finish_world_entry_noncritical_after_frame(
+	save_after_finish: bool,
+	should_announce: bool,
+	completed_world_name: String
+) -> void:
+	var scene_tree := get_tree()
+	if scene_tree != null:
+		await scene_tree.process_frame
+	_finish_world_entry_noncritical(save_after_finish, should_announce, completed_world_name)
+
+
+func _finish_world_entry_noncritical(
+	save_after_finish: bool,
+	should_announce: bool,
+	completed_world_name: String
+) -> void:
+	if world.current_world_name != completed_world_name:
+		return
+
+	close_all_gameplay_popups()
+	world.restore_chat_ui_after_world_enter()
+	world.update_all_ui()
+
+	if should_announce:
+		world.show_notification("Entered world: " + completed_world_name)
 		_send_world_entry_chat_message()
 
-	world_entry_pending_announce = false
+	var network = world.get_node_or_null("/root/NetworkManager")
+	if network != null and network.has_method("persist_completed_world_join"):
+		network.persist_completed_world_join(completed_world_name)
 
 	if save_after_finish:
 		save_world()
 
-	debug_action_position_flow("finish_world_entry_after_load end", {
-		"save_after_finish": save_after_finish,
-		"announce_enter": announce_enter
-	})
+	if world.has_method("start_optional_world_resource_warmup"):
+		world.call_deferred("start_optional_world_resource_warmup")
 
 
 

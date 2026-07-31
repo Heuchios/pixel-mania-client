@@ -5,7 +5,6 @@ const WORLD_LOADING_RETRY_MAX_MSEC := 20000
 const WORLD_LOADING_RETRY_GRACE_ATTEMPTS := 1
 # Set to 0 so the overlay only fades after the world/player readiness checks pass.
 const WORLD_READY_WAIT_TIMEOUT_MSEC := 0
-const WORLD_READY_CHECK_INTERVAL_MSEC := 50
 # Do not add cosmetic delay after the authoritative world/player checks pass.
 const WORLD_LOADING_MIN_VISIBLE_MSEC := 0
 const WORLD_LOADING_READY_HOLD_MSEC := 0
@@ -667,7 +666,9 @@ func _finish_smooth_world_load_when_ready() -> void:
 
 	if not timed_out and not is_world_ready_for_player():
 		update_message("Preparing player...")
-		await get_tree().create_timer(float(WORLD_READY_CHECK_INTERVAL_MSEC) / 1000.0).timeout
+		var scene_tree := get_tree()
+		if scene_tree != null:
+			await scene_tree.process_frame
 		_finish_smooth_world_load_when_ready()
 		return
 
