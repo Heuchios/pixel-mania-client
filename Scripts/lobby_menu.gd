@@ -13,6 +13,7 @@ const MAX_ACTIVE_WORLD_ROWS := 6
 const WORLD_POPULATION_REFRESH_SECONDS := 5.0
 const PLAYER_MAX_LEVEL := 100
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
+const WorldScenePreloader = preload("res://Scripts/world_scene_preloader.gd")
 
 var world_input: LineEdit
 var status_label: Label
@@ -31,15 +32,21 @@ var active_worlds_button: Button
 var world_list_mode := "active"
 var world_population_cache: Dictionary = {}
 var world_population_timer: Timer
+var world_entry_in_progress := false
 
 
 func _ready() -> void:
+	WorldScenePreloader.start()
 	_build_screen()
 	_load_profile()
 	_connect_world_population_feed()
 	_start_world_population_timer()
 	_request_world_population_refresh()
 	call_deferred("_start_lobby_idle_animation")
+
+
+func _process(_delta: float) -> void:
+	WorldScenePreloader.pump()
 
 
 func _build_screen() -> void:
@@ -1666,6 +1673,9 @@ func _on_join_pressed() -> void:
 
 
 func _join_world_name(raw_world_name: String) -> void:
+	if world_entry_in_progress:
+		return
+
 	var world_name: String = _normalize_world_name(raw_world_name)
 
 	if world_name.is_empty():
@@ -1694,7 +1704,29 @@ func _join_world_name(raw_world_name: String) -> void:
 	cfg.set_value("pending_join", "profile_name", profile_name)
 	cfg.save(PROFILE_PATH)
 
-	get_tree().change_scene_to_file(WORLD_SCENE)
+	world_entry_in_progress = true
+	status_label.text = "Loading " + world_name + "..."
+	_enter_preloaded_world()
+
+
+func _enter_preloaded_world() -> void:
+	var start_error := WorldScenePreloader.start()
+	if start_error != OK:
+		world_entry_in_progress = false
+		status_label.text = "Could not start world loading."
+		return
+
+	while is_inside_tree():
+		WorldScenePreloader.pump()
+		var packed_world := WorldScenePreloader.get_loaded_scene()
+		if packed_world != null:
+			get_tree().change_scene_to_packed(packed_world)
+			return
+		if WorldScenePreloader.get_last_error() != OK:
+			world_entry_in_progress = false
+			status_label.text = "Could not load world scene."
+			return
+		await get_tree().process_frame
 
 
 func _on_profile_switch_pressed() -> void:

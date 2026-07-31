@@ -1,5 +1,14 @@
 extends RefCounted
 
+static var _texture_path_cache: Dictionary = {}
+
+
+static func prime_texture(path: String, texture: Texture2D) -> void:
+	var clean_path := path.strip_edges()
+	if clean_path == "" or texture == null:
+		return
+	_texture_path_cache[clean_path] = texture
+
 
 static func load_texture(texture_spec) -> Texture2D:
 	if texture_spec == null:
@@ -56,15 +65,22 @@ static func get_source_path(texture_spec) -> String:
 
 
 static func load_texture_path(path: String) -> Texture2D:
-	if path == "":
+	var clean_path := path.strip_edges()
+	if clean_path == "":
 		return null
 
-	if not ResourceLoader.exists(path):
+	var cached_texture = _texture_path_cache.get(clean_path, null)
+	if cached_texture is Texture2D:
+		return cached_texture as Texture2D
+
+	if not ResourceLoader.exists(clean_path):
 		return null
 
-	var resource = ResourceLoader.load(path)
+	var resource = ResourceLoader.load(clean_path)
 	if resource is Texture2D:
-		return resource
+		var texture := resource as Texture2D
+		prime_texture(clean_path, texture)
+		return texture
 
 	return null
 

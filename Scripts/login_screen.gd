@@ -9,6 +9,7 @@ const BACKGROUND_FRAME_ORDER := [0]
 const BACKGROUND_FRAME_SECONDS := 0.35
 const AccountManagerScript = preload("res://Scripts/account_manager.gd")
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
+const WorldScenePreloader = preload("res://Scripts/world_scene_preloader.gd")
 const LOGIN_PANEL_W := 520.0
 const LOGIN_PANEL_H := 500.0
 const LOGIN_FIELD_W := 470.0
@@ -43,6 +44,7 @@ var server_status_refresh_timer := 0.0
 
 
 func _ready() -> void:
+	WorldScenePreloader.start()
 	_setup_account_manager()
 	_build_screen()
 	_connect_network_auth_signal()
@@ -52,6 +54,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	WorldScenePreloader.pump()
 	_update_background_animation(delta)
 
 	server_status_refresh_timer -= delta

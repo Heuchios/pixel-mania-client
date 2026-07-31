@@ -1,6 +1,30 @@
 extends Node2D
 
 const TouchInputGuard = preload("res://Scripts/touch_input_guard.gd")
+const WorldScenePreloader = preload("res://Scripts/world_scene_preloader.gd")
+const OPTIONAL_WORLD_UI_SETUP_METHODS: Array[StringName] = [
+	&"setup_player_menu_ui",
+	&"setup_game_menu_ui",
+	&"setup_friends_ui",
+	&"setup_developer_panel_ui",
+	&"setup_trade_ui",
+	&"setup_vending_ui",
+	&"setup_safe_ui",
+	&"setup_donation_box_ui",
+	&"setup_mailbox_ui",
+	&"setup_bulletin_board_ui",
+	&"setup_display_ui",
+	&"setup_fish_monger_ui",
+	&"setup_cctv_ui",
+	&"setup_oil_refinery_ui",
+	&"setup_battery_charger_ui",
+	&"setup_generator_ui",
+	&"setup_shop_ui",
+	&"setup_crafting_ui",
+	&"setup_furnace_ui",
+	&"setup_sign_ui",
+	&"setup_world_menu_ui"
+]
 
 const BLOCK_SIZE = 32
 const WORLD_WIDTH = 100
@@ -1689,27 +1713,7 @@ func _ready():
 	setup_command_manager()
 	setup_chat_ui()
 	setup_notification_ui()
-	setup_player_menu_ui()
-	setup_game_menu_ui()
-	setup_friends_ui()
-	setup_developer_panel_ui()
-	setup_trade_ui()
-	setup_vending_ui()
-	setup_safe_ui()
-	setup_donation_box_ui()
-	setup_mailbox_ui()
-	setup_bulletin_board_ui()
-	setup_display_ui()
-	setup_fish_monger_ui()
-	setup_cctv_ui()
-	setup_oil_refinery_ui()
-	setup_battery_charger_ui()
-	setup_generator_ui()
-	setup_shop_ui()
-	setup_crafting_ui()
-	setup_furnace_ui()
-	setup_sign_ui()
-	setup_world_menu_ui()
+	_warm_optional_world_ui()
 
 	if _is_netfox_real_server_launch():
 		_finish_netfox_real_server_startup()
@@ -1724,6 +1728,29 @@ func _ready():
 	else:
 		exit_to_main_menu(false)
 	update_all_ui()
+
+
+func _warm_optional_world_ui() -> void:
+	var scene_tree := get_tree()
+	if scene_tree == null:
+		return
+	scene_tree.process_frame.connect(_warm_optional_world_ui_step.bind(0), CONNECT_ONE_SHOT)
+
+
+func _warm_optional_world_ui_step(setup_index: int) -> void:
+	if not is_inside_tree() or setup_index >= OPTIONAL_WORLD_UI_SETUP_METHODS.size():
+		return
+
+	var setup_method: StringName = OPTIONAL_WORLD_UI_SETUP_METHODS[setup_index]
+	if has_method(setup_method):
+		call(setup_method)
+
+	var scene_tree := get_tree()
+	if scene_tree != null:
+		scene_tree.process_frame.connect(
+			_warm_optional_world_ui_step.bind(setup_index + 1),
+			CONNECT_ONE_SHOT
+		)
 
 
 func show_pending_join_loading_overlay_early() -> void:
@@ -1957,7 +1984,9 @@ func _custom_movement_get_arg_value(flag_name: String, default_value: String) ->
 
 
 func _load_item_database():
-	var item_database_script = load(ITEM_DATABASE_PATH)
+	var item_database_script: Script = WorldScenePreloader.get_loaded_item_database_script()
+	if item_database_script == null:
+		item_database_script = load(ITEM_DATABASE_PATH) as Script
 
 	if item_database_script == null:
 		push_error("Could not load item database script at %s" % ITEM_DATABASE_PATH)
