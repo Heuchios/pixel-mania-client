@@ -8,6 +8,7 @@ signal owned_locked_worlds_received(data)
 const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
 
 var socket := WebSocketPeer.new()
+var socket_generation: int = 0
 var connected := false
 var player_id := ""
 var player_name := "Guest"
@@ -494,16 +495,14 @@ func _process(delta: float) -> void:
 	if not MovementMode.should_run_websocket_backend():
 		return
 
-	socket.poll()
+	# Keep this frame bound to one peer. A route packet can replace `socket` while
+	# messages are being handled, and the retired peer must not tear down the new
+	# peer's join state afterward.
+	var frame_socket: WebSocketPeer = socket
+	var frame_socket_generation: int = socket_generation
+	frame_socket.poll()
 
-	var state = socket.get_ready_state()
-	if state == WebSocketPeer.STATE_CLOSED and last_ready_state != WebSocketPeer.STATE_CLOSED:
-		last_close_code = socket.get_close_code()
-		last_close_reason = socket.get_close_reason()
-		if last_connection_error == "" and not connected:
-			last_connection_error = "closed before opening"
-	last_ready_state = state
-
+	var state: int = frame_socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN and not connected:
 		connected = true
 		server_session_authenticated = false
@@ -520,29 +519,72 @@ func _process(delta: float) -> void:
 		elif has_active_session():
 			send_account_token_login(session_username, session_token)
 
+	process_server_packets_with_budget(frame_socket, frame_socket_generation)
+	_process_network_followup()
+
+	# Packet handling may have followed a world-route redirect and installed a
+	# replacement peer. Never apply lifecycle state from the retired connection.
+	if frame_socket_generation != socket_generation:
+		return
+
+	state = frame_socket.get_ready_state()
+	# WebSocketPeer can retain packets after reporting CLOSED. Drain every queued
+	# packet, including a completed world snapshot, before disconnect cleanup.
+	if state == WebSocketPeer.STATE_CLOSED and frame_socket.get_available_packet_count() > 0:
+		return
+
+	if state == WebSocketPeer.STATE_CLOSED and last_ready_state != WebSocketPeer.STATE_CLOSED:
+		last_close_code = frame_socket.get_close_code()
+		last_close_reason = frame_socket.get_close_reason()
+		if (
+			active_join_request_pending
+			or not pending_server_world_state.is_empty()
+			or not pending_world_state_stream.is_empty()
+			or world_route_redirect_pending
+		):
+			print("[world-entry] transport_closed ", JSON.stringify({
+				"url": last_connection_attempt_url,
+				"close_code": last_close_code,
+				"close_reason": last_close_reason,
+				"connected": connected,
+				"authenticated": server_session_authenticated,
+				"active_join_pending": active_join_request_pending,
+				"active_join_world": active_join_world_name,
+				"pending_snapshot": not pending_server_world_state.is_empty(),
+				"pending_stream": not pending_world_state_stream.is_empty(),
+				"redirect_pending": world_route_redirect_pending,
+				"queued_packets": frame_socket.get_available_packet_count()
+			}))
+		if last_connection_error == "" and not connected:
+			last_connection_error = "closed before opening"
+	last_ready_state = state as WebSocketPeer.State
+
 	if state == WebSocketPeer.STATE_CLOSED and connected:
 		var had_active_session := has_active_session()
 		var close_code := last_close_code
 		var close_reason := last_close_reason
 		connected = false
 		server_session_authenticated = false
-		clear_world_event_tile_update_queue()
 		server_connection_changed.emit(false)
-		if had_active_session and not world_route_redirect_pending:
+		var session_must_end := _should_clear_saved_login_for_close(close_code, close_reason)
+		if had_active_session and session_must_end and not world_route_redirect_pending:
+			clear_world_event_tile_update_queue()
 			_end_authenticated_session(
 				_make_disconnect_login_notice(close_code, close_reason),
-				_should_clear_saved_login_for_close(close_code, close_reason),
+				true,
 				false
 			)
+		elif had_active_session:
+			print("[NetworkManager] Transient disconnect; preserving authenticated join state for reconnect.")
 
 	if state == WebSocketPeer.STATE_CLOSED:
 		reconnect_timer -= delta
 		if reconnect_timer <= 0.0:
-			advance_server_url()
 			reconnect_timer = RECONNECT_INTERVAL
 			connect_to_server()
 
-	process_server_packets_with_budget()
+
+func _process_network_followup() -> void:
 	process_world_event_tile_update_queue()
 	process_pending_world_state_stream_timeout()
 	apply_pending_server_world_state_if_ready()
@@ -551,18 +593,20 @@ func _process(delta: float) -> void:
 	apply_pending_server_player_state_if_ready()
 
 
-func process_server_packets_with_budget() -> void:
+func process_server_packets_with_budget(peer: WebSocketPeer, generation: int) -> void:
 	if is_world_state_apply_in_progress():
 		return
 
 	var processed: int = 0
 	var started_usec: int = Time.get_ticks_usec()
 
-	while socket.get_available_packet_count() > 0 and processed < MAX_SERVER_PACKETS_PER_FRAME:
-		var packet_bytes: PackedByteArray = socket.get_packet()
+	while peer.get_available_packet_count() > 0 and processed < MAX_SERVER_PACKETS_PER_FRAME:
+		var packet_bytes: PackedByteArray = peer.get_packet()
 		var packet: String = packet_bytes.get_string_from_utf8()
 		handle_server_message(packet, packet_bytes.size())
 		processed += 1
+		if generation != socket_generation:
+			break
 
 		if is_world_state_apply_in_progress():
 			break
@@ -642,6 +686,7 @@ func connect_to_server(force: bool = false) -> void:
 	if active_server_urls.is_empty():
 		return
 
+	socket_generation += 1
 	socket = WebSocketPeer.new()
 	socket.inbound_buffer_size = MAX_SERVER_MESSAGE_BYTES
 	socket.outbound_buffer_size = MAX_CLIENT_MESSAGE_BYTES
@@ -2046,11 +2091,24 @@ func has_active_join_request_for_world(world_name: String) -> bool:
 	)
 
 
+func has_join_lifecycle_for_world(world_name: String) -> bool:
+	var clean_world := _safe_world_name(world_name)
+	if clean_world == "" or active_join_request_id == "" or active_join_world_name != clean_world:
+		return false
+	return (
+		active_join_request_pending
+		or world_entry_requires_ready
+		or world_entry_active
+		or not pending_server_world_state.is_empty()
+		or not pending_world_state_stream.is_empty()
+	)
+
+
 func send_join_world_if_needed(world_name: String) -> bool:
 	var clean_world := _safe_world_name(world_name)
 	if clean_world == "":
 		clean_world = "START"
-	if has_active_join_request_for_world(clean_world):
+	if has_join_lifecycle_for_world(clean_world):
 		return true
 	return send_join_world(clean_world)
 
@@ -3727,17 +3785,17 @@ func _get_local_netfox_player_path() -> String:
 	return ""
 
 
-func sync_active_world_name_from_server(world_name) -> void:
-	var clean_world = _safe_world_name(world_name)
+func sync_active_world_name_from_server(world_name, target_world_node: Node = null) -> void:
+	var clean_world: String = _safe_world_name(world_name)
 	if clean_world == "":
 		return
 
 	current_world_name = clean_world
-	var world_node = get_world_node()
-	if world_node == null:
-		return
+	var world_node: Node = target_world_node
+	if world_node == null or not is_instance_valid(world_node):
+		world_node = get_world_node()
 
-	if "current_world_name" in world_node:
+	if world_node != null and "current_world_name" in world_node:
 		world_node.set("current_world_name", clean_world)
 
 
@@ -5187,6 +5245,13 @@ func _send_pending_world_entry_ready() -> bool:
 	if sent:
 		world_entry_ready_sent = true
 		world_entry_ready_retry_at_msec = Time.get_ticks_msec() + WORLD_ENTRY_READY_RETRY_MS
+		print("[world-entry-client] sent world_entry_ready " + JSON.stringify({
+			"world": active_join_world_name,
+			"join_request_id": active_join_request_id,
+			"world_entry_session_id": active_world_entry_session_id,
+			"world_revision": active_world_entry_revision,
+			"block_revision": active_world_entry_block_revision
+		}))
 		record_world_entry_stage("client_spawn_safe_ready_sent", {
 			"world_revision": active_world_entry_revision,
 			"block_revision": active_world_entry_block_revision
@@ -5221,6 +5286,14 @@ func _request_world_entry_snapshot_restart(reason: String) -> bool:
 		"world_entry_session_id": active_world_entry_session_id,
 		"reason": reason
 	})
+	print("[world-entry-client] requested world_entry_snapshot_restart " + JSON.stringify({
+		"world": active_join_world_name,
+		"join_request_id": active_join_request_id,
+		"world_entry_session_id": active_world_entry_session_id,
+		"reason": reason,
+		"world_revision": active_world_entry_revision + 1,
+		"block_revision": active_world_entry_block_revision
+	}))
 	return send_message(restart_payload)
 
 
@@ -5290,27 +5363,69 @@ func _handle_world_entry_catchup_wait(data: Dictionary) -> void:
 		_send_pending_world_entry_ready()
 
 
+func _describe_world_entry_active_packet(data: Dictionary, reason: String) -> Dictionary:
+	return {
+		"reason": reason,
+		"incoming_world": _get_message_world_name(data),
+		"incoming_join_request_id": _get_message_join_request_id(data),
+		"incoming_session_id": _get_message_world_entry_session_id(data),
+		"incoming_world_revision": _safe_int(data.get("world_revision", 0), 0, 0),
+		"incoming_block_revision": _safe_int(data.get("block_revision", 0), 0, 0),
+		"incoming_controls_unlocked": bool(data.get("controls_unlocked", false)),
+		"requires_ready": world_entry_requires_ready,
+		"entry_active": world_entry_active,
+		"active_join_pending": active_join_request_pending,
+		"active_join_request_id": active_join_request_id,
+		"active_join_world": active_join_world_name,
+		"active_session_id": active_world_entry_session_id,
+		"active_world_revision": active_world_entry_revision,
+		"active_block_revision": active_world_entry_block_revision,
+		"pending_ready": not pending_world_entry_ready.is_empty(),
+		"pending_snapshot": not pending_server_world_state.is_empty(),
+		"pending_stream": not pending_world_state_stream.is_empty(),
+		"current_world": current_world_name,
+		"connected": connected,
+		"authenticated": server_session_authenticated
+	}
+
+
+func _log_ignored_world_entry_active(data: Dictionary, reason: String) -> void:
+	var details := _describe_world_entry_active_packet(data, reason)
+	print("[world-entry-client] ignored world_entry_active " + JSON.stringify(details))
+	record_world_entry_stage("client_world_entry_active_ignored", details)
+
+
 func _handle_world_entry_active(data: Dictionary) -> void:
 	if not world_entry_requires_ready:
+		_log_ignored_world_entry_active(data, "not_waiting_for_ready")
 		return
 	if not _is_message_for_active_join_request(data):
+		_log_ignored_world_entry_active(data, "join_request_mismatch")
 		return
 	if not _is_message_for_active_world_entry_session(data):
+		_log_ignored_world_entry_active(data, "session_mismatch")
 		return
 	var incoming_world: String = _get_message_world_name(data)
 	if incoming_world == "" or incoming_world != active_join_world_name:
+		_log_ignored_world_entry_active(data, "world_mismatch")
 		return
 	if world_entry_active:
+		_log_ignored_world_entry_active(data, "already_active")
 		return
 	process_pending_world_entry_block_updates()
 	var incoming_revision: int = _safe_int(data.get("world_revision", 0), 0, 0)
 	var incoming_block_revision: int = _safe_int(data.get("block_revision", 0), 0, 0)
 	if incoming_revision < active_world_entry_revision or incoming_block_revision != active_world_entry_block_revision:
+		_log_ignored_world_entry_active(data, "revision_mismatch")
 		_request_world_entry_snapshot_restart("active_revision_mismatch")
 		return
 	if not bool(data.get("controls_unlocked", false)):
+		_log_ignored_world_entry_active(data, "controls_locked")
 		return
 
+	print("[world-entry-client] accepted world_entry_active " + JSON.stringify(
+		_describe_world_entry_active_packet(data, "accepted")
+	))
 	active_world_entry_revision = incoming_revision
 	active_world_entry_block_revision = incoming_block_revision
 	world_entry_active = true
@@ -5596,10 +5711,18 @@ func _handle_world_state_stream_end(data: Dictionary, wire_bytes: int = 0) -> vo
 		"transfer_ms": _get_world_entry_transfer_ms()
 	})
 	if not _is_valid_server_world_state_payload(payload):
+		record_world_entry_stage("client_world_payload_invalid", {
+			"world": _get_message_world_name(payload),
+			"has_foreground": payload.has("foreground"),
+			"has_background": payload.has("background")
+		})
 		_retry_invalid_server_world_state(payload)
 		return
 	var world_node: Node = get_world_node()
 	if not _world_node_can_apply_server_world_state(world_node):
+		var queued_details: Dictionary = _describe_world_state_apply_target(world_node)
+		queued_details["reason"] = "world_scene_not_ready"
+		record_world_entry_stage("client_world_apply_queued", queued_details)
 		_queue_pending_server_world_state(payload, "world_scene_not_ready")
 		return
 	_apply_server_world_state_payload(payload, world_node)
@@ -5638,8 +5761,8 @@ func _is_valid_server_world_state_payload(data: Dictionary) -> bool:
 func _world_node_can_apply_server_world_state(world_node: Node) -> bool:
 	if world_node == null or not is_instance_valid(world_node):
 		return false
-	if not is_world_node_active():
-		return false
+	# The first authoritative snapshot activates a newly-instantiated world. The
+	# join request, entry session, and target world are validated by the caller.
 	if not world_node.has_method("apply_network_world_state"):
 		return false
 	if "world_state_sync_manager" in world_node and world_node.get("world_state_sync_manager") == null:
@@ -5647,6 +5770,51 @@ func _world_node_can_apply_server_world_state(world_node: Node) -> bool:
 	if "save_manager" in world_node and world_node.get("save_manager") == null:
 		return false
 	return true
+
+
+func _describe_world_state_apply_target(world_node: Node) -> Dictionary:
+	var details: Dictionary = {
+		"target_valid": world_node != null and is_instance_valid(world_node),
+		"current_scene": ""
+	}
+	var scene_tree: SceneTree = get_tree()
+	var current_scene: Node = null
+	if scene_tree != null:
+		current_scene = scene_tree.current_scene
+	if current_scene != null and current_scene.is_inside_tree():
+		details["current_scene"] = str(current_scene.get_path())
+	if world_node == null or not is_instance_valid(world_node):
+		return details
+
+	details["target_name"] = str(world_node.name)
+	details["target_class"] = world_node.get_class()
+	details["target_path"] = str(world_node.get_path()) if world_node.is_inside_tree() else ""
+	if "current_world_name" in world_node:
+		details["target_world"] = _safe_world_name(str(world_node.get("current_world_name")))
+	else:
+		details["target_world"] = ""
+	details["target_has_apply"] = world_node.has_method("apply_network_world_state")
+	details["target_has_sync_manager"] = (
+		"world_state_sync_manager" in world_node
+		and world_node.get("world_state_sync_manager") != null
+	)
+	details["target_has_save_manager"] = (
+		"save_manager" in world_node
+		and world_node.get("save_manager") != null
+	)
+	return details
+
+
+func is_world_state_for_active_entry_target(data: Dictionary) -> bool:
+	if not _is_message_for_active_join_request(data):
+		return false
+	if not _is_message_for_active_world_entry_session(data):
+		return false
+	var incoming_world: String = _get_message_world_name(data)
+	var target_world: String = _safe_world_name(active_join_world_name)
+	if target_world == "":
+		target_world = _safe_world_name(pending_join_world_name)
+	return incoming_world != "" and target_world != "" and incoming_world == target_world
 
 
 func _queue_pending_server_world_state(data: Dictionary, reason: String) -> void:
@@ -5670,8 +5838,15 @@ func _apply_server_world_state_payload(data: Dictionary, world_node: Node) -> vo
 	clear_world_event_tile_update_queue()
 	var incoming_world: String = _get_message_world_name(data)
 	if incoming_world != "":
-		sync_active_world_name_from_server(incoming_world)
+		sync_active_world_name_from_server(incoming_world, world_node)
+	var dispatch_details: Dictionary = _describe_world_state_apply_target(world_node)
+	dispatch_details["world"] = incoming_world
+	record_world_entry_stage("client_world_apply_dispatch", dispatch_details)
 	world_node.apply_network_world_state(data)
+	record_world_entry_stage("client_world_apply_returned", {
+		"world": incoming_world,
+		"target_path": str(world_node.get_path()) if world_node.is_inside_tree() else ""
+	})
 	if world_node.has_method("apply_world_event_state_from_network"):
 		world_node.apply_world_event_state_from_network(data)
 

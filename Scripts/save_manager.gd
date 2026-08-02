@@ -800,10 +800,12 @@ func enter_world_by_name(raw_name: String):
 	finish_world_entry_after_load(true, true)
 
 
-func finish_world_entry_after_load(save_after_finish: bool = true, announce_enter: bool = true):
+func finish_world_entry_after_load(save_after_finish: bool = true, announce_enter: bool = true, server_world_state_finalized: bool = false, defer_noncritical_work: bool = false):
 	debug_action_position_flow("finish_world_entry_after_load start", {
 		"save_after_finish": save_after_finish,
 		"announce_enter": announce_enter,
+		"server_world_state_finalized": server_world_state_finalized,
+		"defer_noncritical_work": defer_noncritical_work,
 		"was_waiting_for_server_world_state": waiting_for_server_world_state
 	})
 	waiting_for_server_world_state = false
