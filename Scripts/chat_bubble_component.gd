@@ -498,6 +498,8 @@ func schedule_notification_expiry(now_msec: int = -1) -> void:
 		earliest_expiry = mini(earliest_expiry, int(entry.get("expires_at_msec", earliest_expiry)))
 	var wait_seconds := maxf(0.01, float(earliest_expiry - now_msec) / 1000.0)
 	hide_timer.stop()
+	if not is_inside_tree() or not hide_timer.is_inside_tree():
+		return
 	hide_timer.start(wait_seconds)
 
 

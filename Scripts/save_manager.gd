@@ -809,6 +809,7 @@ func finish_world_entry_after_load(save_after_finish: bool = true, announce_ente
 		"was_waiting_for_server_world_state": waiting_for_server_world_state
 	})
 	waiting_for_server_world_state = false
+	world.in_world = true
 	world.set_meta("world_entry_in_progress", false)
 
 	set_gameplay_world_active(true)

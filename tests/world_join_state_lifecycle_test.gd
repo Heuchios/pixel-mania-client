@@ -166,6 +166,9 @@ func _run() -> void:
 	var enter_source := source_between(save_source, "func enter_world_by_name", "func handle_network_door_enter_ok")
 	assert(enter_source.contains("request_server_connection(false)"))
 	assert(not enter_source.contains("request_server_connection(true)"))
+	var finish_entry_source := source_between(save_source, "func finish_world_entry_after_load", "func _finish_world_entry_noncritical_after_frame")
+	assert(finish_entry_source.contains("waiting_for_server_world_state = false"))
+	assert(finish_entry_source.contains("world.in_world = true"))
 
 	var sync_source := FileAccess.get_file_as_string("res://Scripts/world_state_sync_manager.gd")
 	var apply_source := source_between(sync_source, "func apply_network_world_state", "func apply_network_block_update")
