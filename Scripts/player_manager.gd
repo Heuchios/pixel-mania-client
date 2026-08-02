@@ -1536,7 +1536,7 @@ func _update_remote_visual_position_v1(remote_player, delta: float) -> void:
 	if buffered_position is Vector2:
 		var remote_animation_state = str(remote_player.get_meta("animation_state", "idle"))
 		var is_airborne_for_collision_checks := remote_animation_state in ["jump", "fall"] or not bool(remote_player.get_meta("network_on_floor", true))
-		var safe_position := buffered_position
+		var safe_position: Vector2 = buffered_position
 		if not is_airborne_for_collision_checks:
 			safe_position = get_safe_remote_render_position(remote_player.global_position, buffered_position)
 		remote_player.set_meta("smoothed_position", safe_position)
