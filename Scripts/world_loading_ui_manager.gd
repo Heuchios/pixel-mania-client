@@ -2,7 +2,7 @@ extends Node
 
 const WORLD_LOADING_TIMEOUT_MSEC := 6000
 const WORLD_LOADING_RETRY_MAX_MSEC := 20000
-const WORLD_LOADING_RETRY_GRACE_ATTEMPTS := 1
+const WORLD_LOADING_RETRY_GRACE_ATTEMPTS := 0
 const WORLD_LOADING_SERVER_RETRY_MAX_ATTEMPTS := 6
 # Never fail-open from the loading overlay into an empty staging world. If
 # readiness stalls, keep the overlay visible and request a fresh snapshot.

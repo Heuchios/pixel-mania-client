@@ -41,11 +41,11 @@ func _run() -> void:
 	loading_manager.set("next_server_retry_msec", 1)
 	loading_manager.call("update_timeout")
 	assert(bool(loading_manager.get("waiting_for_server_state")))
-	assert(retry_world.save_manager.retry_count == 0)
+	assert(retry_world.save_manager.retry_count == 1)
 	loading_manager.set("next_server_retry_msec", 1)
 	loading_manager.set("server_retry_attempt_count", 1)
 	loading_manager.call("update_timeout")
-	assert(retry_world.save_manager.retry_count == 1)
+	assert(retry_world.save_manager.retry_count == 2)
 	loading_manager.free()
 	retry_world.free()
 
