@@ -2659,7 +2659,8 @@ func handle_network_player_position(player_data: Dictionary):
 
 	var airborne_stale_msec = int(remote_player.get_meta("remote_airborne_stale_msec", 0))
 	if animation_state in ["jump", "fall"] and previous_animation_state in ["jump", "fall"] and not network_on_floor:
-		if abs(network_velocity_x) <= REMOTE_AIRBORNE_STALE_EPS_VELOCITY and abs(network_velocity_y) <= REMOTE_AIRBORNE_STALE_EPS_VELOCITY and target_delta <= REMOTE_AIRBORNE_STALE_DISTANCE:
+		var vertical_delta := next_target_position.y - old_target.y
+		if abs(network_velocity_y) <= REMOTE_AIRBORNE_STALE_EPS_VELOCITY and abs(vertical_delta) <= REMOTE_AIRBORNE_STALE_DISTANCE:
 			airborne_stale_msec = now_msec if airborne_stale_msec <= 0 else max(airborne_stale_msec, now_msec)
 		else:
 			airborne_stale_msec = 0
