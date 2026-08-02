@@ -1041,7 +1041,10 @@ const REMOTE_WALK_FRAME_TIME := 0.16
 const REMOTE_IDLE_FRAME_TIME := 0.45
 const REMOTE_WALK_SPEED_THRESHOLD := 8.0
 const REMOTE_POSITION_WALK_MIN_DISTANCE := 2.0
-const REMOTE_JUMP_SPEED_THRESHOLD := 40.0
+const REMOTE_JUMP_SPEED_THRESHOLD := 8.0
+const REMOTE_AIRBORNE_STALE_EPS_VELOCITY := 8.0
+const REMOTE_AIRBORNE_STALE_DISTANCE := 1.5
+const REMOTE_AIRBORNE_STALE_TIMEOUT_MS := 260.0
 const REMOTE_WALK_PHASE_SPEED := 13.0
 const REMOTE_IDLE_PHASE_SPEED := 3.0
 const REMOTE_PLAYER_STALE_TIMEOUT := 20.0
@@ -1531,7 +1534,11 @@ func _update_remote_visual_position_v1(remote_player, delta: float) -> void:
 
 	var buffered_position = get_remote_buffered_render_position(remote_player)
 	if buffered_position is Vector2:
-		var safe_position := get_safe_remote_render_position(remote_player.global_position, buffered_position)
+		var remote_animation_state = str(remote_player.get_meta("animation_state", "idle"))
+		var is_airborne_for_collision_checks := remote_animation_state in ["jump", "fall"] or not bool(remote_player.get_meta("network_on_floor", true))
+		var safe_position := buffered_position
+		if not is_airborne_for_collision_checks:
+			safe_position = get_safe_remote_render_position(remote_player.global_position, buffered_position)
 		remote_player.set_meta("smoothed_position", safe_position)
 		remote_player.global_position = safe_position
 		var authoritative_value = remote_player.get_meta("authoritative_position", safe_position)
@@ -2589,6 +2596,7 @@ func handle_network_player_position(player_data: Dictionary):
 	var vertical_hint: float = float(next_target_position.y - old_target.y) / max(NETWORK_POSITION_SEND_INTERVAL, 0.001)
 	var animation_state = clean_remote_animation_state(str(player_data.get("animation_state", "")))
 	var now_msec := int(Time.get_ticks_msec())
+	var previous_animation_state = str(remote_player.get_meta("animation_state", "idle"))
 	var hurt_animation_until := int(remote_player.get_meta("remote_hurt_animation_until_msec", 0))
 	var action_animation_until := int(remote_player.get_meta("remote_action_animation_until_msec", 0))
 	if now_msec < hurt_animation_until:
@@ -2613,7 +2621,24 @@ func handle_network_player_position(player_data: Dictionary):
 	)
 
 	if has_authoritative_animation_state:
-		if animation_state == "walk" and has_network_velocity and network_on_floor and abs(network_velocity_x) <= REMOTE_WALK_SPEED_THRESHOLD:
+		if animation_state in ["punch", "place_animation", "hurt", "dead", "dead_spirit"]:
+			pass
+		elif animation_state == "walk":
+			if has_network_velocity and network_on_floor and abs(network_velocity_x) <= REMOTE_WALK_SPEED_THRESHOLD:
+				animation_state = "idle"
+			elif not network_on_floor:
+				animation_state = "fall" if network_velocity_y > REMOTE_JUMP_SPEED_THRESHOLD else "jump"
+			elif abs(network_velocity_x) > REMOTE_WALK_SPEED_THRESHOLD:
+				animation_state = "walk"
+			else:
+				animation_state = "idle"
+		elif animation_state in ["jump", "fall"] and network_on_floor:
+			animation_state = "walk" if abs(network_velocity_x) > REMOTE_WALK_SPEED_THRESHOLD else "idle"
+		elif not network_on_floor:
+			animation_state = "fall" if network_velocity_y > REMOTE_JUMP_SPEED_THRESHOLD else "jump"
+		elif abs(network_velocity_x) > REMOTE_WALK_SPEED_THRESHOLD:
+			animation_state = "walk"
+		else:
 			animation_state = "idle"
 	elif has_network_velocity:
 		if not network_on_floor:
@@ -2631,6 +2656,19 @@ func handle_network_player_position(player_data: Dictionary):
 			animation_state = "walk"
 		else:
 			animation_state = "idle"
+
+	var airborne_stale_msec = int(remote_player.get_meta("remote_airborne_stale_msec", 0))
+	if animation_state in ["jump", "fall"] and previous_animation_state in ["jump", "fall"] and not network_on_floor:
+		if abs(network_velocity_x) <= REMOTE_AIRBORNE_STALE_EPS_VELOCITY and abs(network_velocity_y) <= REMOTE_AIRBORNE_STALE_EPS_VELOCITY and target_delta <= REMOTE_AIRBORNE_STALE_DISTANCE:
+			airborne_stale_msec = now_msec if airborne_stale_msec <= 0 else max(airborne_stale_msec, now_msec)
+		else:
+			airborne_stale_msec = 0
+		if airborne_stale_msec > 0 and now_msec - airborne_stale_msec >= int(REMOTE_AIRBORNE_STALE_TIMEOUT_MS):
+			animation_state = "walk" if abs(network_velocity_x) > REMOTE_WALK_SPEED_THRESHOLD else "idle"
+			airborne_stale_msec = 0
+		remote_player.set_meta("remote_airborne_stale_msec", airborne_stale_msec)
+	else:
+		remote_player.set_meta("remote_airborne_stale_msec", 0)
 
 	var visual_speed_hint = 0.0 if animation_state == "idle" else speed_hint
 
@@ -3471,6 +3509,7 @@ func get_or_create_remote_player(remote_id: String, remote_name: String, remote_
 	remote_player.set_meta("has_position", false)
 	remote_player.set_meta("remote_speed", 0.0)
 	remote_player.set_meta("remote_velocity_y", 0.0)
+	remote_player.set_meta("remote_airborne_stale_msec", 0)
 	remote_player.set_meta("animation_state", "idle")
 	remote_player.set_meta("animation_phase", 0.0)
 	remote_player.set_meta("walk_timer", 0.0)
