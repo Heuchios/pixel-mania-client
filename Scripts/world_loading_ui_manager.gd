@@ -10,10 +10,11 @@ const WORLD_READY_WAIT_TIMEOUT_MSEC := 8000
 const WORLD_READY_CHECK_INTERVAL_MSEC := 50
 const WORLD_READY_RETRY_INTERVAL_MSEC := 1000
 const WORLD_READY_RETRY_MAX_ATTEMPTS := 6
-# Do not add cosmetic delay after the authoritative world/player checks pass.
-const WORLD_LOADING_MIN_VISIBLE_MSEC := 0
-const WORLD_LOADING_READY_HOLD_MSEC := 0
-const WORLD_LOADING_REVEAL_FADE_SECONDS := 0.34
+# Add a small visual settling period before revealing the world and use a gentle
+# fade to keep the handoff from feeling abrupt.
+const WORLD_LOADING_MIN_VISIBLE_MSEC := 280
+const WORLD_LOADING_READY_HOLD_MSEC := 160
+const WORLD_LOADING_REVEAL_FADE_SECONDS := 0.6
 const WORLD_LOADING_REVEAL_FADE_TRANS: Tween.TransitionType = Tween.TRANS_SINE
 const WORLD_LOADING_REVEAL_FADE_EASE: Tween.EaseType = Tween.EASE_IN_OUT
 const WORLD_LOADING_DOTS_INTERVAL := 0.32
@@ -994,10 +995,17 @@ func _fade_out_loading_overlay(operation_id: int) -> void:
 	world_loading_fade_tween = create_tween()
 	world_loading_fade_tween.set_trans(WORLD_LOADING_REVEAL_FADE_TRANS)
 	world_loading_fade_tween.set_ease(WORLD_LOADING_REVEAL_FADE_EASE)
+	world_loading_root.scale = Vector2.ONE
 	world_loading_fade_tween.tween_property(
 		world_loading_root,
 		"modulate:a",
 		0.0,
+		WORLD_LOADING_REVEAL_FADE_SECONDS
+	)
+	world_loading_fade_tween.parallel().tween_property(
+		world_loading_root,
+		"scale",
+		Vector2(1.025, 1.025),
 		WORLD_LOADING_REVEAL_FADE_SECONDS
 	)
 	world_loading_fade_tween.tween_callback(Callable(self, "_hide_overlay_after_fade").bind(operation_id))
@@ -1025,6 +1033,7 @@ func cancel_smooth_world_load():
 	if world_loading_root != null and is_instance_valid(world_loading_root):
 		world_loading_root.modulate = Color(1, 1, 1, 1)
 		world_loading_root.mouse_filter = Control.MOUSE_FILTER_STOP
+		world_loading_root.scale = Vector2.ONE
 
 	_unlock_player_after_loading()
 	loading_started_msec = 0
@@ -1327,6 +1336,7 @@ func _finalize_loading_operation(operation_id: int, debug_message: String) -> vo
 	if world_loading_root != null and is_instance_valid(world_loading_root):
 		world_loading_root.modulate = Color(1, 1, 1, 1)
 		world_loading_root.mouse_filter = Control.MOUSE_FILTER_STOP
+		world_loading_root.scale = Vector2.ONE
 
 	world_loading_fade_tween = null
 	_record_world_entry_profile_stage("client_world_revealed")
