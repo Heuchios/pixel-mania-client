@@ -3,8 +3,9 @@ extends Node
 const WORLD_LOADING_TIMEOUT_MSEC := 6000
 const WORLD_LOADING_RETRY_MAX_MSEC := 20000
 const WORLD_LOADING_RETRY_GRACE_ATTEMPTS := 1
-# Set to 0 so the overlay only fades after the world/player readiness checks pass.
-const WORLD_READY_WAIT_TIMEOUT_MSEC := 0
+# Keep a finite fail-safe so an unexpected readiness regression cannot trap the
+# player behind the loading overlay forever.
+const WORLD_READY_WAIT_TIMEOUT_MSEC := 8000
 const WORLD_READY_CHECK_INTERVAL_MSEC := 50
 # Do not add cosmetic delay after the authoritative world/player checks pass.
 const WORLD_LOADING_MIN_VISIBLE_MSEC := 0
@@ -51,6 +52,8 @@ var loading_dot_timer := 0.0
 var loading_dot_count := 0
 var loading_progress_value := 0.0
 var loading_progress_target := 0.0
+var active_loading_world_name: String = ""
+var loading_operation_id: int = 0
 
 
 func _debug(message: String) -> void:
@@ -504,8 +507,32 @@ func begin_smooth_world_load(world_name: String, wait_for_server_state: bool = t
 	if clean_world_name == "":
 		clean_world_name = "WORLD"
 
+	var now_msec: int = Time.get_ticks_msec()
+	var same_active_operation: bool = (
+		active_loading_world_name == clean_world_name
+		and (is_overlay_visible() or pending_finish_smooth_load or finish_wait_running)
+	)
+	if same_active_operation:
+		if wait_for_server_state and not pending_finish_smooth_load and not finish_wait_running:
+			waiting_for_server_state = true
+			if next_server_retry_msec <= 0:
+				next_server_retry_msec = now_msec + WORLD_LOADING_TIMEOUT_MSEC
+		_lock_player_for_loading()
+		update_title_for_world(clean_world_name)
+		hide_world_menu_overlay_while_loading()
+		_set_overlay_visible(true)
+		raise_loading_overlay_to_front()
+		_debug(
+			"Reusing active loading operation world=" + clean_world_name
+			+ " operation_id=" + str(loading_operation_id)
+			+ " wait_for_server=" + str(wait_for_server_state)
+		)
+		return
+
+	loading_operation_id += 1
+	active_loading_world_name = clean_world_name
 	waiting_for_server_state = wait_for_server_state
-	loading_started_msec = Time.get_ticks_msec()
+	loading_started_msec = now_msec
 	next_server_retry_msec = loading_started_msec + WORLD_LOADING_TIMEOUT_MSEC if wait_for_server_state else 0
 	server_retry_attempt_count = 0
 	finish_wait_started_msec = 0
@@ -530,7 +557,11 @@ func begin_smooth_world_load(world_name: String, wait_for_server_state: bool = t
 	hide_world_menu_overlay_while_loading()
 	_set_overlay_visible(true)
 	raise_loading_overlay_to_front()
-	_debug("Begin loading world " + clean_world_name + " wait_for_server=" + str(wait_for_server_state))
+	_debug(
+		"Begin loading world " + clean_world_name
+		+ " operation_id=" + str(loading_operation_id)
+		+ " wait_for_server=" + str(wait_for_server_state)
+	)
 
 
 func update_title_for_world(world_name: String) -> void:
@@ -638,15 +669,14 @@ func is_waiting_for_server_state() -> bool:
 
 
 func finish_smooth_world_load():
+	var operation_id: int = loading_operation_id
 	waiting_for_server_state = false
 	next_server_retry_msec = 0
 	server_retry_attempt_count = 0
 	pending_finish_smooth_load = true
 
 	if world_loading_overlay == null or not is_instance_valid(world_loading_overlay):
-		_record_world_entry_profile_stage("client_world_revealed")
-		_unlock_player_after_loading()
-		_complete_world_entry_profile()
+		_finalize_loading_operation(operation_id, "Loading completed without an overlay")
 		return
 
 	if finish_wait_running:
@@ -654,25 +684,37 @@ func finish_smooth_world_load():
 
 	finish_wait_running = true
 	finish_wait_started_msec = Time.get_ticks_msec()
-	call_deferred("_finish_smooth_world_load_when_ready")
+	call_deferred("_finish_smooth_world_load_when_ready", operation_id)
 
 
-func _finish_smooth_world_load_when_ready() -> void:
+func _finish_smooth_world_load_when_ready(operation_id: int) -> void:
+	if operation_id != loading_operation_id:
+		return
 	if not pending_finish_smooth_load:
 		finish_wait_running = false
 		return
 
 	var now_msec := Time.get_ticks_msec()
 	var timed_out := WORLD_READY_WAIT_TIMEOUT_MSEC > 0 and finish_wait_started_msec > 0 and now_msec - finish_wait_started_msec >= WORLD_READY_WAIT_TIMEOUT_MSEC
+	var world_ready := is_world_ready_for_player()
 
-	if not timed_out and not is_world_ready_for_player():
+	if not timed_out and not world_ready:
 		update_message("Preparing player...")
 		await get_tree().create_timer(float(WORLD_READY_CHECK_INTERVAL_MSEC) / 1000.0).timeout
-		_finish_smooth_world_load_when_ready()
+		if operation_id != loading_operation_id:
+			return
+		_finish_smooth_world_load_when_ready(operation_id)
 		return
 
-	if timed_out and not is_world_ready_for_player():
+	var ready_wait_msec: int = maxi(0, now_msec - finish_wait_started_msec)
+	if timed_out and not world_ready:
 		_debug("Ready wait timed out; hiding loading overlay anyway. " + get_world_ready_debug_text())
+		_record_world_entry_profile_stage("client_world_ready_timeout", {
+			"wait_ms": ready_wait_msec,
+			"readiness": get_world_ready_debug_text(),
+		})
+	else:
+		_record_world_entry_profile_stage("client_world_ready", {"wait_ms": ready_wait_msec})
 
 	var visible_for_msec: int = Time.get_ticks_msec() - loading_started_msec
 	if WORLD_LOADING_MIN_VISIBLE_MSEC > 0 and visible_for_msec < WORLD_LOADING_MIN_VISIBLE_MSEC:
@@ -680,6 +722,8 @@ func _finish_smooth_world_load_when_ready() -> void:
 		var remaining_msec: int = WORLD_LOADING_MIN_VISIBLE_MSEC - visible_for_msec
 		_debug("Keeping loading overlay visible for minimum time. remaining_ms=" + str(remaining_msec))
 		await get_tree().create_timer(float(remaining_msec) / 1000.0).timeout
+		if operation_id != loading_operation_id:
+			return
 		if not pending_finish_smooth_load:
 			finish_wait_running = false
 			return
@@ -688,6 +732,8 @@ func _finish_smooth_world_load_when_ready() -> void:
 		update_message("Entering world...")
 		_debug("Holding loading overlay after ready. hold_ms=" + str(WORLD_LOADING_READY_HOLD_MSEC))
 		await get_tree().create_timer(float(WORLD_LOADING_READY_HOLD_MSEC) / 1000.0).timeout
+		if operation_id != loading_operation_id:
+			return
 		if not pending_finish_smooth_load:
 			finish_wait_running = false
 			return
@@ -695,33 +741,32 @@ func _finish_smooth_world_load_when_ready() -> void:
 	pending_finish_smooth_load = false
 	finish_wait_running = false
 	_set_loading_progress(100.0, true)
-	_fade_out_loading_overlay()
+	_fade_out_loading_overlay(operation_id)
 
 
-func _fade_out_loading_overlay() -> void:
+func _fade_out_loading_overlay(operation_id: int) -> void:
+	if operation_id != loading_operation_id:
+		return
 	if world_loading_overlay == null or not is_instance_valid(world_loading_overlay):
-		_record_world_entry_profile_stage("client_world_revealed")
-		_unlock_player_after_loading()
-		_complete_world_entry_profile()
+		_finalize_loading_operation(operation_id, "Loading completed without an overlay")
 		return
 
 	if world_loading_fade_tween != null:
 		world_loading_fade_tween.kill()
 
 	if world_loading_root == null or not is_instance_valid(world_loading_root):
-		_set_overlay_visible(false)
-		_record_world_entry_profile_stage("client_world_revealed")
-		_unlock_player_after_loading()
-		_complete_world_entry_profile()
+		_finalize_loading_operation(operation_id, "Loading overlay hidden without a root")
 		return
 
 	world_loading_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	world_loading_fade_tween = create_tween()
 	world_loading_fade_tween.tween_property(world_loading_root, "modulate:a", 0.0, 0.12)
-	world_loading_fade_tween.tween_callback(Callable(self, "_hide_overlay_after_fade"))
+	world_loading_fade_tween.tween_callback(Callable(self, "_hide_overlay_after_fade").bind(operation_id))
 
 
 func cancel_smooth_world_load():
+	loading_operation_id += 1
+	active_loading_world_name = ""
 	waiting_for_server_state = false
 	next_server_retry_msec = 0
 	server_retry_attempt_count = 0
@@ -740,6 +785,7 @@ func cancel_smooth_world_load():
 		world_loading_root.mouse_filter = Control.MOUSE_FILTER_STOP
 
 	_unlock_player_after_loading()
+	loading_started_msec = 0
 
 
 func update_timeout():
@@ -805,11 +851,8 @@ func is_world_ready_for_player() -> bool:
 	if in_world_value == null or not bool(in_world_value):
 		return false
 
-	var server_blocks_value = world.get("blocks")
-	if server_blocks_value is Dictionary:
-		var server_blocks: Dictionary = server_blocks_value
-		if server_blocks.is_empty():
-			return false
+	# Empty authoritative worlds are valid. Completion is represented by the
+	# entry/apply flags above, not by the number of foreground blocks.
 
 	if _is_dedicated_netfox_server_without_local_player():
 		return true
@@ -826,17 +869,12 @@ func is_world_ready_for_player() -> bool:
 	if not is_finite(player_node.global_position.x) or not is_finite(player_node.global_position.y):
 		return false
 
-	var blocks_value = world.get("blocks")
-	if blocks_value is Dictionary:
-		var blocks: Dictionary = blocks_value
-		if blocks.is_empty():
-			return false
-
 	if _is_netfox_local_player_ready(player_node):
 		return true
 
 	if player_node is CharacterBody2D and not bool(world.get("noclip_enabled")):
-		if not bool(player_node.is_physics_processing()):
+		var loading_paused_player_physics := bool(world.get_meta("world_loading_input_blocked", false))
+		if not bool(player_node.is_physics_processing()) and not loading_paused_player_physics:
 			return false
 
 	var camera_node = _get_player_camera_node()
@@ -977,7 +1015,10 @@ func _record_world_entry_profile_stage(stage: String, extra: Dictionary = {}) ->
 		network.record_world_entry_stage(stage, extra)
 
 
-func _hide_overlay_after_fade():
+func _finalize_loading_operation(operation_id: int, debug_message: String) -> void:
+	if operation_id != loading_operation_id:
+		return
+
 	_set_overlay_visible(false)
 
 	if world_loading_root != null and is_instance_valid(world_loading_root):
@@ -988,4 +1029,16 @@ func _hide_overlay_after_fade():
 	_record_world_entry_profile_stage("client_world_revealed")
 	_unlock_player_after_loading()
 	_complete_world_entry_profile()
-	_debug("Loading overlay hidden")
+	waiting_for_server_state = false
+	next_server_retry_msec = 0
+	server_retry_attempt_count = 0
+	pending_finish_smooth_load = false
+	finish_wait_running = false
+	finish_wait_started_msec = 0
+	active_loading_world_name = ""
+	loading_started_msec = 0
+	_debug(debug_message)
+
+
+func _hide_overlay_after_fade(operation_id: int) -> void:
+	_finalize_loading_operation(operation_id, "Loading overlay hidden")
