@@ -2117,11 +2117,23 @@ func has_join_lifecycle_for_world(world_name: String) -> bool:
 	)
 
 
+func has_incomplete_join_lifecycle_for_world(world_name: String) -> bool:
+	var clean_world := _safe_world_name(world_name)
+	if clean_world == "" or active_join_request_id == "" or active_join_world_name != clean_world:
+		return false
+	return (
+		active_join_request_pending
+		or (world_entry_requires_ready and not world_entry_active)
+		or not pending_server_world_state.is_empty()
+		or not pending_world_state_stream.is_empty()
+	)
+
+
 func send_join_world_if_needed(world_name: String) -> bool:
 	var clean_world := _safe_world_name(world_name)
 	if clean_world == "":
 		clean_world = "START"
-	if has_join_lifecycle_for_world(clean_world):
+	if has_incomplete_join_lifecycle_for_world(clean_world):
 		return true
 	return send_join_world(clean_world)
 
