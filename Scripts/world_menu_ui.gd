@@ -16,6 +16,7 @@ var profile_status_label = null
 var current_profile_label = null
 var status_label = null
 var main_menu_mode = true
+var return_to_lobby_menu_in_progress := false
 
 
 
@@ -518,10 +519,20 @@ func is_world_name_input_focused() -> bool:
 
 
 func return_to_lobby_menu(save_current_world: bool = true):
+	if return_to_lobby_menu_in_progress:
+		return
+	return_to_lobby_menu_in_progress = true
+	call_deferred("_run_return_to_lobby_menu", save_current_world)
+
+
+func _run_return_to_lobby_menu(save_current_world: bool = true) -> void:
 	if world != null:
 		var is_in_world = true
 		if "in_world" in world:
 			is_in_world = bool(world.get("in_world"))
+
+		if is_in_world:
+			await _wait_for_pending_world_edits_before_lobby()
 
 		if save_current_world and is_in_world and world.has_method("save_world"):
 			world.save_world()
@@ -529,6 +540,20 @@ func return_to_lobby_menu(save_current_world: bool = true):
 	_notify_network_leave_for_lobby()
 	_save_current_world_menu_state_for_lobby()
 	get_tree().change_scene_to_file(LOBBY_SCENE)
+
+
+func _wait_for_pending_world_edits_before_lobby() -> void:
+	if world == null:
+		return
+	if "save_manager" in world and world.save_manager != null and world.save_manager.has_method("wait_for_pending_authoritative_block_updates"):
+		await world.save_manager.wait_for_pending_authoritative_block_updates("return_to_lobby")
+		return
+	var block_manager = world.block_manager if "block_manager" in world else null
+	if block_manager == null or not block_manager.has_method("wait_for_pending_authoritative_block_updates"):
+		return
+	await block_manager.wait_for_pending_authoritative_block_updates()
+
+
 
 
 func _on_worlds_button_pressed():

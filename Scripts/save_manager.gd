@@ -56,6 +56,7 @@ const MAX_PLAYER_HEALTH := 10
 const MAX_PLAYER_LEVEL := 100
 const DUPLICATE_SERVER_PLAYER_STATE_WINDOW_MS := 1500
 const DEBUG_ACTION_POSITION_FLOW := false
+const WORLD_EXIT_BLOCK_UPDATE_DRAIN_TIMEOUT_MS := 1800
 
 
 func debug_action_position_flow(message: String, extra_data: Dictionary = {}) -> void:
@@ -679,9 +680,42 @@ func notify_network_leave_world(world_name: String):
 	if world.player_manager != null and world.player_manager.has_method("reset_multiplayer_sync_state"):
 		world.player_manager.reset_multiplayer_sync_state()
 
+func get_pending_authoritative_block_update_count() -> int:
+	if world == null or world.block_manager == null:
+		return 0
+	if not world.block_manager.has_method("get_pending_authoritative_block_update_count"):
+		return 0
+	return int(world.block_manager.get_pending_authoritative_block_update_count())
+
+
+func wait_for_pending_authoritative_block_updates(reason: String = "world_transition") -> bool:
+	if world == null or world.block_manager == null:
+		return true
+	if not world.block_manager.has_method("has_pending_authoritative_block_updates"):
+		return true
+	if not bool(world.block_manager.has_pending_authoritative_block_updates()):
+		return true
+
+	if world.has_method("update_smooth_world_load_message"):
+		world.update_smooth_world_load_message("Saving world changes...")
+
+	var drained := true
+	if world.block_manager.has_method("wait_for_pending_authoritative_block_updates"):
+		drained = bool(await world.block_manager.wait_for_pending_authoritative_block_updates(WORLD_EXIT_BLOCK_UPDATE_DRAIN_TIMEOUT_MS))
+	else:
+		drained = not bool(world.block_manager.has_pending_authoritative_block_updates())
+
+	if not drained:
+		push_warning("PixelMania: leaving world with pending authoritative block updates after " + reason + ". pending=" + str(get_pending_authoritative_block_update_count()))
+	return drained
+
+
 
 func exit_to_main_menu(save_current_world: bool = true):
 	var previous_world_name = world.current_world_name
+
+	if world.in_world:
+		await wait_for_pending_authoritative_block_updates("exit_to_main_menu")
 
 	if save_current_world and world.in_world:
 		save_world()
@@ -754,6 +788,7 @@ func enter_world_by_name(raw_name: String):
 		sanitized_name = world.DEFAULT_WORLD_NAME.to_lower()
 
 	if world.in_world:
+		await wait_for_pending_authoritative_block_updates("enter_world_by_name")
 		var previous_world_name = world.current_world_name
 		save_world()
 		if previous_world_name.strip_edges().to_upper() != sanitized_name.to_upper():

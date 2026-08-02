@@ -970,6 +970,30 @@ func get_authoritative_place_key(layer: String, grid_pos: Vector2i, block_type: 
 	return layer + ":" + str(grid_pos.x) + ":" + str(grid_pos.y) + ":" + block_type
 
 
+func get_pending_authoritative_block_update_count() -> int:
+	return predicted_authoritative_place_requests.size() + authoritative_break_request_keys.size()
+
+
+func has_pending_authoritative_block_updates() -> bool:
+	return get_pending_authoritative_block_update_count() > 0
+
+
+func wait_for_pending_authoritative_block_updates(timeout_msec: int = 1800) -> bool:
+	var tree := get_tree()
+	if tree == null:
+		return not has_pending_authoritative_block_updates()
+
+	var start_msec := Time.get_ticks_msec()
+	var timeout := maxi(0, timeout_msec)
+	while has_pending_authoritative_block_updates():
+		cleanup_expired_authoritative_place_predictions()
+		if Time.get_ticks_msec() - start_msec >= timeout:
+			break
+		await tree.process_frame
+
+	return not has_pending_authoritative_block_updates()
+
+
 func has_recent_authoritative_place_request(key: String) -> bool:
 	var now = Time.get_ticks_msec()
 	var last_sent = int(authoritative_place_request_times.get(key, 0))

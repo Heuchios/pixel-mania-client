@@ -164,6 +164,9 @@ func _run() -> void:
 	assert(fade_source.contains("Callable(self, \"_hide_overlay_after_fade\").bind(operation_id)"))
 
 	var save_source := FileAccess.get_file_as_string("res://Scripts/save_manager.gd")
+	assert(save_source.contains("func wait_for_pending_authoritative_block_updates"))
+	assert(save_source.contains("wait_for_pending_authoritative_block_updates(\"exit_to_main_menu\")"))
+	assert(save_source.contains("wait_for_pending_authoritative_block_updates(\"enter_world_by_name\")"))
 	var retry_source := source_between(save_source, "func retry_server_world_entry", "func handle_server_world_entry_rejected")
 	assert(retry_source.contains("cancel_active_join_request"))
 	assert(retry_source.contains("request_server_connection(false)"))
@@ -174,6 +177,9 @@ func _run() -> void:
 	var finish_entry_source := source_between(save_source, "func finish_world_entry_after_load", "func _finish_world_entry_noncritical_after_frame")
 	assert(finish_entry_source.contains("waiting_for_server_world_state = false"))
 	assert(finish_entry_source.contains("world.in_world = true"))
+	var world_menu_source := FileAccess.get_file_as_string("res://Scripts/world_menu_ui.gd")
+	assert(world_menu_source.contains("call_deferred(\"_run_return_to_lobby_menu\""))
+	assert(world_menu_source.contains("wait_for_pending_authoritative_block_updates(\"return_to_lobby\")"))
 
 	var sync_source := FileAccess.get_file_as_string("res://Scripts/world_state_sync_manager.gd")
 	var apply_source := source_between(sync_source, "func apply_network_world_state", "func apply_network_block_update")

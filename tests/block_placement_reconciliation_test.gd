@@ -14,6 +14,8 @@ class PlacementWorld:
 	var seed_inventory: Dictionary = {}
 	var lure_inventory: Dictionary = {}
 	var material_inventory: Dictionary = {}
+	var block_hit_progress: Dictionary = {}
+	var block_hit_timers: Dictionary = {}
 	var item_database: Dictionary = {
 		"dirt": {
 			"category": "block",
@@ -184,6 +186,28 @@ func _run() -> void:
 		}
 	], [])
 	assert(not block_manager.predicted_authoritative_place_requests.has(reconnect_request), "A reconnect snapshot with the exact placement ID must confirm the prediction.")
+
+	block_manager.predicted_authoritative_place_requests.clear()
+	assert(not block_manager.has_pending_authoritative_block_updates(), "Fresh block manager should have no pending authoritative edits.")
+	var exit_place_request := "place_exit_wait"
+	var exit_place_grid := Vector2i(18, 19)
+	var exit_break_grid := Vector2i(19, 19)
+	block_manager.predicted_authoritative_place_requests[exit_place_request] = _make_pending(exit_place_request, exit_place_grid)
+	block_manager.authoritative_break_request_keys[block_manager.get_authoritative_break_key("foreground", exit_break_grid)] = true
+	assert(block_manager.get_pending_authoritative_block_update_count() == 2, "Exit drain must count pending placements and breaks.")
+	var drain_timeout_result: bool = await block_manager.wait_for_pending_authoritative_block_updates(0)
+	assert(not drain_timeout_result, "Exit drain must report unresolved edits when the timeout expires.")
+	block_manager.confirm_predicted_authoritative_place({
+		"action": "place",
+		"request_id": exit_place_request,
+		"layer": "foreground",
+		"x": exit_place_grid.x,
+		"y": exit_place_grid.y,
+		"block_type": "dirt"
+	})
+	block_manager.clear_authoritative_break_state_for_grid(exit_break_grid, "foreground")
+	var drain_confirmed_result: bool = await block_manager.wait_for_pending_authoritative_block_updates(0)
+	assert(drain_confirmed_result, "Exit drain must finish once authoritative edits are confirmed.")
 
 	var revision_world := RevisionWorld.new()
 	var revision_block_manager := RevisionBlockManager.new()
