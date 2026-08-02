@@ -2684,7 +2684,6 @@ func handle_network_player_position(player_data: Dictionary):
 		# Snap these so remote players do not slide across the map.
 		should_snap_remote_position = true
 
-	var previous_animation_state = str(remote_player.get_meta("animation_state", "idle"))
 	if previous_animation_state != animation_state:
 		if should_play_remote_jump_sound(previous_animation_state, animation_state, had_position):
 			play_remote_jump_sound(next_target_position, safe_facing, network_in_water)
