@@ -161,6 +161,10 @@ func _run() -> void:
 	assert(finish_source.contains("operation_id != loading_operation_id"))
 	assert(finish_source.contains("_finish_smooth_world_load_when_ready(operation_id)"))
 	var fade_source := source_between(loading_source, "func _fade_out_loading_overlay", "func cancel_smooth_world_load")
+	assert(loading_source.contains("const WORLD_LOADING_REVEAL_FADE_SECONDS := 0.34"))
+	assert(fade_source.contains("set_trans(WORLD_LOADING_REVEAL_FADE_TRANS)"))
+	assert(fade_source.contains("set_ease(WORLD_LOADING_REVEAL_FADE_EASE)"))
+	assert(fade_source.contains("WORLD_LOADING_REVEAL_FADE_SECONDS"))
 	assert(fade_source.contains("Callable(self, \"_hide_overlay_after_fade\").bind(operation_id)"))
 
 	var save_source := FileAccess.get_file_as_string("res://Scripts/save_manager.gd")

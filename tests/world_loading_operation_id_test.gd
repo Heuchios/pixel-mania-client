@@ -115,6 +115,10 @@ func _run() -> void:
 		"func _fade_out_loading_overlay",
 		"func cancel_smooth_world_load"
 	)
+	assert(source.contains("const WORLD_LOADING_REVEAL_FADE_SECONDS := 0.34"))
+	assert(fade_section.contains("set_trans(WORLD_LOADING_REVEAL_FADE_TRANS)"))
+	assert(fade_section.contains("set_ease(WORLD_LOADING_REVEAL_FADE_EASE)"))
+	assert(fade_section.contains("WORLD_LOADING_REVEAL_FADE_SECONDS"))
 	assert(fade_section.contains("bind(operation_id)"))
 
 	var cancel_section: String = _source_between(

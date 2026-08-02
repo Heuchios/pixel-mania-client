@@ -13,6 +13,9 @@ const WORLD_READY_RETRY_MAX_ATTEMPTS := 6
 # Do not add cosmetic delay after the authoritative world/player checks pass.
 const WORLD_LOADING_MIN_VISIBLE_MSEC := 0
 const WORLD_LOADING_READY_HOLD_MSEC := 0
+const WORLD_LOADING_REVEAL_FADE_SECONDS := 0.34
+const WORLD_LOADING_REVEAL_FADE_TRANS: Tween.TransitionType = Tween.TRANS_SINE
+const WORLD_LOADING_REVEAL_FADE_EASE: Tween.EaseType = Tween.EASE_IN_OUT
 const WORLD_LOADING_DOTS_INTERVAL := 0.32
 const WORLD_LOADING_INITIAL_PROGRESS := 8.0
 const WORLD_LOADING_PASSIVE_PROGRESS_MAX := 88.0
@@ -989,7 +992,14 @@ func _fade_out_loading_overlay(operation_id: int) -> void:
 
 	world_loading_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	world_loading_fade_tween = create_tween()
-	world_loading_fade_tween.tween_property(world_loading_root, "modulate:a", 0.0, 0.12)
+	world_loading_fade_tween.set_trans(WORLD_LOADING_REVEAL_FADE_TRANS)
+	world_loading_fade_tween.set_ease(WORLD_LOADING_REVEAL_FADE_EASE)
+	world_loading_fade_tween.tween_property(
+		world_loading_root,
+		"modulate:a",
+		0.0,
+		WORLD_LOADING_REVEAL_FADE_SECONDS
+	)
 	world_loading_fade_tween.tween_callback(Callable(self, "_hide_overlay_after_fade").bind(operation_id))
 
 
