@@ -588,11 +588,21 @@ func begin_smooth_world_load(world_name: String, wait_for_server_state: bool = t
 		and (is_overlay_visible() or pending_finish_smooth_load or finish_wait_running)
 	)
 	if same_active_operation:
-		if wait_for_server_state and not pending_finish_smooth_load and not finish_wait_running:
+		if wait_for_server_state:
 			waiting_for_server_state = true
 			if next_server_retry_msec <= 0:
 				next_server_retry_msec = now_msec + WORLD_LOADING_TIMEOUT_MSEC
-			_set_loading_stage(LoadingStage.WAITING_FOR_SERVER_SNAPSHOT, "reused_operation_waiting")
+			if pending_finish_smooth_load or finish_wait_running:
+				pending_finish_smooth_load = false
+				finish_wait_running = false
+				finish_wait_started_msec = 0
+				last_world_ready_retry_msec = 0
+				world_ready_retry_attempt_count = 0
+			if _has_authoritative_world_entry_pending():
+				_set_loading_stage(_get_authoritative_pending_stage(), "reused_operation_waiting")
+				update_message(_get_authoritative_pending_message())
+			else:
+				_set_loading_stage(LoadingStage.WAITING_FOR_SERVER_SNAPSHOT, "reused_operation_waiting")
 		_lock_player_for_loading()
 		update_title_for_world(clean_world_name)
 		hide_world_menu_overlay_while_loading()
@@ -753,22 +763,7 @@ func is_waiting_for_server_state() -> bool:
 func finish_smooth_world_load():
 	var operation_id: int = loading_operation_id
 	if _has_authoritative_world_entry_pending():
-		waiting_for_server_state = true
-		if next_server_retry_msec <= 0:
-			next_server_retry_msec = Time.get_ticks_msec() + WORLD_LOADING_TIMEOUT_MSEC
-		last_world_ready_retry_msec = 0
-		world_ready_retry_attempt_count = 0
-		pending_finish_smooth_load = false
-		finish_wait_running = false
-		finish_wait_started_msec = 0
-		_set_loading_stage(_get_authoritative_pending_stage(), "finish_deferred_authoritative_pending")
-		update_message(_get_authoritative_pending_message())
-		var readiness := get_world_ready_debug_text()
-		_debug("Finish requested before authoritative entry completed; keeping loading overlay visible. " + readiness)
-		_record_world_entry_profile_stage("client_world_finish_deferred_authoritative_pending", {
-			"operation_id": operation_id,
-			"readiness": readiness
-		})
+		_defer_finish_for_authoritative_pending(operation_id, "finish_deferred_authoritative_pending")
 		return
 
 	waiting_for_server_state = false
@@ -789,6 +784,26 @@ func finish_smooth_world_load():
 	finish_wait_running = true
 	finish_wait_started_msec = Time.get_ticks_msec()
 	call_deferred("_finish_smooth_world_load_when_ready", operation_id)
+
+
+func _defer_finish_for_authoritative_pending(operation_id: int, reason: String) -> void:
+	waiting_for_server_state = true
+	if next_server_retry_msec <= 0:
+		next_server_retry_msec = Time.get_ticks_msec() + WORLD_LOADING_TIMEOUT_MSEC
+	last_world_ready_retry_msec = 0
+	world_ready_retry_attempt_count = 0
+	pending_finish_smooth_load = false
+	finish_wait_running = false
+	finish_wait_started_msec = 0
+	_set_loading_stage(_get_authoritative_pending_stage(), reason)
+	update_message(_get_authoritative_pending_message())
+	var readiness := get_world_ready_debug_text()
+	_debug("Finish requested before authoritative entry completed; keeping loading overlay visible. " + readiness)
+	_record_world_entry_profile_stage("client_world_finish_deferred_authoritative_pending", {
+		"operation_id": operation_id,
+		"reason": reason,
+		"readiness": readiness
+	})
 
 
 func _request_world_ready_snapshot_retry(reason: String) -> bool:
@@ -858,6 +873,10 @@ func _finish_smooth_world_load_when_ready(operation_id: int) -> void:
 		return
 	if not pending_finish_smooth_load:
 		finish_wait_running = false
+		return
+
+	if _has_authoritative_world_entry_pending():
+		_defer_finish_for_authoritative_pending(operation_id, "finish_wait_authoritative_pending")
 		return
 
 	var now_msec := Time.get_ticks_msec()
