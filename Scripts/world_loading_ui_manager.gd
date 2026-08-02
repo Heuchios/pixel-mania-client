@@ -3,10 +3,11 @@ extends Node
 const WORLD_LOADING_TIMEOUT_MSEC := 6000
 const WORLD_LOADING_RETRY_MAX_MSEC := 20000
 const WORLD_LOADING_RETRY_GRACE_ATTEMPTS := 1
-# Keep a finite fail-safe so an unexpected readiness regression cannot trap the
-# player behind the loading overlay forever.
+# Never fail-open from the loading overlay into an empty staging world. If
+# readiness stalls, keep the overlay visible and request a fresh snapshot.
 const WORLD_READY_WAIT_TIMEOUT_MSEC := 8000
 const WORLD_READY_CHECK_INTERVAL_MSEC := 50
+const WORLD_READY_RETRY_INTERVAL_MSEC := 1000
 # Do not add cosmetic delay after the authoritative world/player checks pass.
 const WORLD_LOADING_MIN_VISIBLE_MSEC := 0
 const WORLD_LOADING_READY_HOLD_MSEC := 0
@@ -48,6 +49,8 @@ var server_retry_attempt_count := 0
 var finish_wait_started_msec := 0
 var finish_wait_running := false
 var pending_finish_smooth_load := false
+var last_world_ready_retry_msec := 0
+var world_ready_retry_attempt_count := 0
 var loading_dot_timer := 0.0
 var loading_dot_count := 0
 var loading_progress_value := 0.0
@@ -535,6 +538,8 @@ func begin_smooth_world_load(world_name: String, wait_for_server_state: bool = t
 	loading_started_msec = now_msec
 	next_server_retry_msec = loading_started_msec + WORLD_LOADING_TIMEOUT_MSEC if wait_for_server_state else 0
 	server_retry_attempt_count = 0
+	last_world_ready_retry_msec = 0
+	world_ready_retry_attempt_count = 0
 	finish_wait_started_msec = 0
 	finish_wait_running = false
 	pending_finish_smooth_load = false
@@ -673,6 +678,8 @@ func finish_smooth_world_load():
 	waiting_for_server_state = false
 	next_server_retry_msec = 0
 	server_retry_attempt_count = 0
+	last_world_ready_retry_msec = 0
+	world_ready_retry_attempt_count = 0
 	pending_finish_smooth_load = true
 
 	if world_loading_overlay == null or not is_instance_valid(world_loading_overlay):
@@ -685,6 +692,17 @@ func finish_smooth_world_load():
 	finish_wait_running = true
 	finish_wait_started_msec = Time.get_ticks_msec()
 	call_deferred("_finish_smooth_world_load_when_ready", operation_id)
+
+
+func _request_world_ready_snapshot_retry(reason: String) -> bool:
+	var network_manager: Node = get_node_or_null("/root/NetworkManager")
+	if network_manager != null and network_manager.has_method("request_current_world_entry_snapshot_restart"):
+		return bool(network_manager.call("request_current_world_entry_snapshot_restart", reason))
+
+	if world != null and world.save_manager != null and world.save_manager.has_method("retry_server_world_entry"):
+		return bool(world.save_manager.retry_server_world_entry(reason))
+
+	return false
 
 
 func _finish_smooth_world_load_when_ready(operation_id: int) -> void:
@@ -708,11 +726,34 @@ func _finish_smooth_world_load_when_ready(operation_id: int) -> void:
 
 	var ready_wait_msec: int = maxi(0, now_msec - finish_wait_started_msec)
 	if timed_out and not world_ready:
-		_debug("Ready wait timed out; hiding loading overlay anyway. " + get_world_ready_debug_text())
-		_record_world_entry_profile_stage("client_world_ready_timeout", {
+		var retry_sent := false
+		if last_world_ready_retry_msec <= 0 or now_msec - last_world_ready_retry_msec >= WORLD_READY_RETRY_INTERVAL_MSEC:
+			last_world_ready_retry_msec = now_msec
+			world_ready_retry_attempt_count += 1
+			retry_sent = _request_world_ready_snapshot_retry("world_ready_timeout")
+
+		_debug(
+			"Ready wait timed out; keeping loading overlay visible."
+			+ " retry_attempt=" + str(world_ready_retry_attempt_count)
+			+ " retry_sent=" + str(retry_sent)
+			+ " " + get_world_ready_debug_text()
+		)
+		_record_world_entry_profile_stage("client_world_ready_timeout_retry", {
 			"wait_ms": ready_wait_msec,
+			"retry_attempt": world_ready_retry_attempt_count,
+			"retry_sent": retry_sent,
 			"readiness": get_world_ready_debug_text(),
 		})
+		if retry_sent:
+			update_message("Retrying world state...")
+		else:
+			update_message("Preparing world state...")
+		finish_wait_started_msec = now_msec
+		await get_tree().create_timer(float(WORLD_READY_CHECK_INTERVAL_MSEC) / 1000.0).timeout
+		if operation_id != loading_operation_id:
+			return
+		_finish_smooth_world_load_when_ready(operation_id)
+		return
 	else:
 		_record_world_entry_profile_stage("client_world_ready", {"wait_ms": ready_wait_msec})
 
@@ -770,6 +811,8 @@ func cancel_smooth_world_load():
 	waiting_for_server_state = false
 	next_server_retry_msec = 0
 	server_retry_attempt_count = 0
+	last_world_ready_retry_msec = 0
+	world_ready_retry_attempt_count = 0
 	pending_finish_smooth_load = false
 	finish_wait_running = false
 	finish_wait_started_msec = 0
@@ -1032,6 +1075,8 @@ func _finalize_loading_operation(operation_id: int, debug_message: String) -> vo
 	waiting_for_server_state = false
 	next_server_retry_msec = 0
 	server_retry_attempt_count = 0
+	last_world_ready_retry_msec = 0
+	world_ready_retry_attempt_count = 0
 	pending_finish_smooth_load = false
 	finish_wait_running = false
 	finish_wait_started_msec = 0

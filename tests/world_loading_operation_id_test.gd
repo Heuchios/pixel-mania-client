@@ -27,6 +27,20 @@ func _run() -> void:
 	assert(begin_section.contains("same_active_operation"))
 	assert(begin_section.contains("Reusing active loading operation"))
 	assert(begin_section.contains("loading_operation_id += 1"))
+	assert(begin_section.contains("last_world_ready_retry_msec = 0"))
+	assert(begin_section.contains("world_ready_retry_attempt_count = 0"))
+
+	var finish_load_section: String = _source_between(
+		source,
+		"func finish_smooth_world_load",
+		"func _request_world_ready_snapshot_retry"
+	)
+	assert(finish_load_section.contains("last_world_ready_retry_msec = 0"))
+	assert(finish_load_section.contains("world_ready_retry_attempt_count = 0"))
+	assert(source.contains("func _request_world_ready_snapshot_retry"))
+	assert(source.contains("request_current_world_entry_snapshot_restart"))
+	assert(source.contains("retry_server_world_entry"))
+	assert(not source.contains("hiding loading overlay anyway"))
 
 	var finish_section: String = _source_between(
 		source,
@@ -35,6 +49,9 @@ func _run() -> void:
 	)
 	assert(finish_section.contains("operation_id != loading_operation_id"))
 	assert(finish_section.contains("_finish_smooth_world_load_when_ready(operation_id)"))
+	assert(finish_section.contains("keeping loading overlay visible"))
+	assert(finish_section.contains("client_world_ready_timeout_retry"))
+	assert(finish_section.contains("_request_world_ready_snapshot_retry(\"world_ready_timeout\")"))
 
 	var fade_section: String = _source_between(
 		source,
@@ -49,6 +66,8 @@ func _run() -> void:
 		"func update_timeout"
 	)
 	assert(cancel_section.contains("loading_operation_id += 1"))
+	assert(cancel_section.contains("last_world_ready_retry_msec = 0"))
+	assert(cancel_section.contains("world_ready_retry_attempt_count = 0"))
 
 	var finalize_section: String = _source_between(
 		source,
@@ -57,6 +76,8 @@ func _run() -> void:
 	)
 	assert(finalize_section.contains("operation_id != loading_operation_id"))
 	assert(finalize_section.contains("active_loading_world_name = \"\""))
+	assert(finalize_section.contains("last_world_ready_retry_msec = 0"))
+	assert(finalize_section.contains("world_ready_retry_attempt_count = 0"))
 
 	print("[world-loading-operation] success")
 	quit(0)
