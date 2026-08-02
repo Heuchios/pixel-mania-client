@@ -1796,10 +1796,23 @@ func set_pending_join(world_name: String, profile_name: String = "") -> void:
 	pending_join_profile_name = profile_name.strip_edges()
 
 
+func clear_completed_pending_join_for_world(world_name: String) -> void:
+	var clean_world := _safe_world_name(world_name)
+	if clean_world == "":
+		return
+	if pending_join_world_name != "" and pending_join_world_name != clean_world:
+		return
+	pending_join_enabled = false
+	pending_join_world_name = ""
+	pending_join_profile_name = ""
+
+
 func persist_completed_world_join(world_name: String, _profile_name: String = "") -> void:
 	var clean_world := _safe_world_name(world_name)
 	if clean_world == "":
 		return
+
+	clear_completed_pending_join_for_world(clean_world)
 
 	var cfg := ConfigFile.new()
 	cfg.load(profile_path)
@@ -5430,6 +5443,7 @@ func _handle_world_entry_active(data: Dictionary) -> void:
 	active_world_entry_block_revision = incoming_block_revision
 	world_entry_active = true
 	mark_active_join_request_complete()
+	persist_completed_world_join(incoming_world, session_username)
 	pending_world_entry_ready.clear()
 	pending_world_entry_block_updates.clear()
 	world_entry_ready_retry_at_msec = 0
@@ -5449,7 +5463,6 @@ func _handle_world_entry_active(data: Dictionary) -> void:
 		"block_revision": incoming_block_revision,
 		"entry_session_confirmed": true
 	})
-	call_deferred("persist_completed_world_join", incoming_world, session_username)
 
 
 func _handle_world_entry_rejected_message(data: Dictionary) -> void:

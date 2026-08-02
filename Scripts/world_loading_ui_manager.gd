@@ -589,6 +589,14 @@ func begin_smooth_world_load(world_name: String, wait_for_server_state: bool = t
 	)
 	if same_active_operation:
 		if wait_for_server_state:
+			if (pending_finish_smooth_load or finish_wait_running) and not _has_authoritative_world_entry_pending():
+				_set_loading_stage(LoadingStage.WAITING_FOR_CLIENT_READY, "reused_operation_ignored_during_finish")
+				_debug(
+					"Ignoring reused server-wait loading request while finish is active"
+					+ " world=" + clean_world_name
+					+ " operation_id=" + str(loading_operation_id)
+				)
+				return
 			waiting_for_server_state = true
 			if next_server_retry_msec <= 0:
 				next_server_retry_msec = now_msec + WORLD_LOADING_TIMEOUT_MSEC
