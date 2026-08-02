@@ -3,11 +3,13 @@ extends Node
 const WORLD_LOADING_TIMEOUT_MSEC := 6000
 const WORLD_LOADING_RETRY_MAX_MSEC := 20000
 const WORLD_LOADING_RETRY_GRACE_ATTEMPTS := 1
+const WORLD_LOADING_SERVER_RETRY_MAX_ATTEMPTS := 6
 # Never fail-open from the loading overlay into an empty staging world. If
 # readiness stalls, keep the overlay visible and request a fresh snapshot.
 const WORLD_READY_WAIT_TIMEOUT_MSEC := 8000
 const WORLD_READY_CHECK_INTERVAL_MSEC := 50
 const WORLD_READY_RETRY_INTERVAL_MSEC := 1000
+const WORLD_READY_RETRY_MAX_ATTEMPTS := 6
 # Do not add cosmetic delay after the authoritative world/player checks pass.
 const WORLD_LOADING_MIN_VISIBLE_MSEC := 0
 const WORLD_LOADING_READY_HOLD_MSEC := 0
@@ -30,6 +32,16 @@ const WORLD_LOADING_OVERLAY_SCENE_PATHS := [
 # loads the exact scene path above instead of scanning random folders.
 const WORLD_LOADING_OVERLAY_FILE_NAMES := []
 const WORLD_LOADING_OVERLAY_SCAN_MAX_DEPTH := 0
+
+enum LoadingStage {
+	IDLE,
+	WAITING_FOR_SERVER_SNAPSHOT,
+	APPLYING_WORLD,
+	WAITING_FOR_SERVER_ACTIVE,
+	WAITING_FOR_CLIENT_READY,
+	READY,
+	FAILED
+}
 
 var world = null
 var world_loading_scene_instance = null
@@ -57,11 +69,71 @@ var loading_progress_value := 0.0
 var loading_progress_target := 0.0
 var active_loading_world_name: String = ""
 var loading_operation_id: int = 0
+var loading_stage = LoadingStage.IDLE
+var loading_stage_reason: String = ""
+var loading_failure_reason: String = ""
 
 
 func _debug(message: String) -> void:
 	if DEBUG_WORLD_LOADING_UI:
 		print("[WorldLoadingUI] " + message)
+
+
+func _get_loading_stage_name(stage_value = -1) -> String:
+	var value: int = int(loading_stage) if int(stage_value) < 0 else int(stage_value)
+	match value:
+		LoadingStage.IDLE:
+			return "idle"
+		LoadingStage.WAITING_FOR_SERVER_SNAPSHOT:
+			return "waiting_for_server_snapshot"
+		LoadingStage.APPLYING_WORLD:
+			return "applying_world"
+		LoadingStage.WAITING_FOR_SERVER_ACTIVE:
+			return "waiting_for_server_active"
+		LoadingStage.WAITING_FOR_CLIENT_READY:
+			return "waiting_for_client_ready"
+		LoadingStage.READY:
+			return "ready"
+		LoadingStage.FAILED:
+			return "failed"
+		_:
+			return "unknown"
+
+
+func _set_loading_stage(next_stage, reason: String = "") -> void:
+	var changed := int(loading_stage) != int(next_stage)
+	if not changed and reason == loading_stage_reason:
+		return
+
+	loading_stage = next_stage
+	loading_stage_reason = reason
+	if int(next_stage) == LoadingStage.FAILED:
+		loading_failure_reason = reason
+	elif changed:
+		loading_failure_reason = ""
+
+	var stage_name := _get_loading_stage_name(next_stage)
+	_debug("Stage=" + stage_name + (" reason=" + reason if reason != "" else ""))
+	_record_world_entry_profile_stage("client_loading_stage", {
+		"stage": stage_name,
+		"reason": reason
+	})
+
+
+func _get_network_manager() -> Node:
+	var scene_tree: SceneTree = null
+	if is_inside_tree():
+		scene_tree = get_tree()
+	elif world != null and is_instance_valid(world) and world is Node and (world as Node).is_inside_tree():
+		scene_tree = (world as Node).get_tree()
+
+	if scene_tree == null or scene_tree.root == null:
+		return null
+
+	var network_manager := scene_tree.root.get_node_or_null("NetworkManager")
+	if network_manager is Node:
+		return network_manager
+	return null
 
 
 func setup(world_ref):
@@ -520,6 +592,7 @@ func begin_smooth_world_load(world_name: String, wait_for_server_state: bool = t
 			waiting_for_server_state = true
 			if next_server_retry_msec <= 0:
 				next_server_retry_msec = now_msec + WORLD_LOADING_TIMEOUT_MSEC
+			_set_loading_stage(LoadingStage.WAITING_FOR_SERVER_SNAPSHOT, "reused_operation_waiting")
 		_lock_player_for_loading()
 		update_title_for_world(clean_world_name)
 		hide_world_menu_overlay_while_loading()
@@ -543,6 +616,10 @@ func begin_smooth_world_load(world_name: String, wait_for_server_state: bool = t
 	finish_wait_started_msec = 0
 	finish_wait_running = false
 	pending_finish_smooth_load = false
+	_set_loading_stage(
+		LoadingStage.WAITING_FOR_SERVER_SNAPSHOT if wait_for_server_state else LoadingStage.APPLYING_WORLD,
+		"begin_world_load"
+	)
 	loading_dot_timer = 0.0
 	loading_dot_count = 3
 	_lock_player_for_loading()
@@ -657,7 +734,7 @@ func _refresh_loading_version_label() -> void:
 	if world_loading_version_label == null or not is_instance_valid(world_loading_version_label):
 		return
 	var client_version := "1.0.4"
-	var network_manager := get_node_or_null("/root/NetworkManager")
+	var network_manager := _get_network_manager()
 	if network_manager != null and network_manager.has_method("get_client_version"):
 		var reported_version := str(network_manager.call("get_client_version")).strip_edges()
 		if reported_version != "":
@@ -670,17 +747,37 @@ func is_overlay_visible() -> bool:
 
 
 func is_waiting_for_server_state() -> bool:
-	return waiting_for_server_state
+	return waiting_for_server_state or int(loading_stage) == LoadingStage.FAILED
 
 
 func finish_smooth_world_load():
 	var operation_id: int = loading_operation_id
+	if _has_authoritative_world_entry_pending():
+		waiting_for_server_state = true
+		if next_server_retry_msec <= 0:
+			next_server_retry_msec = Time.get_ticks_msec() + WORLD_LOADING_TIMEOUT_MSEC
+		last_world_ready_retry_msec = 0
+		world_ready_retry_attempt_count = 0
+		pending_finish_smooth_load = false
+		finish_wait_running = false
+		finish_wait_started_msec = 0
+		_set_loading_stage(_get_authoritative_pending_stage(), "finish_deferred_authoritative_pending")
+		update_message(_get_authoritative_pending_message())
+		var readiness := get_world_ready_debug_text()
+		_debug("Finish requested before authoritative entry completed; keeping loading overlay visible. " + readiness)
+		_record_world_entry_profile_stage("client_world_finish_deferred_authoritative_pending", {
+			"operation_id": operation_id,
+			"readiness": readiness
+		})
+		return
+
 	waiting_for_server_state = false
 	next_server_retry_msec = 0
 	server_retry_attempt_count = 0
 	last_world_ready_retry_msec = 0
 	world_ready_retry_attempt_count = 0
 	pending_finish_smooth_load = true
+	_set_loading_stage(LoadingStage.WAITING_FOR_CLIENT_READY, "finish_requested")
 
 	if world_loading_overlay == null or not is_instance_valid(world_loading_overlay):
 		_finalize_loading_operation(operation_id, "Loading completed without an overlay")
@@ -695,14 +792,65 @@ func finish_smooth_world_load():
 
 
 func _request_world_ready_snapshot_retry(reason: String) -> bool:
-	var network_manager: Node = get_node_or_null("/root/NetworkManager")
+	var network_manager: Node = _get_network_manager()
 	if network_manager != null and network_manager.has_method("request_current_world_entry_snapshot_restart"):
-		return bool(network_manager.call("request_current_world_entry_snapshot_restart", reason))
+		var restart_sent := bool(network_manager.call("request_current_world_entry_snapshot_restart", reason))
+		if restart_sent:
+			return true
 
-	if world != null and world.save_manager != null and world.save_manager.has_method("retry_server_world_entry"):
-		return bool(world.save_manager.retry_server_world_entry(reason))
+	var save_manager_value = _get_save_manager_value()
+	if save_manager_value != null and save_manager_value.has_method("retry_server_world_entry"):
+		return bool(save_manager_value.retry_server_world_entry(reason))
 
 	return false
+
+
+func _get_save_manager_value():
+	if world == null:
+		return null
+	if not ("save_manager" in world):
+		return null
+	return world.get("save_manager")
+
+
+func _is_save_manager_waiting_for_server_world_state() -> bool:
+	var save_manager_value = _get_save_manager_value()
+	if save_manager_value == null:
+		return false
+	if not ("waiting_for_server_world_state" in save_manager_value):
+		return false
+	return bool(save_manager_value.get("waiting_for_server_world_state"))
+
+
+func _has_authoritative_world_entry_pending() -> bool:
+	if world == null:
+		return false
+	if bool(world.get("applying_network_world_update")):
+		return true
+	if bool(world.get_meta("world_entry_in_progress", false)):
+		return true
+	if bool(world.get_meta("world_bulk_load_in_progress", false)):
+		return true
+	return _is_save_manager_waiting_for_server_world_state()
+
+
+func _get_authoritative_pending_stage():
+	if world != null and bool(world.get("applying_network_world_update")):
+		return LoadingStage.APPLYING_WORLD
+	if world != null and bool(world.get_meta("world_bulk_load_in_progress", false)):
+		return LoadingStage.APPLYING_WORLD
+	return LoadingStage.WAITING_FOR_SERVER_ACTIVE
+
+
+func _get_authoritative_pending_message() -> String:
+	var target_world := str(world.get("current_world_name")).strip_edges().to_upper() if world != null else "WORLD"
+	if target_world == "":
+		target_world = "WORLD"
+	if world != null and bool(world.get("applying_network_world_update")):
+		return "Building " + target_world + "..."
+	if _is_save_manager_waiting_for_server_world_state():
+		return "Confirming " + target_world + " with server..."
+	return "Preparing " + target_world + "..."
 
 
 func _finish_smooth_world_load_when_ready(operation_id: int) -> void:
@@ -717,6 +865,7 @@ func _finish_smooth_world_load_when_ready(operation_id: int) -> void:
 	var world_ready := is_world_ready_for_player()
 
 	if not timed_out and not world_ready:
+		_set_loading_stage(LoadingStage.WAITING_FOR_CLIENT_READY, "client_ready_checks")
 		update_message("Preparing player...")
 		await get_tree().create_timer(float(WORLD_READY_CHECK_INTERVAL_MSEC) / 1000.0).timeout
 		if operation_id != loading_operation_id:
@@ -730,6 +879,17 @@ func _finish_smooth_world_load_when_ready(operation_id: int) -> void:
 		if last_world_ready_retry_msec <= 0 or now_msec - last_world_ready_retry_msec >= WORLD_READY_RETRY_INTERVAL_MSEC:
 			last_world_ready_retry_msec = now_msec
 			world_ready_retry_attempt_count += 1
+			if world_ready_retry_attempt_count > WORLD_READY_RETRY_MAX_ATTEMPTS:
+				_fail_loading_operation(
+					"client_world_ready_timeout",
+					"World loading stalled while preparing the player. Returning to the lobby.",
+					{
+						"wait_ms": ready_wait_msec,
+						"retry_attempt": world_ready_retry_attempt_count,
+						"readiness": get_world_ready_debug_text()
+					}
+				)
+				return
 			retry_sent = _request_world_ready_snapshot_retry("world_ready_timeout")
 
 		_debug(
@@ -755,6 +915,7 @@ func _finish_smooth_world_load_when_ready(operation_id: int) -> void:
 		_finish_smooth_world_load_when_ready(operation_id)
 		return
 	else:
+		_set_loading_stage(LoadingStage.READY, "client_world_ready")
 		_record_world_entry_profile_stage("client_world_ready", {"wait_ms": ready_wait_msec})
 
 	var visible_for_msec: int = Time.get_ticks_msec() - loading_started_msec
@@ -816,6 +977,7 @@ func cancel_smooth_world_load():
 	pending_finish_smooth_load = false
 	finish_wait_running = false
 	finish_wait_started_msec = 0
+	_set_loading_stage(LoadingStage.IDLE, "cancelled")
 
 	if world_loading_fade_tween != null:
 		world_loading_fade_tween.kill()
@@ -834,6 +996,8 @@ func cancel_smooth_world_load():
 func update_timeout():
 	if not waiting_for_server_state:
 		return
+	if int(loading_stage) == LoadingStage.FAILED:
+		return
 
 	var now_msec: int = Time.get_ticks_msec()
 	if next_server_retry_msec <= 0:
@@ -849,6 +1013,20 @@ func update_timeout():
 		return
 
 	server_retry_attempt_count += 1
+	var target_world := str(world.get("current_world_name")).strip_edges().to_upper() if world != null else "WORLD"
+	if target_world == "":
+		target_world = "WORLD"
+	if server_retry_attempt_count > WORLD_LOADING_SERVER_RETRY_MAX_ATTEMPTS:
+		_fail_loading_operation(
+			"server_world_state_timeout",
+			"Could not load " + target_world + " from the server. Returning to the lobby.",
+			{
+				"retry_attempt": server_retry_attempt_count,
+				"readiness": get_world_ready_debug_text()
+			}
+		)
+		return
+
 	var retry_delay_msec: int = mini(
 		WORLD_LOADING_TIMEOUT_MSEC * (server_retry_attempt_count + 1),
 		WORLD_LOADING_RETRY_MAX_MSEC
@@ -857,10 +1035,9 @@ func update_timeout():
 
 	var retry_sent := false
 	var should_retry: bool = server_retry_attempt_count > WORLD_LOADING_RETRY_GRACE_ATTEMPTS
-	if should_retry and world != null and world.save_manager != null and world.save_manager.has_method("retry_server_world_entry"):
-		retry_sent = bool(world.save_manager.retry_server_world_entry("loading_timeout"))
+	if should_retry:
+		retry_sent = _request_world_ready_snapshot_retry("loading_timeout")
 
-	var target_world := str(world.get("current_world_name")).strip_edges().to_upper() if world != null else "WORLD"
 	update_message(("Retrying " if retry_sent else "Waiting for ") + target_world + " server data...")
 	_debug(
 		"Authoritative world wait timed out; kept staging world hidden"
@@ -885,10 +1062,8 @@ func is_world_ready_for_player() -> bool:
 	if bool(world.get_meta("world_bulk_load_in_progress", false)):
 		return false
 
-	var save_manager_value = world.get("save_manager")
-	if save_manager_value != null and "waiting_for_server_world_state" in save_manager_value:
-		if bool(save_manager_value.get("waiting_for_server_world_state")):
-			return false
+	if _is_save_manager_waiting_for_server_world_state():
+		return false
 
 	var in_world_value = world.get("in_world")
 	if in_world_value == null or not bool(in_world_value):
@@ -970,10 +1145,13 @@ func get_world_ready_debug_text() -> String:
 	if world == null:
 		return "world=null"
 	var parts: Array[String] = []
+	parts.append("stage=" + _get_loading_stage_name())
 	parts.append("netfox=" + str(_is_netfox_real_mode()))
 	parts.append("entry=" + str(world.get_meta("world_entry_in_progress", false)))
 	parts.append("waiting=" + str(waiting_for_server_state))
+	parts.append("save_waiting=" + str(_is_save_manager_waiting_for_server_world_state()))
 	parts.append("bulk=" + str(world.get_meta("world_bulk_load_in_progress", false)))
+	parts.append("bulk_reason=" + str(world.get_meta("world_bulk_load_reason", "")))
 	parts.append("applying=" + str(world.get("applying_network_world_update")))
 	parts.append("in_world=" + str(world.get("in_world")))
 	var player_value = world.get("player")
@@ -1045,7 +1223,7 @@ func _unlock_player_after_loading() -> void:
 
 
 func _complete_world_entry_profile() -> void:
-	var network := get_node_or_null("/root/NetworkManager")
+	var network := _get_network_manager()
 	if network != null and network.has_method("complete_world_entry_profile"):
 		network.complete_world_entry_profile({
 			"loading_visible_ms": maxi(0, Time.get_ticks_msec() - loading_started_msec)
@@ -1053,9 +1231,54 @@ func _complete_world_entry_profile() -> void:
 
 
 func _record_world_entry_profile_stage(stage: String, extra: Dictionary = {}) -> void:
-	var network := get_node_or_null("/root/NetworkManager")
+	var network := _get_network_manager()
 	if network != null and network.has_method("record_world_entry_stage"):
 		network.record_world_entry_stage(stage, extra)
+
+
+func _fail_loading_operation(reason: String, message: String, extra: Dictionary = {}) -> void:
+	_set_loading_stage(LoadingStage.FAILED, reason)
+	waiting_for_server_state = false
+	next_server_retry_msec = 0
+	server_retry_attempt_count = 0
+	last_world_ready_retry_msec = 0
+	world_ready_retry_attempt_count = 0
+	pending_finish_smooth_load = false
+	finish_wait_running = false
+	finish_wait_started_msec = 0
+	update_message(message)
+	_set_loading_dots_text("")
+
+	var details := extra.duplicate(false)
+	details["reason"] = reason
+	details["message"] = message
+	details["readiness"] = get_world_ready_debug_text()
+	_record_world_entry_profile_stage("client_world_loading_failed", details)
+	_debug("World loading failed; reason=" + reason + " " + get_world_ready_debug_text())
+	call_deferred("_cleanup_failed_world_entry", reason, message)
+
+
+func _cleanup_failed_world_entry(reason: String, message: String) -> void:
+	var handled := false
+	var save_manager_value = _get_save_manager_value()
+	if save_manager_value != null and save_manager_value.has_method("handle_client_world_loading_failed"):
+		handled = bool(save_manager_value.handle_client_world_loading_failed(reason, message))
+
+	if handled:
+		return
+
+	var network := _get_network_manager()
+	if network != null and network.has_method("cancel_active_join_request"):
+		network.cancel_active_join_request()
+
+	if world != null:
+		world.set_meta("world_entry_in_progress", false)
+		world.set_meta("world_entry_force_entrance_spawn", false)
+		world.set_meta("world_bulk_load_in_progress", false)
+		world.set_meta("world_bulk_load_reason", "")
+		if "in_world" in world:
+			world.set("in_world", false)
+	cancel_smooth_world_load()
 
 
 func _finalize_loading_operation(operation_id: int, debug_message: String) -> void:
@@ -1082,6 +1305,7 @@ func _finalize_loading_operation(operation_id: int, debug_message: String) -> vo
 	finish_wait_started_msec = 0
 	active_loading_world_name = ""
 	loading_started_msec = 0
+	_set_loading_stage(LoadingStage.IDLE, "finalized")
 	_debug(debug_message)
 
 
