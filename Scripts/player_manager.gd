@@ -13,6 +13,7 @@ const DEBUG_REMOTE_APPEARANCE_FLOW := false
 const MOVEMENT_SYNC_DEBUG_ARG := "--movement-sync-debug"
 const HURT_FACE_EXPRESSION_TIME_MSEC := 550
 const PUNCH_FACE_EXPRESSION_TIME_MSEC := 300
+const PLACE_ANIMATION_TIME_MSEC := 300
 const REMOTE_ANT_SWORD_SLASH_DEDUPE_MSEC := 140
 const DEAD_FACE_EXPRESSION_TIME := 1.0
 const DEAD_SPIRIT_FACE_EXPRESSION_TIME := 3.0
@@ -42,6 +43,8 @@ func debug_remote_appearance_flow(message: String, data: Dictionary = {}) -> voi
 func setup(world_ref):
 	world = world_ref
 	movement_sync_debug_enabled = MovementMode.has_method("has_launch_arg") and bool(MovementMode.has_launch_arg(MOVEMENT_SYNC_DEBUG_ARG))
+	remote_position_snapshot_generation += 1
+	remote_pending_position_snapshots.clear()
 	if MovementMode.is_netfox_real():
 		clear_remote_players()
 		clear_legacy_websocket_remote_visual_nodes()
@@ -649,6 +652,15 @@ func play_player_punch_animation():
 		play_animation_on_player(direct_player, "punch")
 
 
+func play_player_place_animation() -> void:
+	if world == null or world.player == null:
+		return
+
+	world.player.set_meta("place_animation_until_msec", Time.get_ticks_msec() + PLACE_ANIMATION_TIME_MSEC)
+	var animation_player = world.player.get_node_or_null("AnimationPlayer")
+	play_animation_on_player(animation_player, "place_animation")
+
+
 func get_current_player_punch_animation_name() -> String:
 	if world == null:
 		return "punch"
@@ -944,6 +956,8 @@ var remote_name_labels := {}
 var remote_debug_labels := {}
 var remote_chat_bubbles := {}
 var remote_chat_pending_messages := {}
+var remote_pending_position_snapshots := {}
+var remote_position_snapshot_generation := 0
 var remote_name_font: Font = null
 var remote_players_root = null
 var remote_visual_stabilization_deferred_queued := false
@@ -1002,6 +1016,8 @@ const REMOTE_PLAYER_BODY_Z_INDEX := 0
 const REMOTE_PLAYER_BACK_Z_INDEX := -30
 const REMOTE_PLAYER_EQUIPMENT_Z_INDEX := 2
 const REMOTE_PLAYER_HAND_Z_INDEX := 60
+const REMOTE_MOVEMENT_SEQUENCE_MAX := 2147483647
+const REMOTE_MOVEMENT_SEQUENCE_WRAP_WINDOW := 1073741824
 const REMOTE_PLAYER_ENABLE_VISUAL_POSITION_SNAPPING := false
 const REMOTE_POSITION_SMOOTH_RATE := 34.0
 const REMOTE_POSITION_SNAP_DISTANCE := 160.0
@@ -1010,6 +1026,8 @@ const REMOTE_POSITION_VELOCITY_LEAD_MAX_SECONDS := 0.0
 const REMOTE_POSITION_MAX_VELOCITY_LEAD_PIXELS := 0.0
 const REMOTE_SNAPSHOT_INTERVAL_MAX_MS := 5000.0
 const REMOTE_SNAPSHOT_INTERVAL_MIN_MS := 1.0
+const REMOTE_PENDING_POSITION_SNAPSHOT_MAX_AGE_MS := 5000
+const REMOTE_PENDING_POSITION_SNAPSHOT_MAX_ENTRIES := 128
 # Camera-relative jitter fix:
 # Remote player root positions should be smoothed from the physics tick, matching
 # the local CharacterBody2D/camera timing. If remote roots are moved from render
@@ -1027,6 +1045,7 @@ const REMOTE_JUMP_SPEED_THRESHOLD := 40.0
 const REMOTE_WALK_PHASE_SPEED := 13.0
 const REMOTE_IDLE_PHASE_SPEED := 3.0
 const REMOTE_PLAYER_STALE_TIMEOUT := 20.0
+const REMOTE_PLAYER_STALE_VISUAL_WARNING_TIMEOUT := 3.5
 const MAX_REMOTE_PLAYER_COORD := 1000000.0
 const MAX_REMOTE_PLAYER_NAME_LENGTH := 24
 const PLAYER_PUNCH_REQUEST_COOLDOWN_MSEC := 160
@@ -1106,6 +1125,91 @@ func _safe_int(value, fallback: int, min_value: int = -2147483648, max_value: in
 	if value is int or value is float:
 		return clamp(int(value), min_value, max_value)
 	return fallback
+
+
+func _safe_remote_movement_sequence(value, fallback: int = 0, min_value: int = 0, max_value: int = REMOTE_MOVEMENT_SEQUENCE_MAX) -> int:
+	if value is int or value is float:
+		return clamp(int(value), min_value, max_value)
+	if value is String:
+		var raw_value = value.strip_edges()
+		if raw_value.is_empty():
+			return fallback
+		if raw_value.is_valid_int():
+			return clamp(int(raw_value), min_value, max_value)
+		if raw_value.is_valid_float():
+			return clamp(int(float(raw_value)), min_value, max_value)
+	return fallback
+
+
+func _is_remote_movement_sequence_newer(new_sequence: int, previous_sequence: int) -> bool:
+	var safe_previous = int(max(0, previous_sequence))
+	var safe_new = int(max(0, new_sequence))
+	if safe_new <= 0 or safe_previous <= 0:
+		return false
+	if safe_new > safe_previous:
+		return true
+	if safe_previous > REMOTE_MOVEMENT_SEQUENCE_MAX - REMOTE_MOVEMENT_SEQUENCE_WRAP_WINDOW and safe_new <= REMOTE_MOVEMENT_SEQUENCE_WRAP_WINDOW:
+		return true
+	return false
+
+
+func _extract_remote_movement_sequence(player_data: Dictionary) -> int:
+	var sequence = _safe_remote_movement_sequence(player_data.get("movement_sequence", 0), 0, 0, REMOTE_MOVEMENT_SEQUENCE_MAX)
+	if sequence <= 0:
+		sequence = _safe_remote_movement_sequence(player_data.get("server_movement_sequence", 0), 0, 0, REMOTE_MOVEMENT_SEQUENCE_MAX)
+	if sequence <= 0:
+		sequence = _safe_remote_movement_sequence(player_data.get("accepted_sequence", 0), 0, 0, REMOTE_MOVEMENT_SEQUENCE_MAX)
+	return sequence
+
+
+func _is_remote_snapshot_payload_newer(candidate_payload: Dictionary, reference_payload: Dictionary) -> bool:
+	if not (candidate_payload is Dictionary):
+		return false
+	if not (reference_payload is Dictionary):
+		return true
+
+	var candidate_sequence := _extract_remote_movement_sequence(candidate_payload)
+	var reference_sequence := _extract_remote_movement_sequence(reference_payload)
+	if candidate_sequence > 0 and reference_sequence > 0:
+		if _is_remote_movement_sequence_newer(candidate_sequence, reference_sequence):
+			return true
+		if candidate_sequence == reference_sequence:
+			var candidate_snapshot_time := _extract_remote_snapshot_time_msec(candidate_payload, 0)
+			var reference_snapshot_time := _extract_remote_snapshot_time_msec(reference_payload, 0)
+			return candidate_snapshot_time > reference_snapshot_time
+		return false
+	if candidate_sequence > 0:
+		return true
+	if reference_sequence > 0:
+		return false
+
+	var candidate_time := _extract_remote_snapshot_time_msec(candidate_payload, 0)
+	var reference_time := _extract_remote_snapshot_time_msec(reference_payload, 0)
+	return candidate_time > reference_time
+
+
+func _log_remote_movement_drop(remote_player, reason: String, details: Dictionary = {}) -> void:
+	if not movement_sync_debug_enabled:
+		return
+	if remote_player == null or not is_instance_valid(remote_player):
+		return
+
+	var now_msec := Time.get_ticks_msec()
+	var last_log_msec := int(remote_player.get_meta("remote_movement_drop_log_msec", 0))
+	if now_msec - last_log_msec < REMOTE_DEBUG_LOG_THROTTLE_MS:
+		return
+	remote_player.set_meta("remote_movement_drop_log_msec", now_msec)
+
+	var payload := {
+		"event": "drop",
+		"reason": reason,
+		"player_id": str(remote_player.get_meta("remote_id", "")),
+		"sequence": int(remote_player.get_meta("remote_movement_sequence", 0)),
+		"world": _safe_remote_world_name(world.current_world_name) if world != null else "",
+	}
+	for key in details.keys():
+		payload[key] = details[key]
+	print("[MovementSync][Remote] " + str(payload))
 
 
 func get_visible_world_rect(margin_screen_px: float = 0.0) -> Rect2:
@@ -2284,6 +2388,84 @@ func get_local_fishing_sync_key() -> String:
 		rod_id = str(world.fishing_manager.get_fishing_line_rod_id())
 	return "1:" + str(target_grid.x) + ":" + str(target_grid.y) + ":" + lure_id + ":" + rod_id
 
+
+func _safe_remote_world_name(raw_world) -> String:
+	var world_text = str(raw_world).strip_edges()
+	if world_text == "":
+		return ""
+	return world_text.to_upper()
+
+
+func _get_pending_remote_position_snapshot(remote_id: String, remote_world: String) -> Dictionary:
+	if remote_id == "":
+		return {}
+	if not remote_pending_position_snapshots.has(remote_id):
+		return {}
+	var snapshot_entry = remote_pending_position_snapshots.get(remote_id, {})
+	if not (snapshot_entry is Dictionary):
+		remote_pending_position_snapshots.erase(remote_id)
+		return {}
+
+	var snapshot_world = _safe_remote_world_name(snapshot_entry.get("world", ""))
+	var snapshot_generation = int(snapshot_entry.get("snapshot_generation", 0))
+	var queued_msec = int(snapshot_entry.get("queued_msec", 0))
+	if snapshot_generation != remote_position_snapshot_generation:
+		remote_pending_position_snapshots.erase(remote_id)
+		return {}
+	if snapshot_world != _safe_remote_world_name(remote_world):
+		remote_pending_position_snapshots.erase(remote_id)
+		return {}
+	if queued_msec > 0 and REMOTE_PENDING_POSITION_SNAPSHOT_MAX_AGE_MS > 0:
+		if Time.get_ticks_msec() - queued_msec > REMOTE_PENDING_POSITION_SNAPSHOT_MAX_AGE_MS:
+			remote_pending_position_snapshots.erase(remote_id)
+			return {}
+
+	var payload = snapshot_entry.get("payload", {})
+	if not (payload is Dictionary):
+		remote_pending_position_snapshots.erase(remote_id)
+		return {}
+	remote_pending_position_snapshots.erase(remote_id)
+	return payload.duplicate(true)
+
+
+func _set_pending_remote_position_snapshot(remote_id: String, remote_world: String, payload: Dictionary) -> void:
+	if remote_id == "" or not (payload is Dictionary):
+		return
+	var clean_world = _safe_remote_world_name(remote_world)
+	if clean_world == "":
+		return
+
+	var existing_entry = remote_pending_position_snapshots.get(remote_id, {})
+	if existing_entry is Dictionary:
+		var existing_payload = existing_entry.get("payload", {})
+		if existing_payload is Dictionary and not _is_remote_snapshot_payload_newer(payload, existing_payload):
+			return
+
+	var snapshot_entry := {
+		"world": clean_world,
+		"snapshot_generation": remote_position_snapshot_generation,
+		"queued_msec": Time.get_ticks_msec(),
+		"payload": payload.duplicate(true)
+	}
+	remote_pending_position_snapshots[remote_id] = snapshot_entry
+
+	while remote_pending_position_snapshots.size() > REMOTE_PENDING_POSITION_SNAPSHOT_MAX_ENTRIES and remote_pending_position_snapshots.size() > 0:
+		var keys = remote_pending_position_snapshots.keys()
+		if keys.size() <= 0:
+			break
+		var oldest_id = keys[0]
+		var oldest_msec = int(snapshot_entry.get("queued_msec", Time.get_ticks_msec()))
+		for candidate_id in keys:
+			var candidate_entry = remote_pending_position_snapshots.get(candidate_id, {})
+			if not (candidate_entry is Dictionary):
+				remote_pending_position_snapshots.erase(candidate_id)
+				continue
+			var candidate_msec = int(candidate_entry.get("queued_msec", 0))
+			if candidate_msec < oldest_msec:
+				oldest_msec = candidate_msec
+				oldest_id = candidate_id
+		remote_pending_position_snapshots.erase(oldest_id)
+
 func handle_network_existing_players(players_data):
 	if not MovementMode.is_websocket():
 		return
@@ -2315,8 +2497,16 @@ func handle_network_player_position(player_data: Dictionary):
 	if remote_id == "":
 		return
 
-	var remote_world = str(player_data.get("world", world.current_world_name)).to_upper()
-	if remote_world != str(world.current_world_name).to_upper():
+	var local_world: String = ""
+	if world != null and "current_world_name" in world:
+		local_world = _safe_remote_world_name(world.current_world_name)
+	if local_world == "":
+		local_world = "START"
+
+	var remote_world = _safe_remote_world_name(player_data.get("world", local_world))
+	if remote_world == "":
+		remote_world = local_world
+	if remote_world != local_world:
 		remove_remote_player(remote_id)
 		return
 
@@ -2325,26 +2515,39 @@ func handle_network_player_position(player_data: Dictionary):
 	remove_duplicate_remote_players_for_identity(remote_identity, remote_id)
 	var remote_role = clean_remote_player_role(str(player_data.get("role", "player")))
 
-	var remote_player = get_or_create_remote_player(remote_id, remote_name)
+	var remote_player = get_or_create_remote_player(remote_id, remote_name, remote_world)
 	if remote_player == null:
+		_set_pending_remote_position_snapshot(remote_id, remote_world, player_data)
 		return
 	var is_join_event: bool = str(player_data.get("type", "")).strip_edges().to_lower() == "player_joined"
-	var previous_remote_snapshot_msec := int(remote_player.get_meta("remote_snapshot_timestamp_msec", 0))
-	var movement_sequence := _safe_int(player_data.get("movement_sequence", player_data.get("server_movement_sequence", 0)), 0, 0, 2147483647)
-	var previous_movement_sequence := int(remote_player.get_meta("remote_movement_sequence", 0))
-	if not is_join_event and movement_sequence > 0 and previous_movement_sequence > 0 and movement_sequence <= previous_movement_sequence:
-		return
 	var position_reason := str(player_data.get("position_reason", player_data.get("reason", ""))).strip_edges().to_lower()
 	var is_direct_root_correction := is_join_event \
 		or bool(player_data.get("respawn_teleport", false)) \
 		or bool(player_data.get("teleport", false)) \
 		or bool(player_data.get("force_player_position", false)) \
 		or ["respawn", "teleport", "world_join", "join_world", "door_enter"].has(position_reason)
+	var previous_remote_snapshot_msec := int(remote_player.get_meta("remote_snapshot_timestamp_msec", 0))
+	var movement_sequence := _extract_remote_movement_sequence(player_data)
+	var previous_movement_sequence := int(remote_player.get_meta("remote_movement_sequence", 0))
+	if not is_join_event and not is_direct_root_correction and movement_sequence > 0 and previous_movement_sequence > 0 and not _is_remote_movement_sequence_newer(movement_sequence, previous_movement_sequence):
+		_log_remote_movement_drop(remote_player, "stale_sequence", {
+			"remote_id": remote_id,
+			"incoming_sequence": movement_sequence,
+			"previous_sequence": previous_movement_sequence,
+			"world": remote_world,
+		})
+		return
 	var receive_msec := int(Time.get_ticks_msec())
 	var snapshot_time_msec := _extract_remote_snapshot_time_msec(player_data, receive_msec)
 	if snapshot_time_msec <= 0:
 		snapshot_time_msec = max(receive_msec, previous_remote_snapshot_msec + 1)
 	if not is_direct_root_correction and movement_sequence <= 0 and previous_remote_snapshot_msec > 0 and snapshot_time_msec <= previous_remote_snapshot_msec:
+		_log_remote_movement_drop(remote_player, "stale_snapshot_time", {
+			"remote_id": remote_id,
+			"incoming_snapshot_time_msec": snapshot_time_msec,
+			"previous_snapshot_time_msec": previous_remote_snapshot_msec,
+			"world": remote_world,
+		})
 		return
 	var snapshot_interval_msec := 0
 	if previous_remote_snapshot_msec > 0:
@@ -2390,8 +2593,10 @@ func handle_network_player_position(player_data: Dictionary):
 	var action_animation_until := int(remote_player.get_meta("remote_action_animation_until_msec", 0))
 	if now_msec < hurt_animation_until:
 		animation_state = "hurt"
-	elif now_msec < action_animation_until and str(remote_player.get_meta("remote_action_animation_state", "")) == "punch":
-		animation_state = "punch"
+	elif now_msec < action_animation_until:
+		var remote_action_animation_state := clean_remote_animation_state(str(remote_player.get_meta("remote_action_animation_state", "")))
+		if remote_action_animation_state == "punch" or remote_action_animation_state == "place_animation":
+			animation_state = remote_action_animation_state
 	var has_authoritative_animation_state = animation_state != ""
 	var facing_raw = _safe_int(player_data.get("facing", 1), 1, -1, 1)
 	var safe_facing = 1 if facing_raw >= 0 else -1
@@ -2502,6 +2707,7 @@ func handle_network_player_position(player_data: Dictionary):
 	remote_player.set_meta("remote_identity", remote_identity)
 	remote_player.set_meta("remote_role", remote_role)
 	remote_player.set_meta("stale_time", 0.0)
+	remote_player.set_meta("remote_stale_warning_emitted", false)
 
 	var equipment_slots = {}
 	if player_data.has("equipment_slots") and player_data.get("equipment_slots") is Dictionary:
@@ -2559,6 +2765,10 @@ func _extract_remote_snapshot_time_msec(player_data: Dictionary, fallback_msec: 
 			continue
 		var raw_value = player_data.get(key, fallback_msec)
 		if not (raw_value is int or raw_value is float):
+			if raw_value is String:
+				var raw_text = raw_value.strip_edges()
+				if raw_text.is_valid_float():
+					return int(float(raw_text))
 			continue
 		var snapshot_msec := int(raw_value)
 		if snapshot_msec > 0:
@@ -3061,20 +3271,40 @@ func resolve_remote_attacker_id_from_punch_payload(data: Dictionary) -> String:
 	return ""
 
 
-func apply_remote_player_action_animation(remote_id: String, animation_state: String, facing: int) -> void:
+func apply_remote_player_action_animation(remote_id: String, animation_state: String, facing: int, duration_msec: int = PLAYER_PUNCH_REQUEST_COOLDOWN_MSEC) -> void:
 	var remote_player = remote_players.get(remote_id, null)
 	if remote_player == null or not is_instance_valid(remote_player):
 		return
 	var previous_animation_state := str(remote_player.get_meta("animation_state", "idle"))
 	remote_player.set_meta("facing", -1 if facing < 0 else 1)
 	remote_player.set_meta("remote_action_animation_state", animation_state)
-	remote_player.set_meta("remote_action_animation_until_msec", Time.get_ticks_msec() + PLAYER_PUNCH_REQUEST_COOLDOWN_MSEC)
+	remote_player.set_meta("remote_action_animation_until_msec", Time.get_ticks_msec() + maxi(1, duration_msec))
 	remote_player.set_meta("animation_state", animation_state)
 	if previous_animation_state != animation_state:
 		remote_player.set_meta("animation_phase", 0.0)
 		maybe_spawn_remote_ant_sword_punch_slash(remote_player, previous_animation_state, animation_state)
 	update_remote_shared_player_animation(remote_player, 0.0)
 	update_remote_player_facing(remote_player)
+
+
+func play_remote_player_place_animation(data: Dictionary) -> void:
+	if not MovementMode.is_websocket() or world == null:
+		return
+	var remote_id := resolve_remote_attacker_id_from_punch_payload(data)
+	if remote_id == "":
+		return
+	var remote_player = remote_players.get(remote_id, null)
+	if remote_player == null or not is_instance_valid(remote_player):
+		return
+	var facing := int(remote_player.get_meta("facing", 1))
+	if data.has("facing"):
+		facing = _safe_int(data.get("facing", facing), facing, -1, 1)
+	elif data.has("actor_facing"):
+		facing = _safe_int(data.get("actor_facing", facing), facing, -1, 1)
+	var player_data = data.get("player_data", {})
+	if player_data is Dictionary and player_data.has("facing"):
+		facing = _safe_int(player_data.get("facing", facing), facing, -1, 1)
+	apply_remote_player_action_animation(remote_id, "place_animation", facing, PLACE_ANIMATION_TIME_MSEC)
 
 
 func is_local_player_punch_target(data: Dictionary) -> bool:
@@ -3210,7 +3440,10 @@ func get_remote_player_profile_by_username(username: String) -> Dictionary:
 	return {}
 
 
-func get_or_create_remote_player(remote_id: String, remote_name: String):
+func get_or_create_remote_player(remote_id: String, remote_name: String, remote_world: String = ""):
+	if remote_id == "":
+		return null
+
 	if remote_players.has(remote_id):
 		var existing = remote_players[remote_id]
 		if existing != null and is_instance_valid(existing):
@@ -3304,6 +3537,18 @@ func get_or_create_remote_player(remote_id: String, remote_name: String):
 
 	remote_players[remote_id] = remote_player
 	refresh_remote_player_draw_order()
+
+	var normalized_world := _safe_remote_world_name(remote_world)
+	if normalized_world == "":
+		if world != null and "current_world_name" in world:
+			normalized_world = _safe_remote_world_name(world.current_world_name)
+	if normalized_world == "":
+		normalized_world = "START"
+
+	var pending_snapshot = _get_pending_remote_position_snapshot(remote_id, normalized_world)
+	if pending_snapshot.size() > 0:
+		pending_snapshot["world"] = normalized_world
+		handle_network_player_position(pending_snapshot)
 	return remote_player
 
 
@@ -3569,6 +3814,7 @@ func update_remote_players_visuals(delta: float):
 	if remote_players.size() == 0:
 		return
 
+	var warning_world = _safe_remote_world_name(world.current_world_name) if world != null else "START"
 	var visible_world_rect: Rect2 = get_visible_world_rect(REMOTE_PLAYER_VISIBILITY_MARGIN_SCREEN_PX)
 	visible_remote_player_nodes = 0
 
@@ -3582,6 +3828,20 @@ func update_remote_players_visuals(delta: float):
 		if stale_time >= REMOTE_PLAYER_STALE_TIMEOUT:
 			remove_remote_player(remote_id)
 			continue
+
+		var now_msec = Time.get_ticks_msec()
+		var last_receive_msec = int(remote_player.get_meta("remote_last_receive_msec", now_msec))
+		var stale_warning_emitted = bool(remote_player.get_meta("remote_stale_warning_emitted", false))
+		if not stale_warning_emitted and now_msec - last_receive_msec >= int(REMOTE_PLAYER_STALE_VISUAL_WARNING_TIMEOUT * 1000.0):
+			print("[MovementSync][Remote][Warn] remote player snapshot stale while visible world_id=%s remote_id=%s age_ms=%d last_receive_msec=%d current_msec=%d movement_sequence=%d" % [
+				warning_world,
+				remote_id,
+				now_msec - last_receive_msec,
+				last_receive_msec,
+				now_msec,
+				int(remote_player.get_meta("remote_movement_sequence", 0))
+			])
+			remote_player.set_meta("remote_stale_warning_emitted", true)
 
 		if not REMOTE_POSITION_UPDATE_FROM_PHYSICS:
 			update_remote_visual_position(remote_player, delta)
@@ -3767,7 +4027,7 @@ func apply_remote_animation_pose(remote_player, body_sprite: Sprite2D, animation
 		bob = -1.5
 	elif animation_state == "fall":
 		bob = 1.0
-	elif animation_state == "punch":
+	elif animation_state == "punch" or animation_state == "place_animation":
 		x_offset = direction * 1.5
 		bob = -0.5
 		tilt = direction * -5.0
@@ -3857,7 +4117,7 @@ func load_first_existing_remote_texture(paths: Array):
 
 func clean_remote_animation_state(value: String) -> String:
 	var clean = value.strip_edges().to_lower()
-	if ["idle", "walk", "jump", "fall", "punch", "hurt", "dead", "dead_spirit"].has(clean):
+	if ["idle", "walk", "jump", "fall", "punch", "place_animation", "hurt", "dead", "dead_spirit"].has(clean):
 		return clean
 	return ""
 
@@ -4957,7 +5217,7 @@ func get_remote_slot_animation_offset(remote_player, slot_name: String, facing_l
 		return Vector2(0.0, -1.5)
 	if animation_state == "fall":
 		return Vector2(0.0, 1.0)
-	if animation_state == "punch":
+	if animation_state == "punch" or animation_state == "place_animation":
 		if slot_name == "hand":
 			return Vector2(direction * 3.0, -1.0)
 		return Vector2(direction * 1.0, -0.5)
@@ -4978,7 +5238,7 @@ func get_remote_hand_animation_rotation(remote_player, facing_left: bool) -> flo
 		return direction * -8.0
 	if animation_state == "fall":
 		return direction * 6.0
-	if animation_state == "punch":
+	if animation_state == "punch" or animation_state == "place_animation":
 		return direction * -18.0
 	return 0.0
 
@@ -5031,12 +5291,14 @@ func remove_remote_player(remote_id: String, fade_out: bool = true, force_free: 
 		return
 
 	if not remote_players.has(remote_id):
+		remote_pending_position_snapshots.erase(remote_id)
 		return
 
 	var remote_player = remote_players[remote_id]
 	remote_players.erase(remote_id)
 	remote_action_sequences.erase(remote_id)
 	remote_action_server_times.erase(remote_id)
+	remote_pending_position_snapshots.erase(remote_id)
 
 	if remote_player != null and is_instance_valid(remote_player):
 		remote_player.set_meta("remote_snapshot_intervals", [])
@@ -5061,6 +5323,7 @@ func _free_remote_player_node(remote_player):
 
 
 func clear_remote_players():
+	remote_pending_position_snapshots.clear()
 	for remote_id in remote_players.keys():
 		var remote_player = remote_players[remote_id]
 		if remote_player != null and is_instance_valid(remote_player):

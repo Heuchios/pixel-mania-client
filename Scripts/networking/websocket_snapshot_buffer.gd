@@ -7,6 +7,8 @@ const MAX_SNAPSHOT_HISTORY := 24
 const MAX_EXTRAPOLATION_MS := 120.0
 const FULL_SPEED_EXTRAPOLATION_MS := 80.0
 const TIMELINE_RESET_GAP_MS := 500.0
+const REMOTE_MOVEMENT_SEQUENCE_MAX := 2147483647
+const REMOTE_MOVEMENT_SEQUENCE_WRAP_WINDOW := 1073741824
 const INTERVAL_EWMA_WEIGHT := 0.18
 const JITTER_EWMA_WEIGHT := 0.14
 const DELAY_INCREASE_WEIGHT := 0.35
@@ -25,6 +27,18 @@ var rejected_snapshot_count := 0
 var accepted_snapshot_count := 0
 var timeline_reset_count := 0
 var last_render_time_ms := -1.0
+
+
+func _is_remote_movement_sequence_newer(new_sequence: int, previous_sequence: int) -> bool:
+	var safe_previous = int(max(0, previous_sequence))
+	var safe_new = int(max(0, new_sequence))
+	if safe_new <= 0 or safe_previous <= 0:
+		return false
+	if safe_new > safe_previous:
+		return true
+	if safe_previous > REMOTE_MOVEMENT_SEQUENCE_MAX - REMOTE_MOVEMENT_SEQUENCE_WRAP_WINDOW and safe_new <= REMOTE_MOVEMENT_SEQUENCE_WRAP_WINDOW:
+		return true
+	return false
 
 
 func reset(server_time_ms: int, receive_time_ms: int, sequence: int, position: Vector2, velocity: Vector2 = Vector2.ZERO) -> void:
@@ -54,7 +68,7 @@ func push_snapshot(server_time_ms: int, receive_time_ms: int, sequence: int, pos
 		return true
 
 	var safe_sequence := maxi(0, sequence)
-	if safe_sequence > 0 and last_sequence > 0 and safe_sequence <= last_sequence:
+	if safe_sequence > 0 and last_sequence > 0 and not _is_remote_movement_sequence_newer(safe_sequence, last_sequence):
 		rejected_snapshot_count += 1
 		return false
 	if safe_sequence <= 0 and server_time_ms > 0 and server_time_ms <= last_server_time_ms:
