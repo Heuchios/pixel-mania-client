@@ -5644,6 +5644,8 @@ func _world_node_can_apply_server_world_state(world_node: Node) -> bool:
 		return false
 	if "world_state_sync_manager" in world_node and world_node.get("world_state_sync_manager") == null:
 		return false
+	if "save_manager" in world_node and world_node.get("save_manager") == null:
+		return false
 	return true
 
 

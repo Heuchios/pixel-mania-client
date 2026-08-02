@@ -51,7 +51,7 @@ func _run() -> void:
 
 	var loading_source := FileAccess.get_file_as_string("res://Scripts/world_loading_ui_manager.gd")
 	var timeout_source := source_between(loading_source, "func update_timeout", "func is_world_ready_for_player")
-	assert(timeout_source.contains("retry_server_world_entry"))
+	assert(timeout_source.contains("_request_world_ready_snapshot_retry"))
 	assert(not timeout_source.contains("finish_world_entry_after_load"))
 	assert(not timeout_source.contains("finish_smooth_world_load()"))
 
@@ -95,6 +95,10 @@ func _run() -> void:
 	assert(activation_source.contains("active_revision_mismatch"))
 	assert(activation_source.contains("controls_unlocked"))
 	assert(activation_source.contains("process_pending_world_entry_block_updates()"))
+	var world_node_readiness_source := source_between(network_source, "func _world_node_can_apply_server_world_state", "func _queue_pending_server_world_state")
+	assert(world_node_readiness_source.contains("world_state_sync_manager"))
+	assert(world_node_readiness_source.contains("save_manager"))
+	assert(not world_node_readiness_source.contains("finish_smooth_world_load()"))
 
 	var readiness_source := source_between(loading_source, "func is_world_ready_for_player", "func _is_dedicated_netfox_server_without_local_player")
 	assert(not readiness_source.contains("blocks.is_empty()"))

@@ -566,6 +566,105 @@ func notify_network_join_current_world():
 		world.player_manager.reset_multiplayer_sync_state()
 
 
+func retry_server_world_entry(reason: String = "world_state_timeout") -> bool:
+	if world == null or not waiting_for_server_world_state:
+		return false
+	if bool(world.get("applying_network_world_update")):
+		return false
+
+	var target_world: String = sanitize_world_name(str(world.current_world_name))
+	if target_world == "":
+		return false
+	target_world = target_world.to_upper()
+
+	world.set_meta("world_entry_in_progress", true)
+	world.set_meta("world_bulk_load_in_progress", true)
+	world.set_meta("world_bulk_load_reason", "waiting_for_server_world_state")
+	set_gameplay_world_active(false)
+	set_gameplay_ui_visible(false)
+	if world.has_method("update_smooth_world_load_message"):
+		world.update_smooth_world_load_message("Still loading " + target_world + " from server...")
+
+	var network = world.get_node_or_null("/root/NetworkManager")
+	if network == null:
+		return false
+	if network.has_method("has_active_join_request_for_world"):
+		if bool(network.has_active_join_request_for_world(target_world)) and network.has_method("cancel_active_join_request"):
+			network.cancel_active_join_request()
+	if network.has_method("set_pending_join"):
+		network.set_pending_join(target_world, get_current_player_profile_name())
+
+	var sent := false
+	if network.has_method("is_server_session_authenticated") and bool(network.is_server_session_authenticated()):
+		if network.has_method("send_join_world"):
+			sent = bool(network.send_join_world(target_world))
+	if not sent and network.has_method("request_server_connection"):
+		network.request_server_connection(false)
+
+	debug_action_position_flow("retry_server_world_entry", {
+		"world": target_world,
+		"reason": reason,
+		"sent": sent
+	})
+	return sent
+
+
+func handle_server_world_entry_rejected(data: Dictionary) -> bool:
+	if world == null or not waiting_for_server_world_state:
+		return false
+
+	var reason: String = str(data.get("reason", "")).strip_edges().to_lower()
+	var message: String = str(data.get("message", "Could not enter that world.")).strip_edges()
+	if reason.ends_with("_failed") or message.to_lower().contains("still loading"):
+		if world.has_method("update_smooth_world_load_message"):
+			world.update_smooth_world_load_message(message + " Retrying...")
+		return true
+
+	return handle_client_world_loading_failed(reason, message)
+
+
+func handle_client_world_loading_failed(reason: String, message: String) -> bool:
+	if world == null:
+		return false
+
+	var clean_reason := str(reason).strip_edges()
+	if clean_reason == "":
+		clean_reason = "client_world_loading_failed"
+	var clean_message := str(message).strip_edges()
+	if clean_message == "":
+		clean_message = "Could not load the world. Returning to the lobby."
+
+	debug_action_position_flow("handle_client_world_loading_failed", {
+		"reason": clean_reason,
+		"world": str(world.current_world_name)
+	})
+
+	waiting_for_server_world_state = false
+	world_entry_pending_announce = false
+	world.set_meta("world_entry_in_progress", false)
+	world.set_meta("world_entry_force_entrance_spawn", false)
+	world.set_meta("world_bulk_load_in_progress", false)
+	world.set_meta("world_bulk_load_reason", "")
+	world.in_world = false
+	set_gameplay_world_active(false)
+	set_gameplay_ui_visible(false)
+
+	var network = world.get_node_or_null("/root/NetworkManager")
+	if network != null and network.has_method("cancel_active_join_request"):
+		network.cancel_active_join_request()
+
+	if world.has_method("cancel_smooth_world_load"):
+		world.cancel_smooth_world_load()
+
+	if world.world_menu_ui != null and world.world_menu_ui.has_method("return_to_lobby_menu"):
+		world.world_menu_ui.call_deferred("return_to_lobby_menu", false)
+	elif world.world_menu_ui != null and world.world_menu_ui.has_method("open_main_menu"):
+		world.world_menu_ui.call_deferred("open_main_menu")
+
+	if world.has_method("show_notification"):
+		world.call_deferred("show_notification", clean_message)
+	return true
+
 func notify_network_leave_world(world_name: String):
 	if world_name.strip_edges() == "":
 		return
