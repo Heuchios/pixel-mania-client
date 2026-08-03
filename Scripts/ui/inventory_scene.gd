@@ -29,6 +29,9 @@ const SLOT_FRAME_SIZE := Vector2(96, 96)
 const SLOT_FRAME_POS := Vector2.ZERO
 const ICON_SIZE := Vector2(64, 64)
 const ICON_POS := Vector2(16, 14)
+const INVENTORY_SLOT_MIN_COUNT := 20
+const INVENTORY_SLOT_MAX_COUNT := 300
+const INVENTORY_SLOT_UPGRADE_STEP := 20
 const SLOT_GRID_H_SEPARATION := 12
 const SLOT_GRID_V_SEPARATION := 12
 const INVENTORY_BOTTOM_SCROLL_PADDING_RATIO := 0.5
@@ -681,19 +684,22 @@ func _append_world_inventory(output: Array, source: Object, property_name: Strin
 
 
 func _append_inventory_capacity_slots(output: Array, source: Object) -> void:
-	var slot_count: int = 20
+	var slot_count: int = _resolve_inventory_slot_count_from_source(source)
+	var max_slots: int = INVENTORY_SLOT_MAX_COUNT
+	var step: int = INVENTORY_SLOT_UPGRADE_STEP
 	var preview: Dictionary = {}
 	if source != null and source.has_method("get_inventory_upgrade_preview"):
 		var raw_preview: Variant = source.call("get_inventory_upgrade_preview")
 		if raw_preview is Dictionary:
 			preview = raw_preview
-			slot_count = int(preview.get("inventory_slot_count", preview.get("current_slots", slot_count)))
+			slot_count = _normalize_inventory_slot_count(int(preview.get("inventory_slot_count", preview.get("current_slots", slot_count))), max_slots, step)
+			step = int(preview.get("step", step))
+			max_slots = int(preview.get("max_slots", max_slots))
+			slot_count = _normalize_inventory_slot_count(slot_count, max_slots, step)
 	elif source != null and source.has_method("get_inventory_slot_count"):
-		slot_count = int(source.call("get_inventory_slot_count"))
+		slot_count = _normalize_inventory_slot_count(int(source.call("get_inventory_slot_count")), max_slots, step)
 	elif source != null:
-		slot_count = int(source.get("inventory_slot_count"))
-
-	slot_count = clampi(slot_count, 20, 300)
+		slot_count = _normalize_inventory_slot_count(int(source.get("inventory_slot_count")), max_slots, step)
 	var owned_slot_count: int = output.size()
 	var visible_slot_count: int = slot_count if slot_count > owned_slot_count else owned_slot_count
 	for slot_index in range(owned_slot_count, visible_slot_count):
@@ -710,19 +716,19 @@ func _append_inventory_capacity_slots(output: Array, source: Object) -> void:
 			"capacity_slot": true
 		})
 
-	if slot_count >= 300:
+	if slot_count >= max_slots:
 		return
 
 	if preview.is_empty():
 		preview = {
 			"inventory_slot_count": slot_count,
 			"current_slots": slot_count,
-			"next_inventory_slot_count": min(slot_count + 20, 300),
-			"next_slots": min(slot_count + 20, 300),
+			"next_inventory_slot_count": min(slot_count + step, max_slots),
+			"next_slots": min(slot_count + step, max_slots),
 			"inventory_upgrade_cost": 0,
 			"cost": 0,
-			"max_slots": 300,
-			"step": 20
+			"max_slots": max_slots,
+			"step": step
 		}
 
 	var cost: int = int(preview.get("cost", preview.get("inventory_upgrade_cost", 0)))
@@ -742,9 +748,52 @@ func _append_inventory_capacity_slots(output: Array, source: Object) -> void:
 		"next_slots": next_slots,
 		"cost": cost,
 		"inventory_upgrade_cost": cost,
-		"max_slots": int(preview.get("max_slots", 300)),
-		"step": int(preview.get("step", 20))
+		"max_slots": int(preview.get("max_slots", max_slots)),
+		"step": int(preview.get("step", step))
 	})
+
+
+func _normalize_inventory_slot_count(slot_count: int, max_count: int = INVENTORY_SLOT_MAX_COUNT, step: int = INVENTORY_SLOT_UPGRADE_STEP) -> int:
+	var safe_min_count: int = max(INVENTORY_SLOT_MIN_COUNT, 1)
+	var safe_step: int = max(step, 1)
+	var safe_max_count: int = max(safe_min_count, max_count)
+	var clamped_count: int = clampi(slot_count, safe_min_count, safe_max_count)
+	if clamped_count <= safe_min_count:
+		return safe_min_count
+	var upgrade_steps: int = int(ceil(float(clamped_count - safe_min_count) / float(safe_step)))
+	return clampi(safe_min_count + upgrade_steps * safe_step, safe_min_count, safe_max_count)
+
+
+func _resolve_inventory_slot_count_from_source(source: Object) -> int:
+	var raw_slot_count: int = INVENTORY_SLOT_MIN_COUNT
+	var max_slots: int = INVENTORY_SLOT_MAX_COUNT
+	var step: int = INVENTORY_SLOT_UPGRADE_STEP
+
+	if source == null:
+		return _normalize_inventory_slot_count(raw_slot_count, max_slots, step)
+
+	if source.has_method("get_inventory_upgrade_preview"):
+		var raw_preview: Variant = source.call("get_inventory_upgrade_preview")
+		if raw_preview is Dictionary:
+			var preview: Dictionary = raw_preview
+			max_slots = int(preview.get("max_slots", max_slots))
+			step = int(preview.get("step", step))
+			raw_slot_count = int(preview.get("inventory_slot_count", preview.get("current_slots", raw_slot_count)))
+			return _normalize_inventory_slot_count(raw_slot_count, max_slots, step)
+
+	if source.has_method("get_inventory_slot_count"):
+		raw_slot_count = int(source.call("get_inventory_slot_count"))
+	elif source.has_property("inventory_slot_count"):
+		raw_slot_count = int(source.get("inventory_slot_count"))
+	return _normalize_inventory_slot_count(raw_slot_count, max_slots, step)
+
+
+func _count_usable_inventory_slots(items: Array) -> int:
+	var count: int = 0
+	for item in items:
+		if item is Dictionary and not _is_capacity_slot(item):
+			count += 1
+	return count
 
 
 func _is_capacity_slot(item: Dictionary) -> bool:
@@ -1175,7 +1224,11 @@ func _update_detail() -> void:
 
 func _update_footer(filtered_items: Array) -> void:
 	_update_selected_footer()
-	count_label.text = str(filtered_items.size()) + " / " + str(inventory_items.size()) + " ITEMS"
+	var occupied_slots: int = _count_usable_inventory_slots(inventory_items)
+	var total_slots: int = _resolve_inventory_slot_count_from_source(inventory_source)
+	if total_slots < occupied_slots:
+		total_slots = occupied_slots
+	count_label.text = str(occupied_slots) + " / " + str(total_slots) + " ITEMS"
 
 
 func _update_selected_footer() -> void:
