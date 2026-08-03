@@ -2596,7 +2596,7 @@ func handle_network_player_position(player_data: Dictionary):
 	var vertical_hint: float = float(next_target_position.y - old_target.y) / max(NETWORK_POSITION_SEND_INTERVAL, 0.001)
 	var animation_state = clean_remote_animation_state(str(player_data.get("animation_state", "")))
 	var now_msec := int(Time.get_ticks_msec())
-	var previous_animation_state = str(remote_player.get_meta("animation_state", "idle"))
+	var previous_animation_state_from_meta = str(remote_player.get_meta("animation_state", "idle"))
 	var hurt_animation_until := int(remote_player.get_meta("remote_hurt_animation_until_msec", 0))
 	var action_animation_until := int(remote_player.get_meta("remote_action_animation_until_msec", 0))
 	if now_msec < hurt_animation_until:
@@ -2658,7 +2658,7 @@ func handle_network_player_position(player_data: Dictionary):
 			animation_state = "idle"
 
 	var airborne_stale_msec = int(remote_player.get_meta("remote_airborne_stale_msec", 0))
-	if animation_state in ["jump", "fall"] and previous_animation_state in ["jump", "fall"] and not network_on_floor:
+	if animation_state in ["jump", "fall"] and previous_animation_state_from_meta in ["jump", "fall"] and not network_on_floor:
 		var vertical_delta := next_target_position.y - old_target.y
 		if abs(network_velocity_y) <= REMOTE_AIRBORNE_STALE_EPS_VELOCITY and abs(vertical_delta) <= REMOTE_AIRBORNE_STALE_DISTANCE:
 			airborne_stale_msec = now_msec if airborne_stale_msec <= 0 else max(airborne_stale_msec, now_msec)
@@ -2684,8 +2684,8 @@ func handle_network_player_position(player_data: Dictionary):
 		# Snap these so remote players do not slide across the map.
 		should_snap_remote_position = true
 
-	if previous_animation_state != animation_state:
-		if should_play_remote_jump_sound(previous_animation_state, animation_state, had_position):
+	if previous_animation_state_from_meta != animation_state:
+		if should_play_remote_jump_sound(previous_animation_state_from_meta, animation_state, had_position):
 			play_remote_jump_sound(next_target_position, safe_facing, network_in_water)
 		remote_player.set_meta("walk_timer", 0.0)
 		remote_player.set_meta("walk_frame", 0)
@@ -2695,7 +2695,7 @@ func handle_network_player_position(player_data: Dictionary):
 		debug_remote_appearance_flow("remote animation state changed", {
 			"player_id": remote_id,
 			"username": remote_name,
-			"from": previous_animation_state,
+			"from": previous_animation_state_from_meta,
 			"to": animation_state,
 			"facing": player_data.get("facing", 1)
 		})
