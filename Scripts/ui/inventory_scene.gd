@@ -3,6 +3,8 @@ class_name InventoryScene
 
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 const ColourCycleModulation = preload("res://Scripts/colour_cycle_modulation.gd")
+const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
+const SelectedSlotFrameClock = preload("res://Scripts/ui/selected_slot_frame_clock.gd")
 
 signal item_selected(item: Dictionary)
 signal item_double_action_requested(item: Dictionary)
@@ -16,6 +18,7 @@ signal close_requested
 signal tab_changed(tab_id: String)
 
 const UI_PATH := "res://Assets/ui/inventory/"
+const HOTBAR_UI_PATH := "res://Assets/ui/hotbar/"
 const WINDOW_SIZE := Vector2(1000, 640)
 const WINDOW_VISUAL_SIZE := Vector2(1349, 657)
 const MOBILE_GUI_SCALE_SETTING := "gui/theme/default_theme_scale"
@@ -25,20 +28,30 @@ const SLOT_FRAME_SIZE := Vector2(96, 96)
 const SLOT_FRAME_POS := Vector2.ZERO
 const ICON_SIZE := Vector2(64, 64)
 const ICON_POS := Vector2(16, 14)
+const SLOT_GRID_H_SEPARATION := 12
+const SLOT_GRID_V_SEPARATION := 12
+const INVENTORY_BOTTOM_SCROLL_PADDING_RATIO := 0.5
 const DROP_AMOUNT_MIN := 1
 const SLOT_TOUCH_DOUBLE_TAP_TIME_MS := 550
 const SLOT_TOUCH_SCROLL_DEADZONE := 12.0
 const SLOT_LONG_PRESS_TIME_MS := 450
-const INVENTORY_SCROLL_SLIDER_MAX := 1000.0
-const INVENTORY_SCROLL_SLIDER_PAGE := 150.0
 const SEED_BOX_PREVIEW_NODE_NAME := "SeedPreview"
 const LOCK_METADATA_KEYS := ["lock_item", "world_lock_item", "world_lock", "lock_block", "is_lock"]
 const INVENTORY_CAPACITY_CATEGORY := "inventory_capacity"
 const INVENTORY_EMPTY_SLOT_PREFIX := "empty_slot_"
 const INVENTORY_UPGRADE_SLOT_ID := "slot_upgrade"
 const INVENTORY_UPGRADE_SLOT_TEXTURE := "slot_upgrade.png"
+const MATERIAL_SLOT_TEXTURE := "material_slot.png"
+const CLOTHES_SLOT_TEXTURE := "clothes_slot.png"
+const EMPTY_SLOT_TEXTURE := "empty_slot.png"
 const SLOT_TEMPLATE_LAYOUT_NODES := ["Frame", "SelectedFrame", "IconShadow", "Icon", "Count", "Equipped"]
 const COLOUR_CYCLE_ICON_UPDATE_SECONDS := 0.10
+const SELECTED_SLOT_FRAME_SECONDS := 0.30
+const SELECTED_SLOT_FRAMES := [
+	preload("res://Assets/ui/selected_1.png"),
+	preload("res://Assets/ui/selected_2.png"),
+	preload("res://Assets/ui/selected_3.png"),
+]
 
 const TABS := [
 	{"id": "all", "label": "ALL"},
@@ -59,7 +72,7 @@ const TAB_CATEGORIES := {
 
 @export var use_preview_items: bool = false
 @export var default_tab: String = "all"
-@export var slot_columns: int = 9
+@export var slot_columns: int = 10
 
 var inventory_items: Array[Dictionary] = []
 var current_tab: String = "all"
@@ -68,9 +81,15 @@ var selected_item: Dictionary = {}
 var tab_buttons: Dictionary = {}
 var slot_nodes: Dictionary = {}
 var slot_template_nodes: Array[Button] = []
+var visible_slot_keys: Dictionary = {}
 var colour_cycle_slot_keys: Dictionary = {}
+var ui_texture_cache: Dictionary = {}
+var last_live_refresh_changed_structure: bool = false
 var colour_cycle_icon_update_elapsed: float = 0.0
-var syncing_inventory_scroll_slider: bool = false
+var selected_slot_frame_index: int = 0
+var inventory_scroll_handle_dragging: bool = false
+var inventory_scroll_handle_touch_index: int = -1
+var inventory_scroll_handle_drag_offset_y: float = 0.0
 var syncing_drop_amount_controls: bool = false
 var drop_amount: int = DROP_AMOUNT_MIN
 var drop_amount_item_key: String = ""
@@ -91,14 +110,17 @@ var inventory_scroll_touch_start_position := Vector2.ZERO
 var inventory_scroll_touch_last_position := Vector2.ZERO
 var inventory_scroll_touch_value := 0.0
 var inventory_scroll_touch_dragging := false
+var inventory_scroll_layout_sync_queued := false
 var drawer_transform_managed := false
 
 @onready var window: Control = $Window
-@onready var tabs: HBoxContainer = $Window/Tabs
+@onready var tabs: BoxContainer = $Window/Tabs
 @onready var search_input: LineEdit = $Window/SearchInput
 @onready var gem_counter_label: Label = get_node_or_null("Window/HeaderSkin/GemCounterLabel") as Label
 @onready var inventory_scroll: ScrollContainer = $Window/InventoryScroll
-@onready var inventory_scroll_slider: VScrollBar = get_node_or_null("Window/InventoryScrollSlider") as VScrollBar
+@onready var inventory_scroll_slider: Control = get_node_or_null("Window/InventoryScrollSlider") as Control
+@onready var inventory_scroll_track: TextureRect = get_node_or_null("Window/InventoryScrollSlider/Track") as TextureRect
+@onready var inventory_scroll_handle: TextureRect = get_node_or_null("Window/InventoryScrollSlider/Handle") as TextureRect
 @onready var inventory_grid: GridContainer = $Window/InventoryScroll/InventoryGrid
 @onready var empty_state: Label = $Window/EmptyState
 @onready var detail_title: Label = $Window/DetailTitle
@@ -163,6 +185,7 @@ func _notification(what: int) -> void:
 
 func _process(delta: float) -> void:
 	update_colour_cycle_icon_modulation_throttled(delta)
+	update_selected_slot_frame_animation(delta)
 	if active_slot_touch_index < 0 or active_slot_touch_key == "":
 		return
 	if active_slot_touch_scrolled or active_slot_long_press_opened:
@@ -176,7 +199,7 @@ func _process(delta: float) -> void:
 	last_slot_tap_key = ""
 	last_slot_tap_time_ms = 0
 	_select_slot_item(item)
-	var popup_position: Vector2 = active_slot_touch_start_position
+	var popup_position: Vector2 = _slot_anchor_position(active_slot_touch_key, active_slot_touch_start_position)
 	_clear_active_slot_touch()
 	_clear_inventory_scroll_touch()
 	item_action_popup_requested.emit(item.duplicate(true), popup_position)
@@ -185,6 +208,26 @@ func _process(delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if not visible or inventory_scroll == null:
 		return
+
+	if inventory_scroll_handle_dragging:
+		if event is InputEventMouseMotion and inventory_scroll_handle_touch_index == -1:
+			_handle_inventory_scroll_pointer_event(event, false)
+			return
+		if event is InputEventMouseButton:
+			var mouse_button: InputEventMouseButton = event as InputEventMouseButton
+			if mouse_button.button_index == MOUSE_BUTTON_LEFT and not mouse_button.pressed:
+				_handle_inventory_scroll_pointer_event(event, false)
+				return
+		if event is InputEventScreenDrag:
+			var handle_drag: InputEventScreenDrag = event as InputEventScreenDrag
+			if handle_drag.index == inventory_scroll_handle_touch_index:
+				_handle_inventory_scroll_pointer_event(event, false)
+				return
+		if event is InputEventScreenTouch:
+			var handle_touch: InputEventScreenTouch = event as InputEventScreenTouch
+			if not handle_touch.pressed and handle_touch.index == inventory_scroll_handle_touch_index:
+				_handle_inventory_scroll_pointer_event(event, false)
+				return
 
 	if event is InputEventScreenTouch:
 		var touch: InputEventScreenTouch = event as InputEventScreenTouch
@@ -381,6 +424,7 @@ func refresh_live_from_world(source: Object) -> bool:
 
 		item["count"] = count
 		item["equipped"] = _world_item_equipped(source, item_id, category)
+		item["equipable"] = _resolve_item_equipable(source, item_id, category)
 		inventory_items[item_index] = item
 
 		var slot_key: String = _item_key(item)
@@ -394,6 +438,7 @@ func refresh_live_from_world(source: Object) -> bool:
 
 
 func refresh_item_live_from_world(source: Object, item_id: String, category: String) -> bool:
+	last_live_refresh_changed_structure = false
 	if source == null:
 		return false
 	if not _can_refresh():
@@ -416,11 +461,13 @@ func refresh_item_live_from_world(source: Object, item_id: String, category: Str
 	if count <= 0:
 		if item_index == -1:
 			return true
+		last_live_refresh_changed_structure = true
 		inventory_items.remove_at(item_index)
 		var removed_slot: Button = slot_nodes.get(slot_key, null) as Button
 		if removed_slot != null and is_instance_valid(removed_slot):
 			removed_slot.visible = false
 			removed_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		visible_slot_keys.erase(slot_key)
 		if selected_key == slot_key:
 			selected_key = ""
 			selected_item = {}
@@ -432,6 +479,7 @@ func refresh_item_live_from_world(source: Object, item_id: String, category: Str
 		_update_footer(filtered_after_remove)
 		return true
 	if item_index == -1:
+		last_live_refresh_changed_structure = true
 		var new_item: Dictionary = _build_world_inventory_item(source, clean_item_id, clean_category, source.get("item_database"), inventory_items.size())
 		if new_item.is_empty():
 			return true
@@ -452,8 +500,9 @@ func refresh_item_live_from_world(source: Object, item_id: String, category: Str
 				_refresh_slot_live(slot_key, visible_new_item)
 			new_slot.visible = true
 			new_slot.mouse_filter = Control.MOUSE_FILTER_PASS
+			visible_slot_keys[slot_key] = true
 		_sync_filtered_slot_order_and_layout(filtered_after_add)
-		call_deferred("_sync_inventory_scroll_slider")
+		_queue_inventory_scroll_slider_sync()
 		_sync_selected_item(filtered_after_add)
 		_update_selection_state()
 		_update_detail()
@@ -463,14 +512,19 @@ func refresh_item_live_from_world(source: Object, item_id: String, category: Str
 	var item: Dictionary = inventory_items[item_index]
 	item["count"] = count
 	item["equipped"] = _world_item_equipped(source, clean_item_id, clean_category)
+	item["equipable"] = _resolve_item_equipable(source, clean_item_id, clean_category)
 	inventory_items[item_index] = item
 
 	if selected_key == slot_key:
 		selected_item = item
 		_update_detail()
 	_refresh_slot_live(slot_key, item)
-	_update_footer(_get_filtered_items())
+	_update_selected_footer()
 	return true
+
+
+func did_last_live_refresh_change_structure() -> bool:
+	return last_live_refresh_changed_structure
 
 
 func _build_world_inventory_item(source: Object, item_id: String, category: String, item_database, inventory_index: int = -1) -> Dictionary:
@@ -494,7 +548,8 @@ func _build_world_inventory_item(source: Object, item_id: String, category: Stri
 		"rarity": _normalized_rarity(str(database_entry.get("rarity", "common"))),
 		"description": str(database_entry.get("description", "")),
 		"inventory_index": inventory_index if inventory_index >= 0 else inventory_items.size(),
-		"sort_order": int(database_entry.get("order", 9999))
+		"sort_order": int(database_entry.get("order", 9999)),
+		"equipable": _resolve_item_equipable(source, item_id, category)
 	}
 
 	for lock_key in LOCK_METADATA_KEYS:
@@ -527,14 +582,18 @@ func _build_world_inventory_item(source: Object, item_id: String, category: Stri
 
 
 func set_selected_item(item_id: String, category: String) -> void:
-	selected_key = category + ":" + item_id
+	var next_selected_key: String = category + ":" + item_id
+	if selected_key == next_selected_key and not selected_item.is_empty():
+		return
+	var previous_selected_key: String = selected_key
+	selected_key = next_selected_key
 	selected_item = {}
 	for item in inventory_items:
 		if _item_key(item) == selected_key:
 			selected_item = item
 			break
 	if _can_refresh():
-		_update_selection_state()
+		_update_selection_state(previous_selected_key)
 
 
 func clear_search() -> void:
@@ -587,7 +646,8 @@ func _append_world_inventory(output: Array, source: Object, property_name: Strin
 			"rarity": _normalized_rarity(str(database_entry.get("rarity", "common"))),
 			"description": str(database_entry.get("description", "")),
 			"inventory_index": output.size(),
-			"sort_order": int(database_entry.get("order", 9999))
+			"sort_order": int(database_entry.get("order", 9999)),
+			"equipable": _resolve_item_equipable(source, item_id, category)
 		}
 
 		for lock_key in LOCK_METADATA_KEYS:
@@ -860,8 +920,15 @@ func _refresh_grid(filtered_items: Array) -> void:
 	inventory_grid.columns = max(1, slot_columns)
 	empty_state.visible = filtered_items.is_empty()
 
-	for raw_slot_key in slot_nodes.keys():
-		var hidden_slot: Button = slot_nodes[raw_slot_key] as Button
+	var desired_visible_keys: Dictionary = {}
+	for item in filtered_items:
+		desired_visible_keys[_item_key(item)] = true
+
+	for raw_slot_key in visible_slot_keys.keys():
+		var hidden_slot_key: String = str(raw_slot_key)
+		if desired_visible_keys.has(hidden_slot_key):
+			continue
+		var hidden_slot: Button = slot_nodes.get(hidden_slot_key, null) as Button
 		if hidden_slot == null or not is_instance_valid(hidden_slot):
 			continue
 		hidden_slot.visible = false
@@ -881,8 +948,9 @@ func _refresh_grid(filtered_items: Array) -> void:
 
 		slot.visible = true
 		slot.mouse_filter = Control.MOUSE_FILTER_PASS
+	visible_slot_keys = desired_visible_keys
 	_sync_filtered_slot_order_and_layout(filtered_items)
-	call_deferred("_sync_inventory_scroll_slider")
+	_queue_inventory_scroll_slider_sync()
 
 
 func _setup_slot_templates() -> void:
@@ -897,13 +965,15 @@ func _setup_slot_templates() -> void:
 			slot_template_nodes.append(button)
 
 
-func _apply_slot_display_layout(slot: Button, display_index: int) -> void:
+func _apply_slot_display_layout(slot: Button, _display_index: int) -> void:
 	if slot == null or slot_template_nodes.is_empty():
 		return
-	var template_index: int = display_index % slot_template_nodes.size()
-	if int(slot.get_meta("slot_template_index", -1)) == template_index:
+	# Every slot uses one canonical local layout. The old per-column templates
+	# counter-shifted their children and cancelled the GridContainer spacing.
+	const TEMPLATE_INDEX := 0
+	if int(slot.get_meta("slot_template_index", -1)) == TEMPLATE_INDEX:
 		return
-	var template: Button = slot_template_nodes[template_index]
+	var template: Button = slot_template_nodes[TEMPLATE_INDEX]
 	for node_name in SLOT_TEMPLATE_LAYOUT_NODES:
 		var target_control: Control = slot.get_node_or_null(node_name) as Control
 		var template_control: Control = template.get_node_or_null(node_name) as Control
@@ -912,28 +982,46 @@ func _apply_slot_display_layout(slot: Button, display_index: int) -> void:
 		target_control.position = template_control.position
 		target_control.size = template_control.size
 		target_control.pivot_offset = template_control.pivot_offset
-	slot.set_meta("slot_template_index", template_index)
+	slot.set_meta("slot_template_index", TEMPLATE_INDEX)
 
 
 func _sync_filtered_slot_order_and_layout(filtered_items: Array) -> void:
+	var desired_order: Array[String] = []
 	for display_index in range(filtered_items.size()):
 		var slot_key: String = _item_key(filtered_items[display_index])
+		desired_order.append(slot_key)
 		var slot: Button = slot_nodes.get(slot_key, null) as Button
 		if slot == null or not is_instance_valid(slot):
 			continue
 		_apply_slot_display_layout(slot, display_index)
+
+	var current_order: Array[String] = []
+	for child in inventory_grid.get_children():
+		if not (child is Button) or not child.visible:
+			continue
+		var child_slot_key: String = str(child.get_meta("inventory_slot_key", ""))
+		if child_slot_key != "":
+			current_order.append(child_slot_key)
+	if current_order == desired_order:
+		return
+
+	for slot_key in desired_order:
+		var slot: Button = slot_nodes.get(slot_key, null) as Button
+		if slot == null or not is_instance_valid(slot):
+			continue
 		inventory_grid.move_child(slot, inventory_grid.get_child_count() - 1)
 
 
-func _create_slot(item: Dictionary, item_index: int = 0) -> Button:
+func _create_slot(item: Dictionary, _item_index: int = 0) -> Button:
 	var slot: Button = null
 	var slot_key: String = _item_key(item)
 	if not slot_template_nodes.is_empty():
-		var template: Button = slot_template_nodes[item_index % slot_template_nodes.size()]
+		var template: Button = slot_template_nodes[0]
 		slot = template.duplicate() as Button
 	if slot == null:
 		slot = Button.new()
 	slot.name = "Slot_" + slot_key.replace(":", "_")
+	slot.set_meta("inventory_slot_key", slot_key)
 	slot.visible = true
 	slot.custom_minimum_size = SLOT_SIZE
 	slot.focus_mode = Control.FOCUS_NONE
@@ -956,7 +1044,6 @@ func _create_slot(item: Dictionary, item_index: int = 0) -> Button:
 	slot.mouse_entered.connect(_on_slot_hovered.bind(slot, true))
 	slot.mouse_exited.connect(_on_slot_hovered.bind(slot, false))
 
-	var rarity: String = _normalized_rarity(str(item.get("rarity", "common")))
 	var frame: TextureRect = slot.get_node_or_null("Frame") as TextureRect
 	if frame == null:
 		frame = TextureRect.new()
@@ -1050,15 +1137,16 @@ func _create_slot(item: Dictionary, item_index: int = 0) -> Button:
 			equipped_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 			equipped_label.add_theme_font_size_override("font_size", 20)
 			equipped_label.add_theme_color_override("font_color", Color(0.1, 1.0, 0.18, 1.0))
-			equipped_label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.0))
-			equipped_label.add_theme_constant_override("shadow_offset_x", 0)
-			equipped_label.add_theme_constant_override("shadow_offset_y", 0)
+			equipped_label.add_theme_color_override("font_shadow_color", PixelUIStyle.GLOBAL_TEXT_SHADOW_COLOR)
+			equipped_label.add_theme_constant_override("shadow_offset_x", int(PixelUIStyle.GLOBAL_TEXT_SHADOW_OFFSET.x))
+			equipped_label.add_theme_constant_override("shadow_offset_y", int(PixelUIStyle.GLOBAL_TEXT_SHADOW_OFFSET.y))
 			equipped_label.text = "✓"
 		equipped_label.visible = bool(item.get("equipped", false))
 
-	_apply_slot_rarity_visuals(slot, rarity)
+	_apply_slot_rarity_visuals(slot, item)
 
 	slot.tooltip_text = _item_display_name(item) + " " + _detail_count_text(item)
+	slot.set_meta("slot_live_signature", _slot_live_signature(item))
 	return slot
 
 
@@ -1071,9 +1159,8 @@ func _update_detail() -> void:
 	detail_description.text = _item_description(selected_item) if has_selection else ""
 
 	var icon_texture: Texture2D = _item_icon_texture(selected_item) if has_selection else null
-	var rarity: String = _normalized_rarity(str(selected_item.get("rarity", "common"))) if has_selection else "common"
-	var detail_frame_file: String = INVENTORY_UPGRADE_SLOT_TEXTURE if has_selection and _is_inventory_upgrade_slot(selected_item) else _slot_frame_file(rarity)
-	detail_frame.texture = _load_ui_texture(detail_frame_file)
+	detail_frame.texture = _slot_frame_texture(_slot_frame_file_for_item(selected_item))
+	detail_selected_frame.texture = _current_selected_slot_texture()
 	detail_selected_frame.visible = has_selection
 	detail_icon_shadow.texture = icon_texture
 	detail_icon_shadow.visible = icon_texture != null and not (has_selection and _is_inventory_upgrade_slot(selected_item))
@@ -1086,24 +1173,36 @@ func _update_detail() -> void:
 
 
 func _update_footer(filtered_items: Array) -> void:
+	_update_selected_footer()
+	count_label.text = str(filtered_items.size()) + " / " + str(inventory_items.size()) + " ITEMS"
+
+
+func _update_selected_footer() -> void:
 	if selected_item.is_empty():
 		selected_label.text = "Selected: none"
 	else:
 		selected_label.text = "Selected: " + _item_display_name(selected_item) + " " + _detail_count_text(selected_item)
-	count_label.text = str(filtered_items.size()) + " / " + str(inventory_items.size()) + " ITEMS"
 
 
-func _update_selection_state() -> void:
-	for raw_slot_key in slot_nodes.keys():
-		var slot_key: String = str(raw_slot_key)
-		var slot_node: Node = slot_nodes[raw_slot_key] as Node
-		if slot_node == null:
-			continue
-		var selected_frame: CanvasItem = slot_node.get_node_or_null("SelectedFrame") as CanvasItem
-		if selected_frame != null:
-			selected_frame.visible = slot_key == selected_key
+func _set_slot_selected(slot_key: String, is_selected: bool) -> void:
+	if slot_key == "":
+		return
+	var slot_node: Node = slot_nodes.get(slot_key, null) as Node
+	if slot_node == null or not is_instance_valid(slot_node):
+		return
+	var selected_frame: TextureRect = slot_node.get_node_or_null("SelectedFrame") as TextureRect
+	if selected_frame != null:
+		if is_selected:
+			selected_frame.texture = _current_selected_slot_texture()
+		selected_frame.visible = is_selected
+
+
+func _update_selection_state(previous_selected_key: String = "") -> void:
+	if previous_selected_key != selected_key:
+		_set_slot_selected(previous_selected_key, false)
+	_set_slot_selected(selected_key, true)
 	_update_detail()
-	_update_footer(_get_filtered_items())
+	_update_selected_footer()
 
 
 func _on_tab_pressed(tab_id: String) -> void:
@@ -1131,6 +1230,7 @@ func _remove_stale_slot_nodes() -> void:
 			continue
 		var stale_slot: Node = slot_nodes[slot_key] as Node
 		slot_nodes.erase(slot_key)
+		visible_slot_keys.erase(slot_key)
 		colour_cycle_slot_keys.erase(slot_key)
 		if stale_slot != null and is_instance_valid(stale_slot):
 			if stale_slot.get_parent() == inventory_grid:
@@ -1141,9 +1241,11 @@ func _remove_stale_slot_nodes() -> void:
 func _select_slot_item(item: Dictionary) -> void:
 	if item.is_empty():
 		return
+	var previous_selected_key: String = selected_key
 	selected_item = item
 	selected_key = _item_key(item)
-	_update_selection_state()
+	if previous_selected_key != selected_key:
+		_update_selection_state(previous_selected_key)
 	item_selected.emit(selected_item)
 
 
@@ -1217,6 +1319,13 @@ func _get_item_for_slot_key(slot_key: String) -> Dictionary:
 	return inventory_items[item_index]
 
 
+func _slot_anchor_position(slot_key: String, fallback_position: Vector2 = Vector2.ZERO) -> Vector2:
+	var slot: Control = slot_nodes.get(slot_key, null) as Control
+	if slot != null and is_instance_valid(slot):
+		return slot.get_global_rect().get_center()
+	return fallback_position
+
+
 func _on_slot_gui_input(event: InputEvent, slot_key: String) -> void:
 	var item: Dictionary = _get_item_for_slot_key(slot_key)
 	if item.is_empty():
@@ -1241,7 +1350,7 @@ func _on_slot_gui_input(event: InputEvent, slot_key: String) -> void:
 			if _is_inventory_upgrade_slot(item):
 				inventory_upgrade_requested.emit(item)
 			else:
-				item_action_popup_requested.emit(item.duplicate(true), get_viewport().get_mouse_position())
+				item_action_popup_requested.emit(item.duplicate(true), _slot_anchor_position(slot_key, get_viewport().get_mouse_position()))
 			accept_event()
 	elif event is InputEventScreenTouch:
 		var touch: InputEventScreenTouch = event as InputEventScreenTouch
@@ -1396,7 +1505,7 @@ func _selected_payload_with_amount() -> Dictionary:
 
 
 func _setup_inventory_scroll_slider() -> void:
-	if inventory_scroll == null or inventory_scroll_slider == null:
+	if inventory_scroll == null or inventory_scroll_slider == null or inventory_scroll_track == null or inventory_scroll_handle == null:
 		return
 
 	inventory_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
@@ -1414,69 +1523,181 @@ func _setup_inventory_scroll_slider() -> void:
 		if not internal_scrollbar.changed.is_connected(range_callback):
 			internal_scrollbar.changed.connect(range_callback)
 
-	var slider_callback: Callable = Callable(self, "_on_inventory_scroll_slider_changed")
-	if not inventory_scroll_slider.value_changed.is_connected(slider_callback):
-		inventory_scroll_slider.value_changed.connect(slider_callback)
+	var track_input_callback: Callable = Callable(self, "_on_inventory_scroll_track_gui_input")
+	if not inventory_scroll_track.gui_input.is_connected(track_input_callback):
+		inventory_scroll_track.gui_input.connect(track_input_callback)
+	var handle_input_callback: Callable = Callable(self, "_on_inventory_scroll_handle_gui_input")
+	if not inventory_scroll_handle.gui_input.is_connected(handle_input_callback):
+		inventory_scroll_handle.gui_input.connect(handle_input_callback)
 
 	var resize_callback: Callable = Callable(self, "_queue_inventory_scroll_slider_sync")
 	if not inventory_scroll.resized.is_connected(resize_callback):
 		inventory_scroll.resized.connect(resize_callback)
 	if not inventory_grid.resized.is_connected(resize_callback):
 		inventory_grid.resized.connect(resize_callback)
+	if not inventory_scroll_track.resized.is_connected(resize_callback):
+		inventory_scroll_track.resized.connect(resize_callback)
+	if not inventory_scroll_handle.resized.is_connected(resize_callback):
+		inventory_scroll_handle.resized.connect(resize_callback)
 
-	call_deferred("_sync_inventory_scroll_slider")
+	_queue_inventory_scroll_slider_sync()
 
 
 func _queue_inventory_scroll_slider_sync() -> void:
-	call_deferred("_sync_inventory_scroll_slider")
+	if inventory_scroll_layout_sync_queued:
+		return
+	inventory_scroll_layout_sync_queued = true
+	call_deferred("_sync_inventory_scroll_layout")
+
+
+func _sync_inventory_scroll_layout() -> void:
+	_update_inventory_bottom_scroll_padding()
+	_sync_inventory_scroll_slider()
+	inventory_scroll_layout_sync_queued = false
+
+
+func _update_inventory_bottom_scroll_padding() -> void:
+	if inventory_scroll == null or inventory_grid == null:
+		return
+
+	var visible_slot_count: int = visible_slot_keys.size()
+	var target_minimum_height := 0.0
+	if visible_slot_count > 0:
+		var column_count: int = maxi(1, inventory_grid.columns)
+		var row_count: int = ceili(float(visible_slot_count) / float(column_count))
+		var slot_rows_height: float = float(row_count) * SLOT_SIZE.y
+		var row_spacing_height: float = float(maxi(0, row_count - 1) * SLOT_GRID_V_SEPARATION)
+		var bottom_padding_height: float = maxf(0.0, inventory_scroll.size.y * INVENTORY_BOTTOM_SCROLL_PADDING_RATIO)
+		target_minimum_height = slot_rows_height + row_spacing_height + bottom_padding_height
+
+	var minimum_size: Vector2 = inventory_grid.custom_minimum_size
+	if is_equal_approx(minimum_size.y, target_minimum_height):
+		return
+	minimum_size.y = target_minimum_height
+	inventory_grid.custom_minimum_size = minimum_size
 
 
 func _sync_inventory_scroll_slider() -> void:
-	if inventory_scroll == null or inventory_scroll_slider == null:
+	if inventory_scroll == null or inventory_scroll_slider == null or inventory_scroll_track == null or inventory_scroll_handle == null:
 		return
 
 	var internal_scrollbar: VScrollBar = inventory_scroll.get_v_scroll_bar()
 	if internal_scrollbar == null:
 		return
 
-	syncing_inventory_scroll_slider = true
 	var internal_max_scroll: float = maxf(0.0, float(internal_scrollbar.max_value) - float(internal_scrollbar.page))
 	var has_scroll_range: bool = internal_max_scroll > 0.5
-	var slider_max_scroll: float = INVENTORY_SCROLL_SLIDER_MAX - INVENTORY_SCROLL_SLIDER_PAGE
 	var normalized_scroll: float = 0.0
 	if has_scroll_range:
 		normalized_scroll = clampf(float(inventory_scroll.scroll_vertical) / internal_max_scroll, 0.0, 1.0)
 	inventory_scroll_slider.visible = true
-	inventory_scroll_slider.mouse_filter = Control.MOUSE_FILTER_STOP if has_scroll_range else Control.MOUSE_FILTER_IGNORE
-	inventory_scroll_slider.min_value = 0.0
-	inventory_scroll_slider.max_value = INVENTORY_SCROLL_SLIDER_MAX
-	inventory_scroll_slider.page = INVENTORY_SCROLL_SLIDER_PAGE
-	inventory_scroll_slider.step = 1.0
-	inventory_scroll_slider.value = normalized_scroll * slider_max_scroll
+	inventory_scroll_slider.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inventory_scroll_track.mouse_filter = Control.MOUSE_FILTER_STOP if has_scroll_range else Control.MOUSE_FILTER_IGNORE
+	inventory_scroll_handle.mouse_filter = Control.MOUSE_FILTER_STOP if has_scroll_range else Control.MOUSE_FILTER_IGNORE
+	var handle_travel: float = _inventory_scroll_handle_travel()
+	var handle_position: Vector2 = inventory_scroll_handle.position
+	handle_position.y = inventory_scroll_track.position.y + normalized_scroll * handle_travel
+	inventory_scroll_handle.position = handle_position
 	if not has_scroll_range:
 		inventory_scroll.scroll_vertical = 0
 		inventory_scroll_touch_value = 0.0
-	syncing_inventory_scroll_slider = false
+		inventory_scroll_handle_dragging = false
+		inventory_scroll_handle_touch_index = -1
 
 
-func _on_inventory_scroll_slider_changed(value: float) -> void:
-	if syncing_inventory_scroll_slider or inventory_scroll == null:
-		return
-
+func _inventory_scroll_maximum() -> float:
+	if inventory_scroll == null:
+		return 0.0
 	var internal_scrollbar: VScrollBar = inventory_scroll.get_v_scroll_bar()
 	if internal_scrollbar == null:
+		return 0.0
+	return maxf(0.0, float(internal_scrollbar.max_value) - float(internal_scrollbar.page))
+
+
+func _inventory_scroll_handle_travel() -> float:
+	if inventory_scroll_track == null or inventory_scroll_handle == null:
+		return 0.0
+	return maxf(0.0, inventory_scroll_track.size.y - inventory_scroll_handle.size.y)
+
+
+func _inventory_scroll_slider_local_y(screen_position: Vector2) -> float:
+	if inventory_scroll_slider == null:
+		return 0.0
+	return (inventory_scroll_slider.get_global_transform_with_canvas().affine_inverse() * screen_position).y
+
+
+func _set_inventory_scroll_from_handle_top(handle_top: float) -> void:
+	if inventory_scroll == null or inventory_scroll_track == null:
 		return
-	var internal_max_scroll: float = maxf(0.0, float(internal_scrollbar.max_value) - float(internal_scrollbar.page))
-	if internal_max_scroll <= 0.5:
+	var internal_max_scroll: float = _inventory_scroll_maximum()
+	var handle_travel: float = _inventory_scroll_handle_travel()
+	if internal_max_scroll <= 0.5 or handle_travel <= 0.0:
 		inventory_scroll.scroll_vertical = 0
+		_sync_inventory_scroll_slider()
 		return
-	var slider_max_scroll: float = maxf(1.0, float(inventory_scroll_slider.max_value) - float(inventory_scroll_slider.page))
-	var normalized_scroll: float = clampf((value - float(inventory_scroll_slider.min_value)) / slider_max_scroll, 0.0, 1.0)
+	var normalized_scroll: float = clampf((handle_top - inventory_scroll_track.position.y) / handle_travel, 0.0, 1.0)
 	inventory_scroll.scroll_vertical = int(round(normalized_scroll * internal_max_scroll))
 
 
+func _handle_inventory_scroll_pointer_event(event: InputEvent, center_handle_on_press: bool) -> void:
+	if _inventory_scroll_maximum() <= 0.5 or inventory_scroll_handle == null:
+		return
+
+	if event is InputEventMouseButton:
+		var mouse_button: InputEventMouseButton = event as InputEventMouseButton
+		if mouse_button.button_index != MOUSE_BUTTON_LEFT:
+			return
+		if mouse_button.pressed:
+			_clear_inventory_scroll_touch()
+			inventory_scroll_handle_dragging = true
+			inventory_scroll_handle_touch_index = -1
+			var pointer_y: float = _inventory_scroll_slider_local_y(get_viewport().get_mouse_position())
+			inventory_scroll_handle_drag_offset_y = inventory_scroll_handle.size.y * 0.5 if center_handle_on_press else pointer_y - inventory_scroll_handle.position.y
+			_set_inventory_scroll_from_handle_top(pointer_y - inventory_scroll_handle_drag_offset_y)
+		else:
+			inventory_scroll_handle_dragging = false
+		get_viewport().set_input_as_handled()
+		return
+
+	if event is InputEventMouseMotion and inventory_scroll_handle_dragging and inventory_scroll_handle_touch_index == -1:
+		var pointer_y: float = _inventory_scroll_slider_local_y(get_viewport().get_mouse_position())
+		_set_inventory_scroll_from_handle_top(pointer_y - inventory_scroll_handle_drag_offset_y)
+		get_viewport().set_input_as_handled()
+		return
+
+	if event is InputEventScreenTouch:
+		var touch: InputEventScreenTouch = event as InputEventScreenTouch
+		if touch.pressed:
+			_clear_inventory_scroll_touch()
+			inventory_scroll_handle_dragging = true
+			inventory_scroll_handle_touch_index = touch.index
+			var pointer_y: float = _inventory_scroll_slider_local_y(touch.position)
+			inventory_scroll_handle_drag_offset_y = inventory_scroll_handle.size.y * 0.5 if center_handle_on_press else pointer_y - inventory_scroll_handle.position.y
+			_set_inventory_scroll_from_handle_top(pointer_y - inventory_scroll_handle_drag_offset_y)
+		elif touch.index == inventory_scroll_handle_touch_index:
+			inventory_scroll_handle_dragging = false
+			inventory_scroll_handle_touch_index = -1
+		get_viewport().set_input_as_handled()
+		return
+
+	if event is InputEventScreenDrag:
+		var drag: InputEventScreenDrag = event as InputEventScreenDrag
+		if inventory_scroll_handle_dragging and drag.index == inventory_scroll_handle_touch_index:
+			var pointer_y: float = _inventory_scroll_slider_local_y(drag.position)
+			_set_inventory_scroll_from_handle_top(pointer_y - inventory_scroll_handle_drag_offset_y)
+			get_viewport().set_input_as_handled()
+
+
+func _on_inventory_scroll_track_gui_input(event: InputEvent) -> void:
+	_handle_inventory_scroll_pointer_event(event, true)
+
+
+func _on_inventory_scroll_handle_gui_input(event: InputEvent) -> void:
+	_handle_inventory_scroll_pointer_event(event, false)
+
+
 func _on_inventory_scroll_changed(_value: float) -> void:
-	if syncing_inventory_scroll_slider or inventory_scroll_slider == null:
+	if inventory_scroll_slider == null:
 		return
 	_sync_inventory_scroll_slider()
 
@@ -1501,6 +1722,7 @@ func _setup_mouse_passthrough() -> void:
 		"Window/HeaderSkin/GemIcon",
 		"Window/HeaderSkin/GemCounterLabel",
 		"Window/SubtitleLabel",
+		"Window/TabSkin",
 		"Window/GridSkin",
 		"Window/EmptyState",
 		"Window/DetailSkin",
@@ -1526,7 +1748,6 @@ func _setup_mouse_passthrough() -> void:
 		close_button,
 		drop_amount_input,
 		drop_amount_slider,
-		inventory_scroll_slider,
 		use_button,
 		drop_button,
 		info_button,
@@ -1535,6 +1756,8 @@ func _setup_mouse_passthrough() -> void:
 		var interactive_control: Control = control as Control
 		if interactive_control != null:
 			interactive_control.mouse_filter = Control.MOUSE_FILTER_STOP
+	if inventory_scroll_slider != null:
+		inventory_scroll_slider.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 func _control_contains_screen_point(control: Control, point: Vector2) -> bool:
@@ -1567,8 +1790,8 @@ func _style_static_nodes() -> void:
 	detail_description.fit_content = false
 	detail_description.scroll_active = false
 
-	inventory_grid.add_theme_constant_override("h_separation", 7)
-	inventory_grid.add_theme_constant_override("v_separation", 8)
+	inventory_grid.add_theme_constant_override("h_separation", SLOT_GRID_H_SEPARATION)
+	inventory_grid.add_theme_constant_override("v_separation", SLOT_GRID_V_SEPARATION)
 
 
 func _setup_detail_preview_texture_rects() -> void:
@@ -1625,13 +1848,64 @@ func _load_texture_path(path: String) -> Texture2D:
 
 
 func _load_ui_texture(file_name: String) -> Texture2D:
+	if ui_texture_cache.has(file_name):
+		return ui_texture_cache[file_name] as Texture2D
 	var path: String = UI_PATH + file_name
 	if not ResourceLoader.exists(path):
 		return null
 	var resource: Resource = ResourceLoader.load(path)
 	if resource is Texture2D:
-		return resource
+		ui_texture_cache[file_name] = resource
+		return resource as Texture2D
 	return null
+
+
+func _load_hotbar_slot_texture(file_name: String) -> Texture2D:
+	var cache_key: String = "hotbar:" + file_name
+	if ui_texture_cache.has(cache_key):
+		return ui_texture_cache[cache_key] as Texture2D
+	var texture: Texture2D = _load_texture_path(HOTBAR_UI_PATH + file_name)
+	if texture != null:
+		ui_texture_cache[cache_key] = texture
+	return texture
+
+
+func _slot_frame_texture(file_name: String) -> Texture2D:
+	var texture: Texture2D = _load_hotbar_slot_texture(file_name)
+	if texture != null:
+		return texture
+	return _load_ui_texture(file_name)
+
+
+func _current_selected_slot_texture() -> Texture2D:
+	if SELECTED_SLOT_FRAMES.is_empty():
+		return null
+	selected_slot_frame_index = SelectedSlotFrameClock.frame_index(
+		SELECTED_SLOT_FRAMES.size(),
+		SELECTED_SLOT_FRAME_SECONDS
+	)
+	return SELECTED_SLOT_FRAMES[selected_slot_frame_index] as Texture2D
+
+
+func update_selected_slot_frame_animation(_delta: float) -> void:
+	if not visible or SELECTED_SLOT_FRAMES.is_empty():
+		return
+	var next_frame_index: int = SelectedSlotFrameClock.frame_index(
+		SELECTED_SLOT_FRAMES.size(),
+		SELECTED_SLOT_FRAME_SECONDS
+	)
+	if next_frame_index == selected_slot_frame_index:
+		return
+	selected_slot_frame_index = next_frame_index
+	var selected_texture: Texture2D = SELECTED_SLOT_FRAMES[selected_slot_frame_index] as Texture2D
+	if selected_key != "":
+		var selected_slot: Button = slot_nodes.get(selected_key, null) as Button
+		if selected_slot != null and is_instance_valid(selected_slot):
+			var selected_frame: TextureRect = selected_slot.get_node_or_null("SelectedFrame") as TextureRect
+			if selected_frame != null and selected_frame.visible:
+				selected_frame.texture = selected_texture
+	if detail_selected_frame != null and detail_selected_frame.visible:
+		detail_selected_frame.texture = selected_texture
 
 
 func _colour_cycle_item_data(item: Dictionary) -> Dictionary:
@@ -1834,28 +2108,59 @@ func _slot_frame_file(rarity: String) -> String:
 			return "slot_normal.png"
 
 
+func _resolve_item_equipable(source: Object, item_id: String, category: String) -> bool:
+	if source != null and source.has_method("is_item_equipable"):
+		return bool(source.call("is_item_equipable", item_id, category))
+	return _is_equipment_category(category)
+
+
+func _is_material_item(item: Dictionary) -> bool:
+	return str(item.get("category", "")).strip_edges().to_lower() == "material"
+
+
+func _is_equipable_item(item: Dictionary) -> bool:
+	if item.has("equipable"):
+		return bool(item.get("equipable", false))
+	return _is_equipment_category(str(item.get("category", "")))
+
+
+func _slot_frame_file_for_item(item: Dictionary) -> String:
+	if _is_empty_capacity_slot(item):
+		return EMPTY_SLOT_TEXTURE
+	if _is_inventory_upgrade_slot(item):
+		return INVENTORY_UPGRADE_SLOT_TEXTURE
+	if _is_material_item(item):
+		return MATERIAL_SLOT_TEXTURE
+	if _is_equipable_item(item):
+		return CLOTHES_SLOT_TEXTURE
+	return _slot_frame_file(_normalized_rarity(str(item.get("rarity", "common"))))
+
+
 func _normalized_rarity(rarity: String) -> String:
 	return rarity.strip_edges().to_lower()
 
 
-func _apply_slot_rarity_visuals(slot: Button, rarity: String) -> void:
+func _apply_slot_rarity_visuals(slot: Button, item: Dictionary) -> void:
 	if slot == null:
 		return
-	var normalized_rarity: String = _normalized_rarity(rarity)
+	var frame_file_name: String = _slot_frame_file_for_item(item)
+	var visual_key: String = str(slot.get_meta("special_slot", "")) + ":" + frame_file_name
+	if str(slot.get_meta("rarity_visual_key", "")) == visual_key:
+		return
 	var frame: TextureRect = slot.get_node_or_null("Frame") as TextureRect
 	if frame != null:
-		var frame_file: String = INVENTORY_UPGRADE_SLOT_TEXTURE if str(slot.get_meta("special_slot", "")) == "inventory_upgrade" else _slot_frame_file(normalized_rarity)
-		var frame_texture: Texture2D = _load_ui_texture(frame_file)
+		var frame_texture: Texture2D = _slot_frame_texture(frame_file_name)
 		if frame_texture != null:
 			frame.texture = frame_texture
 	var selected_frame: TextureRect = slot.get_node_or_null("SelectedFrame") as TextureRect
 	if selected_frame != null:
-		var selected_texture: Texture2D = _load_ui_texture("slot_selected.png")
+		var selected_texture: Texture2D = _current_selected_slot_texture()
 		if selected_texture != null:
 			selected_frame.texture = selected_texture
 	var rarity_pip: Panel = slot.get_node_or_null("RarityPip") as Panel
 	if rarity_pip != null:
 		rarity_pip.visible = false
+	slot.set_meta("rarity_visual_key", visual_key)
 
 
 func _item_key(item: Dictionary) -> String:
@@ -1934,13 +2239,34 @@ func _world_item_equipped(source: Object, item_id: String, category: String) -> 
 	return equipped_property != "" and str(source.get(equipped_property)) == item_id
 
 
+func _slot_live_signature(item: Dictionary) -> String:
+	return "|".join([
+		str(item.get("special_slot", "")),
+		_normalized_rarity(str(item.get("rarity", "common"))),
+		_slot_frame_file_for_item(item),
+		_slot_count_text(item),
+		"1" if bool(item.get("equipped", false)) else "0",
+		_item_display_name(item),
+		_detail_count_text(item)
+	])
+
+
 func _refresh_slot_live(slot_key: String, item: Dictionary) -> void:
 	var slot: Button = slot_nodes.get(slot_key, null) as Button
 	if slot == null:
 		return
+	var selected_frame: TextureRect = slot.get_node_or_null("SelectedFrame") as TextureRect
+	if selected_frame != null:
+		var is_selected: bool = slot_key == selected_key
+		if is_selected:
+			selected_frame.texture = _current_selected_slot_texture()
+		selected_frame.visible = is_selected
+	var live_signature: String = _slot_live_signature(item)
+	if str(slot.get_meta("slot_live_signature", "")) == live_signature:
+		return
+
 	slot.set_meta("special_slot", str(item.get("special_slot", "")))
-	var rarity: String = _normalized_rarity(str(item.get("rarity", "common")))
-	_apply_slot_rarity_visuals(slot, rarity)
+	_apply_slot_rarity_visuals(slot, item)
 
 	var count_text: String = _slot_count_text(item)
 	var label: Label = slot.get_node_or_null("Count") as Label
@@ -1955,6 +2281,7 @@ func _refresh_slot_live(slot_key: String, item: Dictionary) -> void:
 			equipped_label.text = "✓"
 
 	slot.tooltip_text = _item_display_name(item) + " " + _detail_count_text(item)
+	slot.set_meta("slot_live_signature", live_signature)
 
 
 func _item_display_name(item: Dictionary) -> String:
