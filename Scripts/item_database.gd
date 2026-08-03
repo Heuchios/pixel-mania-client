@@ -3039,6 +3039,28 @@ const ITEMS = {
 		"max_grow_time": 150.0,
 		"order": 27
 	},
+"blue_couch_seed": {
+		"category": "seed",
+		"display_name": "Blue Couch Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "blue_couch",
+		"grow_time": 150.0,
+		"max_grow_time": 150.0,
+		"order": 28
+	},
+"green_couch_seed": {
+		"category": "seed",
+		"display_name": "Green Couch Seed",
+		"rarity": "uncommon",
+		"texture": "res://Assets/seeds/seed_box.png",
+		"seed_box_icon": true,
+		"grows_into": "green_couch",
+		"grow_time": 150.0,
+		"max_grow_time": 150.0,
+		"order": 29
+	},
 
 	# ============================================================
 	# SPLICED SEEDS
@@ -4989,6 +5011,32 @@ const ITEMS = {
 			}
 		},
 		"order": 53
+	},
+"phoenix_sword": {
+		"category": "tool",
+		"display_name": "Phoenix Sword",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/swords/phoenix_sword_1.png",
+		"inventory_icon": "res://Assets/items/swords/phoenix_sword_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"hand_item": true,
+		"punch_animation": "punch_sword",
+		"animation_fps": 6.0,
+		"hand_item_animations": {
+			"idle": {
+				"frames": [
+					"res://Assets/items/swords/phoenix_sword_1.png",
+					"res://Assets/items/swords/phoenix_sword_2.png",
+					"res://Assets/items/swords/phoenix_sword_3.png",
+					"res://Assets/items/swords/phoenix_sword_4.png"
+				],
+				"fps": 6.0,
+				"loop": true
+			}
+		},
+		"order": 64
 	},
 "neptune_trident": {
 		"category": "tool",
