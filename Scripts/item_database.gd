@@ -5050,6 +5050,32 @@ const ITEMS = {
 		"hand_item": true,
 		"order": 45
 	},
+"void_trident": {
+		"category": "tool",
+		"display_name": "Void Trident",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/swords/void_trident.png",
+		"inventory_icon": "res://Assets/items/swords/void_trident_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"hand_item": true,
+		"punch_animation": "punch_sword",
+		"order": 65
+	},
+"blood_battleaxe": {
+		"category": "tool",
+		"display_name": "Blood Battleaxe",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/swords/blood_battleaxe.png",
+		"inventory_icon": "res://Assets/items/swords/blood_battleaxe_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"hand_item": true,
+		"punch_animation": "punch_sword",
+		"order": 66
+	},
 "blue_saber": {
 		"category": "tool",
 		"display_name": "Blue Saber",
