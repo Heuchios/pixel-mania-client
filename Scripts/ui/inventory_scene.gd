@@ -18,6 +18,7 @@ signal close_requested
 signal tab_changed(tab_id: String)
 
 const UI_PATH := "res://Assets/ui/inventory/"
+const ROOT_UI_PATH := "res://Assets/ui/"
 const HOTBAR_UI_PATH := "res://Assets/ui/hotbar/"
 const WINDOW_SIZE := Vector2(1000, 640)
 const WINDOW_VISUAL_SIZE := Vector2(1349, 657)
@@ -1851,6 +1852,8 @@ func _load_ui_texture(file_name: String) -> Texture2D:
 	if ui_texture_cache.has(file_name):
 		return ui_texture_cache[file_name] as Texture2D
 	var path: String = UI_PATH + file_name
+	if not ResourceLoader.exists(path):
+		path = ROOT_UI_PATH + file_name
 	if not ResourceLoader.exists(path):
 		return null
 	var resource: Resource = ResourceLoader.load(path)
