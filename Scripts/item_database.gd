@@ -3664,8 +3664,47 @@ const ITEMS = {
 		"back_flip_with_facing": false,
 
 		"order": 204
+		},
+"appreciation_wings": {
+		"category": "back",
+		"display_name": "Appreciation Wings",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/back_items/appreciation_wings_1.png",
+		"inventory_icon": "res://Assets/items/back_items/appreciation_wings_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"tradeable": false,
+		"vendable": true,
+		"dropable": true,
+
+		"equipment_slot": "back",
+		"back_mode": "default_slot",
+		"sprite_folder": "res://Assets/items/back_items/",
+		"idle_sprite": "appreciation_wings_1.png",
+		"idle_frames": ["appreciation_wings_1.png", "appreciation_wings_2.png", "appreciation_wings_3.png"],
+		"jump_frames": ["appreciation_wings_2.png", "appreciation_wings_4.png", "appreciation_wings_1.png"],
+		"fall_frames": ["appreciation_wings_3.png", "appreciation_wings_5.png", "appreciation_wings_1.png"],
+		"flap_frames": ["appreciation_wings_2.png", "appreciation_wings_4.png", "appreciation_wings_1.png"],
+		"flap_animation": true,
+		"scan_flap_frames": false,
+		"flap_speed": 0.15,
+		"input_flap_time": 0.28,
+		"animation_fps": 6.0,
+
+		"jump_type": "double",
+
+		"auto_scale_back_sprite": false,
+		"back_scale": 1.0,
+		"idle_sprite_offset": [0, 0],
+		"idle_sprite_offset_left": [0, 0],
+		"flap_sprite_offset": [0, 0],
+		"flap_sprite_offset_left": [0, 0],
+		"back_scale_multiplier": 1.0,
+		"back_flip_with_facing": false,
+
+		"order": 204
 	},
-"parrot_wings": {
+	"parrot_wings": {
 		"category": "back",
 		"display_name": "Parrot Wings",
 		"rarity": "legendary",
