@@ -6,8 +6,11 @@
   "offset": [0, 0],
   "filter_clip": true,
   "frames": {
-    "royal_crown": [576, 224, 32, 32],
-    "royal_crown_preview": [544, 224, 32, 32]
+	"basic_blue_shirt_body": [32, 0, 32, 32],
+	"basic_blue_shirt_icon": [0, 0, 32, 32],
+	"basic_blue_shirt_arm": [160, 0, 32, 32],
+	"royal_crown": [576, 224, 32, 32],
+	"royal_crown_preview": [544, 224, 32, 32]
   },
   "aliases": {}
 }
