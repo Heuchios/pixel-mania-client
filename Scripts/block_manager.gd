@@ -6130,16 +6130,22 @@ func apply_display_preview_fit(preview: Sprite2D, texture: Texture2D, max_size: 
 		return
 
 	var texture_size := Vector2(float(texture.get_width()), float(texture.get_height()))
+	if texture_size.x <= 0.0 or texture_size.y <= 0.0:
+		preview.scale = Vector2.ONE
+		preview.offset = Vector2.ZERO
+		return
+
+	# Keep preview sizing consistent for every texture by basing size on the source dimensions.
+	# We still center the visible content so transparent padding does not visually drift.
 	var content_rect := get_display_preview_content_rect(texture)
-	if content_rect.size.x <= 0.0 or content_rect.size.y <= 0.0:
-		content_rect = Rect2(Vector2.ZERO, texture_size)
+	var largest_dimension := maxf(texture_size.x, texture_size.y)
+	preview.scale = Vector2.ONE * (max_size / largest_dimension if largest_dimension > 0.0 else 1.0)
 
-	var largest := maxf(content_rect.size.x, content_rect.size.y)
-	preview.scale = Vector2.ONE * (max_size / largest if largest > 0.0 else 1.0)
-
-	var texture_center := texture_size * 0.5
-	var content_center := content_rect.position + content_rect.size * 0.5
-	preview.offset = texture_center - content_center
+	var preview_offset := Vector2.ZERO
+	if content_rect.size.x > 0.0 and content_rect.size.y > 0.0:
+		var content_center := content_rect.position + content_rect.size * 0.5
+		preview_offset = (texture_size * 0.5) - content_center
+	preview.offset = preview_offset
 
 
 func get_display_preview_content_rect(texture: Texture2D) -> Rect2:
@@ -6396,6 +6402,11 @@ func get_display_preview_texture(item_id: String, category: String):
 		return null
 	if clean_category == "":
 		clean_category = "block"
+
+	if world.has_method("get_inventory_icon_texture"):
+		var icon_texture = world.get_inventory_icon_texture(clean_item_id, clean_category)
+		if icon_texture != null:
+			return icon_texture
 
 	if clean_category == "block":
 		var atlas_icon := get_atlas_item_icon_texture(clean_item_id)
