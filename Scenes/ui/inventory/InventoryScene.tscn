@@ -1,0 +1,1677 @@
+[gd_scene format=3 uid="uid://bs2cogw2rrvh4"]
+
+[ext_resource type="Script" uid="uid://dpp728knctfi2" path="res://Scripts/ui/inventory_scene.gd" id="1_inventory_scene"]
+[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="2_8jaiq"]
+[ext_resource type="Texture2D" uid="uid://cqihscey74vtt" path="res://Assets/ui/inventory/panel_inner.png" id="3_e2fee"]
+[ext_resource type="Texture2D" uid="uid://bg5sabtp5jnsv" path="res://Assets/ui/input_744x72.png" id="4_4q73x"]
+[ext_resource type="Texture2D" uid="uid://ch2qryxhnpu18" path="res://Assets/ui/close_button.png" id="5_mqkg4"]
+[ext_resource type="Texture2D" uid="uid://cdd8rhkxp0cky" path="res://Assets/ui/close_button_pressed.png" id="6_6x1x4"]
+[ext_resource type="Texture2D" uid="uid://tbchr2qk0dib" path="res://Assets/ui/close_button_hover.png" id="7_27xdy"]
+[ext_resource type="Texture2D" uid="uid://cye3w7q2aq3og" path="res://Assets/ui/inventory/all.png" id="7_gkvo4"]
+[ext_resource type="Texture2D" uid="uid://pcd7impeqpvr" path="res://Assets/ui/inventory/panel_outer_94x640.png" id="7_hm6mt"]
+[ext_resource type="Texture2D" uid="uid://du1y8gkuq72nr" path="res://Assets/ui/selected_1.png" id="7_slot_selected"]
+[ext_resource type="Texture2D" uid="uid://cl4gfja4vl0wy" path="res://Assets/ui/inventory/all_pressed.png" id="8_ayrsc"]
+[ext_resource type="Texture2D" uid="uid://xqwk4vcbd43w" path="res://Assets/ui/inventory/blocks.png" id="8_iy8jb"]
+[ext_resource type="Texture2D" uid="uid://to04o303a7j2" path="res://Assets/ui/inventory/seed.png" id="9_2ay85"]
+[ext_resource type="Texture2D" uid="uid://s8ibri7rivv3" path="res://Assets/ui/inventory/all_hover.png" id="9_cmpy6"]
+[ext_resource type="Texture2D" uid="uid://cso20xighlv31" path="res://Assets/ui/inventory/panel_inner_2_920x569.png" id="9_gn2ab"]
+[ext_resource type="Texture2D" uid="uid://r8g848dj47je" path="res://Assets/ui/inventory/gear.png" id="10_8jaiq"]
+[ext_resource type="Texture2D" uid="uid://dx1irvghg5dl5" path="res://Assets/ui/pixelmania/button_normal.png" id="10_lnwar"]
+[ext_resource type="Texture2D" uid="uid://dkukojp8uwua5" path="res://Assets/ui/inventory/seed_pressed.png" id="11_7yute"]
+[ext_resource type="Texture2D" uid="uid://n6h86qfhnipx" path="res://Assets/ui/pixelmania/button_pressed.png" id="11_avr72"]
+[ext_resource type="Texture2D" uid="uid://dscsxi0ecyme6" path="res://Assets/ui/inventory/blocks_pressed.png" id="11_kyfno"]
+[ext_resource type="Texture2D" uid="uid://cawkgomunl2ka" path="res://Assets/ui/inventory/blocks_hover.png" id="12_135m5"]
+[ext_resource type="Texture2D" uid="uid://diugradn6j3u7" path="res://Assets/ui/inventory/equipped.png" id="12_gn2ab"]
+[ext_resource type="Texture2D" uid="uid://bnj5jgwk4nd2f" path="res://Assets/ui/inventory/slot_epic.png" id="12_n5xm8"]
+[ext_resource type="Texture2D" uid="uid://ltsc2hf7q1n1" path="res://Assets/ui/pixelmania/drop_button_pressed.png" id="13_1h3vc"]
+[ext_resource type="Texture2D" uid="uid://divl0kookttxa" path="res://Assets/ui/pixelmania/drop_button_normal.png" id="14_m0pnj"]
+[ext_resource type="Texture2D" uid="uid://c6bk33vp78d2k" path="res://Assets/ui/pixelmania/drop_button_hover.png" id="14_pbsek"]
+[ext_resource type="Texture2D" uid="uid://cjmcvom3odf4n" path="res://Assets/ui/inventory/seed_hover.png" id="15_t60xp"]
+[ext_resource type="Texture2D" uid="uid://dlhqtth4fwh7y" path="res://Assets/ui/inventory/tools.png" id="16_mdw0e"]
+[ext_resource type="Texture2D" uid="uid://trevvwiv47pl" path="res://Assets/ui/inventory/tools_pressed.png" id="17_hm6mt"]
+[ext_resource type="Texture2D" uid="uid://s86t568hvf46" path="res://Assets/ui/inventory/button_blue_normal.png" id="17_m0pnj"]
+[ext_resource type="Texture2D" uid="uid://bduju8gs8cow6" path="res://Assets/ui/inventory/loot.png" id="17_t60xp"]
+[ext_resource type="Texture2D" uid="uid://coddvro8pg6bu" path="res://Assets/ui/inventory/tools_hover.png" id="18_mqkg4"]
+[ext_resource type="Texture2D" uid="uid://bnltvy1oxa1aa" path="res://Assets/ui/inventory/button_blue_pressed.png" id="18_n5xm8"]
+[ext_resource type="Texture2D" uid="uid://bqc5mnmq7p4g7" path="res://Assets/ui/inventory/loot_pressed.png" id="18_voml5"]
+[ext_resource type="Texture2D" uid="uid://c1d276vpf4c7s" path="res://Assets/ui/inventory/button_blue_hover.png" id="19_ctcqj"]
+[ext_resource type="Texture2D" uid="uid://cvbmrrb6vs2vh" path="res://Assets/ui/inventory/loot_hover.png" id="19_iwe7p"]
+[ext_resource type="Texture2D" uid="uid://dkrun3trammec" path="res://Assets/ui/inventory/gear_pressed.png" id="21_iwe7p"]
+[ext_resource type="Texture2D" uid="uid://id538wvpdlk8" path="res://Assets/ui/inventory/gear_hover.png" id="22_7ouvt"]
+[ext_resource type="Texture2D" uid="uid://r8o1suc6ig5c" path="res://Assets/ui/inventory/scroll_bar_21x519.png" id="27_iwe7p"]
+[ext_resource type="Texture2D" uid="uid://m3d85gxykr8n" path="res://Assets/ui/inv_slot_96x96.png" id="28_6x1x4"]
+[ext_resource type="Texture2D" uid="uid://b7acywh8cmls8" path="res://Assets/ui/scroll_handle.png" id="28_7ouvt"]
+[ext_resource type="Texture2D" uid="uid://bdqewvpbuib1a" path="res://Assets/ui/panel_outer_403x130.png" id="42_6x1x4"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xey8r"]
+texture = ExtResource("4_4q73x")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gkvo4"]
+texture = ExtResource("5_mqkg4")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7yute"]
+texture = ExtResource("6_6x1x4")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_de7ua"]
+texture = ExtResource("7_27xdy")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1h3vc"]
+texture = ExtResource("7_gkvo4")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bvn70"]
+texture = ExtResource("8_ayrsc")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_avr72"]
+texture = ExtResource("9_cmpy6")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_q6ft1"]
+texture = ExtResource("8_iy8jb")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3v6au"]
+texture = ExtResource("11_kyfno")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sq05s"]
+texture = ExtResource("12_135m5")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tab_focus"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ctcqj"]
+texture = ExtResource("9_2ay85")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pbsek"]
+texture = ExtResource("11_7yute")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bh1pd"]
+texture = ExtResource("15_t60xp")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2ay85"]
+texture = ExtResource("16_mdw0e")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m0pnj"]
+texture = ExtResource("17_hm6mt")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n5xm8"]
+texture = ExtResource("18_mqkg4")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ayrsc"]
+texture = ExtResource("17_t60xp")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_01elf"]
+texture = ExtResource("18_voml5")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gn2ab"]
+texture = ExtResource("19_iwe7p")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cmpy6"]
+texture = ExtResource("10_8jaiq")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8jaiq"]
+texture = ExtResource("21_iwe7p")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4q73x"]
+texture = ExtResource("22_7ouvt")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_slot_button"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3gjpe"]
+texture = ExtResource("12_gn2ab")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oecnm"]
+texture = ExtResource("12_gn2ab")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_patb1"]
+texture = ExtResource("12_gn2ab")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4esmu"]
+texture = ExtResource("12_gn2ab")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_eh6s4"]
+texture = ExtResource("12_gn2ab")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bhdxu"]
+texture = ExtResource("12_gn2ab")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gpwk3"]
+texture = ExtResource("12_gn2ab")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mxps4"]
+texture = ExtResource("12_gn2ab")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vmp8c"]
+texture = ExtResource("12_gn2ab")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nqja0"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hqjgx"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kyfno"]
+texture = ExtResource("10_lnwar")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_135m5"]
+texture = ExtResource("11_avr72")
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ae2ds"]
+load_path = "res://.godot/imported/button_hover.png-d87e40b63d5741bc1dee90eb5b966621.ctex"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_t60xp"]
+texture = SubResource("CompressedTexture2D_ae2ds")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_voml5"]
+texture = ExtResource("14_m0pnj")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iwe7p"]
+texture = ExtResource("13_1h3vc")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7ouvt"]
+texture = ExtResource("14_pbsek")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_27xdy"]
+texture = ExtResource("17_m0pnj")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iovr8"]
+texture = ExtResource("18_n5xm8")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_io1nh"]
+texture = ExtResource("19_ctcqj")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hm6mt"]
+texture = ExtResource("14_m0pnj")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mqkg4"]
+texture = ExtResource("13_1h3vc")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6x1x4"]
+texture = ExtResource("14_pbsek")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ob0by"]
+texture = ExtResource("42_6x1x4")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_b8nk2"]
+texture = ExtResource("42_6x1x4")
+
+[node name="InventoryScene" type="Control" unique_id=809308218]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_right = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_inventory_scene")
+
+[node name="Dimmer" type="ColorRect" parent="." unique_id=1030871047]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 204.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.00392157, 0.0156863, 0.027451, 0.58)
+
+[node name="Window" type="Control" parent="." unique_id=530459885]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -500.0
+offset_top = -320.0
+offset_right = 500.0
+offset_bottom = 320.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WindowSkin" type="NinePatchRect" parent="Window" unique_id=633213976]
+layout_mode = 0
+offset_left = -134.0
+offset_top = -9.0
+offset_right = 1117.0
+offset_bottom = 641.0
+texture = ExtResource("2_8jaiq")
+patch_margin_left = 36
+patch_margin_top = 36
+patch_margin_right = 36
+patch_margin_bottom = 36
+
+[node name="HeaderSkin" type="NinePatchRect" parent="Window" unique_id=1058675587]
+visible = false
+layout_mode = 0
+offset_left = -12.0
+offset_top = 2.0
+offset_right = 1119.0
+offset_bottom = 80.0
+texture = ExtResource("3_e2fee")
+patch_margin_left = 26
+patch_margin_top = 24
+patch_margin_right = 26
+patch_margin_bottom = 24
+
+[node name="SubtitleLabel" type="Label" parent="Window" unique_id=1934056685]
+visible = false
+layout_mode = 0
+offset_left = 26.0
+offset_top = 28.0
+offset_right = 386.0
+offset_bottom = 51.0
+text = "Pick a category, search, then select an item."
+vertical_alignment = 1
+
+[node name="SearchInput" type="LineEdit" parent="Window" unique_id=1380805827]
+layout_mode = 0
+offset_left = -70.99999
+offset_top = 6.0
+offset_right = 410.33334
+offset_bottom = 84.66667
+scale = Vector2(0.75, 0.75)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxTexture_xey8r")
+placeholder_text = "   Search"
+alignment = 1
+
+[node name="CloseButton" type="Button" parent="Window" unique_id=1240602590]
+custom_minimum_size = Vector2(52, 44)
+layout_mode = 0
+offset_left = 1026.0
+offset_top = 5.0
+offset_right = 1089.0
+offset_bottom = 71.0
+theme_override_styles/normal = SubResource("StyleBoxTexture_gkvo4")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_7yute")
+theme_override_styles/hover = SubResource("StyleBoxTexture_de7ua")
+
+[node name="TabSkin" type="NinePatchRect" parent="Window" unique_id=749553624]
+layout_mode = 0
+offset_left = -235.0
+offset_top = -9.0
+offset_right = -141.0
+offset_bottom = 641.0
+texture = ExtResource("7_hm6mt")
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Tabs" type="VBoxContainer" parent="Window" unique_id=1605518701]
+layout_mode = 0
+offset_left = -223.0
+offset_top = 3.0
+offset_right = -151.0
+offset_bottom = 631.0
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Tab_all" type="Button" parent="Window/Tabs" unique_id=1657380505]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 21
+theme_override_styles/normal = SubResource("StyleBoxTexture_1h3vc")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_bvn70")
+theme_override_styles/hover = SubResource("StyleBoxTexture_avr72")
+icon_alignment = 1
+
+[node name="Tab_blocks" type="Button" parent="Window/Tabs" unique_id=848814704]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.75, 0.92, 1, 0.95)
+theme_override_colors/font_pressed_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_q6ft1")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_3v6au")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sq05s")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_tab_focus")
+icon_alignment = 1
+
+[node name="Tab_seeds" type="Button" parent="Window/Tabs" unique_id=899456672]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.75, 0.92, 1, 0.95)
+theme_override_colors/font_pressed_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_ctcqj")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_pbsek")
+theme_override_styles/hover = SubResource("StyleBoxTexture_bh1pd")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_tab_focus")
+
+[node name="Tab_tools" type="Button" parent="Window/Tabs" unique_id=151667772]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxTexture_2ay85")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_m0pnj")
+theme_override_styles/hover = SubResource("StyleBoxTexture_n5xm8")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_tab_focus")
+
+[node name="Tab_materials" type="Button" parent="Window/Tabs" unique_id=1951497285]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.75, 0.92, 1, 0.95)
+theme_override_colors/font_pressed_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_ayrsc")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_01elf")
+theme_override_styles/hover = SubResource("StyleBoxTexture_gn2ab")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_tab_focus")
+
+[node name="Tab_gear" type="Button" parent="Window/Tabs" unique_id=1471072671]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.75, 0.92, 1, 0.95)
+theme_override_colors/font_pressed_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_cmpy6")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8jaiq")
+theme_override_styles/hover = SubResource("StyleBoxTexture_4q73x")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_tab_focus")
+
+[node name="GridSkin" type="NinePatchRect" parent="Window" unique_id=1526031164]
+visible = false
+layout_mode = 0
+offset_left = -113.0
+offset_top = 84.0
+offset_right = 768.0
+offset_bottom = 628.0
+texture = ExtResource("9_gn2ab")
+patch_margin_left = 28
+patch_margin_top = 28
+patch_margin_right = 28
+patch_margin_bottom = 28
+
+[node name="InventoryScroll" type="ScrollContainer" parent="Window" unique_id=448669960]
+layout_mode = 0
+offset_left = -98.0
+offset_top = 71.0
+offset_right = 1021.0
+offset_bottom = 631.0
+horizontal_scroll_mode = 0
+
+[node name="InventoryGrid" type="GridContainer" parent="Window/InventoryScroll" unique_id=2035976194]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+columns = 10
+
+[node name="SlotTemplate_1" type="Button" parent="Window/InventoryScroll/InventoryGrid" unique_id=302740261]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_slot_button")
+
+[node name="Frame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_1" unique_id=1758452593]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 4.0
+offset_right = 124.0
+offset_bottom = 100.0
+mouse_filter = 2
+texture = ExtResource("28_6x1x4")
+
+[node name="SelectedFrame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_1" unique_id=132013007]
+visible = false
+z_index = 4
+layout_mode = 0
+offset_left = 27.0
+offset_top = 2.0
+offset_right = 126.0
+offset_bottom = 101.0
+mouse_filter = 2
+texture = ExtResource("7_slot_selected")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconShadow" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_1" unique_id=2101858721]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 42.0
+offset_top = 18.0
+offset_right = 106.0
+offset_bottom = 82.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_1" unique_id=135752899]
+z_index = 1
+layout_mode = 0
+offset_left = 39.0
+offset_top = 15.0
+offset_right = 113.0
+offset_bottom = 89.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Count" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_1" unique_id=1708707990]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 75.0
+offset_top = 65.0
+offset_right = 113.0
+offset_bottom = 89.0
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Equipped" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_1" unique_id=988793693]
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 40.0
+offset_top = 28.0
+offset_right = 100.0
+offset_bottom = 85.0
+theme_override_colors/font_color = Color(0.1, 1, 0.18, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_3gjpe")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlotTemplate_2" type="Button" parent="Window/InventoryScroll/InventoryGrid" unique_id=1290344881]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_slot_button")
+
+[node name="Frame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_2" unique_id=492585048]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 4.0
+offset_right = 124.0
+offset_bottom = 100.0
+mouse_filter = 2
+texture = ExtResource("28_6x1x4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_2" unique_id=833135177]
+visible = false
+z_index = 4
+layout_mode = 0
+offset_left = 23.0
+offset_top = -1.0
+offset_right = 122.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = ExtResource("7_slot_selected")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconShadow" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_2" unique_id=1474880330]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 42.0
+offset_top = 18.0
+offset_right = 106.0
+offset_bottom = 82.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_2" unique_id=868485811]
+z_index = 1
+layout_mode = 0
+offset_left = 39.0
+offset_top = 15.0
+offset_right = 113.0
+offset_bottom = 89.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Count" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_2" unique_id=1196594980]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 75.0
+offset_top = 65.0
+offset_right = 113.0
+offset_bottom = 89.0
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Equipped" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_2" unique_id=312929063]
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 40.0
+offset_top = 28.0
+offset_right = 100.0
+offset_bottom = 85.0
+theme_override_colors/font_color = Color(0.1, 1, 0.18, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_oecnm")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlotTemplate_3" type="Button" parent="Window/InventoryScroll/InventoryGrid" unique_id=1544171065]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_slot_button")
+
+[node name="Frame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_3" unique_id=1846730085]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 4.0
+offset_right = 124.0
+offset_bottom = 100.0
+mouse_filter = 2
+texture = ExtResource("28_6x1x4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_3" unique_id=674388162]
+visible = false
+z_index = 4
+layout_mode = 0
+offset_left = 23.0
+offset_top = -1.0
+offset_right = 122.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = ExtResource("7_slot_selected")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconShadow" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_3" unique_id=79811913]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 42.0
+offset_top = 18.0
+offset_right = 106.0
+offset_bottom = 82.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_3" unique_id=624804606]
+z_index = 1
+layout_mode = 0
+offset_left = 39.0
+offset_top = 15.0
+offset_right = 113.0
+offset_bottom = 89.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Count" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_3" unique_id=191671181]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 75.0
+offset_top = 65.0
+offset_right = 113.0
+offset_bottom = 89.0
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Equipped" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_3" unique_id=1917206646]
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 40.0
+offset_top = 28.0
+offset_right = 100.0
+offset_bottom = 85.0
+theme_override_colors/font_color = Color(0.1, 1, 0.18, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_patb1")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlotTemplate_4" type="Button" parent="Window/InventoryScroll/InventoryGrid" unique_id=1842193376]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_slot_button")
+
+[node name="Frame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_4" unique_id=583121688]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 4.0
+offset_right = 124.0
+offset_bottom = 100.0
+mouse_filter = 2
+texture = ExtResource("28_6x1x4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_4" unique_id=1624267227]
+visible = false
+z_index = 4
+layout_mode = 0
+offset_left = 23.0
+offset_top = -1.0
+offset_right = 122.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = ExtResource("7_slot_selected")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconShadow" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_4" unique_id=785820235]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 42.0
+offset_top = 18.0
+offset_right = 106.0
+offset_bottom = 82.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_4" unique_id=2036226881]
+z_index = 1
+layout_mode = 0
+offset_left = 39.0
+offset_top = 15.0
+offset_right = 113.0
+offset_bottom = 89.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Count" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_4" unique_id=1011745426]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 75.0
+offset_top = 65.0
+offset_right = 113.0
+offset_bottom = 89.0
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Equipped" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_4" unique_id=1243337921]
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 40.0
+offset_top = 28.0
+offset_right = 100.0
+offset_bottom = 85.0
+theme_override_colors/font_color = Color(0.1, 1, 0.18, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_4esmu")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlotTemplate_5" type="Button" parent="Window/InventoryScroll/InventoryGrid" unique_id=254070992]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_slot_button")
+
+[node name="Frame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_5" unique_id=697773731]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 4.0
+offset_right = 124.0
+offset_bottom = 100.0
+mouse_filter = 2
+texture = ExtResource("28_6x1x4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_5" unique_id=786728984]
+visible = false
+z_index = 4
+layout_mode = 0
+offset_left = 23.0
+offset_top = -1.0
+offset_right = 122.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = ExtResource("7_slot_selected")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconShadow" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_5" unique_id=234383855]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 42.0
+offset_top = 18.0
+offset_right = 106.0
+offset_bottom = 82.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_5" unique_id=180235908]
+z_index = 1
+layout_mode = 0
+offset_left = 39.0
+offset_top = 15.0
+offset_right = 113.0
+offset_bottom = 89.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Count" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_5" unique_id=449181018]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 75.0
+offset_top = 65.0
+offset_right = 113.0
+offset_bottom = 89.0
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Equipped" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_5" unique_id=481421640]
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 40.0
+offset_top = 28.0
+offset_right = 100.0
+offset_bottom = 85.0
+theme_override_colors/font_color = Color(0.1, 1, 0.18, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_eh6s4")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlotTemplate_6" type="Button" parent="Window/InventoryScroll/InventoryGrid" unique_id=1440371295]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_slot_button")
+
+[node name="Frame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_6" unique_id=1984784385]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 4.0
+offset_right = 124.0
+offset_bottom = 100.0
+mouse_filter = 2
+texture = ExtResource("28_6x1x4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_6" unique_id=467080966]
+visible = false
+z_index = 4
+layout_mode = 0
+offset_left = 23.0
+offset_top = -1.0
+offset_right = 122.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = ExtResource("7_slot_selected")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconShadow" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_6" unique_id=1811578761]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 42.0
+offset_top = 18.0
+offset_right = 106.0
+offset_bottom = 82.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_6" unique_id=1312542987]
+z_index = 1
+layout_mode = 0
+offset_left = 39.0
+offset_top = 15.0
+offset_right = 113.0
+offset_bottom = 89.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Count" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_6" unique_id=1125258398]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 75.0
+offset_top = 65.0
+offset_right = 113.0
+offset_bottom = 89.0
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Equipped" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_6" unique_id=894166750]
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 40.0
+offset_top = 28.0
+offset_right = 100.0
+offset_bottom = 85.0
+theme_override_colors/font_color = Color(0.1, 1, 0.18, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_bhdxu")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlotTemplate_7" type="Button" parent="Window/InventoryScroll/InventoryGrid" unique_id=86795390]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_slot_button")
+
+[node name="Frame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_7" unique_id=1490347945]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 4.0
+offset_right = 124.0
+offset_bottom = 100.0
+mouse_filter = 2
+texture = ExtResource("28_6x1x4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_7" unique_id=1368879947]
+visible = false
+z_index = 4
+layout_mode = 0
+offset_left = 23.0
+offset_top = -1.0
+offset_right = 122.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = ExtResource("7_slot_selected")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconShadow" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_7" unique_id=1804110904]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 42.0
+offset_top = 18.0
+offset_right = 106.0
+offset_bottom = 82.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_7" unique_id=574758984]
+z_index = 1
+layout_mode = 0
+offset_left = 39.0
+offset_top = 15.0
+offset_right = 113.0
+offset_bottom = 89.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Count" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_7" unique_id=71462839]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 75.0
+offset_top = 65.0
+offset_right = 113.0
+offset_bottom = 89.0
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Equipped" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_7" unique_id=176080178]
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 40.0
+offset_top = 28.0
+offset_right = 100.0
+offset_bottom = 85.0
+theme_override_colors/font_color = Color(0.1, 1, 0.18, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_gpwk3")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlotTemplate_8" type="Button" parent="Window/InventoryScroll/InventoryGrid" unique_id=585446814]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_slot_button")
+
+[node name="Frame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_8" unique_id=1833518942]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 4.0
+offset_right = 124.0
+offset_bottom = 100.0
+mouse_filter = 2
+texture = ExtResource("28_6x1x4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_8" unique_id=1558646783]
+visible = false
+z_index = 4
+layout_mode = 0
+offset_left = 23.0
+offset_top = -1.0
+offset_right = 122.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = ExtResource("7_slot_selected")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconShadow" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_8" unique_id=1112093095]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 42.0
+offset_top = 18.0
+offset_right = 106.0
+offset_bottom = 82.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_8" unique_id=894729016]
+z_index = 1
+layout_mode = 0
+offset_left = 39.0
+offset_top = 15.0
+offset_right = 113.0
+offset_bottom = 89.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Count" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_8" unique_id=1595729440]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 75.0
+offset_top = 65.0
+offset_right = 113.0
+offset_bottom = 89.0
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Equipped" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_8" unique_id=1390122606]
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 40.0
+offset_top = 28.0
+offset_right = 100.0
+offset_bottom = 85.0
+theme_override_colors/font_color = Color(0.1, 1, 0.18, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_mxps4")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlotTemplate_9" type="Button" parent="Window/InventoryScroll/InventoryGrid" unique_id=2019000001]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_slot_button")
+
+[node name="Frame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_9" unique_id=2019000002]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 4.0
+offset_right = 124.0
+offset_bottom = 100.0
+mouse_filter = 2
+texture = ExtResource("28_6x1x4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_9" unique_id=2019000003]
+visible = false
+z_index = 4
+layout_mode = 0
+offset_left = 23.0
+offset_top = -1.0
+offset_right = 122.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = ExtResource("7_slot_selected")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconShadow" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_9" unique_id=2019000004]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 42.0
+offset_top = 18.0
+offset_right = 106.0
+offset_bottom = 82.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_9" unique_id=2019000005]
+z_index = 1
+layout_mode = 0
+offset_left = 39.0
+offset_top = 15.0
+offset_right = 113.0
+offset_bottom = 89.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Count" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_9" unique_id=2019000008]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 75.0
+offset_top = 65.0
+offset_right = 113.0
+offset_bottom = 89.0
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Equipped" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_9" unique_id=2019000009]
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 40.0
+offset_top = 28.0
+offset_right = 100.0
+offset_bottom = 85.0
+theme_override_colors/font_color = Color(0.1, 1, 0.18, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_vmp8c")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlotTemplate_10" type="Button" parent="Window/InventoryScroll/InventoryGrid" unique_id=2020100001]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_slot_button")
+
+[node name="Frame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_10" unique_id=2020100002]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 4.0
+offset_right = 124.0
+offset_bottom = 100.0
+mouse_filter = 2
+texture = ExtResource("28_6x1x4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_10" unique_id=2020100003]
+visible = false
+z_index = 4
+layout_mode = 0
+offset_left = 23.0
+offset_top = -1.0
+offset_right = 122.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = ExtResource("7_slot_selected")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconShadow" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_10" unique_id=2020100004]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 42.0
+offset_top = 18.0
+offset_right = 106.0
+offset_bottom = 82.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_10" unique_id=2020100005]
+z_index = 1
+layout_mode = 0
+offset_left = 39.0
+offset_top = 15.0
+offset_right = 113.0
+offset_bottom = 89.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Count" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_10" unique_id=2020100006]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 75.0
+offset_top = 65.0
+offset_right = 113.0
+offset_bottom = 89.0
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Equipped" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_10" unique_id=2020100007]
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 40.0
+offset_top = 28.0
+offset_right = 100.0
+offset_bottom = 85.0
+theme_override_colors/font_color = Color(0.1, 1, 0.18, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_vmp8c")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlotTemplate_11" type="Button" parent="Window/InventoryScroll/InventoryGrid" unique_id=2020100008]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_slot_button")
+
+[node name="Frame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_11" unique_id=2020100009]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 4.0
+offset_right = 124.0
+offset_bottom = 100.0
+mouse_filter = 2
+texture = ExtResource("28_6x1x4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_11" unique_id=2020100010]
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 23.0
+offset_top = -1.0
+offset_right = 122.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = ExtResource("7_slot_selected")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconShadow" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_11" unique_id=2020100011]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 42.0
+offset_top = 18.0
+offset_right = 106.0
+offset_bottom = 82.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_11" unique_id=2020100012]
+z_index = 1
+layout_mode = 0
+offset_left = 39.0
+offset_top = 15.0
+offset_right = 113.0
+offset_bottom = 89.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Count" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_11" unique_id=2020100013]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 75.0
+offset_top = 65.0
+offset_right = 113.0
+offset_bottom = 89.0
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Equipped" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_11" unique_id=2020100014]
+visible = false
+layout_mode = 0
+offset_left = 40.0
+offset_top = 28.0
+offset_right = 100.0
+offset_bottom = 85.0
+theme_override_colors/font_color = Color(0.1, 1, 0.18, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_vmp8c")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlotTemplate_12" type="Button" parent="Window/InventoryScroll/InventoryGrid" unique_id=2020100015]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_slot_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_slot_button")
+
+[node name="Frame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_12" unique_id=2020100016]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 4.0
+offset_right = 124.0
+offset_bottom = 100.0
+mouse_filter = 2
+texture = ExtResource("28_6x1x4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SelectedFrame" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_12" unique_id=2020100017]
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 23.0
+offset_top = -1.0
+offset_right = 122.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = ExtResource("7_slot_selected")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconShadow" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_12" unique_id=2020100018]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 42.0
+offset_top = 18.0
+offset_right = 106.0
+offset_bottom = 82.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_12" unique_id=2020100019]
+z_index = 1
+layout_mode = 0
+offset_left = 39.0
+offset_top = 15.0
+offset_right = 113.0
+offset_bottom = 89.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Count" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_12" unique_id=2020100020]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 75.0
+offset_top = 65.0
+offset_right = 113.0
+offset_bottom = 89.0
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Equipped" type="Label" parent="Window/InventoryScroll/InventoryGrid/SlotTemplate_12" unique_id=2020100021]
+visible = false
+layout_mode = 0
+offset_left = 40.0
+offset_top = 28.0
+offset_right = 100.0
+offset_bottom = 85.0
+theme_override_colors/font_color = Color(0.1, 1, 0.18, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_vmp8c")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InventoryScrollSlider" type="Control" parent="Window" unique_id=517162639]
+anchors_preset = 0
+offset_left = 1049.0
+offset_top = 91.0
+offset_right = 1070.0
+offset_bottom = 610.0
+mouse_filter = 2
+
+[node name="Track" type="TextureRect" parent="Window/InventoryScrollSlider" unique_id=672573292]
+layout_mode = 0
+offset_right = 16.0
+offset_bottom = 519.0
+mouse_filter = 0
+texture = ExtResource("27_iwe7p")
+expand_mode = 1
+
+[node name="Handle" type="TextureRect" parent="Window/InventoryScrollSlider" unique_id=2100113088]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 10.0
+offset_right = 14.0
+offset_bottom = 71.0
+mouse_filter = 0
+texture = ExtResource("28_7ouvt")
+expand_mode = 1
+
+[node name="EmptyState" type="Label" parent="Window" unique_id=1259277660]
+visible = false
+layout_mode = 0
+offset_left = 137.0
+offset_top = 316.0
+offset_right = 685.0
+offset_bottom = 358.0
+text = "No items match this view."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DetailSkin" type="NinePatchRect" parent="Window" unique_id=706695304]
+visible = false
+layout_mode = 0
+offset_left = 865.0
+offset_top = 109.0
+offset_right = 1129.0
+offset_bottom = 565.0
+texture = ExtResource("9_gn2ab")
+patch_margin_left = 26
+patch_margin_top = 26
+patch_margin_right = 26
+patch_margin_bottom = 26
+
+[node name="DetailTitle" type="Label" parent="Window" unique_id=877352316]
+visible = false
+layout_mode = 0
+offset_left = 892.0
+offset_top = 127.0
+offset_right = 1104.0
+offset_bottom = 160.0
+text = "Dirt Block"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="DetailRarity" type="Label" parent="Window" unique_id=223742794]
+visible = false
+layout_mode = 0
+offset_left = 1028.0
+offset_top = 155.0
+offset_right = 1138.0
+offset_bottom = 180.0
+text = "Common"
+vertical_alignment = 1
+
+[node name="DetailCategory" type="Label" parent="Window" unique_id=1760056932]
+visible = false
+layout_mode = 0
+offset_left = 889.0
+offset_top = 155.0
+offset_right = 977.0
+offset_bottom = 180.0
+text = "BLOCK"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DetailPreviewSlot" type="Control" parent="Window" unique_id=688448686]
+visible = false
+anchors_preset = 0
+offset_left = 786.0
+offset_top = 252.0
+offset_right = 860.0
+offset_bottom = 330.0
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="Window/DetailPreviewSlot" unique_id=1548928081]
+visible = false
+layout_mode = 0
+offset_left = 165.0
+offset_top = -66.0
+offset_right = 263.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("12_n5xm8")
+
+[node name="SelectedFrame" type="TextureRect" parent="Window/DetailPreviewSlot" unique_id=1611470177]
+visible = false
+layout_mode = 0
+offset_left = 165.0
+offset_top = -66.0
+offset_right = 263.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("7_slot_selected")
+
+[node name="IconShadow" type="TextureRect" parent="Window/DetailPreviewSlot" unique_id=746742410]
+visible = false
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 165.0
+offset_top = -66.0
+offset_right = 263.0
+offset_bottom = 32.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Window/DetailPreviewSlot" unique_id=1460153014]
+visible = false
+layout_mode = 0
+offset_left = 180.0
+offset_top = -51.0
+offset_right = 245.0
+offset_bottom = 14.0
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="DetailDescription" type="RichTextLabel" parent="Window" unique_id=1130030123]
+visible = false
+layout_mode = 0
+offset_left = 888.0
+offset_top = 287.0
+offset_right = 1100.0
+offset_bottom = 330.0
+mouse_filter = 2
+text = "A basic building block."
+horizontal_alignment = 1
+
+[node name="DropAmountInput" type="LineEdit" parent="Window" unique_id=287618185]
+visible = false
+layout_mode = 0
+offset_left = 961.0
+offset_top = 345.0
+offset_right = 1041.0
+offset_bottom = 375.0
+theme_override_colors/font_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_placeholder_color = Color(0.55, 0.78, 0.9, 0.7)
+theme_override_colors/caret_color = Color(0.75, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "0"
+placeholder_text = "0"
+alignment = 1
+
+[node name="DropAmountSlider" type="HSlider" parent="Window" unique_id=894540015]
+visible = false
+layout_mode = 0
+offset_left = 913.0
+offset_top = 386.0
+offset_right = 1082.0
+offset_bottom = 416.0
+focus_mode = 0
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_nqja0")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_hqjgx")
+max_value = 400.0
+rounded = true
+
+[node name="UseButton" type="Button" parent="Window" unique_id=464497315]
+visible = false
+layout_mode = 0
+offset_left = 916.0
+offset_top = 428.0
+offset_right = 1001.0
+offset_bottom = 471.0
+theme_override_styles/normal = SubResource("StyleBoxTexture_kyfno")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_135m5")
+theme_override_styles/hover = SubResource("StyleBoxTexture_t60xp")
+action_mode = 0
+text = "USE"
+
+[node name="DropButton" type="Button" parent="Window" unique_id=1525239032]
+visible = false
+layout_mode = 0
+offset_left = 1010.0
+offset_top = 428.0
+offset_right = 1095.0
+offset_bottom = 470.0
+theme_override_styles/normal = SubResource("StyleBoxTexture_voml5")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_iwe7p")
+theme_override_styles/hover = SubResource("StyleBoxTexture_7ouvt")
+text = "DROP"
+
+[node name="InfoButton" type="Button" parent="Window" unique_id=1253549094]
+visible = false
+layout_mode = 0
+offset_left = 916.0
+offset_top = 481.0
+offset_right = 1001.0
+offset_bottom = 524.0
+theme_override_styles/normal = SubResource("StyleBoxTexture_27xdy")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_iovr8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_io1nh")
+text = "INFO"
+
+[node name="TrashButton" type="Button" parent="Window" unique_id=1007489418]
+visible = false
+layout_mode = 0
+offset_left = 1010.0
+offset_top = 481.0
+offset_right = 1095.0
+offset_bottom = 524.0
+theme_override_styles/normal = SubResource("StyleBoxTexture_hm6mt")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_mqkg4")
+theme_override_styles/hover = SubResource("StyleBoxTexture_6x1x4")
+text = "TRASH"
+
+[node name="FooterSkin" type="NinePatchRect" parent="Window" unique_id=1556782468]
+visible = false
+layout_mode = 0
+offset_left = 865.0
+offset_top = 562.0
+offset_right = 1129.0
+offset_bottom = 626.0
+texture = ExtResource("9_gn2ab")
+patch_margin_left = 24
+patch_margin_top = 22
+patch_margin_right = 24
+patch_margin_bottom = 22
+
+[node name="FooterSelectedLabel" type="Label" parent="Window" unique_id=1750498333]
+layout_mode = 0
+offset_left = 315.0
+offset_top = 6.0
+offset_right = 748.0
+offset_bottom = 65.0
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_ob0by")
+text = "  Selected: none"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="FooterCountLabel" type="Label" parent="Window" unique_id=1463866860]
+layout_mode = 0
+offset_left = 745.0
+offset_top = 6.0
+offset_right = 997.0
+offset_bottom = 65.0
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_b8nk2")
+text = "0 / 0"
+horizontal_alignment = 1
+vertical_alignment = 1
