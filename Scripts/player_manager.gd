@@ -2775,7 +2775,7 @@ func handle_network_player_position(player_data: Dictionary):
 		})
 
 	if remote_visual_active:
-		maybe_spawn_remote_ant_sword_punch_slash(remote_player, previous_animation_state, animation_state)
+		maybe_spawn_remote_ant_sword_punch_slash(remote_player, previous_animation_state_from_meta, animation_state)
 
 	if remote_visual_active:
 		update_remote_player_name(remote_player, remote_name)
