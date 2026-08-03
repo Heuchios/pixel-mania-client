@@ -5043,7 +5043,7 @@ const ITEMS = {
 		"display_name": "Neptune Trident",
 		"rarity": "legendary",
 		"texture": "res://Assets/items/swords/neptune_trident.png",
-		"inventory_icon": "res://Assets/items/swords/neptune_trident.png",
+		"inventory_icon": "res://Assets/items/swords/neptune_trident_icon.png",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "hand",
