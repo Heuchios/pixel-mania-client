@@ -4024,10 +4024,10 @@ func get_remote_player_punch_animation_name(remote_player) -> String:
 	return get_punch_animation_name_for_item(str(equipment_slots.get("hand", "")))
 
 
-func maybe_spawn_remote_ant_sword_punch_slash(remote_player, previous_animation_state: String, animation_state: String) -> void:
+func maybe_spawn_remote_ant_sword_punch_slash(remote_player, previous_remote_animation_state: String, animation_state: String) -> void:
 	if world == null or remote_player == null or not is_instance_valid(remote_player):
 		return
-	if previous_animation_state == "punch" or animation_state != "punch":
+	if previous_remote_animation_state == "punch" or animation_state != "punch":
 		return
 
 	var equipment_slots = normalize_remote_equipment_slots(remote_player.get_meta("equipment_slots", {}))
