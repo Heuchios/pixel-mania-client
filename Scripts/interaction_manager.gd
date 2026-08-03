@@ -2049,6 +2049,9 @@ func toggle_block_state(grid_pos: Vector2i):
 	var block_type = str(world.blocks[grid_pos].get("type", ""))
 	if not is_toggle_block(block_type):
 		return
+	if world.has_method("can_current_player_build_at") and not bool(world.can_current_player_build_at(grid_pos)):
+		world.show_notification("This area is locked.")
+		return
 
 	if not world.can_reach_grid(grid_pos):
 		world.show_notification("Too far away.")
@@ -2073,6 +2076,9 @@ func try_punch_toggle_machine_at(grid_pos: Vector2i) -> bool:
 	var block_type := str(world.blocks[grid_pos].get("type", ""))
 	if not is_punch_toggle_machine_block(block_type):
 		return false
+	if world.has_method("can_current_player_build_at") and not bool(world.can_current_player_build_at(grid_pos)):
+		world.show_notification("This area is locked.")
+		return true
 
 	if not world.can_reach_grid(grid_pos):
 		world.show_notification("Too far away.")
@@ -2250,10 +2256,17 @@ func update_wooden_entrance_visual(grid_pos: Vector2i):
 
 
 func is_crafting_station_block(block_type: String) -> bool:
-	return block_type == "crafting_station"
+	var clean_type := block_type.strip_edges().to_lower()
+	return clean_type == "crafting_station" or clean_type == "crafting_station_left" or clean_type == "crafting_station_right"
 
 
 func get_crafting_station_left_pos(grid_pos: Vector2i) -> Vector2i:
+	if world == null:
+		return grid_pos
+	if world.blocks.has(grid_pos):
+		var current_type := str(world.blocks[grid_pos].get("type", "")).strip_edges().to_lower()
+		if current_type == "crafting_station_right":
+			return Vector2i(grid_pos.x - 1, grid_pos.y)
 	return grid_pos
 
 
@@ -2327,22 +2340,33 @@ func break_crafting_station(grid_pos: Vector2i):
 
 	var drop_position = Vector2(station_pos.x * world.BLOCK_SIZE, station_pos.y * world.BLOCK_SIZE)
 
-	if world.blocks.has(station_pos):
-		var block_data = world.blocks[station_pos]
-		var block_node = block_data.get("node", null) if block_data is Dictionary else null
-		if world.block_manager != null and world.block_manager.has_method("clear_tilemap_cell"):
-			world.block_manager.clear_tilemap_cell(station_pos, false)
+	for station_part_offset in [0, 1]:
+		var part_pos = Vector2i(station_pos.x + station_part_offset, station_pos.y)
+		if not world.blocks.has(part_pos):
+			continue
 
-		if is_instance_valid(block_node):
-			var crack_overlay = block_node.get_node_or_null("CrackOverlay")
+		var part_data = world.blocks[part_pos]
+		if not (part_data is Dictionary):
+			continue
+
+		var part_type := str(part_data.get("type", "")).strip_edges().to_lower()
+		if not is_crafting_station_block(part_type) and part_type != "crafting_station":
+			continue
+
+		if world.block_manager != null and world.block_manager.has_method("clear_tilemap_cell"):
+			world.block_manager.clear_tilemap_cell(part_pos, false)
+
+		var part_node = part_data.get("node", null)
+		if is_instance_valid(part_node):
+			var crack_overlay = part_node.get_node_or_null("CrackOverlay")
 			if crack_overlay != null:
 				crack_overlay.queue_free()
 
-			block_node.queue_free()
+			part_node.queue_free()
 
-		world.blocks.erase(station_pos)
-		world.block_hit_progress.erase(station_pos)
-		world.block_hit_timers.erase(station_pos)
+		world.blocks.erase(part_pos)
+		world.block_hit_progress.erase(part_pos)
+		world.block_hit_timers.erase(part_pos)
 
 	send_network_station_remove(station_pos)
 

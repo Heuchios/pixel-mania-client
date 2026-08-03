@@ -123,6 +123,7 @@ const DISPLAY_PREVIEW_GLASS_Z_INDEX := 1
 const DEFAULT_DISPLAY_PREVIEW_MAX_SIZE := 25.0
 const DEFAULT_DISPLAY_PREVIEW_ALPHA := 1.0
 const DEFAULT_DISPLAY_GLASS_ALPHA := 0.22
+const DISPLAY_PREVIEW_INVENTORY_ICON_SIZE := 28.0
 const DEFAULT_DISPLAY_GLASS_COLOR := Color(0.72, 0.92, 1.0, 1.0)
 const DISPLAY_PREVIEW_ALPHA_THRESHOLD := 0.01
 const DISPLAY_TRANSACTION_PENDING_MS := 1800
@@ -6117,15 +6118,20 @@ func update_display_visual(grid_pos: Vector2i):
 	preview.position = preview_position
 	preview.texture = texture
 	preview.z_index = FISH_HANGER_DISPLAY_PREVIEW_ITEM_Z_INDEX if is_fish_hanger_block_type(block_type) else DISPLAY_PREVIEW_ITEM_Z_INDEX
+	var is_direct_inventory_display := is_direct_inventory_display_block_type(block_type)
 	var max_size := float(display_data.get("display_preview_max_size", DEFAULT_DISPLAY_PREVIEW_MAX_SIZE))
-	apply_display_preview_fit(preview, texture, max_size)
+	if is_direct_inventory_display:
+		max_size = float(display_data.get("display_preview_max_size", DISPLAY_PREVIEW_INVENTORY_ICON_SIZE))
+		if max_size <= 0.0:
+			max_size = DISPLAY_PREVIEW_INVENTORY_ICON_SIZE
+	apply_display_preview_fit(preview, texture, max_size, is_direct_inventory_display)
 	preview.visible = true
 	var preview_alpha := clampf(float(display_data.get("display_preview_alpha", DEFAULT_DISPLAY_PREVIEW_ALPHA)), 0.0, 1.0)
 	preview.modulate = Color(1.0, 1.0, 1.0, preview_alpha)
 	update_display_glass_overlay(grid_pos, display_data, preview.position)
 
 
-func apply_display_preview_fit(preview: Sprite2D, texture: Texture2D, max_size: float) -> void:
+func apply_display_preview_fit(preview: Sprite2D, texture: Texture2D, max_size: float, inventory_style := false) -> void:
 	if preview == null or texture == null:
 		return
 
@@ -6135,11 +6141,19 @@ func apply_display_preview_fit(preview: Sprite2D, texture: Texture2D, max_size: 
 		preview.offset = Vector2.ZERO
 		return
 
-	# Keep preview sizing consistent for every texture by basing size on the source dimensions.
-	# We still center the visible content so transparent padding does not visually drift.
+	var target_max_size := maxf(max_size, 1.0)
+	# Keep display previews for direct displays consistent with inventory slot sizing.
+	if inventory_style:
+		var largest_dimension := maxf(texture_size.x, texture_size.y)
+		preview.scale = Vector2.ONE * (target_max_size / largest_dimension if largest_dimension > 0.0 else 1.0)
+		preview.offset = Vector2.ZERO
+		return
+
+	# Keep legacy display previews consistent for every texture by basing size on the
+	# source dimensions and centering the visible content so transparent padding does not drift.
 	var content_rect := get_display_preview_content_rect(texture)
 	var largest_dimension := maxf(texture_size.x, texture_size.y)
-	preview.scale = Vector2.ONE * (max_size / largest_dimension if largest_dimension > 0.0 else 1.0)
+	preview.scale = Vector2.ONE * (target_max_size / largest_dimension if largest_dimension > 0.0 else 1.0)
 
 	var preview_offset := Vector2.ZERO
 	if content_rect.size.x > 0.0 and content_rect.size.y > 0.0:
@@ -9077,10 +9091,13 @@ func update_block_crack_visual(grid_pos: Vector2i):
 
 
 func is_non_collideable_block(block_type: String) -> bool:
-	if not world.item_database.has(block_type):
+	var clean_type := block_type.strip_edges().to_lower()
+	if clean_type == "crafting_station_left" or clean_type == "crafting_station_right":
+		return true
+	if not world.item_database.has(clean_type):
 		return false
 
-	var item_data = world.item_database[block_type]
+	var item_data = world.item_database[clean_type]
 
 	# New preferred setting:
 	# "collidable": false
