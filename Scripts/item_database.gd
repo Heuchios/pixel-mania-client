@@ -4150,6 +4150,25 @@ const ITEMS = {
 		"order": 208
 	},
 
+"royal_crown": {
+		"category": "hat",
+		"display_name": "Royal Crown",
+		"rarity": "legendary",
+		"texture": "royal_crown",
+		"inventory_icon": "royal_crown_preview",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 209
+	},
+
 "blue_baseball_cap": {
 		"category": "hat",
 		"display_name": "Blue Baseball Cap",

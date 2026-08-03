@@ -1,10 +1,13 @@
 {
-  "enabled": false,
+  "enabled": true,
   "atlas_path": "res://Assets/items/wearable.png",
   "cell_size": [32, 32],
   "separation": [0, 0],
   "offset": [0, 0],
   "filter_clip": true,
-  "frames": {},
+  "frames": {
+    "royal_crown": [576, 224, 32, 32],
+    "royal_crown_preview": [544, 224, 32, 32]
+  },
   "aliases": {}
 }
