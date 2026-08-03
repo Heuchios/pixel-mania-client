@@ -3626,6 +3626,43 @@ const ITEMS = {
 
 		"order": 203
 	},
+"devil_wings": {
+		"category": "back",
+		"display_name": "Devil Wings",
+		"rarity": "legendary",
+		"texture": "res://Assets/items/back_items/devil_wings_idle_1.png",
+		"inventory_icon": "res://Assets/items/back_items/devil_wings_icon.png",
+		"starting_count": 0,
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+
+		"equipment_slot": "back",
+		"back_mode": "default_slot",
+		"sprite_folder": "res://Assets/items/back_items/",
+		"idle_sprite": "devil_wings_idle_1.png",
+		"idle_frames": ["devil_wings_idle_1.png", "devil_wings_idle_2.png"],
+		"flap_frames": ["devil_wings_jump_1.png", "devil_wings_jump_2.png", "devil_wings_jump_3.png"],
+		"flap_animation": true,
+		"scan_flap_frames": false,
+		"flap_speed": 0.30,
+		"input_flap_time": 0.28,
+		"animation_fps": 3.0,
+
+		"jump_type": "double",
+
+		"auto_scale_back_sprite": false,
+		"back_scale": 1.0,
+		"idle_sprite_offset": [0, 0],
+		"idle_sprite_offset_left": [0, 0],
+		"flap_sprite_offset": [0, 0],
+		"flap_sprite_offset_left": [0, 0],
+		"back_scale_multiplier": 1.0,
+		"back_flip_with_facing": false,
+
+		"order": 204
+	},
 "void_aura": {
 		"category": "back",
 		"display_name": "Void Aura",
