@@ -5200,6 +5200,17 @@ const ITEMS = {
 		"equipment_slot": "hand",
 		"hand_item": true,
 		"punch_animation": "punch_sword",
+		"animation_fps": 6.0,
+		"hand_item_animations": {
+			"idle": {
+				"frames": [
+					"res://Assets/items/swords/neptune_pickaxe.png",
+					"res://Assets/items/swords/neptune_pickaxe_2.png"
+				],
+				"fps": 6.0,
+				"loop": true
+			}
+		},
 		"instance_tracked": true,
 		"order": 62
 	},
