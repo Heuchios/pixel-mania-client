@@ -2,6 +2,9 @@ extends Node
 
 const INVENTORY_ICON_PATH = "res://Assets/inventory_icons/"
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
+const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
+const DEBUG_LOCAL_EQUIPMENT_FLOW := false
+const ELECTRIC_TOOL_ITEM := "electric_tool"
 
 var world = null
 
@@ -18,10 +21,39 @@ func get_inventory_icon_texture(item_type: String, category: String = ""):
 	if world != null and world.item_database.has(item_type):
 		item_data = world.item_database[item_type]
 
+	var item_category: String = category
+	if item_category == "" and item_data is Dictionary:
+		item_category = str(item_data.get("category", ""))
+
+	if item_category == "seed" or item_type.ends_with("_seed"):
+		if world.has_method("get_seed_icon_texture"):
+			var seed_icon = world.get_seed_icon_texture(item_type)
+			if seed_icon != null:
+				return seed_icon
+
+	if item_category == "block":
+		var atlas_item_id := int(item_data.get("atlas_item_id", ITEM_ATLAS_DB.get_item_id_for_key(item_type)))
+		if atlas_item_id > 0:
+			var atlas_tile_set: TileSet = null
+			if world != null and world.has_method("get_item_atlas_tile_set"):
+				atlas_tile_set = world.get_item_atlas_tile_set()
+			var atlas_icon := ITEM_ATLAS_DB.get_item_icon(atlas_item_id, atlas_tile_set)
+			if atlas_icon != null:
+				return atlas_icon
+
 	if item_data.has("inventory_icon"):
 		var explicit_icon = AtlasTextureFactory.load_texture(item_data.get("inventory_icon"))
 		if explicit_icon != null:
 			return explicit_icon
+
+	var fallback_atlas_item_id := int(item_data.get("atlas_item_id", ITEM_ATLAS_DB.get_item_id_for_key(item_type)))
+	if fallback_atlas_item_id > 0:
+		var fallback_atlas_tile_set: TileSet = null
+		if world != null and world.has_method("get_item_atlas_tile_set"):
+			fallback_atlas_tile_set = world.get_item_atlas_tile_set()
+		var fallback_atlas_icon := ITEM_ATLAS_DB.get_item_icon(fallback_atlas_item_id, fallback_atlas_tile_set)
+		if fallback_atlas_icon != null:
+			return fallback_atlas_icon
 
 	var icon_paths = get_inventory_icon_candidates(item_type, category)
 
@@ -85,8 +117,14 @@ func get_selected_item_text() -> String:
 	if world.selected_item_category == "back":
 		return "BACK: " + display_name
 
+	if world.selected_item_category == "hat":
+		return "HAT: " + display_name
+
 	if world.selected_item_category == "hair":
 		return "HAIR: " + display_name
+
+	if world.selected_item_category == "eyewear":
+		return "EYEWEAR: " + display_name
 
 	if world.selected_item_category == "shirt":
 		return "SHIRT: " + display_name
@@ -144,7 +182,7 @@ func is_item_equipable(item_type: String, category: String) -> bool:
 		return false
 	if get_item_count(item_type, category) <= 0:
 		return false
-	if category == "back" or category == "hair" or category == "shirt" or category == "pants" or category == "shoes":
+	if category == "back" or category == "hat" or category == "hair" or category == "eyewear" or category == "shirt" or category == "pants" or category == "shoes" or category == "ride":
 		return true
 	if category == "tool":
 		if world.item_database.has(item_type):
@@ -165,14 +203,20 @@ func toggle_equip_item(item_type: String, category: String):
 		equip_tool(item_type)
 	elif category == "back":
 		equip_back_item(item_type)
+	elif category == "hat":
+		equip_hat_item(item_type)
 	elif category == "hair":
 		equip_hair_item(item_type)
+	elif category == "eyewear":
+		equip_eyewear_item(item_type)
 	elif category == "shirt":
 		equip_shirt_item(item_type)
 	elif category == "pants":
 		equip_pants_item(item_type)
 	elif category == "shoes":
 		equip_shoes_item(item_type)
+	elif category == "ride":
+		equip_ride_item(item_type)
 	else:
 		world.show_notification(get_item_display_name(item_type, category) + " cannot be equipped yet.")
 
@@ -188,10 +232,8 @@ func equip_back_item(item_type: String):
 
 	if world.equipped_back_item == item_type:
 		world.equipped_back_item = ""
-		world.show_notification("Unequipped " + get_item_display_name(item_type, "back") + ".")
 	else:
 		world.equipped_back_item = item_type
-		world.show_notification("Equipped " + get_item_display_name(item_type, "back") + ".")
 
 	world.update_equipment_visual()
 	world.update_all_ui()
@@ -205,6 +247,32 @@ func get_equipped_back_text() -> String:
 	return get_item_display_name(world.equipped_back_item, "back")
 
 
+func equip_hat_item(item_type: String):
+	if not world.hat_inventory.has(item_type):
+		world.show_notification("You do not have " + get_item_display_name(item_type, "hat") + ".")
+		return
+
+	if int(world.hat_inventory[item_type]) <= 0:
+		world.show_notification("You do not have " + get_item_display_name(item_type, "hat") + ".")
+		return
+
+	if world.equipped_hat_item == item_type:
+		world.equipped_hat_item = ""
+	else:
+		world.equipped_hat_item = item_type
+
+	world.update_equipment_visual()
+	world.update_all_ui()
+	save_equipment_state()
+
+
+func get_equipped_hat_text() -> String:
+	if world.equipped_hat_item == "":
+		return "None"
+
+	return get_item_display_name(world.equipped_hat_item, "hat")
+
+
 func equip_hair_item(item_type: String):
 	if not world.hair_inventory.has(item_type):
 		world.show_notification("You do not have " + get_item_display_name(item_type, "hair") + ".")
@@ -216,10 +284,8 @@ func equip_hair_item(item_type: String):
 
 	if world.equipped_hair_item == item_type:
 		world.equipped_hair_item = ""
-		world.show_notification("Unequipped " + get_item_display_name(item_type, "hair") + ".")
 	else:
 		world.equipped_hair_item = item_type
-		world.show_notification("Equipped " + get_item_display_name(item_type, "hair") + ".")
 
 	world.update_equipment_visual()
 	world.update_all_ui()
@@ -233,6 +299,32 @@ func get_equipped_hair_text() -> String:
 	return get_item_display_name(world.equipped_hair_item, "hair")
 
 
+func equip_eyewear_item(item_type: String):
+	if not world.eyewear_inventory.has(item_type):
+		world.show_notification("You do not have " + get_item_display_name(item_type, "eyewear") + ".")
+		return
+
+	if int(world.eyewear_inventory[item_type]) <= 0:
+		world.show_notification("You do not have " + get_item_display_name(item_type, "eyewear") + ".")
+		return
+
+	if world.equipped_eyewear_item == item_type:
+		world.equipped_eyewear_item = ""
+	else:
+		world.equipped_eyewear_item = item_type
+
+	world.update_equipment_visual()
+	world.update_all_ui()
+	save_equipment_state()
+
+
+func get_equipped_eyewear_text() -> String:
+	if world.equipped_eyewear_item == "":
+		return "None"
+
+	return get_item_display_name(world.equipped_eyewear_item, "eyewear")
+
+
 func equip_shirt_item(item_type: String):
 	if not world.shirt_inventory.has(item_type):
 		world.show_notification("You do not have " + get_item_display_name(item_type, "shirt") + ".")
@@ -244,10 +336,8 @@ func equip_shirt_item(item_type: String):
 
 	if world.equipped_shirt_item == item_type:
 		world.equipped_shirt_item = ""
-		world.show_notification("Unequipped " + get_item_display_name(item_type, "shirt") + ".")
 	else:
 		world.equipped_shirt_item = item_type
-		world.show_notification("Equipped " + get_item_display_name(item_type, "shirt") + ".")
 
 	world.update_equipment_visual()
 	world.update_all_ui()
@@ -272,10 +362,8 @@ func equip_pants_item(item_type: String):
 
 	if world.equipped_pants_item == item_type:
 		world.equipped_pants_item = ""
-		world.show_notification("Unequipped " + get_item_display_name(item_type, "pants") + ".")
 	else:
 		world.equipped_pants_item = item_type
-		world.show_notification("Equipped " + get_item_display_name(item_type, "pants") + ".")
 
 	world.update_equipment_visual()
 	world.update_all_ui()
@@ -300,10 +388,8 @@ func equip_shoes_item(item_type: String):
 
 	if world.equipped_shoes_item == item_type:
 		world.equipped_shoes_item = ""
-		world.show_notification("Unequipped " + get_item_display_name(item_type, "shoes") + ".")
 	else:
 		world.equipped_shoes_item = item_type
-		world.show_notification("Equipped " + get_item_display_name(item_type, "shoes") + ".")
 
 	world.update_equipment_visual()
 	world.update_all_ui()
@@ -315,6 +401,32 @@ func get_equipped_shoes_text() -> String:
 		return "None"
 
 	return get_item_display_name(world.equipped_shoes_item, "shoes")
+
+
+func equip_ride_item(item_type: String):
+	if not world.ride_inventory.has(item_type):
+		world.show_notification("You do not have " + get_item_display_name(item_type, "ride") + ".")
+		return
+
+	if int(world.ride_inventory[item_type]) <= 0:
+		world.show_notification("You do not have " + get_item_display_name(item_type, "ride") + ".")
+		return
+
+	if world.equipped_ride_item == item_type:
+		world.equipped_ride_item = ""
+	else:
+		world.equipped_ride_item = item_type
+
+	world.update_equipment_visual()
+	world.update_all_ui()
+	save_equipment_state()
+
+
+func get_equipped_ride_text() -> String:
+	if world.equipped_ride_item == "":
+		return "None"
+
+	return get_item_display_name(world.equipped_ride_item, "ride")
 
 
 func equip_tool(item_type: String):
@@ -334,23 +446,23 @@ func equip_tool(item_type: String):
 		return
 
 	world.equipped_tool = item_type
-	world.show_notification("Equipped " + get_item_display_name(item_type, "tool") + ".")
 	world.update_equipment_visual()
 	world.update_all_ui()
 	save_equipment_state()
+	hide_electrical_layer_if_tool_not_equipped()
+	request_electrical_visibility_if_tool_equipped()
 
 
 func unequip_tool():
 	if world.equipped_tool == "":
 		return
 
-	var old_tool_name = get_item_display_name(world.equipped_tool, "tool")
 	world.equipped_tool = ""
 
-	world.show_notification("Unequipped " + old_tool_name + ".")
 	world.update_equipment_visual()
 	world.update_all_ui()
 	save_equipment_state()
+	hide_electrical_layer_if_tool_not_equipped()
 
 
 func get_equipped_tool_text() -> String:
@@ -358,6 +470,32 @@ func get_equipped_tool_text() -> String:
 		return "None"
 
 	return get_item_display_name(world.equipped_tool, "tool")
+
+
+func hide_electrical_layer_if_tool_not_equipped():
+	if world == null:
+		return
+	if str(world.equipped_tool).strip_edges() == ELECTRIC_TOOL_ITEM:
+		return
+	if world.has_method("apply_network_wire_visibility_refresh"):
+		world.apply_network_wire_visibility_refresh({
+			"visible": false,
+			"electrical_layer": [],
+			"generator_links": [],
+			"oil_refinery_links": [],
+			"battery_charger_links": [],
+			"pole_links": []
+		})
+
+
+func request_electrical_visibility_if_tool_equipped():
+	if world == null:
+		return
+	if str(world.equipped_tool).strip_edges() != ELECTRIC_TOOL_ITEM:
+		return
+	var network = world.get_node_or_null("/root/NetworkManager")
+	if network != null and network.has_method("send_request_wire_visibility_refresh"):
+		network.send_request_wire_visibility_refresh(str(world.current_world_name))
 
 
 func get_gem_drop_range_for_rarity(rarity: String) -> Vector2i:
@@ -414,13 +552,161 @@ func get_block_rarity(block_type: String) -> String:
 func should_always_return_block_on_break(block_type: String) -> bool:
 	if block_type == "crafting_station" or block_type == "furnace":
 		return true
-	if block_type == "world_lock" or block_type == "vend_empty" or block_type == "safe" or block_type == "fish_monger":
+	if (world.has_method("is_world_lock_block_type") and world.is_world_lock_block_type(block_type)) or block_type == "vend_empty" or block_type == "safe" or block_type == "fish_monger":
 		return true
 	if world.item_database.has(block_type):
 		var block_data: Dictionary = world.item_database[block_type]
+		if bool(block_data.get("drops_self", false)):
+			return true
 		if float(block_data.get("shop_price", 0)) > 0.0:
 			return true
 	return false
+
+
+func get_fixed_break_drop_amount(fixed_drop: Dictionary) -> int:
+	var amount_range = fixed_drop.get("amount_range", fixed_drop.get("amountRange", []))
+	if amount_range is Array and amount_range.size() >= 2:
+		var first_amount = int(clamp(int(amount_range[0]), 0, world.MAX_ITEM_STACK_SIZE))
+		var second_amount = int(clamp(int(amount_range[1]), 0, world.MAX_ITEM_STACK_SIZE))
+		var min_amount = min(first_amount, second_amount)
+		var max_amount = max(first_amount, second_amount)
+		return randi_range(min_amount, max_amount)
+
+	return int(clamp(int(fixed_drop.get("amount", 1)), 1, world.MAX_ITEM_STACK_SIZE))
+
+
+func get_fixed_break_drop_category(item_id: String, requested_category: String) -> String:
+	var category = requested_category.strip_edges()
+	if category != "":
+		return category
+	if world.item_database.has(item_id):
+		return str(world.item_database[item_id].get("category", ""))
+	if item_id.ends_with("_seed"):
+		return "seed"
+	return "block"
+
+
+func get_break_drop_from_rule_entry(rule_entry: Dictionary) -> Dictionary:
+	var item_id: String = str(rule_entry.get("item_id", rule_entry.get("item_type", ""))).strip_edges()
+	if item_id == "" or not world.item_database.has(item_id):
+		return {}
+
+	var item_category: String = get_fixed_break_drop_category(
+		item_id,
+		str(rule_entry.get("item_category", rule_entry.get("category", "")))
+	)
+	if item_category == "":
+		return {}
+
+	var amount: int = get_fixed_break_drop_amount(rule_entry)
+	if amount <= 0:
+		return {}
+
+	return {
+		"item_id": item_id,
+		"item_category": item_category,
+		"amount": amount
+	}
+
+
+func roll_weighted_break_drop(loot_table: Array) -> Dictionary:
+	var candidates: Array = []
+	var total_weight: float = 0.0
+
+	for raw_entry in loot_table:
+		if not (raw_entry is Dictionary):
+			continue
+
+		var entry: Dictionary = raw_entry as Dictionary
+		var drop: Dictionary = get_break_drop_from_rule_entry(entry)
+		if drop.is_empty():
+			continue
+
+		var weight: float = max(0.0, float(entry.get("weight", 0.0)))
+		if weight <= 0.0:
+			continue
+
+		total_weight += weight
+		candidates.append({
+			"drop": drop,
+			"weight": weight
+		})
+
+	if total_weight <= 0.0 or candidates.is_empty():
+		return {}
+
+	var roll: float = randf() * total_weight
+	for raw_candidate in candidates:
+		var candidate: Dictionary = raw_candidate as Dictionary
+		var candidate_weight: float = float(candidate.get("weight", 0.0))
+		roll -= candidate_weight
+		if roll < 0.0:
+			var selected_drop = candidate.get("drop", {})
+			if selected_drop is Dictionary:
+				return selected_drop as Dictionary
+			return {}
+
+	var final_candidate: Dictionary = candidates[candidates.size() - 1] as Dictionary
+	var final_drop = final_candidate.get("drop", {})
+	if final_drop is Dictionary:
+		return final_drop as Dictionary
+	return {}
+
+
+func try_drop_fixed_break_drops(block_type: String, drop_position: Vector2) -> bool:
+	if not world.item_database.has(block_type):
+		return false
+
+	var block_data: Dictionary = world.item_database[block_type]
+	var rules = block_data.get("drop_rules", {})
+	if not (rules is Dictionary):
+		return false
+
+	var raw_loot_table = rules.get("loot_table", rules.get("weighted_drops", []))
+	if raw_loot_table is Array:
+		var loot_table: Array = raw_loot_table as Array
+		var weighted_drop: Dictionary = roll_weighted_break_drop(loot_table)
+		if not weighted_drop.is_empty():
+			world.create_item_drop(
+				str(weighted_drop.get("item_id", "")),
+				drop_position,
+				str(weighted_drop.get("item_category", "")) == "seed",
+				str(weighted_drop.get("item_category", "")),
+				0.0,
+				int(weighted_drop.get("amount", 1))
+			)
+		return true
+
+	var fixed_drops: Variant = rules.get("fixed_drops", [])
+	if not (fixed_drops is Array):
+		return false
+
+	for fixed_drop in fixed_drops:
+		if not (fixed_drop is Dictionary):
+			continue
+
+		var drop_chance: float = clamp(float(fixed_drop.get("chance", 1.0)), 0.0, 1.0)
+		if randf() > drop_chance:
+			continue
+
+		var item_id: String = str(fixed_drop.get("item_id", fixed_drop.get("item_type", ""))).strip_edges()
+		if item_id == "" or not world.item_database.has(item_id):
+			continue
+
+		var item_category: String = get_fixed_break_drop_category(
+			item_id,
+			str(fixed_drop.get("item_category", fixed_drop.get("category", "")))
+		)
+		if item_category == "":
+			continue
+
+		var amount: int = get_fixed_break_drop_amount(fixed_drop)
+		if amount <= 0:
+			continue
+
+		world.create_item_drop(item_id, drop_position, item_category == "seed", item_category, 0.0, amount)
+
+	return true
 
 
 func try_drop_block(block_type: String, drop_position: Vector2):
@@ -514,8 +800,14 @@ func get_item_texture(item_type: String, category: String):
 	if category == "tool" and world.tool_textures.has(item_type):
 		return world.tool_textures[item_type]
 
+	if category == "hat" and world.hat_textures.has(item_type):
+		return world.hat_textures[item_type]
+
 	if category == "hair" and world.hair_textures.has(item_type):
 		return world.hair_textures[item_type]
+
+	if category == "eyewear" and world.eyewear_textures.has(item_type):
+		return world.eyewear_textures[item_type]
 
 	if category == "shirt" and world.shirt_textures.has(item_type):
 		return world.shirt_textures[item_type]
@@ -525,6 +817,9 @@ func get_item_texture(item_type: String, category: String):
 
 	if category == "shoes" and world.shoes_textures.has(item_type):
 		return world.shoes_textures[item_type]
+
+	if category == "ride" and world.ride_textures.has(item_type):
+		return world.ride_textures[item_type]
 
 	if world.item_database.has(item_type):
 		var texture = AtlasTextureFactory.load_texture(world.item_database[item_type].get("texture", null))
@@ -547,8 +842,14 @@ func get_item_count(item_type: String, category: String) -> int:
 	if category == "back" and world.back_inventory.has(item_type):
 		return int(world.back_inventory[item_type])
 
+	if category == "hat" and world.hat_inventory.has(item_type):
+		return int(world.hat_inventory[item_type])
+
 	if category == "hair" and world.hair_inventory.has(item_type):
 		return int(world.hair_inventory[item_type])
+
+	if category == "eyewear" and world.eyewear_inventory.has(item_type):
+		return int(world.eyewear_inventory[item_type])
 
 	if category == "shirt" and world.shirt_inventory.has(item_type):
 		return int(world.shirt_inventory[item_type])
@@ -559,6 +860,9 @@ func get_item_count(item_type: String, category: String) -> int:
 	if category == "shoes" and world.shoes_inventory.has(item_type):
 		return int(world.shoes_inventory[item_type])
 
+	if category == "ride" and world.ride_inventory.has(item_type):
+		return int(world.ride_inventory[item_type])
+
 	if category == "material" and world.material_inventory.has(item_type):
 		return int(world.material_inventory[item_type])
 
@@ -566,7 +870,7 @@ func get_item_count(item_type: String, category: String) -> int:
 		return int(world.lure_inventory[item_type])
 
 	if category == "fish" and world.fish_inventory.has(item_type):
-		return int(ceil(max(0.0, float(world.fish_inventory[item_type]))))
+		return max(0, int(floor(float(world.fish_inventory[item_type]))))
 
 	if category == "currency" and world.currency_inventory.has(item_type):
 		return int(world.currency_inventory[item_type])
@@ -575,8 +879,29 @@ func get_item_count(item_type: String, category: String) -> int:
 
 
 func save_equipment_state():
+	if DEBUG_LOCAL_EQUIPMENT_FLOW:
+		print("[APPEARANCE][Client] local equipment changed ", get_local_equipment_debug_snapshot())
 	if world != null and world.has_method("save_player_data"):
 		world.save_player_data()
+	if world != null and world.has_method("flush_multiplayer_position"):
+		world.flush_multiplayer_position(false, true)
+
+
+func get_local_equipment_debug_snapshot() -> Dictionary:
+	if world == null:
+		return {}
+
+	return {
+		"hand": str(world.equipped_tool),
+		"back": str(world.equipped_back_item),
+		"hat": str(world.equipped_hat_item),
+		"hair": str(world.equipped_hair_item),
+		"eyewear": str(world.equipped_eyewear_item),
+		"shirt": str(world.equipped_shirt_item),
+		"pants": str(world.equipped_pants_item),
+		"shoes": str(world.equipped_shoes_item),
+		"ride": str(world.equipped_ride_item)
+	}
 
 
 func get_item_display_name(item_type: String, category: String) -> String:
@@ -618,4 +943,5 @@ func toggle_primary_hotbar_tool():
 	world.setup_hotbar()
 
 	select_item(world.primary_hotbar_tool, "tool")
-	world.show_notification("Mode: " + get_item_display_name(world.primary_hotbar_tool, "tool"))
+	if world.has_method("save_player_data"):
+		world.save_player_data()

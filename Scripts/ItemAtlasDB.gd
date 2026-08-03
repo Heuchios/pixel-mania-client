@@ -35,10 +35,10 @@ static func has_source_changed() -> bool:
 
 
 static func _ensure_loaded() -> void:
-	var current_modified_time := _get_source_modified_time()
-	if _loaded and current_modified_time == _loaded_modified_time:
+	if _loaded:
 		return
 
+	var current_modified_time := _get_source_modified_time()
 	_loaded = true
 	_loaded_modified_time = current_modified_time
 	_items_by_id.clear()
@@ -140,6 +140,12 @@ static func get_item(item_id: int) -> Dictionary:
 	return {}
 
 
+static func _get_item_ref(item_id: int) -> Dictionary:
+	_ensure_loaded()
+	var item = _items_by_id.get(int(item_id), {})
+	return item as Dictionary if item is Dictionary else {}
+
+
 static func has_item(item_id: int) -> bool:
 	_ensure_loaded()
 	return _items_by_id.has(int(item_id))
@@ -210,6 +216,7 @@ static func get_item_database_entries() -> Dictionary:
 
 		var layer := _normalize_layer(item.get("layer", "foreground"))
 		var platform_collision := bool(item.get("platform_collision", false))
+		var item_has_collision := bool(item.get("collision", false)) and layer == "foreground"
 		var entry := {
 			"category": str(item.get("type", "block")),
 			"display_name": str(item.get("name", item_key.capitalize())),
@@ -220,8 +227,8 @@ static func get_item_database_entries() -> Dictionary:
 			"atlas_coords": _to_vector2i(item.get("atlas_coords", Vector2i.ZERO)),
 			"alternative_tile": int(item.get("alternative_tile", 0)),
 			"place_layer": layer,
-			"solid": has_collision(int(item_id)),
-			"collision_type": str(item.get("collision_type", "full" if has_collision(int(item_id)) else "none"))
+			"solid": item_has_collision,
+			"collision_type": str(item.get("collision_type", "full" if item_has_collision else "none"))
 		}
 		if platform_collision:
 			entry["platform_collision"] = true
@@ -229,7 +236,7 @@ static func get_item_database_entries() -> Dictionary:
 			entry["background_block"] = true
 			entry["no_collision"] = true
 			entry["collidable"] = false
-		elif not has_collision(int(item_id)) and not platform_collision:
+		elif not item_has_collision and not platform_collision:
 			entry["no_collision"] = true
 			entry["collidable"] = false
 		if bool(item.get("animated", false)):
@@ -242,7 +249,7 @@ static func get_item_database_entries() -> Dictionary:
 			entry["animated"] = true
 			if str(item.get("animation_trigger", "")).strip_edges().to_lower() == "on_enter" and item_key.find("entrance") >= 0:
 				entry["entrance_block"] = true
-				entry["entrance_tilemap_collision"] = has_collision(int(item_id))
+				entry["entrance_tilemap_collision"] = item_has_collision
 				entry["entrance_idle_atlas_coords"] = _to_vector2i(item.get("atlas_coords", Vector2i.ZERO))
 				entry["entrance_pass_atlas_frames"] = animation_frames
 		for passthrough_key in [
@@ -381,7 +388,7 @@ static func merge_item_database(item_database: Dictionary) -> Dictionary:
 
 
 static func get_item_icon(item_id: int, tile_set: TileSet = null) -> AtlasTexture:
-	var item := get_item(item_id)
+	var item := _get_item_ref(item_id)
 	if item.is_empty() or not bool(item.get("atlas_enabled", true)):
 		return null
 
