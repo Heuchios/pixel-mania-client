@@ -9,6 +9,7 @@ const EXPECTED_ITEMS := {
 	"basic_navy_pants": {"icon_cell": Vector2i(6, 2), "pants_cell": Vector2i(7, 2)},
 	"basic_brown_pants": {"icon_cell": Vector2i(6, 3), "pants_cell": Vector2i(7, 3)},
 	"basic_green_pants": {"icon_cell": Vector2i(6, 4), "pants_cell": Vector2i(7, 4)},
+	"basic_pink_pants": {"icon_cell": Vector2i(6, 5), "pants_cell": Vector2i(7, 5)},
 }
 
 
