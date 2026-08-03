@@ -9,6 +9,8 @@
 	"basic_blue_shirt_body": [32, 0, 32, 32],
 	"basic_blue_shirt_icon": [0, 0, 32, 32],
 	"basic_blue_shirt_arm": [160, 0, 32, 32],
+	"basic_black_pants_icon": [192, 0, 32, 32],
+	"basic_black_pants": [224, 0, 32, 32],
 	"basic_red_shirt_icon": [0, 32, 32, 32],
 	"basic_red_shirt_body": [32, 32, 32, 32],
 	"basic_red_shirt_arm": [160, 32, 32, 32],
