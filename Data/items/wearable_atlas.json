@@ -27,6 +27,12 @@
 	"basic_maroon_shirt_icon": [0, 192, 32, 32],
 	"basic_maroon_shirt_body": [32, 192, 32, 32],
 	"basic_maroon_shirt_arm": [160, 192, 32, 32],
+	"black_suit_icon": [0, 224, 32, 32],
+	"black_suit_body": [32, 224, 32, 32],
+	"black_suit_arm": [160, 224, 32, 32],
+	"blue_suit_icon": [0, 256, 32, 32],
+	"blue_suit_body": [32, 256, 32, 32],
+	"blue_suit_arm": [160, 256, 32, 32],
 	"royal_crown": [576, 224, 32, 32],
 	"royal_crown_preview": [544, 224, 32, 32]
   },

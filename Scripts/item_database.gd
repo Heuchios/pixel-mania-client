@@ -368,6 +368,8 @@ const BASIC_ITEMS_PACK_REWARDS = [
 	"basic_heart_shirt",
 	"basic_gray_shirt",
 	"basic_maroon_shirt",
+	"black_suit",
+	"blue_suit",
 	"basic_black_pants",
 	"basic_light_gray_pants",
 	"basic_navy_pants",
@@ -4651,7 +4653,7 @@ const ITEMS = {
 		"order": 217
 	},
 
-"basic_maroon_shirt": {
+	"basic_maroon_shirt": {
 		"category": "shirt",
 		"display_name": "Maroon Shirt",
 		"rarity": "common",
@@ -4669,6 +4671,46 @@ const ITEMS = {
 		"slot_z_index": 1,
 		"arm_z_index": 1,
 		"order": 218
+	},
+
+"black_suit": {
+		"category": "shirt",
+		"display_name": "Black Suit",
+		"rarity": "common",
+		"texture": "black_suit_body",
+		"inventory_icon": "black_suit_icon",
+		"arm_texture": "black_suit_arm",
+		"left_arm_texture": "res://Assets/items/basic_items_pack/basic_black_shirt_arm_left.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [0, 0],
+		"right_arm_offset": [-7, -5],
+		"left_arm_offset": [6, -5],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"arm_z_index": 1,
+		"order": 219
+	},
+
+"blue_suit": {
+		"category": "shirt",
+		"display_name": "Blue Suit",
+		"rarity": "common",
+		"texture": "blue_suit_body",
+		"inventory_icon": "blue_suit_icon",
+		"arm_texture": "blue_suit_arm",
+		"left_arm_texture": "res://Assets/items/basic_items_pack/basic_blue_shirt_arm_left.png",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [0, 0],
+		"right_arm_offset": [-7, -5],
+		"left_arm_offset": [6, -5],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"arm_z_index": 1,
+		"order": 220
 	},
 
 "basic_black_pants": {
