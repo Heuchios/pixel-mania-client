@@ -4237,6 +4237,21 @@ const ITEMS = {
 		"order": 204
 	},
 
+	"black_slick_hair": {
+		"category": "hair",
+		"display_name": "Black Slick Hair",
+		"rarity": "common",
+		"texture": "black_slick_hair",
+		"inventory_icon": "black_slick_hair_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 204
+	},
+
 	"hairpack": {
 		"category": "material",
 		"display_name": "Hair Pack",
