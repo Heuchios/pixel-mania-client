@@ -7194,6 +7194,8 @@ func handle_inventory_transaction_result(data: Dictionary):
 
 	var action = str(transaction_data.get("action", "")).strip_edges().to_lower()
 	var transaction_ok = bool(transaction_data.get("ok", false))
+	if action.begins_with("display_") and block_manager != null and block_manager.has_method("clear_display_transaction_pending_for_request_id"):
+		block_manager.clear_display_transaction_pending_for_request_id(str(transaction_data.get("request_id", "")))
 	if action == "inventory_slot_upgrade" and transaction_ok:
 		apply_inventory_slot_count(transaction_data.get("inventory_slot_count", inventory_slot_count))
 	if action == "seed_harvest":

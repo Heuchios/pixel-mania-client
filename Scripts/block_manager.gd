@@ -47,6 +47,7 @@ var display_preview_visuals: Dictionary = {}
 var display_preview_glass_visuals: Dictionary = {}
 var display_preview_content_rect_cache: Dictionary = {}
 var pending_display_transactions: Dictionary = {}
+var pending_display_transaction_requests: Dictionary = {}
 var display_request_sequence := 0
 var tackle_box_timer_label: Label = null
 var next_tackle_box_visual_refresh_at_ms := 0
@@ -63,6 +64,7 @@ var snow_storm_visuals_active := false
 var snow_storm_local_block_overrides: Dictionary = {}
 var last_wooden_entrance_grid := Vector2i(-999999, -999999)
 var visual_variant_texture_cache: Dictionary = {}
+var atlas_variant_texture_cache: Dictionary = {}
 var existing_variant_path_cache: Dictionary = {}
 var connected_variant_component_cache: Dictionary = {}
 var authoritative_break_request_keys: Dictionary = {}
@@ -886,6 +888,8 @@ func send_network_block_update(action: String, layer: String, grid_pos: Vector2i
 			"item_id": atlas_item_id,
 			"request_id": str(clean_extra_data.get("request_id", ""))
 		})
+		if sent and str(action).strip_edges().to_lower() == "place" and world.has_method("play_player_place_animation"):
+			world.play_player_place_animation()
 		return sent
 	trace_authoritative_place_event("client_block_send_blocked", {
 		"reason": "network_missing_send_method",
@@ -2022,6 +2026,98 @@ func get_block_tilemap_metadata(block_type: String, visual_block_type: String = 
 		"background": background,
 		"grid_pos": grid_pos
 	}
+
+
+func get_stateful_block_atlas_texture(block_type: String, visual_block_type: String, grid_pos: Vector2i, background := false) -> Texture2D:
+	if background or grid_pos == NO_VARIANT_GRID_POS:
+		return null
+
+	var clean_block_type := str(block_type).strip_edges().to_lower()
+	var clean_visual_type := str(visual_block_type).strip_edges().to_lower()
+	if clean_visual_type == "":
+		clean_visual_type = clean_block_type
+
+	var atlas_data := get_stateful_block_atlas_data(clean_visual_type, grid_pos, background)
+	if atlas_data.is_empty() and clean_visual_type != clean_block_type:
+		atlas_data = get_stateful_block_atlas_data(clean_block_type, grid_pos, background)
+	if atlas_data.is_empty():
+		return null
+
+	var metadata := get_block_tilemap_metadata(clean_block_type, clean_visual_type, grid_pos, background)
+	return get_block_atlas_cell_texture(metadata)
+
+
+func get_block_atlas_cell_texture(metadata: Dictionary) -> Texture2D:
+	if not metadata_has_tilemap_atlas_coords(metadata):
+		return null
+
+	var atlas_item_id := int(metadata.get("atlas_item_id", 0))
+	if atlas_item_id <= 0:
+		return null
+
+	var atlas_coords := parse_block_vector2i(metadata.get("atlas_coords", Vector2i.ZERO), Vector2i.ZERO)
+	var source_id := int(metadata.get("source_id", 0))
+	var source_texture: Texture2D = null
+	var region_size := Vector2i(32, 32)
+	var margins := Vector2i.ZERO
+	var separation := Vector2i.ZERO
+
+	var atlas_tile_set: TileSet = null
+	if world != null and world.has_method("get_item_atlas_tile_set"):
+		atlas_tile_set = world.get_item_atlas_tile_set()
+	if atlas_tile_set != null and atlas_tile_set.has_source(source_id):
+		var raw_source = atlas_tile_set.get_source(source_id)
+		if raw_source is TileSetAtlasSource:
+			var atlas_source := raw_source as TileSetAtlasSource
+			source_texture = atlas_source.texture
+			region_size = atlas_source.texture_region_size
+			margins = atlas_source.margins
+			separation = atlas_source.separation
+			if region_size == Vector2i.ZERO:
+				region_size = atlas_tile_set.tile_size
+
+	if source_texture == null:
+		var base_icon := ITEM_ATLAS_DB.get_item_icon(atlas_item_id, atlas_tile_set)
+		if base_icon == null or base_icon.atlas == null:
+			return null
+		source_texture = base_icon.atlas
+		region_size = Vector2i(roundi(base_icon.region.size.x), roundi(base_icon.region.size.y))
+		var atlas_item := ITEM_ATLAS_DB.get_item(atlas_item_id)
+		var base_coords := parse_block_vector2i(atlas_item.get("atlas_coords", Vector2i.ZERO), Vector2i.ZERO)
+		margins = Vector2i(
+			roundi(base_icon.region.position.x) - base_coords.x * region_size.x,
+			roundi(base_icon.region.position.y) - base_coords.y * region_size.y
+		)
+
+	if source_texture == null or region_size.x <= 0 or region_size.y <= 0:
+		return null
+
+	var cache_key := "%s|%d|%s|%s|%s|%s" % [
+		str(source_texture.get_instance_id()),
+		source_id,
+		str(atlas_coords),
+		str(region_size),
+		str(margins),
+		str(separation)
+	]
+	if atlas_variant_texture_cache.has(cache_key):
+		var cached_texture = atlas_variant_texture_cache.get(cache_key)
+		if cached_texture is Texture2D:
+			return cached_texture
+
+	var atlas_texture := AtlasTexture.new()
+	atlas_texture.atlas = source_texture
+	var step := region_size + separation
+	atlas_texture.region = Rect2(
+		Vector2(
+			float(margins.x + atlas_coords.x * step.x),
+			float(margins.y + atlas_coords.y * step.y)
+		),
+		Vector2(float(region_size.x), float(region_size.y))
+	)
+	atlas_texture.filter_clip = true
+	atlas_variant_texture_cache[cache_key] = atlas_texture
+	return atlas_texture
 
 
 func get_block_tilemap_collision_type(block_type: String, item_data: Dictionary = {}) -> String:
@@ -4337,15 +4433,44 @@ func is_fish_hanger_block_type(block_type: String) -> bool:
 
 
 func is_display_transaction_pending(grid_pos: Vector2i) -> bool:
-	var pending_until := int(pending_display_transactions.get(grid_pos, 0))
-	if pending_until <= Time.get_ticks_msec():
-		pending_display_transactions.erase(grid_pos)
+	if not pending_display_transactions.has(grid_pos):
 		return false
-	return true
+	var pending_until := int(pending_display_transactions.get(grid_pos, 0))
+	if pending_until > Time.get_ticks_msec():
+		return true
+
+	pending_display_transactions.erase(grid_pos)
+	var request_ids_to_clear: Array = pending_display_transaction_requests.keys()
+	for request_id in request_ids_to_clear:
+		if pending_display_transaction_requests.get(request_id, null) == grid_pos:
+			pending_display_transaction_requests.erase(request_id)
+	return false
 
 
-func mark_display_transaction_pending(grid_pos: Vector2i) -> void:
+func mark_display_transaction_pending(grid_pos: Vector2i, request_id: String = "") -> void:
 	pending_display_transactions[grid_pos] = Time.get_ticks_msec() + DISPLAY_TRANSACTION_PENDING_MS
+	if request_id != "":
+		pending_display_transaction_requests[request_id] = grid_pos
+
+
+func clear_display_transaction_pending(grid_pos: Vector2i) -> void:
+	pending_display_transactions.erase(grid_pos)
+	var request_ids_to_clear: Array = pending_display_transaction_requests.keys()
+	for request_id in request_ids_to_clear:
+		if pending_display_transaction_requests.get(request_id, null) == grid_pos:
+			pending_display_transaction_requests.erase(request_id)
+
+
+func clear_display_transaction_pending_for_request_id(request_id: String) -> void:
+	var normalized_request_id := str(request_id).strip_edges()
+	if normalized_request_id == "":
+		return
+	if not pending_display_transaction_requests.has(normalized_request_id):
+		return
+	var grid_pos = pending_display_transaction_requests.get(normalized_request_id, null)
+	pending_display_transaction_requests.erase(normalized_request_id)
+	if grid_pos is Vector2i:
+		pending_display_transactions.erase(grid_pos)
 
 
 func make_display_request_id(action: String, grid_pos: Vector2i) -> String:
@@ -4388,11 +4513,12 @@ func try_display_selected_item_at_grid(grid_pos: Vector2i) -> bool:
 	if network == null or not network.has_method("send_inventory_transaction_request"):
 		world.show_notification("Connection required.")
 		return true
+	var request_id := make_display_request_id("deposit", grid_pos)
 
-	mark_display_transaction_pending(grid_pos)
+	mark_display_transaction_pending(grid_pos, request_id)
 	var sent := bool(network.send_inventory_transaction_request({
 		"action": "display_deposit",
-		"request_id": make_display_request_id("deposit", grid_pos),
+		"request_id": request_id,
 		"world": world.current_world_name,
 		"x": grid_pos.x,
 		"y": grid_pos.y,
@@ -4402,6 +4528,7 @@ func try_display_selected_item_at_grid(grid_pos: Vector2i) -> bool:
 		"amount": 1
 	}))
 	if not sent:
+		pending_display_transaction_requests.erase(request_id)
 		pending_display_transactions.erase(grid_pos)
 		world.show_notification("Could not display that item yet.")
 	return true
@@ -4439,11 +4566,12 @@ func try_withdraw_display_item_at_grid(grid_pos: Vector2i) -> bool:
 	if network == null or not network.has_method("send_inventory_transaction_request"):
 		world.show_notification("Connection required.")
 		return true
+	var request_id := make_display_request_id("withdraw", grid_pos)
 
-	mark_display_transaction_pending(grid_pos)
+	mark_display_transaction_pending(grid_pos, request_id)
 	var sent := bool(network.send_inventory_transaction_request({
 		"action": "display_withdraw",
-		"request_id": make_display_request_id("withdraw", grid_pos),
+		"request_id": request_id,
 		"world": world.current_world_name,
 		"x": grid_pos.x,
 		"y": grid_pos.y,
@@ -4453,6 +4581,7 @@ func try_withdraw_display_item_at_grid(grid_pos: Vector2i) -> bool:
 		"amount": 1
 	}))
 	if not sent:
+		pending_display_transaction_requests.erase(request_id)
 		pending_display_transactions.erase(grid_pos)
 		world.show_notification("Could not take that item yet.")
 	return true
@@ -4488,11 +4617,12 @@ func try_display_selected_fish_at_grid(grid_pos: Vector2i) -> bool:
 	if network == null or not network.has_method("send_inventory_transaction_request"):
 		world.show_notification("Connection required.")
 		return true
+	var request_id := make_display_request_id("fish_deposit", grid_pos)
 
-	mark_display_transaction_pending(grid_pos)
+	mark_display_transaction_pending(grid_pos, request_id)
 	var sent := bool(network.send_inventory_transaction_request({
 		"action": "display_deposit",
-		"request_id": make_display_request_id("fish_deposit", grid_pos),
+		"request_id": request_id,
 		"world": world.current_world_name,
 		"x": grid_pos.x,
 		"y": grid_pos.y,
@@ -4502,6 +4632,7 @@ func try_display_selected_fish_at_grid(grid_pos: Vector2i) -> bool:
 		"amount": 1
 	}))
 	if not sent:
+		pending_display_transaction_requests.erase(request_id)
 		pending_display_transactions.erase(grid_pos)
 		world.show_notification("Could not display that fish yet.")
 	return true
@@ -4537,11 +4668,12 @@ func try_withdraw_fish_hanger_at_grid(grid_pos: Vector2i) -> bool:
 	if network == null or not network.has_method("send_inventory_transaction_request"):
 		world.show_notification("Connection required.")
 		return true
+	var request_id := make_display_request_id("fish_withdraw", grid_pos)
 
-	mark_display_transaction_pending(grid_pos)
+	mark_display_transaction_pending(grid_pos, request_id)
 	var sent := bool(network.send_inventory_transaction_request({
 		"action": "display_withdraw",
-		"request_id": make_display_request_id("fish_withdraw", grid_pos),
+		"request_id": request_id,
 		"world": world.current_world_name,
 		"x": grid_pos.x,
 		"y": grid_pos.y,
@@ -4551,6 +4683,7 @@ func try_withdraw_fish_hanger_at_grid(grid_pos: Vector2i) -> bool:
 		"amount": 1
 	}))
 	if not sent:
+		pending_display_transaction_requests.erase(request_id)
 		pending_display_transactions.erase(grid_pos)
 		world.show_notification("Could not take that fish yet.")
 	return true
@@ -6609,7 +6742,8 @@ func register_colour_cycle_block_visual(grid_pos: Vector2i, block_type: String, 
 	var clean_type := str(block_type).strip_edges().to_lower()
 	if clean_type == "" or not is_colour_cycle_block_type(clean_type):
 		unregister_colour_cycle_block_visual(grid_pos)
-		visual.self_modulate = Color.WHITE
+		if visual != null:
+			visual.self_modulate = Color.WHITE
 		return
 	colour_cycle_block_visuals[grid_pos] = {
 		"block_type": clean_type,
@@ -9060,6 +9194,11 @@ func is_foreground_tilemap_collision_candidate(grid_pos: Vector2i, block_data: D
 
 	var block_type := str(block_data.get("type", ""))
 	var clean_type := block_type.strip_edges().to_lower()
+	# Shift Block keeps a live node for its colour-cycle animation. Keep physics
+	# on that same node so world reconstruction cannot split visual and collision
+	# ownership between the node and the shared TileMapLayer.
+	if is_colour_cycle_block_type(clean_type):
+		return false
 	# World locks keep their interactive node for access-state visuals and input.
 	# Keep collision on that node too so reload-time visual refreshes cannot leave
 	# a lock split across node interaction and TileMapLayer physics.
@@ -9087,6 +9226,7 @@ func sync_foreground_tilemap_collision_for_block(grid_pos: Vector2i, block_data:
 	var is_tilemap_only := bool(block_data.get("tilemap_only", false)) and (block_node_value == null or not is_instance_valid(block_node_value))
 	var block_node: Node = block_node_value if block_node_value is Node and is_instance_valid(block_node_value) else null
 	var block_type := str(block_data.get("type", ""))
+	var keep_live_node_collision := is_colour_cycle_block_type(block_type)
 	var keep_node_collision_disabled := is_non_collideable_block(block_type) or is_background_block_type(block_type) or is_sign_block_type(block_type)
 	if is_wooden_entrance_tilemap_collision_block_type(block_type):
 		return sync_wooden_entrance_tilemap_collision(grid_pos)
@@ -9113,17 +9253,21 @@ func sync_foreground_tilemap_collision_for_block(grid_pos: Vector2i, block_data:
 		clear_foreground_tilemap_collision_cell(grid_pos)
 		if block_node != null and block_node.has_meta("tilemap_collision"):
 			block_node.remove_meta("tilemap_collision")
-		if block_node != null and block_node.has_meta("tilemap_collision_replaces_node"):
+		var had_replaced_node_collision := block_node != null and block_node.has_meta("tilemap_collision_replaces_node")
+		if had_replaced_node_collision:
 			block_node.remove_meta("tilemap_collision_replaces_node")
+		if block_node != null and (had_replaced_node_collision or keep_live_node_collision):
 			if keep_node_collision_disabled:
 				set_block_node_collision_fully_disabled(block_node, true)
 			else:
+				if keep_live_node_collision:
+					set_block_node_collision_fully_disabled(block_node, false)
 				set_original_block_collision_disabled(block_node, false)
 		elif block_node != null and keep_node_collision_disabled:
 			set_block_node_collision_fully_disabled(block_node, true)
-		if is_tilemap_only:
-			block_data.erase("tilemap_collision")
-			block_data.erase("tilemap_collision_kind")
+		block_data.erase("tilemap_collision")
+		block_data.erase("tilemap_collision_kind")
+		if world.blocks.has(grid_pos):
 			world.blocks[grid_pos] = block_data
 		return false
 
@@ -9701,6 +9845,11 @@ func set_block_texture(block, block_type: String, grid_pos: Vector2i = NO_VARIAN
 		var variant_texture = get_cached_visual_variant_texture(variant_texture_path)
 		if variant_texture != null:
 			visual.texture = variant_texture
+			using_variant_texture = true
+	if not using_variant_texture:
+		var atlas_variant_texture := get_stateful_block_atlas_texture(block_type, visual_block_type, grid_pos, background)
+		if atlas_variant_texture != null:
+			visual.texture = atlas_variant_texture
 			using_variant_texture = true
 
 	if not using_variant_texture and not background and is_donation_box_block_type(visual_block_type):
@@ -12216,6 +12365,15 @@ func punch_facing_block():
 	punch_grid_position(target_grid_pos, true)
 
 
+func require_current_player_harvest_access_at(grid_pos: Vector2i) -> bool:
+	if world == null:
+		return false
+	if world.has_method("can_current_player_build_at") and not bool(world.can_current_player_build_at(grid_pos)):
+		world.show_notification("This area is locked.")
+		return false
+	return true
+
+
 func try_harvest_tackle_box(grid_pos: Vector2i) -> bool:
 	if world == null:
 		return false
@@ -12228,6 +12386,8 @@ func try_harvest_tackle_box(grid_pos: Vector2i) -> bool:
 	var block_type := str(block_data.get("type", ""))
 	if not is_tackle_box_block_type(block_type):
 		return false
+	if not require_current_player_harvest_access_at(grid_pos):
+		return true
 
 	face_grid_for_block_punch(grid_pos)
 
@@ -12276,6 +12436,8 @@ func try_harvest_water_well(grid_pos: Vector2i) -> bool:
 	var block_type := str(block_data.get("type", ""))
 	if not is_water_well_block_type(block_type):
 		return false
+	if not require_current_player_harvest_access_at(grid_pos):
+		return true
 
 	face_grid_for_block_punch(grid_pos)
 
@@ -12323,6 +12485,8 @@ func try_harvest_atm_machine(grid_pos: Vector2i) -> bool:
 	var block_type := str(block_data.get("type", ""))
 	if not is_atm_machine_block_type(block_type):
 		return false
+	if not require_current_player_harvest_access_at(grid_pos):
+		return true
 
 	face_grid_for_block_punch(grid_pos)
 
@@ -12371,6 +12535,8 @@ func try_feed_chicken_at_grid(grid_pos: Vector2i) -> bool:
 	var block_type := str(block_data.get("type", ""))
 	if not is_chicken_block_type(block_type):
 		return false
+	if not require_current_player_harvest_access_at(grid_pos):
+		return true
 
 	if not world.can_reach_grid(grid_pos):
 		world.show_notification("Too far away.")
@@ -12430,6 +12596,8 @@ func try_harvest_chicken(grid_pos: Vector2i) -> bool:
 	var block_type := str(block_data.get("type", ""))
 	if not is_chicken_block_type(block_type):
 		return false
+	if not require_current_player_harvest_access_at(grid_pos):
+		return true
 
 	face_grid_for_block_punch(grid_pos)
 
@@ -12476,6 +12644,8 @@ func try_feed_cow_at_grid(grid_pos: Vector2i) -> bool:
 	var block_type := str(block_data.get("type", ""))
 	if not is_cow_block_type(block_type):
 		return false
+	if not require_current_player_harvest_access_at(grid_pos):
+		return true
 
 	if not world.can_reach_grid(grid_pos):
 		world.show_notification("Too far away.")
@@ -12535,6 +12705,8 @@ func try_harvest_cow(grid_pos: Vector2i) -> bool:
 	var block_type := str(block_data.get("type", ""))
 	if not is_cow_block_type(block_type):
 		return false
+	if not require_current_player_harvest_access_at(grid_pos):
+		return true
 
 	face_grid_for_block_punch(grid_pos)
 
@@ -12580,6 +12752,8 @@ func try_feed_duck_at_grid(grid_pos: Vector2i) -> bool:
 	var block_type := str(block_data.get("type", ""))
 	if not is_duck_block_type(block_type):
 		return false
+	if not require_current_player_harvest_access_at(grid_pos):
+		return true
 
 	if not world.can_reach_grid(grid_pos):
 		world.show_notification("Too far away.")
@@ -12639,6 +12813,8 @@ func try_harvest_duck(grid_pos: Vector2i) -> bool:
 	var block_type := str(block_data.get("type", ""))
 	if not is_duck_block_type(block_type):
 		return false
+	if not require_current_player_harvest_access_at(grid_pos):
+		return true
 
 	face_grid_for_block_punch(grid_pos)
 
