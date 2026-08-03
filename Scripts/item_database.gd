@@ -3650,7 +3650,7 @@ const ITEMS = {
 		"scan_flap_frames": false,
 		"flap_speed": 0.30,
 		"input_flap_time": 0.28,
-		"animation_fps": 3.0,
+		"animation_fps": 6.0,
 
 		"jump_type": "double",
 
