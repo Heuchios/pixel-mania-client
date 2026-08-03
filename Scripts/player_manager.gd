@@ -1930,12 +1930,12 @@ func is_remote_lava_rebound_block_type(block_type: String) -> bool:
 	return bool(item_data.get("lava_rebound", false))
 
 
-func should_play_remote_jump_sound(previous_animation_state: String, animation_state: String, had_position: bool) -> bool:
+func should_play_remote_jump_sound(previous_remote_animation_state: String, animation_state: String, had_position: bool) -> bool:
 	if not had_position:
 		return false
 	if animation_state != "jump":
 		return false
-	return previous_animation_state != "jump"
+	return previous_remote_animation_state != "jump"
 
 
 func should_play_remote_water_jump_sound(position: Vector2, facing: int, network_in_water: bool) -> bool:
@@ -3313,14 +3313,14 @@ func apply_remote_player_action_animation(remote_id: String, animation_state: St
 	var remote_player = remote_players.get(remote_id, null)
 	if remote_player == null or not is_instance_valid(remote_player):
 		return
-	var previous_animation_state := str(remote_player.get_meta("animation_state", "idle"))
+	var previous_remote_animation_state := str(remote_player.get_meta("animation_state", "idle"))
 	remote_player.set_meta("facing", -1 if facing < 0 else 1)
 	remote_player.set_meta("remote_action_animation_state", animation_state)
 	remote_player.set_meta("remote_action_animation_until_msec", Time.get_ticks_msec() + maxi(1, duration_msec))
 	remote_player.set_meta("animation_state", animation_state)
-	if previous_animation_state != animation_state:
+	if previous_remote_animation_state != animation_state:
 		remote_player.set_meta("animation_phase", 0.0)
-		maybe_spawn_remote_ant_sword_punch_slash(remote_player, previous_animation_state, animation_state)
+		maybe_spawn_remote_ant_sword_punch_slash(remote_player, previous_remote_animation_state, animation_state)
 	update_remote_shared_player_animation(remote_player, 0.0)
 	update_remote_player_facing(remote_player)
 
