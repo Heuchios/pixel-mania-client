@@ -5221,6 +5221,18 @@ const ITEMS = {
 		"rarity": "legendary",
 		"texture": "res://Assets/items/swords/void_pickaxe.png",
 		"inventory_icon": "res://Assets/items/swords/void_pickaxe_icon.png",
+		"animation_fps": 6.0,
+		"hand_item_animations": {
+			"idle": {
+				"frames": [
+					"res://Assets/items/swords/void_pickaxe.png",
+					"res://Assets/items/swords/void_pickaxe_2.png",
+					"res://Assets/items/swords/void_pickaxe_3.png"
+				],
+				"fps": 6.0,
+				"loop": true
+			}
+		},
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "hand",
