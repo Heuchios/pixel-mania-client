@@ -21,6 +21,8 @@
 	"basic_green_pants": [224, 128, 32, 32],
 	"basic_pink_pants_icon": [192, 160, 32, 32],
 	"basic_pink_pants": [224, 160, 32, 32],
+	"messy_brown_hair_icon": [384, 0, 32, 32],
+	"messy_brown_hair": [416, 0, 32, 32],
 	"basic_red_shirt_icon": [0, 32, 32, 32],
 	"basic_red_shirt_body": [32, 32, 32, 32],
 	"basic_red_shirt_arm": [160, 32, 32, 32],
