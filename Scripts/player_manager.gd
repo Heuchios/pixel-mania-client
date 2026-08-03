@@ -5,8 +5,10 @@ const EquipmentManagerScript = preload("res://Scripts/equipment_manager.gd")
 const PlayerAnimationManagerScript = preload("res://Scripts/player_animation_manager.gd")
 const PlayerShadowScript = preload("res://Scripts/player_shadow.gd")
 const PlayerWorldFadeFXScene = preload("res://Scenes/particles/PlayerWorldFadeFX.tscn")
+const MovementModeScript = preload("res://Scripts/networking/movement_mode.gd")
 
 var world = null
+var MovementMode: Node = null
 
 const DEBUG_ACTION_POSITION_FLOW := false
 const DEBUG_REMOTE_APPEARANCE_FLOW := false
@@ -22,6 +24,32 @@ const PLAYER_WORLD_FADE_FX_NODE_NAME := "PlayerWorldFadeFX"
 var respawn_sequence_running := false
 var respawn_sequence_id := 0
 var movement_sync_debug_enabled := false
+
+
+func _resolve_movement_mode_singleton() -> void:
+	if is_instance_valid(MovementMode):
+		return
+
+	var root_node: Node = null
+	if world != null and is_instance_valid(world):
+		var world_tree = world.get_tree()
+		if world_tree != null:
+			root_node = world_tree.root
+	elif get_tree() != null:
+		root_node = get_tree().root
+
+	if root_node != null:
+		var movement_mode_singleton = root_node.get_node_or_null("MovementMode")
+		if is_instance_valid(movement_mode_singleton):
+			MovementMode = movement_mode_singleton
+			return
+
+	var fallback_mode = MovementModeScript.new()
+	if fallback_mode == null:
+		return
+	MovementMode = fallback_mode
+	if MovementMode.has_method("_ready"):
+		MovementMode.call("_ready")
 
 
 func debug_action_position_flow(message: String) -> void:
@@ -42,6 +70,7 @@ func debug_remote_appearance_flow(message: String, data: Dictionary = {}) -> voi
 
 func setup(world_ref):
 	world = world_ref
+	_resolve_movement_mode_singleton()
 	movement_sync_debug_enabled = MovementMode.has_method("has_launch_arg") and bool(MovementMode.has_launch_arg(MOVEMENT_SYNC_DEBUG_ARG))
 	remote_position_snapshot_generation += 1
 	remote_pending_position_snapshots.clear()
