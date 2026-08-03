@@ -110,6 +110,31 @@ const SNOW_STORM_FX_SCENE_PATH = "res://Scenes/particles/SnowStormFX.tscn"
 const SNOW_STORM_WIND_FX_SCENE_PATH = "res://Scenes/particles/WindGustFX.tscn"
 const ROTATING_SWORD_SLASH_FX_SCENE_PATH = "res://Scenes/particles/RotatingSwordSlashFX.tscn"
 const ANT_SWORD_SLASH_REMOTE_DEDUPE_MSEC := 140
+const PLAYER_MANAGER_SCRIPT_PATH = "res://Scripts/player_manager.gd"
+const OPTIONAL_WORLD_UI_SETUP_METHODS := [
+	&"setup_player_menu_ui",
+	&"setup_game_menu_ui",
+	&"setup_settings_panel_ui",
+	&"setup_friends_ui",
+	&"setup_developer_panel_ui",
+	&"setup_trade_ui",
+	&"setup_vending_ui",
+	&"setup_safe_ui",
+	&"setup_donation_box_ui",
+	&"setup_mailbox_ui",
+	&"setup_bulletin_board_ui",
+	&"setup_display_ui",
+	&"setup_fish_monger_ui",
+	&"setup_cctv_ui",
+	&"setup_oil_refinery_ui",
+	&"setup_battery_charger_ui",
+	&"setup_generator_ui",
+	&"setup_shop_ui",
+	&"setup_crafting_ui",
+	&"setup_furnace_ui",
+	&"setup_sign_ui",
+	&"setup_world_menu_ui",
+]
 
 var block_scene = preload("res://Scenes/block.tscn")
 var rotating_sword_slash_scene: PackedScene = null
@@ -276,6 +301,8 @@ const SEED_TREE_MATURE_PREVIEW_POSITIONS = [
 ]
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
+const WorldScenePreloader = preload("res://Scripts/world_scene_preloader.gd")
+const WorldLockManagerScript = preload("res://Scripts/world_lock_manager.gd")
 
 var item_database = {}
 var splice_recipes = {}
@@ -389,6 +416,7 @@ var particle_manager = null
 var block_shadow_manager = null
 var interaction_manager = null
 var player_manager = null
+var _cached_player_manager_script: Script = null
 var gameplay_ui_manager = null
 var fishing_manager = null
 var fish_monger_manager = null
@@ -422,6 +450,8 @@ var city_theme_rain_transition_generation := 0
 var snow_storm_fx = null
 var snow_storm_wind_fx = null
 var applying_network_world_update = false
+var optional_world_ui_warmup_started := false
+var MovementMode: Node = null
 
 
 func is_gem_currency(item_type: String, _category: String = "currency") -> bool:
@@ -1159,7 +1189,7 @@ func get_seed_preview_block_texture(block_type: String) -> Texture2D:
 	return block_texture
 
 
-func get_block_atlas_icon_texture(block_type: String, block_data: Dictionary = {}) -> Texture2D:
+func get_block_atlas_icon_texture(block_type: String, block_data: Dictionary = {}, atlas_tile_set: TileSet = null) -> Texture2D:
 	var clean_block_type := block_type.strip_edges()
 	if clean_block_type == "":
 		return null
@@ -1168,11 +1198,16 @@ func get_block_atlas_icon_texture(block_type: String, block_data: Dictionary = {
 	if item_data.is_empty() and item_database.has(clean_block_type) and item_database[clean_block_type] is Dictionary:
 		item_data = item_database[clean_block_type]
 
-	var atlas_item_id := int(item_data.get("atlas_item_id", ITEM_ATLAS_DB.get_item_id_for_key(clean_block_type)))
+	var atlas_item_id := int(item_data.get("atlas_item_id", 0))
+	if atlas_item_id <= 0:
+		atlas_item_id = ITEM_ATLAS_DB.get_item_id_for_key(clean_block_type)
 	if atlas_item_id <= 0:
 		return null
 
-	return ITEM_ATLAS_DB.get_item_icon(atlas_item_id, get_item_atlas_tile_set())
+	var resolved_tile_set: TileSet = atlas_tile_set
+	if resolved_tile_set == null:
+		resolved_tile_set = get_item_atlas_tile_set()
+	return ITEM_ATLAS_DB.get_item_icon(atlas_item_id, resolved_tile_set)
 
 
 func get_seed_icon_preview_size(source_size: Vector2i, preview_max_size: int = SEED_ICON_PREVIEW_MAX_SIZE) -> Vector2i:
@@ -1403,6 +1438,7 @@ func setup_item_database():
 	apply_tier_1_splice_balance()
 	ensure_seed_item_definitions_from_blocks()
 
+	var item_atlas_tile_set: TileSet = get_item_atlas_tile_set()
 	for item_id in item_database.keys():
 		var item_data = item_database[item_id]
 		var category = str(item_data.get("category", ""))
@@ -1413,7 +1449,7 @@ func setup_item_database():
 			if not bool(item_data.get("hidden", false)):
 				block_items.append(item_id)
 
-			var block_texture = get_block_atlas_icon_texture(str(item_id), item_data)
+			var block_texture = get_block_atlas_icon_texture(str(item_id), item_data, item_atlas_tile_set)
 			if block_texture == null:
 				block_texture = load_item_texture_spec(item_data)
 			if block_texture != null:
@@ -1639,6 +1675,7 @@ func move_player_to_front():
 
 
 func _ready():
+	_resolve_movement_mode_singleton()
 	if _is_custom_movement_world_export_launch():
 		_run_custom_movement_world_export()
 		return
@@ -1689,27 +1726,6 @@ func _ready():
 	setup_command_manager()
 	setup_chat_ui()
 	setup_notification_ui()
-	setup_player_menu_ui()
-	setup_game_menu_ui()
-	setup_friends_ui()
-	setup_developer_panel_ui()
-	setup_trade_ui()
-	setup_vending_ui()
-	setup_safe_ui()
-	setup_donation_box_ui()
-	setup_mailbox_ui()
-	setup_bulletin_board_ui()
-	setup_display_ui()
-	setup_fish_monger_ui()
-	setup_cctv_ui()
-	setup_oil_refinery_ui()
-	setup_battery_charger_ui()
-	setup_generator_ui()
-	setup_shop_ui()
-	setup_crafting_ui()
-	setup_furnace_ui()
-	setup_sign_ui()
-	setup_world_menu_ui()
 
 	if _is_netfox_real_server_launch():
 		_finish_netfox_real_server_startup()
@@ -1724,6 +1740,39 @@ func _ready():
 	else:
 		exit_to_main_menu(false)
 	update_all_ui()
+
+
+func start_optional_world_ui_warmup() -> void:
+	if optional_world_ui_warmup_started:
+		return
+	optional_world_ui_warmup_started = true
+	WorldScenePreloader.start_optional_warmup()
+	call_deferred("_warm_optional_world_ui")
+
+
+func _warm_optional_world_ui() -> void:
+	# Let the world render first, then amortize modal scene construction across
+	# frames. Every public open path also sets up its UI on demand.
+	var scene_tree := get_tree()
+	if scene_tree == null:
+		return
+	scene_tree.process_frame.connect(_warm_optional_world_ui_step.bind(0), CONNECT_ONE_SHOT)
+
+
+func _warm_optional_world_ui_step(setup_index: int) -> void:
+	if not is_inside_tree() or setup_index >= OPTIONAL_WORLD_UI_SETUP_METHODS.size():
+		return
+
+	var setup_method: StringName = OPTIONAL_WORLD_UI_SETUP_METHODS[setup_index]
+	if has_method(setup_method):
+		call(setup_method)
+
+	var scene_tree := get_tree()
+	if scene_tree != null:
+		scene_tree.process_frame.connect(
+			_warm_optional_world_ui_step.bind(setup_index + 1),
+			CONNECT_ONE_SHOT
+		)
 
 
 func show_pending_join_loading_overlay_early() -> void:
@@ -1957,7 +2006,9 @@ func _custom_movement_get_arg_value(flag_name: String, default_value: String) ->
 
 
 func _load_item_database():
-	var item_database_script = load(ITEM_DATABASE_PATH)
+	var item_database_script: Script = WorldScenePreloader.get_loaded_item_database_script()
+	if item_database_script == null:
+		item_database_script = load(ITEM_DATABASE_PATH) as Script
 
 	if item_database_script == null:
 		push_error("Could not load item database script at %s" % ITEM_DATABASE_PATH)
@@ -1966,7 +2017,6 @@ func _load_item_database():
 		tier_1_splice_balance = {}
 		return
 
-	ITEM_ATLAS_DB.reload()
 	item_database = item_database_script.ITEMS.duplicate(true)
 	item_database = ITEM_ATLAS_DB.merge_item_database(item_database)
 	splice_recipes = item_database_script.SPLICE_RECIPES
@@ -2037,6 +2087,36 @@ func _physics_process(delta):
 func setup_world_loading_overlay():
 	if world_loading_ui_manager != null and world_loading_ui_manager.has_method("setup_overlay"):
 		world_loading_ui_manager.setup_overlay()
+
+
+func _resolve_movement_mode_singleton() -> void:
+	if MovementMode != null and is_instance_valid(MovementMode):
+		return
+	var root = get_tree().get_root()
+	if root != null:
+		var singleton_node = root.get_node_or_null("MovementMode")
+		if singleton_node != null:
+			MovementMode = singleton_node
+			return
+
+	var movement_mode_script = preload("res://Scripts/networking/movement_mode.gd")
+	var movement_mode_instance = movement_mode_script.new()
+	if movement_mode_instance.has_method("_ready"):
+		movement_mode_instance._ready()
+	MovementMode = movement_mode_instance
+
+
+func _load_player_manager_script() -> Script:
+	if _cached_player_manager_script != null:
+		return _cached_player_manager_script
+
+	var player_script = load(PLAYER_MANAGER_SCRIPT_PATH) as Script
+	if player_script == null:
+		push_error("[PlayerManager] Unable to load player manager script at %s" % PLAYER_MANAGER_SCRIPT_PATH)
+		return null
+
+	_cached_player_manager_script = player_script
+	return player_script
 
 
 func begin_smooth_world_load(world_name: String, wait_for_server_state: bool = true):
@@ -3085,6 +3165,16 @@ func play_player_punch_animation():
 	if player_manager != null and player_manager.has_method("play_player_punch_animation"):
 		player_manager.play_player_punch_animation()
 
+
+func play_player_place_animation() -> void:
+	if player_manager != null and player_manager.has_method("play_player_place_animation"):
+		player_manager.play_player_place_animation()
+
+
+func play_remote_player_place_animation(data: Dictionary) -> void:
+	if player_manager != null and player_manager.has_method("play_remote_player_place_animation"):
+		player_manager.play_remote_player_place_animation(data)
+
 func update_block_damage_recovery(delta):
 	if block_manager != null and block_manager.has_method("update_block_damage_recovery"):
 		block_manager.update_block_damage_recovery(delta)
@@ -3177,18 +3267,8 @@ func setup_interaction_manager():
 
 func setup_player_manager():
 	if player_manager == null:
-		var script_paths = [
-			"res://Scripts/player_manager.gd",
-			"res://scripts/player_manager.gd"
-		]
-		var player_script: Script = null
-		for script_path in script_paths:
-			if ResourceLoader.exists(script_path):
-				player_script = load(script_path)
-				if player_script != null:
-					break
+		var player_script = _load_player_manager_script()
 		if player_script == null:
-			push_error("[PlayerManager] Unable to load player_manager script. Check resource path and filesystem case on this machine.")
 			return
 		player_manager = Node.new()
 		player_manager.name = "PlayerManager"
@@ -3246,7 +3326,7 @@ func _is_trusted_movement_backend_dev_client_launch() -> bool:
 		return bool(MovementMode.is_custom_movement_client_launch())
 	if MovementMode.is_netfox_real() and MovementMode.has_method("is_netfox_real_client_launch"):
 		return bool(MovementMode.is_netfox_real_client_launch())
-	var trusted_mode := MovementMode.is_netfox_real() or MovementMode.is_custom_authoritative()
+	var trusted_mode: bool = MovementMode.is_netfox_real() or MovementMode.is_custom_authoritative()
 	return trusted_mode and MovementMode.has_launch_arg("--client") and not MovementMode.has_launch_arg("--server")
 
 
@@ -3305,8 +3385,8 @@ func _run_backend_dev_login_and_enter_world() -> void:
 		MovementMode.report_backend_dev_login_rejected()
 		return
 
-	var world_name := MovementMode.get_dev_test_world_name(_get_backend_dev_login_default_world_name())
-	var profile_name := MovementMode.get_dev_profile_name(_get_backend_dev_login_default_profile_name())
+	var world_name: String = MovementMode.get_dev_test_world_name(_get_backend_dev_login_default_world_name())
+	var profile_name: String = MovementMode.get_dev_profile_name(_get_backend_dev_login_default_profile_name())
 	var network := get_node_or_null("/root/NetworkManager")
 	if network == null:
 		push_warning("[BackendDevLogin] NetworkManager is not available.")
@@ -3457,8 +3537,8 @@ func _get_backend_dev_login_session_result(network: Node, expected_username: Str
 
 
 func _direct_enter_backend_dev_login_world() -> void:
-	var world_name := MovementMode.get_dev_test_world_name(_get_backend_dev_login_default_world_name())
-	var profile_name := MovementMode.get_dev_profile_name(_get_backend_dev_login_default_profile_name())
+	var world_name: String = MovementMode.get_dev_test_world_name(_get_backend_dev_login_default_world_name())
+	var profile_name: String = MovementMode.get_dev_profile_name(_get_backend_dev_login_default_profile_name())
 	var network := get_node_or_null("/root/NetworkManager")
 	if network != null:
 		if network.has_method("get_active_session_username"):
@@ -3574,7 +3654,7 @@ func _get_backend_dev_world_state_api_base() -> String:
 		if active_base != "":
 			return active_base.trim_suffix("/")
 
-	var launch_base := MovementMode.get_launch_arg_value("--pixelmania-api-base", "").strip_edges()
+	var launch_base: String = MovementMode.get_launch_arg_value("--pixelmania-api-base", "").strip_edges()
 	if launch_base != "":
 		return launch_base.trim_suffix("/")
 
@@ -3586,7 +3666,7 @@ func _finish_netfox_real_server_startup() -> void:
 	if world_menu_ui != null and world_menu_ui.has_method("close_menu"):
 		world_menu_ui.close_menu()
 	if _should_bootstrap_netfox_real_local_server_world():
-		var world_name := MovementMode.get_dev_test_world_name(DEFAULT_WORLD_NAME)
+		var world_name: String = MovementMode.get_dev_test_world_name(DEFAULT_WORLD_NAME)
 		_bootstrap_netfox_real_local_server_world(world_name)
 
 
@@ -3637,7 +3717,7 @@ func _bootstrap_netfox_real_local_server_world(world_name: String) -> void:
 
 
 func _finish_custom_authoritative_server_startup() -> void:
-	var world_name := MovementMode.get_dev_test_world_name("TEST")
+	var world_name: String = MovementMode.get_dev_test_world_name("TEST")
 	current_world_name = world_name
 	in_world = true
 	print("[PhaseI] Custom authoritative server mode detected; using actual main scene world=%s." % world_name)
@@ -4013,6 +4093,18 @@ func get_sfx_volume() -> float:
 		return float(sound_manager.get_sfx_volume())
 
 	return 1.0
+
+
+func set_chat_content_filter_enabled(enabled: bool) -> void:
+	if chat_ui != null and chat_ui.has_method("set_chat_content_filter_enabled"):
+		chat_ui.set_chat_content_filter_enabled(enabled)
+
+
+func is_chat_content_filter_enabled() -> bool:
+	if chat_ui != null and chat_ui.has_method("is_chat_content_filter_enabled"):
+		return bool(chat_ui.is_chat_content_filter_enabled())
+
+	return true
 
 
 func spawn_block_hit_particles(grid_pos: Vector2i, block_type: String = "", layer: String = "foreground"):
@@ -4523,18 +4615,9 @@ func update_username_label():
 
 func setup_world_lock_manager():
 	if world_lock_manager == null:
-		var lock_script = load("res://Scripts/world_lock_manager.gd")
-		if lock_script == null:
-			if has_method("show_notification"):
-				show_notification("World Lock manager script failed to load.")
-			return
-		if not (lock_script is Script):
-			if has_method("show_notification"):
-				show_notification("World Lock manager script is not valid.")
-			return
 		world_lock_manager = Node.new()
 		world_lock_manager.name = "WorldLockManager"
-		world_lock_manager.set_script(lock_script)
+		world_lock_manager.set_script(WorldLockManagerScript)
 		add_child(world_lock_manager)
 	if world_lock_manager.has_method("setup"):
 		world_lock_manager.setup(self)
@@ -5669,7 +5752,7 @@ func request_server_seed_place(grid_pos: Vector2i) -> bool:
 		return false
 
 	var seed_grow_time := get_seed_growth_time(selected_item_type)
-	return bool(network.send_inventory_transaction_request({
+	var sent := bool(network.send_inventory_transaction_request({
 		"action": "seed_place",
 		"world": current_world_name,
 		"x": grid_pos.x,
@@ -5678,6 +5761,9 @@ func request_server_seed_place(grid_pos: Vector2i) -> bool:
 		"grow_time": seed_grow_time,
 		"max_grow_time": seed_grow_time
 	}))
+	if sent:
+		play_player_place_animation()
+	return sent
 
 
 func can_place_block_here(grid_pos: Vector2i) -> bool:
@@ -7664,12 +7750,14 @@ func setup_generator_ui():
 	return
 
 func toggle_player_menu():
+	setup_player_menu_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("toggle_player_menu"):
 		return gameplay_ui_manager.toggle_player_menu()
 
 	return
 
 func open_player_menu():
+	setup_player_menu_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_player_menu"):
 		return gameplay_ui_manager.open_player_menu()
 
@@ -7689,6 +7777,7 @@ func is_player_menu_open() -> bool:
 
 
 func toggle_game_menu():
+	setup_game_menu_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("toggle_game_menu"):
 		return gameplay_ui_manager.toggle_game_menu()
 
@@ -7696,6 +7785,7 @@ func toggle_game_menu():
 
 
 func open_game_menu():
+	setup_game_menu_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_game_menu"):
 		return gameplay_ui_manager.open_game_menu()
 
@@ -7717,6 +7807,7 @@ func is_game_menu_open() -> bool:
 
 
 func open_settings_panel():
+	setup_settings_panel_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_settings_panel"):
 		return gameplay_ui_manager.open_settings_panel()
 
@@ -7738,6 +7829,7 @@ func is_settings_panel_open() -> bool:
 
 
 func open_friends_panel():
+	setup_friends_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_friends_panel"):
 		return gameplay_ui_manager.open_friends_panel()
 
@@ -7752,6 +7844,7 @@ func close_friends_panel():
 
 
 func toggle_friends_panel():
+	setup_friends_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("toggle_friends_panel"):
 		return gameplay_ui_manager.toggle_friends_panel()
 
@@ -7766,6 +7859,7 @@ func is_friends_panel_open() -> bool:
 
 
 func toggle_developer_panel():
+	setup_developer_panel_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("toggle_developer_panel"):
 		return gameplay_ui_manager.toggle_developer_panel()
 
@@ -7773,6 +7867,7 @@ func toggle_developer_panel():
 
 
 func open_developer_panel():
+	setup_developer_panel_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_developer_panel"):
 		return gameplay_ui_manager.open_developer_panel()
 
@@ -7793,6 +7888,7 @@ func is_developer_panel_open() -> bool:
 	return false
 
 func handle_trade_message(data: Dictionary):
+	setup_trade_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("handle_trade_message"):
 		return gameplay_ui_manager.handle_trade_message(data)
 
@@ -7805,6 +7901,7 @@ func close_trade_ui():
 	return
 
 func open_vending_ui(grid_pos: Vector2i):
+	setup_vending_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_vending_ui"):
 		return gameplay_ui_manager.open_vending_ui(grid_pos)
 
@@ -7823,6 +7920,7 @@ func is_vending_open() -> bool:
 	return false
 
 func open_safe_ui(grid_pos: Vector2i):
+	setup_safe_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_safe_ui"):
 		return gameplay_ui_manager.open_safe_ui(grid_pos)
 
@@ -7841,6 +7939,7 @@ func is_safe_open() -> bool:
 	return false
 
 func open_donation_box_ui(grid_pos: Vector2i):
+	setup_donation_box_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_donation_box_ui"):
 		return gameplay_ui_manager.open_donation_box_ui(grid_pos)
 
@@ -7859,6 +7958,7 @@ func is_donation_box_open() -> bool:
 	return false
 
 func open_mailbox_ui(grid_pos: Vector2i):
+	setup_mailbox_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_mailbox_ui"):
 		return gameplay_ui_manager.open_mailbox_ui(grid_pos)
 
@@ -7877,6 +7977,7 @@ func is_mailbox_open() -> bool:
 	return false
 
 func open_bulletin_board_ui(grid_pos: Vector2i):
+	setup_bulletin_board_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_bulletin_board_ui"):
 		return gameplay_ui_manager.open_bulletin_board_ui(grid_pos)
 
@@ -7895,6 +7996,7 @@ func is_bulletin_board_open() -> bool:
 	return false
 
 func open_display_ui(grid_pos: Vector2i):
+	setup_display_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_display_ui"):
 		return gameplay_ui_manager.open_display_ui(grid_pos)
 
@@ -7913,6 +8015,7 @@ func is_display_open() -> bool:
 	return false
 
 func open_fish_monger_ui(grid_pos: Vector2i):
+	setup_fish_monger_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_fish_monger_ui"):
 		return gameplay_ui_manager.open_fish_monger_ui(grid_pos)
 
@@ -7931,6 +8034,7 @@ func is_fish_monger_open() -> bool:
 	return false
 
 func open_cctv_ui(grid_pos: Vector2i):
+	setup_cctv_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_cctv_ui"):
 		return gameplay_ui_manager.open_cctv_ui(grid_pos)
 
@@ -7949,6 +8053,7 @@ func is_cctv_open() -> bool:
 	return false
 
 func open_oil_refinery_ui(grid_pos: Vector2i):
+	setup_oil_refinery_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_oil_refinery_ui"):
 		return gameplay_ui_manager.open_oil_refinery_ui(grid_pos)
 
@@ -7968,6 +8073,7 @@ func is_oil_refinery_open() -> bool:
 
 
 func open_battery_charger_ui(grid_pos: Vector2i):
+	setup_battery_charger_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_battery_charger_ui"):
 		return gameplay_ui_manager.open_battery_charger_ui(grid_pos)
 
@@ -8283,6 +8389,7 @@ func setup_crafting_ui():
 	return
 
 func open_crafting_station(grid_pos: Vector2i):
+	setup_crafting_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_crafting_station"):
 		return gameplay_ui_manager.open_crafting_station(grid_pos)
 
@@ -8355,6 +8462,7 @@ func setup_sign_ui():
 	return
 
 func open_sign_editor(grid_pos: Vector2i):
+	setup_sign_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_sign_editor"):
 		return gameplay_ui_manager.open_sign_editor(grid_pos)
 
@@ -8385,6 +8493,7 @@ func setup_furnace_ui():
 	return
 
 func open_furnace_station(grid_pos: Vector2i):
+	setup_furnace_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_furnace_station"):
 		return gameplay_ui_manager.open_furnace_station(grid_pos)
 
@@ -8421,6 +8530,7 @@ func update_shop_ui():
 	return
 
 func open_shop():
+	setup_shop_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_shop"):
 		return gameplay_ui_manager.open_shop()
 
@@ -8433,6 +8543,7 @@ func close_shop():
 	return
 
 func toggle_shop():
+	setup_shop_ui()
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("toggle_shop"):
 		return gameplay_ui_manager.toggle_shop()
 
@@ -8533,6 +8644,7 @@ func exit_to_main_menu(save_current_world: bool = true):
 
 
 func exit_to_world_menu():
+	setup_world_menu_ui()
 	if save_manager != null and save_manager.has_method("exit_to_world_menu"):
 		return save_manager.exit_to_world_menu()
 
@@ -9164,6 +9276,8 @@ func apply_network_wire_visibility_refresh(data: Dictionary):
 
 
 func apply_network_generator_data_update(data: Dictionary):
+	if bool(data.get("opened", false)):
+		setup_generator_ui()
 	if electricity_manager != null and electricity_manager.has_method("handle_generator_data_update"):
 		electricity_manager.handle_generator_data_update(data)
 	elif generator_ui != null and generator_ui.has_method("open_generator"):
