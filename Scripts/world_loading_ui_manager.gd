@@ -7,14 +7,19 @@ const WORLD_LOADING_SERVER_RETRY_MAX_ATTEMPTS := 6
 # Never fail-open from the loading overlay into an empty staging world. If
 # readiness stalls, keep the overlay visible and request a fresh snapshot.
 const WORLD_READY_WAIT_TIMEOUT_MSEC := 8000
-const WORLD_READY_CHECK_INTERVAL_MSEC := 50
+# Poll readiness once per frame rather than every 50ms. The old interval could add
+# up to ~34ms of pure waiting after the world was already playable.
+const WORLD_READY_CHECK_INTERVAL_MSEC := 16
 const WORLD_READY_RETRY_INTERVAL_MSEC := 1000
 const WORLD_READY_RETRY_MAX_ATTEMPTS := 6
-# Add a small visual settling period before revealing the world and use a gentle
-# fade to keep the handoff from feeling abrupt.
-const WORLD_LOADING_MIN_VISIBLE_MSEC := 280
-const WORLD_LOADING_READY_HOLD_MSEC := 160
-const WORLD_LOADING_REVEAL_FADE_SECONDS := 0.6
+# These three used to add a fixed ~1.04s of opaque overlay AFTER the world was fully
+# built, collidable and activated by the server -- pure cosmetic delay on every join.
+# Keep a short minimum visible time so a fast join does not flash the overlay, drop
+# the post-ready hold entirely, and shorten the fade. The player is now unlocked when
+# the fade STARTS (see _fade_out_loading_overlay), so the fade no longer gates control.
+const WORLD_LOADING_MIN_VISIBLE_MSEC := 90
+const WORLD_LOADING_READY_HOLD_MSEC := 0
+const WORLD_LOADING_REVEAL_FADE_SECONDS := 0.18
 const WORLD_LOADING_REVEAL_FADE_TRANS: Tween.TransitionType = Tween.TRANS_SINE
 const WORLD_LOADING_REVEAL_FADE_EASE: Tween.EaseType = Tween.EASE_IN_OUT
 const WORLD_LOADING_DOTS_INTERVAL := 0.32
@@ -992,6 +997,15 @@ func _fade_out_loading_overlay(operation_id: int) -> void:
 		return
 
 	world_loading_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# The world is fully built, collidable and server-activated by the time the fade
+	# starts, and the overlay already ignores mouse input from here on. Hand control
+	# back now instead of at the end of the tween so the fade is purely cosmetic
+	# rather than a period where a ready world is unplayable. _finalize_loading_operation
+	# still calls this again; it is idempotent.
+	_unlock_player_after_loading()
+	_record_world_entry_profile_stage("client_controls_unlocked", {
+		"loading_visible_ms": maxi(0, Time.get_ticks_msec() - loading_started_msec),
+	})
 	world_loading_fade_tween = create_tween()
 	world_loading_fade_tween.set_trans(WORLD_LOADING_REVEAL_FADE_TRANS)
 	world_loading_fade_tween.set_ease(WORLD_LOADING_REVEAL_FADE_EASE)

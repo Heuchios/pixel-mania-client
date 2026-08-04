@@ -75,12 +75,19 @@ var world_route_redirect_attempts := {}
 var debug_last_sent_equipment_key := ""
 var debug_last_sent_animation_state := ""
 var movement_sequence := 0
+var local_position_pending_payload: Dictionary = {}
+var local_position_pending_world: String = ""
+var local_position_pending_reason: String = ""
+var local_position_pending_queued_msec: int = 0
+var has_local_position_pending := false
 var local_position_batch_window_msec := 0
 var local_position_batch_budget := 0
 var local_position_batch_world := ""
 var local_position_batch_limit := 0
 var local_position_batch_sends := 0
 var local_position_batch_skips := 0
+var local_position_queue_last_flush_msec := 0
+var _last_local_position_debug_msec := 0
 var last_accepted_position_sequence := 0
 var last_rejected_position_sequence := 0
 var world_event_tile_update_queue: Array[Dictionary] = []
@@ -105,6 +112,10 @@ const NETFOX_TRUSTED_POSITION_DEBUG_ENV := "NETFOX_TRUSTED_POSITION_DEBUG"
 const WORLD_ENTRY_PROFILE_ARG := "--world-entry-profile"
 const WORLD_ENTRY_PROFILE_ENV := "PIXELMANIA_WORLD_ENTRY_PROFILE"
 const WORLD_ENTRY_FRAME_STALL_THRESHOLD_MS := 33.334
+# Upper bound on how long the profile stays open waiting for the loading overlay to
+# report that controls were actually handed back. Only reached if the overlay reveal
+# path never runs.
+const WORLD_ENTRY_CONTROLS_WATCHDOG_MSEC := 5000
 const PLAYER_STATE_REQUEST_TIMEOUT_MS := 15000
 var SERVER_URLS: Array[String] = WORLD_ROUTE_WS_URLS.duplicate()
 const NETWORK_API_OVERRIDE_SETTING := "pixelmania/network/api_base"
@@ -164,6 +175,8 @@ const MAX_BLOCK_HIT_METRIC := 1024
 # Keep WebSocket movement responsive for current interpolation/backend.
 # Lower this later only after remote interpolation buffer is retuned.
 const MAX_PLAYER_POSITION_RATE_PER_SECOND := 60
+const LOCAL_POSITION_QUEUE_FLUSH_DEBUG_INTERVAL_MS := 600
+const LOCAL_POSITION_QUEUE_FLUSH_INTERVAL_MS := 120
 const MAX_PLAYER_PUNCH_RATE_PER_SECOND := 8
 const MAX_NETFOX_STATE_BRIDGE_RATE_PER_SECOND := 20
 const MAX_TRADE_RATE_PER_SECOND := 14
@@ -367,7 +380,9 @@ func begin_world_entry_profile(world_name: String, request_id: String) -> void:
 		"peak_memory_bytes": memory_bytes,
 		"max_frame_delta_ms": 0.0,
 		"frame_stall_count": 0,
-		"last_loading_percent": -1
+		"last_loading_percent": -1,
+		"activated_at_msec": 0,
+		"pending_controls_extra": {}
 	}
 	record_world_entry_stage("client_join_request")
 
@@ -446,6 +461,12 @@ func _sample_world_entry_frame(delta: float) -> void:
 		memory_bytes,
 		int(world_entry_profile.get("peak_memory_bytes", memory_bytes))
 	)
+	# Watchdog: the loading overlay normally completes the profile once the player is
+	# genuinely unlocked. If the overlay path never runs, close the profile out here
+	# so a run always produces a terminal stage instead of a truncated report.
+	var activated_at_msec := int(world_entry_profile.get("activated_at_msec", 0))
+	if activated_at_msec > 0 and Time.get_ticks_msec() - activated_at_msec >= WORLD_ENTRY_CONTROLS_WATCHDOG_MSEC:
+		complete_world_entry_profile({"completion_source": "watchdog"})
 
 
 func update_world_entry_loading_progress(received_count: int, chunk_count: int) -> void:
@@ -464,7 +485,19 @@ func update_world_entry_loading_progress(received_count: int, chunk_count: int) 
 func complete_world_entry_profile(extra: Dictionary = {}) -> void:
 	if world_entry_profile.is_empty() or not bool(world_entry_profile.get("active", false)):
 		return
-	record_world_entry_stage("client_controls_enabled", extra)
+	# Carry through the activation details recorded when world_entry_active arrived so
+	# the terminal stage still reports the revisions it always did, regardless of
+	# whether the loading overlay or the watchdog closed the profile out.
+	var merged_extra: Dictionary = {}
+	var pending_extra: Variant = world_entry_profile.get("pending_controls_extra", {})
+	if pending_extra is Dictionary:
+		merged_extra = (pending_extra as Dictionary).duplicate()
+	for key in extra.keys():
+		merged_extra[key] = extra[key]
+	var activated_at_msec := int(world_entry_profile.get("activated_at_msec", 0))
+	if activated_at_msec > 0:
+		merged_extra["reveal_tail_ms"] = maxi(0, Time.get_ticks_msec() - activated_at_msec)
+	record_world_entry_stage("client_controls_enabled", merged_extra)
 	world_entry_profile["active"] = false
 
 
@@ -591,6 +624,7 @@ func _process_network_followup() -> void:
 	process_pending_world_entry_block_updates()
 	process_pending_world_entry_ready_retry()
 	apply_pending_server_player_state_if_ready()
+	_process_local_position_queue()
 
 
 func process_server_packets_with_budget(peer: WebSocketPeer, generation: int) -> void:
@@ -1346,8 +1380,8 @@ func send_message(data: Dictionary) -> bool:
 	if payload_text.to_utf8_buffer().size() > MAX_CLIENT_MESSAGE_BYTES:
 		push_warning("NetworkManager: refused oversized client packet type=" + str(outgoing.get("type", "")))
 		return false
-	socket.send_text(payload_text)
-	return true
+	var send_error = socket.send_text(payload_text)
+	return send_error == OK
 
 
 func _strip_session_token_from_non_auth_payload(outgoing: Dictionary) -> void:
@@ -2072,6 +2106,7 @@ func send_join_world(world_name: String) -> bool:
 	if world_node != null and world_node.has_method("update_smooth_world_load_message"):
 		world_node.update_smooth_world_load_message("Finding world...")
 	movement_sequence = 0
+	_clear_local_position_payload_queue()
 	last_accepted_position_sequence = 0
 	last_rejected_position_sequence = 0
 	debug_action_position_flow("send_join_world", {
@@ -3450,13 +3485,19 @@ func send_player_position(position: Vector2, facing: int, world_name: String, al
 	if clean_world == "":
 		clean_world = "START"
 	if not bypass_rate_limit and not _can_send_rate_limited("player_position", get_server_guided_player_position_rate_per_second(clean_world, MAX_PLAYER_POSITION_RATE_PER_SECOND)):
+		_set_local_position_payload_queue(clean_world, _build_player_position_payload(position, facing, clean_world, allow_join, false, position_reason), "rate_limited")
+		_maybe_log_local_position_queue_debug("local_rate_limited", clean_world, {
+			"world": clean_world,
+			"position_reason": _safe_string(position_reason, "", MAX_ITEM_ID_LENGTH),
+		})
 		return false
 	if not (position is Vector2):
 		return false
 	if not _consume_local_position_batch_slot(clean_world):
 		local_position_batch_skips += 1
 		var batch_population = _get_world_population_for_batching(clean_world)
-		debug_action_position_flow("player_position skipped by local batch budget", {
+		_set_local_position_payload_queue(clean_world, _build_player_position_payload(position, facing, clean_world, allow_join, false, position_reason), "batch_limit")
+		_maybe_log_local_position_queue_debug("local_batch_skip", clean_world, {
 			"world": clean_world,
 			"limit": local_position_batch_limit,
 			"remaining": local_position_batch_budget,
@@ -3470,10 +3511,23 @@ func send_player_position(position: Vector2, facing: int, world_name: String, al
 			"requested_world": clean_world,
 			"previous_network_world": current_world_name,
 			"allow_join": allow_join,
-		"auto_join_disabled": true
+			"auto_join_disabled": true
 		})
 		current_world_name = clean_world
 	var safe_facing = 1 if facing >= 0 else -1
+	var payload = _build_player_position_payload(position, safe_facing, clean_world, allow_join, true, position_reason)
+	var sent = _send_local_player_position_payload(clean_world, payload)
+	if sent:
+		local_position_batch_sends += 1
+		_clear_local_position_payload_queue()
+	return sent
+
+	local_position_batch_sends += 1
+	_set_local_position_payload_queue(clean_world, _build_player_position_payload(position, safe_facing, clean_world, allow_join, false, position_reason), "send_failed")
+	return false
+
+
+func _build_player_position_payload(position: Vector2, safe_facing: int, clean_world: String, allow_join: bool, include_debug_state: bool, position_reason: String) -> Dictionary:
 	var safe_x = _safe_float(position.x, 0.0, float(MIN_PLAYER_COORDINATE), float(MAX_PLAYER_COORDINATE))
 	var safe_y = _safe_float(position.y, 0.0, float(MIN_PLAYER_COORDINATE), float(MAX_PLAYER_COORDINATE))
 	var equipment_slots = get_equipment_slots()
@@ -3482,28 +3536,7 @@ func send_player_position(position: Vector2, facing: int, world_name: String, al
 	var damage_state = get_player_damage_visual_state()
 	var animation_state = str(motion_state.get("animation_state", "idle"))
 	var clean_position_reason = _safe_string(position_reason, "", MAX_ITEM_ID_LENGTH).to_lower()
-	var next_movement_sequence = movement_sequence + 1
-	if next_movement_sequence >= 2147483647:
-		next_movement_sequence = 1
-	movement_sequence = next_movement_sequence
-	var sent_at_msec := Time.get_ticks_msec()
-	if DEBUG_LOCAL_APPEARANCE_FLOW:
-		var equipment_key = get_equipment_slots_debug_key(equipment_slots)
-		if equipment_key != debug_last_sent_equipment_key:
-			debug_last_sent_equipment_key = equipment_key
-			print("[APPEARANCE][Client] sending equipment snapshot ", {
-				"world": clean_world,
-				"equipment_slots": equipment_slots,
-				"facing": safe_facing,
-				"animation_state": animation_state
-			})
-		if animation_state != debug_last_sent_animation_state:
-			debug_last_sent_animation_state = animation_state
-			print("[APPEARANCE][Client] sending animation state ", {
-				"world": clean_world,
-				"animation_state": animation_state,
-				"facing": safe_facing
-			})
+
 	var payload := {
 		"type": "player_position",
 		"name": player_name,
@@ -3511,8 +3544,7 @@ func send_player_position(position: Vector2, facing: int, world_name: String, al
 		"y": safe_y,
 		"facing": safe_facing,
 		"world": clean_world,
-		"movement_sequence": movement_sequence,
-		"client_time_msec": sent_at_msec,
+		"allow_join": bool(allow_join),
 		"animation_state": animation_state,
 		"velocity_x": float(motion_state.get("velocity_x", 0.0)),
 		"velocity_y": float(motion_state.get("velocity_y", 0.0)),
@@ -3524,7 +3556,7 @@ func send_player_position(position: Vector2, facing: int, world_name: String, al
 
 	# Fishing/damage are temporary visual state, not core movement state.
 	# Send them on change and occasional resync instead of every position packet.
-	if _should_send_full_movement_visual_sync(equipment_slots, fishing_state, damage_state, clean_position_reason, bypass_rate_limit):
+	if _should_send_full_movement_visual_sync(equipment_slots, fishing_state, damage_state, clean_position_reason, false):
 		payload["visual_sync"] = true
 		payload["equipment_slots"] = equipment_slots
 		payload["equipped_tool"] = str(equipment_slots.get("hand", ""))
@@ -3549,11 +3581,151 @@ func send_player_position(position: Vector2, facing: int, world_name: String, al
 		payload["position_reason"] = clean_position_reason
 	if clean_position_reason == "respawn":
 		payload["respawn_teleport"] = true
-	var sent = send_message(attach_session_auth(payload))
+
+	if include_debug_state and DEBUG_LOCAL_APPEARANCE_FLOW:
+		var equipment_key = get_equipment_slots_debug_key(equipment_slots)
+		if equipment_key != debug_last_sent_equipment_key:
+			debug_last_sent_equipment_key = equipment_key
+			print("[APPEARANCE][Client] sending equipment snapshot ", {
+				"world": clean_world,
+				"equipment_slots": equipment_slots,
+				"facing": safe_facing,
+				"animation_state": animation_state
+			})
+		if animation_state != debug_last_sent_animation_state:
+			debug_last_sent_animation_state = animation_state
+			print("[APPEARANCE][Client] sending animation state ", {
+				"world": clean_world,
+				"animation_state": animation_state,
+				"facing": safe_facing
+			})
+
+	return payload
+
+
+func _send_local_player_position_payload(world_name: String, payload: Dictionary) -> bool:
+	if not (payload is Dictionary):
+		return false
+	var outgoing := payload.duplicate(true)
+	var next_movement_sequence = movement_sequence + 1
+	if next_movement_sequence >= 2147483647:
+		next_movement_sequence = 1
+	outgoing["movement_sequence"] = next_movement_sequence
+	var sent_at_msec := Time.get_ticks_msec()
+	outgoing["client_time_msec"] = sent_at_msec
+	var sent := send_message(attach_session_auth(outgoing))
 	if sent:
-		local_position_batch_sends += 1
+		movement_sequence = next_movement_sequence
+		_maybe_log_local_position_queue_debug("sent", world_name, {
+			"world": world_name,
+			"movement_sequence": next_movement_sequence,
+			"queued_world": local_position_pending_world,
+			"queued_reason": local_position_pending_reason,
+			"reason": str(outgoing.get("position_reason", "")),
+			"client_time_msec": sent_at_msec
+		})
 	return sent
 
+
+func _process_local_position_queue() -> void:
+	if not has_local_position_pending:
+		return
+	if not MovementMode.is_websocket():
+		return
+	if not is_server_session_authenticated():
+		return
+	if not (local_position_pending_payload is Dictionary):
+		_clear_local_position_payload_queue()
+		return
+
+	var now_msec := Time.get_ticks_msec()
+	if now_msec - local_position_queue_last_flush_msec < LOCAL_POSITION_QUEUE_FLUSH_INTERVAL_MS:
+		return
+
+	local_position_queue_last_flush_msec = now_msec
+	var queue_age_msec := now_msec - local_position_pending_queued_msec
+	if queue_age_msec < 0:
+		queue_age_msec = 0
+
+	var clean_world := _safe_world_name(local_position_pending_world)
+	if clean_world == "":
+		clean_world = _safe_world_name(current_world_name)
+	if clean_world == "":
+		clean_world = "START"
+
+	var max_rate_per_second = get_server_guided_player_position_rate_per_second(clean_world, MAX_PLAYER_POSITION_RATE_PER_SECOND)
+	if not _can_send_rate_limited("player_position", max_rate_per_second):
+		_maybe_log_local_position_queue_debug("local_queue_rate_limited", clean_world, {
+			"world": clean_world,
+			"queue_age_msec": queue_age_msec,
+			"reason": local_position_pending_reason
+		})
+		return
+
+	if not _consume_local_position_batch_slot(clean_world):
+		_maybe_log_local_position_queue_debug("local_queue_batch_skip", clean_world, {
+			"world": clean_world,
+			"remaining": local_position_batch_budget,
+			"limit": local_position_batch_limit,
+			"queue_age_msec": queue_age_msec,
+			"reason": local_position_pending_reason
+		})
+		return
+
+	var sent := _send_local_player_position_payload(clean_world, local_position_pending_payload)
+	local_position_batch_sends += 1
+	if sent:
+		_clear_local_position_payload_queue()
+		_maybe_log_local_position_queue_debug("local_queue_flush_success", clean_world, {
+			"world": clean_world,
+			"queue_age_msec": queue_age_msec,
+			"reason": local_position_pending_reason
+		})
+		return
+
+	_maybe_log_local_position_queue_debug("local_queue_send_failed", clean_world, {
+		"world": clean_world,
+		"queue_age_msec": queue_age_msec,
+		"reason": local_position_pending_reason
+	})
+
+
+func _set_local_position_payload_queue(world_name: String, payload: Dictionary, reason: String) -> void:
+	var clean_world = _safe_world_name(world_name)
+	if clean_world == "":
+		clean_world = "START"
+	if not (payload is Dictionary):
+		return
+	local_position_pending_payload = payload.duplicate(true)
+	local_position_pending_world = clean_world
+	local_position_pending_reason = _safe_string(reason, "pending")
+	local_position_pending_queued_msec = Time.get_ticks_msec()
+	has_local_position_pending = true
+
+
+func _clear_local_position_payload_queue() -> void:
+	local_position_pending_payload = {}
+	local_position_pending_world = ""
+	local_position_pending_reason = ""
+	local_position_pending_queued_msec = 0
+	has_local_position_pending = false
+	local_position_queue_last_flush_msec = 0
+
+
+func _maybe_log_local_position_queue_debug(event_name: String, world_name: String, details: Dictionary = {}) -> void:
+	if not DEBUG_ACTION_POSITION_FLOW:
+		return
+	var now_msec = Time.get_ticks_msec()
+	if now_msec - _last_local_position_debug_msec < LOCAL_POSITION_QUEUE_FLUSH_DEBUG_INTERVAL_MS:
+		return
+	_last_local_position_debug_msec = now_msec
+	var payload = {
+		"event": event_name,
+		"world": world_name,
+	}
+	for key in details.keys():
+		payload[key] = details[key]
+	print("[MovementSync][Local] " + str(payload))
 
 func send_netfox_trusted_player_state(position: Vector2, velocity: Vector2, facing: int, world_name: String, peer_id: int, tick: int = 0, bypass_rate_limit: bool = false) -> bool:
 	if not MovementMode.is_netfox_real():
@@ -5470,11 +5642,19 @@ func _handle_world_entry_active(data: Dictionary) -> void:
 			save_manager_value.finish_world_entry_after_load(false, true, true, true)
 		elif world_node.has_method("finish_smooth_world_load"):
 			world_node.finish_smooth_world_load()
-	complete_world_entry_profile({
+	# Do NOT complete the profile here. finish_world_entry_after_load only schedules
+	# the reveal (call_deferred) and returns immediately, so completing at this point
+	# stamped "client_controls_enabled" up to a second before the player could
+	# actually move -- and, because completion deactivates the profile, it silently
+	# discarded every later stage the loading overlay emits. The overlay completes the
+	# profile for real in _finalize_loading_operation; the watchdog below covers the
+	# case where the overlay path never runs.
+	world_entry_profile["pending_controls_extra"] = {
 		"world_revision": incoming_revision,
 		"block_revision": incoming_block_revision,
 		"entry_session_confirmed": true
-	})
+	}
+	world_entry_profile["activated_at_msec"] = Time.get_ticks_msec()
 
 
 func _handle_world_entry_rejected_message(data: Dictionary) -> void:

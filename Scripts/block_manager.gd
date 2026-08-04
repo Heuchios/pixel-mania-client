@@ -65,6 +65,10 @@ var snow_storm_local_block_overrides: Dictionary = {}
 var last_wooden_entrance_grid := Vector2i(-999999, -999999)
 var visual_variant_texture_cache: Dictionary = {}
 var atlas_variant_texture_cache: Dictionary = {}
+# Memoized get_block_tilemap_metadata results for the variant-independent call shape,
+# keyed by "block_type|visual_block_type|background". Derived purely from the item
+# database, so it stays valid for the lifetime of the loaded item data.
+var tilemap_metadata_cache: Dictionary = {}
 var existing_variant_path_cache: Dictionary = {}
 var connected_variant_component_cache: Dictionary = {}
 var authoritative_break_request_keys: Dictionary = {}
@@ -1981,6 +1985,20 @@ func get_block_tilemap_metadata(block_type: String, visual_block_type: String = 
 	if clean_visual_type == "":
 		clean_visual_type = clean_type
 
+	# When there is no variant grid position, get_stateful_block_atlas_data returns
+	# an empty dictionary, so the result depends only on the (static) item database.
+	# This is by far the hottest call shape during a world build -- the candidate
+	# checks alone run it several times per tile, and each run deep-duplicates an
+	# item dictionary via ITEM_ATLAS_DB.get_item. Memoize it per block type pair.
+	var metadata_cache_key := ""
+	var can_cache_metadata := grid_pos == NO_VARIANT_GRID_POS
+	if can_cache_metadata:
+		metadata_cache_key = clean_type + "|" + clean_visual_type + "|" + ("1" if background else "0")
+		var cached_metadata: Variant = tilemap_metadata_cache.get(metadata_cache_key)
+		if cached_metadata is Dictionary:
+			# Return a copy: callers treat the result as their own to mutate.
+			return (cached_metadata as Dictionary).duplicate()
+
 	var item_data := get_block_item_data(clean_type)
 	var visual_data := get_block_item_data(clean_visual_type)
 	if visual_data.is_empty():
@@ -2013,7 +2031,7 @@ func get_block_tilemap_metadata(block_type: String, visual_block_type: String = 
 		solid = false
 
 	var animated := bool(visual_data.get("animated", false)) or has_tilemap_animation_metadata(visual_data)
-	return {
+	var metadata := {
 		"solid": solid,
 		"atlas_coords": atlas_coords,
 		"source_id": source_id,
@@ -2027,6 +2045,9 @@ func get_block_tilemap_metadata(block_type: String, visual_block_type: String = 
 		"background": background,
 		"grid_pos": grid_pos
 	}
+	if can_cache_metadata:
+		tilemap_metadata_cache[metadata_cache_key] = metadata.duplicate()
+	return metadata
 
 
 func get_stateful_block_atlas_texture(block_type: String, visual_block_type: String, grid_pos: Vector2i, background := false) -> Texture2D:
