@@ -17,8 +17,9 @@ you already have working in server-authoritative flow.
 - Backend persistence wiring:
   - startup waits for PostgreSQL initialization
   - existing JSON accounts/players/worlds import into PostgreSQL on first empty DB run
-  - accounts, player state, inventory snapshots, world state, world locks, admin actions, and world snapshots write to PostgreSQL when ready
-  - JSON files remain local migration/backups, not the preferred source once PostgreSQL has data
+- accounts, player state, inventory snapshots, world state, world locks, admin actions, and world snapshots write to PostgreSQL when ready
+- JSON files remain local migration/backups, not the preferred source once PostgreSQL has data
+- legacy client inventory import is disabled by default; enable `ALLOW_LEGACY_PLAYER_STATE_IMPORT=true` only for a controlled migration window
 - Dupe prevention primitives:
   - `idempotency_keys`
   - immutable ledgers (`item_transactions`, `gem_ledger`)
@@ -36,7 +37,7 @@ you already have working in server-authoritative flow.
 - `world_members`: yes
 - `world_locks`: yes
 - `inventory`: yes
-- `item_instances`: yes; tracked equipment/tool-style inventory now reconciles into exact item rows, and direct create/update/list helpers exist for future unique-item features.
+- `item_instances`: yes; tracked equipment/tool-style inventory now reconciles into unique item rows with `PM-ITEM-*` public IDs, source/location fields, and `item_instance_events` history. Trade, vending, drop pickup, and item-ledger paths now keep tracked rows aligned with inventory balances.
 - `item_transactions`: yes
 - `gem_ledger`: yes
 - `trades`: yes
@@ -47,7 +48,7 @@ you already have working in server-authoritative flow.
 - `world_snapshots`: yes
 - `security_events`: yes
 - `sessions`: yes
-- `punishments` (ban/mute/etc.): schema + Postgres issue/revoke/check helpers exist; admin commands and request-pipeline enforcement are the remaining gameplay layer.
+- `punishments` (ban/mute/etc.): yes; schema, Postgres helpers, admin commands, and request-pipeline enforcement are wired.
 
 ## Recommended implementation order
 

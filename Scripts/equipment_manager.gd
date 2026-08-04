@@ -1335,21 +1335,9 @@ func load_back_item_visual_data(back_item: String):
 
 	if idle_frame_names is Array:
 		for frame_name in idle_frame_names:
-			if frame_name is Dictionary or frame_name is Texture2D:
-				var frame_texture = AtlasTextureFactory.load_texture(frame_name)
-
-				if frame_texture != null:
-					back_idle_frames.append(frame_texture)
-
-				continue
-
-			var frame_path = make_sprite_path(sprite_folder, str(frame_name))
-
-			if ResourceLoader.exists(frame_path):
-				var frame_texture = load(frame_path)
-
-				if frame_texture != null:
-					back_idle_frames.append(frame_texture)
+			var frame_texture = _resolve_wearable_frame_texture(sprite_folder, frame_name)
+			if frame_texture != null:
+				back_idle_frames.append(frame_texture)
 
 	var jump_frame_names = back_item_data.get("jump_frames")
 	var fall_frame_names = back_item_data.get("fall_frames")
@@ -1362,35 +1350,15 @@ func load_back_item_visual_data(back_item: String):
 
 	if jump_frame_names is Array:
 		for frame_name in jump_frame_names:
-			if frame_name is Dictionary or frame_name is Texture2D:
-				var frame_texture = AtlasTextureFactory.load_texture(frame_name)
-				if frame_texture != null:
-					back_jump_frames.append(frame_texture)
-				continue
-
-			var frame_path = make_sprite_path(sprite_folder, str(frame_name))
-
-			if ResourceLoader.exists(frame_path):
-				var frame_texture = load(frame_path)
-
-				if frame_texture != null:
-					back_jump_frames.append(frame_texture)
+			var frame_texture = _resolve_wearable_frame_texture(sprite_folder, frame_name)
+			if frame_texture != null:
+				back_jump_frames.append(frame_texture)
 
 	if fall_frame_names is Array:
 		for frame_name in fall_frame_names:
-			if frame_name is Dictionary or frame_name is Texture2D:
-				var frame_texture = AtlasTextureFactory.load_texture(frame_name)
-				if frame_texture != null:
-					back_fall_frames.append(frame_texture)
-				continue
-
-			var frame_path = make_sprite_path(sprite_folder, str(frame_name))
-
-			if ResourceLoader.exists(frame_path):
-				var frame_texture = load(frame_path)
-
-				if frame_texture != null:
-					back_fall_frames.append(frame_texture)
+			var frame_texture = _resolve_wearable_frame_texture(sprite_folder, frame_name)
+			if frame_texture != null:
+				back_fall_frames.append(frame_texture)
 
 	if bool(back_item_data.get("scan_flap_frames", true)) and sprite_folder != "":
 		load_flap_frames_from_directory(sprite_folder)
@@ -1749,6 +1717,25 @@ func make_sprite_path(sprite_folder: String, file_name: String) -> String:
 		return file_name
 
 	return sprite_folder + file_name
+
+
+func _resolve_wearable_frame_texture(sprite_folder: String, frame_name) -> Texture2D:
+	if frame_name is Dictionary or frame_name is Texture2D:
+		return AtlasTextureFactory.load_texture(frame_name)
+
+	var frame_key = str(frame_name).strip_edges()
+	if frame_key == "":
+		return null
+
+	var atlas_texture = AtlasTextureFactory.load_texture(frame_key)
+	if atlas_texture != null:
+		return atlas_texture
+
+	var frame_path = make_sprite_path(sprite_folder, frame_key)
+	if frame_path == "":
+		return null
+
+	return AtlasTextureFactory.load_texture(frame_path)
 
 
 func load_first_existing_texture(paths: Array):

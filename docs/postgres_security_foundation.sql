@@ -68,6 +68,49 @@ CREATE INDEX IF NOT EXISTS idx_sessions_account_id ON sessions(account_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_expires_at ON sessions(expires_at);
 CREATE INDEX IF NOT EXISTS idx_sessions_last_seen_at ON sessions(last_seen_at);
 
+CREATE TABLE IF NOT EXISTS account_password_reset_requests (
+	reset_request_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+	account_id uuid NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE,
+	username text NOT NULL DEFAULT '',
+	email citext NOT NULL,
+	token_hash text NOT NULL UNIQUE,
+	expires_at timestamptz NOT NULL,
+	used_at timestamptz,
+	ip_address inet,
+	user_agent text,
+	device_info jsonb NOT NULL DEFAULT '{}'::jsonb,
+	request_id text,
+	created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_account_password_reset_requests_account_time
+ON account_password_reset_requests(account_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_account_password_reset_requests_token_active
+ON account_password_reset_requests(token_hash)
+WHERE used_at IS NULL;
+
+CREATE TABLE IF NOT EXISTS account_email_change_requests (
+	email_change_request_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+	account_id uuid NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE,
+	username text NOT NULL DEFAULT '',
+	old_email citext NOT NULL,
+	new_email citext NOT NULL,
+	token_hash text NOT NULL UNIQUE,
+	expires_at timestamptz NOT NULL,
+	used_at timestamptz,
+	ip_address inet,
+	user_agent text,
+	device_info jsonb NOT NULL DEFAULT '{}'::jsonb,
+	request_id text,
+	created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_account_email_change_requests_account_time
+ON account_email_change_requests(account_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_account_email_change_requests_token_active
+ON account_email_change_requests(token_hash)
+WHERE used_at IS NULL;
+
 CREATE TABLE IF NOT EXISTS worlds (
 	world_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
 	world_name citext NOT NULL UNIQUE,
@@ -153,7 +196,7 @@ CREATE TABLE IF NOT EXISTS world_lock_access (
 CREATE TABLE IF NOT EXISTS world_locks (
 	world_lock_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
 	world_id uuid NOT NULL UNIQUE REFERENCES worlds(world_id) ON DELETE CASCADE,
-	lock_type text NOT NULL DEFAULT 'none' CHECK (lock_type IN ('none', 'world_lock', 'diamond_lock')),
+	lock_type text NOT NULL DEFAULT 'none' CHECK (lock_type IN ('none', 'world_lock', 'super_world_lock', 'diamond_lock')),
 	owner_player_id uuid REFERENCES players(player_id) ON DELETE SET NULL,
 	is_locked boolean NOT NULL DEFAULT false,
 	lock_x integer,
@@ -163,12 +206,78 @@ CREATE TABLE IF NOT EXISTS world_locks (
 	updated_at timestamptz NOT NULL DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS world_drops (
+	world_drop_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+	world_id uuid NOT NULL REFERENCES worlds(world_id) ON DELETE CASCADE,
+	drop_id text NOT NULL,
+	item_type text NOT NULL,
+	item_category text NOT NULL DEFAULT 'block',
+	amount bigint NOT NULL CHECK (amount >= 0),
+	x double precision NOT NULL DEFAULT 0,
+	y double precision NOT NULL DEFAULT 0,
+	stack_grid_x integer,
+	stack_grid_y integer,
+	pickup_delay double precision NOT NULL DEFAULT 0 CHECK (pickup_delay >= 0),
+	status text NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'picked_up', 'removed', 'expired')),
+	picked_by_player_id uuid REFERENCES players(player_id) ON DELETE SET NULL,
+	picked_at timestamptz,
+	removed_at timestamptz,
+	metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
+	created_at timestamptz NOT NULL DEFAULT now(),
+	updated_at timestamptz NOT NULL DEFAULT now(),
+	UNIQUE (world_id, drop_id)
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_world_drops_world_drop_id
+ON world_drops(world_id, drop_id);
+
+CREATE INDEX IF NOT EXISTS idx_world_drops_world_active
+ON world_drops(world_id, status, updated_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_world_drops_item_active
+ON world_drops(item_category, item_type, status);
+
+CREATE TABLE IF NOT EXISTS world_area_locks (
+	world_area_lock_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+	world_id uuid NOT NULL REFERENCES worlds(world_id) ON DELETE CASCADE,
+	lock_key text NOT NULL,
+	lock_type text NOT NULL CHECK (lock_type IN ('small_lock', 'medium_lock', 'big_lock')),
+	owner_player_id uuid REFERENCES players(player_id) ON DELETE SET NULL,
+	lock_x integer NOT NULL,
+	lock_y integer NOT NULL,
+	max_tiles integer NOT NULL CHECK (max_tiles > 0),
+	public_build boolean NOT NULL DEFAULT false,
+	ignore_empty_space boolean NOT NULL DEFAULT false,
+	metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
+	created_at timestamptz NOT NULL DEFAULT now(),
+	updated_at timestamptz NOT NULL DEFAULT now(),
+	UNIQUE (world_id, lock_key)
+);
+
+CREATE TABLE IF NOT EXISTS world_area_lock_access (
+	world_area_lock_id uuid NOT NULL REFERENCES world_area_locks(world_area_lock_id) ON DELETE CASCADE,
+	player_id uuid NOT NULL REFERENCES players(player_id) ON DELETE CASCADE,
+	granted_by_player_id uuid REFERENCES players(player_id) ON DELETE SET NULL,
+	role text NOT NULL DEFAULT 'builder' CHECK (role IN ('admin', 'builder', 'visitor')),
+	can_build boolean NOT NULL DEFAULT true,
+	can_manage_lock boolean NOT NULL DEFAULT false,
+	created_at timestamptz NOT NULL DEFAULT now(),
+	updated_at timestamptz NOT NULL DEFAULT now(),
+	PRIMARY KEY (world_area_lock_id, player_id)
+);
+
+CREATE INDEX IF NOT EXISTS world_area_locks_world_idx
+ON world_area_locks(world_id);
+
+CREATE INDEX IF NOT EXISTS world_area_lock_access_player_idx
+ON world_area_lock_access(player_id);
+
 CREATE TABLE IF NOT EXISTS inventory (
 	player_id uuid NOT NULL REFERENCES players(player_id) ON DELETE CASCADE,
 	item_type text NOT NULL,
 	item_category text NOT NULL,
 	amount bigint NOT NULL DEFAULT 0 CHECK (amount >= 0),
-	stack_limit integer NOT NULL DEFAULT 200 CHECK (stack_limit > 0),
+	stack_limit integer NOT NULL DEFAULT 400 CHECK (stack_limit > 0),
 	row_version bigint NOT NULL DEFAULT 0,
 	updated_at timestamptz NOT NULL DEFAULT now(),
 	PRIMARY KEY (player_id, item_type, item_category)
@@ -197,6 +306,9 @@ CREATE TABLE IF NOT EXISTS item_transactions (
 	source text NOT NULL CHECK (
 		source IN (
 			'world_block_break',
+			'world_block_place',
+			'world_lock_conversion',
+			'world_interaction',
 			'drop_pickup',
 			'drop_inventory',
 			'seed_place',
@@ -204,12 +316,21 @@ CREATE TABLE IF NOT EXISTS item_transactions (
 			'seed_harvest',
 			'trade',
 			'vending',
+			'safe',
+			'display',
 			'shop',
 			'craft',
+			'crafting',
+			'event',
+			'quest',
+			'loot_box',
+			'reward',
+			'world_drop',
 			'furnace',
 			'fishing',
 			'fish_monger',
 			'admin',
+			'rollback',
 			'system'
 		)
 	),
@@ -256,11 +377,14 @@ ON gem_ledger(player_id, created_at DESC);
 
 CREATE TABLE IF NOT EXISTS item_instances (
 	item_instance_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+	public_item_instance_id text NOT NULL UNIQUE DEFAULT ('PM-ITEM-' || upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 16))),
 	item_type text NOT NULL,
 	item_category text NOT NULL,
 	owner_player_id uuid REFERENCES players(player_id) ON DELETE SET NULL,
 	world_id uuid REFERENCES worlds(world_id) ON DELETE SET NULL,
 	state text NOT NULL DEFAULT 'active' CHECK (state IN ('active', 'consumed', 'traded', 'destroyed', 'dropped', 'locked')),
+	created_by_source text NOT NULL DEFAULT 'unknown',
+	current_location text NOT NULL DEFAULT 'inventory' CHECK (current_location IN ('inventory', 'vending', 'trade', 'world_drop', 'safe', 'display', 'shop', 'admin', 'system', 'unknown')),
 	origin_transaction_id bigint REFERENCES item_transactions(item_transaction_id) ON DELETE SET NULL,
 	metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
 	created_at timestamptz NOT NULL DEFAULT now(),
@@ -269,6 +393,32 @@ CREATE TABLE IF NOT EXISTS item_instances (
 
 CREATE INDEX IF NOT EXISTS idx_item_instances_owner ON item_instances(owner_player_id, state);
 CREATE INDEX IF NOT EXISTS idx_item_instances_world ON item_instances(world_id, state);
+CREATE INDEX IF NOT EXISTS idx_item_instances_type_state ON item_instances(item_category, item_type, state);
+CREATE INDEX IF NOT EXISTS idx_item_instances_location_state ON item_instances(current_location, state);
+
+CREATE TABLE IF NOT EXISTS item_instance_events (
+	item_instance_event_id bigserial PRIMARY KEY,
+	item_instance_id uuid NOT NULL REFERENCES item_instances(item_instance_id) ON DELETE CASCADE,
+	event_type text NOT NULL CHECK (event_type IN ('created', 'reconciled', 'owner_changed', 'location_changed', 'state_changed', 'updated', 'retired')),
+	from_player_id uuid REFERENCES players(player_id) ON DELETE SET NULL,
+	to_player_id uuid REFERENCES players(player_id) ON DELETE SET NULL,
+	from_location text,
+	to_location text,
+	world_id uuid REFERENCES worlds(world_id) ON DELETE SET NULL,
+	item_transaction_id bigint REFERENCES item_transactions(item_transaction_id) ON DELETE SET NULL,
+	correlation_id uuid,
+	source text NOT NULL DEFAULT 'system',
+	metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
+	created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_item_instance_events_item_time
+ON item_instance_events(item_instance_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_item_instance_events_player_time
+ON item_instance_events(to_player_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_item_instance_events_correlation
+ON item_instance_events(correlation_id)
+WHERE correlation_id IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS trades (
 	trade_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -358,11 +508,94 @@ ON admin_actions(admin_player_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_admin_actions_world_time
 ON admin_actions(world_id, created_at DESC);
 
+CREATE TABLE IF NOT EXISTS transaction_ledger (
+	transaction_ledger_id bigserial PRIMARY KEY,
+	transaction_id uuid NOT NULL DEFAULT gen_random_uuid(),
+	transaction_type text NOT NULL,
+	status text NOT NULL DEFAULT 'success' CHECK (status IN ('success', 'failed', 'reversed')),
+	player_id uuid REFERENCES players(player_id) ON DELETE SET NULL,
+	other_player_id uuid REFERENCES players(player_id) ON DELETE SET NULL,
+	world_id uuid REFERENCES worlds(world_id) ON DELETE SET NULL,
+	item_transaction_id bigint REFERENCES item_transactions(item_transaction_id) ON DELETE SET NULL,
+	gem_ledger_id bigint REFERENCES gem_ledger(gem_ledger_id) ON DELETE SET NULL,
+	trade_id uuid REFERENCES trades(trade_id) ON DELETE SET NULL,
+	vending_transaction_id bigint REFERENCES vending_transactions(vending_transaction_id) ON DELETE SET NULL,
+	shop_purchase_id bigint REFERENCES shop_purchases(shop_purchase_id) ON DELETE SET NULL,
+	admin_action_id bigint REFERENCES admin_actions(admin_action_id) ON DELETE SET NULL,
+	item_instance_id uuid REFERENCES item_instances(item_instance_id) ON DELETE SET NULL,
+	public_item_instance_id text,
+	item_type text,
+	item_category text,
+	quantity bigint,
+	gems_before bigint,
+	gems_after bigint,
+	inventory_before_hash text,
+	inventory_after_hash text,
+	ip_address inet,
+	session_token_hash text,
+	user_agent text,
+	device_info jsonb NOT NULL DEFAULT '{}'::jsonb,
+	request_id text,
+	correlation_id uuid,
+	source text,
+	action text,
+	metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
+	server_time timestamptz NOT NULL DEFAULT now(),
+	created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_transaction_ledger_player_time
+ON transaction_ledger(player_id, server_time DESC);
+CREATE INDEX IF NOT EXISTS idx_transaction_ledger_type_time
+ON transaction_ledger(transaction_type, server_time DESC);
+CREATE INDEX IF NOT EXISTS idx_transaction_ledger_instance_time
+ON transaction_ledger(public_item_instance_id, server_time DESC)
+WHERE public_item_instance_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_transaction_ledger_item_time
+ON transaction_ledger(item_category, item_type, server_time DESC)
+WHERE item_type IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_transaction_ledger_request_id
+ON transaction_ledger(request_id)
+WHERE request_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_transaction_ledger_correlation_id
+ON transaction_ledger(correlation_id)
+WHERE correlation_id IS NOT NULL;
+
+CREATE TABLE IF NOT EXISTS rollback_jobs (
+	rollback_job_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+	rollback_type text NOT NULL CHECK (rollback_type IN ('player', 'world', 'item', 'transaction')),
+	status text NOT NULL DEFAULT 'planned' CHECK (status IN ('planned', 'applied', 'failed')),
+	actor_username text NOT NULL DEFAULT 'rollback_tool',
+	reason text NOT NULL,
+	target_username text,
+	target_world text,
+	target_item_instance_id text,
+	target_transaction_id uuid,
+	target_transaction_ledger_id bigint,
+	since_at timestamptz,
+	until_at timestamptz,
+	snapshot_version integer,
+	dry_run boolean NOT NULL DEFAULT true,
+	plan jsonb NOT NULL DEFAULT '{}'::jsonb,
+	result jsonb NOT NULL DEFAULT '{}'::jsonb,
+	applied_at timestamptz,
+	created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_rollback_jobs_type_time
+ON rollback_jobs(rollback_type, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_rollback_jobs_status_time
+ON rollback_jobs(status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_rollback_jobs_target_user_time
+ON rollback_jobs(target_username, created_at DESC)
+WHERE target_username IS NOT NULL;
+
 CREATE TABLE IF NOT EXISTS world_block_changes (
 	world_block_change_id bigserial PRIMARY KEY,
 	world_id uuid NOT NULL REFERENCES worlds(world_id) ON DELETE CASCADE,
 	player_id uuid REFERENCES players(player_id) ON DELETE SET NULL,
 	action text NOT NULL CHECK (action IN ('place', 'break', 'hit')),
+	reason text,
 	layer text NOT NULL CHECK (layer IN ('foreground', 'background')),
 	block_x integer NOT NULL,
 	block_y integer NOT NULL,
@@ -374,12 +607,44 @@ CREATE TABLE IF NOT EXISTS world_block_changes (
 	created_at timestamptz NOT NULL DEFAULT now()
 );
 
+ALTER TABLE world_block_changes
+	ADD COLUMN IF NOT EXISTS reason text;
+
 CREATE INDEX IF NOT EXISTS idx_world_block_changes_world_time
 ON world_block_changes(world_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_world_block_changes_world_position
 ON world_block_changes(world_id, block_x, block_y, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_world_block_changes_player_time
 ON world_block_changes(player_id, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS world_object_changes (
+	world_object_change_id bigserial PRIMARY KEY,
+	world_id uuid NOT NULL REFERENCES worlds(world_id) ON DELETE CASCADE,
+	player_id uuid REFERENCES players(player_id) ON DELETE SET NULL,
+	object_type text NOT NULL,
+	object_id text NOT NULL,
+	block_x integer,
+	block_y integer,
+	action text NOT NULL,
+	reason text,
+	source_type text,
+	source_id text,
+	request_id text,
+	old_data jsonb NOT NULL DEFAULT '{}'::jsonb,
+	new_data jsonb NOT NULL DEFAULT '{}'::jsonb,
+	metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
+	created_at timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE world_object_changes
+	ADD COLUMN IF NOT EXISTS reason text;
+
+CREATE INDEX IF NOT EXISTS idx_world_object_changes_world_time
+ON world_object_changes(world_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_world_object_changes_object_time
+ON world_object_changes(world_id, object_type, object_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_world_object_changes_player_time
+ON world_object_changes(player_id, created_at DESC);
 
 CREATE TABLE IF NOT EXISTS world_snapshots (
 	world_snapshot_id bigserial PRIMARY KEY,
@@ -466,6 +731,18 @@ EXECUTE FUNCTION set_updated_at();
 DROP TRIGGER IF EXISTS trg_world_locks_set_updated_at ON world_locks;
 CREATE TRIGGER trg_world_locks_set_updated_at
 BEFORE UPDATE ON world_locks
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+DROP TRIGGER IF EXISTS trg_world_area_locks_set_updated_at ON world_area_locks;
+CREATE TRIGGER trg_world_area_locks_set_updated_at
+BEFORE UPDATE ON world_area_locks
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+DROP TRIGGER IF EXISTS trg_world_area_lock_access_set_updated_at ON world_area_lock_access;
+CREATE TRIGGER trg_world_area_lock_access_set_updated_at
+BEFORE UPDATE ON world_area_lock_access
 FOR EACH ROW
 EXECUTE FUNCTION set_updated_at();
 

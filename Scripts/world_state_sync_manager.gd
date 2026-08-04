@@ -335,6 +335,14 @@ func _is_current_world_message(data: Dictionary) -> bool:
 		return true
 
 	if is_waiting_for_server_world_entry():
+		var network_manager: Node = world.get_node_or_null("/root/NetworkManager")
+		if (
+			network_manager != null
+			and network_manager.has_method("is_world_state_for_active_entry_target")
+			and bool(network_manager.is_world_state_for_active_entry_target(data))
+		):
+			world.current_world_name = incoming_world
+			return true
 		if local_world == "":
 			world.current_world_name = incoming_world
 			return true
@@ -1139,6 +1147,11 @@ func _refresh_world_state_visuals_after_reveal(apply_generation: int) -> void:
 
 func apply_network_world_state(data: Dictionary):
 	if not _is_current_world_message(data):
+		_profile_world_entry_stage("client_world_apply_rejected", {
+			"incoming_world": _get_message_world_name(data),
+			"local_world": _safe_world_name(world.current_world_name) if world != null else "",
+			"waiting_for_entry": is_waiting_for_server_world_entry()
+		})
 		return
 	var incoming_world := _get_message_world_name(data)
 	if incoming_world == "":
@@ -1676,7 +1689,7 @@ func apply_network_world_state(data: Dictionary):
 				network.request_current_world_entry_snapshot_restart("client_ready_validation_failed")
 	else:
 		if world.save_manager != null and world.save_manager.has_method("finish_world_entry_after_load"):
-			world.save_manager.finish_world_entry_after_load(false, true, true)
+			world.save_manager.finish_world_entry_after_load(false, true, true, true)
 		else:
 			world.finish_smooth_world_load()
 	call_deferred("_refresh_world_state_visuals_after_reveal", apply_generation)
@@ -1944,6 +1957,9 @@ func apply_network_block_update(data: Dictionary):
 
 	var apply_instant_death := _block_update_targets_local_player_for_instant_death(data)
 	world.applying_network_world_update = old_flag
+	if action == "place" and not is_bulk_network_update and not is_local_confirmed_update and _has_network_actor(data):
+		if world.has_method("play_remote_player_place_animation"):
+			world.play_remote_player_place_animation(data)
 	if apply_instant_death:
 		_apply_block_update_instant_death_if_targeted(data, true)
 	if not is_bulk_network_update and not _is_world_bulk_load_active() and world.has_method("refresh_area_lock_highlight_overlay"):
@@ -2485,6 +2501,7 @@ func apply_network_seed_update(data: Dictionary):
 
 	var grid_pos = _safe_grid_position(data.get("x", 0), data.get("y", 0))
 	var seed_type = _safe_string(data.get("seed_type", ""), "", 64)
+	var is_local_confirmed_update := _is_local_player_confirmed_update(data)
 
 	if (action == "place" or action == "splice") and seed_type != "":
 		if world.seed_system != null and world.seed_system.has_method("remove_seed_at") and world.has_planted_seed(grid_pos):
@@ -2503,6 +2520,9 @@ func apply_network_seed_update(data: Dictionary):
 		if world.seed_system != null and world.seed_system.has_method("set_seed_mature") and _safe_bool(data.get("mature", false), false):
 			world.seed_system.set_seed_mature(grid_pos, true)
 		play_confirmed_block_place_sound(grid_pos)
+		if action == "place" and not is_local_confirmed_update and _has_network_actor(data):
+			if world.has_method("play_remote_player_place_animation"):
+				world.play_remote_player_place_animation(data)
 	elif action == "remove":
 		if world.seed_system != null and world.seed_system.has_method("remove_seed_at"):
 			var should_play_tree_break_sound := false

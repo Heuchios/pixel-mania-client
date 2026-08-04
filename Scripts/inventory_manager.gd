@@ -8,12 +8,14 @@ const INVENTORY_SCENE = preload("res://Scenes/ui/inventory/InventoryScene.tscn")
 const INVENTORY_UPGRADE_CONFIRM_SCENE = preload("res://Scenes/ui/inventory/InventoryUpgradeConfirm.tscn")
 const ITEM_ACTION_POPUP_SCENE = preload("res://Scenes/ui/inventory/ItemActionPopup.tscn")
 const ColourCycleModulation = preload("res://Scripts/colour_cycle_modulation.gd")
+const SelectedSlotFrameClock = preload("res://Scripts/ui/selected_slot_frame_clock.gd")
 const HOTBAR_SLOT_COUNT = 6
 const HOTBAR_HEIGHT = 104.0
 const HOTBAR_SLOT_SIZE = 96
-const HOTBAR_SLOT_GAP = 8
+const HOTBAR_SLOT_GAP = 12
 const HOTBAR_SLOT_STEP = HOTBAR_SLOT_SIZE + HOTBAR_SLOT_GAP
-const HOTBAR_PAD_X = 2
+const HOTBAR_FRAME_LEFT_INSET = 34
+const HOTBAR_FRAME_RIGHT_INSET = 12
 const HOTBAR_PAD_Y = 11
 const HOTBAR_HANDLE_HEIGHT = 24
 const HOTBAR_HANDLE_TOUCH_PAD_TOP = 18.0
@@ -25,7 +27,7 @@ const HOTBAR_Z_INDEX = 176
 const INVENTORY_BUTTON_Z_INDEX = 178
 const INVENTORY_WINDOW_Z_INDEX = 175
 const INVENTORY_MODAL_Z_INDEX = 240
-const ITEM_ACTION_POPUP_Z_INDEX = 245
+const ITEM_ACTION_POPUP_Z_INDEX = 300
 const INVENTORY_DRAWER_BASE_WIDTH = 1100.0
 const INVENTORY_DRAWER_BASE_HEIGHT = 560.0
 const INVENTORY_DRAWER_EXTRA_COLUMNS = 2.0
@@ -39,6 +41,10 @@ const EQUIP_DOUBLE_TAP_TIME_MS = 350
 const TOUCH_EQUIP_DOUBLE_TAP_TIME_MS = 550
 const UI_STYLE_PATH = "res://Assets/ui/inventory/"
 const HOTBAR_STYLE_PATH = "res://Assets/ui/hotbar/"
+const ROOT_UI_PATH = "res://Assets/ui/"
+const HOTBAR_MATERIAL_SLOT_TEXTURE = "material_slot.png"
+const HOTBAR_CLOTHES_SLOT_TEXTURE = "clothes_slot.png"
+const HOTBAR_EMPTY_SLOT_TEXTURE = "empty_slot.png"
 const UI_PANEL_MARGIN = 28.0
 const UI_BUTTON_MARGIN = 22.0
 const UI_SLOT_MARGIN = 24.0
@@ -101,6 +107,12 @@ const INVENTORY_UPDATE_SOURCE_LOCAL := "local"
 const INVENTORY_UPDATE_SOURCE_SERVER := "server"
 const INVENTORY_UPDATE_SOURCE_REMOTE := "remote"
 const COLOUR_CYCLE_HOTBAR_UPDATE_SECONDS := 0.066
+const HOTBAR_SELECTED_FRAME_SECONDS := 0.30
+const HOTBAR_SELECTED_FRAMES := [
+	preload("res://Assets/ui/selected_1.png"),
+	preload("res://Assets/ui/selected_2.png"),
+	preload("res://Assets/ui/selected_3.png"),
+]
 
 var world = null
 var ui_layer_ref = null
@@ -138,6 +150,7 @@ var inventory_window_structure_dirty = true
 var inventory_last_structure_check_ms = 0
 var inventory_scene_cache_signature = ""
 var colour_cycle_hotbar_update_elapsed: float = 0.0
+var hotbar_selected_frame_index: int = 0
 
 var item_context_menu = null
 var context_amount_input = null
@@ -214,10 +227,17 @@ func get_hotbar_ui_texture(file_name: String):
 
 
 func get_hotbar_slot_frame_texture(file_name: String) -> Texture2D:
-	var inventory_texture: Texture2D = get_ui_texture(file_name) as Texture2D
-	if inventory_texture != null:
-		return inventory_texture
-	return get_hotbar_ui_texture(file_name) as Texture2D
+	var hotbar_texture: Texture2D = get_hotbar_ui_texture(file_name) as Texture2D
+	if hotbar_texture != null:
+		return hotbar_texture
+	var ui_texture: Texture2D = get_ui_texture(file_name) as Texture2D
+	if ui_texture != null:
+		return ui_texture
+	var root_path: String = ROOT_UI_PATH + file_name
+	if ResourceLoader.exists(root_path):
+		var root_texture: Resource = ResourceLoader.load(root_path)
+		return root_texture as Texture2D
+	return null
 
 
 func has_inventory_ui_kit() -> bool:
@@ -343,9 +363,40 @@ func style_panel_child(node_name: String, texture_name: String):
 	add_texture_skin(node, "StyleSkin", texture_name, Vector2.ZERO, node.size)
 
 
-func get_slot_texture_name(rarity: String, selected: bool) -> String:
+func _is_equipable_hotbar_category(category: String) -> bool:
+	match category.strip_edges().to_lower():
+		"back":
+			return true
+		"hat":
+			return true
+		"hair":
+			return true
+		"eyewear":
+			return true
+		"shirt":
+			return true
+		"pants":
+			return true
+		"shoes":
+			return true
+		"ride":
+			return true
+		_:
+			return false
+
+
+func get_slot_texture_name(rarity: String, selected: bool, item_type: String = "", category: String = "") -> String:
 	if selected:
 		return "slot_selected.png"
+	var normalized_category := category.strip_edges().to_lower()
+	if normalized_category == "material":
+		return HOTBAR_MATERIAL_SLOT_TEXTURE
+	if _is_equipable_hotbar_category(normalized_category):
+		return HOTBAR_CLOTHES_SLOT_TEXTURE
+	if normalized_category != "tool" and item_type != "":
+		var item_count: int = get_item_count(str(item_type), normalized_category)
+		if item_count <= 0:
+			return HOTBAR_EMPTY_SLOT_TEXTURE
 	match normalize_item_rarity(rarity):
 		"common":    return "slot_common.png"
 		"uncommon":  return "slot_uncommon.png"
@@ -902,6 +953,7 @@ func _process(delta):
 	process_dirty_inventory_slots()
 	process_queued_inventory_hud_refresh()
 	update_hotbar_colour_cycle_icons_throttled(delta)
+	update_hotbar_selected_frame_animation(delta)
 	update_inventory_ambient(delta)
 
 
@@ -913,8 +965,6 @@ func update_all_ui():
 	if is_inventory_window_refresh_active():
 		if inventory_slot_dirty_keys.is_empty():
 			update_inventory_window_chrome()
-			if is_inventory_scene_window():
-				refresh_inventory_scene_chrome()
 		else:
 			process_dirty_inventory_slots()
 	else:
@@ -1073,6 +1123,8 @@ func get_inventory_mouse_position_safe() -> Vector2:
 
 func _input(event):
 	if TouchInputGuard.is_emulated_mouse_from_touch(event):
+		return
+	if is_item_action_popup_event(event):
 		return
 	if handle_active_drawer_drag_input(event):
 		return
@@ -1280,6 +1332,30 @@ func control_contains_point(control, point: Vector2) -> bool:
 	return control.get_global_rect().has_point(point)
 
 
+func is_item_action_popup_open() -> bool:
+	if item_action_popup == null or not is_instance_valid(item_action_popup):
+		return false
+	if item_action_popup.has_method("is_open"):
+		return bool(item_action_popup.is_open())
+	return item_action_popup is Control and (item_action_popup as Control).visible
+
+
+func is_item_action_popup_at_point(point: Vector2) -> bool:
+	if item_action_popup == null or not is_instance_valid(item_action_popup):
+		return false
+	if item_action_popup.has_method("owns_pointer_position"):
+		return bool(item_action_popup.owns_pointer_position(point))
+	return control_contains_point(item_action_popup, point)
+
+
+func is_item_action_popup_event(event: InputEvent) -> bool:
+	if item_action_popup == null or not is_instance_valid(item_action_popup):
+		return false
+	if item_action_popup.has_method("owns_pointer_event"):
+		return bool(item_action_popup.owns_pointer_event(event))
+	return false
+
+
 func is_chat_ui_at_point(point: Vector2) -> bool:
 	if world == null or not ("chat_ui" in world) or world.chat_ui == null:
 		return false
@@ -1297,6 +1373,8 @@ func is_gameplay_ui_at_point(point: Vector2) -> bool:
 
 
 func is_inventory_ui_at_point(point: Vector2) -> bool:
+	if is_item_action_popup_at_point(point):
+		return true
 	if not is_inventory_open():
 		return false
 	if is_inventory_control_at_point(point):
@@ -1359,6 +1437,8 @@ func is_inventory_scene_node_at_point(node_path: String, point: Vector2) -> bool
 
 
 func is_inventory_control_at_point(point: Vector2) -> bool:
+	if is_item_action_popup_at_point(point):
+		return true
 	if control_contains_point(inventory_search_input, point):
 		return true
 	if control_contains_point(inventory_button, point):
@@ -1827,8 +1907,7 @@ func assign_item_to_quick_hotbar(item_type: String, category: String):
 	while world.hotbar_items.size() > HOTBAR_SLOT_COUNT:
 		world.hotbar_items.pop_back()
 		world.hotbar_item_categories.pop_back()
-	normalize_hotbar()
-	setup_hotbar()
+	update_scene_hotbar_slots(false)
 	call_deferred("persist_hotbar_state")
 
 
@@ -2038,6 +2117,27 @@ func update_hotbar_colour_cycle_icons() -> void:
 		var category := str(slot.get_meta("category", "")).strip_edges().to_lower()
 		var icon := slot.get_node_or_null("Icon") as TextureRect
 		apply_colour_cycle_icon_modulation(icon, item_type, category, float(int(slot_index)) / 12.0)
+
+
+func update_hotbar_selected_frame_animation(_delta: float) -> void:
+	if hotbar_slots.is_empty() or HOTBAR_SELECTED_FRAMES.is_empty():
+		hotbar_selected_frame_index = 0
+		return
+
+	var next_frame_index: int = SelectedSlotFrameClock.frame_index(
+		HOTBAR_SELECTED_FRAMES.size(),
+		HOTBAR_SELECTED_FRAME_SECONDS
+	)
+	if next_frame_index == hotbar_selected_frame_index:
+		return
+	hotbar_selected_frame_index = next_frame_index
+	var selected_texture: Texture2D = HOTBAR_SELECTED_FRAMES[hotbar_selected_frame_index] as Texture2D
+	for slot in hotbar_slots.values():
+		if slot == null or not is_instance_valid(slot):
+			continue
+		var selected_frame := slot.get_node_or_null("SelectedFrame") as TextureRect
+		if selected_frame != null and selected_frame.visible:
+			selected_frame.texture = selected_texture
 
 
 func is_seed_item(item_type: String, category: String) -> bool:
@@ -2356,23 +2456,27 @@ func setup_scene_hotbar():
 		hotbar_slots[i] = slot
 
 	update_hotbar_position()
-	update_scene_hotbar_slots()
+	update_scene_hotbar_slots(false)
 
 
-func update_scene_hotbar_slot_frame(slot: Control, rarity: String, selected: bool):
+func update_scene_hotbar_slot_frame(slot: Control, rarity: String, selected: bool, item_type: String = "", category: String = ""):
 	var frame = slot.get_node_or_null("SlotFrame") as TextureRect
 	var selected_frame = slot.get_node_or_null("SelectedFrame") as TextureRect
 	if frame != null:
 		frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		frame.stretch_mode = TextureRect.STRETCH_SCALE
-		var frame_texture = get_hotbar_slot_frame_texture(get_slot_texture_name(rarity, false))
+		var frame_texture = get_hotbar_slot_frame_texture(get_slot_texture_name(rarity, false, item_type, category))
 		if frame_texture != null:
 			frame.texture = frame_texture
 		frame.visible = true
 	if selected_frame != null:
 		selected_frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		selected_frame.stretch_mode = TextureRect.STRETCH_SCALE
-		var selected_texture = get_hotbar_slot_frame_texture("slot_selected.png")
+		hotbar_selected_frame_index = SelectedSlotFrameClock.frame_index(
+			HOTBAR_SELECTED_FRAMES.size(),
+			HOTBAR_SELECTED_FRAME_SECONDS
+		)
+		var selected_texture: Texture2D = HOTBAR_SELECTED_FRAMES[hotbar_selected_frame_index] as Texture2D
 		if selected_texture != null:
 			selected_frame.texture = selected_texture
 		selected_frame.visible = selected
@@ -2402,6 +2506,7 @@ func update_scene_hotbar_slot_icon(slot: Control, item_type: String, category: S
 		icon.visible = has_texture
 		icon.texture = icon_texture
 		icon.modulate = Color(1.0, 1.0, 1.0, 0.96)
+		_apply_hotbar_slot_icon_layout(icon, icon_shadow, item_type, category)
 		apply_colour_cycle_icon_modulation(icon, item_type, category, 0.0)
 		if has_texture and category != "tool":
 			update_seed_box_icon_overlay(icon, item_type, category)
@@ -2416,6 +2521,120 @@ func update_scene_hotbar_slot_icon(slot: Control, item_type: String, category: S
 	if fallback_label != null:
 		fallback_label.visible = not has_texture
 		fallback_label.text = fallback_text
+
+
+func _get_hotbar_slot_icon_layout(item_type: String, _category: String, icon: TextureRect, icon_shadow: TextureRect) -> Dictionary:
+	var item_data: Dictionary = {}
+	if world != null and world.item_database.has(item_type) and world.item_database[item_type] is Dictionary:
+		item_data = world.item_database[item_type]
+
+	var layout = AtlasTextureFactory.get_wearable_icon_layout(item_data.get("inventory_icon", null))
+	if layout.is_empty():
+		layout = AtlasTextureFactory.get_wearable_icon_layout(item_data.get("icon", null))
+	if layout.is_empty():
+		layout = AtlasTextureFactory.get_wearable_icon_layout(item_data.get("icon_path", null))
+	if layout.is_empty():
+		layout = AtlasTextureFactory.get_wearable_icon_layout(item_data.get("texture", null))
+
+	var fallback_position := icon.position
+	var fallback_size := icon.size
+	var fallback_scale := icon.scale
+	var fallback_shadow_position := Vector2(
+		fallback_position.x + 3.0,
+		fallback_position.y + 4.0
+	)
+	var fallback_shadow_size := fallback_size
+	var fallback_shadow_scale := icon_shadow.scale if icon_shadow != null else fallback_scale
+
+	var resolved_position: Vector2 = layout.get("icon_position", fallback_position)
+	var resolved_size: Vector2 = layout.get("icon_size", fallback_size)
+	var resolved_shadow_position: Vector2 = layout.get("icon_shadow_position", fallback_shadow_position)
+	var resolved_shadow_size: Vector2 = layout.get("icon_shadow_size", resolved_size)
+	var resolved_scale := AtlasTextureFactory.get_scale_vector(
+		layout.get("icon_scale", fallback_scale),
+		fallback_scale
+	)
+	var resolved_shadow_scale := AtlasTextureFactory.get_scale_vector(
+		layout.get("icon_shadow_scale", fallback_shadow_scale),
+		fallback_shadow_scale
+	)
+
+	if layout.is_empty():
+		# Keep current frame defaults when no metadata is set.
+		resolved_position = icon.position
+		resolved_size = icon.size
+		resolved_shadow_position = layout.get(
+			"icon_shadow_position",
+			Vector2(
+				fallback_position.x + 3.0,
+				fallback_position.y + 4.0
+			)
+		)
+		resolved_shadow_size = resolved_size
+		resolved_scale = icon.scale
+		resolved_shadow_scale = fallback_shadow_scale
+
+	# Allow item data to override icon metadata explicitly.
+	if item_data.has("inventory_icon_position"):
+		resolved_position = AtlasTextureFactory.get_vector2(item_data.get("inventory_icon_position"), resolved_position)
+	if item_data.has("icon_position"):
+		resolved_position = AtlasTextureFactory.get_vector2(item_data.get("icon_position"), resolved_position)
+	if item_data.has("inventory_icon_size"):
+		resolved_size = AtlasTextureFactory.get_vector2(item_data.get("inventory_icon_size"), resolved_size)
+	if item_data.has("icon_size"):
+		resolved_size = AtlasTextureFactory.get_vector2(item_data.get("icon_size"), resolved_size)
+
+	var icon_shadow_offset = AtlasTextureFactory.get_vector2(
+		item_data.get("inventory_icon_shadow_offset", item_data.get("icon_shadow_offset", null)),
+		resolved_shadow_position - resolved_position
+	)
+	if item_data.has("inventory_icon_shadow_offset") or item_data.has("icon_shadow_offset"):
+		resolved_shadow_position = resolved_position + icon_shadow_offset
+
+	if item_data.has("inventory_icon_shadow_size"):
+		resolved_shadow_size = AtlasTextureFactory.get_vector2(item_data.get("inventory_icon_shadow_size"), resolved_shadow_size)
+	if item_data.has("icon_shadow_size"):
+		resolved_shadow_size = AtlasTextureFactory.get_vector2(item_data.get("icon_shadow_size"), resolved_shadow_size)
+
+	if item_data.has("inventory_icon_scale") or item_data.has("icon_scale"):
+		resolved_scale = AtlasTextureFactory.get_scale_vector(
+			item_data.get("inventory_icon_scale", item_data.get("icon_scale", null)),
+			resolved_scale
+		)
+
+	if item_data.has("inventory_icon_shadow_scale") or item_data.has("icon_shadow_scale"):
+		resolved_shadow_scale = AtlasTextureFactory.get_scale_vector(
+			item_data.get("inventory_icon_shadow_scale", item_data.get("icon_shadow_scale", null)),
+			resolved_shadow_scale
+		)
+
+	layout.clear()
+	layout["icon_position"] = AtlasTextureFactory.get_vector2(resolved_position, fallback_position)
+	layout["icon_size"] = AtlasTextureFactory.get_vector2(resolved_size, fallback_size)
+	layout["icon_scale"] = resolved_scale
+	layout["icon_shadow_position"] = AtlasTextureFactory.get_vector2(resolved_shadow_position, fallback_shadow_position)
+	layout["icon_shadow_size"] = AtlasTextureFactory.get_vector2(resolved_shadow_size, resolved_size)
+	layout["icon_shadow_scale"] = resolved_shadow_scale
+
+	return layout
+
+
+func _apply_hotbar_slot_icon_layout(icon: TextureRect, icon_shadow: TextureRect, item_type: String, category: String) -> void:
+	if icon == null:
+		return
+
+	var icon_layout := _get_hotbar_slot_icon_layout(item_type, category, icon, icon_shadow)
+	icon.position = AtlasTextureFactory.get_vector2(icon_layout.get("icon_position", icon.position), icon.position)
+	icon.size = AtlasTextureFactory.get_vector2(icon_layout.get("icon_size", icon.size), icon.size)
+	icon.scale = AtlasTextureFactory.get_scale_vector(icon_layout.get("icon_scale", icon.scale), icon.scale)
+	icon.pivot_offset = icon.size * 0.5
+
+	if icon_shadow == null:
+		return
+	icon_shadow.position = AtlasTextureFactory.get_vector2(icon_layout.get("icon_shadow_position", icon_shadow.position), icon_shadow.position)
+	icon_shadow.size = AtlasTextureFactory.get_vector2(icon_layout.get("icon_shadow_size", icon_shadow.size), icon_shadow.size)
+	icon_shadow.scale = AtlasTextureFactory.get_scale_vector(icon_layout.get("icon_shadow_scale", icon_shadow.scale), icon_shadow.scale)
+	icon_shadow.pivot_offset = icon_shadow.size * 0.5
 
 
 func update_scene_hotbar_slot_count(slot: Control, item_type: String, category: String) -> void:
@@ -2456,14 +2675,15 @@ func refresh_hotbar_live() -> void:
 			update_hotbar()
 			return
 		var is_selected: bool = world.selected_item_category == category and world.selected_item_type == item_type
-		update_scene_hotbar_slot_frame(slot, get_item_rarity(item_type, category), is_selected)
+		update_scene_hotbar_slot_frame(slot, get_item_rarity(item_type, category), is_selected, item_type, category)
 		update_scene_hotbar_slot_count(slot, item_type, category)
 
 
-func update_scene_hotbar_slots():
+func update_scene_hotbar_slots(normalize_first: bool = true):
 	if world == null:
 		return
-	normalize_hotbar()
+	if normalize_first:
+		normalize_hotbar()
 	var expected_slot_count = min(world.hotbar_items.size(), HOTBAR_SLOT_COUNT)
 	if hotbar_root == null or hotbar_slots.size() != expected_slot_count:
 		setup_scene_hotbar()
@@ -2481,7 +2701,7 @@ func update_scene_hotbar_slots():
 		var is_selected = world.selected_item_category == category and world.selected_item_type == item_type
 		var rarity = get_item_rarity(item_type, category)
 
-		update_scene_hotbar_slot_frame(slot, rarity, is_selected)
+		update_scene_hotbar_slot_frame(slot, rarity, is_selected, item_type, category)
 		update_scene_hotbar_slot_icon(slot, item_type, category)
 
 		var rarity_pip = slot.get_node_or_null("RarityPip") as CanvasItem
@@ -2646,7 +2866,12 @@ func _on_hotbar_slot_gui_input(event: InputEvent, slot_index: int):
 
 
 func get_hotbar_base_visual_width() -> float:
-	return float(HOTBAR_SLOT_COUNT * HOTBAR_SLOT_STEP - HOTBAR_SLOT_GAP + HOTBAR_PAD_X * 2 + 2)
+	return float(
+		HOTBAR_FRAME_LEFT_INSET
+		+ HOTBAR_SLOT_COUNT * HOTBAR_SLOT_SIZE
+		+ (HOTBAR_SLOT_COUNT - 1) * HOTBAR_SLOT_GAP
+		+ HOTBAR_FRAME_RIGHT_INSET
+	)
 
 
 func get_hotbar_visual_width(screen_size: Vector2 = Vector2.ZERO) -> float:
@@ -3407,7 +3632,7 @@ func _select_inventory_scene_item_for_gameplay(item_type: String, category: Stri
 	assign_item_to_quick_hotbar(item_type, category)
 	if world != null:
 		world.select_item(item_type, category)
-	update_hotbar()
+	refresh_hotbar_live()
 
 
 func _on_inventory_scene_item_selected(item: Dictionary) -> void:
@@ -3490,8 +3715,6 @@ func _on_inventory_scene_drop_requested(item: Dictionary) -> void:
 			world.show_notification("Choose at least 1 item.")
 		return
 	drop_inventory_item(item_type, category, float(stack_amount))
-	refresh_inventory_scene_window()
-	update_hotbar()
 
 
 func _on_inventory_scene_info_requested(item: Dictionary) -> void:
@@ -3513,8 +3736,6 @@ func _on_inventory_scene_trash_requested(item: Dictionary) -> void:
 			world.show_notification("Choose at least 1 item.")
 		return
 	trash_inventory_item(item_type, category, float(stack_amount))
-	refresh_inventory_scene_window()
-	update_hotbar()
 
 
 func _on_inventory_scene_item_action_popup_requested(item: Dictionary, screen_position: Vector2) -> void:
@@ -3572,15 +3793,23 @@ func _build_item_action_payload(item_type: String, category: String, base_item: 
 	var available_count: int = get_item_count(item_type, category)
 	if is_reserved_hotbar_tool(item_type, category):
 		available_count = maxi(1, available_count)
+	var database_entry: Dictionary = {}
+	if world != null and world.item_database.has(item_type) and world.item_database[item_type] is Dictionary:
+		database_entry = world.item_database[item_type]
 	payload["id"] = item_type
 	payload["type"] = item_type
 	payload["item_type"] = item_type
 	payload["category"] = category
 	payload["item_category"] = category
+	payload["type_label"] = category
 	payload["display_name"] = get_item_display_name(item_type, category)
 	payload["count"] = maxi(1, available_count)
 	payload["available_count"] = maxi(1, available_count)
 	payload["rarity"] = get_item_rarity(item_type, category)
+	payload["description"] = str(payload.get("description", database_entry.get("description", "")))
+	payload["spliceable"] = bool(payload.get("spliceable", false)) \
+		or str(database_entry.get("seed", "")).strip_edges() != "" \
+		or database_entry.has("recipe")
 	payload["can_use"] = true
 	payload["can_drop"] = can_drop_item_from_inventory(item_type, category)
 	payload["can_trash"] = item_type != "punch"
@@ -5427,6 +5656,13 @@ func remove_or_hide_inventory_slot(item_id: String) -> void:
 	refresh_incremental_inventory_grid_extent()
 
 
+func did_inventory_scene_live_refresh_change_structure() -> bool:
+	if inventory_window != null and inventory_window.has_method("did_last_live_refresh_change_structure"):
+		return bool(inventory_window.did_last_live_refresh_change_structure())
+	# Older/fallback scene implementations cannot report this distinction.
+	return true
+
+
 func process_dirty_inventory_slots() -> void:
 	if inventory_slot_dirty_keys.is_empty():
 		return
@@ -5444,6 +5680,7 @@ func process_dirty_inventory_slots() -> void:
 	# rebuild once at most, not once per dirty item. This is the main bulk-pickup spike fix.
 	if is_inventory_scene_window():
 		var scene_needs_full_rebuild := false
+		var scene_structure_changed := false
 		var scene_processed := 0
 		var scene_remaining_keys: Array = []
 		for slot_key in inventory_slot_dirty_keys:
@@ -5460,6 +5697,7 @@ func process_dirty_inventory_slots() -> void:
 				continue
 			if inventory_window.has_method("refresh_item_live_from_world") and bool(inventory_window.refresh_item_live_from_world(world, item_type, category)):
 				inventory_window_live_cache_valid = true
+				scene_structure_changed = scene_structure_changed or did_inventory_scene_live_refresh_change_structure()
 			else:
 				scene_needs_full_rebuild = true
 			scene_processed += 1
@@ -5470,7 +5708,8 @@ func process_dirty_inventory_slots() -> void:
 			refresh_inventory_scene_window(true)
 			_clear_inventory_slot_dirty_queue()
 		else:
-			inventory_scene_cache_signature = get_inventory_scene_signature()
+			if scene_structure_changed:
+				inventory_scene_cache_signature = get_inventory_scene_signature()
 			_keep_inventory_dirty_queue(scene_remaining_keys)
 			refresh_inventory_scene_chrome()
 		request_inventory_hud_refresh()
@@ -6718,7 +6957,8 @@ func refresh_inventory_item_live(item_type: String, category: String) -> void:
 			return
 		if inventory_window.has_method("refresh_item_live_from_world") and bool(inventory_window.refresh_item_live_from_world(world, item_type, category)):
 			refresh_inventory_scene_chrome()
-			inventory_scene_cache_signature = get_inventory_scene_signature()
+			if did_inventory_scene_live_refresh_change_structure():
+				inventory_scene_cache_signature = get_inventory_scene_signature()
 			inventory_window_live_cache_valid = true
 			return
 		inventory_window_structure_dirty = true

@@ -25,6 +25,196 @@ const OK_GREEN := Color(0.30, 0.95, 0.42, 1.0)
 const WARNING_RED := Color(1.0, 0.28, 0.22, 1.0)
 const TEXT_LIGHT := Color.WHITE
 const TEXT_SOFT := Color(0.86, 0.96, 1.0, 1.0)
+const GAME_FONT_PATH := "res://Assets/font/font.ttf"
+const DEFAULT_TEXT_FONT_SIZE := 24
+const HEADER_FONT_SIZE := 36
+const GLOBAL_TEXT_SHADOW_COLOR := Color(0.0, 0.0, 0.0, 0.85)
+const GLOBAL_TEXT_SHADOW_OFFSET := Vector2(2.0, 2.0)
+const GLOBAL_FONT_ROLE_META := &"pixelmania_font_role"
+const GLOBAL_FONT_SIZE_META := &"pixelmania_font_size"
+const GLOBAL_LABEL_SETTINGS_OWNED_META := &"_pixelmania_global_label_settings_owned"
+
+const HEADER_NAME_MARKERS := [
+	"title",
+	"header_label",
+	"heading",
+	"headline",
+]
+
+static var game_font: Font = null
+
+
+static func get_game_font() -> Font:
+	if game_font == null and ResourceLoader.exists(GAME_FONT_PATH):
+		var loaded_font: Resource = load(GAME_FONT_PATH)
+		if loaded_font is Font:
+			game_font = loaded_font
+	return game_font
+
+
+static func apply_game_font_to_node(node: Node) -> void:
+	if node == null:
+		return
+
+	var font := get_game_font()
+	if font == null:
+		return
+
+	if node.has_method("add_theme_font_override"):
+		_add_font_override(node, "font", font)
+
+	if node is RichTextLabel:
+		_add_font_override(node, "normal_font", font)
+		_add_font_override(node, "bold_font", font)
+		_add_font_override(node, "italics_font", font)
+		_add_font_override(node, "bold_italics_font", font)
+		_add_font_override(node, "mono_font", font)
+
+	if node is Label:
+		var label := node as Label
+		if label.label_settings != null:
+			label.label_settings.font = font
+
+	if node is SpinBox:
+		var spin_box := node as SpinBox
+		apply_game_font_to_node(spin_box.get_line_edit())
+
+	if node is OptionButton:
+		var option_button := node as OptionButton
+		apply_game_font_to_node(option_button.get_popup())
+
+	if node is MenuButton:
+		var menu_button := node as MenuButton
+		apply_game_font_to_node(menu_button.get_popup())
+
+
+static func apply_global_typography_to_node(node: Node) -> void:
+	apply_game_font_to_node(node)
+	if not _is_text_control(node):
+		return
+
+	var font_size := _resolve_global_font_size(node)
+	if font_size > 0:
+		_apply_global_font_size(node, font_size)
+
+	_apply_global_text_shadow(node)
+
+
+static func _is_text_control(node: Node) -> bool:
+	return (
+		node is Label
+		or node is RichTextLabel
+		or node is BaseButton
+		or node is LineEdit
+		or node is TextEdit
+		or node is ItemList
+		or node is Tree
+		or node is PopupMenu
+		or node is TabBar
+	)
+
+
+static func _resolve_global_font_size(node: Node) -> int:
+	if node.has_meta(GLOBAL_FONT_SIZE_META):
+		return maxi(0, int(node.get_meta(GLOBAL_FONT_SIZE_META, DEFAULT_TEXT_FONT_SIZE)))
+
+	var role := str(node.get_meta(GLOBAL_FONT_ROLE_META, "")).strip_edges().to_lower()
+	match role:
+		"preserve", "custom", "none":
+			return 0
+		"header", "heading", "headline", "title":
+			return HEADER_FONT_SIZE
+		"body", "default", "text":
+			return DEFAULT_TEXT_FONT_SIZE
+
+	var normalized_name := String(node.name).to_snake_case()
+	for marker in HEADER_NAME_MARKERS:
+		var marker_text := str(marker)
+		if (
+			normalized_name == marker_text
+			or normalized_name.begins_with(marker_text + "_")
+			or normalized_name.ends_with("_" + marker_text)
+		):
+			return HEADER_FONT_SIZE
+
+	if _get_authored_font_size(node) >= 30:
+		return HEADER_FONT_SIZE
+
+	return DEFAULT_TEXT_FONT_SIZE
+
+
+static func _get_authored_font_size(node: Node) -> int:
+	if node is Label:
+		var label := node as Label
+		if label.label_settings != null and label.label_settings.font_size > 0:
+			return label.label_settings.font_size
+
+	if node is RichTextLabel:
+		var rich_text := node as RichTextLabel
+		if rich_text.has_theme_font_size_override("normal_font_size"):
+			return rich_text.get_theme_font_size("normal_font_size")
+
+	if node is Control:
+		var control := node as Control
+		if control.has_theme_font_size_override("font_size"):
+			return control.get_theme_font_size("font_size")
+
+	return 0
+
+
+static func _apply_global_font_size(node: Node, font_size: int) -> void:
+	if node is Control:
+		(node as Control).add_theme_font_size_override("font_size", font_size)
+
+	if node is RichTextLabel:
+		var rich_text := node as RichTextLabel
+		for theme_item in ["normal_font_size", "bold_font_size", "italics_font_size", "bold_italics_font_size", "mono_font_size"]:
+			rich_text.add_theme_font_size_override(theme_item, font_size)
+
+	if node is Label:
+		var label := node as Label
+		if label.label_settings != null:
+			var settings := _ensure_owned_label_settings(label)
+			if settings != null:
+				settings.font_size = font_size
+
+
+static func _apply_global_text_shadow(node: Node) -> void:
+	if node is Control:
+		var control := node as Control
+		var has_visible_shadow := (
+			control.has_theme_color_override("font_shadow_color")
+			and control.get_theme_color("font_shadow_color").a > 0.0
+		)
+		if not has_visible_shadow:
+			control.add_theme_color_override("font_shadow_color", GLOBAL_TEXT_SHADOW_COLOR)
+			control.add_theme_constant_override("shadow_offset_x", int(GLOBAL_TEXT_SHADOW_OFFSET.x))
+			control.add_theme_constant_override("shadow_offset_y", int(GLOBAL_TEXT_SHADOW_OFFSET.y))
+
+	if node is Label:
+		var label := node as Label
+		if label.label_settings != null:
+			var settings := _ensure_owned_label_settings(label)
+			if settings != null and settings.shadow_color.a <= 0.0:
+				settings.shadow_color = GLOBAL_TEXT_SHADOW_COLOR
+				settings.shadow_offset = GLOBAL_TEXT_SHADOW_OFFSET
+
+
+static func _ensure_owned_label_settings(label: Label) -> LabelSettings:
+	if label == null or label.label_settings == null:
+		return null
+
+	if not label.has_meta(GLOBAL_LABEL_SETTINGS_OWNED_META):
+		label.label_settings = label.label_settings.duplicate() as LabelSettings
+		label.set_meta(GLOBAL_LABEL_SETTINGS_OWNED_META, true)
+	return label.label_settings
+
+
+static func _add_font_override(node: Node, theme_item: String, font: Font) -> void:
+	if node == null or not node.has_method("add_theme_font_override"):
+		return
+
+	node.call("add_theme_font_override", theme_item, font)
 
 
 static func style_box(fill: Color, border: Color, border_width: int = 4, radius: int = 14, shadow_size: int = 7) -> StyleBoxFlat:
@@ -110,11 +300,12 @@ static func input_focus_style() -> StyleBoxFlat:
 	return style_box(GLASS_INPUT_FOCUS, Color(0.85, 0.96, 1.0, 0.94), 3, 10, 6)
 
 
-static func apply_label_shadow(label: Label, font_size: int = 16, color: Color = TEXT_LIGHT) -> void:
+static func apply_label_shadow(label: Label, font_size: int = DEFAULT_TEXT_FONT_SIZE, color: Color = TEXT_LIGHT) -> void:
 	if label == null:
 		return
 
 	label.add_theme_font_size_override("font_size", font_size)
+	apply_game_font_to_node(label)
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_shadow_color", Color.BLACK)
 	label.add_theme_constant_override("shadow_offset_x", 2)
@@ -125,15 +316,16 @@ static func apply_small_label(label: Label, font_size: int = 13) -> void:
 	apply_label_shadow(label, font_size, TEXT_SOFT)
 
 
-static func apply_section_title(label: Label, font_size: int = 22) -> void:
+static func apply_section_title(label: Label, font_size: int = HEADER_FONT_SIZE) -> void:
 	apply_label_shadow(label, font_size, GOLD_SOFT)
 
 
-static func apply_button_text(button: Button, font_size: int = 18, color: Color = TEXT_LIGHT) -> void:
+static func apply_button_text(button: Button, font_size: int = DEFAULT_TEXT_FONT_SIZE, color: Color = TEXT_LIGHT) -> void:
 	if button == null:
 		return
 
 	button.add_theme_font_size_override("font_size", font_size)
+	apply_game_font_to_node(button)
 	button.add_theme_color_override("font_color", color)
 	button.add_theme_color_override("font_shadow_color", Color.BLACK)
 	button.add_theme_color_override("font_disabled_color", Color(0.68, 0.74, 0.80, 0.70))
@@ -142,7 +334,7 @@ static func apply_button_text(button: Button, font_size: int = 18, color: Color 
 	button.focus_mode = Control.FOCUS_NONE
 
 
-static func apply_blue_button(button: Button, font_size: int = 18) -> void:
+static func apply_blue_button(button: Button, font_size: int = DEFAULT_TEXT_FONT_SIZE) -> void:
 	if button == null:
 		return
 
@@ -153,7 +345,7 @@ static func apply_blue_button(button: Button, font_size: int = 18) -> void:
 	button.add_theme_stylebox_override("disabled", style_box(Color(0.08, 0.12, 0.17, 0.42), Color(0.18, 0.28, 0.40, 0.26), 3, 12, 3))
 
 
-static func apply_yellow_button(button: Button, font_size: int = 18) -> void:
+static func apply_yellow_button(button: Button, font_size: int = DEFAULT_TEXT_FONT_SIZE) -> void:
 	if button == null:
 		return
 
@@ -164,7 +356,7 @@ static func apply_yellow_button(button: Button, font_size: int = 18) -> void:
 	button.add_theme_stylebox_override("disabled", style_box(Color(0.23, 0.20, 0.14, 0.88), Color(0.11, 0.08, 0.03, 1.0), 4, 12, 4))
 
 
-static func apply_green_button(button: Button, font_size: int = 18) -> void:
+static func apply_green_button(button: Button, font_size: int = DEFAULT_TEXT_FONT_SIZE) -> void:
 	if button == null:
 		return
 
@@ -206,11 +398,12 @@ static func play_panel_open(panel: Control, start_scale: Vector2 = Vector2(0.96,
 	tween.tween_property(panel, "modulate", Color(1.0, 1.0, 1.0, 1.0), min(duration, 0.12)).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 
-static func apply_input(line_edit: LineEdit, font_size: int = 22) -> void:
+static func apply_input(line_edit: LineEdit, font_size: int = DEFAULT_TEXT_FONT_SIZE) -> void:
 	if line_edit == null:
 		return
 
 	line_edit.add_theme_font_size_override("font_size", font_size)
+	apply_game_font_to_node(line_edit)
 	line_edit.add_theme_stylebox_override("normal", input_style())
 	line_edit.add_theme_stylebox_override("focus", input_focus_style())
 	line_edit.add_theme_color_override("font_color", TEXT_LIGHT)

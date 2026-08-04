@@ -1,0 +1,87 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/player_world_fade_fx.gd" id="1_fade"]
+[ext_resource type="Texture2D" path="res://Assets/effects/ceiling_light_glow.svg" id="2_glow"]
+[ext_resource type="Texture2D" path="res://Assets/effects/player_world_fade_mote.svg" id="3_mote"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_additive"]
+blend_mode = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_enter_motes"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(13, 26, 0)
+direction = Vector3(0, -1, 0)
+spread = 180.0
+initial_velocity_min = 18.0
+initial_velocity_max = 56.0
+gravity = Vector3(0, 18, 0)
+damping_min = 3.0
+damping_max = 8.0
+angle_min = -180.0
+angle_max = 180.0
+angular_velocity_min = -360.0
+angular_velocity_max = 360.0
+scale_min = 0.24
+scale_max = 0.64
+color = Color(0.64, 0.94, 1, 0.86)
+hue_variation_min = -0.04
+hue_variation_max = 0.06
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_exit_motes"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(12, 24, 0)
+direction = Vector3(0, -1, 0)
+spread = 180.0
+initial_velocity_min = 28.0
+initial_velocity_max = 78.0
+gravity = Vector3(0, -10, 0)
+damping_min = 4.0
+damping_max = 10.0
+angle_min = -180.0
+angle_max = 180.0
+angular_velocity_min = -520.0
+angular_velocity_max = 520.0
+scale_min = 0.20
+scale_max = 0.54
+color = Color(0.86, 0.98, 1, 0.9)
+hue_variation_min = -0.04
+hue_variation_max = 0.05
+
+[node name="PlayerWorldFadeFX" type="Node2D"]
+z_index = 24
+script = ExtResource("1_fade")
+
+[node name="ArrivalGlow" type="Sprite2D" parent="."]
+modulate = Color(0.58, 0.93, 1, 0)
+z_index = -1
+texture_filter = 1
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(0, -18)
+scale = Vector2(0.58, 0.66)
+texture = ExtResource("2_glow")
+
+[node name="EnterMotes" type="GPUParticles2D" parent="."]
+z_index = 4
+position = Vector2(0, -18)
+amount = 28
+texture = ExtResource("3_mote")
+lifetime = 0.78
+one_shot = true
+explosiveness = 0.86
+randomness = 0.42
+visibility_rect = Rect2(-30, -54, 60, 76)
+process_material = SubResource("ParticleProcessMaterial_enter_motes")
+
+[node name="ExitMotes" type="GPUParticles2D" parent="."]
+z_index = 5
+position = Vector2(0, -18)
+amount = 22
+texture = ExtResource("3_mote")
+lifetime = 0.58
+one_shot = true
+explosiveness = 1.0
+randomness = 0.36
+visibility_rect = Rect2(-30, -54, 60, 76)
+process_material = SubResource("ParticleProcessMaterial_exit_motes")

@@ -1,0 +1,683 @@
+[gd_scene format=3 uid="uid://dditnuwqpr0gk"]
+
+[ext_resource type="Script" uid="uid://c5n1qbfibnuet" path="res://netfox_test/scripts/netfox_test_player.gd" id="1_player"]
+[ext_resource type="Script" path="res://netfox_test/scripts/netfox_test_input.gd" id="2_input"]
+[ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="3_rollback"]
+[ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="4_interpolator"]
+[ext_resource type="Texture2D" uid="uid://cmwio43avy4a2" path="res://Assets/player/body_parts/left_hand_idle_1.png" id="5_left_hand"]
+[ext_resource type="Texture2D" uid="uid://dpyv6nhqq3dky" path="res://Assets/player/expressions/dead_spirit_1.png" id="5_xpiay"]
+[ext_resource type="Texture2D" uid="uid://b01b8gdc4jgf8" path="res://Assets/player/expressions/dead_spirit_2.png" id="6_ln67o"]
+[ext_resource type="Texture2D" uid="uid://dhvw45dbsawpx" path="res://Assets/player/body_parts/right_foot_idle_1.png" id="6_right_foot"]
+[ext_resource type="Texture2D" uid="uid://b7iep25jiww67" path="res://Assets/player/body_parts/left_foot_idle_1.png" id="7_left_foot"]
+[ext_resource type="Texture2D" uid="uid://d3igh6txvr3s8" path="res://Assets/player/expressions/dead_spirit_3.png" id="7_w4s0u"]
+[ext_resource type="Texture2D" uid="uid://cih17ddmescem" path="res://Assets/player/body_parts/bottom_idle_1.png" id="8_bottom"]
+[ext_resource type="Texture2D" uid="uid://d3uscrqq63ykr" path="res://Assets/player/body_parts/body_idle_1.png" id="9_body"]
+[ext_resource type="Texture2D" uid="uid://bmo385y27type" path="res://Assets/player/body_parts/right_hand_idle_1.png" id="10_right_hand"]
+[ext_resource type="Texture2D" uid="uid://bgsjtudggrbrn" path="res://Assets/player/body_parts/head_idle_1.png" id="11_head"]
+[ext_resource type="Texture2D" uid="uid://b53hq1cc5ls5j" path="res://Assets/player/expressions/idle.png" id="12_face_idle"]
+[ext_resource type="Texture2D" uid="uid://cdt7cwcgk23ox" path="res://Assets/player/expressions/idle_blink.png" id="13_face_blink"]
+[ext_resource type="Texture2D" uid="uid://bfc38xdl6cc0e" path="res://Assets/player/expressions/jump.png" id="14_face_jump"]
+[ext_resource type="Texture2D" uid="uid://bepq2vcgwsnw1" path="res://Assets/player/expressions/fall.png" id="15_face_fall"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uvybh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_xpiay")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_ln67o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_w4s0u")
+}],
+"loop": true,
+"name": &"dead_spirit",
+"speed": 6.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_left_foot"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_left_foot")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_right_foot"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_right_foot")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_left_arm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_left_hand")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_bottom"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_bottom")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_body"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_body")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_head"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_head")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_face_expression"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_face_fall")
+}],
+"loop": true,
+"name": &"fall",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_face_idle")
+}, {
+"duration": 0.18,
+"texture": ExtResource("13_face_blink")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("14_face_jump")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_right_arm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_right_hand")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="Animation" id="Animation_movement_reset"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerVisual/LeftFoot:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerVisual/RightFoot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerVisual/RightArm:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PlayerVisual/HandItem:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PlayerVisual/LeftArm:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("PlayerVisual:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_walk"]
+resource_name = "walk"
+length = 1.7333333
+loop_mode = 1
+step = 0.025
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerVisual/LeftFoot:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.33333334, 0.6333333, 0.93333334, 1.2666667, 1.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -1), Vector2(0, -0.5), Vector2(0, 0), Vector2(0, -0.5), Vector2(0, -1), Vector2(0, -1.5)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerVisual/RightFoot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.033333335, 0.33333334, 0.6333333, 0.93333334, 1.2666667, 1.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -0.5), Vector2(0, -1), Vector2(0, -1.5), Vector2(0, -1), Vector2(0, -0.5), Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerVisual/RightArm:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.104719755, 0.20943951, 0.104719755, 0.0, -0.104719755, -0.20943951, -0.104719755, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PlayerVisual/HandItem:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.104719755, 0.20943951, 0.104719755, 0.0, -0.104719755, -0.20943951, -0.104719755, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PlayerVisual/LeftArm:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.16666667, 0.53333336, 0.93333334, 1.3333334, 1.6333333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -0.06806784, -0.04886922, 0.0, 0.034906585, 0.0068226526]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_movement"]
+_data = {
+&"RESET": SubResource("Animation_movement_reset"),
+&"walk": SubResource("Animation_walk")
+}
+
+[sub_resource type="Animation" id="Animation_jump_reset"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerVisual/LeftFoot:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerVisual/RightFoot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerVisual/LeftArm:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PlayerVisual/RightArm:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PlayerVisual/HandItem:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_jump"]
+resource_name = "jump"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerVisual/LeftFoot:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -2)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerVisual/RightFoot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -2)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerVisual/LeftArm:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, -0.13962634]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PlayerVisual/RightArm:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 0.15707964]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PlayerVisual/HandItem:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 0.15707964]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jump"]
+_data = {
+&"RESET": SubResource("Animation_jump_reset"),
+&"jump": SubResource("Animation_jump")
+}
+
+[sub_resource type="Animation" id="Animation_idle_reset"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerVisual/RightArm:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.034906585]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerVisual/HandItem:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerVisual/HandItem/FishingLineStart:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.034906585]
+}
+
+[sub_resource type="Animation" id="Animation_idle"]
+resource_name = "idle"
+length = 2.2666667
+loop_mode = 1
+step = 0.028571429
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerVisual/RightArm:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2, 2.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.034906585, 0.06981317, 0.10471976, 0.06981317, 0.034906585, 0.0, -0.034906585, -0.06981317, -0.10471976, -0.06981317, -0.034906585, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerVisual/HandItem:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.21, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2, 2.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.034906585, 0.06981317, 0.10471976, 0.06981317, 0.034906585, 0.0, -0.034906585, -0.06981317, -0.10471976, -0.06981317, -0.034906585, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerVisual/HandItem/FishingLineStart:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2, 2.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.034906585, 0.06981317, 0.10471976, 0.06981317, 0.034906585, 0.0, -0.034906585, -0.06981317, -0.10471976, -0.06981317, -0.034906585, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_idle"]
+_data = {
+&"RESET": SubResource("Animation_idle_reset"),
+&"idle": SubResource("Animation_idle")
+}
+
+[node name="NetfoxTestPlayer" type="CharacterBody2D" unique_id=2038596900]
+script = ExtResource("1_player")
+
+[node name="PlayerInput" type="Node" parent="." unique_id=1190409115]
+script = ExtResource("2_input")
+
+[node name="RollbackSynchronizer" type="Node" parent="." unique_id=1908886660 node_paths=PackedStringArray("root")]
+script = ExtResource("3_rollback")
+enable_prediction = true
+state_properties = Array[String]([".:position", ".:velocity", ".:facing_dir", ".:movement_state", ".:jump_hold_fall_pause_timer"])
+input_properties = Array[String](["PlayerInput:movement", "PlayerInput:jump_pressed", "PlayerInput:jump_held", "PlayerInput:facing_dir"])
+root = NodePath("..")
+
+[node name="TickInterpolator" type="Node" parent="." unique_id=656472234 node_paths=PackedStringArray("root")]
+script = ExtResource("4_interpolator")
+root = NodePath("..")
+properties = Array[String]([".:position"])
+
+[node name="DeadSpiritAnimated" type="AnimatedSprite2D" parent="." unique_id=2129328972]
+visible = false
+position = Vector2(1, -8)
+sprite_frames = SubResource("SpriteFrames_uvybh")
+animation = &"dead_spirit"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2138933146]
+scale = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_player")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1320141191]
+visible = false
+zoom = Vector2(1.5, 1.5)
+
+[node name="PlayerVisual" type="Node2D" parent="." unique_id=2104791971]
+position = Vector2(0, -8)
+
+[node name="BackSlot" type="Node2D" parent="PlayerVisual" unique_id=2144932028]
+z_index = -30
+
+[node name="BackItemAnimated" type="AnimatedSprite2D" parent="PlayerVisual/BackSlot" unique_id=1428992086]
+visible = false
+
+[node name="LeftFoot" type="Node2D" parent="PlayerVisual" unique_id=1642969697]
+
+[node name="BaseLeftFootAnimated" type="AnimatedSprite2D" parent="PlayerVisual/LeftFoot" unique_id=1762156717]
+sprite_frames = SubResource("SpriteFrames_left_foot")
+
+[node name="LeftShoeAnimated" type="AnimatedSprite2D" parent="PlayerVisual/LeftFoot" unique_id=875414829]
+visible = false
+position = Vector2(0, 14)
+
+[node name="RightFoot" type="Node2D" parent="PlayerVisual" unique_id=1610838344]
+z_index = 5
+
+[node name="BaseRightFootAnimated" type="AnimatedSprite2D" parent="PlayerVisual/RightFoot" unique_id=1406222924]
+sprite_frames = SubResource("SpriteFrames_right_foot")
+
+[node name="RightShoeAnimated" type="AnimatedSprite2D" parent="PlayerVisual/RightFoot" unique_id=787051746]
+visible = false
+position = Vector2(0, 14)
+
+[node name="LeftArm" type="Node2D" parent="PlayerVisual" unique_id=1068902497]
+z_index = 4
+
+[node name="BaseLeftArmAnimated" type="AnimatedSprite2D" parent="PlayerVisual/LeftArm" unique_id=140497665]
+sprite_frames = SubResource("SpriteFrames_left_arm")
+
+[node name="LeftSleeveAnimated" type="AnimatedSprite2D" parent="PlayerVisual/LeftArm" unique_id=643879786]
+visible = false
+position = Vector2(5, 3)
+
+[node name="Bottom" type="Node2D" parent="PlayerVisual" unique_id=419410812]
+z_index = 10
+
+[node name="BaseBottomAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Bottom" unique_id=1179324259]
+sprite_frames = SubResource("SpriteFrames_bottom")
+
+[node name="PantsAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Bottom" unique_id=1276913111]
+visible = false
+position = Vector2(0, 9)
+
+[node name="Body" type="Node2D" parent="PlayerVisual" unique_id=1451961031]
+z_index = 30
+
+[node name="BaseBodyAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Body" unique_id=760853380]
+sprite_frames = SubResource("SpriteFrames_body")
+
+[node name="ShirtBodyAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Body" unique_id=219205181]
+visible = false
+position = Vector2(1, 4)
+
+[node name="NecklaceAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Body" unique_id=693671436]
+visible = false
+position = Vector2(1, 4)
+
+[node name="Head" type="Node2D" parent="PlayerVisual" unique_id=432917469]
+z_index = 40
+position = Vector2(1, 0)
+
+[node name="BaseHeadAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Head" unique_id=1128676176]
+sprite_frames = SubResource("SpriteFrames_head")
+
+[node name="FaceExpressionAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Head" unique_id=527099271]
+sprite_frames = SubResource("SpriteFrames_face_expression")
+animation = &"idle"
+
+[node name="HairAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Head" unique_id=1301070538]
+visible = false
+position = Vector2(0, -14)
+
+[node name="BeardAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Head" unique_id=1595463213]
+visible = false
+
+[node name="EyewearAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Head" unique_id=896513224]
+visible = false
+position = Vector2(8, -6)
+
+[node name="HatAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Head" unique_id=168663268]
+visible = false
+
+[node name="RightArm" type="Node2D" parent="PlayerVisual" unique_id=1129061169]
+z_index = 50
+rotation = 0.034906585
+
+[node name="BaseRightArmAnimated" type="AnimatedSprite2D" parent="PlayerVisual/RightArm" unique_id=67310700]
+sprite_frames = SubResource("SpriteFrames_right_arm")
+
+[node name="RightSleeveAnimated" type="AnimatedSprite2D" parent="PlayerVisual/RightArm" unique_id=1910945551]
+visible = false
+position = Vector2(-5, 3)
+
+[node name="HandItem" type="Node2D" parent="PlayerVisual" unique_id=1770160189]
+z_index = 60
+
+[node name="HandItemAnimated" type="AnimatedSprite2D" parent="PlayerVisual/HandItem" unique_id=1904003124]
+visible = false
+position = Vector2(1, -1)
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="FishingLineStart" type="Marker2D" parent="PlayerVisual/HandItem" unique_id=2005505174]
+visible = false
+position = Vector2(34, 10)
+rotation = 0.034906585
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="ThunderStart" type="Marker2D" parent="PlayerVisual/HandItem" unique_id=668838966]
+visible = false
+position = Vector2(34, 10)
+rotation = 0.034906585
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="ChatBubbleAnchor" type="Marker2D" parent="." unique_id=1348607706]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=848086886]
+libraries/ = SubResource("AnimationLibrary_movement")
+
+[node name="Jump" type="AnimationPlayer" parent="." unique_id=127245380]
+libraries/ = SubResource("AnimationLibrary_jump")
+
+[node name="idle" type="AnimationPlayer" parent="." unique_id=2098663202]
+libraries/ = SubResource("AnimationLibrary_idle")
+
+[node name="DebugLabel" type="Label" parent="." unique_id=1572945553]
+offset_left = -54.0
+offset_top = -86.0
+offset_right = 72.0
+offset_bottom = -26.0
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1

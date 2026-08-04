@@ -8,19 +8,31 @@ signal trash_requested(item: Dictionary)
 signal closed
 
 const MIN_AMOUNT := 1
-const WINDOW_SIZE := Vector2(430.0, 326.0)
+const WINDOW_BASE_SIZE := Vector2(430.0, 300.0)
+const WINDOW_RENDER_SCALE := 1.35
+const WINDOW_SIZE := WINDOW_BASE_SIZE * WINDOW_RENDER_SCALE
 const VIEWPORT_MARGIN := 12.0
+const ANCHOR_GAP := 12.0
+const OPEN_ANIMATION_SECONDS := 0.14
+const CLOSE_ANIMATION_SECONDS := 0.10
 
 var item_data: Dictionary = {}
 var amount: int = MIN_AMOUNT
 var amount_limit: int = MIN_AMOUNT
 var syncing_amount: bool = false
+var popup_tween: Tween = null
+var window_base_scale := Vector2(WINDOW_RENDER_SCALE, WINDOW_RENDER_SCALE)
 
 @onready var window: Control = get_node_or_null("Window") as Control
 @onready var dismiss_area: Button = get_node_or_null("DismissArea") as Button
 @onready var close_button: Button = get_node_or_null("Window/CloseButton") as Button
 @onready var item_name_label: Label = get_node_or_null("Window/ItemName") as Label
 @onready var item_count_label: Label = get_node_or_null("Window/ItemCount") as Label
+@onready var item_type_label: Label = get_node_or_null("Window/TypeLabel") as Label
+@onready var item_rarity_label: Label = get_node_or_null("Window/RarityLabel") as Label
+@onready var item_spliceable_label: Label = get_node_or_null("Window/SpliceableLabel") as Label
+@onready var more_details_label: Label = get_node_or_null("Window/MoreDetailsLabel") as Label
+@onready var description_label: Label = get_node_or_null("Window/DescriptionLabel") as Label
 @onready var item_icon_shadow: TextureRect = get_node_or_null("Window/PreviewSlot/IconShadow") as TextureRect
 @onready var item_icon: TextureRect = get_node_or_null("Window/PreviewSlot/Icon") as TextureRect
 @onready var amount_label: Label = get_node_or_null("Window/AmountLabel") as Label
@@ -34,8 +46,15 @@ var syncing_amount: bool = false
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	visible = false
+	if window != null:
+		window.mouse_filter = Control.MOUSE_FILTER_STOP
+		window_base_scale = window.scale
+		window.pivot_offset = window.size * Vector2(0.5, 1.0)
+		if not window.gui_input.is_connected(_on_modal_gui_input):
+			window.gui_input.connect(_on_modal_gui_input)
+	_set_popup_visible(false)
 	if dismiss_area != null:
+		dismiss_area.mouse_filter = Control.MOUSE_FILTER_STOP
 		dismiss_area.pressed.connect(_on_close_pressed)
 	if close_button != null:
 		close_button.pressed.connect(_on_close_pressed)
@@ -58,36 +77,198 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if not visible:
 		return
+	if _try_handle_close_pointer_event(event):
+		return
+	if _try_consume_modal_pointer_event(event):
+		return
 	if event.is_action_pressed("ui_cancel"):
 		close_popup()
 		get_viewport().set_input_as_handled()
 
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_VISIBILITY_CHANGED and visible and item_data.is_empty():
+		call_deferred("_hide_popup_immediate", false)
+
+
 func open_popup(item: Dictionary, icon_texture: Texture2D = null, anchor_position: Vector2 = Vector2.ZERO) -> void:
+	if not _is_valid_popup_item(item):
+		close_popup(false)
+		return
 	item_data = item.duplicate(true)
 	amount_limit = maxi(MIN_AMOUNT, int(item_data.get("count", item_data.get("available_count", MIN_AMOUNT))))
 	amount = MIN_AMOUNT
 	_update_item_preview(icon_texture)
+	_update_item_facts()
 	_sync_amount_controls()
 	_update_action_state()
-	visible = true
+	_set_popup_visible(true)
 	move_to_front()
-	call_deferred("_position_window", anchor_position)
+	call_deferred("_position_window_and_play_open", anchor_position)
 
 
 func close_popup(emit_closed: bool = true) -> void:
-	if not visible and item_data.is_empty():
+	var should_emit_closed := emit_closed and (visible or not item_data.is_empty())
+	if not visible:
+		_hide_popup_immediate(true)
 		return
-	visible = false
 	if amount_input != null:
 		amount_input.release_focus()
-	item_data.clear()
-	if emit_closed:
-		closed.emit()
+	_play_close_animation(should_emit_closed)
 
 
 func is_open() -> bool:
 	return visible and not item_data.is_empty()
+
+
+func owns_pointer_position(point: Vector2) -> bool:
+	if not visible:
+		return false
+	var root_rect: Rect2 = get_global_rect()
+	if root_rect.size.x <= 0.0 or root_rect.size.y <= 0.0:
+		root_rect = Rect2(Vector2.ZERO, get_viewport_rect().size)
+	return root_rect.has_point(point)
+
+
+func owns_pointer_event(event: InputEvent) -> bool:
+	var pointer_position: Vector2 = _get_pointer_event_position(event)
+	if pointer_position == Vector2.INF:
+		return false
+	return owns_pointer_position(pointer_position)
+
+
+func _process(_delta: float) -> void:
+	if visible and item_data.is_empty():
+		_hide_popup_immediate(false)
+
+
+func _is_valid_popup_item(item: Dictionary) -> bool:
+	var item_type := str(item.get("item_type", item.get("type", item.get("id", "")))).strip_edges()
+	var category := str(item.get("item_category", item.get("category", ""))).strip_edges()
+	return item_type != "" and category != "" and category != "empty"
+
+
+func _set_popup_visible(should_show: bool) -> void:
+	visible = should_show
+	if window != null:
+		window.visible = should_show
+	if dismiss_area != null:
+		dismiss_area.visible = should_show
+	var dimmer := get_node_or_null("Dimmer") as CanvasItem
+	if dimmer != null:
+		dimmer.visible = should_show
+
+
+func _hide_popup_immediate(clear_item_data: bool = false) -> void:
+	_kill_popup_tween()
+	_set_popup_visible(false)
+	if window != null:
+		window.scale = window_base_scale
+		window.modulate.a = 1.0
+	if amount_input != null:
+		amount_input.release_focus()
+	if clear_item_data:
+		item_data.clear()
+
+
+func _kill_popup_tween() -> void:
+	if popup_tween != null:
+		if popup_tween.is_valid():
+			popup_tween.kill()
+		popup_tween = null
+
+
+func _try_handle_close_pointer_event(event: InputEvent) -> bool:
+	if close_button == null:
+		return false
+	var pointer_position := Vector2.ZERO
+	var should_check := false
+	if event is InputEventMouseButton:
+		var mouse_event := event as InputEventMouseButton
+		should_check = mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT
+		pointer_position = mouse_event.position
+	elif event is InputEventScreenTouch:
+		var touch_event := event as InputEventScreenTouch
+		should_check = touch_event.pressed
+		pointer_position = touch_event.position
+	if not should_check:
+		return false
+	if not close_button.get_global_rect().has_point(pointer_position):
+		return false
+	close_popup()
+	get_viewport().set_input_as_handled()
+	return true
+
+
+func _try_consume_modal_pointer_event(event: InputEvent) -> bool:
+	var pointer_position: Vector2 = _get_pointer_event_position(event)
+	if pointer_position == Vector2.INF:
+		return false
+	if not _get_scaled_window_global_rect().has_point(pointer_position):
+		return false
+	if _is_pointer_over_interactive_control(pointer_position):
+		return false
+	get_viewport().set_input_as_handled()
+	return true
+
+
+func _get_pointer_event_position(event: InputEvent) -> Vector2:
+	if event is InputEventMouseButton:
+		return (event as InputEventMouseButton).position
+	if event is InputEventMouseMotion:
+		return (event as InputEventMouseMotion).position
+	if event is InputEventScreenTouch:
+		return (event as InputEventScreenTouch).position
+	if event is InputEventScreenDrag:
+		return (event as InputEventScreenDrag).position
+	return Vector2.INF
+
+
+func _get_scaled_window_global_rect() -> Rect2:
+	if window == null:
+		return Rect2(Vector2.ZERO, Vector2.ZERO)
+	var scaled_size := Vector2(absf(window.size.x * window.scale.x), absf(window.size.y * window.scale.y))
+	return Rect2(window.global_position, scaled_size)
+
+
+func _is_pointer_over_interactive_control(point: Vector2) -> bool:
+	for control in [
+		close_button,
+		amount_input,
+		amount_slider,
+		use_button,
+		drop_button,
+		info_button,
+		trash_button
+	]:
+		if _control_contains_screen_point(control as Control, point):
+			return true
+	return false
+
+
+func _control_contains_screen_point(control: Control, point: Vector2) -> bool:
+	if control == null or not is_instance_valid(control):
+		return false
+	if not control.is_visible_in_tree():
+		return false
+	var rect := control.get_global_rect()
+	if rect.size.x <= 0.0 or rect.size.y <= 0.0:
+		return false
+	return rect.has_point(point)
+
+
+func _on_modal_gui_input(event: InputEvent) -> void:
+	if _get_pointer_event_position(event) == Vector2.INF:
+		return
+	accept_event()
+	get_viewport().set_input_as_handled()
+
+
+func _position_window_and_play_open(anchor_position: Vector2) -> void:
+	if not visible or item_data.is_empty():
+		return
+	_position_window(anchor_position)
+	_play_open_animation()
 
 
 func _position_window(anchor_position: Vector2) -> void:
@@ -97,13 +278,53 @@ func _position_window(anchor_position: Vector2) -> void:
 	var target_position: Vector2
 	if anchor_position == Vector2.ZERO:
 		target_position = (viewport_size - WINDOW_SIZE) * 0.5
-	elif OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios"):
-		target_position = anchor_position + Vector2(-WINDOW_SIZE.x * 0.5, -WINDOW_SIZE.y - 24.0)
 	else:
-		target_position = anchor_position + Vector2(18.0, -WINDOW_SIZE.y * 0.42)
+		target_position = Vector2(anchor_position.x - WINDOW_SIZE.x * 0.5, anchor_position.y - WINDOW_SIZE.y - ANCHOR_GAP)
+		if target_position.y < VIEWPORT_MARGIN:
+			target_position.y = anchor_position.y + ANCHOR_GAP
 	target_position.x = clampf(target_position.x, VIEWPORT_MARGIN, maxf(VIEWPORT_MARGIN, viewport_size.x - WINDOW_SIZE.x - VIEWPORT_MARGIN))
 	target_position.y = clampf(target_position.y, VIEWPORT_MARGIN, maxf(VIEWPORT_MARGIN, viewport_size.y - WINDOW_SIZE.y - VIEWPORT_MARGIN))
 	window.position = target_position
+
+
+func _play_open_animation() -> void:
+	if window == null:
+		return
+	_kill_popup_tween()
+	window.pivot_offset = window.size * Vector2(0.5, 1.0)
+	window.scale = window_base_scale * 0.9
+	window.modulate.a = 0.0
+	popup_tween = create_tween()
+	popup_tween.set_parallel(true)
+	popup_tween.tween_property(window, "scale", window_base_scale, OPEN_ANIMATION_SECONDS).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	popup_tween.tween_property(window, "modulate:a", 1.0, OPEN_ANIMATION_SECONDS * 0.75).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+func _play_close_animation(emit_closed: bool) -> void:
+	if window == null:
+		item_data.clear()
+		_set_popup_visible(false)
+		if emit_closed:
+			closed.emit()
+		return
+	_kill_popup_tween()
+	window.pivot_offset = window.size * Vector2(0.5, 1.0)
+	popup_tween = create_tween()
+	var closing_tween: Tween = popup_tween
+	closing_tween.set_parallel(true)
+	closing_tween.tween_property(window, "scale", window_base_scale * 0.92, CLOSE_ANIMATION_SECONDS).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	closing_tween.tween_property(window, "modulate:a", 0.0, CLOSE_ANIMATION_SECONDS).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	closing_tween.finished.connect(func() -> void:
+		if popup_tween != closing_tween:
+			return
+		popup_tween = null
+		item_data.clear()
+		_set_popup_visible(false)
+		window.scale = window_base_scale
+		window.modulate.a = 1.0
+		if emit_closed:
+			closed.emit()
+	)
 
 
 func _update_item_preview(icon_texture: Texture2D) -> void:
@@ -111,21 +332,49 @@ func _update_item_preview(icon_texture: Texture2D) -> void:
 	if display_name == "":
 		display_name = "Item"
 	if item_name_label != null:
-		item_name_label.text = display_name
+		item_name_label.text = display_name + " (" + str(amount_limit) + "x)"
 		var title_size: int = 19
-		if display_name.length() > 32:
+		if item_name_label.text.length() > 32:
 			title_size = 13
-		elif display_name.length() > 23:
+		elif item_name_label.text.length() > 23:
 			title_size = 16
 		item_name_label.add_theme_font_size_override("font_size", title_size)
 	if item_count_label != null:
 		item_count_label.text = "AVAILABLE  x" + str(amount_limit)
+		item_count_label.visible = false
 	if item_icon_shadow != null:
 		item_icon_shadow.texture = icon_texture
 		item_icon_shadow.visible = icon_texture != null
 	if item_icon != null:
 		item_icon.texture = icon_texture
 		item_icon.visible = icon_texture != null
+
+
+func _update_item_facts() -> void:
+	var category := _display_case_text(str(item_data.get("type_label", item_data.get("category", "Item"))))
+	var rarity := _display_case_text(str(item_data.get("rarity", "common")))
+	var spliceable := bool(item_data.get("spliceable", false))
+	var description := str(item_data.get("description", "")).strip_edges()
+	if description == "":
+		description = category + " item ready for the active inventory action."
+
+	if item_type_label != null:
+		item_type_label.text = "Type: " + category
+	if item_rarity_label != null:
+		item_rarity_label.text = "Rarity: " + rarity
+	if item_spliceable_label != null:
+		item_spliceable_label.text = "Spliceable: " + ("Yes" if spliceable else "No")
+	if more_details_label != null:
+		more_details_label.text = "... (More details)"
+	if description_label != null:
+		description_label.text = description
+
+
+func _display_case_text(raw_text: String) -> String:
+	var clean_text := raw_text.strip_edges().replace("_", " ")
+	if clean_text == "":
+		return "Item"
+	return clean_text.capitalize()
 
 
 func _update_action_state() -> void:

@@ -3196,7 +3196,7 @@ z_index = 4
 sprite_frames = SubResource("SpriteFrames_kry3j")
 
 [node name="LeftSleeveAnimated" type="AnimatedSprite2D" parent="Player/PlayerVisual/LeftArm" unique_id=580323188]
-visible = false
+position = Vector2(6, 3)
 sprite_frames = SubResource("SpriteFrames_21xkr")
 
 [node name="Bottom" type="Node2D" parent="Player/PlayerVisual" unique_id=150284632]
@@ -3223,7 +3223,7 @@ sprite_frames = SubResource("SpriteFrames_body")
 
 [node name="ShirtBodyAnimated" type="AnimatedSprite2D" parent="Player/PlayerVisual/Body" unique_id=975217255]
 visible = false
-position = Vector2(2, 4)
+position = Vector2(1, 4)
 sprite_frames = SubResource("SpriteFrames_shirt_item")
 
 [node name="NecklaceAnimated" type="AnimatedSprite2D" parent="Player/PlayerVisual/Body" unique_id=1412660288]
@@ -3293,7 +3293,7 @@ sprite_frames = SubResource("SpriteFrames_right_hand")
 
 [node name="RightSleeveAnimated" type="AnimatedSprite2D" parent="Player/PlayerVisual/RightArm" unique_id=1665327662]
 visible = false
-position = Vector2(-5, 3)
+position = Vector2(-5.9993896, 3.034912)
 sprite_frames = SubResource("SpriteFrames_right_sleeve")
 
 [node name="ChatBubbleAnchor" type="Marker2D" parent="Player" unique_id=1926947233]

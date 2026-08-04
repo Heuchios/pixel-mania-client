@@ -1,0 +1,124 @@
+[gd_scene format=3 uid="uid://c3kvnyj18kku"]
+
+[ext_resource type="Script" uid="uid://npout5my14pc" path="res://Scripts/ceiling_light_particles_fx.gd" id="1_lightfx"]
+[ext_resource type="Texture2D" uid="uid://cximtj2fb16yd" path="res://Assets/effects/ceiling_light_glow.svg" id="2_glow"]
+[ext_resource type="Texture2D" uid="uid://cf2jsvb5wyin7" path="res://Assets/effects/ceiling_light_mote.svg" id="3_mote"]
+[ext_resource type="Texture2D" uid="uid://dq8ico6fsvgu1" path="res://Assets/effects/ceiling_light_fixture.svg" id="4_fixture"]
+[ext_resource type="Texture2D" uid="uid://cont8q3d02l6s" path="res://Assets/effects/ceiling_light_beam.svg" id="5_beam"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_additive_beam"]
+blend_mode = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qvieg"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(43, 20, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 4.0
+initial_velocity_max = 16.0
+angular_velocity_min = -28.0
+angular_velocity_max = 28.0
+gravity = Vector3(0, -2, 0)
+damping_min = 0.7
+damping_max = 2.8
+scale_min = 0.22
+scale_max = 0.74
+color = Color(1, 0.91, 0.66, 0.24)
+hue_variation_min = -0.03
+hue_variation_max = 0.05
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1o2ih"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(36, 8, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 42.0
+initial_velocity_min = 10.0
+initial_velocity_max = 26.0
+angular_velocity_min = -80.0
+angular_velocity_max = 80.0
+gravity = Vector3(0, 4, 0)
+damping_min = 1.8
+damping_max = 5.0
+scale_min = 0.12
+scale_max = 0.3
+color = Color(1, 0.95, 0.76, 0.2)
+hue_variation_min = -0.04
+hue_variation_max = 0.04
+
+[node name="CeilingLightParticlesFX" type="Node2D" unique_id=309009729]
+visible = false
+z_index = 4075
+z_as_relative = false
+script = ExtResource("1_lightfx")
+light_energy = 1.45
+bulb_glow_energy = 0.35
+beam_alpha = 0.24
+show_fixture = false
+
+[node name="WarmCeilingLight" type="PointLight2D" parent="." unique_id=653508902]
+position = Vector2(0, 32)
+color = Color(1, 0.84, 0.56, 1)
+energy = 1.4880425
+shadow_enabled = true
+shadow_color = Color(0, 0, 0, 0.68)
+shadow_filter = 2
+shadow_filter_smooth = 4.0
+texture = ExtResource("5_beam")
+height = 12.0
+
+[node name="BulbGlowLight" type="PointLight2D" parent="." unique_id=695013533]
+color = Color(1, 0.84, 0.56, 1)
+energy = 0.35918266
+shadow_enabled = true
+shadow_color = Color(0, 0, 0, 0.56)
+shadow_filter = 1
+shadow_filter_smooth = 2.5
+texture = ExtResource("2_glow")
+texture_scale = 0.28
+height = 8.0
+
+[node name="VisibleLightBeam" type="Sprite2D" parent="." unique_id=252177756]
+modulate = Color(1, 0.84, 0.56, 0.24629667)
+z_index = 1
+texture_filter = 1
+material = SubResource("CanvasItemMaterial_additive_beam")
+position = Vector2(0, 32)
+texture = ExtResource("5_beam")
+
+[node name="Fixture" type="Sprite2D" parent="." unique_id=97326190]
+visible = false
+z_index = 4
+texture_filter = 1
+texture = ExtResource("4_fixture")
+
+[node name="WarmMotes" type="GPUParticles2D" parent="." unique_id=608856404]
+visible = false
+z_index = 3
+position = Vector2(0, 34)
+amount = 24
+texture = ExtResource("3_mote")
+lifetime = 3.2
+preprocess = 3.2
+randomness = 0.62
+visibility_rect = Rect2(-56, -6, 112, 82)
+process_material = SubResource("ParticleProcessMaterial_qvieg")
+
+[node name="FallingDust" type="GPUParticles2D" parent="." unique_id=1315367641]
+z_index = 3
+position = Vector2(0, 10)
+texture = ExtResource("3_mote")
+lifetime = 2.4
+preprocess = 2.4
+randomness = 0.58
+visibility_rect = Rect2(-48, -2, 96, 72)
+process_material = SubResource("ParticleProcessMaterial_1o2ih")
+
+[node name="GeneratedBlockLightOccluders" type="Node2D" parent="." unique_id=62513292]
+z_index = 4074
+z_as_relative = false

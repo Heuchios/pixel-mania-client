@@ -1,0 +1,191 @@
+{
+  "name": "PixelMania Super Casual GUI Kit",
+  "version": "1.0-first-style-rounded-corners",
+  "style": "original first-pass glossy casual PixelMania palette with cleaned rounded inner corners",
+  "godot": "PNG assets only; no wiring included",
+  "asset_count": 43,
+  "suggested_margins_px": {
+    "large_panels": "28-32",
+    "small_panels": "20-24",
+    "buttons_tabs": "18-22",
+    "slots": "24"
+  },
+  "assets": {
+    "button_blue_normal.png": {
+      "width": 220,
+      "height": 70
+    },
+    "button_blue_hover.png": {
+      "width": 220,
+      "height": 70
+    },
+    "button_blue_pressed.png": {
+      "width": 220,
+      "height": 70
+    },
+    "button_yellow_normal.png": {
+      "width": 220,
+      "height": 70
+    },
+    "button_yellow_hover.png": {
+      "width": 220,
+      "height": 70
+    },
+    "button_yellow_pressed.png": {
+      "width": 220,
+      "height": 70
+    },
+    "button_green_normal.png": {
+      "width": 220,
+      "height": 70
+    },
+    "button_green_hover.png": {
+      "width": 220,
+      "height": 70
+    },
+    "button_green_pressed.png": {
+      "width": 220,
+      "height": 70
+    },
+    "button_red_normal.png": {
+      "width": 180,
+      "height": 62
+    },
+    "button_red_hover.png": {
+      "width": 180,
+      "height": 62
+    },
+    "button_red_pressed.png": {
+      "width": 180,
+      "height": 62
+    },
+    "close_button.png": {
+      "width": 64,
+      "height": 64
+    },
+    "panel_window_large_blue.png": {
+      "width": 900,
+      "height": 560
+    },
+    "panel_window_medium_blue.png": {
+      "width": 640,
+      "height": 420
+    },
+    "panel_window_small_blue.png": {
+      "width": 360,
+      "height": 240
+    },
+    "panel_window_purple.png": {
+      "width": 700,
+      "height": 440
+    },
+    "panel_window_gold.png": {
+      "width": 640,
+      "height": 380
+    },
+    "panel_popup.png": {
+      "width": 420,
+      "height": 260
+    },
+    "panel_confirm_popup.png": {
+      "width": 520,
+      "height": 300
+    },
+    "panel_main.png": {
+      "width": 720,
+      "height": 420
+    },
+    "panel_inner.png": {
+      "width": 560,
+      "height": 300
+    },
+    "panel_card_blue.png": {
+      "width": 360,
+      "height": 180
+    },
+    "panel_card_dark.png": {
+      "width": 360,
+      "height": 180
+    },
+    "panel_card_purple.png": {
+      "width": 360,
+      "height": 180
+    },
+    "panel_inventory_grid.png": {
+      "width": 760,
+      "height": 360
+    },
+    "panel_shop_item_card.png": {
+      "width": 460,
+      "height": 190
+    },
+    "panel_sidebar.png": {
+      "width": 220,
+      "height": 520
+    },
+    "panel_tooltip.png": {
+      "width": 340,
+      "height": 130
+    },
+    "panel_header_bar.png": {
+      "width": 780,
+      "height": 78
+    },
+    "panel_footer_bar.png": {
+      "width": 780,
+      "height": 90
+    },
+    "panel_world_lock_card.png": {
+      "width": 520,
+      "height": 220
+    },
+    "hotbar_panel.png": {
+      "width": 620,
+      "height": 118
+    },
+    "inventory_handle.png": {
+      "width": 210,
+      "height": 44
+    },
+    "input_box.png": {
+      "width": 360,
+      "height": 58
+    },
+    "slot_normal.png": {
+      "width": 96,
+      "height": 96
+    },
+    "slot_selected.png": {
+      "width": 96,
+      "height": 96
+    },
+    "slot_rare.png": {
+      "width": 96,
+      "height": 96
+    },
+    "slot_epic.png": {
+      "width": 96,
+      "height": 96
+    },
+    "slot_legendary.png": {
+      "width": 96,
+      "height": 96
+    },
+    "tab_selected.png": {
+      "width": 170,
+      "height": 56
+    },
+    "tab_unselected.png": {
+      "width": 170,
+      "height": 56
+    },
+    "ninepatch_guide.png": {
+      "width": 420,
+      "height": 260
+    },
+    "preview/pixelmania_super_casual_gui_preview.png": {
+      "width": 1600,
+      "height": 1964
+    }
+  }
+}

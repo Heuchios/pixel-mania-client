@@ -1,0 +1,512 @@
+[gd_scene format=3 uid="uid://dcj67i7so4mjm"]
+
+[ext_resource type="Script" uid="uid://dk87xwb626w6e" path="res://Scripts/login_screen.gd" id="1_login_script"]
+[ext_resource type="Texture2D" uid="uid://c4k867krp3wli" path="res://Assets/background/space_theme/star_1.png" id="2_0axv6"]
+[ext_resource type="Texture2D" uid="uid://cvjfqv4kccwo0" path="res://Assets/background/space_theme/star_2.png" id="3_ox2yu"]
+[ext_resource type="Texture2D" uid="uid://dsnopy0fnnne2" path="res://Assets/background/space_theme/star_3.png" id="4_ui2s7"]
+[ext_resource type="Texture2D" uid="uid://bd6iwmw6k8s4x" path="res://Assets/background/space_theme/star_4.png" id="5_fk7no"]
+[ext_resource type="Texture2D" uid="uid://b8ypi1cqq13s6" path="res://Assets/ui/inner_panel_887x408.png" id="7_0axv6"]
+[ext_resource type="Texture2D" uid="uid://dnuvhhyohskng" path="res://Assets/ui/logo/Logo_6.png" id="9_logo"]
+[ext_resource type="Texture2D" uid="uid://dhwabrvcekyrx" path="res://Assets/ui/input_470x52.png" id="9_ox2yu"]
+[ext_resource type="Texture2D" uid="uid://dnyf6mdepwrxc" path="res://Assets/ui/inventory/panel_inventory_grid.png" id="10_panel_grid"]
+[ext_resource type="Texture2D" uid="uid://buhs7xmnksv4a" path="res://Assets/ui/login/checked.png" id="11_ox2yu"]
+[ext_resource type="Texture2D" uid="uid://no714kin0ckc" path="res://Assets/ui/login/un_checked.png" id="12_ui2s7"]
+[ext_resource type="Texture2D" uid="uid://i3nk3d4nfgx5" path="res://Assets/ui/pink_button_90x24.png" id="13_0axv6"]
+[ext_resource type="Texture2D" uid="uid://bqm24ecryw223" path="res://Assets/ui/pink_button_pressed_90x24.png" id="14_ox2yu"]
+[ext_resource type="Texture2D" uid="uid://dp3cg88aiem4v" path="res://Assets/ui/pink_button_hover_90x24.png" id="15_ui2s7"]
+[ext_resource type="Texture2D" uid="uid://mb6ouxcf6ipt" path="res://Assets/ui/blue_button_normal_90x24.png" id="16_0axv6"]
+[ext_resource type="Texture2D" uid="uid://c0fhbukoi2ev0" path="res://Assets/ui/blue_button_pressed_90x24.png" id="17_ox2yu"]
+[ext_resource type="Texture2D" uid="uid://butpdc43dm4b8" path="res://Assets/ui/blue_button_hover_90x24.png" id="18_ui2s7"]
+[ext_resource type="Texture2D" uid="uid://c0s1vj8wepsbi" path="res://Assets/ui/green_button_normal_90x24.png" id="19_0axv6"]
+[ext_resource type="Texture2D" uid="uid://pyw7s5lcdhmt" path="res://Assets/ui/green_button_pressed_90x24.png" id="20_ox2yu"]
+[ext_resource type="Texture2D" uid="uid://opqgsn2jk7ie" path="res://Assets/ui/green_button_hover_90x24.png" id="21_ui2s7"]
+[ext_resource type="Texture2D" uid="uid://d1n2gwvwc6eay" path="res://Assets/ui/red_button_normal_90x24.png" id="22_0axv6"]
+[ext_resource type="AudioStream" uid="uid://dp1j3cf0ac7wf" path="res://Assets/sounds/login.wav" id="23_login_sound"]
+[ext_resource type="Texture2D" uid="uid://b7ngun3bstbwq" path="res://Assets/ui/red_button_pressed_90x24.png" id="23_ox2yu"]
+[ext_resource type="Texture2D" uid="uid://u2iiji1cp4cs" path="res://Assets/ui/red_button_hover_90x24.png" id="24_ui2s7"]
+[ext_resource type="Script" uid="uid://ca4fq8loi3owy" path="res://Scripts/ui/custom_icon_check_box.gd" id="27_custom_checkbox"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_logo"]
+atlas = ExtResource("9_logo")
+region = Rect2(54, 144, 406, 222)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_input"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yellow_normal"]
+texture = ExtResource("13_0axv6")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yellow_pressed"]
+texture = ExtResource("14_ox2yu")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yellow_hover"]
+texture = ExtResource("15_ui2s7")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0axv6"]
+texture = ExtResource("16_0axv6")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_pressed"]
+texture = ExtResource("17_ox2yu")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_hover"]
+texture = ExtResource("18_ui2s7")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_green_normal"]
+texture = ExtResource("19_0axv6")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_green_pressed"]
+texture = ExtResource("20_ox2yu")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_u1e5q"]
+texture = ExtResource("21_ui2s7")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_drop_normal"]
+texture = ExtResource("22_0axv6")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_drop_pressed"]
+texture = ExtResource("23_ox2yu")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_drop_hover"]
+texture = ExtResource("24_ui2s7")
+
+[node name="LoginScene" type="Control" unique_id=219844431]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_login_script")
+
+[node name="StarryNightBackground" type="Control" parent="." unique_id=653466359]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Layer8" type="TextureRect" parent="StarryNightBackground" unique_id=1328861671]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -34.0
+offset_top = -34.0
+offset_right = 34.0
+offset_bottom = 34.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_0axv6")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Layer7" type="TextureRect" parent="StarryNightBackground" unique_id=21867996]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = -42.0
+offset_right = 42.0
+offset_bottom = 42.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_ox2yu")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Layer6" type="TextureRect" parent="StarryNightBackground" unique_id=345133307]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_ui2s7")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Layer5" type="TextureRect" parent="StarryNightBackground" unique_id=2132014003]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -58.0
+offset_top = -58.0
+offset_right = 58.0
+offset_bottom = 58.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_fk7no")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BackgroundShade" type="ColorRect" parent="." unique_id=2077483247]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.0156863, 0.00784314, 0.027451, 0.28)
+
+[node name="ServerStatusPill" type="Control" parent="." unique_id=861077110]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -224.0
+offset_top = 28.0
+offset_right = -24.0
+offset_bottom = 64.0
+grow_horizontal = 0
+
+[node name="Skin" type="NinePatchRect" parent="ServerStatusPill" unique_id=40240053]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+patch_margin_left = 18
+patch_margin_top = 18
+patch_margin_right = 18
+patch_margin_bottom = 18
+
+[node name="StatusDot" type="Panel" parent="ServerStatusPill" unique_id=1835935128]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 8.0
+offset_right = 27.0
+offset_bottom = 28.0
+
+[node name="StatusLabel" type="Label" parent="ServerStatusPill" unique_id=2130629432]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 3.0
+offset_right = 188.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(0.38, 1, 0.22, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Server Online"
+vertical_alignment = 1
+
+[node name="LoginPanel" type="Control" parent="." unique_id=1108261510]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -296.0
+offset_right = 260.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelShadow" type="NinePatchRect" parent="LoginPanel" unique_id=592477613]
+visible = false
+modulate = Color(0, 0, 0, 0.22)
+layout_mode = 0
+offset_left = 18.0
+offset_top = 110.0
+offset_right = 502.0
+offset_bottom = 538.0
+texture = ExtResource("10_panel_grid")
+patch_margin_left = 36
+patch_margin_top = 36
+patch_margin_right = 36
+patch_margin_bottom = 36
+
+[node name="PanelSkin" type="NinePatchRect" parent="LoginPanel" unique_id=1392536024]
+modulate = Color(1, 1, 1, 0.46)
+layout_mode = 0
+offset_left = -175.0
+offset_top = 169.0
+offset_right = 712.0
+offset_bottom = 577.0
+texture = ExtResource("7_0axv6")
+patch_margin_left = 36
+patch_margin_top = 36
+patch_margin_right = 36
+patch_margin_bottom = 36
+
+[node name="Logo" type="TextureRect" parent="LoginPanel" unique_id=1052561195]
+layout_mode = 0
+offset_left = 70.0
+offset_top = -72.0
+offset_right = 512.0
+offset_bottom = 155.0
+mouse_filter = 2
+texture = SubResource("AtlasTexture_logo")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Form" type="Control" parent="LoginPanel" unique_id=1446275344]
+anchors_preset = 0
+offset_left = 25.0
+offset_top = 158.0
+offset_right = 495.0
+offset_bottom = 520.0
+
+[node name="UsernameField" type="Control" parent="LoginPanel/Form" unique_id=1293270972]
+anchors_preset = 0
+offset_right = 470.0
+offset_bottom = 52.0
+
+[node name="Skin" type="NinePatchRect" parent="LoginPanel/Form/UsernameField" unique_id=1393739010]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 195.0
+offset_top = 37.0
+offset_right = 195.0
+offset_bottom = 37.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("9_ox2yu")
+patch_margin_left = 24
+patch_margin_top = 16
+patch_margin_right = 24
+patch_margin_bottom = 16
+
+[node name="UsernameInput" type="LineEdit" parent="LoginPanel/Form/UsernameField" unique_id=1515237665]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 42.0
+offset_right = 648.0
+offset_bottom = 81.0
+theme_override_colors/font_color = Color(0.94, 0.98, 1, 1)
+theme_override_colors/font_placeholder_color = Color(0.76, 0.9, 1, 0.72)
+theme_override_colors/caret_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/selection_color = Color(0.2, 0.48, 0.82, 0.58)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxEmpty_input")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_input")
+placeholder_text = "Username"
+alignment = 1
+
+[node name="EmailField" type="Control" parent="LoginPanel/Form" unique_id=695579086]
+anchors_preset = 0
+offset_top = 70.0
+offset_right = 470.0
+offset_bottom = 122.0
+
+[node name="Skin" type="NinePatchRect" parent="LoginPanel/Form/EmailField" unique_id=2016371821]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 194.0
+offset_top = 36.0
+offset_right = 194.0
+offset_bottom = 36.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("9_ox2yu")
+patch_margin_left = 24
+patch_margin_top = 16
+patch_margin_right = 24
+patch_margin_bottom = 16
+
+[node name="EmailInput" type="LineEdit" parent="LoginPanel/Form/EmailField" unique_id=1653240688]
+layout_mode = 0
+offset_left = 210.0
+offset_top = 41.0
+offset_right = 650.0
+offset_bottom = 80.0
+theme_override_colors/font_color = Color(0.94, 0.98, 1, 1)
+theme_override_colors/font_placeholder_color = Color(0.76, 0.9, 1, 0.72)
+theme_override_colors/caret_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/selection_color = Color(0.2, 0.48, 0.82, 0.58)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxEmpty_input")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_input")
+placeholder_text = "Email"
+alignment = 1
+
+[node name="PasswordField" type="Control" parent="LoginPanel/Form" unique_id=2024647496]
+anchors_preset = 0
+offset_top = 140.0
+offset_right = 470.0
+offset_bottom = 192.0
+
+[node name="Skin" type="NinePatchRect" parent="LoginPanel/Form/PasswordField" unique_id=1693178192]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 195.0
+offset_top = 35.0
+offset_right = 195.0
+offset_bottom = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("9_ox2yu")
+patch_margin_left = 24
+patch_margin_top = 16
+patch_margin_right = 24
+patch_margin_bottom = 16
+
+[node name="PasswordInput" type="LineEdit" parent="LoginPanel/Form/PasswordField" unique_id=2117580023]
+layout_mode = 0
+offset_left = 209.0
+offset_top = 40.0
+offset_right = 649.0
+offset_bottom = 79.0
+theme_override_colors/font_color = Color(0.94, 0.98, 1, 1)
+theme_override_colors/font_placeholder_color = Color(0.76, 0.9, 1, 0.72)
+theme_override_colors/caret_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/selection_color = Color(0.2, 0.48, 0.82, 0.58)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxEmpty_input")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_input")
+placeholder_text = "Password"
+alignment = 1
+secret = true
+
+[node name="RememberPasswordCheck" type="CheckBox" parent="LoginPanel/Form" unique_id=1460154231]
+layout_mode = 0
+offset_left = 199.0
+offset_top = 236.0
+offset_right = 441.0
+offset_bottom = 267.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_icons/checked = ExtResource("11_ox2yu")
+theme_override_icons/unchecked = ExtResource("12_ui2s7")
+theme_override_icons/checked_disabled = ExtResource("12_ui2s7")
+button_pressed = true
+text = "Remember Password"
+script = ExtResource("27_custom_checkbox")
+
+[node name="ResetEmailButton" type="Button" parent="LoginPanel/Form" unique_id=415525335]
+custom_minimum_size = Vector2(90, 24)
+layout_mode = 0
+offset_left = 193.0
+offset_top = 275.0
+offset_right = 438.0
+offset_bottom = 329.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxTexture_yellow_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_yellow_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_yellow_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "Change Email"
+
+[node name="ResetPasswordButton" type="Button" parent="LoginPanel/Form" unique_id=172932406]
+custom_minimum_size = Vector2(112, 24)
+layout_mode = 0
+offset_left = 194.0
+offset_top = 351.0
+offset_right = 438.0
+offset_bottom = 406.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxTexture_yellow_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_yellow_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_yellow_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "Reset Password"
+
+[node name="RegisterButton" type="Button" parent="LoginPanel/Form" unique_id=1603973115]
+custom_minimum_size = Vector2(214, 58)
+layout_mode = 0
+offset_left = 450.0
+offset_top = 347.0
+offset_right = 666.0
+offset_bottom = 405.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0axv6")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "Register"
+
+[node name="SignOnButton" type="Button" parent="LoginPanel/Form" unique_id=238767931]
+custom_minimum_size = Vector2(214, 58)
+layout_mode = 0
+offset_left = 450.0
+offset_top = 272.0
+offset_right = 666.0
+offset_bottom = 330.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_green_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_green_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_u1e5q")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "Sign On"
+
+[node name="MessageLabel" type="Label" parent="LoginPanel/Form" unique_id=740303062]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 427.0
+offset_right = 493.0
+offset_bottom = 453.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ExitButton" type="Button" parent="LoginPanel/Form" unique_id=593956664]
+visible = false
+custom_minimum_size = Vector2(240, 34)
+layout_mode = 0
+offset_left = 116.0
+offset_top = 496.0
+offset_right = 356.0
+offset_bottom = 554.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_drop_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_drop_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_drop_hover")
+text = "Exit"
+
+[node name="LoginLoopSound" type="AudioStreamPlayer" parent="." unique_id=1435911446]
+stream = ExtResource("23_login_sound")
+volume_db = -12.0
+autoplay = true

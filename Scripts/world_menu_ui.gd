@@ -2,7 +2,8 @@ extends Control
 
 const UI_STYLE_PATH = "res://Assets/ui/pixelmania/"
 const LOBBY_PROFILE_PATH = "user://pixelmania_profile.cfg"
-const LOBBY_SCENE = "res://Scenes/lobby_menu.tscn"
+const LOBBY_SCENE = "res://Scenes/ui/lobby/LobbyScene.tscn"
+const LOGIN_SCENE = "res://Scenes/ui/login/LoginScene.tscn"
 
 var world = null
 var ui_layer_ref = null
@@ -403,6 +404,8 @@ func open_menu(world_name: String = "", is_main: bool = false):
 func _try_auto_enter_pending_lobby_world():
 	if world == null:
 		return
+	if MovementMode.is_backend_dev_login_requested():
+		return
 
 	var cfg = ConfigFile.new()
 	var err = cfg.load(LOBBY_PROFILE_PATH)
@@ -431,6 +434,11 @@ func _try_auto_enter_pending_lobby_world():
 
 	if pending_world_name == "":
 		pending_world_name = "START"
+	pending_world_name = pending_world_name.strip_edges().to_upper()
+
+	world.current_world_name = pending_world_name
+	if network != null and "current_world_name" in network:
+		network.set("current_world_name", pending_world_name)
 
 	var session_profile_name = _get_network_session_username()
 	if session_profile_name != "":
@@ -459,6 +467,8 @@ func _try_auto_enter_pending_lobby_world():
 
 	if not has_active_profile():
 		set_profile_status("Could not auto-enter. Sign on first.")
+		if world.has_method("cancel_smooth_world_load"):
+			world.cancel_smooth_world_load()
 		open_menu(pending_world_name, true)
 		return
 
@@ -467,6 +477,8 @@ func _try_auto_enter_pending_lobby_world():
 	if world.has_method("enter_world_by_name"):
 		world.enter_world_by_name(pending_world_name)
 	else:
+		if world.has_method("cancel_smooth_world_load"):
+			world.cancel_smooth_world_load()
 		open_menu(pending_world_name, true)
 
 
@@ -484,12 +496,17 @@ func close_menu():
 
 
 func _get_network_manager():
-	var network = get_node_or_null("/root/NetworkManager")
-	if network != null:
-		return network
+	if is_inside_tree():
+		var own_tree = get_tree()
+		if own_tree != null and own_tree.root != null:
+			var own_network = own_tree.root.get_node_or_null("NetworkManager")
+			if own_network != null:
+				return own_network
 
-	if world != null:
-		return world.get_node_or_null("/root/NetworkManager")
+	if world != null and world.has_method("is_inside_tree") and world.is_inside_tree():
+		var world_tree = world.get_tree()
+		if world_tree != null and world_tree.root != null:
+			return world_tree.root.get_node_or_null("NetworkManager")
 
 	return null
 
@@ -554,8 +571,6 @@ func _wait_for_pending_world_edits_before_lobby() -> void:
 	await block_manager.wait_for_pending_authoritative_block_updates()
 
 
-
-
 func _on_worlds_button_pressed():
 	return_to_lobby_menu(true)
 
@@ -581,7 +596,7 @@ func _notify_network_leave_for_lobby():
 		world.save_manager.notify_network_leave_world(current_world_name)
 		return
 
-	var network = world.get_node_or_null("/root/NetworkManager")
+	var network = _get_network_manager()
 	if network != null and network.has_method("send_leave_world"):
 		network.send_leave_world(current_world_name)
 
@@ -630,6 +645,12 @@ func enter_world_from_input():
 		return
 
 	if not has_active_profile():
+		if _should_redirect_netfox_real_launch_to_login():
+			_prepare_netfox_real_login_redirect()
+			set_profile_status("Sign on first. Opening login...")
+			get_tree().change_scene_to_file(LOGIN_SCENE)
+			return
+
 		set_profile_status("Sign on or select a registered account before entering a world.")
 
 		if profile_name_input != null:
@@ -644,6 +665,29 @@ func enter_world_from_input():
 
 	if world.has_method("enter_world_by_name"):
 		world.enter_world_by_name(typed_name)
+
+
+func _should_redirect_netfox_real_launch_to_login() -> bool:
+	if MovementMode.is_backend_dev_login_requested():
+		return false
+	return MovementMode.is_netfox_real_launch_requested() and MovementMode.has_method("is_netfox_real_client_launch") and MovementMode.is_netfox_real_client_launch() and MovementMode.get_launch_arg_value("--world", "").strip_edges() != ""
+
+
+func _prepare_netfox_real_login_redirect() -> void:
+	var world_name := MovementMode.get_dev_test_world_name("NETFOX_TEST")
+	var profile_name := ""
+	if profile_name_input != null:
+		profile_name = profile_name_input.text.strip_edges()
+	if profile_name == "":
+		profile_name = get_current_profile_name()
+
+	var cfg := ConfigFile.new()
+	cfg.load(LOBBY_PROFILE_PATH)
+	cfg.set_value("profile", "last_world", world_name)
+	cfg.set_value("pending_join", "enabled", true)
+	cfg.set_value("pending_join", "world_name", world_name)
+	cfg.set_value("pending_join", "profile_name", profile_name)
+	cfg.save(LOBBY_PROFILE_PATH)
 
 
 func has_active_profile() -> bool:

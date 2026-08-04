@@ -1,0 +1,466 @@
+[gd_scene format=3 uid="uid://c4immukjbwaxr"]
+
+[ext_resource type="Script" uid="uid://cudpp5ns32ssc" path="res://Scripts/oil_refinery_ui.gd" id="1_oil_refinery_ui"]
+[ext_resource type="Texture2D" uid="uid://bgt0geyx2l4kd" path="res://Assets/ui/login/outer_panel.png" id="2_ft21p"]
+[ext_resource type="Texture2D" uid="uid://b26xvfc2ty1no" path="res://Assets/ui/login/sign_on_normal.png" id="3_ct46l"]
+[ext_resource type="Texture2D" uid="uid://cvx7ww6p2w78r" path="res://Assets/ui/login/sign_on_pressed.png" id="4_r5g46"]
+[ext_resource type="Texture2D" uid="uid://xxxaiaynrj0l" path="res://Assets/ui/login/signon_hover.png" id="5_o3ny3"]
+[ext_resource type="Texture2D" uid="uid://bc4yqbdvnpqiy" path="res://Assets/ui/pixelmania/close_button.png" id="6_close_button"]
+[ext_resource type="Texture2D" uid="uid://ibwuhveruvw8" path="res://Assets/ui/hotbar/slot_normal.png" id="7_slot_normal"]
+[ext_resource type="Texture2D" uid="uid://djklmthvsxfnl" path="res://Assets/blocks/special_blocks/oil_refinery/crude_oil.png" id="14_crude_oil"]
+[ext_resource type="Texture2D" uid="uid://cexoax4fixdao" path="res://Assets/blocks/electric/battery.png" id="15_battery"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_normal"]
+texture = ExtResource("3_ct46l")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_pressed"]
+texture = ExtResource("4_r5g46")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_hover"]
+texture = ExtResource("5_o3ny3")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_normal"]
+texture = ExtResource("6_close_button")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_pressed"]
+texture = ExtResource("6_close_button")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_hover"]
+texture = ExtResource("6_close_button")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_normal"]
+texture = ExtResource("3_ct46l")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_pressed"]
+texture = ExtResource("4_r5g46")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_hover"]
+texture = ExtResource("5_o3ny3")
+
+[node name="OilRefineryUI" type="Control" unique_id=1757774581]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_oil_refinery_ui")
+
+[node name="Dimmer" type="ColorRect" parent="." unique_id=1129855677]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.00392157, 0.0156863, 0.027451, 0.32)
+
+[node name="Window" type="Control" parent="." unique_id=776913302]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -215.0
+offset_right = 320.0
+offset_bottom = 215.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WindowSkin" type="NinePatchRect" parent="Window" unique_id=135436555]
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 430.0
+texture = ExtResource("2_ft21p")
+patch_margin_left = 36
+patch_margin_top = 36
+patch_margin_right = 36
+patch_margin_bottom = 36
+
+[node name="HeaderCard" type="NinePatchRect" parent="Window" unique_id=807065142]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 16.0
+offset_right = 622.0
+offset_bottom = 90.0
+mouse_filter = 0
+patch_margin_left = 26
+patch_margin_top = 24
+patch_margin_right = 26
+patch_margin_bottom = 24
+
+[node name="TitleLabel" type="Label" parent="Window/HeaderCard" unique_id=166321528]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 8.0
+offset_right = 310.0
+offset_bottom = 42.0
+theme_override_font_sizes/font_size = 27
+text = "OIL REFINERY"
+vertical_alignment = 1
+
+[node name="StatusBadge" type="Label" parent="Window/HeaderCard" unique_id=1511583568]
+layout_mode = 0
+offset_left = 271.0
+offset_top = 16.0
+offset_right = 367.0
+offset_bottom = 54.0
+theme_override_font_sizes/font_size = 18
+text = "OFFLINE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ToggleButton" type="Button" parent="Window/HeaderCard" unique_id=2093868749]
+custom_minimum_size = Vector2(96, 36)
+layout_mode = 0
+offset_left = 383.0
+offset_top = 17.0
+offset_right = 479.0
+offset_bottom = 53.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "TURN OFF"
+
+[node name="CloseButton" type="Button" parent="Window" unique_id=485117752]
+custom_minimum_size = Vector2(48, 44)
+layout_mode = 0
+offset_left = 597.0
+offset_top = -19.0
+offset_right = 657.0
+offset_bottom = 41.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_close_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_close_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_close_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "X"
+
+[node name="PowerCoreCard" type="NinePatchRect" parent="Window" unique_id=1562635107]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 108.0
+offset_right = 220.0
+offset_bottom = 336.0
+mouse_filter = 0
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="BatteryInputSlot" type="NinePatchRect" parent="Window/PowerCoreCard" unique_id=1375537098]
+layout_mode = 0
+offset_left = 39.0
+offset_top = 46.0
+offset_right = 109.0
+offset_bottom = 116.0
+texture = ExtResource("7_slot_normal")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+
+[node name="BatteryInputIcon" type="TextureRect" parent="Window/PowerCoreCard/BatteryInputSlot" unique_id=439232789]
+visible = false
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 62.0
+offset_bottom = 61.0
+mouse_filter = 2
+texture = ExtResource("15_battery")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AddBatteryButton" type="Button" parent="Window/PowerCoreCard" unique_id=522298913]
+custom_minimum_size = Vector2(92, 38)
+layout_mode = 0
+offset_left = 33.0
+offset_top = 180.0
+offset_right = 125.0
+offset_bottom = 218.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.75)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxTexture_button_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_button_hover")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_button_normal")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "ADD"
+
+[node name="PowerCoreTitle" type="Label" parent="Window/PowerCoreCard" unique_id=1431632136]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 8.0
+offset_right = 170.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 17
+text = "INPUT"
+vertical_alignment = 1
+
+[node name="ConsumptionLabel" type="Label" parent="Window/PowerCoreCard" unique_id=318302484]
+layout_mode = 0
+offset_left = 229.0
+offset_top = 112.0
+offset_right = 381.0
+offset_bottom = 134.0
+theme_override_font_sizes/font_size = 14
+text = "CONSUMPTION"
+vertical_alignment = 1
+
+[node name="ConsumptionRateLabel" type="Label" parent="Window/PowerCoreCard" unique_id=1357603868]
+layout_mode = 0
+offset_left = 233.0
+offset_top = 141.0
+offset_right = 312.0
+offset_bottom = 165.0
+theme_override_font_sizes/font_size = 15
+text = "100 W / HR"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RuntimeCard" type="NinePatchRect" parent="Window" unique_id=2054223301]
+layout_mode = 0
+offset_left = 238.0
+offset_top = 108.0
+offset_right = 480.0
+offset_bottom = 196.0
+mouse_filter = 0
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="RuntimeTitle" type="Label" parent="Window/RuntimeCard" unique_id=589762745]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 10.0
+offset_right = 168.0
+offset_bottom = 34.0
+theme_override_font_sizes/font_size = 18
+text = "RUNTIME"
+vertical_alignment = 1
+
+[node name="RuntimeValueLabel" type="Label" parent="Window/RuntimeCard" unique_id=608337547]
+layout_mode = 0
+offset_left = 118.0
+offset_top = 12.0
+offset_right = 218.0
+offset_bottom = 36.0
+theme_override_font_sizes/font_size = 17
+text = "0h"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="RuntimeMeterBack" type="Panel" parent="Window/RuntimeCard" unique_id=2037211202]
+layout_mode = 0
+offset_left = -69.0
+offset_top = 48.0
+offset_right = 218.0
+offset_bottom = 68.0
+mouse_filter = 2
+
+[node name="RuntimeFill" type="ColorRect" parent="Window/RuntimeCard/RuntimeMeterBack" unique_id=882841544]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 4.0
+offset_bottom = 16.0
+mouse_filter = 2
+color = Color(0.3, 0.95, 0.42, 1)
+
+[node name="InputCard" type="NinePatchRect" parent="Window" unique_id=1679250873]
+layout_mode = 0
+offset_left = 194.0
+offset_top = 190.0
+offset_right = 436.0
+offset_bottom = 356.0
+mouse_filter = 0
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="BatteryValueLabel" type="Label" parent="Window/InputCard" unique_id=684811092]
+visible = false
+layout_mode = 0
+offset_left = 57.0
+offset_top = 83.0
+offset_right = 257.0
+offset_bottom = 105.0
+theme_override_font_sizes/font_size = 15
+text = "Battery: empty"
+vertical_alignment = 1
+
+[node name="MetalPadValueLabel" type="Label" parent="Window/InputCard" unique_id=747860263]
+visible = false
+layout_mode = 0
+offset_left = 57.0
+offset_top = 107.0
+offset_right = 257.0
+offset_bottom = 129.0
+theme_override_font_sizes/font_size = 15
+text = "Metal pad: none"
+vertical_alignment = 1
+
+[node name="OutputCard" type="NinePatchRect" parent="Window" unique_id=1801472693]
+layout_mode = 0
+offset_left = 498.0
+offset_top = 108.0
+offset_right = 616.0
+offset_bottom = 336.0
+mouse_filter = 0
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="OutputTitle" type="Label" parent="Window/OutputCard" unique_id=560755061]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 10.0
+offset_right = 100.0
+offset_bottom = 34.0
+theme_override_font_sizes/font_size = 17
+text = "OUTPUT"
+vertical_alignment = 1
+
+[node name="OutputSlot" type="NinePatchRect" parent="Window/OutputCard" unique_id=1468520865]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 46.0
+offset_right = 94.0
+offset_bottom = 116.0
+texture = ExtResource("7_slot_normal")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+
+[node name="OutputIcon" type="TextureRect" parent="Window/OutputCard/OutputSlot" unique_id=1033167073]
+visible = false
+layout_mode = 0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 60.0
+offset_bottom = 58.0
+mouse_filter = 2
+texture = ExtResource("14_crude_oil")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OutputSlotLabel" type="Label" parent="Window/OutputCard/OutputSlot" unique_id=1510926663]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 8.0
+offset_right = 64.0
+offset_bottom = 62.0
+theme_override_font_sizes/font_size = 13
+text = "EMPTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="OutputCountLabel" type="Label" parent="Window/OutputCard" unique_id=1832562230]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 122.0
+offset_right = 100.0
+offset_bottom = 144.0
+theme_override_font_sizes/font_size = 14
+text = "Empty"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OutputValueLabel" type="Label" parent="Window/OutputCard" unique_id=120049713]
+visible = false
+layout_mode = 0
+offset_left = 12.0
+offset_top = 150.0
+offset_right = 108.0
+offset_bottom = 174.0
+theme_override_font_sizes/font_size = 13
+text = "Crude oil: idle"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="CollectButton" type="Button" parent="Window/OutputCard" unique_id=1607035543]
+custom_minimum_size = Vector2(92, 38)
+layout_mode = 0
+offset_left = 13.0
+offset_top = 180.0
+offset_right = 105.0
+offset_bottom = 218.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.75)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxTexture_button_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_button_hover")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_button_normal")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+disabled = true
+text = "COLLECT"
+
+[node name="ProductionCard" type="NinePatchRect" parent="Window" unique_id=200362449]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 352.0
+offset_right = 616.0
+offset_bottom = 404.0
+mouse_filter = 0
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="ProductionTitle" type="Label" parent="Window/ProductionCard" unique_id=483053448]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 12.0
+offset_right = 148.0
+offset_bottom = 36.0
+theme_override_font_sizes/font_size = 17
+text = "PRODUCTION"
+vertical_alignment = 1
+
+[node name="OutputMeterBack" type="Panel" parent="Window/ProductionCard" unique_id=172068417]
+layout_mode = 0
+offset_left = 158.0
+offset_top = 16.0
+offset_right = 428.0
+offset_bottom = 34.0
+mouse_filter = 2
+
+[node name="OutputFill" type="ColorRect" parent="Window/ProductionCard/OutputMeterBack" unique_id=1881017660]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 4.0
+offset_bottom = 14.0
+mouse_filter = 2
+color = Color(1, 0.84, 0.05, 1)

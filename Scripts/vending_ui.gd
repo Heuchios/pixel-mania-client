@@ -1,6 +1,10 @@
 extends Control
 
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
+const VENDING_INPUT_BOX = preload("res://Assets/ui/vending/input_box.png")
+const VENDING_SCROLL_TRACK = preload("res://Assets/ui/vending/inventory_scroll_track.png")
+const VENDING_SCROLL_THUMB = preload("res://Assets/ui/vending/inventory_scroll_thumb.png")
+const VENDING_SCROLL_THUMB_HOVER = preload("res://Assets/ui/vending/inventory_scroll_thumb_hover.png")
 
 var world = null
 var ui_layer_ref = null
@@ -25,6 +29,7 @@ var log_text = null
 var current_grid := Vector2i.ZERO
 var current_state := {}
 var selected_item := {}
+var scene_ui_ready := false
 
 
 func setup(parent_world, ui_node):
@@ -43,6 +48,89 @@ func _process(_delta):
 
 
 func build_ui():
+	scene_ui_ready = bind_scene_ui()
+	if not scene_ui_ready:
+		push_error("VendingUI: scene GUI nodes are missing. Coded vending GUI fallback is disabled.")
+		return
+
+	update_position()
+
+
+func bind_scene_ui() -> bool:
+	overlay = get_node_or_null("VendingOverlay")
+	panel = get_node_or_null("VendingPanel")
+	if overlay == null or panel == null:
+		return false
+
+	status_label = panel.get_node_or_null("StatusBack/Status")
+	item_slot = panel.get_node_or_null("ItemCard/ItemSlot")
+	item_icon = item_slot.get_node_or_null("Icon") if item_slot != null else null
+	item_label = item_slot.get_node_or_null("ItemLabel") if item_slot != null else null
+	stock_spin = panel.get_node_or_null("PriceCard/StockSpin")
+	per_sale_spin = panel.get_node_or_null("PriceCard/PerSaleSpin")
+	price_spin = panel.get_node_or_null("PriceCard/PriceSpin")
+	list_button = panel.get_node_or_null("ListButton")
+	buy_button = panel.get_node_or_null("BuyButton")
+	cancel_button = panel.get_node_or_null("CancelListingButton")
+	collect_button = panel.get_node_or_null("CollectButton")
+	log_button = panel.get_node_or_null("LogButton")
+	log_overlay = panel.get_node_or_null("VendingLogOverlay")
+	log_text = log_overlay.get_node_or_null("LogScroll/LogText") if log_overlay != null else null
+
+	if status_label == null or item_slot == null or item_icon == null or item_label == null:
+		return false
+	if stock_spin == null or per_sale_spin == null or price_spin == null:
+		return false
+	if list_button == null or buy_button == null or cancel_button == null or collect_button == null or log_button == null:
+		return false
+	if log_overlay == null or log_text == null:
+		return false
+
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	_connect_button(panel.get_node_or_null("CloseButton"), close_vending)
+	_connect_button(item_slot, _on_item_slot_pressed)
+	_connect_button(list_button, _on_list_pressed)
+	_connect_button(buy_button, _on_buy_pressed)
+	_connect_button(collect_button, _on_collect_pressed)
+	_connect_button(log_button, _on_log_pressed)
+	_connect_button(cancel_button, _on_cancel_listing_pressed)
+	_connect_button(log_overlay.get_node_or_null("CloseButton"), _hide_log_overlay)
+	_connect_spin(stock_spin)
+	_connect_spin(per_sale_spin)
+	_connect_spin(price_spin)
+	apply_vending_scrollbar_style(log_overlay.get_node_or_null("LogScroll"))
+	log_overlay.visible = false
+	return true
+
+
+func _connect_button(button, callback: Callable) -> void:
+	if button == null:
+		return
+	button.focus_mode = Control.FOCUS_NONE
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
+	if not button.pressed.is_connected(callback):
+		button.pressed.connect(callback)
+
+
+func _connect_spin(spin) -> void:
+	if spin == null:
+		return
+	spin.step = 1
+	spin.mouse_filter = Control.MOUSE_FILTER_STOP
+	if not spin.value_changed.is_connected(_on_price_fields_changed):
+		spin.value_changed.connect(_on_price_fields_changed)
+	var editor = spin.get_line_edit()
+	if editor != null:
+		apply_vending_input_style(editor, 17)
+
+
+func _hide_log_overlay() -> void:
+	if log_overlay != null:
+		log_overlay.visible = false
+
+
+func build_legacy_ui():
 	for child in get_children():
 		child.queue_free()
 
@@ -560,10 +648,15 @@ func apply_vending_input_style(line_edit: LineEdit, font_size: int = 17):
 		return
 
 	line_edit.add_theme_font_size_override("font_size", font_size)
-	PixelUIStyle.apply_input(line_edit, font_size)
+	line_edit.add_theme_stylebox_override("normal", vending_texture_style(VENDING_INPUT_BOX))
+	line_edit.add_theme_stylebox_override("focus", vending_texture_style(VENDING_INPUT_BOX))
+	line_edit.add_theme_color_override("font_color", PixelUIStyle.TEXT_LIGHT)
+	line_edit.add_theme_color_override("font_placeholder_color", Color(0.76, 0.90, 1.0, 0.74))
+	line_edit.add_theme_color_override("caret_color", PixelUIStyle.GOLD_SOFT)
+	line_edit.add_theme_color_override("selection_color", Color(0.20, 0.48, 0.82, 0.58))
 
 
-func apply_vending_scrollbar_style(scroll: ScrollContainer):
+func apply_vending_scrollbar_style(scroll):
 	if scroll == null:
 		return
 
@@ -572,13 +665,24 @@ func apply_vending_scrollbar_style(scroll: ScrollContainer):
 		return
 
 	scrollbar.custom_minimum_size = Vector2(12, scrollbar.custom_minimum_size.y)
-	scrollbar.add_theme_stylebox_override("scroll", PixelUIStyle.style_box(Color(0.82, 0.94, 1.0, 0.10), Color(0.38, 0.72, 1.0, 0.24), 2, 8, 0))
-	scrollbar.add_theme_stylebox_override("grabber", PixelUIStyle.style_box(Color(0.28, 0.62, 0.92, 0.74), Color(0.72, 0.96, 1.0, 0.56), 2, 8, 4))
-	scrollbar.add_theme_stylebox_override("grabber_highlight", PixelUIStyle.style_box(Color(0.38, 0.76, 1.0, 0.88), Color(0.86, 1.0, 1.0, 0.82), 2, 8, 6))
-	scrollbar.add_theme_stylebox_override("grabber_pressed", PixelUIStyle.style_box(Color(1.0, 0.66, 0.12, 0.90), Color(1.0, 0.92, 0.40, 0.84), 2, 8, 6))
+	scrollbar.add_theme_stylebox_override("scroll", vending_texture_style(VENDING_SCROLL_TRACK))
+	scrollbar.add_theme_stylebox_override("grabber", vending_texture_style(VENDING_SCROLL_THUMB))
+	scrollbar.add_theme_stylebox_override("grabber_highlight", vending_texture_style(VENDING_SCROLL_THUMB_HOVER))
+	scrollbar.add_theme_stylebox_override("grabber_pressed", vending_texture_style(VENDING_SCROLL_THUMB_HOVER))
+
+
+func vending_texture_style(texture: Texture2D) -> StyleBoxTexture:
+	var style = StyleBoxTexture.new()
+	style.texture = texture
+	return style
 
 
 func open_vending(grid_pos: Vector2i):
+	if not scene_ui_ready:
+		if world != null and world.has_method("show_notification"):
+			world.show_notification("Vending UI scene is not ready.")
+		return
+
 	current_grid = grid_pos
 	selected_item.clear()
 	current_state = {

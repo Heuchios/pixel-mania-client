@@ -1,0 +1,167 @@
+[gd_scene format=3 uid="uid://d4m0jhqrxnost"]
+
+[ext_resource type="Script" uid="uid://d3esrvpujv4wq" path="res://Scripts/area_lock_ui.gd" id="1_area"]
+[ext_resource type="Texture2D" uid="uid://bgt0geyx2l4kd" path="res://Assets/ui/login/outer_panel.png" id="2_8xgam"]
+[ext_resource type="Texture2D" uid="uid://bc4yqbdvnpqiy" path="res://Assets/ui/pixelmania/close_button.png" id="3_x3kgr"]
+[ext_resource type="Texture2D" uid="uid://buhs7xmnksv4a" path="res://Assets/ui/login/checked.png" id="4_a3uca"]
+[ext_resource type="Texture2D" uid="uid://no714kin0ckc" path="res://Assets/ui/login/un_checked.png" id="5_yeuuy"]
+[ext_resource type="Texture2D" uid="uid://hx1s0b2xwx84" path="res://Assets/ui/inventory/search_input.png" id="6_hta0s"]
+[ext_resource type="Texture2D" uid="uid://b26xvfc2ty1no" path="res://Assets/ui/login/sign_on_normal.png" id="7_u38c5"]
+[ext_resource type="Texture2D" uid="uid://cvx7ww6p2w78r" path="res://Assets/ui/login/sign_on_pressed.png" id="8_2k66i"]
+[ext_resource type="Texture2D" uid="uid://xxxaiaynrj0l" path="res://Assets/ui/login/signon_hover.png" id="9_bcxq4"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_10n2d"]
+texture = ExtResource("2_8xgam")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a3uca"]
+texture = ExtResource("3_x3kgr")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yeuuy"]
+texture = ExtResource("3_x3kgr")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hta0s"]
+texture = ExtResource("3_x3kgr")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_u38c5"]
+texture = ExtResource("3_x3kgr")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2k66i"]
+texture = ExtResource("3_x3kgr")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dgynu"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1s4se"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tdfh6"]
+texture = ExtResource("6_hta0s")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_75vi0"]
+texture = ExtResource("6_hta0s")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_fjk15"]
+texture = ExtResource("7_u38c5")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6ge1x"]
+texture = ExtResource("8_2k66i")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_76nhy"]
+texture = ExtResource("9_bcxq4")
+
+[node name="AreaLockGUI" type="Control" unique_id=1198811296]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_area")
+
+[node name="Panel" type="Panel" parent="." unique_id=448067614]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -190.0
+offset_right = 230.0
+offset_bottom = 190.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_10n2d")
+
+[node name="VBox" type="VBoxContainer" parent="Panel" unique_id=1206777984]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 14.0
+offset_right = -16.0
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Panel/VBox" unique_id=910868545]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="Panel/VBox/Header" unique_id=1367178070]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Area Lock"
+horizontal_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Panel/VBox/Header" unique_id=1276533566]
+custom_minimum_size = Vector2(36, 30)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a3uca")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_yeuuy")
+theme_override_styles/hover = SubResource("StyleBoxTexture_hta0s")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_u38c5")
+theme_override_styles/focus = SubResource("StyleBoxTexture_2k66i")
+text = "X"
+
+[node name="InfoPanel" type="PanelContainer" parent="Panel/VBox" unique_id=220784680]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_dgynu")
+
+[node name="InfoLabel" type="Label" parent="Panel/VBox/InfoPanel" unique_id=144225600]
+layout_mode = 2
+text = "Owner:
+Protected tiles:
+Mode:"
+autowrap_mode = 3
+
+[node name="PublicBuildCheck" type="CheckBox" parent="Panel/VBox" unique_id=1678574033]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_1s4se")
+theme_override_icons/checked = ExtResource("4_a3uca")
+theme_override_icons/unchecked = ExtResource("5_yeuuy")
+text = " Allow public building in this locked area"
+
+[node name="IgnoreEmptySpaceCheck" type="CheckBox" parent="Panel/VBox" unique_id=1754405205]
+layout_mode = 2
+theme_override_icons/checked = ExtResource("4_a3uca")
+theme_override_icons/unchecked = ExtResource("5_yeuuy")
+text = "Ignore empty space"
+
+[node name="AddRow" type="HBoxContainer" parent="Panel/VBox" unique_id=1991139817]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PlayerInput" type="LineEdit" parent="Panel/VBox/AddRow" unique_id=413651934]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_tdfh6")
+placeholder_text = "Player name"
+
+[node name="RoleOption" type="OptionButton" parent="Panel/VBox/AddRow" unique_id=1729979242]
+custom_minimum_size = Vector2(104, 32)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_75vi0")
+
+[node name="AddButton" type="Button" parent="Panel/VBox/AddRow" unique_id=828716731]
+custom_minimum_size = Vector2(74, 32)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_fjk15")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_6ge1x")
+theme_override_styles/hover = SubResource("StyleBoxTexture_76nhy")
+text = "Add"
+
+[node name="AccessScroll" type="ScrollContainer" parent="Panel/VBox" unique_id=1533944828]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="AccessList" type="VBoxContainer" parent="Panel/VBox/AccessScroll" unique_id=284506820]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="StatusLabel" type="Label" parent="Panel/VBox" unique_id=929225708]
+layout_mode = 2
+autowrap_mode = 3

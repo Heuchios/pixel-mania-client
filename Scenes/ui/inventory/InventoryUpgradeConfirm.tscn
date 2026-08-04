@@ -1,0 +1,178 @@
+[gd_scene format=3 uid="uid://c357yxk40kr6t"]
+
+[ext_resource type="Script" uid="uid://dlgqlgvfjm1jh" path="res://Scripts/ui/inventory_upgrade_confirm.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="2_qners"]
+[ext_resource type="Texture2D" uid="uid://bdqewvpbuib1a" path="res://Assets/ui/panel_outer_403x130.png" id="3_3de26"]
+[ext_resource type="Texture2D" uid="uid://bg5sabtp5jnsv" path="res://Assets/ui/input_744x72.png" id="3_nq8hr"]
+[ext_resource type="Texture2D" uid="uid://tbchr2qk0dib" path="res://Assets/ui/close_button_hover.png" id="4_3de26"]
+[ext_resource type="Texture2D" uid="uid://cdd8rhkxp0cky" path="res://Assets/ui/close_button_pressed.png" id="5_tcoyx"]
+[ext_resource type="Texture2D" uid="uid://c0s1vj8wepsbi" path="res://Assets/ui/green_button_normal_90x24.png" id="6_2htjl"]
+[ext_resource type="Texture2D" uid="uid://pyw7s5lcdhmt" path="res://Assets/ui/green_button_pressed_90x24.png" id="7_o4q48"]
+[ext_resource type="Texture2D" uid="uid://opqgsn2jk7ie" path="res://Assets/ui/green_button_hover_90x24.png" id="8_61nja"]
+[ext_resource type="Texture2D" uid="uid://d1n2gwvwc6eay" path="res://Assets/ui/red_button_normal_90x24.png" id="9_gqvhg"]
+[ext_resource type="Texture2D" uid="uid://b7ngun3bstbwq" path="res://Assets/ui/red_button_pressed_90x24.png" id="10_vyf3r"]
+[ext_resource type="Texture2D" uid="uid://u2iiji1cp4cs" path="res://Assets/ui/red_button_hover_90x24.png" id="11_whrtc"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gn2ab"]
+texture = ExtResource("2_qners")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xstlw"]
+texture = ExtResource("3_3de26")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_i3ycd"]
+texture = ExtResource("3_nq8hr")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_falkf"]
+texture = ExtResource("4_3de26")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8adxn"]
+texture = ExtResource("5_tcoyx")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1dker"]
+texture = ExtResource("4_3de26")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2ay85"]
+texture = ExtResource("6_2htjl")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8jaiq"]
+texture = ExtResource("7_o4q48")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4q73x"]
+texture = ExtResource("8_61nja")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gkvo4"]
+texture = ExtResource("9_gqvhg")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7yute"]
+texture = ExtResource("10_vyf3r")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_de7ua"]
+texture = ExtResource("11_whrtc")
+
+[node name="InventoryUpgradeConfirm" type="Control" unique_id=1282473518]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Dimmer" type="ColorRect" parent="." unique_id=45886688]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.0117647, 0.0196078, 0.58)
+
+[node name="Window" type="Panel" parent="." unique_id=1527309680]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -128.0
+offset_right = 220.0
+offset_bottom = 128.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_gn2ab")
+
+[node name="Panel" type="Panel" parent="Window" unique_id=835047443]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 56.0
+offset_right = 426.0
+offset_bottom = 186.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_xstlw")
+
+[node name="TitleLabel" type="Label" parent="Window" unique_id=1392317206]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 14.0
+offset_right = 379.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(0.94902, 0.988235, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_i3ycd")
+text = " INVENTORY UPGRADE"
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Window" unique_id=547773328]
+layout_mode = 0
+offset_left = 391.0
+offset_top = 14.0
+offset_right = 427.0
+offset_bottom = 52.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_falkf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8adxn")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1dker")
+
+[node name="SlotsLabel" type="Label" parent="Window" unique_id=1588353707]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 72.0
+offset_right = 416.0
+offset_bottom = 104.0
+theme_override_colors/font_color = Color(0.756863, 0.941176, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "20 slots  >  40 slots"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CostLabel" type="Label" parent="Window" unique_id=638302504]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 108.0
+offset_right = 416.0
+offset_bottom = 138.0
+theme_override_colors/font_color = Color(1, 0.878431, 0.27451, 1)
+theme_override_font_sizes/font_size = 18
+text = "2,000 gems"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MessageLabel" type="Label" parent="Window" unique_id=1360773701]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 146.0
+offset_right = 416.0
+offset_bottom = 174.0
+theme_override_colors/font_color = Color(0.760784, 0.890196, 0.941176, 0.95)
+theme_override_font_sizes/font_size = 15
+text = "Buy 20 more inventory slots?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ConfirmButton" type="Button" parent="Window" unique_id=363932716]
+layout_mode = 0
+offset_left = 66.0
+offset_top = 194.0
+offset_right = 204.0
+offset_bottom = 234.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_2ay85")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8jaiq")
+theme_override_styles/hover = SubResource("StyleBoxTexture_4q73x")
+text = "BUY"
+
+[node name="CancelButton" type="Button" parent="Window" unique_id=1839140565]
+layout_mode = 0
+offset_left = 236.0
+offset_top = 194.0
+offset_right = 374.0
+offset_bottom = 234.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_gkvo4")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_7yute")
+theme_override_styles/hover = SubResource("StyleBoxTexture_de7ua")
+text = "CANCEL"

@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://bn6ul6r2lnhxe"]
+
+[ext_resource type="Script" uid="uid://cu8t33ypfrcph" path="res://Scripts/thunder_particles_fx.gd" id="1_thunder"]
+[ext_resource type="Texture2D" uid="uid://uraq3sc7ngv" path="res://Assets/effects/electric_spark.svg" id="2_spark"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_446bq"]
+particle_flag_disable_z = true
+direction = Vector3(0.9988124, -0.048722558, 0)
+spread = 48.0
+initial_velocity_min = 130.0
+initial_velocity_max = 255.0
+gravity = Vector3(0, -4, 0)
+damping_min = 8.0
+damping_max = 18.0
+scale_min = 0.42
+scale_max = 0.88
+color = Color(0.62, 0.94, 1, 0.9)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_mgfvc"]
+particle_flag_disable_z = true
+direction = Vector3(-0.9988124, 0.048722558, 0)
+spread = 82.0
+initial_velocity_min = 82.0
+initial_velocity_max = 220.0
+gravity = Vector3(0, 6, 0)
+damping_min = 8.0
+damping_max = 18.0
+scale_min = 0.34
+scale_max = 0.86
+color = Color(0.86, 0.99, 1, 0.94)
+
+[node name="ThunderParticlesFX" type="Node2D" unique_id=676534177]
+z_index = 4086
+z_as_relative = false
+scale = Vector2(0.5, 0.5)
+script = ExtResource("1_thunder")
+target_offset = Vector2(164, -8)
+bolt_width = 3.4
+impact_scale = 1.35
+
+[node name="TipGPUSparks" type="GPUParticles2D" parent="." unique_id=418972015]
+visible = false
+z_index = 1
+amount = 18
+texture = ExtResource("2_spark")
+lifetime = 0.24
+one_shot = true
+explosiveness = 1.0
+randomness = 0.28
+process_material = SubResource("ParticleProcessMaterial_446bq")
+
+[node name="ImpactGPUSparks" type="GPUParticles2D" parent="." unique_id=2067255808]
+visible = false
+z_index = 1
+position = Vector2(164, -8)
+amount = 42
+texture = ExtResource("2_spark")
+lifetime = 0.28
+one_shot = true
+explosiveness = 1.0
+randomness = 0.32
+process_material = SubResource("ParticleProcessMaterial_mgfvc")

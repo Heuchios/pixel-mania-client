@@ -26,14 +26,25 @@ const BITE_MAX_TIME        = 5.5
 const REACTION_WINDOW_TIME = 2.2
 const MINIGAME_DURATION    = 5.0
 const CATCH_POPUP_DURATION = 3.6
+const FISHING_LINE_SEGMENTS = 16
+const FISHING_LINE_SAG = 26.0
+const FISHING_LINE_WAVE_AMPLITUDE = 2.0
+const FISHING_LINE_WAVE_FREQUENCY = 1.6
+const FISHING_LINE_WAVE_SPEED = 4.2
+const FISHING_BOBBER_Z_OFFSET = -4
 
 # ── Fishing state ─────────────────────────────────────────────
 var state               = STATE_IDLE
 var state_timer         = 0.0
 var bobber              = null
 var bobber_anim         = null
+var fishing_line        = null
+var fishing_line_start  = null
+var fishing_line_end    = null
+var fishing_line_wave_phase = 0.0
 var current_lure_id     = ""
 var pending_fish_id     = ""
+var pending_reward_category = "fish"
 var pending_fish_data   = {}
 var server_fishing_session_id = ""
 var waiting_for_server_catch = false
@@ -111,6 +122,45 @@ func is_fishing_active() -> bool:
 
 # ── Public API ────────────────────────────────────────────────
 
+func is_fishing_rod_item(item_id: String) -> bool:
+	if world != null and world.has_method("is_fishing_rod_item"):
+		return bool(world.is_fishing_rod_item(item_id))
+	var clean_item_id := normalize_fishing_rod_id(item_id)
+	return clean_item_id in [
+		"bamboo_rod",
+		"refined_bamboo_rod",
+		"pristine_bamboo_rod",
+		"fiberglass_rod",
+		"refined_fiberglass_rod",
+		"pristine_fiberglass_rod",
+		"tungsten_rod",
+		"refined_tungsten_rod",
+		"pristine_tungsten_rod",
+		"neptune_rod"
+	]
+
+
+func normalize_fishing_rod_id(item_id: String) -> String:
+	var clean_item_id := str(item_id).strip_edges()
+	match clean_item_id:
+		"fishing_rod":
+			return "bamboo_rod"
+		"platinum_prestige_rod":
+			return "pristine_tungsten_rod"
+		_:
+			return clean_item_id
+
+
+func get_active_fishing_rod_id() -> String:
+	if world == null:
+		return ""
+	if str(world.selected_item_category) == "tool" and is_fishing_rod_item(str(world.selected_item_type)):
+		return str(world.selected_item_type)
+	if is_fishing_rod_item(str(world.equipped_tool)):
+		return str(world.equipped_tool)
+	return ""
+
+
 func use_fishing_rod_at_mouse(preferred_lure_id: String = ""):
 	if world.fishing_active:
 		handle_fishing_action()
@@ -119,11 +169,11 @@ func use_fishing_rod_at_mouse(preferred_lure_id: String = ""):
 	var target_grid = world.get_mouse_grid_position()
 
 	if not can_reach_fishing_grid(target_grid):
-		world.show_notification("Water is too far away.")
+		world.show_notification("Water must be within 4 tiles.")
 		return
 
 	if not is_fishable_water(target_grid):
-		world.show_notification("Cast the fishing rod on water.")
+		world.show_notification("Cast a fishing rod on water.")
 		return
 
 	var lure_id = ""
@@ -144,8 +194,8 @@ func use_selected_lure_at_mouse():
 		handle_fishing_action()
 		return
 
-	if world.equipped_tool != world.FISHING_ROD_ID:
-		world.show_notification("Equip Fishing Rod first.")
+	if not is_fishing_rod_item(str(world.equipped_tool)):
+		world.show_notification("Equip a fishing rod first.")
 		return
 
 	if not world.lure_inventory.has(world.selected_item_type) or int(world.lure_inventory[world.selected_item_type]) <= 0:
@@ -195,7 +245,10 @@ func start_local_cast(target_grid: Vector2i, lure_id: String, spend_lure: bool =
 
 	current_lure_id  = lure_id
 	pending_fish_data = fish_data.duplicate(true)
-	pending_fish_id  = str(pending_fish_data.get("fish_id", ""))
+	pending_fish_id  = str(pending_fish_data.get("item_id", pending_fish_data.get("fish_id", "")))
+	pending_reward_category = str(pending_fish_data.get("item_category", pending_fish_data.get("category", "fish"))).strip_edges()
+	if pending_reward_category == "" and str(pending_fish_data.get("fish_id", "")) != "":
+		pending_reward_category = "fish"
 	server_fishing_session_id = session_id
 	waiting_for_server_catch = false
 	cast_selected_item_type = str(world.selected_item_type)
@@ -206,10 +259,11 @@ func start_local_cast(target_grid: Vector2i, lure_id: String, spend_lure: bool =
 
 	spawn_bobber(target_grid)
 	play_bobber_anim("cast")
+	flush_fishing_visual_sync()
 	_show_waiting_ui()
 
-	world.update_all_ui()
 	if spend_lure:
+		world.update_all_ui()
 		world.save_player_data()
 	world.show_notification("Casting with " + world.get_item_display_name(lure_id, "lure") + "...")
 
@@ -228,11 +282,16 @@ func request_server_fishing_start(target_grid: Vector2i, lure_id: String) -> boo
 	if not network.has_method("send_inventory_transaction_request"):
 		return false
 
+	var rod_id := get_active_fishing_rod_id()
+	if rod_id == "":
+		return false
+
 	return bool(network.send_inventory_transaction_request({
 		"action": "fishing_start",
 		"world": world.current_world_name,
 		"target_x": target_grid.x,
 		"target_y": target_grid.y,
+		"rod_id": rod_id,
 		"lure_id": lure_id
 	}))
 
@@ -251,11 +310,15 @@ func spawn_bobber(target_grid: Vector2i):
 
 	bobber = scene.instantiate()
 	world.add_child(bobber)
+	apply_bobber_draw_order()
 	bobber.global_position = Vector2(
 		target_grid.x * world.BLOCK_SIZE,
 		target_grid.y * world.BLOCK_SIZE
 	)
 	bobber_anim = bobber.get_node_or_null("AnimationPlayer")
+	fishing_line_wave_phase = 0.0
+	cache_fishing_line_nodes()
+	update_fishing_line(0.0)
 
 
 func play_bobber_anim(anim_name: String):
@@ -263,11 +326,292 @@ func play_bobber_anim(anim_name: String):
 		bobber_anim.play(anim_name)
 
 
+func apply_bobber_draw_order():
+	if bobber == null or not is_instance_valid(bobber) or not (bobber is CanvasItem):
+		return
+
+	var player_z := 0
+	if world != null and world.player != null and world.player is CanvasItem:
+		player_z = int(world.player.z_index)
+
+	bobber.z_as_relative = false
+	bobber.z_index = player_z + FISHING_BOBBER_Z_OFFSET
+
+
 func clear_bobber():
 	if bobber != null and is_instance_valid(bobber):
 		bobber.queue_free()
 	bobber      = null
 	bobber_anim = null
+	fishing_line = null
+	fishing_line_start = null
+	fishing_line_end = null
+	fishing_line_wave_phase = 0.0
+
+
+func cache_fishing_line_nodes():
+	fishing_line = null
+	fishing_line_start = null
+	fishing_line_end = null
+
+	if bobber != null and is_instance_valid(bobber):
+		fishing_line = bobber.get_node_or_null("FishingLine")
+		fishing_line_end = bobber.get_node_or_null("Sprite2D/FishingLineEnd")
+		if fishing_line_end == null:
+			fishing_line_end = bobber.get_node_or_null("FishingLineEnd")
+
+	fishing_line_start = get_fishing_line_start_marker(get_fishing_line_rod_id(), true)
+
+
+func update_fishing_line(delta: float = 0.0):
+	if fishing_line == null or not is_instance_valid(fishing_line):
+		return
+
+	if delta > 0.0:
+		fishing_line_wave_phase = wrapf(fishing_line_wave_phase + delta * FISHING_LINE_WAVE_SPEED, 0.0, PI * 2.0)
+
+	var start_global_position = get_fishing_line_start_global_position()
+
+	if fishing_line_end == null or not is_instance_valid(fishing_line_end):
+		if bobber != null and is_instance_valid(bobber):
+			fishing_line_end = bobber.get_node_or_null("Sprite2D/FishingLineEnd")
+
+	if start_global_position == null or fishing_line_end == null:
+		fishing_line.visible = false
+		return
+
+	fishing_line.visible = true
+	var start_pos: Vector2 = fishing_line.to_local(start_global_position)
+	var end_pos: Vector2 = fishing_line.to_local(fishing_line_end.global_position)
+	fishing_line.points = get_wavy_fishing_line_points(start_pos, end_pos)
+
+
+func refresh_fishing_line_after_transforms():
+	if world == null or not world.fishing_active:
+		return
+	update_fishing_line(0.0)
+
+
+func get_wavy_fishing_line_points(start_pos: Vector2, end_pos: Vector2) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	var line_delta: Vector2 = end_pos - start_pos
+	var line_length: float = line_delta.length()
+
+	if line_length <= 0.1:
+		points.append(start_pos)
+		points.append(end_pos)
+		return points
+
+	var normal := Vector2(-line_delta.y, line_delta.x).normalized()
+	var sag_scale: float = clamp(line_length / 240.0, 0.35, 1.4)
+	var wave_amplitude := FISHING_LINE_WAVE_AMPLITUDE
+	if state == STATE_BITE:
+		wave_amplitude *= 1.8
+	elif state == STATE_MINIGAME:
+		wave_amplitude *= 1.25
+
+	for i in range(FISHING_LINE_SEGMENTS + 1):
+		var t: float = float(i) / float(FISHING_LINE_SEGMENTS)
+		var fade: float = sin(t * PI)
+		var sag: Vector2 = Vector2.DOWN * FISHING_LINE_SAG * sag_scale * fade
+		var wave: Vector2 = normal * sin((t * FISHING_LINE_WAVE_FREQUENCY * PI * 2.0) + fishing_line_wave_phase) * wave_amplitude * fade
+		points.append(start_pos.lerp(end_pos, t) + sag + wave)
+
+	return points
+
+
+func get_fishing_line_start_global_position():
+	var rod_id := get_fishing_line_rod_id()
+	var rod_marker = get_fishing_line_start_marker(rod_id, false)
+	if rod_marker != null:
+		return rod_marker.global_position
+
+	var hand_item_sprite = get_hand_item_sprite_node()
+	if hand_item_sprite is Node2D:
+		var rod_data := get_fishing_rod_item_data(rod_id)
+		if rod_data.has("fishing_line_tip_offset"):
+			var texture_size := get_hand_item_sprite_texture_size(hand_item_sprite, rod_id)
+			var facing_left := get_current_player_fishing_facing() < 0
+			var tip_local_position := get_fishing_line_tip_local_position(hand_item_sprite, rod_data, texture_size, facing_left)
+			return hand_item_sprite.to_global(tip_local_position)
+
+		var fallback_texture_size := get_fishing_rod_texture_size(rod_id)
+		if fallback_texture_size != Vector2.ZERO:
+			return hand_item_sprite.to_global(get_texture_right_edge_local_position(hand_item_sprite, fallback_texture_size))
+
+	var fallback_marker = get_fishing_line_start_marker(rod_id, true)
+	if fallback_marker != null:
+		return fallback_marker.global_position
+
+	return null
+
+
+func get_fishing_line_start_marker(rod_id: String = "", include_generic: bool = true):
+	if world == null or world.player == null:
+		return null
+
+	if rod_id != "":
+		for marker_path in [
+			"PlayerVisual/HandItem/FishingLineStart_" + rod_id,
+			"PlayerVisual/HandItem/HandItemAnimated/FishingLineStart_" + rod_id
+		]:
+			var rod_marker = world.player.get_node_or_null(marker_path)
+			if rod_marker is Node2D:
+				return rod_marker
+
+	if include_generic:
+		for marker_path in [
+			"PlayerVisual/HandItem/FishingLineStart",
+			"PlayerVisual/HandItem/HandItemAnimated/FishingLineStart",
+			"PlayerVisual/HandItem/PlatinumPrestigeRod/FishingLineStart"
+		]:
+			var marker = world.player.get_node_or_null(marker_path)
+			if marker is Node2D:
+				return marker
+
+		var hand_item = world.player.get_node_or_null("PlayerVisual/HandItem")
+		if hand_item != null:
+			var marker = hand_item.find_child("FishingLineStart", true, false)
+			if marker is Node2D:
+				return marker
+
+	return null
+
+
+func get_fishing_line_rod_id() -> String:
+	if world == null:
+		return ""
+	if is_fishing_rod_item(str(world.equipped_tool)):
+		return str(world.equipped_tool)
+	if cast_selected_item_type != "" and is_fishing_rod_item(cast_selected_item_type):
+		return cast_selected_item_type
+	if str(world.selected_item_category) == "tool" and is_fishing_rod_item(str(world.selected_item_type)):
+		return str(world.selected_item_type)
+	return get_active_fishing_rod_id()
+
+
+func get_fishing_rod_item_data(rod_id: String) -> Dictionary:
+	if world == null or rod_id == "":
+		return {}
+	if world.item_database.has(rod_id):
+		var item_data = world.item_database[rod_id]
+		if item_data is Dictionary:
+			return item_data
+	return {}
+
+
+func get_hand_item_sprite_node():
+	if world == null or world.player == null:
+		return null
+	return world.player.get_node_or_null("PlayerVisual/HandItem/HandItemAnimated")
+
+
+func get_current_player_fishing_facing() -> int:
+	if world == null:
+		return 1
+
+	if world.player != null:
+		var player_facing = world.player.get("facing_dir")
+		if player_facing != null:
+			return -1 if int(player_facing) < 0 else 1
+
+	return -1 if int(world.player_facing_direction) < 0 else 1
+
+
+func is_hand_item_sprite_rendering_rod(rod_id: String) -> bool:
+	if world == null:
+		return false
+	var clean_rod_id := normalize_fishing_rod_id(rod_id)
+	if clean_rod_id == "":
+		return false
+	return normalize_fishing_rod_id(str(world.equipped_tool)) == clean_rod_id
+
+
+func get_hand_item_sprite_texture_size(hand_item_sprite, rod_id: String) -> Vector2:
+	if is_hand_item_sprite_rendering_rod(rod_id):
+		var texture = get_hand_item_sprite_texture(hand_item_sprite)
+		if texture != null:
+			return texture.get_size()
+	return get_fishing_rod_texture_size(rod_id)
+
+
+func get_hand_item_sprite_texture(hand_item_sprite):
+	if hand_item_sprite is AnimatedSprite2D:
+		var sprite := hand_item_sprite as AnimatedSprite2D
+		if sprite.sprite_frames == null:
+			return null
+		var animation_name: StringName = sprite.animation
+		if not sprite.sprite_frames.has_animation(animation_name):
+			return null
+		var frame_count := sprite.sprite_frames.get_frame_count(animation_name)
+		if frame_count <= 0:
+			return null
+		var frame_index := clampi(sprite.frame, 0, frame_count - 1)
+		return sprite.sprite_frames.get_frame_texture(animation_name, frame_index)
+
+	if hand_item_sprite is Sprite2D:
+		return (hand_item_sprite as Sprite2D).texture
+
+	return null
+
+
+func get_fishing_line_tip_local_position(hand_item_sprite, rod_data: Dictionary, texture_size: Vector2, facing_left: bool) -> Vector2:
+	var has_left_tip := facing_left and rod_data.has("fishing_line_tip_offset_left")
+	var tip_value = rod_data.get("fishing_line_tip_offset_left", Vector2.ZERO) if has_left_tip else rod_data.get("fishing_line_tip_offset", Vector2.ZERO)
+	var tip_position := get_vector2_from_data(tip_value, Vector2.ZERO)
+
+	if texture_size == Vector2.ZERO:
+		return tip_position
+
+	if facing_left and not has_left_tip and is_hand_item_sprite_flipped(hand_item_sprite):
+		tip_position.x = texture_size.x - tip_position.x
+
+	if is_hand_item_sprite_centered(hand_item_sprite):
+		tip_position -= texture_size * 0.5
+
+	return tip_position
+
+
+func get_texture_right_edge_local_position(hand_item_sprite, texture_size: Vector2) -> Vector2:
+	if is_hand_item_sprite_centered(hand_item_sprite):
+		return Vector2(texture_size.x * 0.5, 0.0)
+	return Vector2(texture_size.x, texture_size.y * 0.5)
+
+
+func is_hand_item_sprite_centered(hand_item_sprite) -> bool:
+	if hand_item_sprite is AnimatedSprite2D:
+		return bool((hand_item_sprite as AnimatedSprite2D).centered)
+	if hand_item_sprite is Sprite2D:
+		return bool((hand_item_sprite as Sprite2D).centered)
+	return false
+
+
+func is_hand_item_sprite_flipped(hand_item_sprite) -> bool:
+	if hand_item_sprite is AnimatedSprite2D:
+		return bool((hand_item_sprite as AnimatedSprite2D).flip_h)
+	if hand_item_sprite is Sprite2D:
+		return bool((hand_item_sprite as Sprite2D).flip_h)
+	return false
+
+
+func get_fishing_rod_texture_size(rod_id: String) -> Vector2:
+	if world == null or rod_id == "":
+		return Vector2.ZERO
+	if world.tool_textures.has(rod_id):
+		var texture = world.tool_textures[rod_id]
+		if texture != null:
+			return texture.get_size()
+	return Vector2.ZERO
+
+
+func get_vector2_from_data(value, fallback: Vector2) -> Vector2:
+	if value is Vector2:
+		return value
+	if value is Array and value.size() >= 2:
+		return Vector2(float(value[0]), float(value[1]))
+	if value is Dictionary:
+		return Vector2(float(value.get("x", fallback.x)), float(value.get("y", fallback.y)))
+	return fallback
 
 
 # ── Input dispatch ────────────────────────────────────────────
@@ -295,6 +639,9 @@ func update_fishing(delta: float):
 	if _should_cancel_for_cleanup_rule():
 		fail_fishing("Fish escaped...")
 		return
+
+	update_fishing_line(delta)
+	call_deferred("refresh_fishing_line_after_transforms")
 
 	match state:
 		STATE_CASTING:
@@ -331,9 +678,12 @@ func trigger_bite():
 		return
 
 	if pending_fish_data.is_empty():
-		pending_fish_data = _roll_fish_entry(current_lure_id)
+		pending_fish_data = _roll_fish_entry(current_lure_id, get_active_fishing_rod_id())
 
-	pending_fish_id = str(pending_fish_data.get("fish_id", ""))
+	pending_fish_id = str(pending_fish_data.get("item_id", pending_fish_data.get("fish_id", "")))
+	pending_reward_category = str(pending_fish_data.get("item_category", pending_fish_data.get("category", "fish"))).strip_edges()
+	if pending_reward_category == "" and str(pending_fish_data.get("fish_id", "")) != "":
+		pending_reward_category = "fish"
 
 	if pending_fish_id == "":
 		fail_fishing("Nothing bit the lure.")
@@ -379,7 +729,8 @@ func _populate_mg_info():
 	if world == null:
 		return
 
-	var fish_name = world.get_item_display_name(pending_fish_id, "fish")
+	var reward_category := get_pending_reward_category()
+	var fish_name = world.get_item_display_name(pending_fish_id, reward_category)
 	var rarity    = "common"
 	if world.item_database.has(pending_fish_id):
 		rarity = str(world.item_database[pending_fish_id].get("rarity", "common"))
@@ -392,7 +743,7 @@ func _populate_mg_info():
 		mg_rarity_label.add_theme_color_override("font_color", _rarity_color(rarity))
 
 	if mg_fish_icon != null:
-		mg_fish_icon.texture = world.fish_textures.get(pending_fish_id, null)
+		mg_fish_icon.texture = get_reward_texture(pending_fish_id, reward_category)
 
 	if mg_lure_label != null:
 		mg_lure_label.text = world.get_item_display_name(current_lure_id, "lure")
@@ -451,6 +802,21 @@ func catch_fish():
 		fail_fishing("Connection required to finish fishing.")
 		return
 
+	var reward_category := get_pending_reward_category()
+	if reward_category != "fish":
+		var added := add_reward_to_inventory(pending_fish_id, reward_category, 1)
+		if added <= 0:
+			fail_fishing("Could not save fishing reward.")
+			return
+		_show_catch_result(pending_fish_id, false, -1.0, reward_category)
+		_show_catch_notification(pending_fish_id, reward_category)
+		_maybe_spawn_fishing_reward_confetti(pending_fish_id, reward_category)
+		play_bobber_anim("reel_success")
+		world.update_all_ui()
+		world.save_player_data()
+		reset_fishing_state(true)
+		return
+
 	var owned_before: float = _get_owned_fish_weight(pending_fish_id)
 	var catch_weight: float = _normalize_fish_weight(_roll_catch_weight(pending_fish_id))
 	var catch_record: Dictionary = record_fish_catch(pending_fish_id, catch_weight)
@@ -458,8 +824,9 @@ func catch_fish():
 	_add_fish_weight_to_inventory(pending_fish_id, catch_weight)
 
 	_show_catch_result(pending_fish_id, was_new, catch_weight)
-	_show_catch_notification(pending_fish_id, catch_weight)
+	_show_catch_notification(pending_fish_id, "fish")
 	_maybe_broadcast_legendary_catch(pending_fish_id)
+	_maybe_spawn_fishing_reward_confetti(pending_fish_id, "fish")
 	play_bobber_anim("reel_success")
 	world.update_all_ui()
 	world.save_player_data()
@@ -470,10 +837,42 @@ func _normalize_fish_weight(weight) -> float:
 	return snapped(max(0.0, float(weight)), 0.1)
 
 
+func _fish_weight_to_tenths(weight) -> int:
+	return _fish_inventory_value_to_tenths(weight)
+
+
+func _fish_inventory_value_to_tenths(value) -> int:
+	if value is int:
+		return max(0, int(value))
+	if value is float:
+		var raw_float: float = float(value)
+		if not is_finite(raw_float) or raw_float <= 0.0:
+			return 0
+		return max(0, int(floor(raw_float)))
+	if value is String:
+		var text = value.strip_edges()
+		if text.is_valid_int():
+			return max(0, int(text))
+		if text.is_valid_float():
+			return max(0, int(floor(float(text))))
+	return 0
+
+
+func _fish_tenths_to_weight(tenths: int) -> float:
+	return float(max(0, tenths))
+
+
+func _legacy_tenths_to_fish_count(value) -> int:
+	var tenths: int = _fish_inventory_value_to_tenths(value)
+	if tenths <= 0:
+		return 0
+	return max(1, int(round(float(tenths) / 10.0)))
+
+
 func _get_owned_fish_weight(fish_id: String) -> float:
 	if world == null or fish_id == "":
 		return 0.0
-	return _normalize_fish_weight(world.fish_inventory.get(fish_id, 0.0))
+	return _fish_tenths_to_weight(_fish_inventory_value_to_tenths(world.fish_inventory.get(fish_id, 0)))
 
 
 func _add_fish_weight_to_inventory(fish_id: String, weight) -> void:
@@ -482,24 +881,227 @@ func _add_fish_weight_to_inventory(fish_id: String, weight) -> void:
 	var safe_weight: float = _normalize_fish_weight(weight)
 	if safe_weight <= 0.0:
 		return
-	world.fish_inventory[fish_id] = _normalize_fish_weight(_get_owned_fish_weight(fish_id) + safe_weight)
+	var current_count: int = _fish_inventory_value_to_tenths(world.fish_inventory.get(fish_id, 0))
+	world.fish_inventory[fish_id] = current_count + 1
+	if world.has_method("refresh_ui_after_item_change"):
+		world.refresh_ui_after_item_change(fish_id, "fish")
+
+
+func has_inventory_delta_payload(data: Dictionary) -> bool:
+	var raw_delta = null
+	if data.has("inventory_delta"):
+		raw_delta = data.get("inventory_delta")
+	elif data.has("inventory_deltas"):
+		raw_delta = data.get("inventory_deltas")
+	else:
+		return false
+	return (raw_delta is Dictionary and not raw_delta.is_empty()) or (raw_delta is Array and raw_delta.size() > 0)
 
 
 func _apply_server_fish_inventory_result(data: Dictionary, fish_id: String, catch_weight) -> void:
 	if world == null or fish_id == "":
 		return
+	if has_inventory_delta_payload(data):
+		return
 
 	var inventory_payload = data.get("fish_inventory", null)
 	if inventory_payload is Dictionary and inventory_payload.has(fish_id):
-		world.fish_inventory[fish_id] = _normalize_fish_weight(inventory_payload.get(fish_id, 0.0))
+		if str(data.get("fish_inventory_unit", data.get("unit", ""))) == "tenths_lb":
+			world.fish_inventory[fish_id] = _legacy_tenths_to_fish_count(inventory_payload.get(fish_id, 0))
+		else:
+			world.fish_inventory[fish_id] = _fish_inventory_value_to_tenths(inventory_payload.get(fish_id, 0))
+		if world.has_method("refresh_ui_after_item_change"):
+			world.refresh_ui_after_item_change(fish_id, "fish")
 		return
+
+	for tenths_key in ["owned_weight_tenths", "total_weight_tenths", "fish_weight_tenths", "new_weight_tenths", "weight_tenths"]:
+		if data.has(tenths_key):
+			world.fish_inventory[fish_id] = _legacy_tenths_to_fish_count(data.get(tenths_key, 0))
+			if world.has_method("refresh_ui_after_item_change"):
+				world.refresh_ui_after_item_change(fish_id, "fish")
+			return
 
 	for key in ["owned_weight_lb", "total_weight_lb", "fish_weight_lb", "new_weight_lb"]:
 		if data.has(key):
-			world.fish_inventory[fish_id] = _normalize_fish_weight(data.get(key, 0.0))
+			world.fish_inventory[fish_id] = _fish_inventory_value_to_tenths(data.get(key, 0.0))
+			if world.has_method("refresh_ui_after_item_change"):
+				world.refresh_ui_after_item_change(fish_id, "fish")
 			return
 
 	_add_fish_weight_to_inventory(fish_id, catch_weight)
+
+
+func _apply_server_reward_inventory_result(data: Dictionary, item_id: String, category: String) -> void:
+	if world == null or item_id == "":
+		return
+	if has_inventory_delta_payload(data):
+		return
+
+	var safe_category := normalize_reward_category(category)
+	var inventory = get_reward_inventory_for_category(safe_category)
+	if not (inventory is Dictionary):
+		return
+
+	var inventory_field := get_inventory_field_for_reward_category(safe_category)
+	var player_data = data.get("player_data", null)
+	if player_data is Dictionary:
+		var player_inventory = player_data.get(inventory_field, null)
+		if player_inventory is Dictionary and player_inventory.has(item_id):
+			inventory[item_id] = int(player_inventory.get(item_id, 0))
+			if world.has_method("refresh_ui_after_item_change"):
+				world.refresh_ui_after_item_change(item_id, safe_category)
+			return
+
+	var inventory_payload = data.get(inventory_field, null)
+	if inventory_payload is Dictionary and inventory_payload.has(item_id):
+		inventory[item_id] = int(inventory_payload.get(item_id, 0))
+		if world.has_method("refresh_ui_after_item_change"):
+			world.refresh_ui_after_item_change(item_id, safe_category)
+		return
+
+	add_reward_to_inventory(item_id, safe_category, 1)
+
+
+func add_reward_to_inventory(item_id: String, category: String, amount: int) -> int:
+	if world == null or item_id == "":
+		return 0
+
+	var safe_category := normalize_reward_category(category)
+	var inventory = get_reward_inventory_for_category(safe_category)
+	if not (inventory is Dictionary):
+		return 0
+
+	if world.has_method("add_item_to_inventory_stack"):
+		return int(world.add_item_to_inventory_stack(inventory, item_id, safe_category, amount))
+
+	var current_count: int = max(0, int(inventory.get(item_id, 0)))
+	var next_count: int = current_count + max(0, amount)
+	inventory[item_id] = next_count
+	if next_count != current_count and world.has_method("refresh_ui_after_item_change"):
+		world.refresh_ui_after_item_change(item_id, safe_category)
+	return next_count - current_count
+
+
+func normalize_reward_category(category: String) -> String:
+	var safe_category := str(category).strip_edges().to_lower()
+	if safe_category in ["block", "seed", "tool", "back", "hat", "hair", "eyewear", "shirt", "pants", "shoes", "ride", "currency", "material", "lure", "fish"]:
+		return safe_category
+	var pending_category := pending_reward_category.strip_edges().to_lower()
+	if pending_category in ["block", "seed", "tool", "back", "hat", "hair", "eyewear", "shirt", "pants", "shoes", "ride", "currency", "material", "lure", "fish"]:
+		return pending_category
+	return "fish"
+
+
+func get_pending_reward_category() -> String:
+	return normalize_reward_category(pending_reward_category)
+
+
+func get_inventory_field_for_reward_category(category: String) -> String:
+	match normalize_reward_category(category):
+		"block":
+			return "inventory"
+		"seed":
+			return "seed_inventory"
+		"tool":
+			return "tool_inventory"
+		"back":
+			return "back_inventory"
+		"hat":
+			return "hat_inventory"
+		"hair":
+			return "hair_inventory"
+		"eyewear":
+			return "eyewear_inventory"
+		"shirt":
+			return "shirt_inventory"
+		"pants":
+			return "pants_inventory"
+		"shoes":
+			return "shoes_inventory"
+		"ride":
+			return "ride_inventory"
+		"currency":
+			return "currency_inventory"
+		"material":
+			return "material_inventory"
+		"lure":
+			return "lure_inventory"
+		"fish":
+			return "fish_inventory"
+		_:
+			return ""
+
+
+func get_reward_inventory_for_category(category: String):
+	if world == null:
+		return null
+
+	match normalize_reward_category(category):
+		"block":
+			return world.inventory
+		"seed":
+			return world.seed_inventory
+		"tool":
+			return world.tool_inventory
+		"back":
+			return world.back_inventory
+		"hat":
+			return world.hat_inventory
+		"hair":
+			return world.hair_inventory
+		"eyewear":
+			return world.eyewear_inventory
+		"shirt":
+			return world.shirt_inventory
+		"pants":
+			return world.pants_inventory
+		"shoes":
+			return world.shoes_inventory
+		"ride":
+			return world.ride_inventory
+		"currency":
+			return world.currency_inventory
+		"material":
+			return world.material_inventory
+		"lure":
+			return world.lure_inventory
+		"fish":
+			return world.fish_inventory
+		_:
+			return null
+
+
+func get_reward_texture(item_id: String, category: String):
+	if world == null or item_id == "":
+		return null
+
+	var safe_category := normalize_reward_category(category)
+	if world.has_method("get_inventory_icon_texture"):
+		var icon_texture = world.get_inventory_icon_texture(item_id, safe_category)
+		if icon_texture != null:
+			return icon_texture
+	if world.has_method("get_item_texture"):
+		var item_texture = world.get_item_texture(item_id, safe_category)
+		if item_texture != null:
+			return item_texture
+
+	match safe_category:
+		"fish":
+			return world.fish_textures.get(item_id, null)
+		"material":
+			return world.material_textures.get(item_id, null)
+		"lure":
+			return world.lure_textures.get(item_id, null)
+		"tool":
+			return world.tool_textures.get(item_id, null)
+		"currency":
+			return world.currency_textures.get(item_id, null)
+		"block":
+			return world.block_textures.get(item_id, null)
+		"seed":
+			return world.seed_textures.get(item_id, null)
+		_:
+			return null
 
 
 func request_server_fishing_complete(success: bool) -> bool:
@@ -537,6 +1139,8 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 		var target_grid = Vector2i(int(data.get("target_x", 0)), int(data.get("target_y", 0)))
 		var lure_id = str(data.get("lure_id", ""))
 		var fish_data = {
+			"item_id": str(data.get("item_id", data.get("fish_id", ""))),
+			"item_category": str(data.get("item_category", "fish")),
 			"fish_id": str(data.get("fish_id", "")),
 			"difficulty": int(data.get("difficulty", 1))
 		}
@@ -547,28 +1151,40 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 		waiting_for_server_catch = false
 		var message = str(data.get("message", "Fishing finished."))
 		var caught_fish_id: String = ""
-		var caught_weight: float = 0.0
 
 		if bool(data.get("ok", false)):
+			var reward_id := str(data.get("item_id", data.get("fish_id", "")))
+			var reward_category := str(data.get("item_category", "fish")).strip_edges()
+			if reward_category == "":
+				reward_category = "fish"
 			var fish_id = str(data.get("fish_id", ""))
-			if fish_id != "":
+			if reward_id != "" and reward_category == "fish":
+				if fish_id == "":
+					fish_id = reward_id
 				var server_weight: float = _normalize_fish_weight(float(data.get("catch_weight", _roll_catch_weight(fish_id))))
 				caught_fish_id = fish_id
-				caught_weight = server_weight
 				var server_owned_before: float = _get_owned_fish_weight(fish_id)
 				var server_record: Dictionary = record_fish_catch(fish_id, server_weight)
 				var server_new: bool = bool(data.get("is_new", server_record.get("was_new", server_owned_before <= 0.0)))
 				_apply_server_fish_inventory_result(data, fish_id, server_weight)
 				_show_catch_result(fish_id, server_new, server_weight)
 				_maybe_broadcast_legendary_catch(fish_id)
+				if not bool(data.get("reward_fx_sent", false)):
+					_maybe_spawn_fishing_reward_confetti(fish_id, "fish")
+			elif reward_id != "":
+				_apply_server_reward_inventory_result(data, reward_id, reward_category)
+				_show_catch_result(reward_id, false, -1.0, reward_category)
+				if not bool(data.get("reward_fx_sent", false)):
+					_maybe_spawn_fishing_reward_confetti(reward_id, reward_category)
 			if message.strip_edges() != "":
 				world.show_notification(message)
 			elif caught_fish_id != "":
-				_show_catch_notification(caught_fish_id, caught_weight)
+				_show_catch_notification(caught_fish_id, "fish")
+			elif reward_id != "":
+				_show_catch_notification(reward_id, reward_category)
 		else:
 			world.show_notification(message)
 
-		world.update_all_ui()
 		world.save_player_data()
 		return true
 
@@ -594,17 +1210,24 @@ func reset_fishing_state(delay_bobber: bool = true):
 	state_timer     = 0.0
 	current_lure_id = ""
 	pending_fish_id = ""
+	pending_reward_category = "fish"
 	pending_fish_data = {}
 	server_fishing_session_id = ""
 	cast_selected_item_type = ""
 	cast_selected_item_category = ""
 	cast_world_name = ""
+	flush_fishing_visual_sync()
 	_hide_fishing_state_ui()
 
 	if delay_bobber:
 		call_deferred("clear_bobber")
 	else:
 		clear_bobber()
+
+
+func flush_fishing_visual_sync():
+	if world != null and world.has_method("flush_multiplayer_position"):
+		world.flush_multiplayer_position(false, true)
 
 
 func finish_fishing():
@@ -628,23 +1251,27 @@ func is_fishable_water(grid_pos: Vector2i) -> bool:
 
 
 func get_best_available_lure() -> String:
-	for lure_id in ["golden_lure", "shiny_lure", "worm_lure"]:
+	for lure_id in ["void_worm_lure", "bonito_lure", "cotton_cordel_lure", "golden_lure", "shiny_lure", "worm_lure", "hook"]:
 		if world.lure_inventory.has(lure_id) and int(world.lure_inventory[lure_id]) > 0:
 			return lure_id
 	for lure_id in world.lure_inventory.keys():
+		var safe_lure_id := str(lure_id)
+		if safe_lure_id == "lure_pack":
+			continue
 		if int(world.lure_inventory[lure_id]) > 0:
-			return str(lure_id)
+			return safe_lure_id
 	return ""
 
 
 # ── Loot tables ───────────────────────────────────────────────
 
-func roll_fish_for_lure(lure_id: String) -> String:
-	return str(_roll_fish_entry(lure_id).get("fish_id", ""))
+func roll_fish_for_lure(lure_id: String, rod_id: String = "") -> String:
+	var entry := _roll_fish_entry(lure_id, rod_id)
+	return str(entry.get("item_id", entry.get("fish_id", "")))
 
 
-func _roll_fish_entry(lure_id: String) -> Dictionary:
-	var table = get_fishing_table_for_lure(lure_id)
+func _roll_fish_entry(lure_id: String, rod_id: String = "") -> Dictionary:
+	var table = get_fishing_table_for_lure(lure_id, rod_id)
 	if table.is_empty():
 		return {}
 
@@ -664,33 +1291,161 @@ func _roll_fish_entry(lure_id: String) -> Dictionary:
 	return table[0]
 
 
-func get_fishing_table_for_lure(lure_id: String) -> Array:
+func get_fishing_table_for_lure(lure_id: String, rod_id: String = "") -> Array:
+	var safe_lure_id := lure_id.strip_edges()
+	if safe_lure_id == "magnet_lure":
+		return _filter_fishing_table_for_rod(get_magnetic_fishing_table(), rod_id)
+
+	return build_fishing_table_from_rarity_weights(get_fishing_rarity_weights(safe_lure_id), rod_id)
+
+
+func get_fishing_rarity_weights(lure_id: String) -> Dictionary:
 	match lure_id:
-		"worm_lure":
-			return [
-				{"fish_id": "pond_fish",    "weight": 65, "difficulty": 1},
-				{"fish_id": "bluegill",     "weight": 28, "difficulty": 2},
-				{"fish_id": "golden_carp",  "weight": 6,  "difficulty": 4},
-				{"fish_id": "crystal_fish", "weight": 1,  "difficulty": 6}
-			]
+		"hook", "worm_lure":
+			return {"common": 8000, "uncommon": 1600, "rare": 300, "epic": 90, "legendary": 10}
 		"shiny_lure":
-			return [
-				{"fish_id": "pond_fish",    "weight": 38, "difficulty": 1},
-				{"fish_id": "bluegill",     "weight": 42, "difficulty": 2},
-				{"fish_id": "golden_carp",  "weight": 16, "difficulty": 4},
-				{"fish_id": "crystal_fish", "weight": 4,  "difficulty": 6}
-			]
+			return {"common": 3000, "uncommon": 6100, "rare": 800, "epic": 90, "legendary": 10}
 		"golden_lure":
-			return [
-				{"fish_id": "bluegill",     "weight": 35, "difficulty": 2},
-				{"fish_id": "golden_carp",  "weight": 50, "difficulty": 4},
-				{"fish_id": "crystal_fish", "weight": 15, "difficulty": 6}
-			]
+			return {"common": 2000, "uncommon": 3000, "rare": 4500, "epic": 490, "legendary": 10}
+		"bonito_lure", "cotton_cordel_lure":
+			return {"common": 1000, "uncommon": 2000, "rare": 3000, "epic": 3500, "legendary": 500}
+		"void_worm_lure":
+			return {"common": 1000, "uncommon": 1500, "rare": 2000, "epic": 2000, "legendary": 3500}
 		_:
-			return [
-				{"fish_id": "pond_fish", "weight": 80, "difficulty": 1},
-				{"fish_id": "bluegill",  "weight": 20, "difficulty": 2}
-			]
+			return {"common": 8000, "uncommon": 1600, "rare": 300, "epic": 90, "legendary": 10}
+
+
+func get_fishing_rarity_pools() -> Dictionary:
+	return {
+		"common": [
+			{"fish_id": "pond_fish_small"},
+			{"fish_id": "pond_fish_med"},
+			{"fish_id": "pond_fish_large"},
+			{"fish_id": "cat_fish_small"},
+			{"fish_id": "cat_fish_med"},
+			{"fish_id": "cat_fish_large"},
+			{"fish_id": "sea_horse_small"},
+			{"fish_id": "sea_horse_med"},
+			{"fish_id": "sea_horse_large"}
+		],
+		"uncommon": [
+			{"fish_id": "bone_fish_small"},
+			{"fish_id": "bone_fish_med"},
+			{"fish_id": "bone_fish_large"},
+			{"fish_id": "stingray_small"},
+			{"fish_id": "stingray_med"},
+			{"fish_id": "stingray_large"}
+		],
+		"rare": [
+			{"fish_id": "lava_fish_small"},
+			{"fish_id": "lava_fish_med"},
+			{"fish_id": "lava_fish_large"},
+			{"fish_id": "alien_fish_small"},
+			{"fish_id": "alien_fish_med"},
+			{"fish_id": "alien_fish_large"}
+		],
+		"epic": [
+			{"fish_id": "barracuda_small"},
+			{"fish_id": "barracuda_med"},
+			{"fish_id": "barracuda_large"},
+			{"fish_id": "shark_small"},
+			{"fish_id": "shark_med"},
+			{"fish_id": "shark_large"}
+		],
+		"legendary": [
+			{"fish_id": "tail_of_trident"},
+			{"fish_id": "mermaid"},
+			{"fish_id": "megalodon"},
+			{"fish_id": "kraken"},
+			{"fish_id": "sea_eater"}
+		]
+	}
+
+
+func get_neptune_rod_special_fishing_rewards(rod_id: String) -> Array:
+	var rewards := [
+		{"item_id": "golden_statue", "item_category": "block", "weight": 10, "difficulty": 9, "required_rod_id": "neptune_rod"}
+	]
+	return _filter_fishing_table_for_rod(rewards, rod_id)
+
+
+func build_fishing_table_from_rarity_weights(rarity_weights: Dictionary, rod_id: String = "") -> Array:
+	var table := []
+	var pools := get_fishing_rarity_pools()
+	for rarity in ["common", "uncommon", "rare", "epic", "legendary"]:
+		var group_weight := int(rarity_weights.get(rarity, 0))
+		if group_weight <= 0:
+			continue
+		var special_rewards: Array = get_neptune_rod_special_fishing_rewards(rod_id) if rarity == "common" else []
+		var special_weight: int = 0
+		for special_entry in special_rewards:
+			special_weight += max(0, int(special_entry.get("weight", 0)))
+		if special_weight > 0:
+			group_weight = max(0, group_weight - special_weight)
+		var pool = _filter_fishing_table_for_rod(pools.get(rarity, []), rod_id)
+		table.append_array(distribute_fishing_weight(group_weight, pool))
+		if special_rewards.size() > 0:
+			table.append_array(special_rewards)
+	return table
+
+
+func distribute_fishing_weight(group_weight: int, entries: Array) -> Array:
+	var weighted_entries := []
+	if group_weight <= 0 or entries.is_empty():
+		return weighted_entries
+
+	var base_weight := int(floor(float(group_weight) / float(entries.size())))
+	var remainder := group_weight % entries.size()
+	for entry_value in entries:
+		var entry: Dictionary = entry_value.duplicate(true)
+		var entry_weight := base_weight
+		if remainder > 0:
+			entry_weight += 1
+			remainder -= 1
+		if entry_weight <= 0:
+			continue
+		entry["weight"] = entry_weight
+		entry["difficulty"] = get_fishing_entry_difficulty(entry)
+		weighted_entries.append(entry)
+	return weighted_entries
+
+
+func get_fishing_entry_difficulty(entry: Dictionary) -> int:
+	var configured := int(entry.get("difficulty", 0))
+	if configured > 0:
+		return configured
+
+	var item_id := str(entry.get("item_id", entry.get("fish_id", "")))
+	if world != null and world.item_database.has(item_id) and world.item_database[item_id] is Dictionary:
+		return max(1, int(world.item_database[item_id].get("difficulty", 1)))
+	return 1
+
+
+func get_magnetic_fishing_table() -> Array:
+	return [
+		{"item_id": "seaweed", "item_category": "material", "weight": 18, "difficulty": 1},
+		{"item_id": "trash_can", "item_category": "material", "weight": 16, "difficulty": 1},
+		{"item_id": "coral", "item_category": "material", "weight": 13, "difficulty": 2},
+		{"item_id": "clam", "item_category": "material", "weight": 13, "difficulty": 2},
+		{"item_id": "compass", "item_category": "material", "weight": 9, "difficulty": 3},
+		{"item_id": "pearl", "item_category": "material", "weight": 8, "difficulty": 3},
+		{"item_id": "rusty_bicycle", "item_category": "material", "weight": 7, "difficulty": 4},
+		{"item_id": "lost_chapter", "item_category": "material", "weight": 5, "difficulty": 5},
+		{"item_id": "topaz_necklace", "item_category": "material", "weight": 4, "difficulty": 6},
+		{"item_id": "toxic_waste", "item_category": "material", "weight": 4, "difficulty": 6},
+		{"item_id": "naval_mines", "item_category": "material", "weight": 2, "difficulty": 7},
+		{"item_id": "atlantic_chest", "item_category": "block", "weight": 1, "difficulty": 6}
+	]
+
+
+func _filter_fishing_table_for_rod(table: Array, rod_id: String) -> Array:
+	var clean_rod_id := normalize_fishing_rod_id(rod_id)
+	var filtered := []
+	for entry in table:
+		var required_rod_id := normalize_fishing_rod_id(str(entry.get("required_rod_id", "")))
+		if required_rod_id == "" or required_rod_id == clean_rod_id:
+			filtered.append(entry)
+	return filtered
 
 
 func open_lure_pack(amount: int = 1):
@@ -706,10 +1461,26 @@ func open_lure_pack(amount: int = 1):
 
 
 func roll_lure_from_pack() -> String:
-	var roll = randi_range(1, 100)
-	if roll <= 65: return "worm_lure"
-	if roll <= 93: return "shiny_lure"
-	return "golden_lure"
+	var table := [
+		{"item_id": "hook", "weight": 300},
+		{"item_id": "worm_lure", "weight": 300},
+		{"item_id": "shiny_lure", "weight": 180},
+		{"item_id": "golden_lure", "weight": 100},
+		{"item_id": "magnet_lure", "weight": 60},
+		{"item_id": "bonito_lure", "weight": 30},
+		{"item_id": "cotton_cordel_lure", "weight": 25},
+		{"item_id": "void_worm_lure", "weight": 5}
+	]
+	var total := 0
+	for entry in table:
+		total += int(entry.get("weight", 0))
+	var roll = randi_range(1, max(1, total))
+	var running := 0
+	for entry in table:
+		running += int(entry.get("weight", 0))
+		if roll <= running:
+			return str(entry.get("item_id", "worm_lure"))
+	return "worm_lure"
 
 
 # ── Minigame UI (pure code) ───────────────────────────────────
@@ -1272,9 +2043,18 @@ func _show_catch_popup(fish_id: String):
 
 func _lure_bonus(lure_id: String) -> float:
 	match lure_id:
-		"shiny_lure":  return 0.045
-		"golden_lure": return 0.075
-		_:             return 0.0
+		"shiny_lure":
+			return 0.045
+		"golden_lure":
+			return 0.075
+		"bonito_lure", "cotton_cordel_lure":
+			return 0.095
+		"void_worm_lure":
+			return 0.12
+		"magnet_lure":
+			return 0.04
+		_:
+			return 0.0
 
 
 func _default_fishing_records() -> Dictionary:
@@ -1359,7 +2139,7 @@ func record_fish_catch(fish_id: String, weight: float) -> Dictionary:
 	var best_values: Dictionary = _get_record_dictionary("best_value_per_species")
 	var previous_count: int = max(0, int(species_counts.get(safe_fish_id, 0)))
 	var was_new: bool = previous_count <= 0 and not discovered.has(safe_fish_id)
-	var catch_value: int = _calculate_fish_sale_value(rounded_weight, sell_value)
+	var catch_value: int = _calculate_fish_sale_value(1, sell_value)
 
 	species_counts[safe_fish_id] = previous_count + 1
 	if rounded_weight > float(biggest.get(safe_fish_id, 0.0)):
@@ -1386,7 +2166,7 @@ func record_fish_catch(fish_id: String, weight: float) -> Dictionary:
 		"weight": rounded_weight,
 		"rarity": rarity,
 		"value": catch_value,
-		"price_per_lb": sell_value
+		"value_per_fish": sell_value
 	}
 
 
@@ -1480,7 +2260,7 @@ func get_fishing_journal_entries(rarity_filter: String = "all") -> Array:
 			"biggest_weight": float(biggest.get(fish_id, 0.0)),
 			"total_caught": int(species_counts.get(fish_id, 0)),
 			"best_value": int(best_values.get(fish_id, 0)),
-			"price_per_lb": _get_fish_sell_value(fish_id, item_data),
+			"value_per_fish": _get_fish_sell_value(fish_id, item_data),
 			"icon": world.fish_textures.get(fish_id, null) if world != null else null,
 			"order": int(item_data.get("order", 99999))
 		})
@@ -1502,7 +2282,7 @@ func _is_fish_discovered(fish_id: String, discovered: Dictionary) -> bool:
 		var species_counts: Dictionary = _get_record_dictionary("total_caught_per_species")
 		if int(species_counts.get(fish_id, 0)) > 0:
 			return true
-	if world != null and world.fish_inventory.has(fish_id) and float(world.fish_inventory.get(fish_id, 0.0)) > 0.0:
+	if world != null and world.fish_inventory.has(fish_id) and _fish_inventory_value_to_tenths(world.fish_inventory.get(fish_id, 0)) > 0:
 		return true
 	return false
 
@@ -1578,28 +2358,31 @@ func _hide_fishing_state_ui():
 		fishing_ui.hide_fishing_state()
 
 
-func _show_catch_result(fish_id: String, was_new: bool = false, catch_weight: float = -1.0):
+func _show_catch_result(fish_id: String, was_new: bool = false, catch_weight: float = -1.0, category: String = "fish"):
 	if fishing_ui == null or not fishing_ui.has_method("show_catch_result"):
 		return
-	fishing_ui.show_catch_result(_build_catch_result_data(fish_id, was_new, catch_weight))
+	fishing_ui.show_catch_result(_build_catch_result_data(fish_id, was_new, catch_weight, category))
 
 
-func _build_catch_result_data(fish_id: String, was_new: bool, catch_weight: float = -1.0) -> Dictionary:
+func _build_catch_result_data(fish_id: String, was_new: bool, _catch_weight: float = -1.0, category: String = "fish") -> Dictionary:
 	var item_data: Dictionary = {}
 	if world != null and world.item_database.has(fish_id):
 		item_data = world.item_database[fish_id]
 
+	var safe_category := normalize_reward_category(category)
 	var rarity: String = str(item_data.get("rarity", "common")).to_lower()
-	var display_weight: float = catch_weight if catch_weight > 0.0 else _roll_display_weight_for_rarity(rarity)
+	var sell_value: int = _get_fish_sell_value(fish_id, item_data) if safe_category == "fish" else 0
 	return {
 		"fish_id": fish_id,
-		"name": world.get_item_display_name(fish_id, "fish") if world != null else fish_id,
+		"item_id": fish_id,
+		"item_category": safe_category,
+		"name": world.get_item_display_name(fish_id, safe_category) if world != null else fish_id,
 		"rarity": rarity,
-		"weight": _format_fish_weight(display_weight),
-		"value": _calculate_fish_sale_value(display_weight, _get_fish_sell_value(fish_id, item_data)),
-		"price_per_lb": _get_fish_sell_value(fish_id, item_data),
+		"amount": "x1",
+		"value": _calculate_fish_sale_value(1, sell_value),
+		"value_per_fish": sell_value,
 		"is_new": was_new,
-		"icon": world.fish_textures.get(fish_id, null) if world != null else null
+		"icon": get_reward_texture(fish_id, safe_category)
 	}
 
 
@@ -1631,23 +2414,73 @@ func _format_fish_weight(weight: float) -> String:
 	return "%.1f lb" % snapped(weight, 0.1)
 
 
-func _show_catch_notification(fish_id: String, weight: float) -> void:
+func _show_catch_notification(fish_id: String, category: String = "fish") -> void:
 	if world == null or not world.has_method("show_notification"):
 		return
-	world.show_notification("Caught " + world.get_item_display_name(fish_id, "fish") + " weighing " + _format_fish_weight(weight) + "!")
+	var safe_category := normalize_reward_category(category)
+	world.show_notification("Caught " + world.get_item_display_name(fish_id, safe_category) + " x1!")
+
+
+func _maybe_spawn_fishing_reward_confetti(item_id: String, category: String = "fish") -> void:
+	if world == null:
+		return
+
+	var rarity := _get_reward_rarity(item_id, category)
+	if rarity != "epic" and rarity != "legendary":
+		return
+
+	var ui_position := _get_fishing_reward_confetti_ui_position()
+	if is_finite(ui_position.x) and is_finite(ui_position.y):
+		if world.has_method("spawn_fishing_reward_confetti_ui_particles"):
+			if bool(world.spawn_fishing_reward_confetti_ui_particles(ui_position, rarity)):
+				return
+
+	if world.has_method("spawn_fishing_reward_confetti_particles"):
+		world.spawn_fishing_reward_confetti_particles(_get_fishing_reward_confetti_position(), rarity)
+
+
+func get_fishing_reward_confetti_ui_position() -> Vector2:
+	return _get_fishing_reward_confetti_ui_position()
+
+
+func _get_reward_rarity(item_id: String, _category: String = "fish") -> String:
+	var safe_item_id := item_id.strip_edges()
+	if safe_item_id == "" or world == null:
+		return "common"
+
+	if world.item_database.has(safe_item_id) and world.item_database[safe_item_id] is Dictionary:
+		return str(world.item_database[safe_item_id].get("rarity", "common")).strip_edges().to_lower()
+
+	return "common"
+
+
+func _get_fishing_reward_confetti_position() -> Vector2:
+	if world != null and world.player != null and is_instance_valid(world.player):
+		return world.player.global_position + Vector2(0.0, -38.0)
+
+	return Vector2.ZERO
+
+
+func _get_fishing_reward_confetti_ui_position() -> Vector2:
+	if fishing_ui != null and is_instance_valid(fishing_ui) and fishing_ui.has_method("get_catch_card_confetti_position"):
+		return fishing_ui.get_catch_card_confetti_position()
+
+	return Vector2(INF, INF)
 
 
 func _get_fish_sell_value(fish_id: String, item_data: Dictionary) -> int:
 	if world != null and world.fish_monger_manager != null and world.fish_monger_manager.has_method("get_fish_sell_value"):
 		return int(world.fish_monger_manager.get_fish_sell_value(fish_id))
-	if item_data.has("sell_price_per_lb"):
-		return max(0, int(item_data.get("sell_price_per_lb", 0)))
-	if item_data.has("price_per_lb"):
-		return max(0, int(item_data.get("price_per_lb", 0)))
 	if item_data.has("sell_value"):
 		return max(0, int(item_data.get("sell_value", 0)))
 	if item_data.has("fish_sell_value"):
 		return max(0, int(item_data.get("fish_sell_value", 0)))
+	if item_data.has("sell_price"):
+		return max(0, int(item_data.get("sell_price", 0)))
+	if item_data.has("sell_price_per_lb"):
+		return max(0, int(item_data.get("sell_price_per_lb", 0)))
+	if item_data.has("price_per_lb"):
+		return max(0, int(item_data.get("price_per_lb", 0)))
 	match str(item_data.get("rarity", "common")):
 		"uncommon":
 			return 6
@@ -1661,11 +2494,10 @@ func _get_fish_sell_value(fish_id: String, item_data: Dictionary) -> int:
 			return 3
 
 
-func _calculate_fish_sale_value(weight: float, price_per_lb: int) -> int:
-	var tenths: int = max(0, int(round(snapped(max(0.0, weight), 0.1) * 10.0)))
-	if tenths <= 0 or price_per_lb <= 0:
+func _calculate_fish_sale_value(count: int, value_per_fish: int) -> int:
+	if count <= 0 or value_per_fish <= 0:
 		return 0
-	return int(floor((float(price_per_lb) * float(tenths)) / 10.0))
+	return count * value_per_fish
 
 
 func _maybe_broadcast_legendary_catch(fish_id: String):
@@ -1704,9 +2536,9 @@ func _update_target_indicator():
 func _is_fishing_rod_ready_for_targeting() -> bool:
 	if world == null:
 		return false
-	if str(world.equipped_tool) == world.FISHING_ROD_ID:
+	if is_fishing_rod_item(str(world.equipped_tool)):
 		return true
-	return str(world.selected_item_category) == "tool" and str(world.selected_item_type) == world.FISHING_ROD_ID
+	return str(world.selected_item_category) == "tool" and is_fishing_rod_item(str(world.selected_item_type))
 
 
 func _is_reeling_input_down() -> bool:
@@ -1735,13 +2567,11 @@ func _should_cancel_for_cleanup_rule() -> bool:
 		return true
 	if cast_world_name != "" and str(world.current_world_name) != cast_world_name:
 		return true
-	if world.has_method("is_chat_input_focused") and world.is_chat_input_focused():
-		return true
 	if _is_blocking_ui_open_for_fishing():
 		return true
 	if world.fishing_target_grid != world.INVALID_GRID_POS and not can_reach_fishing_grid(world.fishing_target_grid):
 		return true
-	if str(world.equipped_tool) != world.FISHING_ROD_ID:
+	if not is_fishing_rod_item(str(world.equipped_tool)) and not (str(world.selected_item_category) == "tool" and is_fishing_rod_item(str(world.selected_item_type))):
 		return true
 	if cast_selected_item_type != "" and str(world.selected_item_type) != cast_selected_item_type:
 		return true

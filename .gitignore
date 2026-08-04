@@ -14,6 +14,7 @@
 *.bak
 /Backups/
 /previews/
+/.netfox_locks/
 
 # Backend lives in its own Git repository
 /backend/

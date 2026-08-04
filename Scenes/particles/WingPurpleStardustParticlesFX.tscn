@@ -1,0 +1,180 @@
+[gd_scene format=3 uid="uid://bcx02td75e0xk"]
+
+[ext_resource type="Script" uid="uid://k2qujoc5pahp" path="res://Scripts/wing_sparkle_particles_fx.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://trfnydujh1du" path="res://Assets/effects/confetti_star.svg" id="2_star"]
+[ext_resource type="Texture2D" uid="uid://ci2m11blt7mtx" path="res://Assets/effects/angel_wing_sparkle.svg" id="3_sparkle"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_additive"]
+blend_mode = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_idle_starfall"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(5, 2, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 20.0
+initial_velocity_min = 8.0
+initial_velocity_max = 22.0
+angular_velocity_min = -220.0
+angular_velocity_max = 220.0
+gravity = Vector3(0, 16, 0)
+damping_min = 1.2
+damping_max = 3.0
+scale_min = 0.11
+scale_max = 0.34
+color = Color(0.88, 0.05, 1, 0.92)
+hue_variation_min = -0.04
+hue_variation_max = 0.06
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_idle_dust"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(19, 5, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 34.0
+initial_velocity_min = 6.0
+initial_velocity_max = 16.0
+angular_velocity_min = -110.0
+angular_velocity_max = 110.0
+gravity = Vector3(0, 14, 0)
+damping_min = 1.5
+damping_max = 3.8
+scale_min = 0.06
+scale_max = 0.2
+color = Color(0.16, 0.08, 0.78, 0.5)
+hue_variation_min = -0.04
+hue_variation_max = 0.08
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_move_trail_star"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(4, 6, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 28.0
+initial_velocity_min = 18.0
+initial_velocity_max = 46.0
+angular_velocity_min = -520.0
+angular_velocity_max = 520.0
+gravity = Vector3(0, 20, 0)
+damping_min = 3.8
+damping_max = 8.4
+scale_min = 0.09
+scale_max = 0.3
+color = Color(0.72, 0, 1, 0.86)
+hue_variation_min = -0.04
+hue_variation_max = 0.07
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_move_trail_dust"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(5, 7, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 34.0
+initial_velocity_min = 14.0
+initial_velocity_max = 40.0
+angular_velocity_min = -360.0
+angular_velocity_max = 360.0
+gravity = Vector3(0, 18, 0)
+damping_min = 4.0
+damping_max = 9.0
+scale_min = 0.05
+scale_max = 0.18
+color = Color(0.1, 0.3, 1, 0.46)
+hue_variation_min = -0.05
+hue_variation_max = 0.09
+
+[node name="WingPurpleStardustParticlesFX" type="Node2D" unique_id=2076222577]
+z_index = 72
+script = ExtResource("1_script")
+
+[node name="IdleLeftPurpleStars" type="GPUParticles2D" parent="." unique_id=2093413979]
+z_index = 4
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(-18, 7)
+amount = 10
+texture = ExtResource("2_star")
+lifetime = 1.22
+preprocess = 1.22
+randomness = 0.52
+visibility_rect = Rect2(-18, -10, 36, 58)
+process_material = SubResource("ParticleProcessMaterial_idle_starfall")
+
+[node name="IdleRightPurpleStars" type="GPUParticles2D" parent="." unique_id=1706618403]
+z_index = 4
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(18, 7)
+amount = 10
+texture = ExtResource("2_star")
+lifetime = 1.22
+preprocess = 1.22
+randomness = 0.52
+visibility_rect = Rect2(-18, -10, 36, 58)
+process_material = SubResource("ParticleProcessMaterial_idle_starfall")
+
+[node name="IdleSoftPurpleDust" type="GPUParticles2D" parent="." unique_id=227773963]
+z_index = 3
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(0, 5)
+amount = 14
+texture = ExtResource("3_sparkle")
+lifetime = 1.42
+preprocess = 1.42
+randomness = 0.68
+visibility_rect = Rect2(-30, -12, 60, 64)
+process_material = SubResource("ParticleProcessMaterial_idle_dust")
+
+[node name="TrailLeftPurpleStars" type="GPUParticles2D" parent="." unique_id=1985770477]
+z_index = 5
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(-20, 8)
+amount = 16
+texture = ExtResource("2_star")
+lifetime = 0.62
+preprocess = 0.62
+randomness = 0.38
+visibility_rect = Rect2(-66, -18, 76, 42)
+process_material = SubResource("ParticleProcessMaterial_move_trail_star")
+
+[node name="TrailRightPurpleStars" type="GPUParticles2D" parent="." unique_id=691060026]
+z_index = 5
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(20, 8)
+amount = 16
+texture = ExtResource("2_star")
+lifetime = 0.62
+preprocess = 0.62
+randomness = 0.38
+visibility_rect = Rect2(-66, -18, 76, 42)
+process_material = SubResource("ParticleProcessMaterial_move_trail_star")
+
+[node name="TrailLeftPurpleDust" type="GPUParticles2D" parent="." unique_id=359535361]
+z_index = 4
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(-20, 8)
+amount = 18
+texture = ExtResource("3_sparkle")
+lifetime = 0.54
+preprocess = 0.54
+randomness = 0.46
+visibility_rect = Rect2(-62, -18, 72, 40)
+process_material = SubResource("ParticleProcessMaterial_move_trail_dust")
+
+[node name="TrailRightPurpleDust" type="GPUParticles2D" parent="." unique_id=857255220]
+z_index = 4
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(20, 8)
+amount = 18
+texture = ExtResource("3_sparkle")
+lifetime = 0.54
+preprocess = 0.54
+randomness = 0.46
+visibility_rect = Rect2(-62, -18, 72, 40)
+process_material = SubResource("ParticleProcessMaterial_move_trail_dust")

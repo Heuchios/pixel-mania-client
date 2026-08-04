@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dwu4i8y5ww7qm"]
+
+[ext_resource type="Script" path="res://Scripts/blue_hit_particles_fx.gd" id="1_bluehit"]
+
+[node name="BlueHitParticlesFX" type="Node2D"]
+z_index = 4080
+z_as_relative = false
+scale = Vector2(0.23, 0.23)
+script = ExtResource("1_bluehit")
+preview_emitting = true
+auto_restart_preview = true
+preview_interval = 0.72
+particle_scale = 1.0

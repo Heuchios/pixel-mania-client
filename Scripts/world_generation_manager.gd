@@ -13,9 +13,11 @@ const TERRAIN_SURFACE_VERTICAL_OFFSET = -8
 
 # Slightly wider terrain range so hills can be taller without looking jagged.
 const TERRAIN_EXTRA_HILL_RANGE = 3
-const HILL_AMPLITUDE_MAJOR = 4.8
-const HILL_AMPLITUDE_MINOR = 2.4
-const HILL_AMPLITUDE_DETAIL = 1.2
+const HILL_AMPLITUDE_MAJOR = 5.2
+const HILL_AMPLITUDE_MINOR = 2.0
+const HILL_AMPLITUDE_DETAIL = 0.55
+const TERRAIN_SMOOTHING_PASSES = 4
+const TERRAIN_AVERAGING_PASSES = 2
 
 # Surface decoration distribution.
 const SURFACE_DECORATION_CHANCE = 0.62
@@ -55,6 +57,9 @@ const CAVE_BOTTOM_SOLID_PADDING = 7
 # Cave tuning. These create actual hollow spaces/tunnels while keeping the
 # surface and bottom lava/stone layer solid/readable.
 const CAVE_MIN_DEPTH = 8
+# Keep generated cave wall backgrounds off the visible top block only; surface
+# decorations such as grass, roses, and tulips clear this same cell explicitly.
+const SURFACE_BACKGROUND_GUARD_DEPTH = 0
 const SHALLOW_CAVE_START_DEPTH = 10
 const DEEP_CAVE_START_DEPTH = 18
 const CAVE_TUNNEL_NOISE_SEED_A = 1203
@@ -89,7 +94,10 @@ func generate_world():
 	generate_natural_ponds()
 	generate_surface_decorations()
 	generate_trees()
-	world.ensure_entrance_gate()
+	if world.has_method("ensure_generated_entrance_gate"):
+		world.ensure_generated_entrance_gate()
+	else:
+		world.ensure_entrance_gate()
 
 
 func prepare_generation_rng():
@@ -167,19 +175,65 @@ func generate_terrain_surface():
 		drift_timer -= 1
 
 		if drift_timer <= 0:
-			drift_timer = generation_rng.randi_range(4, 8)
+			drift_timer = generation_rng.randi_range(7, 14)
 			drift += generation_rng.randi_range(-1, 1)
-			drift = clamp(drift, -2, 2)
+			drift = clamp(drift, -1, 1)
 
-		var wave_1 = sin(float(x) * 0.070 + wave_seed_a) * HILL_AMPLITUDE_MAJOR
-		var wave_2 = sin(float(x) * 0.145 + wave_seed_b) * HILL_AMPLITUDE_MINOR
-		var wave_3 = sin(float(x) * 0.310 + wave_seed_c) * HILL_AMPLITUDE_DETAIL
+		var wave_1 = sin(float(x) * 0.052 + wave_seed_a) * HILL_AMPLITUDE_MAJOR
+		var wave_2 = sin(float(x) * 0.112 + wave_seed_b) * HILL_AMPLITUDE_MINOR
+		var wave_3 = sin(float(x) * 0.220 + wave_seed_c) * HILL_AMPLITUDE_DETAIL
 		var target_y = int(round(float(base_surface_y) + wave_1 + wave_2 + wave_3 + float(drift)))
 
 		world.terrain_surface_y[x] = clamp(target_y, min_surface_y, max_surface_y)
 
 	# Smooth sharp cliffs so hills are slightly larger but still walkable-looking.
-	for smoothing_pass in range(3):
+	for smoothing_pass in range(TERRAIN_SMOOTHING_PASSES):
+		for x in range(1, world.WORLD_WIDTH - 1):
+			if abs(x - world.SPAWN_GRID_X) <= world.SPAWN_FLAT_RADIUS:
+				world.terrain_surface_y[x] = base_surface_y
+				continue
+
+			var left_y = int(world.terrain_surface_y[x - 1])
+			var current = int(world.terrain_surface_y[x])
+			var right_y = int(world.terrain_surface_y[x + 1])
+
+			if current < left_y - 1:
+				current = left_y - 1
+
+			if current > left_y + 1:
+				current = left_y + 1
+
+			if current < right_y - 1:
+				current = right_y - 1
+
+			if current > right_y + 1:
+				current = right_y + 1
+
+			world.terrain_surface_y[x] = clamp(current, min_surface_y, max_surface_y)
+
+	for averaging_pass in range(TERRAIN_AVERAGING_PASSES):
+		var averaged_surface = {}
+
+		for x in range(world.WORLD_WIDTH):
+			if x <= 0 or x >= world.WORLD_WIDTH - 1:
+				averaged_surface[x] = int(world.terrain_surface_y[x])
+				continue
+
+			if abs(x - world.SPAWN_GRID_X) <= world.SPAWN_FLAT_RADIUS:
+				averaged_surface[x] = base_surface_y
+				continue
+
+			var left_y = int(world.terrain_surface_y[x - 1])
+			var current_y = int(world.terrain_surface_y[x])
+			var right_y = int(world.terrain_surface_y[x + 1])
+			var smoothed_y = int(round((float(left_y) + float(current_y) * 2.0 + float(right_y)) * 0.25))
+
+			averaged_surface[x] = clamp(smoothed_y, min_surface_y, max_surface_y)
+
+		for x in range(world.WORLD_WIDTH):
+			world.terrain_surface_y[x] = averaged_surface[x]
+
+	for smoothing_pass in range(2):
 		for x in range(1, world.WORLD_WIDTH - 1):
 			if abs(x - world.SPAWN_GRID_X) <= world.SPAWN_FLAT_RADIUS:
 				world.terrain_surface_y[x] = base_surface_y
@@ -273,7 +327,7 @@ func should_place_cave_background(block_type: String, x: int, y: int, surface_y:
 	if world == null:
 		return false
 
-	if y <= surface_y:
+	if y <= surface_y + SURFACE_BACKGROUND_GUARD_DEPTH:
 		return false
 
 	if y >= world.BEDROCK_START_Y:
@@ -406,40 +460,40 @@ func get_normal_underground_block_type(x: int, y: int, depth: int) -> String:
 	# Just below surface: mostly dirt.
 	if depth <= 5:
 		return pick_weighted_block(x, y, [
-			{"type": "dirt", "weight": 89.0},
-			{"type": "stone", "weight": 7.0},
+			{"type": "dirt", "weight": 94.0},
+			{"type": "stone", "weight": 4.0},
+			{"type": "sand", "weight": 2.0}
+		])
+
+	# Mid shallow: longer dirt shelves with limited stone and sand.
+	if depth <= 16:
+		return pick_weighted_block(x, y, [
+			{"type": "dirt", "weight": 88.0},
+			{"type": "stone", "weight": 8.0},
 			{"type": "sand", "weight": 4.0}
 		])
 
-	# Mid shallow: still mostly dirt with limited stone and sand.
-	if depth <= 16:
-		return pick_weighted_block(x, y, [
-			{"type": "dirt", "weight": 80.0},
-			{"type": "stone", "weight": 13.0},
-			{"type": "sand", "weight": 7.0}
-		])
-
-	# Mid bands add more stone and depth variation.
+	# Mid bands stay dirt-heavy so caves cut through readable soil layers.
 	if depth <= 24:
 		return pick_weighted_block(x, y, [
-			{"type": "dirt", "weight": 68.0},
-			{"type": "stone", "weight": 24.0},
-			{"type": "sand", "weight": 8.0}
+			{"type": "dirt", "weight": 78.0},
+			{"type": "stone", "weight": 16.0},
+			{"type": "sand", "weight": 6.0}
 		])
 
 	# Deeper underground band.
 	if depth <= 34:
 		return pick_weighted_block(x, y, [
-			{"type": "dirt", "weight": 55.0},
-			{"type": "stone", "weight": 37.0},
-			{"type": "sand", "weight": 8.0}
+			{"type": "dirt", "weight": 66.0},
+			{"type": "stone", "weight": 28.0},
+			{"type": "sand", "weight": 6.0}
 		])
 
 	# Deep underground: much more stone for structure.
 	return pick_weighted_block(x, y, [
-		{"type": "dirt", "weight": 40.0},
-		{"type": "stone", "weight": 53.0},
-		{"type": "sand", "weight": 8.0}
+		{"type": "dirt", "weight": 42.0},
+		{"type": "stone", "weight": 52.0},
+		{"type": "sand", "weight": 6.0}
 	])
 
 
@@ -509,15 +563,15 @@ func get_generated_block_type(x: int, y: int, surface_y: int) -> String:
 	if is_spawn_safe_column(x):
 		if depth <= 9:
 			return pick_weighted_block(x, y, [
-				{"type": "dirt", "weight": 88.0},
-				{"type": "stone", "weight": 9.0},
-				{"type": "sand", "weight": 3.0}
+				{"type": "dirt", "weight": 92.0},
+				{"type": "stone", "weight": 6.0},
+				{"type": "sand", "weight": 2.0}
 			])
 
 		return pick_weighted_block(x, y, [
-			{"type": "dirt", "weight": 80.0},
-			{"type": "stone", "weight": 15.0},
-			{"type": "sand", "weight": 5.0}
+			{"type": "dirt", "weight": 85.0},
+			{"type": "stone", "weight": 11.0},
+			{"type": "sand", "weight": 4.0}
 		])
 
 	# Underground empty spaces. Cave background is only placed on supporting terrain.
@@ -741,7 +795,9 @@ func generate_surface_decorations():
 		if decoration_type == "":
 			continue
 
+		clear_generated_background_block(surface_pos)
 		world.replace_block_without_drop(surface_pos, decoration_type)
+		clear_generated_background_block(surface_pos)
 
 
 func get_surface_decoration_type(x: int, surface_y: int) -> String:
@@ -796,6 +852,7 @@ func create_tree(x: int):
 		return
 
 	world.replace_block_without_drop(ground_pos, "dirt")
+	clear_generated_background_block(ground_pos)
 
 	var trunk_height = generation_rng.randi_range(TREE_MIN_HEIGHT, TREE_MAX_HEIGHT)
 	var trunk_tilt = 0

@@ -99,6 +99,49 @@ static func load_texture_path(path: String) -> Texture2D:
 	return null
 
 
+static func get_wearable_icon_layout(texture_spec) -> Dictionary:
+	var spec := _coerce_wearable_icon_spec(texture_spec)
+	if spec.is_empty():
+		return {}
+
+	var layout := {}
+
+	var icon_position = spec.get("icon_position", spec.get("icon_offset", null))
+	if icon_position != null:
+		layout["icon_position"] = get_vector2(icon_position, Vector2.ZERO)
+
+	var icon_size = spec.get("icon_size", spec.get("icon_size_px", spec.get("size", null)))
+	if icon_size != null:
+		layout["icon_size"] = get_vector2(icon_size, Vector2.ZERO)
+
+	var icon_scale = spec.get("icon_scale", spec.get("scale", null))
+	if icon_scale != null:
+		layout["icon_scale"] = get_scale_vector(icon_scale, Vector2.ONE)
+
+	var icon_shadow_position = spec.get(
+		"icon_shadow_position",
+		spec.get(
+			"shadow_position",
+			spec.get(
+				"icon_shadow_offset",
+				spec.get("shadow_offset", null)
+			)
+		)
+	)
+	if icon_shadow_position != null:
+		layout["icon_shadow_position"] = get_vector2(icon_shadow_position, Vector2.ZERO)
+
+	var icon_shadow_size = spec.get("icon_shadow_size", spec.get("shadow_size", null))
+	if icon_shadow_size != null:
+		layout["icon_shadow_size"] = get_vector2(icon_shadow_size, Vector2.ZERO)
+
+	var icon_shadow_scale = spec.get("icon_shadow_scale", spec.get("shadow_scale", null))
+	if icon_shadow_scale != null:
+		layout["icon_shadow_scale"] = get_scale_vector(icon_shadow_scale, Vector2.ONE)
+
+	return layout
+
+
 static func load_texture_dictionary(texture_spec: Dictionary) -> Texture2D:
 	if texture_spec.is_empty():
 		return null
@@ -221,6 +264,58 @@ static func get_vector2(value, fallback: Vector2) -> Vector2:
 		)
 
 	return fallback
+
+
+static func get_scale_vector(value, fallback: Vector2) -> Vector2:
+	if value is Vector2:
+		return value
+
+	if value is Vector2i:
+		return Vector2(float(value.x), float(value.y))
+
+	if value is float or value is int:
+		var scalar := float(value)
+		return Vector2(scalar, scalar)
+
+	if value is Array:
+		if value.size() >= 2:
+			return Vector2(float(value[0]), float(value[1]))
+		if value.size() >= 1:
+			var scalar := float(value[0])
+			return Vector2(scalar, scalar)
+
+	if value is Dictionary:
+		var dictionary: Dictionary = value
+		if dictionary.has("x") or dictionary.has("y"):
+			return Vector2(
+				float(dictionary.get("x", fallback.x)),
+				float(dictionary.get("y", fallback.y))
+			)
+		if dictionary.has("w") or dictionary.has("h"):
+			return Vector2(
+				float(dictionary.get("w", fallback.x)),
+				float(dictionary.get("h", fallback.y))
+			)
+
+	return fallback
+
+
+static func _coerce_wearable_icon_spec(texture_spec) -> Dictionary:
+	if texture_spec == null:
+		return {}
+
+	if texture_spec is Dictionary:
+		return (texture_spec as Dictionary).duplicate(true)
+
+	if texture_spec is String or texture_spec is StringName:
+		var clean_path := str(texture_spec).strip_edges()
+		if clean_path == "":
+			return {}
+		var resolved_spec = _resolve_wearable_atlas_texture_spec(clean_path)
+		if resolved_spec is Dictionary:
+			return (resolved_spec as Dictionary).duplicate(true)
+
+	return {}
 
 
 static func _reload_wearable_atlas_manifest_if_needed() -> void:

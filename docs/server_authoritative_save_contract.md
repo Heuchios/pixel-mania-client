@@ -128,7 +128,7 @@ Client expectations for pickup packets:
   requester identity on the drop update/remove packet so the requesting client
   can safely reconcile the confirmed delta.
 
-Recommended authoritative server flow (single stack per item, max stack 200):
+Recommended authoritative server flow (single stack per item, max stack 400):
 
 1. Validate request:
    - player/session authenticated

@@ -38,6 +38,27 @@ var shop_last_purchase_context = {}
 
 var shop_items = [
 	{
+		"item_id": "small_lock",
+		"amount": 1,
+		"price": 500,
+		"section": "locks",
+		"description": "Protect a small 10-tile area and manage builder access."
+	},
+	{
+		"item_id": "medium_lock",
+		"amount": 1,
+		"price": 1000,
+		"section": "locks",
+		"description": "Protect a medium 48-tile area and manage builder access."
+	},
+	{
+		"item_id": "big_lock",
+		"amount": 1,
+		"price": 1500,
+		"section": "locks",
+		"description": "Protect a big 80-tile area and manage builder access."
+	},
+	{
 		"item_id": "world_lock",
 		"amount": 1,
 		"price": 3500,
@@ -73,11 +94,88 @@ var shop_items = [
 		"description": "A friendly vendor who buys your caught fish for gems.",
 	},
 	{
+		"item_id": "anti_punch",
+		"amount": 1,
+		"price": 25000,
+		"section": "special",
+		"description": "Lets owners block player punch knockback in their world.",
+	},
+	{
+		"item_id": "anti_talk",
+		"amount": 1,
+		"price": 25000,
+		"section": "special",
+		"description": "Lets owners block normal chat and popup text in their world.",
+	},
+	{
+		"item_id": "anti_gravity",
+		"amount": 1,
+		"price": 150000,
+		"section": "special",
+		"description": "Lets owners enable higher jumps and slower falling in their world.",
+	},
+	{
+		"item_id": "snow_repellent",
+		"amount": 1,
+		"price": 75000,
+		"section": "special",
+		"description": "Blocks Snow Storm events from spawning in the world.",
+	},
+	{
+		"item_id": "night_theme_machine",
+		"amount": 1,
+		"price": 125000,
+		"section": "special",
+		"description": "Lets trusted builders switch the world to a night parallax background.",
+	},
+	{
+		"item_id": "snow_theme_machine",
+		"amount": 1,
+		"price": 125000,
+		"section": "special",
+		"description": "Lets trusted builders switch the world to a snow parallax background.",
+	},
+	{
+		"item_id": "city_theme_machine",
+		"amount": 1,
+		"price": 125000,
+		"section": "special",
+		"description": "Lets trusted builders switch the world to a city parallax background.",
+	},
+	{
+		"item_id": "cctv",
+		"amount": 1,
+		"price": 15000,
+		"section": "special",
+		"description": "Tracks the latest world enter and leave activity for owners.",
+	},
+	{
 		"item_id": "basic_items_pack",
 		"amount": 1,
 		"price": 500,
 		"section": "clothes",
 		"description": "Opens into one random basic wearable item.",
+	},
+	{
+		"item_id": "hairpack",
+		"amount": 1,
+		"price": 1500,
+		"section": "clothes",
+		"description": "Opens into one random hair style.",
+	},
+	{
+		"item_id": "red_tractor",
+		"amount": 1,
+		"price": 100000,
+		"section": "clothes",
+		"description": "A red tractor ride that auto-harvests ready seed-trees.",
+	},
+	{
+		"item_id": "prestige_coloured_block_pack",
+		"amount": 1,
+		"price": 500,
+		"section": "blocks",
+		"description": "Gives 5 random prestige coloured blocks.",
 	},
 	{
 		"item_id": "entrance_mover",
@@ -87,20 +185,62 @@ var shop_items = [
 		"description": "Move your world's Entrance Gate."
 	},
 	{
-		"item_id": "fishing_rod",
+		"item_id": "lock_mover",
+		"amount": 1,
+		"price": 17000,
+		"section": "tools",
+		"description": "Move your World Lock or Super World Lock."
+	},
+	{
+		"item_id": "door_mover",
+		"amount": 1,
+		"price": 500,
+		"section": "tools",
+		"description": "Move a door and keep its settings."
+	},
+	{
+		"item_id": "electric_tool",
+		"amount": 1,
+		"price": 5000,
+		"section": "tools",
+		"description": "Link electrical wires between transformers, pads, and devices."
+	},
+	{
+		"item_id": "bamboo_rod",
 		"amount": 1,
 		"price": 5000,
 		"section": "fishing",
-		"description": "Cast into water with lures to catch fish."
+		"description": "A simple rod for casting into water with lures."
 	},
 	{
-		"item_id": "lure_pack",
+		"item_id": "fiberglass_rod",
 		"amount": 1,
-		"price": 25,
+		"price": 15000,
 		"section": "fishing",
-		"description": "Gives 5 random fishing lures."
-	}
-]
+		"description": "A stronger fishing rod ready for future upgrades."
+	},
+	{
+		"item_id": "tungsten_rod",
+		"amount": 1,
+		"price": 50000,
+		"section": "fishing",
+		"description": "A heavy-duty fishing rod ready for future upgrades."
+	},
+		{
+			"item_id": "lure_pack",
+			"amount": 1,
+			"price": 25,
+			"section": "fishing",
+			"description": "Gives 5 random fishing lures."
+		},
+		{
+			"item_id": "tackle_box",
+			"amount": 1,
+			"price": 9500,
+			"section": "fishing",
+			"description": "A harvestable tackle box that refills with lures every 4 hours."
+		}
+	]
 
 
 func setup(parent_world, ui_node):
@@ -125,7 +265,6 @@ func setup(parent_world, ui_node):
 func _process(_delta):
 	refresh_shop_panel_for_viewport()
 	update_shop_button_position()
-	update_gem_hud_position()
 	update_shop_panel_position()
 	update_shop_info()
 
@@ -158,20 +297,39 @@ func get_shop_margin_x(screen_size: Vector2) -> float:
 	return clamp(screen_size.x * 0.035, 26.0, 76.0)
 
 
+func get_hud_layer() -> Node:
+	if world != null and world.has_method("get_ui_hud_layer"):
+		var hud_layer = world.get_ui_hud_layer()
+		if hud_layer != null:
+			return hud_layer
+
+	return ui_layer_ref
+
+
 func setup_shop_button():
 	if ui_layer_ref == null:
 		return
+	var hud_layer = get_hud_layer()
+	if hud_layer == null:
+		return
 
-	shop_button = ui_layer_ref.get_node_or_null("ShopButton")
+	shop_button = hud_layer.get_node_or_null("ShopButton")
+	if shop_button == null and hud_layer != ui_layer_ref:
+		shop_button = ui_layer_ref.get_node_or_null("ShopButton")
 
 	if shop_button == null:
 		shop_button = Button.new()
 		shop_button.name = "ShopButton"
-		ui_layer_ref.add_child(shop_button)
+		hud_layer.add_child(shop_button)
+	elif shop_button.get_parent() != hud_layer:
+		var old_parent = shop_button.get_parent()
+		if old_parent != null:
+			old_parent.remove_child(shop_button)
+		hud_layer.add_child(shop_button)
 
 	shop_button.text = ""
 	shop_button.size = SHOP_BUTTON_SIZE
-	shop_button.z_index = 80
+	shop_button.z_index = 184
 	shop_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	apply_shop_icon_button_style(shop_button)
 	setup_shop_button_icon()
@@ -304,70 +462,19 @@ func setup_gem_hud():
 		return
 
 	gem_hud = ui_layer_ref.get_node_or_null("GemHud")
-
-	if gem_hud == null:
-		gem_hud = Control.new()
-		gem_hud.name = "GemHud"
-		ui_layer_ref.add_child(gem_hud)
-
-	gem_hud.size = Vector2(224, 38)
-	gem_hud.z_index = 82
-	gem_hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-	for child in gem_hud.get_children():
-		child.queue_free()
-
-	var back = Panel.new()
-	back.name = "GemHudBack"
-	back.position = Vector2.ZERO
-	back.size = gem_hud.size
-	back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.10, 0.24, 0.34, 0.58),
-		Color(0.42, 0.78, 1.0, 0.42),
-		3, 12, 10
-	))
-	back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	gem_hud.add_child(back)
-
-	gem_hud_icon = TextureRect.new()
-	gem_hud_icon.name = "GemIcon"
-	gem_hud_icon.position = Vector2(10, 6)
-	gem_hud_icon.size = Vector2(26, 26)
-	gem_hud_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	gem_hud_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-	if world != null and world.currency_textures.has("gem"):
-		gem_hud_icon.texture = world.currency_textures["gem"]
-
-	gem_hud.add_child(gem_hud_icon)
-
-	gem_hud_label = Label.new()
-	gem_hud_label.name = "GemLabel"
-	gem_hud_label.position = Vector2(42, 5)
-	gem_hud_label.size = Vector2(174, 28)
-	gem_hud_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	gem_hud_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(gem_hud_label, 17)
-	gem_hud.add_child(gem_hud_label)
-
-	update_gem_hud_position()
-	update_shop_info()
+	if gem_hud != null:
+		gem_hud.queue_free()
+	gem_hud = null
+	gem_hud_icon = null
+	gem_hud_label = null
 
 
 func update_gem_hud_position():
-	if gem_hud == null:
-		return
-
-	var hud_visible: bool = not is_floating_hud_blocked()
-	gem_hud.visible = hud_visible
-	if not hud_visible:
-		return
-
-	var screen_size = get_viewport_rect().size
-	gem_hud.position = Vector2(
-		max(8.0, screen_size.x - gem_hud.size.x - 16.0),
-		max(8.0, screen_size.y - gem_hud.size.y - 16.0)
-	)
+	if gem_hud != null and is_instance_valid(gem_hud):
+		gem_hud.queue_free()
+	gem_hud = null
+	gem_hud_icon = null
+	gem_hud_label = null
 
 
 func setup_shop_panel():
@@ -385,7 +492,7 @@ func setup_shop_panel():
 	shop_panel_layout_size = screen_size
 	shop_panel.position = Vector2.ZERO
 	shop_panel.size = screen_size
-	shop_panel.z_index = 95
+	shop_panel.z_index = 220
 	shop_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 
 	if shop_panel is ColorRect:
@@ -1159,6 +1266,10 @@ func buy_item(item_id: String, amount: int, price: int):
 		world.open_lure_pack(canonical_amount)
 	elif item_id == "basic_items_pack":
 		open_basic_items_pack(canonical_amount)
+	elif item_id == "hairpack":
+		open_hair_pack(canonical_amount)
+	elif item_id == "prestige_coloured_block_pack":
+		open_prestige_coloured_block_pack(canonical_amount)
 	else:
 		add_item_to_inventory(item_id, canonical_amount)
 
@@ -1166,13 +1277,22 @@ func buy_item(item_id: String, amount: int, price: int):
 	finalize_shop_purchase(item_id, canonical_amount, canonical_price, rewards)
 
 
-func finalize_shop_purchase(item_id: String, amount: int, price: int, rewards: Array):
+func has_inventory_delta_payload(data: Dictionary) -> bool:
+	var raw_delta = null
+	if data.has("inventory_delta"):
+		raw_delta = data.get("inventory_delta")
+	elif data.has("inventory_deltas"):
+		raw_delta = data.get("inventory_deltas")
+	return (raw_delta is Dictionary and not raw_delta.is_empty()) or (raw_delta is Array and raw_delta.size() > 0)
+
+
+func finalize_shop_purchase(item_id: String, amount: int, price: int, rewards: Array, refresh_inventory: bool = true):
 	show_shop_card_purchase_feedback(item_id)
 
-	if world.has_method("update_all_ui"):
+	if refresh_inventory and world.has_method("update_all_ui"):
 		world.update_all_ui()
 
-	if world.has_method("save_player_data"):
+	if refresh_inventory and world.has_method("save_player_data"):
 		world.save_player_data()
 
 	update_shop_info()
@@ -1251,7 +1371,7 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 		if not (rewards is Array):
 			rewards = []
 		notify(message)
-		finalize_shop_purchase(purchase_item_id, purchase_amount, purchase_price, rewards)
+		finalize_shop_purchase(purchase_item_id, purchase_amount, purchase_price, rewards, not has_inventory_delta_payload(data))
 		shop_last_purchase_context = {}
 	else:
 		notify(message)
@@ -1272,20 +1392,62 @@ func open_basic_items_pack(amount: int = 1):
 
 
 func roll_basic_item_from_pack() -> String:
-	if world != null and world.item_database.has("basic_items_pack"):
-		var pack_data = world.item_database["basic_items_pack"]
+	return roll_item_from_pack("basic_items_pack", "messy_brown_hair")
+
+
+func open_hair_pack(amount: int = 1):
+	var safe_amount = max(1, amount)
+	for i in range(safe_amount):
+		add_item_to_inventory(roll_hair_from_pack(), 1)
+
+	if world != null and world.has_method("show_notification"):
+		world.show_notification("Opened Hair Pack x" + str(safe_amount) + ".")
+
+
+func roll_hair_from_pack() -> String:
+	return roll_item_from_pack("hairpack", "black_afro")
+
+
+func open_prestige_coloured_block_pack(amount: int = 1):
+	var safe_amount = max(1, amount)
+	for i in range(safe_amount * 5):
+		add_item_to_inventory(roll_item_from_pack("prestige_coloured_block_pack", "ps_blue_block"), 1)
+
+	if world != null and world.has_method("show_notification"):
+		world.show_notification("Opened Prestige Coloured Block Pack x" + str(safe_amount) + ".")
+
+
+func roll_item_from_pack(pack_item_id: String, fallback_item_id: String) -> String:
+	if world != null and world.item_database.has(pack_item_id):
+		var pack_data = world.item_database[pack_item_id]
 		if pack_data is Dictionary:
 			var rewards = pack_data.get("pack_rewards", [])
 			var valid_rewards = []
+			var total_weight := 0
 			if rewards is Array:
-				for reward_id in rewards:
-					var clean_reward_id = str(reward_id)
-					if clean_reward_id != "" and world.item_database.has(clean_reward_id):
-						valid_rewards.append(clean_reward_id)
-			if valid_rewards.size() > 0:
-				return valid_rewards[randi() % valid_rewards.size()]
+				for reward_entry in rewards:
+					var clean_reward_id := ""
+					var reward_weight := 1
+					if reward_entry is Dictionary:
+						clean_reward_id = str(reward_entry.get("item_id", ""))
+						reward_weight = max(0, int(reward_entry.get("weight", 0)))
+					else:
+						clean_reward_id = str(reward_entry)
 
-	return "messy_brown_hair"
+					if clean_reward_id != "" and reward_weight > 0 and world.item_database.has(clean_reward_id):
+						valid_rewards.append({
+							"item_id": clean_reward_id,
+							"weight": reward_weight
+						})
+						total_weight += reward_weight
+			if valid_rewards.size() > 0 and total_weight > 0:
+				var roll := randi() % total_weight
+				for reward in valid_rewards:
+					roll -= int(reward.get("weight", 0))
+					if roll < 0:
+						return str(reward.get("item_id", fallback_item_id))
+
+	return fallback_item_id
 
 
 func get_inventory_snapshot() -> Dictionary:
@@ -1302,10 +1464,13 @@ func get_inventory_snapshot() -> Dictionary:
 	add_inventory_dictionary_to_snapshot(snapshot, "lure", world.lure_inventory)
 	add_inventory_dictionary_to_snapshot(snapshot, "fish", world.fish_inventory)
 	add_inventory_dictionary_to_snapshot(snapshot, "back", world.back_inventory)
+	add_inventory_dictionary_to_snapshot(snapshot, "hat", world.hat_inventory)
 	add_inventory_dictionary_to_snapshot(snapshot, "hair", world.hair_inventory)
+	add_inventory_dictionary_to_snapshot(snapshot, "eyewear", world.eyewear_inventory)
 	add_inventory_dictionary_to_snapshot(snapshot, "shirt", world.shirt_inventory)
 	add_inventory_dictionary_to_snapshot(snapshot, "pants", world.pants_inventory)
 	add_inventory_dictionary_to_snapshot(snapshot, "shoes", world.shoes_inventory)
+	add_inventory_dictionary_to_snapshot(snapshot, "ride", world.ride_inventory)
 
 	return snapshot
 
@@ -1329,10 +1494,13 @@ func get_inventory_delta(before_snapshot: Dictionary) -> Array:
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "lure", world.lure_inventory)
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "fish", world.fish_inventory)
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "back", world.back_inventory)
+	add_inventory_delta_from_dictionary(rewards, before_snapshot, "hat", world.hat_inventory)
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "hair", world.hair_inventory)
+	add_inventory_delta_from_dictionary(rewards, before_snapshot, "eyewear", world.eyewear_inventory)
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "shirt", world.shirt_inventory)
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "pants", world.pants_inventory)
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "shoes", world.shoes_inventory)
+	add_inventory_delta_from_dictionary(rewards, before_snapshot, "ride", world.ride_inventory)
 
 	return rewards
 
@@ -1362,11 +1530,15 @@ func get_reward_summary_text(rewards: Array) -> String:
 	for reward in rewards:
 		var item_id = str(reward.get("item_id", ""))
 		var amount = int(reward.get("amount", 0))
+		var category = str(reward.get("category", ""))
 
 		if amount <= 0:
 			continue
 
-		parts.append(get_item_display_name(item_id) + " x" + str(amount))
+		if category == "fish":
+			parts.append(get_item_display_name(item_id) + " " + ("%.1f lb" % (float(amount) / 10.0)))
+		else:
+			parts.append(get_item_display_name(item_id) + " x" + str(amount))
 
 	if parts.size() == 0:
 		return "No items"
@@ -1529,6 +1701,10 @@ func show_purchase_reward_popup(purchased_item_id: String, rewards: Array, purch
 		subtitle.text = "Lure Pack opened"
 	elif purchased_item_id == "basic_items_pack":
 		subtitle.text = "Basic Items Pack opened"
+	elif purchased_item_id == "hairpack":
+		subtitle.text = "Hair Pack opened"
+	elif purchased_item_id == "prestige_coloured_block_pack":
+		subtitle.text = "Prestige Coloured Block Pack opened"
 	subtitle.position = Vector2(32, 84)
 	subtitle.size = Vector2(card_width - 64.0, 24)
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1669,7 +1845,9 @@ func populate_purchase_reward_slots(root: Control, rewards: Array, scroll_size: 
 
 func create_purchase_reward_slot(root: Control, reward: Dictionary, slot_position: Vector2, slot_size: float, slot_index: int):
 	var item_id = str(reward.get("item_id", ""))
+	var category = str(reward.get("category", ""))
 	var amount = int(reward.get("amount", 0))
+	var amount_text: String = ("%.1f lb" % (float(amount) / 10.0)) if category == "fish" else "x" + str(amount)
 	var rarity = "common"
 	if world != null and world.item_database.has(item_id):
 		rarity = str(world.item_database[item_id].get("rarity", "common"))
@@ -1695,7 +1873,7 @@ func create_purchase_reward_slot(root: Control, reward: Dictionary, slot_positio
 	slot.pivot_offset = Vector2(slot_size * 0.5, slot_size * 0.5)
 	slot.scale = Vector2(0.62, 0.62)
 	slot.modulate = Color(1.0, 1.0, 1.0, 0.0)
-	slot.tooltip_text = get_item_display_name(item_id) + " x" + str(amount)
+	slot.tooltip_text = get_item_display_name(item_id) + " " + amount_text
 	slot.mouse_filter = Control.MOUSE_FILTER_STOP
 	slot.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
 		Color(0.035, 0.12, 0.17, 0.98),
@@ -1747,8 +1925,9 @@ func create_purchase_reward_slot(root: Control, reward: Dictionary, slot_positio
 
 	var amount_back = Panel.new()
 	amount_back.name = "AmountBack"
-	amount_back.position = Vector2(slot_size - 50.0, slot_size - 25.0)
-	amount_back.size = Vector2(44, 20)
+	var amount_back_width: float = 58.0 if category == "fish" else 44.0
+	amount_back.position = Vector2(slot_size - amount_back_width - 6.0, slot_size - 25.0)
+	amount_back.size = Vector2(amount_back_width, 20)
 	amount_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	amount_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
 		Color(0.005, 0.020, 0.032, 0.94),
@@ -1759,7 +1938,7 @@ func create_purchase_reward_slot(root: Control, reward: Dictionary, slot_positio
 
 	var amount_label = Label.new()
 	amount_label.name = "Amount"
-	amount_label.text = "x" + str(amount)
+	amount_label.text = amount_text
 	amount_label.position = amount_back.position
 	amount_label.size = amount_back.size - Vector2(4, 0)
 	amount_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -1847,10 +2026,22 @@ func add_item_to_inventory(item_id: String, amount: int):
 		world.add_item_to_inventory_stack(world.back_inventory, item_id, category, amount)
 		return
 
+	if category == "hat":
+		if not world.hat_inventory.has(item_id):
+			world.hat_inventory[item_id] = 0
+		world.add_item_to_inventory_stack(world.hat_inventory, item_id, category, amount)
+		return
+
 	if category == "hair":
 		if not world.hair_inventory.has(item_id):
 			world.hair_inventory[item_id] = 0
 		world.add_item_to_inventory_stack(world.hair_inventory, item_id, category, amount)
+		return
+
+	if category == "eyewear":
+		if not world.eyewear_inventory.has(item_id):
+			world.eyewear_inventory[item_id] = 0
+		world.add_item_to_inventory_stack(world.eyewear_inventory, item_id, category, amount)
 		return
 
 	if category == "shirt":
@@ -1871,6 +2062,12 @@ func add_item_to_inventory(item_id: String, amount: int):
 		world.add_item_to_inventory_stack(world.shoes_inventory, item_id, category, amount)
 		return
 
+	if category == "ride":
+		if not world.ride_inventory.has(item_id):
+			world.ride_inventory[item_id] = 0
+		world.add_item_to_inventory_stack(world.ride_inventory, item_id, category, amount)
+		return
+
 	if category == "lure":
 		if not world.lure_inventory.has(item_id):
 			world.lure_inventory[item_id] = 0
@@ -1880,7 +2077,10 @@ func add_item_to_inventory(item_id: String, amount: int):
 	if category == "fish":
 		if not world.fish_inventory.has(item_id):
 			world.fish_inventory[item_id] = 0
-		world.add_item_to_inventory_stack(world.fish_inventory, item_id, category, amount)
+		var current_fish_count: int = max(0, int(floor(float(world.fish_inventory.get(item_id, 0)))))
+		world.fish_inventory[item_id] = current_fish_count + max(0, amount)
+		if world.has_method("refresh_ui_after_item_change"):
+			world.refresh_ui_after_item_change(item_id, category)
 		return
 
 
@@ -1933,6 +2133,12 @@ func get_item_texture(item_id: String):
 	if category == "hair" and world.hair_textures.has(item_id):
 		return world.hair_textures[item_id]
 
+	if category == "hat" and world.hat_textures.has(item_id):
+		return world.hat_textures[item_id]
+
+	if category == "eyewear" and world.eyewear_textures.has(item_id):
+		return world.eyewear_textures[item_id]
+
 	if category == "shirt" and world.shirt_textures.has(item_id):
 		return world.shirt_textures[item_id]
 
@@ -1941,6 +2147,9 @@ func get_item_texture(item_id: String):
 
 	if category == "shoes" and world.shoes_textures.has(item_id):
 		return world.shoes_textures[item_id]
+
+	if category == "ride" and world.ride_textures.has(item_id):
+		return world.ride_textures[item_id]
 
 	var texture = AtlasTextureFactory.load_texture(item_data.get("texture", null))
 	if texture != null:
@@ -1980,9 +2189,6 @@ func update_shop_button_position():
 
 
 func is_floating_hud_blocked() -> bool:
-	if world != null and world.has_method("is_movement_blocking_ui_open"):
-		return bool(world.is_movement_blocking_ui_open())
-
 	return false
 
 

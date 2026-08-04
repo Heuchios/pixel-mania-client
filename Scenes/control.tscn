@@ -1,0 +1,161 @@
+[gd_scene format=3 uid="uid://de2c76pjgrvcw"]
+
+[node name="InventoryUI" type="Control" unique_id=2138430694]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InventoryPanel" type="PanelContainer" parent="." unique_id=434767967]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -450.0
+offset_top = -624.0
+offset_right = 450.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="InventoryPanel" unique_id=76103220]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="MainVBox" type="VBoxContainer" parent="InventoryPanel/MarginContainer" unique_id=1519287124]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="InventoryPanel/MarginContainer/MainVBox" unique_id=852159174]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Inventory"
+
+[node name="TabsHBox" type="HBoxContainer" parent="InventoryPanel/MarginContainer/MainVBox" unique_id=519911506]
+layout_mode = 2
+
+[node name="AllButton" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/TabsHBox" unique_id=998163212]
+custom_minimum_size = Vector2(80, 35)
+layout_mode = 2
+text = "ALL"
+
+[node name="BlocksButton" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/TabsHBox" unique_id=1795838233]
+custom_minimum_size = Vector2(80, 35)
+layout_mode = 2
+text = "BLOCKS"
+
+[node name="SeedsButton" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/TabsHBox" unique_id=964347625]
+custom_minimum_size = Vector2(80, 35)
+layout_mode = 2
+text = "SEEDS"
+
+[node name="ToolsButton" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/TabsHBox" unique_id=1464775216]
+custom_minimum_size = Vector2(80, 35)
+layout_mode = 2
+text = "TOOLS"
+
+[node name="LootButton" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/TabsHBox" unique_id=690474734]
+custom_minimum_size = Vector2(80, 35)
+layout_mode = 2
+text = "LOOT"
+
+[node name="GearButton" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/TabsHBox" unique_id=1618310496]
+custom_minimum_size = Vector2(80, 35)
+layout_mode = 2
+text = "GEAR"
+
+[node name="InventoryScroll" type="ScrollContainer" parent="InventoryPanel/MarginContainer/MainVBox" unique_id=1471083807]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="InventoryGrid" type="GridContainer" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll" unique_id=1734447324]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 8
+
+[node name="Slot1" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=774714026]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot2" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=494211835]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot3" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=1651488060]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot4" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=1865872124]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot5" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=2048356563]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot6" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=529830191]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot7" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=1605083129]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot8" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=715198241]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot9" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=1024407567]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot10" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=1140353034]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot11" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=1278170449]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot12" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=910957708]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot13" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=398320858]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot14" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=568764233]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot15" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=2093582196]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot16" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=262666018]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot17" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=1032762084]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot18" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=1151512001]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot19" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=1235135038]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Slot20" type="Button" parent="InventoryPanel/MarginContainer/MainVBox/InventoryScroll/InventoryGrid" unique_id=1453844935]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2

@@ -8,7 +8,7 @@ anchors_preset = 0
 layout_mode = 0
 offset_right = 240.0
 offset_bottom = 24.0
-color = Color(0, 0, 0, 0.36078432)
+color = Color(0.06469653, 0.06469653, 0.06469653, 0.36078432)
 
 [node name="GreenZone" type="ColorRect" parent="." unique_id=650097450]
 layout_mode = 0

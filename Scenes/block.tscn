@@ -7,6 +7,7 @@ size = Vector2(32, 32)
 load_path = "res://.godot/imported/dirt_block.png-29ce5604ec18ed632d2093b90232b3d1.ctex"
 
 [node name="Block" type="StaticBody2D" unique_id=327817152]
+visible = false
 texture_filter = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=593056055]

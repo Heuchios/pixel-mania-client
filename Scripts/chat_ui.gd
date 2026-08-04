@@ -4,7 +4,10 @@ const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 
 const CHAT_PANEL_HEIGHT = 448.0
 const CHAT_OPEN_SPEED = 9.0
-const MAX_CHAT_MESSAGES = 80
+const MAX_CHAT_MESSAGES = 50
+const CHAT_SCROLL_BOTTOM_THRESHOLD := 24
+const CHAT_SCROLL_SLIDER_MAX := 1000.0
+const CHAT_SCROLL_SLIDER_PAGE := 150.0
 const UI_STYLE_PATH = "res://Assets/ui/pixelmania/"
 const CHAT_MAX_WIDTH = 1680.0
 const CHAT_MIN_WIDTH = 1000.0
@@ -17,14 +20,38 @@ const MESSAGE_ICON_PATH = "res://Assets/ui/icons/message.png"
 const BROADCAST_HOLD_SECONDS = 0.55
 const BROADCAST_HOLD_MOVE_CANCEL = 18.0
 const CHAT_FONT_PATH = "res://Assets/font/font.ttf"
-const CHAT_MESSAGE_FONT_SIZE = 15
-const CHAT_MESSAGE_LINE_HEIGHT = 21.0
+const CHAT_MESSAGE_FONT_SIZE := 24
+const CHAT_MESSAGE_LINE_HEIGHT := 31.0
 const CHAT_MESSAGE_PAD_X = 12.0
-const CHAT_MESSAGE_PAD_Y = 5.0
-const CHAT_MESSAGE_MIN_ROW_HEIGHT = 30.0
+const CHAT_MESSAGE_PAD_Y = 6.0
+const CHAT_MESSAGE_MIN_ROW_HEIGHT = 42.0
 const CHAT_FILTER_WORLD = "world"
 const CHAT_FILTER_LOCAL = "local"
 const CHAT_FILTER_SYSTEM = "system"
+const CHAT_CONTENT_FILTER_WORDS: Array[String] = [
+	"ass",
+	"asshole",
+	"bastard",
+	"bitch",
+	"bullshit",
+	"crap",
+	"cunt",
+	"damn",
+	"dick",
+	"douche",
+	"fag",
+	"faggot",
+	"fuck",
+	"motherfucker",
+	"nigga",
+	"nigger",
+	"piss",
+	"prick",
+	"pussy",
+	"shit",
+	"slut",
+	"whore"
+]
 const CHAT_SYSTEM_COLOR = Color(1.0, 0.86, 0.22, 1.0)
 const NOTIFICATION_BUBBLE_TEXT_COLOR = Color(1.0, 0.58, 0.12, 1.0)
 const BUBBLE_KIND_NONE = ""
@@ -87,7 +114,11 @@ const CHAT_HANDLE_TOUCH_PADDING := Vector2(30.0, 18.0)
 var quick_chat_active = false
 var chat_button_hovered = false
 var chat_scroll_slider_syncing := false
+var chat_scroll_programmatic := false
+var chat_scroll_stick_to_bottom := true
+var chat_message_refresh_generation := 0
 var chat_filter_mode := CHAT_FILTER_WORLD
+var chat_content_filter_enabled := true
 
 var is_setup = false
 var chat_font: Font = null
@@ -197,6 +228,93 @@ func set_world(new_world):
 		ui_layer_ref = new_world.ui_layer
 
 
+func set_chat_content_filter_enabled(enabled: bool) -> void:
+	if chat_content_filter_enabled == enabled:
+		return
+	chat_content_filter_enabled = enabled
+	refresh_chat_messages()
+
+
+func is_chat_content_filter_enabled() -> bool:
+	return chat_content_filter_enabled
+
+
+func get_filtered_chat_text(message: String) -> String:
+	if not chat_content_filter_enabled:
+		return message
+	return filter_inappropriate_chat_text(message)
+
+
+func get_display_chat_text(message: String, metadata: Dictionary) -> String:
+	if not chat_content_filter_enabled:
+		return message
+	var server_filtered_message := str(metadata.get("filtered_message", "")).strip_edges()
+	if server_filtered_message != "":
+		return server_filtered_message
+	return filter_inappropriate_chat_text(message)
+
+
+func filter_inappropriate_chat_text(message: String) -> String:
+	var result := ""
+	var token := ""
+	for i in range(message.length()):
+		var character := message.substr(i, 1)
+		if is_chat_word_character(character):
+			token += character
+			continue
+		result += censor_chat_token(token)
+		token = ""
+		result += character
+	result += censor_chat_token(token)
+	return result
+
+
+func censor_chat_token(token: String) -> String:
+	if token == "":
+		return ""
+	var normalized := normalize_chat_filter_token(token)
+	if CHAT_CONTENT_FILTER_WORDS.has(normalized):
+		return "*".repeat(max(3, token.length()))
+	return token
+
+
+func normalize_chat_filter_token(token: String) -> String:
+	var lower_token := token.to_lower()
+	var normalized := ""
+	for i in range(lower_token.length()):
+		var character := lower_token.substr(i, 1)
+		match character:
+			"0":
+				normalized += "o"
+			"1", "!":
+				normalized += "i"
+			"3":
+				normalized += "e"
+			"4", "@":
+				normalized += "a"
+			"5", "$":
+				normalized += "s"
+			"7":
+				normalized += "t"
+			_:
+				normalized += character
+	return normalized
+
+
+func is_chat_word_character(character: String) -> bool:
+	if character.length() != 1:
+		return false
+	var code := character.unicode_at(0)
+	return (
+		(code >= 48 and code <= 57)
+		or (code >= 65 and code <= 90)
+		or (code >= 97 and code <= 122)
+		or character == "!"
+		or character == "$"
+		or character == "@"
+	)
+
+
 func setup(parent_world):
 	set_world(parent_world)
 	if parent_world != null and "player" in parent_world:
@@ -239,7 +357,7 @@ func setup_chat_ui():
 		setup_chat_bubble()
 		add_chat_message("System", "Chat ready.")
 		update_chat_position()
-		refresh_chat_messages()
+		refresh_chat_messages(true)
 		return
 
 	chat_panel = get_node_or_null("ChatPanel")
@@ -347,6 +465,7 @@ func setup_chat_ui():
 	chat_messages_root.size = Vector2(1488, 322)
 	chat_messages_root.custom_minimum_size = Vector2(1488, 322)
 	chat_messages_root.add_theme_constant_override("separation", 5)
+	chat_messages_root.alignment = BoxContainer.ALIGNMENT_END
 	chat_messages_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	chat_messages_scroll.add_child(chat_messages_root)
 	chat_input = LineEdit.new()
@@ -434,7 +553,7 @@ func setup_chat_ui():
 	setup_chat_bubble()
 	add_chat_message("System", "Chat ready.")
 	update_chat_position()
-	refresh_chat_messages()
+	refresh_chat_messages(true)
 
 
 func bind_authored_chat_scene() -> bool:
@@ -522,7 +641,9 @@ func bind_authored_chat_scene() -> bool:
 
 	setup_messages_scroll_slider()
 	setup_chat_channel_tabs()
+	apply_authored_chat_text_defaults()
 
+	chat_messages_root.alignment = BoxContainer.ALIGNMENT_END
 	chat_messages_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	chat_input.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -941,11 +1062,21 @@ func _sync_messages_scroll_slider() -> void:
 		return
 
 	chat_scroll_slider_syncing = true
-	chat_messages_scroll_slider.min_value = float(internal_scrollbar.min_value)
-	chat_messages_scroll_slider.max_value = float(internal_scrollbar.max_value)
-	chat_messages_scroll_slider.page = float(internal_scrollbar.page)
+	var internal_max_scroll: float = maxf(0.0, float(internal_scrollbar.max_value) - float(internal_scrollbar.page))
+	var has_scroll_range: bool = internal_max_scroll > 0.5
+	var slider_max_scroll: float = CHAT_SCROLL_SLIDER_MAX - CHAT_SCROLL_SLIDER_PAGE
+	var normalized_scroll: float = 0.0
+	if has_scroll_range:
+		normalized_scroll = clampf(float(chat_messages_scroll.scroll_vertical) / internal_max_scroll, 0.0, 1.0)
+	chat_messages_scroll_slider.visible = true
+	chat_messages_scroll_slider.mouse_filter = Control.MOUSE_FILTER_STOP if has_scroll_range else Control.MOUSE_FILTER_IGNORE
+	chat_messages_scroll_slider.min_value = 0.0
+	chat_messages_scroll_slider.max_value = CHAT_SCROLL_SLIDER_MAX
+	chat_messages_scroll_slider.page = CHAT_SCROLL_SLIDER_PAGE
 	chat_messages_scroll_slider.step = 1.0
-	chat_messages_scroll_slider.value = float(chat_messages_scroll.scroll_vertical)
+	chat_messages_scroll_slider.value = normalized_scroll * slider_max_scroll
+	if not has_scroll_range:
+		chat_messages_scroll.scroll_vertical = 0
 	chat_scroll_slider_syncing = false
 
 
@@ -954,10 +1085,23 @@ func _on_messages_scroll_slider_value_changed(value: float) -> void:
 		return
 
 	var max_scroll: int = get_messages_scroll_max()
-	chat_messages_scroll.scroll_vertical = int(round(clampf(value, 0.0, float(max_scroll))))
+	if max_scroll <= 0:
+		chat_scroll_programmatic = true
+		chat_messages_scroll.scroll_vertical = 0
+		chat_scroll_programmatic = false
+		chat_scroll_stick_to_bottom = true
+		return
+	var slider_max_scroll: float = maxf(1.0, float(chat_messages_scroll_slider.max_value) - float(chat_messages_scroll_slider.page))
+	var normalized_scroll: float = clampf((value - float(chat_messages_scroll_slider.min_value)) / slider_max_scroll, 0.0, 1.0)
+	chat_scroll_programmatic = true
+	chat_messages_scroll.scroll_vertical = int(round(normalized_scroll * float(max_scroll)))
+	chat_scroll_programmatic = false
+	chat_scroll_stick_to_bottom = is_messages_scroll_at_bottom()
 
 
 func _on_messages_scroll_changed(_value: float) -> void:
+	if not chat_scroll_programmatic:
+		chat_scroll_stick_to_bottom = is_messages_scroll_at_bottom()
 	if chat_scroll_slider_syncing or chat_messages_scroll_slider == null:
 		return
 	_sync_messages_scroll_slider()
@@ -974,12 +1118,31 @@ func get_messages_scroll_max() -> int:
 	return max(0, int(round(float(internal_scrollbar.max_value) - float(internal_scrollbar.page))))
 
 
-func set_messages_scroll_vertical(value: int) -> void:
+func is_messages_scroll_at_bottom(threshold: int = CHAT_SCROLL_BOTTOM_THRESHOLD) -> bool:
+	if chat_messages_scroll == null:
+		return true
+	return get_messages_scroll_max() - int(chat_messages_scroll.scroll_vertical) <= max(0, threshold)
+
+
+func set_messages_scroll_vertical(value: int, user_initiated: bool = false) -> void:
 	if chat_messages_scroll == null:
 		return
 
+	chat_scroll_programmatic = true
 	chat_messages_scroll.scroll_vertical = clamp(value, 0, get_messages_scroll_max())
+	chat_scroll_programmatic = false
+	if user_initiated:
+		chat_scroll_stick_to_bottom = is_messages_scroll_at_bottom()
 	_sync_messages_scroll_slider()
+
+
+func scroll_messages_to_bottom_deferred() -> void:
+	if chat_messages_scroll == null:
+		return
+	await get_tree().process_frame
+	await get_tree().process_frame
+	set_messages_scroll_vertical(get_messages_scroll_max())
+	chat_scroll_stick_to_bottom = true
 
 
 func setup_chat_channel_tabs() -> void:
@@ -998,6 +1161,24 @@ func setup_chat_channel_tabs() -> void:
 	connect_chat_channel_tab(chat_local_tab, CHAT_FILTER_LOCAL)
 	connect_chat_channel_tab(chat_system_tab, CHAT_FILTER_SYSTEM)
 	apply_chat_channel_tab_visuals()
+
+
+func apply_authored_chat_text_defaults() -> void:
+	var default_size := CHAT_MESSAGE_FONT_SIZE
+	var text_controls: Array = [
+		chat_input,
+		chat_send_button,
+		quick_chat_input,
+		quick_chat_send_button,
+		chat_world_tab,
+		chat_local_tab,
+		chat_system_tab
+	]
+	for control in text_controls:
+		if control is Control:
+			var text_control := control as Control
+			apply_chat_font_to_control(text_control)
+			text_control.add_theme_font_size_override("font_size", default_size)
 
 
 func connect_chat_channel_tab(tab_button, filter_mode: String) -> void:
@@ -1028,7 +1209,7 @@ func set_chat_filter_mode(filter_mode: String) -> void:
 
 	chat_filter_mode = filter_mode
 	apply_chat_channel_tab_visuals()
-	refresh_chat_messages()
+	refresh_chat_messages(true)
 
 
 func apply_chat_channel_tab_visuals() -> void:
@@ -1280,7 +1461,7 @@ func _scroll_chat_messages_for_wheel(event: InputEvent) -> bool:
 
 	var scroll_step: int = int(max(36.0, chat_messages_scroll.size.y * 0.22))
 	var direction: int = -1 if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP else 1
-	set_messages_scroll_vertical(chat_messages_scroll.scroll_vertical + direction * scroll_step)
+	set_messages_scroll_vertical(chat_messages_scroll.scroll_vertical + direction * scroll_step, true)
 	return true
 
 
@@ -1388,6 +1569,9 @@ func finish_chat_drag():
 	chat_drag_active = false
 	# No snap — stay wherever the player left it.
 	chat_panel_target = chat_panel_amount
+	if chat_panel_amount > 0.05:
+		chat_scroll_stick_to_bottom = true
+		scroll_messages_to_bottom_deferred()
 
 
 func open_chat_panel():
@@ -1398,6 +1582,8 @@ func open_chat_panel():
 		quick_chat_input.release_focus()
 	hide_active_bubble()
 	chat_panel_target = 1.0
+	chat_scroll_stick_to_bottom = true
+	scroll_messages_to_bottom_deferred()
 
 
 func close_chat_panel():
@@ -1731,25 +1917,27 @@ func get_sender_color(sender: String) -> Color:
 
 
 func format_chat_message_line(sender: String, message: String, metadata: Dictionary) -> String:
+	var display_message := get_display_chat_text(message, metadata)
 	if is_broadcast_chat_message(metadata):
 		var source_world: String = str(metadata.get("world", "")).strip_edges()
 		if source_world != "":
-			return "Broadcast [" + source_world + "] " + sender + ": " + message
-		return "Broadcast " + sender + ": " + message
+			return "Broadcast [" + source_world + "] " + sender + ": " + display_message
+		return "Broadcast " + sender + ": " + display_message
 	if is_system_chat_message(sender, metadata):
-		return "System: " + message
+		return "System: " + display_message
 
-	return sender + ": " + message
+	return sender + ": " + display_message
 
 
 func format_authored_chat_message_line(sender: String, message: String, metadata: Dictionary) -> String:
+	var display_message := get_display_chat_text(message, metadata)
 	if is_broadcast_chat_message(metadata):
 		return format_chat_message_line(sender, message, metadata)
 	if is_system_chat_message(sender, metadata):
-		return "[System] " + message
+		return "[System] " + display_message
 	if sender == "Me":
-		return "[Me] " + message
-	return sender + ": " + message
+		return "[Me] " + display_message
+	return sender + ": " + display_message
 
 
 func get_authored_sender_color(sender: String) -> Color:
@@ -1761,17 +1949,27 @@ func get_authored_sender_color(sender: String) -> Color:
 		_: return Color(1.0, 1.0, 1.0, 1.0)
 
 
-func refresh_chat_messages():
+func refresh_chat_messages(force_scroll_to_bottom: bool = false):
 	if chat_messages_root == null:
 		return
+
+	var previous_scroll: int = int(chat_messages_scroll.scroll_vertical) if chat_messages_scroll != null else 0
+	var should_scroll_to_bottom: bool = (
+		force_scroll_to_bottom
+		or chat_scroll_stick_to_bottom
+		or is_messages_scroll_at_bottom()
+	)
+	chat_message_refresh_generation += 1
+	var refresh_generation: int = chat_message_refresh_generation
+
 	if using_authored_scene_layout:
-		refresh_authored_chat_messages()
+		refresh_authored_chat_messages(should_scroll_to_bottom, previous_scroll, refresh_generation)
 		return
 
 	for child in chat_messages_root.get_children():
 		child.queue_free()
 	var visible_messages: Array = get_filtered_chat_messages()
-	var start_index = max(0, visible_messages.size() - 22)
+	var start_index = max(0, visible_messages.size() - MAX_CHAT_MESSAGES)
 	var usable_width = max(300.0, chat_messages_root.size.x - 14.0)
 	var total_height = 0.0
 	for i in range(start_index, visible_messages.size()):
@@ -1823,18 +2021,21 @@ func refresh_chat_messages():
 		label.clip_text = false
 		row.add_child(label)
 		total_height += row_height + 5.0
-	chat_messages_root.custom_minimum_size = Vector2(usable_width, max(total_height, 320.0))
-	if chat_messages_scroll != null:
-		await get_tree().process_frame
-		set_messages_scroll_vertical(get_messages_scroll_max())
+	var viewport_height: float = chat_messages_scroll.size.y if chat_messages_scroll != null else 320.0
+	chat_messages_root.custom_minimum_size = Vector2(usable_width, max(total_height, viewport_height))
+	finish_chat_message_refresh(should_scroll_to_bottom, previous_scroll, refresh_generation)
 
 
-func refresh_authored_chat_messages():
+func refresh_authored_chat_messages(
+	should_scroll_to_bottom: bool,
+	previous_scroll: int,
+	refresh_generation: int
+):
 	for child in chat_messages_root.get_children():
 		child.queue_free()
 
 	var visible_messages: Array = get_filtered_chat_messages()
-	var start_index = max(0, visible_messages.size() - 22)
+	var start_index = max(0, visible_messages.size() - MAX_CHAT_MESSAGES)
 	var usable_width: float = get_authored_message_width()
 	var total_height: float = 0.0
 
@@ -1877,10 +2078,30 @@ func refresh_authored_chat_messages():
 		chat_messages_root.add_child(label)
 		total_height += row_height
 
-	chat_messages_root.custom_minimum_size = Vector2(usable_width, max(total_height, 320.0))
-	if chat_messages_scroll != null:
-		await get_tree().process_frame
+	var viewport_height: float = chat_messages_scroll.size.y if chat_messages_scroll != null else 320.0
+	chat_messages_root.custom_minimum_size = Vector2(usable_width, max(total_height, viewport_height))
+	finish_chat_message_refresh(should_scroll_to_bottom, previous_scroll, refresh_generation)
+
+
+func finish_chat_message_refresh(
+	should_scroll_to_bottom: bool,
+	previous_scroll: int,
+	refresh_generation: int
+) -> void:
+	if chat_messages_scroll == null:
+		return
+
+	await get_tree().process_frame
+	await get_tree().process_frame
+	if refresh_generation != chat_message_refresh_generation:
+		return
+
+	if should_scroll_to_bottom:
 		set_messages_scroll_vertical(get_messages_scroll_max())
+		chat_scroll_stick_to_bottom = true
+	else:
+		set_messages_scroll_vertical(previous_scroll)
+		chat_scroll_stick_to_bottom = is_messages_scroll_at_bottom()
 
 
 func get_authored_message_width() -> float:
@@ -2003,6 +2224,8 @@ func show_bubble_message(message: String, text_color: Color = Color.WHITE, bubbl
 	var clean_message = message.strip_edges()
 	if clean_message == "":
 		return false
+	if bubble_kind == BUBBLE_KIND_CHAT:
+		clean_message = get_filtered_chat_text(clean_message)
 
 	var was_shown := true
 	if bubble_kind == BUBBLE_KIND_NOTIFICATION and chat_bubble_node.has_method("show_notification_message"):

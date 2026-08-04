@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://d1w27u0t7t2of"]
+
+[ext_resource type="Script" uid="uid://b34jeoqpkh8ti" path="res://Scripts/wind_gust_fx.gd" id="1_wind"]
+
+[node name="WindGustFX" type="Node2D" unique_id=1347696919]
+z_index = 4090
+z_as_relative = false
+position = Vector2(-420, 0)
+script = ExtResource("1_wind")
+spawn_interval_min = 1.8
+spawn_interval_max = 3.4
+max_active_gusts = 1
+draw_time_min = 1.55
+draw_time_max = 2.35
+trail_length_min = 0.1
+trail_length_max = 0.18
+random_y_offset = 36.0
+
+[node name="TrailContainer" type="Node2D" parent="." unique_id=2112097090]

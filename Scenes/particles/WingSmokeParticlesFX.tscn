@@ -1,0 +1,169 @@
+[gd_scene format=3 uid="uid://btoqy6pem2t3f"]
+
+[ext_resource type="Script" uid="uid://k2qujoc5pahp" path="res://Scripts/wing_sparkle_particles_fx.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://d321pbm6immtm" path="res://Assets/effects/wing_smoke_mote.svg" id="2_smoke"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_idle_smoke"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(7, 4, 0)
+angle_min = -38.0
+angle_max = 38.0
+direction = Vector3(0, -1, 0)
+spread = 62.0
+initial_velocity_min = 12.0
+initial_velocity_max = 34.0
+angular_velocity_min = -68.0
+angular_velocity_max = 68.0
+gravity = Vector3(0, -16, 0)
+damping_min = 1.1
+damping_max = 2.8
+scale_min = 0.44
+scale_max = 1.08
+color = Color(0.04, 0.04, 0.05, 0.56)
+hue_variation_min = -0.01
+hue_variation_max = 0.02
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_idle_mist"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(20, 6, 0)
+angle_min = -42.0
+angle_max = 42.0
+direction = Vector3(0, -1, 0)
+spread = 74.0
+initial_velocity_min = 8.0
+initial_velocity_max = 25.0
+angular_velocity_min = -44.0
+angular_velocity_max = 44.0
+gravity = Vector3(0, -11, 0)
+damping_min = 1.4
+damping_max = 3.4
+scale_min = 0.62
+scale_max = 1.46
+color = Color(0.12, 0.12, 0.14, 0.34)
+hue_variation_min = -0.01
+hue_variation_max = 0.02
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_move_trail_smoke"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(6, 8, 0)
+angle_min = -42.0
+angle_max = 42.0
+direction = Vector3(-0.62, -0.78, 0)
+spread = 56.0
+initial_velocity_min = 24.0
+initial_velocity_max = 74.0
+angular_velocity_min = -96.0
+angular_velocity_max = 96.0
+gravity = Vector3(0, -13, 0)
+damping_min = 2.4
+damping_max = 5.4
+scale_min = 0.38
+scale_max = 1.08
+color = Color(0.035, 0.035, 0.045, 0.52)
+hue_variation_min = -0.01
+hue_variation_max = 0.02
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_move_trail_dark_smoke"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(5, 8, 0)
+angle_min = -36.0
+angle_max = 36.0
+direction = Vector3(-0.42, -0.92, 0)
+spread = 48.0
+initial_velocity_min = 16.0
+initial_velocity_max = 54.0
+angular_velocity_min = -64.0
+angular_velocity_max = 64.0
+gravity = Vector3(0, -9, 0)
+damping_min = 2.8
+damping_max = 6.2
+scale_min = 0.56
+scale_max = 1.36
+color = Color(0.01, 0.01, 0.014, 0.34)
+hue_variation_min = -0.01
+hue_variation_max = 0.02
+
+[node name="WingSmokeParticlesFX" type="Node2D" unique_id=1193195287]
+z_index = 72
+script = ExtResource("1_script")
+
+[node name="IdleLeftSmokePuffs" type="GPUParticles2D" parent="." unique_id=2074103927]
+z_index = 3
+position = Vector2(-18, 10)
+amount = 18
+texture = ExtResource("2_smoke")
+lifetime = 2.05
+preprocess = 2.05
+randomness = 0.76
+visibility_rect = Rect2(-54, -92, 108, 118)
+process_material = SubResource("ParticleProcessMaterial_idle_smoke")
+
+[node name="IdleRightSmokePuffs" type="GPUParticles2D" parent="." unique_id=1921211301]
+z_index = 3
+position = Vector2(18, 10)
+amount = 18
+texture = ExtResource("2_smoke")
+lifetime = 2.05
+preprocess = 2.05
+randomness = 0.76
+visibility_rect = Rect2(-54, -92, 108, 118)
+process_material = SubResource("ParticleProcessMaterial_idle_smoke")
+
+[node name="IdleSoftSmokeMist" type="GPUParticles2D" parent="." unique_id=377273648]
+z_index = 2
+position = Vector2(0, 12)
+amount = 20
+texture = ExtResource("2_smoke")
+lifetime = 2.6
+preprocess = 2.6
+randomness = 0.84
+visibility_rect = Rect2(-68, -110, 136, 136)
+process_material = SubResource("ParticleProcessMaterial_idle_mist")
+
+[node name="TrailLeftSmokePuffs" type="GPUParticles2D" parent="." unique_id=1974617471]
+z_index = 4
+position = Vector2(-21, 11)
+amount = 28
+texture = ExtResource("2_smoke")
+lifetime = 1.28
+preprocess = 1.28
+randomness = 0.66
+visibility_rect = Rect2(-98, -86, 122, 112)
+process_material = SubResource("ParticleProcessMaterial_move_trail_smoke")
+
+[node name="TrailRightSmokePuffs" type="GPUParticles2D" parent="." unique_id=113031572]
+z_index = 4
+position = Vector2(21, 11)
+amount = 28
+texture = ExtResource("2_smoke")
+lifetime = 1.28
+preprocess = 1.28
+randomness = 0.66
+visibility_rect = Rect2(-98, -86, 122, 112)
+process_material = SubResource("ParticleProcessMaterial_move_trail_smoke")
+
+[node name="TrailLeftDarkSmoke" type="GPUParticles2D" parent="." unique_id=160431025]
+z_index = 3
+position = Vector2(-18, 13)
+amount = 16
+texture = ExtResource("2_smoke")
+lifetime = 1.72
+preprocess = 1.72
+randomness = 0.72
+visibility_rect = Rect2(-96, -100, 120, 126)
+process_material = SubResource("ParticleProcessMaterial_move_trail_dark_smoke")
+
+[node name="TrailRightDarkSmoke" type="GPUParticles2D" parent="." unique_id=2084571550]
+z_index = 3
+position = Vector2(18, 13)
+amount = 16
+texture = ExtResource("2_smoke")
+lifetime = 1.72
+preprocess = 1.72
+randomness = 0.72
+visibility_rect = Rect2(-96, -100, 120, 126)
+process_material = SubResource("ParticleProcessMaterial_move_trail_dark_smoke")

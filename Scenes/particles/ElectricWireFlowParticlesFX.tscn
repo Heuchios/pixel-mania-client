@@ -1,0 +1,99 @@
+[gd_scene format=3 uid="uid://qdomfog2y80d"]
+
+[ext_resource type="Script" uid="uid://bvaxkkyvi66fl" path="res://Scripts/electric_wire_flow_particles_fx.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://didv6whfcuxru" path="res://Assets/particles/spark_sheet.png" id="2_mote"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_additive"]
+blend_mode = 1
+particles_animation = true
+particles_anim_h_frames = 7
+particles_anim_v_frames = 1
+particles_anim_loop = true
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6n5f4"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 0.5, 0)
+spread = 5.0
+initial_velocity_min = 26.0
+initial_velocity_max = 26.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.45
+scale_max = 0.6
+color = Color(1, 0.72, 0.08, 0.78)
+anim_speed_min = 1.35
+anim_speed_max = 2.25
+anim_offset_max = 1.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_gvkbj"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 0.5, 0)
+spread = 2.0
+initial_velocity_min = 28.08
+initial_velocity_max = 28.08
+gravity = Vector3(0, 0, 0)
+scale_min = 0.4
+scale_max = 0.55
+color = Color(1, 0.98, 0.66, 0.94)
+anim_speed_min = 1.55
+anim_speed_max = 2.6
+anim_offset_max = 1.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1pyar"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 0.5, 0)
+angle_min = -6.0
+angle_max = 6.0
+spread = 12.0
+initial_velocity_min = 30.68
+initial_velocity_max = 30.68
+gravity = Vector3(0, 0, 0)
+scale_min = 0.35
+scale_max = 0.55
+color = Color(1, 0.46, 0.04, 0.66)
+anim_speed_min = 1.2
+anim_speed_max = 2.4
+anim_offset_max = 1.0
+
+[node name="ElectricWireFlowParticlesFX" type="Node2D" unique_id=373743360]
+z_index = 4088
+z_as_relative = false
+script = ExtResource("1_script")
+flow_speed_px = 26.0
+wire_thickness_px = 1.0
+
+[node name="FlowPixels" type="GPUParticles2D" parent="." unique_id=426246609]
+visible = false
+z_index = 2
+material = SubResource("CanvasItemMaterial_additive")
+texture = ExtResource("2_mote")
+lifetime = 3.923076923076923
+preprocess = 3.923076923076923
+visibility_rect = Rect2(-4, -4, 110, 8)
+process_material = SubResource("ParticleProcessMaterial_6n5f4")
+
+[node name="CorePixels" type="GPUParticles2D" parent="." unique_id=1249627010]
+z_index = 3
+material = SubResource("CanvasItemMaterial_additive")
+emitting = false
+amount = 10
+texture = ExtResource("2_mote")
+lifetime = 5.5
+randomness = 1.0
+visibility_rect = Rect2(-4, -4, 110, 8)
+process_material = SubResource("ParticleProcessMaterial_gvkbj")
+
+[node name="FlickerPixels" type="GPUParticles2D" parent="." unique_id=1761115662]
+visible = false
+z_index = 1
+material = SubResource("CanvasItemMaterial_additive")
+amount = 3
+amount_ratio = 0.0
+texture = ExtResource("2_mote")
+lifetime = 3.3246414602346808
+preprocess = 3.3246414602346808
+randomness = 0.78
+visibility_rect = Rect2(-4, -4, 110, 8)
+process_material = SubResource("ParticleProcessMaterial_1pyar")

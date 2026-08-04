@@ -1,0 +1,143 @@
+[gd_scene format=3 uid="uid://d200cab13wtd2"]
+
+[ext_resource type="Script" path="res://Scripts/wing_pearl_particles_fx.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cfas030iwrgqf" path="res://Assets/items/materials/pearl.png" id="2_pearl"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_additive"]
+blend_mode = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lq2br"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(5, 2, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 24.0
+initial_velocity_min = 4.0
+initial_velocity_max = 14.0
+angular_velocity_min = -120.0
+angular_velocity_max = 120.0
+gravity = Vector3(0, 16, 0)
+damping_min = 1.2
+damping_max = 2.6
+scale_min = 0.1
+scale_max = 0.38
+color = Color(0.78, 1, 0.98, 0.98)
+hue_variation_min = -0.05
+hue_variation_max = 0.08
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_xf2h6"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(5, 2, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 24.0
+initial_velocity_min = 4.0
+initial_velocity_max = 14.0
+angular_velocity_min = -120.0
+angular_velocity_max = 120.0
+gravity = Vector3(0, 16, 0)
+damping_min = 1.2
+damping_max = 2.6
+scale_min = 0.1
+scale_max = 0.38
+color = Color(0.78, 1, 0.98, 0.98)
+hue_variation_min = -0.05
+hue_variation_max = 0.08
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8klyt"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(3, 6, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(-1, 0.1, 0)
+spread = 32.0
+initial_velocity_min = 40.0
+initial_velocity_max = 96.0
+angular_velocity_min = -840.0
+angular_velocity_max = 840.0
+gravity = Vector3(0, 18, 0)
+damping_min = 4.2
+damping_max = 8.6
+scale_min = 0.09
+scale_max = 0.28
+color = Color(0.52, 1, 0.98, 0.72)
+hue_variation_min = -0.05
+hue_variation_max = 0.1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_pd08v"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(3, 6, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(-1, 0.1, 0)
+spread = 32.0
+initial_velocity_min = 40.0
+initial_velocity_max = 96.0
+angular_velocity_min = -840.0
+angular_velocity_max = 840.0
+gravity = Vector3(0, 18, 0)
+damping_min = 4.2
+damping_max = 8.6
+scale_min = 0.09
+scale_max = 0.28
+color = Color(0.9, 1, 1, 0.72)
+hue_variation_min = -0.1
+hue_variation_max = 0.09
+
+[node name="WingPearlParticlesFX" type="Node2D" unique_id=1196561240]
+z_index = 72
+script = ExtResource("1_script")
+
+[node name="CoreLeftPearl" type="GPUParticles2D" parent="." unique_id=1567736344]
+z_index = 4
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(-13, 7)
+amount = 14
+texture = ExtResource("2_pearl")
+lifetime = 1.15
+preprocess = 1.15
+randomness = 0.45
+visibility_rect = Rect2(-24, -10, 48, 52)
+process_material = SubResource("ParticleProcessMaterial_lq2br")
+
+[node name="CoreRightPearl" type="GPUParticles2D" parent="." unique_id=2118623545]
+z_index = 4
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(13, 7)
+amount = 14
+texture = ExtResource("2_pearl")
+lifetime = 1.15
+preprocess = 1.15
+randomness = 0.45
+visibility_rect = Rect2(-24, -10, 48, 52)
+process_material = SubResource("ParticleProcessMaterial_xf2h6")
+
+[node name="TrailLeftPearlShards" type="GPUParticles2D" parent="." unique_id=1739630886]
+z_index = 5
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(-20, 9)
+amount = 22
+texture = ExtResource("2_pearl")
+lifetime = 0.58
+preprocess = 0.58
+randomness = 0.3
+visibility_rect = Rect2(-66, -20, 82, 46)
+process_material = SubResource("ParticleProcessMaterial_8klyt")
+
+[node name="TrailRightPearlShards" type="GPUParticles2D" parent="." unique_id=1133783799]
+z_index = 5
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(20, 9)
+amount = 22
+texture = ExtResource("2_pearl")
+lifetime = 0.58
+preprocess = 0.58
+randomness = 0.3
+visibility_rect = Rect2(-66, -20, 82, 46)
+process_material = SubResource("ParticleProcessMaterial_pd08v")

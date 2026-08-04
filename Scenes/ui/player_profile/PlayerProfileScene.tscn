@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://s2qd6aym6sau" path="res://Assets/ui/fill_bar_full.png" id="5_dxium"]
 [ext_resource type="Texture2D" uid="uid://b26xvfc2ty1no" path="res://Assets/ui/login/sign_on_normal.png" id="5_k7k66"]
 [ext_resource type="Texture2D" uid="uid://chootb3uj6qh6" path="res://Assets/ui/login/register_normal.png" id="6_5rsf5"]
-[ext_resource type="Texture2D" uid="uid://ba1rutvybyvf2" path="res://Assets/ui/close_button_pressed_69x69.png" id="6_lvkcs"]
+[ext_resource type="Texture2D" uid="uid://burjdcdg4op0f" path="res://Assets/ui/close_button_pressed_69x69.png" id="6_lvkcs"]
 [ext_resource type="Texture2D" uid="uid://cho1iwl84l4pf" path="res://Assets/ui/close_button_hover_69x69.png" id="7_3ir0m"]
 [ext_resource type="Script" uid="uid://bqqp7buhb2yw7" path="res://Scripts/ui/player_profile_scene.gd" id="7_profile_script"]
 
@@ -37,6 +37,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -12.0
+offset_top = -15.0
+offset_right = 111.0
+offset_bottom = 15.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -47,10 +51,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = 24.0
+offset_left = 54.0
+offset_top = 14.0
 offset_right = -24.0
-offset_bottom = -24.0
+offset_bottom = -14.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -206,13 +210,13 @@ patch_margin_top = 18
 patch_margin_right = 18
 patch_margin_bottom = 18
 
-[node name="PortraitViewport" type="SubViewport" parent="CenterContainer/ProfileWindow/PortraitPanel/PortraitFrame"]
+[node name="PortraitViewport" type="SubViewport" parent="CenterContainer/ProfileWindow/PortraitPanel/PortraitFrame" unique_id=2029685073]
 unique_name_in_owner = true
 transparent_bg = true
 size = Vector2i(244, 208)
 render_target_update_mode = 4
 
-[node name="PortraitPreviewRoot" type="Node2D" parent="CenterContainer/ProfileWindow/PortraitPanel/PortraitFrame/PortraitViewport"]
+[node name="PortraitPreviewRoot" type="Node2D" parent="CenterContainer/ProfileWindow/PortraitPanel/PortraitFrame/PortraitViewport" unique_id=1495254719]
 unique_name_in_owner = true
 position = Vector2(122, 136)
 

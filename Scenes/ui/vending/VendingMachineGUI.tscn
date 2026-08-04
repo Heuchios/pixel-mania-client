@@ -1,0 +1,550 @@
+[gd_scene format=3 uid="uid://cycpv2orex2a7"]
+
+[ext_resource type="Script" uid="uid://btdcblbklgem7" path="res://Scripts/vending_ui.gd" id="1_vending_ui"]
+[ext_resource type="Texture2D" uid="uid://bgt0geyx2l4kd" path="res://Assets/ui/login/outer_panel.png" id="3_81mko"]
+[ext_resource type="Texture2D" uid="uid://bqai7lpbggfpi" path="res://Assets/ui/vending/panel_inner.png" id="3_panel_inner"]
+[ext_resource type="Texture2D" uid="uid://dsnqbrsuybswl" path="res://Assets/ui/vending/panel_card_dark.png" id="4_panel_card"]
+[ext_resource type="Texture2D" uid="uid://hx1s0b2xwx84" path="res://Assets/ui/inventory/search_input.png" id="5_0ig1y"]
+[ext_resource type="Texture2D" uid="uid://duiytjm5wvjc5" path="res://Assets/ui/vending/panel_tooltip.png" id="5_panel_tooltip"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/status_normal.tres" id="6_status_style"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/close_normal.tres" id="7_close_normal"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/close_pressed.tres" id="8_close_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/close_hover.tres" id="9_close_hover"]
+[ext_resource type="StyleBoxEmpty" path="res://Scenes/ui/vending/styles/focus_empty.tres" id="10_focus_empty"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/slot_normal.tres" id="11_slot_normal"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/slot_hover.tres" id="12_slot_hover"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/blue_normal.tres" id="13_blue_normal"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/blue_pressed.tres" id="14_blue_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/blue_hover.tres" id="15_blue_hover"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/button_normal.tres" id="16_button_normal"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/button_pressed.tres" id="17_button_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/button_hover.tres" id="18_button_hover"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/drop_normal.tres" id="19_drop_normal"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/drop_pressed.tres" id="20_drop_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/drop_hover.tres" id="21_drop_hover"]
+
+[node name="VendingUI" type="Control" unique_id=1841926686]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_vending_ui")
+
+[node name="VendingOverlay" type="ColorRect" parent="." unique_id=166591377]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.32)
+
+[node name="VendingPanel" type="Control" parent="." unique_id=816415001]
+anchors_preset = 0
+offset_right = 860.0
+offset_bottom = 560.0
+
+[node name="Shadow" type="NinePatchRect" parent="VendingPanel" unique_id=46079545]
+visible = false
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 9.0
+offset_top = 9.0
+offset_right = 869.0
+offset_bottom = 569.0
+texture = ExtResource("5_panel_tooltip")
+patch_margin_left = 34
+patch_margin_top = 34
+patch_margin_right = 34
+patch_margin_bottom = 34
+
+[node name="PanelBack" type="NinePatchRect" parent="VendingPanel" unique_id=825121441]
+layout_mode = 0
+offset_right = 860.0
+offset_bottom = 560.0
+texture = ExtResource("3_81mko")
+patch_margin_left = 36
+patch_margin_top = 36
+patch_margin_right = 36
+patch_margin_bottom = 36
+
+[node name="TopBar" type="NinePatchRect" parent="VendingPanel" unique_id=1530077589]
+visible = false
+layout_mode = 0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 844.0
+offset_bottom = 88.0
+texture = ExtResource("3_panel_inner")
+patch_margin_left = 28
+patch_margin_top = 28
+patch_margin_right = 28
+patch_margin_bottom = 28
+
+[node name="Title" type="Label" parent="VendingPanel" unique_id=1348267238]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 14.0
+offset_right = 544.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 44
+text = "VENDING MACHINE"
+vertical_alignment = 1
+
+[node name="StatusBack" type="NinePatchRect" parent="VendingPanel" unique_id=966520367]
+layout_mode = 0
+offset_left = 558.0
+offset_top = 18.0
+offset_right = 764.0
+offset_bottom = 62.0
+texture = ExtResource("5_0ig1y")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="Status" type="Label" parent="VendingPanel/StatusBack" unique_id=678808480]
+layout_mode = 0
+offset_right = 206.0
+offset_bottom = 41.0
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = ExtResource("6_status_style")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="VendingPanel" unique_id=2017596064]
+custom_minimum_size = Vector2(48, 44)
+layout_mode = 0
+offset_left = 822.0
+offset_top = -24.0
+offset_right = 882.0
+offset_bottom = 36.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("7_close_normal")
+theme_override_styles/pressed = ExtResource("8_close_pressed")
+theme_override_styles/hover = ExtResource("9_close_hover")
+theme_override_styles/focus = ExtResource("10_focus_empty")
+text = "X"
+
+[node name="ItemCard" type="Control" parent="VendingPanel" unique_id=652172147]
+anchors_preset = 0
+offset_left = 30.0
+offset_top = 106.0
+offset_right = 388.0
+offset_bottom = 428.0
+
+[node name="ItemCardSkin" type="NinePatchRect" parent="VendingPanel/ItemCard" unique_id=432543719]
+layout_mode = 0
+offset_right = 358.0
+offset_bottom = 322.0
+patch_margin_left = 28
+patch_margin_top = 28
+patch_margin_right = 28
+patch_margin_bottom = 28
+
+[node name="ItemTitle" type="Label" parent="VendingPanel/ItemCard" unique_id=876198196]
+layout_mode = 0
+offset_left = 86.0
+offset_top = 14.0
+offset_right = 266.0
+offset_bottom = 45.0
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 22
+text = "ITEM LISTING"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ItemSlot" type="Button" parent="VendingPanel/ItemCard" unique_id=1880161368]
+custom_minimum_size = Vector2(146, 122)
+clip_contents = true
+layout_mode = 0
+offset_left = 106.0
+offset_top = 59.0
+offset_right = 252.0
+offset_bottom = 205.0
+focus_mode = 0
+theme_override_styles/normal = ExtResource("11_slot_normal")
+theme_override_styles/pressed = ExtResource("11_slot_normal")
+theme_override_styles/hover = ExtResource("12_slot_hover")
+theme_override_styles/focus = ExtResource("10_focus_empty")
+
+[node name="Icon" type="TextureRect" parent="VendingPanel/ItemCard/ItemSlot" unique_id=1932345823]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 29.0
+offset_right = 108.0
+offset_bottom = 111.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemLabel" type="Label" parent="VendingPanel/ItemCard/ItemSlot" unique_id=1255134805]
+visible = false
+layout_mode = 0
+offset_left = 14.0
+offset_top = 87.0
+offset_right = 127.0
+offset_bottom = 110.0
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="Hint" type="Label" parent="VendingPanel/ItemCard" unique_id=672875610]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 236.0
+offset_right = 334.0
+offset_bottom = 282.0
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "Click the slot to choose item from your inventory."
+autowrap_mode = 2
+
+[node name="PriceCard" type="Control" parent="VendingPanel" unique_id=1714098435]
+anchors_preset = 0
+offset_left = 414.0
+offset_top = 106.0
+offset_right = 830.0
+offset_bottom = 428.0
+
+[node name="PriceCardSkin" type="NinePatchRect" parent="VendingPanel/PriceCard" unique_id=1587718735]
+layout_mode = 0
+offset_right = 416.0
+offset_bottom = 322.0
+patch_margin_left = 28
+patch_margin_top = 28
+patch_margin_right = 28
+patch_margin_bottom = 28
+
+[node name="SetupTitle" type="Label" parent="VendingPanel/PriceCard" unique_id=1045407624]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 14.0
+offset_right = 300.0
+offset_bottom = 45.0
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 22
+text = "SALE DETAILS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StockLabel" type="Label" parent="VendingPanel/PriceCard" unique_id=1825131492]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 66.0
+offset_right = 216.0
+offset_bottom = 98.0
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "AMOUNT"
+vertical_alignment = 1
+
+[node name="StockSpin" type="SpinBox" parent="VendingPanel/PriceCard" unique_id=1125168074]
+layout_mode = 0
+offset_left = 244.0
+offset_top = 62.0
+offset_right = 386.0
+offset_bottom = 100.0
+min_value = 1.0
+max_value = 1.0
+value = 1.0
+
+[node name="PerSaleLabel" type="Label" parent="VendingPanel/PriceCard" unique_id=1576520946]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 128.0
+offset_right = 216.0
+offset_bottom = 160.0
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "ITEMS PER SALE"
+vertical_alignment = 1
+
+[node name="PerSaleSpin" type="SpinBox" parent="VendingPanel/PriceCard" unique_id=1798037706]
+layout_mode = 0
+offset_left = 244.0
+offset_top = 124.0
+offset_right = 386.0
+offset_bottom = 162.0
+min_value = 1.0
+max_value = 1.0
+value = 1.0
+
+[node name="PriceLabel" type="Label" parent="VendingPanel/PriceCard" unique_id=1556772239]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 190.0
+offset_right = 216.0
+offset_bottom = 222.0
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "PRICE"
+vertical_alignment = 1
+
+[node name="PriceSpin" type="SpinBox" parent="VendingPanel/PriceCard" unique_id=1717215570]
+layout_mode = 0
+offset_left = 244.0
+offset_top = 186.0
+offset_right = 386.0
+offset_bottom = 224.0
+min_value = 1.0
+max_value = 200.0
+value = 1.0
+
+[node name="Formula" type="Label" parent="VendingPanel/PriceCard" unique_id=50391249]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 250.0
+offset_right = 386.0
+offset_bottom = 292.0
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "Example: 10 Dirt for 1 World Lock."
+autowrap_mode = 2
+
+[node name="ActionBack" type="NinePatchRect" parent="VendingPanel" unique_id=936782811]
+visible = false
+layout_mode = 0
+offset_left = 30.0
+offset_top = 452.0
+offset_right = 830.0
+offset_bottom = 528.0
+texture = ExtResource("3_panel_inner")
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="ListButton" type="Button" parent="VendingPanel" unique_id=64417382]
+custom_minimum_size = Vector2(150, 46)
+layout_mode = 0
+offset_left = 50.0
+offset_top = 467.0
+offset_right = 200.0
+offset_bottom = 513.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = ExtResource("13_blue_normal")
+theme_override_styles/pressed = ExtResource("14_blue_pressed")
+theme_override_styles/hover = ExtResource("15_blue_hover")
+theme_override_styles/disabled = ExtResource("16_button_normal")
+theme_override_styles/focus = ExtResource("10_focus_empty")
+text = "LIST ITEM"
+
+[node name="BuyButton" type="Button" parent="VendingPanel" unique_id=1132375868]
+custom_minimum_size = Vector2(150, 46)
+layout_mode = 0
+offset_left = 214.0
+offset_top = 467.0
+offset_right = 434.0
+offset_bottom = 513.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = ExtResource("13_blue_normal")
+theme_override_styles/pressed = ExtResource("14_blue_pressed")
+theme_override_styles/hover = ExtResource("15_blue_hover")
+theme_override_styles/disabled = ExtResource("16_button_normal")
+theme_override_styles/focus = ExtResource("10_focus_empty")
+text = "BUY"
+
+[node name="CollectButton" type="Button" parent="VendingPanel" unique_id=1300413087]
+custom_minimum_size = Vector2(122, 46)
+layout_mode = 0
+offset_left = 448.0
+offset_top = 467.0
+offset_right = 570.0
+offset_bottom = 513.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = ExtResource("13_blue_normal")
+theme_override_styles/pressed = ExtResource("14_blue_pressed")
+theme_override_styles/hover = ExtResource("15_blue_hover")
+theme_override_styles/disabled = ExtResource("16_button_normal")
+theme_override_styles/focus = ExtResource("10_focus_empty")
+text = "COLLECT"
+
+[node name="LogButton" type="Button" parent="VendingPanel" unique_id=267774638]
+custom_minimum_size = Vector2(92, 46)
+layout_mode = 0
+offset_left = 584.0
+offset_top = 467.0
+offset_right = 676.0
+offset_bottom = 513.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = ExtResource("16_button_normal")
+theme_override_styles/pressed = ExtResource("17_button_pressed")
+theme_override_styles/hover = ExtResource("18_button_hover")
+theme_override_styles/focus = ExtResource("10_focus_empty")
+text = "LOG"
+
+[node name="CancelListingButton" type="Button" parent="VendingPanel" unique_id=827162718]
+custom_minimum_size = Vector2(116, 46)
+layout_mode = 0
+offset_left = 690.0
+offset_top = 467.0
+offset_right = 806.0
+offset_bottom = 513.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = ExtResource("19_drop_normal")
+theme_override_styles/pressed = ExtResource("20_drop_pressed")
+theme_override_styles/hover = ExtResource("21_drop_hover")
+theme_override_styles/disabled = ExtResource("16_button_normal")
+theme_override_styles/focus = ExtResource("10_focus_empty")
+text = "CANCEL"
+
+[node name="VendingLogOverlay" type="Control" parent="VendingPanel" unique_id=777142770]
+visible = false
+z_index = 30
+anchors_preset = 0
+offset_left = 150.0
+offset_top = 92.0
+offset_right = 710.0
+offset_bottom = 474.0
+
+[node name="Shadow" type="NinePatchRect" parent="VendingPanel/VendingLogOverlay" unique_id=1068230482]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 567.0
+offset_bottom = 389.0
+texture = ExtResource("5_panel_tooltip")
+patch_margin_left = 34
+patch_margin_top = 34
+patch_margin_right = 34
+patch_margin_bottom = 34
+
+[node name="Back" type="NinePatchRect" parent="VendingPanel/VendingLogOverlay" unique_id=739911832]
+layout_mode = 0
+offset_right = 560.0
+offset_bottom = 382.0
+texture = ExtResource("5_panel_tooltip")
+patch_margin_left = 34
+patch_margin_top = 34
+patch_margin_right = 34
+patch_margin_bottom = 34
+
+[node name="Header" type="NinePatchRect" parent="VendingPanel/VendingLogOverlay" unique_id=1945777227]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 10.0
+offset_right = 548.0
+offset_bottom = 72.0
+texture = ExtResource("3_panel_inner")
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="Title" type="Label" parent="VendingPanel/VendingLogOverlay" unique_id=2020000065]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 10.0
+offset_right = 284.0
+offset_bottom = 56.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 32
+text = "SALE LOG"
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="VendingPanel/VendingLogOverlay" unique_id=344306255]
+custom_minimum_size = Vector2(40, 38)
+layout_mode = 0
+offset_left = 502.0
+offset_top = 14.0
+offset_right = 542.0
+offset_bottom = 52.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("19_drop_normal")
+theme_override_styles/pressed = ExtResource("20_drop_pressed")
+theme_override_styles/hover = ExtResource("21_drop_hover")
+theme_override_styles/focus = ExtResource("10_focus_empty")
+text = "X"
+
+[node name="ScrollBack" type="NinePatchRect" parent="VendingPanel/VendingLogOverlay" unique_id=895528046]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 88.0
+offset_right = 536.0
+offset_bottom = 352.0
+texture = ExtResource("4_panel_card")
+patch_margin_left = 28
+patch_margin_top = 28
+patch_margin_right = 28
+patch_margin_bottom = 28
+
+[node name="LogScroll" type="ScrollContainer" parent="VendingPanel/VendingLogOverlay" unique_id=1340175884]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 98.0
+offset_right = 526.0
+offset_bottom = 342.0
+horizontal_scroll_mode = 0
+
+[node name="LogText" type="Label" parent="VendingPanel/VendingLogOverlay/LogScroll" unique_id=1499378641]
+custom_minimum_size = Vector2(460, 244)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+autowrap_mode = 2

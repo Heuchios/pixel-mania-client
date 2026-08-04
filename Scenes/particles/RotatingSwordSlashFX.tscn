@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://ij10h8fg7mga"]
+
+[ext_resource type="Script" uid="uid://b7mindnyyu2xo" path="res://Scripts/rotating_sword_slash_fx.gd" id="1_script"]
+
+[node name="RotatingSwordSlashFX" type="Node2D" unique_id=1842840946]
+z_index = 4092
+z_as_relative = false
+script = ExtResource("1_script")

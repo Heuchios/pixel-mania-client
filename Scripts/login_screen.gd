@@ -1,58 +1,189 @@
 extends Control
 
 const PROFILE_PATH := "user://pixelmania_profile.cfg"
-const LOBBY_SCENE := "res://Scenes/lobby_menu.tscn"
-const BACKGROUND_TEXTURES := [
-	"res://Assets/ui/backgrounds/mountain_background.png",
+const LOBBY_SCENE := "res://Scenes/ui/lobby/LobbyScene.tscn"
+const WORLD_SCENE := "res://Scenes/main.tscn"
+const CUSTOM_MOVEMENT_TEST_SCENE := "res://custom_movement_test/scenes/custom_movement_test_main.tscn"
+const CUSTOM_REAL_WORLD_MOVEMENT_TEST_SCENE := "res://custom_movement_test/scenes/custom_real_world_movement_test.tscn"
+const DEV_TEST_USERNAME := "DevNetfox"
+const DEV_TEST_EMAIL := "dev-netfox@local.invalid"
+const DEV_TEST_SESSION_TOKEN := "dev-test-login-local-only"
+const STARRY_NIGHT_LAYERS := [
+	{"file": "Starry_night_Layer_8.png", "drift": Vector2.ZERO, "speed": 0.0, "phase": 0.0, "overscan": 0.0},
+	{"file": "Starry_night_Layer_7.png", "drift": Vector2(18.0, 0.0), "speed": 0.32, "phase": 0.0, "overscan": 24.0},
+	{"file": "Starry_night_Layer_6.png", "drift": Vector2(28.0, 0.0), "speed": 0.39, "phase": 2.1, "overscan": 34.0},
+	{"file": "Starry_night_Layer_5.png", "drift": Vector2(40.0, 0.0), "speed": 0.46, "phase": 4.2, "overscan": 46.0},
 ]
-const BACKGROUND_FRAME_ORDER := [0]
-const BACKGROUND_FRAME_SECONDS := 0.35
 const AccountManagerScript = preload("res://Scripts/account_manager.gd")
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
-const LOGIN_PANEL_W := 520.0
-const LOGIN_PANEL_H := 500.0
-const LOGIN_FIELD_W := 470.0
-const LOGIN_FIELD_H := 52.0
-const LOGIN_BUTTON_W := 214.0
-const LOGIN_BUTTON_H := 58.0
-const EXIT_BUTTON_W := 240.0
-const EXIT_BUTTON_H := 34.0
+const LOGIN_SOUND_PATH := "res://Assets/sounds/login.wav"
+const LOGIN_SOUND_VOLUME_DB := -12.0
+const MenuLoopSoundHelper = preload("res://Scripts/ui/menu_loop_sound_helper.gd")
+const WorldScenePreloader = preload("res://Scripts/world_scene_preloader.gd")
 
-var background_rect: TextureRect
-var background_textures: Array = []
-var background_frame_cursor := 0
-var background_frame_timer := 0.0
+var parallax_background: Control
+var parallax_layers: Array = []
+var parallax_time := 0.0
+var login_sound_player: AudioStreamPlayer = null
 var username_input: LineEdit
 var email_input: LineEdit
 var password_input: LineEdit
 var remember_password_check: CheckBox
 var message_label: Label
-var server_status_panel: PanelContainer
+var server_status_panel: Control
 var server_status_dot: Panel
 var server_status_label: Label
-var version_label: Label
 var account_manager = null
+var profile_path: String = PROFILE_PATH
 var saved_session_username := ""
 var saved_session_email := ""
 var saved_session_token := ""
+var saved_refresh_token := ""
 var saved_session_role := "player"
+var loading_saved_account := false
 var auth_busy := false
 var pending_auth_request_id := ""
 var pending_auth_response := {}
 var server_status_refresh_timer := 0.0
+var netfox_launch_scene_change_in_progress := false
 
 
 func _ready() -> void:
+	if _try_custom_movement_test_redirect():
+		return
+
+	if _try_netfox_server_login_skip():
+		return
+
+	if _try_backend_dev_login_bypass():
+		return
+
+	if _try_dev_test_login_bypass():
+		return
+
+	WorldScenePreloader.start()
+	_setup_login_sound()
 	_setup_account_manager()
-	_build_screen()
+	if not _bind_login_scene_ui():
+		return
 	_connect_network_auth_signal()
 	_load_saved_account()
 	_update_server_status_indicator(_is_network_connected(_get_network_manager()))
 	_show_network_login_notice()
+	call_deferred("_try_enter_authenticated_netfox_launch_world")
+
+
+func _try_custom_movement_test_redirect() -> bool:
+	if not MovementMode.has_method("is_custom_movement_test_launch_requested"):
+		return false
+	if not MovementMode.is_custom_movement_test_launch_requested():
+		return false
+
+	var scene_path := CUSTOM_MOVEMENT_TEST_SCENE
+	if MovementMode.has_method("has_launch_arg") and MovementMode.has_launch_arg("--custom-movement-real-world-test"):
+		scene_path = CUSTOM_REAL_WORLD_MOVEMENT_TEST_SCENE
+
+	MovementMode.set_mode(MovementMode.Mode.CUSTOM_AUTHORITATIVE)
+	print("[CustomMovementTest] Redirecting login launch to " + scene_path)
+	get_tree().call_deferred("change_scene_to_file", scene_path)
+	return true
+
+
+func _try_netfox_server_login_skip() -> bool:
+	if MovementMode.has_method("is_netfox_real_server_launch") and MovementMode.is_netfox_real_server_launch():
+		print("[NetfoxReal] Server mode detected; skipping login UI.")
+		call_deferred("_enter_netfox_server_world_scene")
+		return true
+	return false
+
+
+func _enter_netfox_server_world_scene() -> void:
+	get_tree().change_scene_to_file(WORLD_SCENE)
+
+
+func _try_backend_dev_login_bypass() -> bool:
+	if not MovementMode.is_backend_dev_login_requested():
+		return false
+
+	if not MovementMode.is_backend_dev_login_allowed():
+		MovementMode.report_backend_dev_login_rejected()
+		return false
+
+	# TODO: Remove backend-dev-login before production release.
+	MovementMode.set_mode(MovementMode.Mode.NETFOX_REAL)
+	_setup_account_manager()
+	if not _bind_login_scene_ui():
+		return false
+	_connect_network_auth_signal()
+	_show_message("Starting backend dev login...")
+	call_deferred("_run_backend_dev_login_bypass")
+	return true
+
+
+func _run_backend_dev_login_bypass() -> void:
+	auth_busy = true
+
+	var world_name := MovementMode.get_dev_test_world_name("NETFOX_TEST")
+	var profile_name := MovementMode.get_dev_profile_name(DEV_TEST_USERNAME)
+	_show_message("Connecting as " + profile_name + "...")
+
+	var connected_ok = await _wait_for_server_connection(12.0)
+	if not connected_ok:
+		auth_busy = false
+		_show_message(_server_connection_failed_message())
+		return
+
+	var network = _get_network_manager()
+	if network == null or not network.has_method("send_backend_dev_login"):
+		auth_busy = false
+		_show_message("Backend dev login is not available.")
+		return
+
+	if network.has_method("set_pending_join"):
+		network.set_pending_join(world_name, profile_name)
+	network.set("current_world_name", world_name)
+	_write_pending_join_profile_config(world_name, profile_name, "", "", false)
+
+	var request_id = str(network.send_backend_dev_login(profile_name, world_name))
+	if request_id == "":
+		auth_busy = false
+		_show_message("Could not start backend dev login.")
+		return
+
+	var result = await _wait_for_auth_response(request_id, 10.0)
+	auth_busy = false
+	if not bool(result.get("ok", false)):
+		_show_message(str(result.get("message", "Backend dev login failed.")))
+		return
+
+	var server_username = str(result.get("username", profile_name))
+	var server_email = str(result.get("email", "%s@dev.local.invalid" % server_username.to_lower()))
+	var session_token = str(result.get("session_token", ""))
+	var refresh_token = str(result.get("refresh_token", ""))
+	var role = str(result.get("role", "player"))
+	if session_token == "":
+		_show_message("Backend dev login did not return a session.")
+		return
+
+	_cache_server_account(server_username, server_email)
+	_save_active_account(server_username, server_email, session_token, role, refresh_token)
+	if network.has_method("set_pending_join"):
+		network.set_pending_join(world_name, server_username)
+	network.set("current_world_name", world_name)
+	_write_pending_join_profile_config(world_name, server_username, server_email, "", false, role)
+	print("[BackendDevLogin] Authenticated %s for %s in %s mode." % [server_username, world_name, MovementMode.get_mode_name()])
+	print("[NetfoxReal] Client dev login complete; entering world %s." % world_name)
+	get_tree().change_scene_to_file(WORLD_SCENE)
+
+
+func _exit_tree() -> void:
+	if login_sound_player != null and is_instance_valid(login_sound_player):
+		login_sound_player.stop()
 
 
 func _process(delta: float) -> void:
-	_update_background_animation(delta)
+	WorldScenePreloader.pump()
+	_update_background_parallax(delta)
 
 	server_status_refresh_timer -= delta
 	if server_status_refresh_timer > 0.0:
@@ -60,6 +191,77 @@ func _process(delta: float) -> void:
 
 	server_status_refresh_timer = 0.35
 	_update_server_status_indicator(_is_network_connected(_get_network_manager()))
+
+
+func _try_dev_test_login_bypass() -> bool:
+	if not MovementMode.is_dev_test_login_requested():
+		return false
+
+	if not MovementMode.is_dev_test_login_allowed():
+		MovementMode.report_dev_test_login_rejected()
+		if not MovementMode.is_websocket() and not MovementMode.is_netfox_real_launch_requested():
+			MovementMode.set_mode(MovementMode.Mode.WEBSOCKET)
+		return false
+
+	# TODO: Remove dev-test-login before production release.
+	MovementMode.set_mode(MovementMode.Mode.NETFOX_REAL)
+	_setup_account_manager()
+
+	var world_name := MovementMode.get_dev_test_world_name("NETFOX_TEST")
+	var profile_name := MovementMode.get_dev_profile_name(DEV_TEST_USERNAME)
+	_prepare_dev_test_profile(world_name, profile_name)
+	print("[DevTestLogin] Entering %s as %s in %s mode." % [world_name, profile_name, MovementMode.get_mode_name()])
+	call_deferred("_enter_dev_test_world_scene")
+	return true
+
+
+func _prepare_dev_test_profile(world_name: String, profile_name: String) -> void:
+	var clean_profile_name := profile_name.strip_edges()
+	if clean_profile_name == "":
+		clean_profile_name = DEV_TEST_USERNAME
+	var dev_email := "%s@local.invalid" % clean_profile_name.to_lower()
+	var dev_token := "%s-%s" % [DEV_TEST_SESSION_TOKEN, clean_profile_name.to_lower()]
+
+	_set_network_session(clean_profile_name, dev_email, dev_token, "player")
+
+	if account_manager != null:
+		if account_manager.has_method("cache_dev_test_account"):
+			account_manager.cache_dev_test_account(clean_profile_name, dev_email)
+		elif account_manager.has_method("cache_server_account"):
+			account_manager.cache_server_account(clean_profile_name, dev_email)
+
+	var network = get_node_or_null("/root/NetworkManager")
+	if network != null:
+		if network.has_method("set_pending_join"):
+			network.set_pending_join(world_name, clean_profile_name)
+		network.set("current_world_name", world_name)
+
+	_write_pending_join_profile_config(world_name, clean_profile_name, dev_email, "", false)
+
+
+func _write_pending_join_profile_config(world_name: String, profile_name: String, email: String = "", token: String = "", remember_login: bool = false, role: String = "player", refresh_token: String = "") -> void:
+	var cfg := ConfigFile.new()
+	cfg.load(profile_path)
+	cfg.set_value("profile", "username", profile_name)
+	cfg.set_value("profile", "email", email)
+	cfg.set_value("profile", "session_token", token if remember_login else "")
+	cfg.set_value("profile", "refresh_token", refresh_token if remember_login else "")
+	cfg.set_value("profile", "role", role)
+	cfg.set_value("profile", "remember_login", remember_login)
+	cfg.set_value("profile", "last_world", world_name)
+	_clear_local_password_cache(cfg)
+	cfg.set_value("pending_join", "enabled", true)
+	cfg.set_value("pending_join", "world_name", world_name)
+	cfg.set_value("pending_join", "profile_name", profile_name)
+	cfg.save(profile_path)
+
+
+func _enter_dev_test_world_scene() -> void:
+	get_tree().change_scene_to_file(WORLD_SCENE)
+
+
+func _setup_login_sound() -> void:
+	login_sound_player = MenuLoopSoundHelper.start_menu_loop_sound(self, LOGIN_SOUND_PATH, "LoginLoopSound", LOGIN_SOUND_VOLUME_DB)
 
 
 func _setup_account_manager() -> void:
@@ -85,178 +287,102 @@ func _connect_network_auth_signal() -> void:
 		network.server_connection_changed.connect(_on_server_connection_changed)
 
 
-func _build_screen() -> void:
+func _bind_login_scene_ui() -> bool:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
+	_bind_scene_background_layers()
 
-	_add_real_background()
-	_add_dark_gradient_overlay()
-	_add_server_status_indicator()
+	username_input = get_node_or_null("LoginPanel/Form/UsernameField/UsernameInput") as LineEdit
+	email_input = get_node_or_null("LoginPanel/Form/EmailField/EmailInput") as LineEdit
+	password_input = get_node_or_null("LoginPanel/Form/PasswordField/PasswordInput") as LineEdit
+	remember_password_check = get_node_or_null("LoginPanel/Form/RememberPasswordCheck") as CheckBox
+	message_label = get_node_or_null("LoginPanel/Form/MessageLabel") as Label
+	server_status_panel = get_node_or_null("ServerStatusPill") as Control
+	server_status_dot = get_node_or_null("ServerStatusPill/StatusDot") as Panel
+	server_status_label = get_node_or_null("ServerStatusPill/StatusLabel") as Label
 
-	var center := Control.new()
-	center.name = "LoginPanel"
-	center.set_anchors_preset(Control.PRESET_CENTER)
-	center.offset_left = -LOGIN_PANEL_W * 0.5
-	center.offset_top = -LOGIN_PANEL_H * 0.5
-	center.offset_right = LOGIN_PANEL_W * 0.5
-	center.offset_bottom = LOGIN_PANEL_H * 0.5
-	center.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(center)
+	var register_button := get_node_or_null("LoginPanel/Form/RegisterButton") as Button
+	var sign_button := get_node_or_null("LoginPanel/Form/SignOnButton") as Button
+	var reset_email_button := get_node_or_null("LoginPanel/Form/ResetEmailButton") as Button
+	var reset_password_button := get_node_or_null("LoginPanel/Form/ResetPasswordButton") as Button
+	var exit_button := get_node_or_null("LoginPanel/Form/ExitButton") as Button
+	var missing: Array[String] = []
+	_append_missing_node(missing, username_input, "LoginPanel/Form/UsernameField/UsernameInput")
+	_append_missing_node(missing, email_input, "LoginPanel/Form/EmailField/EmailInput")
+	_append_missing_node(missing, password_input, "LoginPanel/Form/PasswordField/PasswordInput")
+	_append_missing_node(missing, remember_password_check, "LoginPanel/Form/RememberPasswordCheck")
+	_append_missing_node(missing, message_label, "LoginPanel/Form/MessageLabel")
+	_append_missing_node(missing, server_status_dot, "ServerStatusPill/StatusDot")
+	_append_missing_node(missing, server_status_label, "ServerStatusPill/StatusLabel")
+	_append_missing_node(missing, register_button, "LoginPanel/Form/RegisterButton")
+	_append_missing_node(missing, sign_button, "LoginPanel/Form/SignOnButton")
+	_append_missing_node(missing, reset_email_button, "LoginPanel/Form/ResetEmailButton")
+	_append_missing_node(missing, reset_password_button, "LoginPanel/Form/ResetPasswordButton")
+	_append_missing_node(missing, exit_button, "LoginPanel/Form/ExitButton")
+	if not missing.is_empty():
+		push_error("LoginScene is missing required nodes: " + ", ".join(missing))
+		return false
 
-	var logo := Label.new()
-	logo.name = "Title"
-	logo.text = "PIXELMANIA"
-	logo.position = Vector2(0, 24)
-	logo.size = Vector2(LOGIN_PANEL_W, 70)
-	logo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	logo.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(logo, 52)
-	center.add_child(logo)
+	if not username_input.text_submitted.is_connected(_on_username_submitted):
+		username_input.text_submitted.connect(_on_username_submitted)
+	if not email_input.text_submitted.is_connected(_on_email_submitted):
+		email_input.text_submitted.connect(_on_email_submitted)
+	if not password_input.text_submitted.is_connected(_on_password_submitted):
+		password_input.text_submitted.connect(_on_password_submitted)
+	if not remember_password_check.toggled.is_connected(_on_remember_login_toggled):
+		remember_password_check.toggled.connect(_on_remember_login_toggled)
+	if not register_button.pressed.is_connected(_on_register_pressed):
+		register_button.pressed.connect(_on_register_pressed)
+	if not sign_button.pressed.is_connected(_on_sign_on_pressed):
+		sign_button.pressed.connect(_on_sign_on_pressed)
+	if not reset_email_button.pressed.is_connected(_on_reset_email_pressed):
+		reset_email_button.pressed.connect(_on_reset_email_pressed)
+	if not reset_password_button.pressed.is_connected(_on_reset_password_pressed):
+		reset_password_button.pressed.connect(_on_reset_password_pressed)
+	if not exit_button.pressed.is_connected(_on_exit_pressed):
+		exit_button.pressed.connect(_on_exit_pressed)
 
-	var field_x := (LOGIN_PANEL_W - LOGIN_FIELD_W) * 0.5
-	var field_size := Vector2(LOGIN_FIELD_W, LOGIN_FIELD_H)
-	username_input = _make_login_input("UsernameInput", "Username", Vector2(field_x, 118), field_size)
-	username_input.text_submitted.connect(_on_username_submitted)
-	center.add_child(username_input)
+	var login_panel := get_node_or_null("LoginPanel") as Control
+	if login_panel != null:
+		PixelUIStyle.play_panel_open(login_panel, Vector2(0.98, 0.98), 0.22)
 
-	email_input = _make_login_input("EmailInput", "Email", Vector2(field_x, 188), field_size)
-	email_input.text_submitted.connect(_on_email_submitted)
-	center.add_child(email_input)
-
-	password_input = _make_login_input("PasswordInput", "Password", Vector2(field_x, 258), field_size, true)
-	password_input.text_submitted.connect(_on_password_submitted)
-	center.add_child(password_input)
-
-	remember_password_check = CheckBox.new()
-	remember_password_check.name = "RememberPasswordCheck"
-	remember_password_check.text = "Remember password"
-	remember_password_check.position = Vector2(field_x, 320)
-	remember_password_check.size = Vector2(260, 30)
-	remember_password_check.mouse_filter = Control.MOUSE_FILTER_STOP
-	remember_password_check.add_theme_font_size_override("font_size", 16)
-	remember_password_check.add_theme_color_override("font_color", Color.WHITE)
-	remember_password_check.add_theme_color_override("font_hover_color", Color.WHITE)
-	remember_password_check.add_theme_color_override("font_pressed_color", Color.WHITE)
-	remember_password_check.add_theme_color_override("font_shadow_color", Color.BLACK)
-	remember_password_check.add_theme_constant_override("shadow_offset_x", 2)
-	remember_password_check.add_theme_constant_override("shadow_offset_y", 2)
-	center.add_child(remember_password_check)
-
-	var register_button := _make_big_button("Register", Color(0.25, 0.66, 1.0), Color(0.08, 0.30, 0.78))
-	register_button.position = Vector2(37, 358)
-	register_button.size = Vector2(LOGIN_BUTTON_W, LOGIN_BUTTON_H)
-	register_button.pressed.connect(_on_register_pressed)
-	center.add_child(register_button)
-
-	var sign_button := _make_big_button("Sign On", Color(0.40, 0.95, 0.16), Color(0.12, 0.58, 0.07))
-	sign_button.position = Vector2(269, 358)
-	sign_button.size = Vector2(LOGIN_BUTTON_W, LOGIN_BUTTON_H)
-	sign_button.pressed.connect(_on_sign_on_pressed)
-	center.add_child(sign_button)
-
-	message_label = Label.new()
-	message_label.name = "MessageLabel"
-	message_label.text = ""
-	message_label.position = Vector2(field_x, 420)
-	message_label.size = Vector2(LOGIN_FIELD_W, 26)
-	message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	message_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	message_label.add_theme_font_size_override("font_size", 14)
-	message_label.add_theme_color_override("font_color", Color.WHITE)
-	message_label.add_theme_color_override("font_shadow_color", Color.BLACK)
-	message_label.add_theme_constant_override("shadow_offset_x", 2)
-	message_label.add_theme_constant_override("shadow_offset_y", 2)
-	center.add_child(message_label)
-
-	var exit_button := _make_small_button("Exit", Color(0.95, 0.18, 0.18), Color(0.48, 0.02, 0.04))
-	exit_button.position = Vector2((LOGIN_PANEL_W - EXIT_BUTTON_W) * 0.5, 452)
-	exit_button.size = Vector2(EXIT_BUTTON_W, EXIT_BUTTON_H)
-	exit_button.pressed.connect(_on_exit_pressed)
-	center.add_child(exit_button)
-
-	PixelUIStyle.play_panel_open(center, Vector2(0.98, 0.98), 0.22)
+	return true
 
 
-func _add_server_status_indicator() -> void:
-	server_status_panel = PanelContainer.new()
-	server_status_panel.name = "ServerStatusIndicator"
-	server_status_panel.anchor_left = 1.0
-	server_status_panel.anchor_top = 0.0
-	server_status_panel.anchor_right = 1.0
-	server_status_panel.anchor_bottom = 0.0
-	server_status_panel.offset_left = -234
-	server_status_panel.offset_top = 24
-	server_status_panel.offset_right = -24
-	server_status_panel.offset_bottom = 62
-	server_status_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	server_status_panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.010, 0.016, 0.022, 0.96),
-		Color(0.0, 0.0, 0.0, 0.98),
-		4,
-		18,
-		8
-	))
-	add_child(server_status_panel)
-
-	var row := HBoxContainer.new()
-	row.name = "StatusRow"
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_theme_constant_override("separation", 9)
-	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	server_status_panel.add_child(row)
-
-	server_status_dot = Panel.new()
-	server_status_dot.name = "StatusDot"
-	server_status_dot.custom_minimum_size = Vector2(12, 30)
-	server_status_dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_child(server_status_dot)
-
-	server_status_label = Label.new()
-	server_status_label.name = "StatusLabel"
-	server_status_label.text = "Server Offline"
-	server_status_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	server_status_label.add_theme_font_size_override("font_size", 16)
-	server_status_label.add_theme_color_override("font_shadow_color", Color.BLACK)
-	server_status_label.add_theme_constant_override("shadow_offset_x", 2)
-	server_status_label.add_theme_constant_override("shadow_offset_y", 2)
-	server_status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_child(server_status_label)
-
-	_update_server_status_indicator(false)
+func _append_missing_node(missing: Array[String], node: Node, node_path: String) -> void:
+	if node == null:
+		missing.append(node_path)
 
 
-func _add_version_label() -> void:
-	version_label = Label.new()
-	version_label.name = "ClientVersionLabel"
-	version_label.anchor_left = 1.0
-	version_label.anchor_top = 1.0
-	version_label.anchor_right = 1.0
-	version_label.anchor_bottom = 1.0
-	version_label.offset_left = -180
-	version_label.offset_top = -42
-	version_label.offset_right = -22
-	version_label.offset_bottom = -16
-	version_label.text = "v" + _get_client_version_text()
-	version_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	version_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	version_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	version_label.add_theme_font_size_override("font_size", 14)
-	version_label.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 0.76))
-	version_label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.82))
-	version_label.add_theme_constant_override("shadow_offset_x", 2)
-	version_label.add_theme_constant_override("shadow_offset_y", 2)
-	add_child(version_label)
+func _bind_scene_background_layers() -> void:
+	parallax_layers.clear()
+	parallax_background = get_node_or_null("StarryNightBackground") as Control
+	if parallax_background == null:
+		return
 
+	for layer_data in STARRY_NIGHT_LAYERS:
+		var file_name := str(layer_data.get("file", "")).get_basename()
+		var layer := parallax_background.get_node_or_null(file_name) as TextureRect
+		if layer == null:
+			var layer_suffix := file_name.substr(file_name.rfind("_") + 1)
+			layer = parallax_background.get_node_or_null("Layer" + layer_suffix) as TextureRect
+		if layer == null:
+			continue
 
-func _get_client_version_text() -> String:
-	var network = _get_network_manager()
-	if network != null and network.has_method("get_client_version"):
-		var version = str(network.get_client_version()).strip_edges()
-		if version != "":
-			return version
+		layer.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		parallax_layers.append({
+			"node": layer,
+			"base_position": layer.position,
+			"drift": layer_data.get("drift", Vector2.ZERO),
+			"speed": float(layer_data.get("speed", 0.0)),
+			"phase": float(layer_data.get("phase", 0.0)),
+			"overscan": float(layer_data.get("overscan", 48.0)),
+		})
 
-	return "unknown"
+	if not resized.is_connected(_layout_parallax_background):
+		resized.connect(_layout_parallax_background)
+
+	_layout_parallax_background()
+	_update_background_parallax(0.0)
 
 
 func _status_dot_style(color: Color) -> StyleBoxFlat:
@@ -281,165 +407,53 @@ func _update_server_status_indicator(is_online: bool) -> void:
 	server_status_dot.add_theme_stylebox_override("panel", _status_dot_style(color))
 
 
-func _add_real_background() -> void:
-	background_textures.clear()
-	for texture_path in BACKGROUND_TEXTURES:
-		if not ResourceLoader.exists(str(texture_path)):
+func _layout_parallax_background() -> void:
+	if parallax_background == null:
+		return
+
+	var viewport_size := get_viewport_rect().size
+
+	for layer_entry in parallax_layers:
+		var layer = layer_entry.get("node", null)
+		if layer == null or not is_instance_valid(layer):
 			continue
 
-		var texture := load(str(texture_path))
-		if texture is Texture2D:
-			background_textures.append(texture)
-
-	var bg := TextureRect.new()
-	bg.name = "MountainBackground"
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	bg.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-
-	if not background_textures.is_empty():
-		bg.texture = background_textures[0]
-	else:
-		bg.modulate = Color(0.02, 0.02, 0.09)
-
-	background_rect = bg
-	add_child(bg)
+		var margin := float(layer_entry.get("overscan", 48.0))
+		var base_position := Vector2(-margin, -margin)
+		layer.position = base_position
+		layer.size = viewport_size + Vector2(margin * 2.0, margin * 2.0)
+		layer_entry["base_position"] = base_position
 
 
-func _update_background_animation(delta: float) -> void:
-	if background_rect == null or background_textures.size() <= 1:
+func _update_background_parallax(delta: float) -> void:
+	if parallax_background == null or parallax_layers.is_empty():
 		return
 
-	background_frame_timer += delta
-	if background_frame_timer < BACKGROUND_FRAME_SECONDS:
-		return
+	parallax_time += delta
 
-	background_frame_timer = 0.0
-	background_frame_cursor = (background_frame_cursor + 1) % BACKGROUND_FRAME_ORDER.size()
-	var texture_index := int(BACKGROUND_FRAME_ORDER[background_frame_cursor])
-	if texture_index >= 0 and texture_index < background_textures.size():
-		background_rect.texture = background_textures[texture_index]
+	for layer_entry in parallax_layers:
+		var layer = layer_entry.get("node", null)
+		if layer == null or not is_instance_valid(layer):
+			continue
 
+		var base_position = layer_entry.get("base_position", Vector2.ZERO)
+		if not (base_position is Vector2):
+			base_position = Vector2.ZERO
 
-func _add_dark_gradient_overlay() -> void:
-	var shade := ColorRect.new()
-	shade.name = "BackgroundShade"
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.0, 0.0, 0.0, 0.10)
-	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(shade)
+		var drift = layer_entry.get("drift", Vector2.ZERO)
+		if not (drift is Vector2):
+			drift = Vector2.ZERO
 
-
-func _make_login_input(node_name: String, placeholder: String, input_position: Vector2, input_size: Vector2, secret_input: bool = false) -> LineEdit:
-	var input := LineEdit.new()
-	input.name = node_name
-	input.placeholder_text = placeholder
-	input.position = input_position
-	input.size = input_size
-	input.custom_minimum_size = input_size
-	input.alignment = HORIZONTAL_ALIGNMENT_CENTER
-	input.secret = secret_input
-	input.mouse_filter = Control.MOUSE_FILTER_STOP
-	_apply_login_input_style(input, 22)
-	return input
-
-
-func _apply_login_input_style(line_edit: LineEdit, font_size: int = 22) -> void:
-	if line_edit == null:
-		return
-
-	line_edit.add_theme_font_size_override("font_size", font_size)
-	line_edit.add_theme_stylebox_override("normal", PixelUIStyle.style_box(
-		Color(0.015, 0.040, 0.070, 0.95),
-		Color(0.002, 0.008, 0.014, 1.0),
-		4,
-		17,
-		7
-	))
-	line_edit.add_theme_stylebox_override("focus", PixelUIStyle.style_box(
-		Color(0.022, 0.058, 0.095, 0.98),
-		Color(0.70, 0.86, 1.0, 0.95),
-		4,
-		17,
-		8
-	))
-	line_edit.add_theme_color_override("font_color", Color(0.92, 0.98, 1.0, 1.0))
-	line_edit.add_theme_color_override("font_placeholder_color", Color(0.78, 0.88, 0.96, 0.64))
-	line_edit.add_theme_color_override("caret_color", Color(0.95, 0.76, 0.10, 1.0))
-	line_edit.add_theme_color_override("selection_color", Color(0.20, 0.48, 0.82, 0.58))
-
-
-func _apply_login_button_style(button: Button, selected: bool = false, danger: bool = false, font_size: int = 16) -> void:
-	if button == null:
-		return
-
-	PixelUIStyle.apply_button_text(button, font_size)
-	if danger:
-		button.add_theme_stylebox_override("normal", PixelUIStyle.style_box(Color(0.62, 0.08, 0.15, 0.98), Color(0.18, 0.01, 0.05, 1.0), 3, 12, 6))
-		button.add_theme_stylebox_override("hover", PixelUIStyle.style_box(Color(0.86, 0.12, 0.22, 0.98), Color(1.0, 0.38, 0.40, 0.72), 3, 12, 7))
-		button.add_theme_stylebox_override("pressed", PixelUIStyle.style_box(Color(0.40, 0.03, 0.09, 0.98), Color(0.12, 0.0, 0.02, 1.0), 3, 12, 4))
-		button.add_theme_stylebox_override("disabled", PixelUIStyle.style_box(Color(0.30, 0.04, 0.08, 0.72), Color(0.10, 0.0, 0.02, 0.92), 3, 12, 3))
-		return
-
-	if selected:
-		button.add_theme_stylebox_override("normal", PixelUIStyle.style_box(Color(0.95, 0.68, 0.08, 0.98), Color(1.0, 0.90, 0.22, 0.95), 3, 8, 6))
-		button.add_theme_stylebox_override("hover", PixelUIStyle.style_box(Color(1.0, 0.76, 0.12, 0.98), Color(1.0, 0.96, 0.38, 1.0), 3, 8, 7))
-		button.add_theme_stylebox_override("pressed", PixelUIStyle.style_box(Color(0.72, 0.36, 0.04, 0.98), Color(0.42, 0.15, 0.01, 1.0), 3, 8, 4))
-		button.add_theme_stylebox_override("disabled", PixelUIStyle.style_box(Color(0.48, 0.34, 0.05, 0.76), Color(0.74, 0.58, 0.12, 0.78), 3, 8, 3))
-		return
-
-	button.add_theme_stylebox_override("normal", PixelUIStyle.style_box(Color(0.060, 0.080, 0.145, 0.78), Color(0.45, 0.74, 1.0, 0.22), 2, 8, 2))
-	button.add_theme_stylebox_override("hover", PixelUIStyle.style_box(Color(0.09, 0.16, 0.30, 0.92), Color(0.50, 0.92, 1.0, 0.65), 2, 8, 4))
-	button.add_theme_stylebox_override("pressed", PixelUIStyle.style_box(Color(0.04, 0.10, 0.22, 0.98), Color(0.18, 0.48, 0.86, 0.85), 2, 8, 2))
-	button.add_theme_stylebox_override("disabled", PixelUIStyle.style_box(Color(0.030, 0.045, 0.080, 0.62), Color(0.16, 0.28, 0.48, 0.30), 2, 8, 1))
-
-
-func _make_big_button(text: String, top_color: Color, bottom_color: Color) -> Button:
-	var button := Button.new()
-	button.text = text
-	button.custom_minimum_size = Vector2(LOGIN_BUTTON_W, LOGIN_BUTTON_H)
-	button.mouse_filter = Control.MOUSE_FILTER_STOP
-	_apply_color_button_style(button, top_color, bottom_color, 24, 15, 4, 8)
-	return button
-
-
-func _make_small_button(text: String, top_color: Color, bottom_color: Color) -> Button:
-	var button := Button.new()
-	button.text = text
-	button.custom_minimum_size = Vector2(EXIT_BUTTON_W, EXIT_BUTTON_H)
-	button.mouse_filter = Control.MOUSE_FILTER_STOP
-	_apply_color_button_style(button, top_color, bottom_color, 14, 11, 3, 6)
-	return button
-
-
-func _apply_color_button_style(button: Button, fill: Color, border: Color, font_size: int, radius: int, border_width: int, shadow_size: int) -> void:
-	if button == null:
-		return
-
-	PixelUIStyle.apply_button_text(button, font_size)
-	button.add_theme_stylebox_override("normal", PixelUIStyle.style_box(fill, border, border_width, radius, shadow_size))
-	button.add_theme_stylebox_override("hover", PixelUIStyle.style_box(fill.lightened(0.08), border.lightened(0.08), border_width, radius, shadow_size + 1))
-	button.add_theme_stylebox_override("pressed", PixelUIStyle.style_box(fill.darkened(0.14), border.darkened(0.12), border_width, radius, max(2, shadow_size - 2)))
-	button.add_theme_stylebox_override("disabled", PixelUIStyle.style_box(fill.darkened(0.35), border.darkened(0.30), border_width, radius, 3))
-
-
-func _style_box(fill: Color, border: Color, border_width: int, radius: int) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = fill
-	style.border_color = border
-	style.set_border_width_all(border_width)
-	style.set_corner_radius_all(radius)
-	style.shadow_color = Color(0, 0, 0, 0.35)
-	style.shadow_size = 8
-	style.shadow_offset = Vector2(0, 5)
-	return style
+		var speed := float(layer_entry.get("speed", 0.0))
+		var phase := float(layer_entry.get("phase", 0.0))
+		var wave_x: float = sin((parallax_time * speed) + phase) * drift.x
+		layer.position = base_position + Vector2(wave_x, 0.0)
 
 
 func _load_saved_account() -> void:
+	loading_saved_account = true
 	var cfg := ConfigFile.new()
-	var err := cfg.load(PROFILE_PATH)
+	var err := cfg.load(profile_path)
 	if err == OK:
 		var username = str(cfg.get_value("profile", "username", ""))
 		saved_session_username = username.strip_edges()
@@ -449,16 +463,20 @@ func _load_saved_account() -> void:
 		var remember_login = bool(cfg.get_value("profile", "remember_login", cfg.get_value("profile", "remember_password", false)))
 		remember_password_check.button_pressed = remember_login
 		saved_session_token = str(cfg.get_value("profile", "session_token", "")).strip_edges() if remember_login else ""
+		saved_refresh_token = str(cfg.get_value("profile", "refresh_token", "")).strip_edges() if remember_login else ""
 		saved_session_role = str(cfg.get_value("profile", "role", "player")).strip_edges().to_lower()
 		password_input.text = ""
+		_update_saved_login_password_placeholder()
 		_clear_local_password_cache(cfg)
 		cfg.set_value("profile", "remember_login", remember_login)
 		if not remember_login:
 			cfg.set_value("profile", "session_token", "")
-		cfg.save(PROFILE_PATH)
+			cfg.set_value("profile", "refresh_token", "")
+		cfg.save(profile_path)
 
 		if email_input.text.strip_edges() == "" and account_manager != null and account_manager.has_method("get_email_for_username"):
 			email_input.text = account_manager.get_email_for_username(username)
+	loading_saved_account = false
 
 
 func _on_username_submitted(_text: String) -> void:
@@ -476,8 +494,104 @@ func _on_password_submitted(_text: String) -> void:
 	_on_sign_on_pressed()
 
 
+func _on_remember_login_toggled(enabled: bool) -> void:
+	if loading_saved_account or enabled:
+		return
+	if saved_session_token != "" or saved_refresh_token != "":
+		_clear_remembered_login_tokens()
+
+
 func _on_exit_pressed() -> void:
 	get_tree().quit()
+
+
+func _on_reset_email_pressed() -> void:
+	if auth_busy:
+		return
+
+	var username := username_input.text.strip_edges()
+	var new_email := email_input.text.strip_edges()
+	var password := password_input.text
+
+	var validation = _validate_email_change_input(username, new_email, password)
+	if not bool(validation.get("ok", false)):
+		_show_message(str(validation.get("message", "Could not start email change.")))
+		return
+
+	_clear_network_login_notice()
+	auth_busy = true
+	_show_message("Sending email change confirmation...")
+
+	var connected_ok = await _wait_for_server_connection()
+	if not connected_ok:
+		auth_busy = false
+		_show_message(_server_connection_failed_message())
+		return
+
+	var network = _get_network_manager()
+	if network == null or not network.has_method("send_account_email_change_request"):
+		auth_busy = false
+		_show_message("Server account system not ready.")
+		return
+
+	var request_id = str(network.send_account_email_change_request(username, new_email, password))
+	if request_id == "":
+		auth_busy = false
+		_show_message("Could not contact server.")
+		return
+
+	var result = await _wait_for_auth_response(request_id, 10.0)
+	auth_busy = false
+	if not bool(result.get("ok", false)):
+		_show_message(str(result.get("message", "Could not start email change.")))
+		return
+
+	password_input.text = ""
+	_show_message(str(result.get("message", "Check your new email to confirm the change.")))
+
+
+func _on_reset_password_pressed() -> void:
+	if auth_busy:
+		return
+
+	var username := username_input.text.strip_edges()
+	var email := email_input.text.strip_edges()
+
+	var validation = _validate_password_reset_input(username, email)
+	if not bool(validation.get("ok", false)):
+		_show_message(str(validation.get("message", "Could not start password reset.")))
+		return
+
+	_clear_network_login_notice()
+	auth_busy = true
+	_show_message("Sending password reset email...")
+
+	var connected_ok = await _wait_for_server_connection()
+	if not connected_ok:
+		auth_busy = false
+		_show_message(_server_connection_failed_message())
+		return
+
+	var network = _get_network_manager()
+	if network == null or not network.has_method("send_account_password_reset_request"):
+		auth_busy = false
+		_show_message("Server account system not ready.")
+		return
+
+	var request_id = str(network.send_account_password_reset_request(username, email))
+	if request_id == "":
+		auth_busy = false
+		_show_message("Could not contact server.")
+		return
+
+	var result = await _wait_for_auth_response(request_id, 10.0)
+	auth_busy = false
+	if not bool(result.get("ok", false)):
+		_show_message(str(result.get("message", "Could not start password reset.")))
+		return
+
+	password_input.text = ""
+	_show_message(str(result.get("message", "If that account matches, I sent a password reset email.")))
 
 
 func _on_server_auth_finished(data) -> void:
@@ -485,6 +599,8 @@ func _on_server_auth_finished(data) -> void:
 		return
 
 	var request_id = str(data.get("request_id", "")).strip_edges()
+	if pending_auth_request_id == "" and bool(data.get("ok", false)) and _should_enter_netfox_launch_world_after_login():
+		call_deferred("_try_enter_authenticated_netfox_launch_world", data.duplicate(true))
 	if request_id == "" or request_id != pending_auth_request_id:
 		return
 
@@ -612,6 +728,40 @@ func _validate_register_input(username: String, email: String, password: String)
 	return {"ok": true}
 
 
+func _validate_password_reset_input(username: String, email: String) -> Dictionary:
+	if account_manager == null:
+		return {"ok": false, "message": "Account system not ready."}
+
+	var username_validation = account_manager.validate_username(username)
+	if not bool(username_validation.get("ok", false)):
+		return username_validation
+
+	var email_validation = account_manager.validate_email(email)
+	if not bool(email_validation.get("ok", false)):
+		return email_validation
+
+	return {"ok": true}
+
+
+func _validate_email_change_input(username: String, new_email: String, password: String) -> Dictionary:
+	if account_manager == null:
+		return {"ok": false, "message": "Account system not ready."}
+
+	var username_validation = account_manager.validate_username(username)
+	if not bool(username_validation.get("ok", false)):
+		return username_validation
+
+	var email_validation = account_manager.validate_email(new_email)
+	if not bool(email_validation.get("ok", false)):
+		return email_validation
+
+	var password_validation = account_manager.validate_password(password)
+	if not bool(password_validation.get("ok", false)):
+		return {"ok": false, "message": "Enter your current password."}
+
+	return {"ok": true}
+
+
 func _cache_server_account(username: String, email: String) -> void:
 	if account_manager != null and account_manager.has_method("cache_server_account"):
 		account_manager.cache_server_account(username, email)
@@ -666,13 +816,14 @@ func _on_register_pressed() -> void:
 	var server_username = str(result.get("username", username))
 	var server_email = str(result.get("email", email))
 	var session_token = str(result.get("session_token", ""))
+	var refresh_token = str(result.get("refresh_token", ""))
 	var role = str(result.get("role", "player"))
 	if session_token == "":
 		_show_message("Check your email to verify this account before signing on.")
 		return
 
 	_cache_server_account(server_username, server_email)
-	_save_active_account(server_username, server_email, session_token, role)
+	_save_active_account(server_username, server_email, session_token, role, refresh_token)
 	password_input.text = ""
 	_show_message("Account registered.")
 	get_tree().change_scene_to_file(LOBBY_SCENE)
@@ -707,11 +858,13 @@ func _on_sign_on_pressed() -> void:
 		return
 
 	var request_id = ""
+	var used_saved_login := false
 
 	var email_matches_saved = email == "" or email.to_lower() == saved_session_email.to_lower()
-	if password == "" and saved_session_token != "" and username.to_lower() == saved_session_username.to_lower() and email_matches_saved:
-		if network.has_method("send_account_token_login"):
-			request_id = str(network.send_account_token_login(username, saved_session_token))
+	var has_saved_login := saved_refresh_token != "" or saved_session_token != ""
+	if password == "" and has_saved_login and username.to_lower() == saved_session_username.to_lower() and email_matches_saved:
+		request_id = _send_saved_login_request(network, username)
+		used_saved_login = request_id != ""
 	else:
 		if account_manager != null and account_manager.has_method("validate_email"):
 			var email_validation = account_manager.validate_email(email)
@@ -738,6 +891,8 @@ func _on_sign_on_pressed() -> void:
 	var result = await _wait_for_auth_response(request_id)
 	auth_busy = false
 	if not bool(result.get("ok", false)):
+		if used_saved_login and _saved_login_error_requires_clear(result):
+			_clear_remembered_login_tokens()
 		_show_message(str(result.get("message", "Could not sign on.")))
 		return
 
@@ -748,34 +903,167 @@ func _on_sign_on_pressed() -> void:
 	var server_username = str(result.get("username", username))
 	var server_email = str(result.get("email", ""))
 	var session_token = str(result.get("session_token", ""))
+	var refresh_token = str(result.get("refresh_token", ""))
+	if refresh_token == "" and used_saved_login:
+		refresh_token = saved_refresh_token
 	var role = str(result.get("role", "player"))
 	if session_token == "":
 		_show_message("Verify your email before signing on.")
 		return
 
 	_cache_server_account(server_username, server_email)
-	_save_active_account(server_username, server_email, session_token, role)
+	_save_active_account(server_username, server_email, session_token, role, refresh_token)
 	password_input.text = ""
+	if _should_enter_netfox_launch_world_after_login():
+		await _try_enter_authenticated_netfox_launch_world({
+			"username": server_username,
+			"email": server_email,
+			"role": role,
+		})
+		return
 	get_tree().change_scene_to_file(LOBBY_SCENE)
 
 
-func _save_active_account(username: String, email: String, token: String, role: String = "player") -> void:
+func _save_active_account(username: String, email: String, token: String, role: String = "player", refresh_token: String = "") -> void:
 	_set_network_session(username, email, token, role)
 
 	var cfg := ConfigFile.new()
-	cfg.load(PROFILE_PATH)
+	cfg.load(profile_path)
 	var should_remember_login = remember_password_check != null and remember_password_check.button_pressed
 	cfg.set_value("profile", "username", username)
 	cfg.set_value("profile", "email", email)
 	cfg.set_value("profile", "session_token", token if should_remember_login else "")
+	cfg.set_value("profile", "refresh_token", refresh_token if should_remember_login else "")
 	cfg.set_value("profile", "role", role)
 	cfg.set_value("profile", "remember_login", should_remember_login)
 	_clear_local_password_cache(cfg)
-	cfg.save(PROFILE_PATH)
+	cfg.save(profile_path)
 	saved_session_username = username
 	saved_session_email = email
 	saved_session_token = token if should_remember_login else ""
+	saved_refresh_token = refresh_token if should_remember_login else ""
 	saved_session_role = role
+	_update_saved_login_password_placeholder()
+
+
+func _send_saved_login_request(network, username: String) -> String:
+	if network == null:
+		return ""
+	if saved_refresh_token != "" and network.has_method("send_account_refresh_token_login"):
+		return str(network.send_account_refresh_token_login(username, saved_refresh_token))
+	if saved_session_token != "" and network.has_method("send_account_token_login"):
+		return str(network.send_account_token_login(username, saved_session_token))
+	return ""
+
+
+func _saved_login_error_requires_clear(result: Dictionary) -> bool:
+	var reason := str(result.get("reason", "")).strip_edges().to_lower()
+	return ["missing_token", "invalid_or_expired", "invalid_refresh_token", "invalid_account_state"].has(reason)
+
+
+func _clear_remembered_login_tokens() -> void:
+	var cfg := ConfigFile.new()
+	cfg.load(profile_path)
+	cfg.set_value("profile", "session_token", "")
+	cfg.set_value("profile", "refresh_token", "")
+	cfg.set_value("profile", "remember_login", false)
+	_clear_local_password_cache(cfg)
+	cfg.save(profile_path)
+	saved_session_token = ""
+	saved_refresh_token = ""
+	if remember_password_check != null:
+		remember_password_check.button_pressed = false
+	_update_saved_login_password_placeholder()
+
+
+func _update_saved_login_password_placeholder() -> void:
+	if password_input == null:
+		return
+	var has_saved_login := saved_refresh_token != "" or saved_session_token != ""
+	password_input.placeholder_text = "Saved login ready" if has_saved_login else "Password"
+
+
+func _should_enter_netfox_launch_world_after_login() -> bool:
+	return MovementMode.is_netfox_real_launch_requested() and MovementMode.has_method("is_netfox_real_client_launch") and MovementMode.is_netfox_real_client_launch() and MovementMode.get_launch_arg_value("--world", "").strip_edges() != ""
+
+
+func _try_enter_authenticated_netfox_launch_world(auth_data: Dictionary = {}) -> void:
+	if netfox_launch_scene_change_in_progress or not is_inside_tree():
+		return
+	if not _should_enter_netfox_launch_world_after_login():
+		return
+
+	var network = _get_network_manager()
+	if network == null or not network.has_method("is_server_session_authenticated"):
+		return
+	if not bool(network.is_server_session_authenticated()):
+		return
+
+	var username := str(auth_data.get("username", saved_session_username)).strip_edges()
+	if username == "" and network.has_method("get_active_session_username"):
+		username = str(network.get_active_session_username()).strip_edges()
+	var email := str(auth_data.get("email", saved_session_email)).strip_edges()
+	if email == "" and network.has_method("get_active_session_email"):
+		email = str(network.get_active_session_email()).strip_edges()
+	var role := str(auth_data.get("role", saved_session_role)).strip_edges()
+	if role == "":
+		role = "player"
+	if username == "":
+		push_error("[WorldJoinHandoff] Authenticated session has no username; refusing world transition.")
+		return
+
+	netfox_launch_scene_change_in_progress = true
+	var handoff_started_at := Time.get_ticks_msec()
+	_prepare_authenticated_netfox_launch_world(username, email, role)
+	print("[WorldJoinHandoff] Authenticated launch handoff started.")
+
+	var world_scene: PackedScene = await _wait_for_preloaded_world_scene()
+	if not is_inside_tree():
+		return
+	if world_scene == null:
+		netfox_launch_scene_change_in_progress = false
+		_show_message("Could not load the world scene. Try again.")
+		return
+
+	print("[WorldJoinHandoff] World scene ready elapsed_ms=%.3f" % float(Time.get_ticks_msec() - handoff_started_at))
+	var change_error := get_tree().change_scene_to_packed(world_scene)
+	if change_error != OK:
+		netfox_launch_scene_change_in_progress = false
+		push_error("[WorldJoinHandoff] World scene transition failed with error %d." % change_error)
+		_show_message("Could not enter the world. Try again.")
+
+
+func _wait_for_preloaded_world_scene() -> PackedScene:
+	var start_error: Error = WorldScenePreloader.start()
+	if start_error != OK:
+		push_error("[WorldJoinHandoff] Could not start world preload: %d." % start_error)
+		return null
+
+	var deadline_msec := Time.get_ticks_msec() + 15000
+	while is_inside_tree() and Time.get_ticks_msec() < deadline_msec:
+		WorldScenePreloader.pump()
+		if WorldScenePreloader.is_ready():
+			return WorldScenePreloader.get_loaded_scene()
+		var load_error: Error = WorldScenePreloader.get_last_error()
+		if load_error != OK:
+			push_error("[WorldJoinHandoff] World preload failed with error %d." % load_error)
+			return null
+		await get_tree().process_frame
+
+	push_error("[WorldJoinHandoff] Timed out waiting for the preloaded world scene.")
+	return null
+
+
+func _prepare_authenticated_netfox_launch_world(username: String, email: String, role: String = "player") -> void:
+	var world_name := MovementMode.get_dev_test_world_name("NETFOX_TEST")
+	var network = _get_network_manager()
+	if network != null:
+		if network.has_method("set_pending_join"):
+			network.set_pending_join(world_name, username)
+		network.set("current_world_name", world_name)
+	var remember_login := saved_refresh_token != "" or saved_session_token != ""
+	_write_pending_join_profile_config(world_name, username, email, saved_session_token, remember_login, role, saved_refresh_token)
+	print("[NetfoxReal] Authenticated launch entering %s as %s." % [world_name, username])
 
 
 func _clear_local_password_cache(cfg: ConfigFile) -> void:
@@ -791,4 +1079,7 @@ func _set_network_session(username: String, email: String, token: String, role: 
 
 
 func _show_message(text: String) -> void:
+	if message_label == null or not is_instance_valid(message_label):
+		print("[BackendDevLogin] " + text)
+		return
 	message_label.text = text

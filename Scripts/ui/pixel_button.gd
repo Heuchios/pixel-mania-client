@@ -3,7 +3,7 @@ extends Button
 @export var pixel_text: String = "BUTTON"
 @export_enum("yellow", "blue", "green", "close", "tab", "custom") var button_style: String = "yellow"
 
-@export var font_size: int = 18
+@export var font_size: int = PixelUIStyle.DEFAULT_TEXT_FONT_SIZE
 @export var selected: bool = false
 @export var auto_apply_style: bool = true
 @export var min_size: Vector2 = Vector2(120, 42)

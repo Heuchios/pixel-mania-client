@@ -52,6 +52,15 @@ func set_world(world_ref) -> void:
 	world = world_ref
 
 
+func get_hud_layer() -> Node:
+	if world != null and world.has_method("get_ui_hud_layer"):
+		var hud_layer = world.get_ui_hud_layer()
+		if hud_layer != null:
+			return hud_layer
+
+	return self
+
+
 func setup() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -105,15 +114,28 @@ func update_position() -> void:
 
 
 func setup_notification_button() -> void:
-	notification_button = get_node_or_null("NotificationButton")
+	var hud_layer = get_hud_layer()
+	notification_button = null
+	if hud_layer != null:
+		notification_button = hud_layer.get_node_or_null("NotificationButton")
+	if notification_button == null and hud_layer != self:
+		notification_button = get_node_or_null("NotificationButton")
 	if notification_button == null:
 		notification_button = Button.new()
 		notification_button.name = "NotificationButton"
-		add_child(notification_button)
+		if hud_layer != null:
+			hud_layer.add_child(notification_button)
+		else:
+			add_child(notification_button)
+	elif hud_layer != null and notification_button.get_parent() != hud_layer:
+		var old_parent = notification_button.get_parent()
+		if old_parent != null:
+			old_parent.remove_child(notification_button)
+		hud_layer.add_child(notification_button)
 
 	notification_button.text = ""
 	notification_button.size = NOTIFICATION_BUTTON_SIZE
-	notification_button.z_index = 174
+	notification_button.z_index = 185
 	notification_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	notification_button.focus_mode = Control.FOCUS_NONE
 	apply_notification_icon_button_style(notification_button)
@@ -233,9 +255,6 @@ func update_notification_button_position() -> void:
 
 
 func is_floating_hud_blocked() -> bool:
-	if world != null and world.has_method("is_movement_blocking_ui_open"):
-		return bool(world.is_movement_blocking_ui_open())
-
 	return false
 
 
@@ -766,6 +785,9 @@ func should_ignore_notification(message: String) -> bool:
 	if lower.begins_with("zoom") or lower.find("zoom") != -1:
 		return true
 
+	if is_xp_gain_notification(lower):
+		return true
+
 	return false
 
 
@@ -795,6 +817,20 @@ func is_routine_world_action_message(lower_message: String) -> bool:
 		return true
 
 	return false
+
+
+func is_xp_gain_notification(lower_message: String) -> bool:
+	var clean_message = lower_message.strip_edges()
+	if not clean_message.begins_with("+"):
+		return false
+
+	var first_space = clean_message.find(" ")
+	var xp_prefix: String = clean_message
+	if first_space > 0:
+		xp_prefix = clean_message.substr(0, first_space)
+
+	var amount_text = xp_prefix.substr(1).strip_edges()
+	return amount_text.is_valid_int() and clean_message.find("xp") != -1
 
 
 func show_message(message: String, forced_kind: String = "") -> void:

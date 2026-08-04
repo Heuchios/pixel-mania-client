@@ -1,5 +1,7 @@
 extends Node
 
+const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
+
 var world = null
 
 var autosave_interval := 1.0
@@ -15,12 +17,19 @@ var legacy_server_inventory_import_in_flight := false
 var legacy_server_inventory_import_attempts := 0
 var last_server_player_state_username := ""
 var last_server_player_state_hash := 0
+var last_server_player_state_saved_at := ""
 var last_server_player_state_applied_ms := 0
+var network_player_state_request_in_flight := false
+var network_player_state_request_username := ""
+var network_player_state_request_started_ms := 0
+var world_entry_final_entrance_snap_id := 0
 
 # Turn this on only when you want console proof that saving is happening.
 # Leaving it false avoids printing "World saved." every second.
 var print_save_messages := false
+const WORLD_ENTRY_FINAL_ENTRANCE_SNAP_FRAMES := 2
 const PLAYER_SAVE_FOLDER = "user://players/"
+const LOBBY_PROFILE_PATH = "user://pixelmania_profile.cfg"
 const LEGACY_PLAYER_MIGRATION_MARKER = "user://players/_legacy_player_data_migrated.txt"
 const LEGACY_SERVER_INVENTORY_IMPORT_MARKER_PREFIX = "user://players/_legacy_server_inventory_import_confirmed_"
 const LEGACY_SERVER_INVENTORY_IMPORT_MAX_ATTEMPTS := 3
@@ -30,10 +39,13 @@ const PLAYER_INVENTORY_SAVE_KEYS = [
 	"seed_inventory",
 	"tool_inventory",
 	"back_inventory",
+	"hat_inventory",
 	"hair_inventory",
+	"eyewear_inventory",
 	"shirt_inventory",
 	"pants_inventory",
 	"shoes_inventory",
+	"ride_inventory",
 	"currency_inventory",
 	"material_inventory",
 	"lure_inventory",
@@ -45,18 +57,29 @@ const PLAYER_LOADOUT_SAVE_KEYS = [
 	"primary_hotbar_tool",
 	"equipped_tool",
 	"equipped_back_item",
+	"equipped_hat_item",
 	"equipped_hair_item",
+	"equipped_eyewear_item",
 	"equipped_shirt_item",
 	"equipped_pants_item",
-	"equipped_shoes_item"
+	"equipped_shoes_item",
+	"equipped_ride_item"
 ]
-const MAX_INVENTORY_STACK := 200
+const MAX_INVENTORY_STACK := 400
 const MAX_INVENTORY_STRING_LEN := 64
 const MAX_PLAYER_HEALTH := 10
 const MAX_PLAYER_LEVEL := 100
 const DUPLICATE_SERVER_PLAYER_STATE_WINDOW_MS := 1500
+const SERVER_PLAYER_STATE_FRESH_MS := 30000
+const NETWORK_PLAYER_STATE_REQUEST_TIMEOUT_MS := 15000
 const DEBUG_ACTION_POSITION_FLOW := false
 const WORLD_EXIT_BLOCK_UPDATE_DRAIN_TIMEOUT_MS := 1800
+# World entry performance: when the server is expected to send the real world state,
+# do not build a full generated world first. The loading overlay can cover an empty
+# base while we wait for the authoritative block payload.
+const FAST_WORLD_ENTRY_SKIP_SERVER_BASE_GENERATION := true
+# Let the loading CanvasLayer render before any heavy save/clear/load work starts.
+const WORLD_ENTRY_OVERLAY_DRAW_FRAMES := 2
 
 
 func debug_action_position_flow(message: String, extra_data: Dictionary = {}) -> void:
@@ -78,6 +101,10 @@ func _safe_int(value, fallback: int, min_value: int = 0, max_value: int = 214748
 		if not is_finite(num):
 			return fallback
 		return clamp(int(num), min_value, max_value)
+	if value is String:
+		var text := str(value).strip_edges()
+		if text.is_valid_int():
+			return clamp(int(text), min_value, max_value)
 	return fallback
 
 
@@ -95,6 +122,23 @@ func _safe_string(value, fallback: String = "", max_length: int = 0) -> String:
 	return text
 
 
+func select_first_hotbar_slot_silent():
+	if world == null:
+		return
+	if not (world.hotbar_items is Array) or not (world.hotbar_item_categories is Array):
+		return
+	if world.hotbar_items.is_empty() or world.hotbar_item_categories.is_empty():
+		return
+
+	var item_type = _safe_string(world.hotbar_items[0], "", MAX_INVENTORY_STRING_LEN)
+	var category = _safe_string(world.hotbar_item_categories[0], "", MAX_INVENTORY_STRING_LEN)
+	if item_type == "" or category == "" or category == "empty":
+		return
+
+	world.selected_item_type = item_type
+	world.selected_item_category = category
+
+
 func _safe_float(value, fallback: float, min_value: float = -1.0e9, max_value: float = 1.0e9) -> float:
 	if value is int or value is float:
 		var num = float(value)
@@ -109,6 +153,69 @@ func _safe_bool(value, fallback: bool = false) -> bool:
 	if value is bool:
 		return value
 	return fallback
+
+
+func _saved_layer_key(grid_pos: Vector2i) -> String:
+	return str(grid_pos.x) + "," + str(grid_pos.y)
+
+
+func _parse_saved_layer_key(raw_key) -> Dictionary:
+	var parts := str(raw_key).strip_edges().split(",", false)
+	if parts.size() < 2:
+		return {}
+	var x_text := str(parts[0]).strip_edges()
+	var y_text := str(parts[1]).strip_edges()
+	if not x_text.is_valid_int() or not y_text.is_valid_int():
+		return {}
+	return {
+		"x": _safe_int(x_text, 0, 0, max(world.WORLD_WIDTH - 1, 0)),
+		"y": _safe_int(y_text, 0, 0, max(world.WORLD_HEIGHT - 1, 0))
+	}
+
+
+func _normalize_saved_layer_entries(raw_layer) -> Array:
+	var result: Array = []
+	if raw_layer is Array:
+		for raw_entry in raw_layer:
+			if raw_entry is Dictionary:
+				result.append((raw_entry as Dictionary).duplicate(true))
+		return result
+
+	if raw_layer is Dictionary:
+		for raw_key in (raw_layer as Dictionary).keys():
+			var parsed_key := _parse_saved_layer_key(raw_key)
+			if parsed_key.is_empty():
+				continue
+			var raw_value = (raw_layer as Dictionary).get(raw_key)
+			var entry := {
+				"x": parsed_key.get("x", 0),
+				"y": parsed_key.get("y", 0)
+			}
+			if raw_value is Dictionary:
+				for field in (raw_value as Dictionary).keys():
+					entry[field] = raw_value[field]
+			else:
+				entry["item_id"] = raw_value
+			result.append(entry)
+	return result
+
+
+func _resolve_saved_block_type(block_data: Dictionary) -> String:
+	var block_type := _safe_string(block_data.get("type", block_data.get("block_type", "")), "", MAX_INVENTORY_STRING_LEN)
+	if block_type != "":
+		return block_type
+	return ITEM_ATLAS_DB.resolve_item_key(block_data.get("item_id", block_data.get("id", "")))
+
+
+func _get_saved_atlas_item_id(block_type: String, block_data: Dictionary = {}) -> int:
+	var explicit_id := _safe_int(block_data.get("item_id", 0), 0, 0, 2147483647)
+	if explicit_id > 0:
+		return explicit_id
+	if world != null and world.item_database.has(block_type):
+		explicit_id = _safe_int(world.item_database[block_type].get("atlas_item_id", 0), 0, 0, 2147483647)
+		if explicit_id > 0:
+			return explicit_id
+	return ITEM_ATLAS_DB.get_item_id_for_key(block_type)
 
 
 func setup(world_ref, _autosave_interval: float = 1.0):
@@ -233,9 +340,30 @@ func clear_background_blocks():
 		var block_node = background_blocks[grid_pos].get("node", null)
 
 		if block_node != null and is_instance_valid(block_node):
+			retire_block_node_collision_for_removal(block_node)
 			block_node.queue_free()
 
 	background_blocks.clear()
+
+
+func retire_block_node_collision_for_removal(block_node) -> void:
+	if block_node == null or not is_instance_valid(block_node):
+		return
+
+	var manager = get_block_manager_ref()
+	if manager != null and manager.has_method("retire_block_node_for_removal"):
+		manager.retire_block_node_for_removal(block_node)
+		return
+
+	if block_node is CollisionObject2D:
+		var collision_object := block_node as CollisionObject2D
+		collision_object.collision_layer = 0
+		collision_object.collision_mask = 0
+
+	for child in block_node.get_children():
+		if child is CollisionShape2D:
+			(child as CollisionShape2D).disabled = true
+		retire_block_node_collision_for_removal(child)
 
 
 func should_loaded_block_get_missing_background(block_type: String, grid_pos: Vector2i) -> bool:
@@ -252,17 +380,16 @@ func should_loaded_block_get_missing_background(block_type: String, grid_pos: Ve
 
 
 func load_background_blocks_from_data(saved_background_blocks):
-	if not (saved_background_blocks is Array):
-		saved_background_blocks = []
+	saved_background_blocks = _normalize_saved_layer_entries(saved_background_blocks)
 
 	for block_data in saved_background_blocks:
 		if not (block_data is Dictionary):
 			continue
 
-		if not block_data.has("x") or not block_data.has("y") or not block_data.has("type"):
+		if not block_data.has("x") or not block_data.has("y"):
 			continue
 
-		var block_type = _safe_string(block_data.get("type", ""), "", MAX_INVENTORY_STRING_LEN)
+		var block_type = _resolve_saved_block_type(block_data)
 		if block_type == "":
 			continue
 
@@ -273,7 +400,7 @@ func load_background_blocks_from_data(saved_background_blocks):
 		if not world.is_grid_inside_world(grid_pos):
 			continue
 
-		if world.block_textures.has(block_type):
+		if world.item_database.has(block_type) or world.block_textures.has(block_type):
 			create_saved_background_block(grid_pos, block_type)
 
 
@@ -420,14 +547,20 @@ func mark_legacy_global_player_data_migrated():
 	file.close()
 
 
-func set_gameplay_world_active(active: bool):
+func set_gameplay_world_active(active: bool, sync_world_nodes: bool = true):
 	if world.player != null:
 		world.player.visible = active
 		world.player.velocity = Vector2.ZERO
 		world.player.set_physics_process(active and not world.noclip_enabled)
 
+	if not sync_world_nodes:
+		if world.seed_system != null and world.seed_system is CanvasItem:
+			world.seed_system.visible = active
+		return
+
 	for grid_pos in world.blocks.keys():
-		var block_node = world.blocks[grid_pos]["node"]
+		var block_data = world.blocks[grid_pos]
+		var block_node = block_data.get("node", null) if block_data is Dictionary else null
 
 		if is_instance_valid(block_node):
 			block_node.visible = active
@@ -505,9 +638,39 @@ func is_popup_ui_node_name(node_name: String) -> bool:
 	return false
 
 
+func is_world_entry_loading_active() -> bool:
+	if world == null:
+		return false
+
+	if bool(world.get_meta("world_entry_in_progress", false)):
+		return true
+
+	if world.has_method("is_smooth_world_load_visible") and bool(world.is_smooth_world_load_visible()):
+		return true
+
+	return false
+
+
+func hide_world_menu_overlay_for_loading() -> void:
+	if world == null:
+		return
+
+	if world.world_menu_ui != null and world.world_menu_ui.has_method("close_menu"):
+		world.world_menu_ui.close_menu()
+
+	if world.ui_layer == null:
+		return
+
+	var world_menu_overlay: Node = world.ui_layer.get_node_or_null("WorldMenuOverlay")
+	if world_menu_overlay != null and world_menu_overlay is CanvasItem:
+		(world_menu_overlay as CanvasItem).visible = false
+
+
 func set_gameplay_ui_visible(active: bool):
 	if world.ui_layer == null:
 		return
+
+	var loading_active: bool = is_world_entry_loading_active()
 
 	for child in world.ui_layer.get_children():
 		# Keep the world menu controller alive, but do not force its overlay visible.
@@ -516,11 +679,15 @@ func set_gameplay_ui_visible(active: bool):
 			continue
 
 		if child.name == "ChatUI":
-			child.visible = active
+			child.visible = active and not loading_active
 			continue
 
 		if child.name == "WorldMenuOverlay":
-			if active:
+			# During world entry/loading, do NOT show the world menu as the fallback screen.
+			# The dedicated WorldLoadingOverlay CanvasLayer should be the only visible screen.
+			if loading_active:
+				child.visible = false
+			elif active:
 				child.visible = false
 			else:
 				child.visible = true
@@ -546,6 +713,10 @@ func close_all_gameplay_popups():
 		world.close_safe_ui()
 	if world.has_method("close_fish_monger_ui"):
 		world.close_fish_monger_ui()
+	if world.has_method("close_wooden_entrance_confirm"):
+		world.close_wooden_entrance_confirm()
+	if world.has_method("close_door_editor"):
+		world.close_door_editor()
 	world.close_crafting()
 	world.close_furnace()
 	world.close_sign()
@@ -555,11 +726,20 @@ func close_all_gameplay_popups():
 		world.close_game_menu()
 	if world.has_method("close_trade_ui"):
 		world.close_trade_ui()
+	if world.has_method("close_area_lock_ui"):
+		world.close_area_lock_ui()
 
 func notify_network_join_current_world():
+	if _is_dev_test_login_active():
+		return
+
 	var network = world.get_node_or_null("/root/NetworkManager")
-	if network != null and network.has_method("send_join_world"):
-		var sent = bool(network.send_join_world(world.current_world_name))
+	if network != null and (network.has_method("send_join_world_if_needed") or network.has_method("send_join_world")):
+		var sent := false
+		if network.has_method("send_join_world_if_needed"):
+			sent = bool(network.send_join_world_if_needed(world.current_world_name))
+		else:
+			sent = bool(network.send_join_world(world.current_world_name))
 		if not sent and network.has_method("set_pending_join"):
 			network.set_pending_join(world.current_world_name, get_current_player_profile_name())
 
@@ -616,12 +796,42 @@ func handle_server_world_entry_rejected(data: Dictionary) -> bool:
 
 	var reason: String = str(data.get("reason", "")).strip_edges().to_lower()
 	var message: String = str(data.get("message", "Could not enter that world.")).strip_edges()
-	if reason.ends_with("_failed") or message.to_lower().contains("still loading"):
+	var retryable_reasons := [
+		"database_error",
+		"world_state_refresh_failed",
+		"player_state_refresh_failed",
+		"world_persistence_flush_failed",
+		"player_persistence_flush_failed",
+		"persistence_flush_failed",
+		"postgres_authority_unavailable",
+		"postgres_unavailable"
+	]
+	if reason in retryable_reasons or message.to_lower().contains("still loading"):
 		if world.has_method("update_smooth_world_load_message"):
 			world.update_smooth_world_load_message(message + " Retrying...")
 		return true
 
-	return handle_client_world_loading_failed(reason, message)
+	waiting_for_server_world_state = false
+	world_entry_pending_announce = false
+	world.set_meta("world_entry_in_progress", false)
+	world.set_meta("world_entry_force_entrance_spawn", false)
+	world.set_meta("world_bulk_load_in_progress", false)
+	world.set_meta("world_bulk_load_reason", "")
+	world.in_world = false
+	set_gameplay_world_active(false)
+	set_gameplay_ui_visible(false)
+	if world.has_method("cancel_smooth_world_load"):
+		world.cancel_smooth_world_load()
+
+	var network = world.get_node_or_null("/root/NetworkManager")
+	if network != null and network.has_method("cancel_active_join_request"):
+		network.cancel_active_join_request()
+
+	if world.world_menu_ui != null and world.world_menu_ui.has_method("return_to_lobby_menu"):
+		world.world_menu_ui.call_deferred("return_to_lobby_menu", false)
+	elif world.world_menu_ui != null and world.world_menu_ui.has_method("open_main_menu"):
+		world.world_menu_ui.call_deferred("open_main_menu")
+	return true
 
 
 func handle_client_world_loading_failed(reason: String, message: String) -> bool:
@@ -642,6 +852,7 @@ func handle_client_world_loading_failed(reason: String, message: String) -> bool
 
 	waiting_for_server_world_state = false
 	world_entry_pending_announce = false
+	world_entry_final_entrance_snap_id += 1
 	world.set_meta("world_entry_in_progress", false)
 	world.set_meta("world_entry_force_entrance_spawn", false)
 	world.set_meta("world_bulk_load_in_progress", false)
@@ -666,8 +877,41 @@ func handle_client_world_loading_failed(reason: String, message: String) -> bool
 		world.call_deferred("show_notification", clean_message)
 	return true
 
+
+func notify_netfox_world_left(world_name: String, reason: String = "world-left") -> void:
+	if world == null or not MovementMode.is_netfox_real():
+		return
+
+	var manager = world.get("netfox_real_manager")
+	if manager != null and manager.has_method("notify_world_left"):
+		manager.notify_world_left(world_name, reason)
+
+
+func notify_netfox_world_entry_started(world_name: String, reason: String = "world-entry-started") -> void:
+	if world == null or not MovementMode.is_netfox_real():
+		return
+
+	var manager = world.get("netfox_real_manager")
+	if manager != null and manager.has_method("notify_world_entry_started"):
+		manager.notify_world_entry_started(world_name, reason)
+
+
+func notify_netfox_world_entry_ready(world_name: String, reason: String = "world-entry-ready") -> void:
+	if world == null or not MovementMode.is_netfox_real():
+		return
+
+	var manager = world.get("netfox_real_manager")
+	if manager != null and manager.has_method("notify_world_entry_ready"):
+		manager.notify_world_entry_ready(world_name, reason)
+
+
 func notify_network_leave_world(world_name: String):
 	if world_name.strip_edges() == "":
+		return
+
+	notify_netfox_world_left(world_name, "notify_network_leave_world")
+
+	if _is_dev_test_login_active():
 		return
 
 	var network = world.get_node_or_null("/root/NetworkManager")
@@ -679,6 +923,7 @@ func notify_network_leave_world(world_name: String):
 
 	if world.player_manager != null and world.player_manager.has_method("reset_multiplayer_sync_state"):
 		world.player_manager.reset_multiplayer_sync_state()
+
 
 func get_pending_authoritative_block_update_count() -> int:
 	if world == null or world.block_manager == null:
@@ -710,9 +955,9 @@ func wait_for_pending_authoritative_block_updates(reason: String = "world_transi
 	return drained
 
 
-
 func exit_to_main_menu(save_current_world: bool = true):
 	var previous_world_name = world.current_world_name
+	var preserve_loading_overlay_for_pending_join := has_pending_lobby_join()
 
 	if world.in_world:
 		await wait_for_pending_authoritative_block_updates("exit_to_main_menu")
@@ -722,9 +967,13 @@ func exit_to_main_menu(save_current_world: bool = true):
 
 	waiting_for_server_world_state = false
 	world_entry_pending_announce = false
+	world_entry_final_entrance_snap_id += 1
+	world.set_meta("world_entry_force_entrance_spawn", false)
 
-	if world.has_method("cancel_smooth_world_load"):
+	if world.has_method("cancel_smooth_world_load") and not preserve_loading_overlay_for_pending_join:
 		world.cancel_smooth_world_load()
+	elif preserve_loading_overlay_for_pending_join:
+		show_pending_lobby_join_loading_overlay()
 
 	if world.in_world:
 		notify_network_leave_world(previous_world_name)
@@ -733,6 +982,10 @@ func exit_to_main_menu(save_current_world: bool = true):
 	world.close_shop()
 	if world.has_method("close_fish_monger_ui"):
 		world.close_fish_monger_ui()
+	if world.has_method("close_wooden_entrance_confirm"):
+		world.close_wooden_entrance_confirm()
+	if world.has_method("close_door_editor"):
+		world.close_door_editor()
 	world.close_crafting()
 	world.close_furnace()
 	world.close_inventory_window()
@@ -751,6 +1004,64 @@ func exit_to_main_menu(save_current_world: bool = true):
 		world.world_menu_ui.open_main_menu()
 	elif world.world_menu_ui != null and world.world_menu_ui.has_method("open_menu"):
 		world.world_menu_ui.open_menu("", true)
+
+
+func has_pending_lobby_join() -> bool:
+	if world != null:
+		var network = world.get_node_or_null("/root/NetworkManager")
+		if network != null and network.has_method("has_pending_join") and bool(network.has_pending_join()):
+			return true
+
+	var cfg := ConfigFile.new()
+	if cfg.load(LOBBY_PROFILE_PATH) != OK:
+		return false
+
+	if not bool(cfg.get_value("pending_join", "enabled", false)):
+		return false
+
+	var pending_world_name := str(cfg.get_value("pending_join", "world_name", "")).strip_edges()
+	if pending_world_name != "":
+		return true
+
+	return str(cfg.get_value("profile", "last_world", "")).strip_edges() != ""
+
+
+func show_pending_lobby_join_loading_overlay() -> void:
+	if world == null:
+		return
+	if not world.has_method("begin_smooth_world_load"):
+		return
+
+	var pending_world_name := get_pending_lobby_join_world_name()
+	if pending_world_name == "":
+		pending_world_name = "START"
+	pending_world_name = pending_world_name.to_upper()
+
+	world.begin_smooth_world_load(pending_world_name, true)
+	if world.has_method("update_smooth_world_load_message"):
+		world.update_smooth_world_load_message("Loading " + pending_world_name + "...")
+
+
+func get_pending_lobby_join_world_name() -> String:
+	if world != null:
+		var network = world.get_node_or_null("/root/NetworkManager")
+		if network != null and network.has_method("has_pending_join") and bool(network.has_pending_join()):
+			var network_world = str(network.get("pending_join_world_name")).strip_edges()
+			if network_world != "":
+				return network_world
+
+	var cfg := ConfigFile.new()
+	if cfg.load(LOBBY_PROFILE_PATH) != OK:
+		return ""
+
+	if not bool(cfg.get_value("pending_join", "enabled", false)):
+		return ""
+
+	var pending_world_name := str(cfg.get_value("pending_join", "world_name", "")).strip_edges()
+	if pending_world_name != "":
+		return pending_world_name
+
+	return str(cfg.get_value("profile", "last_world", "")).strip_edges()
 
 
 func exit_to_world_menu():
@@ -777,8 +1088,81 @@ func resume_current_world():
 		world.player.set_physics_process(true)
 
 
+func show_world_entry_loading_overlay(target_world_name: String, wait_for_server_state: bool, message: String = "") -> void:
+	if world == null:
+		return
+	var clean_world_name: String = str(target_world_name).strip_edges().to_upper()
+	if clean_world_name == "":
+		clean_world_name = str(world.current_world_name).strip_edges().to_upper()
+	hide_world_menu_overlay_for_loading()
+
+	if world.has_method("begin_smooth_world_load"):
+		world.begin_smooth_world_load(clean_world_name, wait_for_server_state)
+	if message.strip_edges() != "" and world.has_method("update_smooth_world_load_message"):
+		world.update_smooth_world_load_message(message)
+	elif world.has_method("update_smooth_world_load_message"):
+		world.update_smooth_world_load_message("Loading " + clean_world_name + "...")
+
+
+func wait_for_loading_overlay_to_draw(reason: String = "") -> void:
+	if world == null:
+		return
+	if not world.has_method("is_smooth_world_load_visible"):
+		return
+	if not bool(world.is_smooth_world_load_visible()):
+		return
+	var tree: SceneTree = world.get_tree()
+	if tree == null:
+		return
+	for _i in range(WORLD_ENTRY_OVERLAY_DRAW_FRAMES):
+		await tree.process_frame
+	debug_action_position_flow("loading overlay draw wait complete", {"reason": reason})
+
+
+func place_player_at_current_entrance_gate_for_world_entry(sync_to_server: bool = true) -> bool:
+	if world == null:
+		return false
+
+	if world.has_method("force_place_player_at_current_entrance_gate"):
+		return bool(world.force_place_player_at_current_entrance_gate(sync_to_server))
+
+	if world.has_method("place_player_at_entrance_immediate"):
+		world.place_player_at_entrance_immediate()
+		return true
+
+	return false
+
+
+func schedule_final_entrance_gate_snap_for_world_entry(sync_to_server: bool = true) -> void:
+	if world == null:
+		return
+
+	world_entry_final_entrance_snap_id += 1
+	var snap_id := world_entry_final_entrance_snap_id
+	var expected_world := str(world.current_world_name).strip_edges().to_upper()
+	_run_final_entrance_gate_snap_for_world_entry.call_deferred(snap_id, expected_world, sync_to_server)
+
+
+func _run_final_entrance_gate_snap_for_world_entry(snap_id: int, expected_world: String, sync_to_server: bool):
+	var tree := get_tree()
+	if tree == null:
+		return
+
+	for _i in range(WORLD_ENTRY_FINAL_ENTRANCE_SNAP_FRAMES):
+		await tree.process_frame
+
+	if snap_id != world_entry_final_entrance_snap_id:
+		return
+	if world == null or not bool(world.in_world):
+		return
+	if str(world.current_world_name).strip_edges().to_upper() != expected_world:
+		return
+
+	place_player_at_current_entrance_gate_for_world_entry(sync_to_server)
+
+
 func enter_world_by_name(raw_name: String):
-	var sanitized_name = sanitize_world_name(raw_name)
+	var sanitized_name: String = sanitize_world_name(raw_name)
 	debug_action_position_flow("enter_world_by_name start", {
 		"raw_name": raw_name,
 		"sanitized_name": sanitized_name
@@ -787,9 +1171,22 @@ func enter_world_by_name(raw_name: String):
 	if sanitized_name == "":
 		sanitized_name = world.DEFAULT_WORLD_NAME.to_lower()
 
+	var target_world_name: String = sanitized_name.to_upper()
+	var expect_server_world_state: bool = bool(should_expect_server_world_state())
+
+	# Show the loading screen BEFORE save_world(), clear_world(), load_world(), or server
+	# state application. Otherwise Godot cannot draw the CanvasLayer until after the
+	# heavy synchronous work finishes, which makes it look like the scene never showed.
+	show_world_entry_loading_overlay(
+		target_world_name,
+		expect_server_world_state,
+		"Loading " + target_world_name + (" from server..." if expect_server_world_state else "...")
+	)
+	await wait_for_loading_overlay_to_draw("enter_world_before_save_clear_load")
+
 	if world.in_world:
-		await wait_for_pending_authoritative_block_updates("enter_world_by_name")
 		var previous_world_name = world.current_world_name
+		await wait_for_pending_authoritative_block_updates("enter_world_by_name")
 		save_world()
 		if previous_world_name.strip_edges().to_upper() != sanitized_name.to_upper():
 			notify_network_leave_world(previous_world_name)
@@ -797,42 +1194,161 @@ func enter_world_by_name(raw_name: String):
 		if world.has_method("clear_remote_players"):
 			world.clear_remote_players()
 
-	world.current_world_name = sanitized_name.to_upper()
+	world.current_world_name = target_world_name
 	world.in_world = true
 	world.set_meta("world_entry_in_progress", true)
-	waiting_for_server_world_state = should_expect_server_world_state()
+	# Normal world entry should always spawn at the current live entrance gate.
+	# This prevents old saved/server player coordinates from overriding a moved gate.
+	world.set_meta("world_entry_force_entrance_spawn", true)
+	world.set_meta("world_bulk_load_in_progress", true)
+	world.set_meta("world_bulk_load_reason", "world_entry")
+	waiting_for_server_world_state = expect_server_world_state
 	world_entry_pending_announce = true
+	notify_netfox_world_entry_started(target_world_name, "enter_world_by_name")
 	debug_action_position_flow("enter_world_by_name waiting state", {
 		"waiting_for_server_world_state": waiting_for_server_world_state
 	})
 
-	clear_world()
+	if world.world_menu_ui != null and world.world_menu_ui.has_method("close_menu"):
+		world.world_menu_ui.close_menu()
+	hide_world_menu_overlay_for_loading()
+	close_all_gameplay_popups()
 	set_gameplay_ui_visible(false)
 	set_gameplay_world_active(false)
 
-	if world.has_method("begin_smooth_world_load"):
-		world.begin_smooth_world_load(world.current_world_name, waiting_for_server_world_state)
-
-	if waiting_for_server_world_state and world.has_method("update_smooth_world_load_message"):
-		world.update_smooth_world_load_message("Loading " + world.current_world_name + " from server...")
-
-	if world.world_menu_ui != null and world.world_menu_ui.has_method("close_menu"):
-		world.world_menu_ui.close_menu()
+	if world.has_method("update_smooth_world_load_message"):
+		world.update_smooth_world_load_message("Clearing old world...")
+	await wait_for_loading_overlay_to_draw("enter_world_before_clear_world")
+	clear_world()
 
 	var network = world.get_node_or_null("/root/NetworkManager")
 	if waiting_for_server_world_state and network != null and network.has_method("request_server_connection"):
-		network.request_server_connection(true)
-
-	load_world()
+		network.request_server_connection(false)
 
 	if waiting_for_server_world_state:
-		set_gameplay_world_active(false)
+		load_clean_server_world_base(true)
 		if should_use_server_world_state():
 			notify_network_join_current_world()
 		return
 
+	if world.has_method("update_smooth_world_load_message"):
+		world.update_smooth_world_load_message("Loading " + world.current_world_name + "...")
+	await wait_for_loading_overlay_to_draw("enter_world_before_load_world")
+	load_world()
+
 	notify_network_join_current_world()
 	finish_world_entry_after_load(true, true)
+
+
+func handle_network_door_enter_ok(data: Dictionary):
+	if MovementMode.is_netfox_real():
+		return
+
+	var target_world = sanitize_world_name(str(data.get("world", world.current_world_name)))
+	if target_world == "":
+		apply_same_world_door_spawn_with_transition(data)
+		return
+
+	var current_world = sanitize_world_name(str(world.current_world_name))
+	var needs_world_state = bool(data.get("requires_world_state", false)) or target_world.to_upper() != current_world.to_upper()
+	if needs_world_state:
+		begin_server_door_world_entry_with_transition(data, target_world)
+		return
+
+	apply_same_world_door_spawn_with_transition(data)
+
+
+func begin_local_door_exit_fade(finished_callable: Callable) -> bool:
+	if not MovementMode.is_websocket():
+		return false
+	if world == null or world.player == null or not is_instance_valid(world.player):
+		return false
+
+	if world.player is CharacterBody2D:
+		world.player.velocity = Vector2.ZERO
+		world.player.set_physics_process(false)
+
+	if world.player_manager != null and world.player_manager.has_method("play_local_player_world_exit_fade"):
+		return bool(world.player_manager.play_local_player_world_exit_fade(finished_callable))
+
+	return false
+
+
+func apply_same_world_door_spawn_with_transition(data: Dictionary):
+	var transition_data := data.duplicate(true)
+	var finished_callable := Callable(self, "_finish_same_world_door_spawn_transition").bind(transition_data)
+	if begin_local_door_exit_fade(finished_callable):
+		return
+
+	_finish_same_world_door_spawn_transition(transition_data)
+
+
+func _finish_same_world_door_spawn_transition(data: Dictionary):
+	if world.has_method("apply_server_door_spawn"):
+		world.apply_server_door_spawn(data)
+
+	if MovementMode.is_websocket() and world.player_manager != null and world.player_manager.has_method("play_local_player_world_enter_fade"):
+		world.player_manager.play_local_player_world_enter_fade()
+
+
+func begin_server_door_world_entry_with_transition(data: Dictionary, target_world: String):
+	var transition_data := data.duplicate(true)
+	var transition_world := target_world
+	var finished_callable := Callable(self, "_begin_server_door_world_entry_after_fade").bind(transition_data, transition_world)
+	if begin_local_door_exit_fade(finished_callable):
+		return
+
+	_begin_server_door_world_entry_after_fade(transition_data, transition_world)
+
+
+func _begin_server_door_world_entry_after_fade(data: Dictionary, target_world: String):
+	begin_server_door_world_entry(data, target_world)
+
+
+func begin_server_door_world_entry(data: Dictionary, target_world: String):
+	var sanitized_name: String = sanitize_world_name(target_world)
+	if sanitized_name == "":
+		return
+
+	var target_world_name: String = sanitized_name.to_upper()
+	show_world_entry_loading_overlay(target_world_name, true, "Entering " + target_world_name + "...")
+	await wait_for_loading_overlay_to_draw("door_entry_before_save_clear")
+
+	if world.in_world:
+		save_world()
+
+	if world.has_method("clear_remote_players"):
+		world.clear_remote_players()
+
+	world.current_world_name = target_world_name
+	world.in_world = true
+	world.set_meta("world_entry_in_progress", true)
+	# Cross-world entries should resolve the destination world's live Entrance Gate
+	# after the server world-state has loaded. Same-world doors still use their
+	# door coordinate path and never enter this world-load flow.
+	world.set_meta("world_entry_force_entrance_spawn", true)
+	world.set_meta("world_bulk_load_in_progress", true)
+	world.set_meta("world_bulk_load_reason", "door_world_entry")
+	waiting_for_server_world_state = true
+	world_entry_pending_announce = true
+	notify_netfox_world_entry_started(target_world_name, "door_world_entry")
+
+	close_all_gameplay_popups()
+	set_gameplay_ui_visible(false)
+	set_gameplay_world_active(false)
+	if world.has_method("update_smooth_world_load_message"):
+		world.update_smooth_world_load_message("Clearing old world...")
+	await wait_for_loading_overlay_to_draw("door_entry_before_clear_world")
+	clear_world()
+
+	if world.has_method("update_smooth_world_load_message"):
+		world.update_smooth_world_load_message("Entering " + world.current_world_name + "...")
+
+	debug_action_position_flow("begin_server_door_world_entry", {
+		"world": world.current_world_name,
+		"x": data.get("x", data.get("portal_spawn_x", null)),
+		"y": data.get("y", data.get("portal_spawn_y", null))
+	})
 
 
 func finish_world_entry_after_load(save_after_finish: bool = true, announce_enter: bool = true, server_world_state_finalized: bool = false, defer_noncritical_work: bool = false):
@@ -840,14 +1356,25 @@ func finish_world_entry_after_load(save_after_finish: bool = true, announce_ente
 		"save_after_finish": save_after_finish,
 		"announce_enter": announce_enter,
 		"server_world_state_finalized": server_world_state_finalized,
-		"defer_noncritical_work": defer_noncritical_work,
 		"was_waiting_for_server_world_state": waiting_for_server_world_state
 	})
 	waiting_for_server_world_state = false
 	world.in_world = true
 	world.set_meta("world_entry_in_progress", false)
 
-	set_gameplay_world_active(true)
+	# If this was a local/generated load path, queue one final variant pass. Server
+	# world-state already awaits finalize_world_load_block_variants() before calling
+	# this method, but this keeps local loads safe too.
+	if not server_world_state_finalized and world.block_manager != null and world.block_manager.has_method("refresh_all_foreground_block_textures"):
+		world.block_manager.refresh_all_foreground_block_textures()
+
+	# The heavy world build is finished by the time this method runs. Clear the
+	# bulk-load flag before normal gameplay resumes.
+	world.set_meta("world_bulk_load_in_progress", false)
+	world.set_meta("world_bulk_load_reason", "")
+	notify_netfox_world_entry_ready(world.current_world_name, "finish_world_entry_after_load")
+
+	set_gameplay_world_active(true, not server_world_state_finalized)
 	close_all_gameplay_popups()
 	set_gameplay_ui_visible(true)
 
@@ -858,48 +1385,138 @@ func finish_world_entry_after_load(save_after_finish: bool = true, announce_ente
 		world.player.visible = true
 		world.player.set_physics_process(true)
 
-	world.restore_chat_ui_after_world_enter()
+	if bool(world.get_meta("world_entry_force_entrance_spawn", false)):
+		place_player_at_current_entrance_gate_for_world_entry(true)
+		schedule_final_entrance_gate_snap_for_world_entry(true)
+	world.set_meta("world_entry_force_entrance_spawn", false)
+
 	world.setup_world_camera_limits()
 	world.set_default_camera_zoom_silent()
 	world.clamp_player_to_world()
+	if world.block_manager != null and world.block_manager.has_method("schedule_world_entry_tilemap_visual_reconciliation"):
+		world.block_manager.schedule_world_entry_tilemap_visual_reconciliation()
+	world.normalize_hotbar()
+	select_first_hotbar_slot_silent()
+	if world.has_method("refresh_hotbar_live"):
+		world.refresh_hotbar_live()
+	else:
+		world.setup_hotbar()
 	world.update_equipment_visual()
-	world.update_all_ui()
-
+	if MovementMode.is_websocket() and world.player_manager != null and world.player_manager.has_method("play_local_player_world_enter_fade"):
+		world.player_manager.play_local_player_world_enter_fade()
 	if world.has_method("finish_smooth_world_load"):
 		world.finish_smooth_world_load()
 
-	if announce_enter and world_entry_pending_announce:
-		world.show_notification("Entered world: " + world.current_world_name)
-		_send_world_entry_chat_message()
-
+	var completed_world_name := str(world.current_world_name)
+	var should_announce := announce_enter and world_entry_pending_announce
 	world_entry_pending_announce = false
-
-	if save_after_finish:
-		save_world()
+	if defer_noncritical_work:
+		call_deferred("_finish_world_entry_noncritical_after_frame", completed_world_name, save_after_finish, should_announce)
+	else:
+		_finish_world_entry_noncritical_work(completed_world_name, save_after_finish, should_announce)
 
 	debug_action_position_flow("finish_world_entry_after_load end", {
 		"save_after_finish": save_after_finish,
-		"announce_enter": announce_enter
+		"announce_enter": announce_enter,
+		"defer_noncritical_work": defer_noncritical_work
 	})
+
+
+func _finish_world_entry_noncritical_after_frame(completed_world_name: String, save_after_finish: bool, should_announce: bool) -> void:
+	var scene_tree: SceneTree = world.get_tree() if world != null else null
+	if scene_tree != null:
+		await scene_tree.process_frame
+	_finish_world_entry_noncritical_work(completed_world_name, save_after_finish, should_announce)
+
+
+func _finish_world_entry_noncritical_work(completed_world_name: String, save_after_finish: bool, should_announce: bool) -> void:
+	if world == null or str(world.current_world_name) != completed_world_name:
+		return
+	world.restore_chat_ui_after_world_enter()
+	world.update_all_ui()
+	if should_announce:
+		world.show_notification("Entered world: " + completed_world_name)
+		_send_world_entry_chat_message()
+	if save_after_finish:
+		save_world()
+	if world.has_method("start_optional_world_ui_warmup"):
+		world.start_optional_world_ui_warmup()
 
 
 
 func _send_world_entry_chat_message():
 	var world_name = world.current_world_name
 
-	var owner_text = "No Owner"
-	if world.world_lock_manager != null:
-		var wlm = world.world_lock_manager
-		if wlm.is_locked and wlm.owner_name != "":
-			owner_text = wlm.owner_name
+	if world.world_lock_manager != null and world.world_lock_manager.has_method("reconcile_world_lock_state_with_blocks"):
+		world.world_lock_manager.reconcile_world_lock_state_with_blocks()
 
-	# Players = 1 for now, ready for multiplayer
-	var player_count = 1
+	var lock_text = "World is not locked."
+	if world.world_lock_manager != null and world.world_lock_manager.is_locked:
+		var owner_name = str(world.world_lock_manager.owner_name).strip_edges()
+		if owner_name == "":
+			owner_name = "unknown"
+		lock_text = "World is locked by \"%s\"." % owner_name
 
-	var msg = "World: %s  |  Owner: %s  |  Players: %d" % [world_name, owner_text, player_count]
+	var other_player_count = _get_world_entry_other_player_count(world_name)
+	var player_text = "There are %d other players here." % other_player_count
+	if other_player_count == 1:
+		player_text = "There is 1 other player here."
+
+	var active_features = _get_world_entry_active_features()
+	var active_text = "No world effects are active."
+	if not active_features.is_empty():
+		active_text = "%s %s active." % [_format_world_entry_list(active_features), "are" if active_features.size() != 1 else "is"]
+
+	var msg = "Entered \"%s\". %s %s %s" % [world_name, lock_text, player_text, active_text]
 
 	if world.chat_ui != null and world.chat_ui.has_method("add_chat_message"):
 		world.chat_ui.add_chat_message("System", msg)
+
+
+func _get_world_entry_other_player_count(world_name: String) -> int:
+	var network = world.get_node_or_null("/root/NetworkManager")
+	if network == null:
+		return 0
+	if network.has_method("get_world_other_player_count"):
+		return max(0, int(network.get_world_other_player_count(world_name)))
+	if not network.has_method("get_world_player_count"):
+		return 0
+
+	return max(0, int(network.get_world_player_count(world_name)))
+
+
+func _get_world_entry_active_features() -> Array:
+	var active_features = []
+	if world.block_manager == null:
+		return active_features
+
+	if world.block_manager.has_method("is_anti_punch_enabled") and world.block_manager.is_anti_punch_enabled():
+		active_features.append("anti punch")
+	if world.block_manager.has_method("is_anti_talk_enabled") and world.block_manager.is_anti_talk_enabled():
+		active_features.append("anti talk")
+	if world.block_manager.has_method("is_anti_gravity_enabled") and world.block_manager.is_anti_gravity_enabled():
+		active_features.append("anti gravity")
+
+	return active_features
+
+
+func _format_world_entry_list(entries: Array) -> String:
+	if entries.is_empty():
+		return ""
+	if entries.size() == 1:
+		return str(entries[0])
+	if entries.size() == 2:
+		return "%s and %s" % [str(entries[0]), str(entries[1])]
+
+	var text = ""
+	for i in range(entries.size()):
+		if i > 0:
+			if i == entries.size() - 1:
+				text += ", and "
+			else:
+				text += ", "
+		text += str(entries[i])
+	return text
 
 
 func get_player_save_data() -> Dictionary:
@@ -917,25 +1534,33 @@ func get_player_save_data() -> Dictionary:
 		"player_total_xp": _safe_int(world.player_total_xp, 0, 0),
 		"player_title": _safe_string(world.player_title, "Explorer", MAX_INVENTORY_STRING_LEN),
 		"player_health": world.player_health,
+		"inventory_slot_count": world.get_inventory_slot_count() if world.has_method("get_inventory_slot_count") else 20,
 		"inventory": world.inventory,
 		"seed_inventory": world.seed_inventory,
 		"tool_inventory": world.tool_inventory,
 		"back_inventory": world.back_inventory,
+		"hat_inventory": world.hat_inventory,
 		"hair_inventory": world.hair_inventory,
+		"eyewear_inventory": world.eyewear_inventory,
 		"shirt_inventory": world.shirt_inventory,
 		"pants_inventory": world.pants_inventory,
 		"shoes_inventory": world.shoes_inventory,
+		"ride_inventory": world.ride_inventory,
 		"currency_inventory": world.currency_inventory,
 		"material_inventory": world.material_inventory,
 		"lure_inventory": world.lure_inventory,
-		"fish_inventory": world.fish_inventory,
+		"fish_inventory": get_fish_inventory_count_save_data(),
+		"fish_inventory_unit": "count",
 		"fishing_records": world.fishing_manager.get_fishing_records_save_data() if world.fishing_manager != null and world.fishing_manager.has_method("get_fishing_records_save_data") else {},
 		"equipped_tool": str(world.equipped_tool) if world.equipped_tool != null else "",
 		"equipped_back_item": str(world.equipped_back_item) if world.equipped_back_item != null else "",
+		"equipped_hat_item": str(world.equipped_hat_item) if world.equipped_hat_item != null else "",
 		"equipped_hair_item": str(world.equipped_hair_item) if world.equipped_hair_item != null else "",
+		"equipped_eyewear_item": str(world.equipped_eyewear_item) if world.equipped_eyewear_item != null else "",
 		"equipped_shirt_item": str(world.equipped_shirt_item) if world.equipped_shirt_item != null else "",
 		"equipped_pants_item": str(world.equipped_pants_item) if world.equipped_pants_item != null else "",
-		"equipped_shoes_item": str(world.equipped_shoes_item) if world.equipped_shoes_item != null else ""
+		"equipped_shoes_item": str(world.equipped_shoes_item) if world.equipped_shoes_item != null else "",
+		"equipped_ride_item": str(world.equipped_ride_item) if world.equipped_ride_item != null else ""
 	}
 
 
@@ -1035,17 +1660,17 @@ func merge_legacy_inventory_counts(target_data: Dictionary, source_data: Diction
 
 		for item_name in source_inventory.keys():
 			if inventory_key == "fish_inventory":
-				var source_weight: float = safe_fish_weight_from_save(source_inventory.get(item_name, 0.0))
-				var target_weight: float = safe_fish_weight_from_save(target_inventory.get(item_name, 0.0))
-				if source_weight > target_weight:
-					target_inventory[item_name] = source_weight
+				var fish_source_count: int = safe_fish_count_from_save(source_inventory.get(item_name, 0.0), str(source_data.get("fish_inventory_unit", "")))
+				var fish_target_count: int = safe_fish_count_from_save(target_inventory.get(item_name, 0.0), str(target_data.get("fish_inventory_unit", "count")))
+				if fish_source_count > fish_target_count:
+					target_inventory[item_name] = fish_source_count
 				continue
 
-			var source_count = int(source_inventory.get(item_name, 0))
-			var target_count = int(target_inventory.get(item_name, 0))
+			var item_source_count = int(source_inventory.get(item_name, 0))
+			var item_target_count = int(target_inventory.get(item_name, 0))
 
-			if source_count > target_count:
-				target_inventory[item_name] = source_count
+			if item_source_count > item_target_count:
+				target_inventory[item_name] = item_source_count
 
 		target_data[inventory_key] = target_inventory
 
@@ -1126,7 +1751,7 @@ func _request_network_player_state_after_legacy_import() -> void:
 	request_network_player_state()
 
 
-func request_network_player_state():
+func request_network_player_state(force: bool = false):
 	if not is_registered_account_active():
 		return
 
@@ -1134,20 +1759,35 @@ func request_network_player_state():
 	if network == null:
 		return
 
+	var username := get_current_player_profile_name()
+	var now_ms := Time.get_ticks_msec()
+	if not force:
+		var normalized_username := username.strip_edges().to_lower()
+		if normalized_username != "" and normalized_username == last_server_player_state_username:
+			if now_ms - last_server_player_state_applied_ms <= SERVER_PLAYER_STATE_FRESH_MS:
+				return
+		if network_player_state_request_in_flight and normalized_username == network_player_state_request_username:
+			if now_ms - network_player_state_request_started_ms <= NETWORK_PLAYER_STATE_REQUEST_TIMEOUT_MS:
+				return
+			network_player_state_request_in_flight = false
+
 	if network.has_method("send_account_state_save"):
 		var email = ""
 		if world.has_method("get_current_profile_email"):
 			email = str(world.get_current_profile_email())
-		network.send_account_state_save(get_current_player_profile_name(), email)
+		network.send_account_state_save(username, email)
 
 	if try_send_legacy_server_inventory_import():
 		return
 
 	if network.has_method("send_player_state_request"):
-		network.send_player_state_request(get_current_player_profile_name())
+		if bool(network.send_player_state_request(username)):
+			network_player_state_request_in_flight = true
+			network_player_state_request_username = username.strip_edges().to_lower()
+			network_player_state_request_started_ms = now_ms
 
 
-func load_player_data():
+func load_player_data(request_server_state: bool = true):
 	loading_player_data = true
 	var player_save_path = get_current_player_save_path()
 
@@ -1164,7 +1804,8 @@ func load_player_data():
 				apply_player_data(data)
 				world.player_data_loaded_from_file = true
 				loading_player_data = false
-				request_network_player_state()
+				if request_server_state:
+					request_network_player_state()
 				return
 
 	if can_migrate_legacy_global_player_data():
@@ -1179,11 +1820,12 @@ func load_player_data():
 			if data is Dictionary:
 				apply_player_data(data)
 				world.player_data_loaded_from_file = true
-				save_player_data()
+				save_player_data(request_server_state)
 				mark_legacy_global_player_data_migrated()
 				print("Migrated global player data to account: " + get_current_player_profile_name())
 				loading_player_data = false
-				request_network_player_state()
+				if request_server_state:
+					request_network_player_state()
 				return
 
 	if not is_registered_account_active():
@@ -1192,17 +1834,19 @@ func load_player_data():
 		if legacy_data is Dictionary and has_useful_player_data(legacy_data):
 			apply_player_data(legacy_data)
 			world.player_data_loaded_from_file = true
-			save_player_data()
+			save_player_data(request_server_state)
 			print("Migrated player data from START world save.")
 			loading_player_data = false
-			request_network_player_state()
+			if request_server_state:
+				request_network_player_state()
 			return
 
 	reset_player_data_to_defaults()
 	world.player_data_loaded_from_file = false
-	save_player_data()
+	save_player_data(request_server_state)
 	loading_player_data = false
-	request_network_player_state()
+	if request_server_state:
+		request_network_player_state()
 
 
 func load_player_data_from_current_or_legacy(world_data: Dictionary):
@@ -1255,7 +1899,13 @@ func has_useful_player_data(data: Dictionary) -> bool:
 	if str(data.get("equipped_back_item", "")) != "":
 		return true
 
+	if str(data.get("equipped_hat_item", "")) != "":
+		return true
+
 	if str(data.get("equipped_hair_item", "")) != "":
+		return true
+
+	if str(data.get("equipped_eyewear_item", "")) != "":
 		return true
 
 	if str(data.get("equipped_shirt_item", "")) != "":
@@ -1265,6 +1915,9 @@ func has_useful_player_data(data: Dictionary) -> bool:
 		return true
 
 	if str(data.get("equipped_shoes_item", "")) != "":
+		return true
+
+	if str(data.get("equipped_ride_item", "")) != "":
 		return true
 
 	for inventory_key in PLAYER_INVENTORY_SAVE_KEYS:
@@ -1294,19 +1947,25 @@ func reset_player_data_to_defaults():
 	world.player_health = 10
 	world.equipped_tool = ""
 	world.equipped_back_item = ""
+	world.equipped_hat_item = ""
 	world.equipped_hair_item = ""
+	world.equipped_eyewear_item = ""
 	world.equipped_shirt_item = ""
 	world.equipped_pants_item = ""
 	world.equipped_shoes_item = ""
+	world.equipped_ride_item = ""
 
 	world.inventory.clear()
 	world.seed_inventory.clear()
 	world.tool_inventory.clear()
 	world.back_inventory.clear()
+	world.hat_inventory.clear()
 	world.hair_inventory.clear()
+	world.eyewear_inventory.clear()
 	world.shirt_inventory.clear()
 	world.pants_inventory.clear()
 	world.shoes_inventory.clear()
+	world.ride_inventory.clear()
 	world.currency_inventory.clear()
 	world.material_inventory.clear()
 	world.lure_inventory.clear()
@@ -1328,14 +1987,20 @@ func reset_player_data_to_defaults():
 				world.tool_inventory[item_id] = starting_count
 			"back":
 				world.back_inventory[item_id] = starting_count
+			"hat":
+				world.hat_inventory[item_id] = starting_count
 			"hair":
 				world.hair_inventory[item_id] = starting_count
+			"eyewear":
+				world.eyewear_inventory[item_id] = starting_count
 			"shirt":
 				world.shirt_inventory[item_id] = starting_count
 			"pants":
 				world.pants_inventory[item_id] = starting_count
 			"shoes":
 				world.shoes_inventory[item_id] = starting_count
+			"ride":
+				world.ride_inventory[item_id] = starting_count
 			"currency":
 				if world.has_method("clamp_item_stack_count"):
 					world.currency_inventory[item_id] = world.clamp_item_stack_count(item_id, category, starting_count)
@@ -1380,28 +2045,32 @@ func apply_player_data(data: Dictionary):
 			world.hotbar_items = ["punch", quick_item_type, "grass", "stone", "wood", "leaf"]
 			world.hotbar_item_categories = ["tool", quick_item_category, "block", "block", "block", "block"]
 
-	world.normalize_hotbar()
-	world.setup_hotbar()
-
 	world.player_level = _safe_int(data.get("player_level", data.get("level", world.player_level)), world.player_level, 1, MAX_PLAYER_LEVEL)
 	world.player_xp = _safe_int(data.get("player_xp", data.get("xp", world.player_xp)), world.player_xp, 0)
 	world.player_xp_needed = _safe_int(data.get("player_xp_needed", data.get("xp_needed", world.player_xp_needed)), world.player_xp_needed, 0)
 	world.player_total_xp = _safe_int(data.get("player_total_xp", data.get("total_xp", world.player_total_xp)), world.player_total_xp, 0)
 	world.player_title = _safe_string(data.get("player_title", world.player_title), "Explorer", MAX_INVENTORY_STRING_LEN)
 	world.player_health = _safe_int(data.get("player_health", world.player_health), world.player_health, 0, MAX_PLAYER_HEALTH)
+	if world.has_method("apply_inventory_slot_count"):
+		world.apply_inventory_slot_count(data.get("inventory_slot_count", data.get("inventory_slots", world.inventory_slot_count)), false)
 
 	apply_saved_inventory_counts(world.inventory, data.get("inventory", {}), false)
 	apply_saved_inventory_counts(world.seed_inventory, data.get("seed_inventory", {}), false)
 	apply_saved_inventory_counts(world.tool_inventory, data.get("tool_inventory", {}), true)
 	apply_saved_inventory_counts(world.back_inventory, data.get("back_inventory", {}), true)
+	apply_saved_inventory_counts(world.hat_inventory, data.get("hat_inventory", {}), true)
 	apply_saved_inventory_counts(world.hair_inventory, data.get("hair_inventory", {}), true)
+	apply_saved_inventory_counts(world.eyewear_inventory, data.get("eyewear_inventory", {}), true)
 	apply_saved_inventory_counts(world.shirt_inventory, data.get("shirt_inventory", {}), true)
 	apply_saved_inventory_counts(world.pants_inventory, data.get("pants_inventory", {}), true)
 	apply_saved_inventory_counts(world.shoes_inventory, data.get("shoes_inventory", {}), true)
+	apply_saved_inventory_counts(world.ride_inventory, data.get("ride_inventory", {}), true)
 	apply_saved_inventory_counts(world.currency_inventory, data.get("currency_inventory", {}), true)
 	apply_saved_inventory_counts(world.material_inventory, data.get("material_inventory", {}), true)
 	apply_saved_inventory_counts(world.lure_inventory, data.get("lure_inventory", {}), true)
-	apply_saved_fish_weight_inventory(data.get("fish_inventory", {}), true)
+	apply_saved_fish_count_inventory(data.get("fish_inventory", {}), true, str(data.get("fish_inventory_unit", "")))
+	world.normalize_hotbar()
+	world.setup_hotbar()
 	if world.fishing_manager != null and world.fishing_manager.has_method("apply_fishing_records"):
 		var fishing_records_data = data.get("fishing_records", {})
 		var fishing_records_dictionary: Dictionary = (fishing_records_data as Dictionary) if fishing_records_data is Dictionary else {}
@@ -1427,6 +2096,16 @@ func apply_player_data(data: Dictionary):
 	if world.equipped_back_item != "" and (not world.back_inventory.has(world.equipped_back_item) or _safe_int(world.back_inventory[world.equipped_back_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
 		world.equipped_back_item = ""
 
+	var loaded_equipped_hat_item = data.get("equipped_hat_item", world.equipped_hat_item)
+
+	if loaded_equipped_hat_item == null:
+		loaded_equipped_hat_item = ""
+
+	world.equipped_hat_item = _safe_string(loaded_equipped_hat_item, "", MAX_INVENTORY_STRING_LEN)
+
+	if world.equipped_hat_item != "" and (not world.hat_inventory.has(world.equipped_hat_item) or _safe_int(world.hat_inventory[world.equipped_hat_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
+		world.equipped_hat_item = ""
+
 	var loaded_equipped_hair_item = data.get("equipped_hair_item", world.equipped_hair_item)
 
 	if loaded_equipped_hair_item == null:
@@ -1436,6 +2115,16 @@ func apply_player_data(data: Dictionary):
 
 	if world.equipped_hair_item != "" and (not world.hair_inventory.has(world.equipped_hair_item) or _safe_int(world.hair_inventory[world.equipped_hair_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
 		world.equipped_hair_item = ""
+
+	var loaded_equipped_eyewear_item = data.get("equipped_eyewear_item", world.equipped_eyewear_item)
+
+	if loaded_equipped_eyewear_item == null:
+		loaded_equipped_eyewear_item = ""
+
+	world.equipped_eyewear_item = _safe_string(loaded_equipped_eyewear_item, "", MAX_INVENTORY_STRING_LEN)
+
+	if world.equipped_eyewear_item != "" and (not world.eyewear_inventory.has(world.equipped_eyewear_item) or _safe_int(world.eyewear_inventory[world.equipped_eyewear_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
+		world.equipped_eyewear_item = ""
 
 	var loaded_equipped_shirt_item = data.get("equipped_shirt_item", world.equipped_shirt_item)
 
@@ -1466,6 +2155,16 @@ func apply_player_data(data: Dictionary):
 
 	if world.equipped_shoes_item != "" and (not world.shoes_inventory.has(world.equipped_shoes_item) or _safe_int(world.shoes_inventory[world.equipped_shoes_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
 		world.equipped_shoes_item = ""
+
+	var loaded_equipped_ride_item = data.get("equipped_ride_item", world.equipped_ride_item)
+
+	if loaded_equipped_ride_item == null:
+		loaded_equipped_ride_item = ""
+
+	world.equipped_ride_item = _safe_string(loaded_equipped_ride_item, "", MAX_INVENTORY_STRING_LEN)
+
+	if world.equipped_ride_item != "" and (not world.ride_inventory.has(world.equipped_ride_item) or _safe_int(world.ride_inventory[world.equipped_ride_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
+		world.equipped_ride_item = ""
 
 	world.update_equipment_visual()
 	world.update_all_ui()
@@ -1514,9 +2213,17 @@ func restore_local_transaction_loadout(snapshot: Dictionary):
 	if previous_back_item == "" or can_restore_local_loadout_item(previous_back_item, "back"):
 		world.equipped_back_item = previous_back_item
 
+	var previous_hat_item = str(snapshot.get("equipped_hat_item", ""))
+	if previous_hat_item == "" or can_restore_local_loadout_item(previous_hat_item, "hat"):
+		world.equipped_hat_item = previous_hat_item
+
 	var previous_hair_item = str(snapshot.get("equipped_hair_item", ""))
 	if previous_hair_item == "" or can_restore_local_loadout_item(previous_hair_item, "hair"):
 		world.equipped_hair_item = previous_hair_item
+
+	var previous_eyewear_item = str(snapshot.get("equipped_eyewear_item", ""))
+	if previous_eyewear_item == "" or can_restore_local_loadout_item(previous_eyewear_item, "eyewear"):
+		world.equipped_eyewear_item = previous_eyewear_item
 
 	var previous_shirt_item = str(snapshot.get("equipped_shirt_item", ""))
 	if previous_shirt_item == "" or can_restore_local_loadout_item(previous_shirt_item, "shirt"):
@@ -1529,6 +2236,10 @@ func restore_local_transaction_loadout(snapshot: Dictionary):
 	var previous_shoes_item = str(snapshot.get("equipped_shoes_item", ""))
 	if previous_shoes_item == "" or can_restore_local_loadout_item(previous_shoes_item, "shoes"):
 		world.equipped_shoes_item = previous_shoes_item
+
+	var previous_ride_item = str(snapshot.get("equipped_ride_item", ""))
+	if previous_ride_item == "" or can_restore_local_loadout_item(previous_ride_item, "ride"):
+		world.equipped_ride_item = previous_ride_item
 
 	world.update_equipment_visual()
 	world.update_all_ui()
@@ -1561,23 +2272,31 @@ func apply_network_player_state(data: Dictionary):
 	if normalized_username == "":
 		normalized_username = local_username.to_lower()
 
+	var payload_saved_at := _safe_string(player_data.get("saved_at", ""), "", MAX_INVENTORY_STRING_LEN)
 	var payload_hash = get_player_data_dedup_hash(player_data)
 	var now_ms = Time.get_ticks_msec()
 	var current_local_hash = get_current_player_state_dedup_hash()
+	if normalized_username == last_server_player_state_username and payload_saved_at != "" and payload_saved_at == last_server_player_state_saved_at and current_local_hash == payload_hash:
+		network_player_state_request_in_flight = false
+		return
 	if current_local_hash == payload_hash:
 		last_server_player_state_username = normalized_username
 		last_server_player_state_hash = payload_hash
+		last_server_player_state_saved_at = payload_saved_at
 		last_server_player_state_applied_ms = now_ms
+		network_player_state_request_in_flight = false
 		return
 
-	if normalized_username == last_server_player_state_username and payload_hash == last_server_player_state_hash:
+	if normalized_username == last_server_player_state_username and payload_hash == last_server_player_state_hash and current_local_hash == payload_hash:
 		if now_ms - last_server_player_state_applied_ms <= DUPLICATE_SERVER_PLAYER_STATE_WINDOW_MS:
+			network_player_state_request_in_flight = false
 			return
 
 	if _safe_int(player_data.get("legacy_client_inventory_import_revision", 0), 0, 0, LEGACY_SERVER_INVENTORY_IMPORT_REVISION) >= LEGACY_SERVER_INVENTORY_IMPORT_REVISION:
 		mark_legacy_server_inventory_import_confirmed()
 
 	var preserve_local_loadout = bool(data.get("preserve_local_loadout", false))
+	var should_select_first_hotbar_slot = not preserve_local_loadout and str(data.get("purpose", "")).strip_edges().to_lower() == "active_profile"
 	var local_loadout_snapshot = {}
 	if preserve_local_loadout and world != null:
 		local_loadout_snapshot = {
@@ -1588,22 +2307,31 @@ func apply_network_player_state(data: Dictionary):
 			"hotbar_item_categories": world.hotbar_item_categories.duplicate(true),
 			"equipped_tool": str(world.equipped_tool) if world.equipped_tool != null else "",
 			"equipped_back_item": str(world.equipped_back_item) if world.equipped_back_item != null else "",
+			"equipped_hat_item": str(world.equipped_hat_item) if world.equipped_hat_item != null else "",
 			"equipped_hair_item": str(world.equipped_hair_item) if world.equipped_hair_item != null else "",
+			"equipped_eyewear_item": str(world.equipped_eyewear_item) if world.equipped_eyewear_item != null else "",
 			"equipped_shirt_item": str(world.equipped_shirt_item) if world.equipped_shirt_item != null else "",
 			"equipped_pants_item": str(world.equipped_pants_item) if world.equipped_pants_item != null else "",
-			"equipped_shoes_item": str(world.equipped_shoes_item) if world.equipped_shoes_item != null else ""
+			"equipped_shoes_item": str(world.equipped_shoes_item) if world.equipped_shoes_item != null else "",
+			"equipped_ride_item": str(world.equipped_ride_item) if world.equipped_ride_item != null else ""
 		}
 
 	applying_server_player_data = true
 	apply_player_data(player_data)
 	if preserve_local_loadout:
 		restore_local_transaction_loadout(local_loadout_snapshot)
+	elif should_select_first_hotbar_slot:
+		world.normalize_hotbar()
+		select_first_hotbar_slot_silent()
+		world.setup_hotbar()
 	world.player_data_loaded_from_file = true
 	save_player_data(false)
 	applying_server_player_data = false
 	last_server_player_state_username = normalized_username
 	last_server_player_state_hash = payload_hash
+	last_server_player_state_saved_at = payload_saved_at
 	last_server_player_state_applied_ms = now_ms
+	network_player_state_request_in_flight = false
 
 	debug_action_position_flow("applied network player state", {
 		"username": (server_username if server_username != "" else local_username),
@@ -1630,31 +2358,63 @@ func apply_saved_inventory_counts(target_inventory: Dictionary, saved_inventory,
 			target_inventory[item_name] = 0
 
 
-func safe_fish_weight_from_save(raw_value) -> float:
-	if raw_value is Dictionary:
-		if raw_value.has("weight_tenths"):
-			return float(max(0, int(raw_value.get("weight_tenths", 0)))) / 10.0
-		if raw_value.has("weight_lb"):
-			raw_value = raw_value.get("weight_lb", 0.0)
-		elif raw_value.has("amount"):
-			raw_value = raw_value.get("amount", 0.0)
-		else:
-			return 0.0
-
-	var value := 0.0
-	if raw_value is int or raw_value is float:
-		value = float(raw_value)
-	elif raw_value is String:
+func runtime_fish_value_to_count(raw_value) -> int:
+	if raw_value is int:
+		return max(0, int(raw_value))
+	if raw_value is float:
+		var raw_float: float = float(raw_value)
+		if not is_finite(raw_float) or raw_float <= 0.0:
+			return 0
+		return max(0, int(floor(raw_float)))
+	if raw_value is String:
 		var text = raw_value.strip_edges()
+		if text.is_valid_int():
+			return max(0, int(text))
 		if text.is_valid_float():
-			value = float(text)
-
-	if not is_finite(value) or value <= 0.0:
-		return 0.0
-	return float(max(0, int(round(value * 10.0)))) / 10.0
+			return max(0, int(floor(float(text))))
+	return 0
 
 
-func apply_saved_fish_weight_inventory(saved_inventory, _preserve_default_if_missing: bool):
+func legacy_fish_tenths_to_count(raw_value) -> int:
+	var tenths: int = runtime_fish_value_to_count(raw_value)
+	if tenths <= 0:
+		return 0
+	return max(1, int(round(float(tenths) / 10.0)))
+
+
+func get_fish_inventory_count_save_data() -> Dictionary:
+	var result: Dictionary = {}
+	if world == null or not (world.fish_inventory is Dictionary):
+		return result
+	for item_name in world.fish_inventory.keys():
+		var clean_item_name: String = _safe_string(item_name, "", MAX_INVENTORY_STRING_LEN)
+		if clean_item_name == "":
+			continue
+		var count: int = runtime_fish_value_to_count(world.fish_inventory.get(item_name, 0))
+		if count > 0:
+			result[clean_item_name] = count
+	return result
+
+
+func safe_fish_count_from_save(raw_value, unit: String = "") -> int:
+	if raw_value is Dictionary:
+		if raw_value.has("count"):
+			return runtime_fish_value_to_count(raw_value.get("count", 0))
+		if raw_value.has("weight_tenths"):
+			return legacy_fish_tenths_to_count(raw_value.get("weight_tenths", 0))
+		if raw_value.has("amount"):
+			raw_value = raw_value.get("amount", 0.0)
+		elif raw_value.has("weight_lb"):
+			raw_value = raw_value.get("weight_lb", 0.0)
+		else:
+			return 0
+
+	if unit == "tenths_lb":
+		return legacy_fish_tenths_to_count(raw_value)
+	return runtime_fish_value_to_count(raw_value)
+
+
+func apply_saved_fish_count_inventory(saved_inventory, _preserve_default_if_missing: bool, unit: String = ""):
 	if not (saved_inventory is Dictionary):
 		saved_inventory = {}
 
@@ -1664,9 +2424,9 @@ func apply_saved_fish_weight_inventory(saved_inventory, _preserve_default_if_mis
 		var clean_item_name: String = _safe_string(item_name, "", MAX_INVENTORY_STRING_LEN)
 		if clean_item_name == "":
 			continue
-		var safe_weight: float = safe_fish_weight_from_save(saved_inventory.get(item_name, 0.0))
-		if safe_weight > 0.0:
-			world.fish_inventory[clean_item_name] = safe_weight
+		var safe_count: int = safe_fish_count_from_save(saved_inventory.get(item_name, 0.0), unit)
+		if safe_count > 0:
+			world.fish_inventory[clean_item_name] = safe_count
 
 
 func get_player_data_dedup_hash(player_data: Dictionary) -> int:
@@ -1684,24 +2444,32 @@ func get_player_data_dedup_hash(player_data: Dictionary) -> int:
 		"player_total_xp": _safe_int(player_data.get("player_total_xp", player_data.get("total_xp", 0)), 0, 0),
 		"player_title": _safe_string(player_data.get("player_title", "Explorer"), "Explorer", MAX_INVENTORY_STRING_LEN),
 		"player_health": _safe_int(player_data.get("player_health", 0), 0, 0, MAX_PLAYER_HEALTH),
+		"inventory_slot_count": _safe_int(player_data.get("inventory_slot_count", player_data.get("inventory_slots", 20)), 20, 20, 300),
 		"equipped_tool": _safe_string(player_data.get("equipped_tool", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_back_item": _safe_string(player_data.get("equipped_back_item", ""), "", MAX_INVENTORY_STRING_LEN),
+		"equipped_hat_item": _safe_string(player_data.get("equipped_hat_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_hair_item": _safe_string(player_data.get("equipped_hair_item", ""), "", MAX_INVENTORY_STRING_LEN),
+		"equipped_eyewear_item": _safe_string(player_data.get("equipped_eyewear_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_shirt_item": _safe_string(player_data.get("equipped_shirt_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_pants_item": _safe_string(player_data.get("equipped_pants_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_shoes_item": _safe_string(player_data.get("equipped_shoes_item", ""), "", MAX_INVENTORY_STRING_LEN),
+		"equipped_ride_item": _safe_string(player_data.get("equipped_ride_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"inventory": player_data.get("inventory", {}) if player_data.get("inventory", null) is Dictionary else {},
 		"seed_inventory": player_data.get("seed_inventory", {}) if player_data.get("seed_inventory", null) is Dictionary else {},
 		"tool_inventory": player_data.get("tool_inventory", {}) if player_data.get("tool_inventory", null) is Dictionary else {},
 		"back_inventory": player_data.get("back_inventory", {}) if player_data.get("back_inventory", null) is Dictionary else {},
+		"hat_inventory": player_data.get("hat_inventory", {}) if player_data.get("hat_inventory", null) is Dictionary else {},
 		"hair_inventory": player_data.get("hair_inventory", {}) if player_data.get("hair_inventory", null) is Dictionary else {},
+		"eyewear_inventory": player_data.get("eyewear_inventory", {}) if player_data.get("eyewear_inventory", null) is Dictionary else {},
 		"shirt_inventory": player_data.get("shirt_inventory", {}) if player_data.get("shirt_inventory", null) is Dictionary else {},
 		"pants_inventory": player_data.get("pants_inventory", {}) if player_data.get("pants_inventory", null) is Dictionary else {},
 		"shoes_inventory": player_data.get("shoes_inventory", {}) if player_data.get("shoes_inventory", null) is Dictionary else {},
+		"ride_inventory": player_data.get("ride_inventory", {}) if player_data.get("ride_inventory", null) is Dictionary else {},
 		"currency_inventory": player_data.get("currency_inventory", {}) if player_data.get("currency_inventory", null) is Dictionary else {},
 		"material_inventory": player_data.get("material_inventory", {}) if player_data.get("material_inventory", null) is Dictionary else {},
 		"lure_inventory": player_data.get("lure_inventory", {}) if player_data.get("lure_inventory", null) is Dictionary else {},
 		"fish_inventory": player_data.get("fish_inventory", {}) if player_data.get("fish_inventory", null) is Dictionary else {},
+		"fish_inventory_unit": _safe_string(player_data.get("fish_inventory_unit", ""), "", MAX_INVENTORY_STRING_LEN),
 		"fishing_records": player_data.get("fishing_records", {}) if player_data.get("fishing_records", null) is Dictionary else {}
 	}
 	return hash(normalized_payload)
@@ -1725,24 +2493,32 @@ func get_current_player_state_dedup_hash() -> int:
 		"player_total_xp": _safe_int(world.player_total_xp, 0, 0),
 		"player_title": _safe_string(world.player_title, "Explorer", MAX_INVENTORY_STRING_LEN),
 		"player_health": _safe_int(world.player_health, 0, 0, MAX_PLAYER_HEALTH),
+		"inventory_slot_count": world.get_inventory_slot_count() if world.has_method("get_inventory_slot_count") else 20,
 		"equipped_tool": _safe_string(world.equipped_tool, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_back_item": _safe_string(world.equipped_back_item, "", MAX_INVENTORY_STRING_LEN),
+		"equipped_hat_item": _safe_string(world.equipped_hat_item, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_hair_item": _safe_string(world.equipped_hair_item, "", MAX_INVENTORY_STRING_LEN),
+		"equipped_eyewear_item": _safe_string(world.equipped_eyewear_item, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_shirt_item": _safe_string(world.equipped_shirt_item, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_pants_item": _safe_string(world.equipped_pants_item, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_shoes_item": _safe_string(world.equipped_shoes_item, "", MAX_INVENTORY_STRING_LEN),
+		"equipped_ride_item": _safe_string(world.equipped_ride_item, "", MAX_INVENTORY_STRING_LEN),
 		"inventory": world.inventory.duplicate(true) if world.inventory is Dictionary else {},
 		"seed_inventory": world.seed_inventory.duplicate(true) if world.seed_inventory is Dictionary else {},
 		"tool_inventory": world.tool_inventory.duplicate(true) if world.tool_inventory is Dictionary else {},
 		"back_inventory": world.back_inventory.duplicate(true) if world.back_inventory is Dictionary else {},
+		"hat_inventory": world.hat_inventory.duplicate(true) if world.hat_inventory is Dictionary else {},
 		"hair_inventory": world.hair_inventory.duplicate(true) if world.hair_inventory is Dictionary else {},
+		"eyewear_inventory": world.eyewear_inventory.duplicate(true) if world.eyewear_inventory is Dictionary else {},
 		"shirt_inventory": world.shirt_inventory.duplicate(true) if world.shirt_inventory is Dictionary else {},
 		"pants_inventory": world.pants_inventory.duplicate(true) if world.pants_inventory is Dictionary else {},
 		"shoes_inventory": world.shoes_inventory.duplicate(true) if world.shoes_inventory is Dictionary else {},
+		"ride_inventory": world.ride_inventory.duplicate(true) if world.ride_inventory is Dictionary else {},
 		"currency_inventory": world.currency_inventory.duplicate(true) if world.currency_inventory is Dictionary else {},
 		"material_inventory": world.material_inventory.duplicate(true) if world.material_inventory is Dictionary else {},
 		"lure_inventory": world.lure_inventory.duplicate(true) if world.lure_inventory is Dictionary else {},
-		"fish_inventory": world.fish_inventory.duplicate(true) if world.fish_inventory is Dictionary else {},
+		"fish_inventory": get_fish_inventory_count_save_data(),
+		"fish_inventory_unit": "count",
 		"fishing_records": world.fishing_manager.get_fishing_records_save_data() if world.fishing_manager != null and world.fishing_manager.has_method("get_fishing_records_save_data") else {}
 	}
 	return hash(normalized_payload)
@@ -1763,6 +2539,10 @@ func get_world_save_path_for_name(world_name: String) -> String:
 func should_use_server_world_state() -> bool:
 	if world == null:
 		return false
+	if _is_dev_test_login_active():
+		return false
+	if _is_netfox_real_server_launch():
+		return false
 
 	var clean_world_name = str(world.current_world_name).strip_edges()
 	if clean_world_name == "":
@@ -1774,6 +2554,10 @@ func should_use_server_world_state() -> bool:
 func should_expect_server_world_state() -> bool:
 	if world == null:
 		return false
+	if _is_dev_test_login_active():
+		return false
+	if _is_netfox_real_server_launch():
+		return false
 
 	var clean_world_name = str(world.current_world_name).strip_edges()
 	if clean_world_name == "":
@@ -1782,24 +2566,58 @@ func should_expect_server_world_state() -> bool:
 	return true
 
 
-func load_clean_server_world_base():
+func load_clean_server_world_base(skip_clear: bool = false):
 	debug_action_position_flow("load_clean_server_world_base start")
-	clear_world()
-	world.generate_world()
-	world.ensure_entrance_gate()
-	debug_action_position_flow("load_clean_server_world_base place at entrance")
-	world.place_player_at_entrance_immediate()
-	world.setup_world_camera_limits()
-	world.set_default_camera_zoom_silent()
-	world.clamp_player_to_world()
+	if not skip_clear:
+		clear_world()
+
+	# Important performance fix:
+	# Do not generate/build a full local terrain copy while waiting for the server
+	# world_state. The server will send the real foreground/background blocks and
+	# world_state_sync_manager.gd will build those in batches. Building a generated
+	# world here and then clearing/rebuilding it again was causing a huge freeze on
+	# world entry.
+	world.set_meta("world_bulk_load_in_progress", true)
+	world.set_meta("world_bulk_load_reason", "waiting_for_server_world_state")
+	if world.has_method("update_smooth_world_load_message"):
+		world.update_smooth_world_load_message("Loading " + str(world.current_world_name).to_upper() + " from server...")
+
+	if not FAST_WORLD_ENTRY_SKIP_SERVER_BASE_GENERATION:
+		world.generate_world()
+		world.ensure_entrance_gate()
+		debug_action_position_flow("load_clean_server_world_base place at entrance")
+		place_player_at_current_entrance_gate_for_world_entry(true)
+		world.setup_world_camera_limits()
+		world.set_default_camera_zoom_silent()
+		world.clamp_player_to_world()
 
 	if world.has_method("load_world_lock_save_data"):
 		world.load_world_lock_save_data({})
+	if world.has_method("load_area_locks_save_data"):
+		world.load_area_locks_save_data([])
 
-	load_player_data()
+	ensure_player_data_loaded_for_world_entry()
 	world.update_equipment_visual()
-	world.update_all_ui()
+	# Keep UI light while waiting for server state; avoid rebuilding gameplay UI
+	# before the real world has been applied.
 	debug_action_position_flow("load_clean_server_world_base end")
+
+
+func ensure_player_data_loaded_for_world_entry():
+	if world == null:
+		return
+	if bool(world.player_data_loaded_from_file):
+		return
+
+	load_player_data(false)
+
+
+func _is_dev_test_login_active() -> bool:
+	return MovementMode != null and MovementMode.has_method("is_dev_test_login_active") and bool(MovementMode.is_dev_test_login_active())
+
+
+func _is_netfox_real_server_launch() -> bool:
+	return MovementMode != null and MovementMode.has_method("is_netfox_real_server_launch") and bool(MovementMode.is_netfox_real_server_launch())
 
 
 func save_world():
@@ -1840,22 +2658,33 @@ func save_world():
 		"seed_inventory": world.seed_inventory,
 		"tool_inventory": world.tool_inventory,
 		"back_inventory": world.back_inventory,
+		"hat_inventory": world.hat_inventory,
 		"hair_inventory": world.hair_inventory,
+		"eyewear_inventory": world.eyewear_inventory,
 		"shirt_inventory": world.shirt_inventory,
 		"pants_inventory": world.pants_inventory,
 		"shoes_inventory": world.shoes_inventory,
+		"ride_inventory": world.ride_inventory,
 		"currency_inventory": world.currency_inventory,
 		"material_inventory": world.material_inventory,
 		"lure_inventory": world.lure_inventory,
-		"fish_inventory": world.fish_inventory,
+		"fish_inventory": get_fish_inventory_count_save_data(),
+		"fish_inventory_unit": "count",
 		"fishing_records": world.fishing_manager.get_fishing_records_save_data() if world.fishing_manager != null and world.fishing_manager.has_method("get_fishing_records_save_data") else {},
 		"equipped_tool": str(world.equipped_tool) if world.equipped_tool != null else "",
 		"equipped_back_item": str(world.equipped_back_item) if world.equipped_back_item != null else "",
+		"equipped_hat_item": str(world.equipped_hat_item) if world.equipped_hat_item != null else "",
 		"equipped_hair_item": str(world.equipped_hair_item) if world.equipped_hair_item != null else "",
+		"equipped_eyewear_item": str(world.equipped_eyewear_item) if world.equipped_eyewear_item != null else "",
 		"equipped_shirt_item": str(world.equipped_shirt_item) if world.equipped_shirt_item != null else "",
 		"equipped_pants_item": str(world.equipped_pants_item) if world.equipped_pants_item != null else "",
 		"equipped_shoes_item": str(world.equipped_shoes_item) if world.equipped_shoes_item != null else "",
+		"equipped_ride_item": str(world.equipped_ride_item) if world.equipped_ride_item != null else "",
 		"world_lock": world.get_world_lock_save_data() if world.has_method("get_world_lock_save_data") else {},
+		"area_locks": world.get_area_locks_save_data() if world.has_method("get_area_locks_save_data") else [],
+		"electrical_layer": world.get_electrical_save_data() if world.has_method("get_electrical_save_data") else [],
+		"foreground": {},
+		"background": {},
 		"blocks": [],
 		"background_blocks": [],
 		"item_drops": [],
@@ -1863,21 +2692,32 @@ func save_world():
 	}
 
 	for grid_pos in world.blocks.keys():
+		var block_type := str(world.blocks[grid_pos].get("type", ""))
+		var atlas_item_id := _get_saved_atlas_item_id(block_type, world.blocks[grid_pos])
+		if atlas_item_id > 0:
+			save_data["foreground"][_saved_layer_key(grid_pos)] = atlas_item_id
 		save_data["blocks"].append({
 			"x": grid_pos.x,
 			"y": grid_pos.y,
-			"type": world.blocks[grid_pos]["type"],
+			"type": block_type,
+			"item_id": atlas_item_id,
 			"entrance_locked": bool(world.blocks[grid_pos].get("entrance_locked", false)),
-			"sign_text": str(world.blocks[grid_pos].get("sign_text", ""))
+			"sign_text": str(world.blocks[grid_pos].get("sign_text", "")),
+			"toggle_on": bool(world.blocks[grid_pos].get("toggle_on", false))
 		})
 
 	var background_blocks = get_background_blocks_dictionary()
 
 	for grid_pos in background_blocks.keys():
+		var background_type := str(background_blocks[grid_pos].get("type", ""))
+		var background_item_id := _get_saved_atlas_item_id(background_type, background_blocks[grid_pos])
+		if background_item_id > 0:
+			save_data["background"][_saved_layer_key(grid_pos)] = background_item_id
 		save_data["background_blocks"].append({
 			"x": grid_pos.x,
 			"y": grid_pos.y,
-			"type": background_blocks[grid_pos]["type"]
+			"type": background_type,
+			"item_id": background_item_id
 		})
 
 	for drop_data in world.dropped_items:
@@ -1934,12 +2774,14 @@ func load_world():
 		print("No save file found for world: " + world.current_world_name)
 		clear_world()
 		world.generate_world()
-		world.place_player_at_entrance_immediate()
+		place_player_at_current_entrance_gate_for_world_entry(true)
 		world.setup_world_camera_limits()
 		world.set_default_camera_zoom_silent()
 		world.clamp_player_to_world()
 		if world.has_method("load_world_lock_save_data"):
 			world.load_world_lock_save_data({})
+		if world.has_method("load_area_locks_save_data"):
+			world.load_area_locks_save_data([])
 
 		load_player_data()
 		world.update_equipment_visual()
@@ -1970,7 +2812,7 @@ func load_world():
 		print("Old save version found. Creating new world with terrain directly above bedrock.")
 		clear_world()
 		world.generate_world()
-		world.place_player_at_entrance_immediate()
+		place_player_at_current_entrance_gate_for_world_entry(true)
 		world.setup_world_camera_limits()
 		world.set_default_camera_zoom_silent()
 		world.clamp_player_to_world()
@@ -1982,6 +2824,12 @@ func load_world():
 
 	if world.has_method("load_world_lock_save_data"):
 		world.load_world_lock_save_data(data.get("world_lock", {}))
+	if world.has_method("load_area_locks_save_data"):
+		var saved_world_lock = data.get("world_lock", {})
+		var nested_area_locks = saved_world_lock.get("area_locks", []) if saved_world_lock is Dictionary else []
+		world.load_area_locks_save_data(data.get("area_locks", nested_area_locks))
+	if world.has_method("load_electrical_save_data"):
+		world.load_electrical_save_data(data.get("electrical_layer", data.get("electrical_tiles", [])))
 
 	world.selected_item_type = _safe_string(data.get("selected_item_type", data.get("selected_block_type", "punch")), "punch", MAX_INVENTORY_STRING_LEN)
 	world.selected_item_category = _safe_string(data.get("selected_item_category", "tool"), "tool", MAX_INVENTORY_STRING_LEN)
@@ -2011,9 +2859,6 @@ func load_world():
 			world.hotbar_items = ["punch", quick_item_type, "grass", "stone", "wood", "leaf"]
 			world.hotbar_item_categories = ["tool", quick_item_category, "block", "block", "block", "block"]
 
-	world.normalize_hotbar()
-	world.setup_hotbar()
-
 	world.player_health = _safe_int(data.get("player_health", 10), 10, 0, MAX_PLAYER_HEALTH)
 
 	var saved_inventory = data.get("inventory", {})
@@ -2023,14 +2868,19 @@ func load_world():
 	apply_saved_inventory_counts(world.seed_inventory, data.get("seed_inventory", {}), false)
 	apply_saved_inventory_counts(world.tool_inventory, data.get("tool_inventory", {}), true)
 	apply_saved_inventory_counts(world.back_inventory, data.get("back_inventory", {}), true)
+	apply_saved_inventory_counts(world.hat_inventory, data.get("hat_inventory", {}), true)
 	apply_saved_inventory_counts(world.hair_inventory, data.get("hair_inventory", {}), true)
+	apply_saved_inventory_counts(world.eyewear_inventory, data.get("eyewear_inventory", {}), true)
 	apply_saved_inventory_counts(world.shirt_inventory, data.get("shirt_inventory", {}), true)
 	apply_saved_inventory_counts(world.pants_inventory, data.get("pants_inventory", {}), true)
 	apply_saved_inventory_counts(world.shoes_inventory, data.get("shoes_inventory", {}), true)
+	apply_saved_inventory_counts(world.ride_inventory, data.get("ride_inventory", {}), true)
 	apply_saved_inventory_counts(world.currency_inventory, data.get("currency_inventory", {}), true)
 	apply_saved_inventory_counts(world.material_inventory, data.get("material_inventory", {}), true)
 	apply_saved_inventory_counts(world.lure_inventory, data.get("lure_inventory", {}), true)
-	apply_saved_fish_weight_inventory(data.get("fish_inventory", {}), true)
+	apply_saved_fish_count_inventory(data.get("fish_inventory", {}), true, str(data.get("fish_inventory_unit", "")))
+	world.normalize_hotbar()
+	world.setup_hotbar()
 	if world.fishing_manager != null and world.fishing_manager.has_method("apply_fishing_records"):
 		var fishing_records_data = data.get("fishing_records", {})
 		var fishing_records_dictionary: Dictionary = (fishing_records_data as Dictionary) if fishing_records_data is Dictionary else {}
@@ -2052,6 +2902,14 @@ func load_world():
 	if world.equipped_back_item != "" and (not world.back_inventory.has(world.equipped_back_item) or _safe_int(world.back_inventory[world.equipped_back_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
 		world.equipped_back_item = ""
 
+	var loaded_equipped_hat_item = data.get("equipped_hat_item", world.equipped_hat_item)
+	if loaded_equipped_hat_item == null:
+		loaded_equipped_hat_item = ""
+	world.equipped_hat_item = _safe_string(loaded_equipped_hat_item, "", MAX_INVENTORY_STRING_LEN)
+
+	if world.equipped_hat_item != "" and (not world.hat_inventory.has(world.equipped_hat_item) or _safe_int(world.hat_inventory[world.equipped_hat_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
+		world.equipped_hat_item = ""
+
 	var loaded_equipped_hair_item = data.get("equipped_hair_item", world.equipped_hair_item)
 	if loaded_equipped_hair_item == null:
 		loaded_equipped_hair_item = ""
@@ -2059,6 +2917,14 @@ func load_world():
 
 	if world.equipped_hair_item != "" and (not world.hair_inventory.has(world.equipped_hair_item) or _safe_int(world.hair_inventory[world.equipped_hair_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
 		world.equipped_hair_item = ""
+
+	var loaded_equipped_eyewear_item = data.get("equipped_eyewear_item", world.equipped_eyewear_item)
+	if loaded_equipped_eyewear_item == null:
+		loaded_equipped_eyewear_item = ""
+	world.equipped_eyewear_item = _safe_string(loaded_equipped_eyewear_item, "", MAX_INVENTORY_STRING_LEN)
+
+	if world.equipped_eyewear_item != "" and (not world.eyewear_inventory.has(world.equipped_eyewear_item) or _safe_int(world.eyewear_inventory[world.equipped_eyewear_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
+		world.equipped_eyewear_item = ""
 
 	var loaded_equipped_shirt_item = data.get("equipped_shirt_item", world.equipped_shirt_item)
 	if loaded_equipped_shirt_item == null:
@@ -2084,19 +2950,24 @@ func load_world():
 	if world.equipped_shoes_item != "" and (not world.shoes_inventory.has(world.equipped_shoes_item) or _safe_int(world.shoes_inventory[world.equipped_shoes_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
 		world.equipped_shoes_item = ""
 
-	var saved_blocks = data.get("blocks", [])
+	var loaded_equipped_ride_item = data.get("equipped_ride_item", world.equipped_ride_item)
+	if loaded_equipped_ride_item == null:
+		loaded_equipped_ride_item = ""
+	world.equipped_ride_item = _safe_string(loaded_equipped_ride_item, "", MAX_INVENTORY_STRING_LEN)
 
-	if not (saved_blocks is Array):
-		saved_blocks = []
+	if world.equipped_ride_item != "" and (not world.ride_inventory.has(world.equipped_ride_item) or _safe_int(world.ride_inventory[world.equipped_ride_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
+		world.equipped_ride_item = ""
+
+	var saved_blocks = _normalize_saved_layer_entries(data.get("foreground", data.get("blocks", [])))
 
 	for block_data in saved_blocks:
 		if not (block_data is Dictionary):
 			continue
 
-		if not block_data.has("x") or not block_data.has("y") or not block_data.has("type"):
+		if not block_data.has("x") or not block_data.has("y"):
 			continue
 
-		var block_type = _safe_string(block_data.get("type", ""), "", MAX_INVENTORY_STRING_LEN)
+		var block_type = _resolve_saved_block_type(block_data)
 		if block_type == "":
 			continue
 
@@ -2107,21 +2978,27 @@ func load_world():
 		if not world.is_grid_inside_world(grid_pos):
 			continue
 
-		if world.block_textures.has(block_type):
+		if world.item_database.has(block_type) or world.block_textures.has(block_type):
 			world.create_block(grid_pos, block_type)
 
-			if block_type == "wooden_entrance":
+			if world.is_wooden_entrance_block(block_type):
 				world.set_wooden_entrance_locked(grid_pos, _safe_bool(block_data.get("entrance_locked", false), false))
 
-			if block_type == "sign" and world.blocks.has(grid_pos):
+			if world.is_sign_block(block_type) and world.blocks.has(grid_pos):
 				world.blocks[grid_pos]["sign_text"] = _safe_string(block_data.get("sign_text", ""), "", 128)
 				world.update_sign_text_visual(grid_pos)
 
-	var saved_background_blocks = data.get("background_blocks", [])
+			if world.blocks.has(grid_pos) and world.item_database.has(block_type) and bool(world.item_database[block_type].get("toggle_block", false)):
+				var state_key = str(world.item_database[block_type].get("toggle_state_key", "toggle_on"))
+				world.blocks[grid_pos][state_key] = _safe_bool(block_data.get("toggle_on", false), false)
+				if world.block_manager != null and world.block_manager.has_method("update_toggle_block_visual"):
+					world.block_manager.update_toggle_block_visual(grid_pos)
+
+	var saved_background_blocks = _normalize_saved_layer_entries(data.get("background", data.get("background_blocks", [])))
 
 	load_background_blocks_from_data(saved_background_blocks)
 
-	if not (saved_background_blocks is Array) or saved_background_blocks.size() == 0:
+	if saved_background_blocks.size() == 0:
 		add_missing_backgrounds_for_loaded_blocks()
 
 	var saved_item_drops = data.get("item_drops", [])
@@ -2160,7 +3037,7 @@ func load_world():
 		world.seed_system.load_seed_data(saved_planted_seeds)
 
 	world.ensure_entrance_gate()
-	world.place_player_at_entrance_immediate()
+	place_player_at_current_entrance_gate_for_world_entry(true)
 
 	# Current system keeps player inventory/equipment global, not per world.
 	# This restores player data after old world saves try to load old inventory fields.
@@ -2169,6 +3046,8 @@ func load_world():
 	world.setup_world_camera_limits()
 	world.set_default_camera_zoom_silent()
 	world.clamp_player_to_world()
+	if world.world_lock_manager != null and world.world_lock_manager.has_method("reconcile_world_lock_state_with_blocks"):
+		world.world_lock_manager.reconcile_world_lock_state_with_blocks()
 	world.update_equipment_visual()
 	world.update_all_ui()
 
@@ -2177,14 +3056,32 @@ func load_world():
 
 func clear_world():
 	clear_background_blocks()
+	if world.has_method("clear_electrical_layer"):
+		world.clear_electrical_layer()
+	if world.block_manager != null and world.block_manager.has_method("clear_all_tilemap_cells"):
+		world.block_manager.clear_all_tilemap_cells()
 
 	for grid_pos in world.blocks.keys():
-		world.blocks[grid_pos]["node"].queue_free()
+		var block_data = world.blocks[grid_pos]
+		if block_data is Dictionary and world.block_manager != null and world.block_manager.has_method("clear_foreground_crack_visual_for_data"):
+			world.block_manager.clear_foreground_crack_visual_for_data(block_data)
+		var block_node = block_data.get("node", null) if block_data is Dictionary else null
+		if block_node != null and is_instance_valid(block_node):
+			retire_block_node_collision_for_removal(block_node)
+			block_node.queue_free()
 
 	world.blocks.clear()
 	world.terrain_surface_y.clear()
 	world.block_hit_progress.clear()
 	world.block_hit_timers.clear()
+	if world.has_method("load_world_lock_save_data"):
+		world.load_world_lock_save_data({})
+	if world.world_lock_manager != null and world.world_lock_manager.has_method("load_area_locks_save_data"):
+		world.world_lock_manager.load_area_locks_save_data([])
+	if "active_checkpoint_grid" in world:
+		world.active_checkpoint_grid = world.INVALID_GRID_POS
+	if "active_checkpoint_world" in world:
+		world.active_checkpoint_world = ""
 	clear_dropped_items()
 	world.clear_planted_seeds()
 

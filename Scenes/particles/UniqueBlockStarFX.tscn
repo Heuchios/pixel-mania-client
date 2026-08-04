@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://5oi3sknmw2bc"]
+
+[ext_resource type="Script" uid="uid://b35tk1r3plutf" path="res://Scripts/unique_block_star_fx.gd" id="1_unique_star_fx"]
+[ext_resource type="Texture2D" uid="uid://trfnydujh1du" path="res://Assets/effects/confetti_star.svg" id="2_star"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_additive"]
+blend_mode = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_abc7t"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(8, 4, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, -1, 0)
+spread = 42.0
+initial_velocity_min = 28.0
+initial_velocity_max = 82.0
+angular_velocity_min = -420.0
+angular_velocity_max = 420.0
+gravity = Vector3(0, 56, 0)
+damping_min = 1.2
+damping_max = 2.2
+scale_min = 0.34
+scale_max = 0.96
+color = Color(1, 0.78, 0.15, 0.94)
+hue_variation_min = -0.03
+hue_variation_max = 0.04
+
+[node name="UniqueBlockStarFX" type="Node2D" unique_id=873509684]
+z_index = 4095
+z_as_relative = false
+script = ExtResource("1_unique_star_fx")
+preview_interval = 1.55
+one_shot_duration = 1.1
+
+[node name="StarBurst" type="GPUParticles2D" parent="." unique_id=1153324705]
+z_index = 1
+material = SubResource("CanvasItemMaterial_additive")
+emitting = false
+amount = 6
+texture = ExtResource("2_star")
+lifetime = 0.62
+one_shot = true
+preprocess = 0.62
+explosiveness = 1.0
+randomness = 0.46
+visibility_rect = Rect2(-18, -18, 36, 30)
+process_material = SubResource("ParticleProcessMaterial_abc7t")

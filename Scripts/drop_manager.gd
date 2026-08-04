@@ -1396,6 +1396,7 @@ func send_network_drop_pickup_bulk(drop_entries: Array) -> bool:
 	var pending_drops: Array = []
 	var now_ms := Time.get_ticks_msec()
 
+	var batched_drop_ids: Dictionary = {}
 	for raw_drop in drop_entries:
 		if not (raw_drop is Dictionary):
 			continue
@@ -1404,6 +1405,25 @@ func send_network_drop_pickup_bulk(drop_entries: Array) -> bool:
 		var clean_drop_id: String = _safe_string(payload.get("drop_id", ""), "", MAX_DROP_ID_LENGTH)
 		if clean_drop_id == "":
 			continue
+
+		# Same in-flight guard the single-drop sender already applies. Without it
+		# auto-pickup re-sends a drop id inside the next batch before the first
+		# response lands, and the server answers the duplicate of a pickup that
+		# already succeeded with a "not available" error.
+		var already_sent_drop_id: String = _safe_string(drop_data.get("pickup_requested_drop_id", ""), "", MAX_DROP_ID_LENGTH)
+		var request_age: float = _safe_float(drop_data.get("pickup_requested_age", 0.0), 0.0, 0.0, DROP_PICKUP_REQUEST_TIMEOUT * 2.0)
+		if bool(drop_data.get("pickup_request_sent", false)) and already_sent_drop_id == clean_drop_id and request_age < DROP_PICKUP_REQUEST_TIMEOUT:
+			continue
+
+		# Already confirmed gone by the server; asking again can only fail.
+		if was_drop_id_recently_removed(clean_drop_id):
+			continue
+
+		# One batch must never carry the same drop id twice.
+		if batched_drop_ids.has(clean_drop_id):
+			continue
+		batched_drop_ids[clean_drop_id] = true
+
 		payloads.append(payload)
 		pending_drops.append(drop_data)
 

@@ -3,11 +3,17 @@ extends Control
 const PROFILE_PATH := "user://pixelmania_profile.cfg"
 const PLAYER_SAVE_FOLDER := "user://players/"
 const WORLD_SCENE := "res://Scenes/main.tscn"
-const LOGIN_SCENE := "res://Scenes/login_screen.tscn"
+const LOGIN_SCENE := "res://Scenes/ui/login/LoginScene.tscn"
+const WORLD_LOADING_OVERLAY_SCENE_PATH := "res://Scenes/ui/WorldLoadingOverlay/WorldLoadingOverlay.tscn"
+const WORLD_LOADING_CANVAS_LAYER := 4096
+const WORLD_JOIN_SCENE_CHANGE_DRAW_FRAMES := 2
 const PLAYER_IDLE_TEXTURE := "res://Assets/player/body/player_idle.png"
 const BACKGROUND_TEXTURE := "res://Assets/ui/backgrounds/mountain_background.png"
-const GRASS_BLOCK_TEXTURE := "res://Assets/blocks/basic blocks/grass_block.png"
-const DIRT_BLOCK_TEXTURE := "res://Assets/blocks/basic blocks/dirt_block.png"
+const MenuLoopSoundHelper = preload("res://Scripts/ui/menu_loop_sound_helper.gd")
+const MENU_LOOP_SOUND_PATH := "res://Assets/sounds/login.wav"
+const MENU_LOOP_SOUND_VOLUME_DB := -12.0
+const GRASS_BLOCK_TEXTURE := "res://Assets/blocks/Tier_1/basic blocks/grass_block.png"
+const DIRT_BLOCK_TEXTURE := "res://Assets/blocks/Tier_1/basic blocks/dirt_block.png"
 const LOBBY_HUB_WORLD := "START"
 const MAX_ACTIVE_WORLD_ROWS := 6
 const WORLD_POPULATION_REFRESH_SECONDS := 5.0
@@ -30,10 +36,16 @@ var recent_worlds_chip_label: Label
 var active_worlds_button: Button
 var world_list_mode := "active"
 var world_population_cache: Dictionary = {}
+var owned_locked_world_entries: Array = []
+var owned_locked_worlds_loading := false
+var owned_locked_worlds_request_id := ""
+var owned_locked_worlds_error := ""
 var world_population_timer: Timer
+var join_scene_change_in_progress := false
 
 
 func _ready() -> void:
+	MenuLoopSoundHelper.start_menu_loop_sound(self, MENU_LOOP_SOUND_PATH, "LoginLoopSound", MENU_LOOP_SOUND_VOLUME_DB)
 	_build_screen()
 	_load_profile()
 	_connect_world_population_feed()
@@ -573,7 +585,15 @@ func _refresh_recent_worlds_panel() -> void:
 
 	if active_worlds.is_empty():
 		var empty_label := Label.new()
-		empty_label.text = "No server-owned locked worlds in this feed yet." if world_list_mode == "owned" else "No recent or live worlds yet."
+		if world_list_mode == "owned":
+			if owned_locked_worlds_loading:
+				empty_label.text = "Loading your locked worlds..."
+			elif owned_locked_worlds_error != "":
+				empty_label.text = owned_locked_worlds_error
+			else:
+				empty_label.text = "No server-owned locked worlds in this feed yet."
+		else:
+			empty_label.text = "No recent or live worlds yet."
 		empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		empty_label.custom_minimum_size = Vector2(0, 100)
@@ -747,9 +767,9 @@ func _get_active_world_meta_text(entry: Dictionary) -> String:
 	var source := str(entry.get("source_label", "SAVED"))
 	var lock_text := "LOCKED" if bool(entry.get("is_locked", false)) else "OPEN"
 
-	var owner := str(entry.get("owner_name", "")).strip_edges()
-	if owner == "":
-		owner = "none"
+	var owner_text := str(entry.get("owner_name", "")).strip_edges()
+	if owner_text == "":
+		owner_text = "none"
 
 	if world_list_mode == "owned":
 		return "OWNER | access " + str(int(entry.get("access_count", 0))) + " | " + _get_player_count_text(world_name)
@@ -757,7 +777,7 @@ func _get_active_world_meta_text(entry: Dictionary) -> String:
 	if not bool(entry.get("has_save", false)):
 		return source + " | " + lock_text + " | " + _get_player_count_text(world_name)
 
-	return source + " | owner " + owner + " | " + lock_text + " | " + _get_player_count_text(world_name)
+	return source + " | owner " + owner_text + " | " + lock_text + " | " + _get_player_count_text(world_name)
 
 
 func _get_player_count_label(world_name: String) -> String:
@@ -853,7 +873,43 @@ func _get_active_world_entries() -> Array:
 
 
 func _get_owned_locked_world_entries() -> Array:
-	return []
+	var entries: Array = []
+	for raw_entry in owned_locked_world_entries:
+		if not (raw_entry is Dictionary):
+			continue
+		var entry := _normalize_owned_locked_world_entry(raw_entry)
+		if entry.is_empty():
+			continue
+		entries.append(entry)
+
+	entries.sort_custom(_sort_active_world_entries)
+	return entries
+
+
+func _normalize_owned_locked_world_entry(raw_entry: Dictionary) -> Dictionary:
+	var world_name: String = _normalize_world_name(str(raw_entry.get("world_name", "")))
+	if world_name == "":
+		return {}
+
+	return {
+		"world_name": world_name,
+		"source_label": str(raw_entry.get("source_label", "SERVER")).strip_edges().to_upper(),
+		"has_save": true,
+		"is_locked": true,
+		"owner_name": _normalize_profile_name(str(raw_entry.get("owner_name", ""))),
+		"lock_grid_x": int(raw_entry.get("lock_grid_x", 999999)),
+		"lock_grid_y": int(raw_entry.get("lock_grid_y", 999999)),
+		"access_count": max(0, int(raw_entry.get("access_count", 0))),
+		"public_build": bool(raw_entry.get("public_build", false)),
+		"trusted_builder_slot_limit": max(0, int(raw_entry.get("trusted_builder_slot_limit", 0))),
+		"world_width": 0,
+		"world_height": 0,
+		"block_count": 0,
+		"drop_count": 0,
+		"seed_count": 0,
+		"modified_time": Time.get_unix_time_from_system(),
+		"sort_group": 0
+	}
 
 
 func _pin_start_world_entry(entries: Array, seen: Dictionary) -> void:
@@ -1544,6 +1600,10 @@ func _connect_world_population_feed() -> void:
 	if network.has_signal("world_population_changed") and not network.is_connected("world_population_changed", callback):
 		network.connect("world_population_changed", callback)
 
+	var owned_callback := Callable(self, "_on_owned_locked_worlds_received")
+	if network.has_signal("owned_locked_worlds_received") and not network.is_connected("owned_locked_worlds_received", owned_callback):
+		network.connect("owned_locked_worlds_received", owned_callback)
+
 
 func _start_world_population_timer() -> void:
 	if world_population_timer != null:
@@ -1568,6 +1628,53 @@ func _request_world_population_refresh() -> void:
 		return
 
 	network.request_world_population(_get_known_world_names_for_population_request())
+
+
+func _request_owned_locked_worlds_refresh() -> void:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null or not network.has_method("request_owned_locked_worlds"):
+		owned_locked_worlds_loading = false
+		owned_locked_worlds_error = "Owned locked worlds are unavailable."
+		_refresh_recent_worlds_panel()
+		return
+
+	owned_locked_worlds_request_id = "lobby_owned_" + str(Time.get_ticks_msec())
+	owned_locked_worlds_loading = true
+	owned_locked_worlds_error = ""
+	_refresh_recent_worlds_panel()
+
+	if not bool(network.request_owned_locked_worlds(owned_locked_worlds_request_id)):
+		owned_locked_worlds_loading = false
+		owned_locked_worlds_error = "Sign in to load owned locked worlds."
+		_refresh_recent_worlds_panel()
+
+
+func _on_owned_locked_worlds_received(data: Dictionary) -> void:
+	if owned_locked_worlds_request_id != "":
+		var response_request_id: String = str(data.get("request_id", "")).strip_edges()
+		if response_request_id != "" and response_request_id != owned_locked_worlds_request_id:
+			return
+
+	owned_locked_worlds_loading = false
+	owned_locked_worlds_error = ""
+
+	if not bool(data.get("ok", true)):
+		owned_locked_world_entries.clear()
+		owned_locked_worlds_error = str(data.get("message", "Could not load owned locked worlds.")).strip_edges()
+		if owned_locked_worlds_error == "":
+			owned_locked_worlds_error = "Could not load owned locked worlds."
+		_refresh_recent_worlds_panel()
+		return
+
+	var incoming = data.get("worlds", [])
+	owned_locked_world_entries.clear()
+	if incoming is Array:
+		for raw_entry in incoming:
+			if raw_entry is Dictionary:
+				owned_locked_world_entries.append(raw_entry.duplicate(true))
+
+	if world_list_mode == "owned":
+		_refresh_recent_worlds_panel()
 
 
 func _get_known_world_names_for_population_request() -> Array:
@@ -1654,6 +1761,7 @@ func _on_active_worlds_pressed() -> void:
 func _on_lock_worlds_pressed() -> void:
 	world_list_mode = "owned"
 	_refresh_recent_worlds_panel()
+	_request_owned_locked_worlds_refresh()
 	_request_world_population_refresh()
 
 
@@ -1666,12 +1774,16 @@ func _on_join_pressed() -> void:
 
 
 func _join_world_name(raw_world_name: String) -> void:
+	if join_scene_change_in_progress:
+		return
+
 	var world_name: String = _normalize_world_name(raw_world_name)
 
 	if world_name.is_empty():
 		status_label.text = "Enter a world name first."
 		return
 
+	join_scene_change_in_progress = true
 	world_input.text = world_name
 	_save_recent_world_name(world_name)
 
@@ -1694,7 +1806,162 @@ func _join_world_name(raw_world_name: String) -> void:
 	cfg.set_value("pending_join", "profile_name", profile_name)
 	cfg.save(PROFILE_PATH)
 
-	get_tree().change_scene_to_file(WORLD_SCENE)
+	_show_join_world_loading_overlay(world_name)
+	await _wait_for_join_world_loading_overlay_to_draw()
+
+	var change_error := get_tree().change_scene_to_file(WORLD_SCENE)
+	if change_error != OK:
+		join_scene_change_in_progress = false
+		status_label.text = "Could not open world scene."
+		_hide_join_world_loading_overlay()
+
+
+func _show_join_world_loading_overlay(world_name: String) -> void:
+	var overlay_scene_instance: Node = _get_or_create_root_loading_overlay()
+	if overlay_scene_instance == null:
+		return
+
+	var loading_canvas = _find_loading_canvas(overlay_scene_instance)
+	if loading_canvas == null:
+		return
+
+	if overlay_scene_instance is CanvasItem:
+		overlay_scene_instance.visible = true
+
+	if loading_canvas is CanvasLayer:
+		loading_canvas.layer = WORLD_LOADING_CANVAS_LAYER
+		loading_canvas.process_mode = Node.PROCESS_MODE_ALWAYS
+		loading_canvas.visible = true
+
+	var loading_root = _find_loading_root(loading_canvas)
+	if loading_root is Control:
+		loading_root.visible = true
+		loading_root.modulate = Color(1, 1, 1, 1)
+		loading_root.mouse_filter = Control.MOUSE_FILTER_STOP
+
+	var clean_world_name := world_name.strip_edges().to_upper()
+	if clean_world_name == "":
+		clean_world_name = "WORLD"
+
+	var title_label := _find_loading_label(loading_canvas, "Title")
+	if title_label != null:
+		title_label.text = _format_loading_title(clean_world_name)
+
+	var message_label := _find_loading_label(loading_canvas, "Message")
+	if message_label != null:
+		message_label.text = "Loading " + clean_world_name + "..."
+
+	var dots_label := _find_loading_label(loading_canvas, "Dots")
+	if dots_label != null:
+		dots_label.text = "..."
+
+	var parent_node: Node = overlay_scene_instance.get_parent()
+	if parent_node != null:
+		parent_node.move_child(overlay_scene_instance, parent_node.get_child_count() - 1)
+
+
+func _hide_join_world_loading_overlay() -> void:
+	var overlay_scene_instance: Node = get_tree().root.get_node_or_null("WorldLoadingOverlay")
+	if overlay_scene_instance == null:
+		return
+
+	var loading_canvas = _find_loading_canvas(overlay_scene_instance)
+	if loading_canvas is CanvasLayer:
+		loading_canvas.visible = false
+
+	var loading_root = _find_loading_root(loading_canvas)
+	if loading_root is Control:
+		loading_root.visible = false
+
+
+func _wait_for_join_world_loading_overlay_to_draw() -> void:
+	var tree := get_tree()
+	if tree == null:
+		return
+
+	for _i in range(WORLD_JOIN_SCENE_CHANGE_DRAW_FRAMES):
+		await tree.process_frame
+
+
+func _get_or_create_root_loading_overlay() -> Node:
+	var root_node: Node = get_tree().root
+	if root_node == null:
+		return null
+
+	var existing_overlay: Node = root_node.get_node_or_null("WorldLoadingOverlay")
+	if existing_overlay != null:
+		return existing_overlay
+
+	if not ResourceLoader.exists(WORLD_LOADING_OVERLAY_SCENE_PATH):
+		return null
+
+	var scene_resource = load(WORLD_LOADING_OVERLAY_SCENE_PATH)
+	if not (scene_resource is PackedScene):
+		return null
+
+	var overlay_scene_instance: Node = scene_resource.instantiate()
+	overlay_scene_instance.name = "WorldLoadingOverlay"
+	root_node.add_child(overlay_scene_instance)
+	return overlay_scene_instance
+
+
+func _find_loading_canvas(root_node):
+	if root_node == null or not is_instance_valid(root_node):
+		return null
+	if root_node is CanvasLayer:
+		return root_node
+	if not (root_node is Node):
+		return null
+
+	for preferred_name in ["LoadingCanvas", "CanvasLayer", "WorldLoadingOverlay"]:
+		var named_canvas = root_node.get_node_or_null(preferred_name)
+		if named_canvas is CanvasLayer:
+			return named_canvas
+
+	for child in root_node.get_children():
+		if child is CanvasLayer:
+			return child
+
+	for child in root_node.get_children():
+		if child is Node:
+			var found_canvas = _find_loading_canvas(child)
+			if found_canvas is CanvasLayer:
+				return found_canvas
+
+	return null
+
+
+func _find_loading_root(loading_canvas):
+	if loading_canvas == null or not is_instance_valid(loading_canvas):
+		return null
+	if not (loading_canvas is Node):
+		return null
+
+	var root_node = loading_canvas.get_node_or_null("Root")
+	if root_node == null:
+		root_node = loading_canvas.find_child("Root", true, false)
+	return root_node
+
+
+func _find_loading_label(loading_canvas, label_name: String) -> Label:
+	if loading_canvas == null or not is_instance_valid(loading_canvas):
+		return null
+	if not (loading_canvas is Node):
+		return null
+
+	var direct_label = loading_canvas.get_node_or_null("Root/Center/Box/" + label_name)
+	if direct_label == null:
+		direct_label = loading_canvas.find_child(label_name, true, false)
+	if direct_label is Label:
+		return direct_label
+	return null
+
+
+func _format_loading_title(world_name: String) -> String:
+	var clean_world_name := str(world_name).strip_edges().to_upper()
+	if clean_world_name == "" or clean_world_name == "WORLD":
+		return "LOADING WORLD"
+	return "LOADING WORLD: " + clean_world_name
 
 
 func _on_profile_switch_pressed() -> void:

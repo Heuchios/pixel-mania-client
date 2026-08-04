@@ -1,0 +1,356 @@
+[gd_scene format=3 uid="uid://c5awf35vqxnse"]
+
+[ext_resource type="Script" uid="uid://ckmamhrykm3xs" path="res://Scripts/ui/settings_panel.gd" id="1_settings_panel"]
+[ext_resource type="Texture2D" uid="uid://bgt0geyx2l4kd" path="res://Assets/ui/login/outer_panel.png" id="2_2a3si"]
+[ext_resource type="Texture2D" uid="uid://cltmtlvs56ugh" path="res://Assets/ui/settings/close_button.png" id="4_close_button"]
+[ext_resource type="Texture2D" uid="uid://cbvqnk2kgdrku" path="res://Assets/ui/settings/scrollbar.png" id="5_scrollbar"]
+[ext_resource type="Texture2D" uid="uid://rcxc05omk26g" path="res://Assets/ui/inventory/scroll_bar.png" id="5_verfj"]
+[ext_resource type="Texture2D" uid="uid://no714kin0ckc" path="res://Assets/ui/login/un_checked.png" id="6_2a3si"]
+[ext_resource type="Texture2D" uid="uid://buhs7xmnksv4a" path="res://Assets/ui/login/checked.png" id="7_verfj"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_normal"]
+texture = ExtResource("4_close_button")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_pressed"]
+texture = ExtResource("4_close_button")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_hover"]
+texture = ExtResource("4_close_button")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_scroll_track"]
+texture = ExtResource("5_scrollbar")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_emsb5"]
+texture = ExtResource("5_verfj")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_scroll_grabber"]
+texture = ExtResource("5_verfj")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sfx_slider_track"]
+bg_color = Color(0.0196078, 0.0862745, 0.137255, 0.92)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.176471, 0.478431, 0.639216, 0.88)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_eimbx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sfx_slider_fill"]
+bg_color = Color(0.211765, 0.678431, 0.858824, 0.82)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.658824, 0.933333, 1, 0.86)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_customize_normal"]
+bg_color = Color(0.0392157, 0.286275, 0.403922, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.32549, 0.780392, 0.94902, 0.92)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_customize_pressed"]
+bg_color = Color(0.0235294, 0.188235, 0.270588, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.764706, 0.956863, 1, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_customize_hover"]
+bg_color = Color(0.0705882, 0.380392, 0.521569, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.619608, 0.921569, 1, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[node name="SettingsPanel" type="Control" unique_id=1439493869]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_settings_panel")
+
+[node name="Dimmer" type="ColorRect" parent="." unique_id=1961590631]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.00392157, 0.0156863, 0.027451, 0.42)
+
+[node name="Window" type="Control" parent="." unique_id=2071227947]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -180.0
+offset_right = 280.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WindowSkin" type="NinePatchRect" parent="Window" unique_id=122084328]
+layout_mode = 0
+offset_top = -144.0
+offset_right = 560.0
+offset_bottom = 517.0
+texture = ExtResource("2_2a3si")
+patch_margin_left = 36
+patch_margin_top = 36
+patch_margin_right = 36
+patch_margin_bottom = 36
+
+[node name="HeaderSkin" type="NinePatchRect" parent="Window" unique_id=1166752146]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 16.0
+offset_right = 542.0
+offset_bottom = 84.0
+patch_margin_left = 26
+patch_margin_top = 24
+patch_margin_right = 26
+patch_margin_bottom = 24
+
+[node name="TitleLabel" type="Label" parent="Window/HeaderSkin" unique_id=725674851]
+layout_mode = 0
+offset_left = 22.0
+offset_top = -146.0
+offset_right = 186.0
+offset_bottom = -96.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 29
+text = "SETTINGS"
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Window" unique_id=1432242637]
+custom_minimum_size = Vector2(52, 44)
+layout_mode = 0
+offset_left = 522.0
+offset_top = -166.0
+offset_right = 582.0
+offset_bottom = -106.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_close_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_close_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_close_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "X"
+
+[node name="SettingsScrollSlider" type="VScrollBar" parent="Window" unique_id=1839073500]
+layout_mode = 0
+offset_left = 522.0
+offset_top = -70.0
+offset_right = 542.0
+offset_bottom = 489.0
+focus_mode = 0
+theme_override_styles/scroll = SubResource("StyleBoxTexture_scroll_track")
+theme_override_styles/grabber = SubResource("StyleBoxTexture_emsb5")
+theme_override_styles/grabber_highlight = SubResource("StyleBoxTexture_scroll_grabber")
+theme_override_styles/grabber_pressed = SubResource("StyleBoxTexture_scroll_grabber")
+step = 1.0
+page = 32.0
+
+[node name="FullScreenRow" type="Control" parent="Window" unique_id=1599017340]
+anchors_preset = 0
+offset_left = 36.0
+offset_top = -72.0
+offset_right = 500.0
+offset_bottom = -30.0
+mouse_default_cursor_shape = 2
+
+[node name="FullScreenCheckmark" type="TextureButton" parent="Window/FullScreenRow" unique_id=958428378]
+layout_mode = 0
+offset_top = 2.0
+offset_right = 42.0
+offset_bottom = 38.0
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_pressed = true
+texture_normal = ExtResource("6_2a3si")
+texture_pressed = ExtResource("7_verfj")
+texture_hover = ExtResource("6_2a3si")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="FullScreenLabel" type="Label" parent="Window/FullScreenRow" unique_id=1654512905]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 6.0
+offset_right = 272.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Enable Full Screen"
+vertical_alignment = 1
+
+[node name="SfxRow" type="Control" parent="Window" unique_id=838488696]
+anchors_preset = 0
+offset_left = 36.0
+offset_top = -22.0
+offset_right = 500.0
+offset_bottom = 20.0
+mouse_default_cursor_shape = 2
+
+[node name="SfxLabel" type="Label" parent="Window/SfxRow" unique_id=1102247915]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 6.0
+offset_right = 170.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Enable SFX"
+vertical_alignment = 1
+
+[node name="SfxSlider" type="HSlider" parent="Window/SfxRow" unique_id=774057074]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 8.0
+offset_right = 384.0
+offset_bottom = 34.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_styles/slider = SubResource("StyleBoxFlat_sfx_slider_track")
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_eimbx")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_sfx_slider_fill")
+value = 100.0
+rounded = true
+
+[node name="SfxValueLabel" type="Label" parent="Window/SfxRow" unique_id=1750493660]
+layout_mode = 0
+offset_left = 396.0
+offset_top = 6.0
+offset_right = 462.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.78, 0.95, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 16
+text = "100%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ChatFilterRow" type="Control" parent="Window" unique_id=664121915]
+visible = false
+anchors_preset = 0
+offset_left = 36.0
+offset_top = 28.0
+offset_right = 500.0
+offset_bottom = 70.0
+mouse_default_cursor_shape = 2
+
+[node name="ChatFilterCheckmark" type="TextureButton" parent="Window/ChatFilterRow" unique_id=1190540773]
+layout_mode = 0
+offset_top = 2.0
+offset_right = 42.0
+offset_bottom = 38.0
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_pressed = true
+texture_normal = ExtResource("6_2a3si")
+texture_pressed = ExtResource("7_verfj")
+texture_hover = ExtResource("6_2a3si")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="ChatFilterLabel" type="Label" parent="Window/ChatFilterRow" unique_id=1287235466]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 6.0
+offset_right = 336.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Filter Inappropriate Words"
+vertical_alignment = 1
+
+[node name="MobileControlsRow" type="Control" parent="Window" unique_id=844847142]
+anchors_preset = 0
+offset_left = 36.0
+offset_top = 78.0
+offset_right = 500.0
+offset_bottom = 128.0
+
+[node name="MobileControlsLabel" type="Label" parent="Window/MobileControlsRow" unique_id=773127600]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 9.0
+offset_right = 252.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "Mobile Controls"
+vertical_alignment = 1
+
+[node name="CustomizeButton" type="Button" parent="Window/MobileControlsRow" unique_id=682562624]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 4.0
+offset_right = 462.0
+offset_bottom = 44.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_customize_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_customize_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_customize_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "CUSTOMIZE"

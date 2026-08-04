@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://custom_movement_test/scripts/custom_movement_test_main.gd" id="1_main"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(1600, 40)
+
+[node name="CustomMovementTestMain" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="Players" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="LocalPlayers" type="Node2D" parent="."]
+z_index = 4096
+z_as_relative = false
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(640, 420)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="GroundVisual" type="Polygon2D" parent="Ground"]
+color = Color(0.16, 0.28, 0.22, 1)
+polygon = PackedVector2Array(-800, -20, 800, -20, 800, 20, -800, 20)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(640, 250)
+enabled = false
+zoom = Vector2(1.2, 1.2)
+
+[node name="InfoLabel" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 460.0
+offset_bottom = 230.0
+theme_override_font_sizes/font_size = 14
+text = "Custom Movement Test"

@@ -500,7 +500,7 @@ func can_manage_current_safe() -> bool:
 
 func find_merge_slot(item_type: String, category: String, amount: int) -> int:
 	var slots = get_slots()
-	var stack_limit = 200
+	var stack_limit = 400
 	if world != null and world.has_method("get_stack_limit_for_item"):
 		stack_limit = world.get_stack_limit_for_item(item_type, category)
 	for i in range(slots.size()):

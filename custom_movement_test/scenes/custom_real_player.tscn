@@ -1,0 +1,317 @@
+[gd_scene format=3 uid="uid://cndl1kqwb103i"]
+
+[ext_resource type="Script" uid="uid://dpsly7qouj2bi" path="res://custom_movement_test/scripts/custom_real_player_controller.gd" id="1_controller"]
+[ext_resource type="Texture2D" uid="uid://dpyv6nhqq3dky" path="res://Assets/player/expressions/dead_spirit_1.png" id="2_dead_1"]
+[ext_resource type="Texture2D" uid="uid://b01b8gdc4jgf8" path="res://Assets/player/expressions/dead_spirit_2.png" id="3_dead_2"]
+[ext_resource type="Texture2D" uid="uid://d3igh6txvr3s8" path="res://Assets/player/expressions/dead_spirit_3.png" id="4_dead_3"]
+[ext_resource type="Texture2D" uid="uid://cmwio43avy4a2" path="res://Assets/player/body_parts/left_hand_idle_1.png" id="5_left_hand"]
+[ext_resource type="Texture2D" uid="uid://bmo385y27type" path="res://Assets/player/body_parts/right_hand_idle_1.png" id="6_right_hand"]
+[ext_resource type="Texture2D" uid="uid://b7iep25jiww67" path="res://Assets/player/body_parts/left_foot_idle_1.png" id="7_left_foot"]
+[ext_resource type="Texture2D" uid="uid://dhvw45dbsawpx" path="res://Assets/player/body_parts/right_foot_idle_1.png" id="8_right_foot"]
+[ext_resource type="Texture2D" uid="uid://cih17ddmescem" path="res://Assets/player/body_parts/bottom_idle_1.png" id="9_bottom"]
+[ext_resource type="Texture2D" uid="uid://d3uscrqq63ykr" path="res://Assets/player/body_parts/body_idle_1.png" id="10_body"]
+[ext_resource type="Texture2D" uid="uid://bgsjtudggrbrn" path="res://Assets/player/body_parts/head_idle_1.png" id="11_head"]
+[ext_resource type="Texture2D" uid="uid://b53hq1cc5ls5j" path="res://Assets/player/expressions/idle.png" id="12_face_idle"]
+[ext_resource type="Texture2D" uid="uid://cdt7cwcgk23ox" path="res://Assets/player/expressions/idle_blink.png" id="13_face_blink"]
+[ext_resource type="Texture2D" uid="uid://bfc38xdl6cc0e" path="res://Assets/player/expressions/jump.png" id="14_face_jump"]
+[ext_resource type="Texture2D" uid="uid://bepq2vcgwsnw1" path="res://Assets/player/expressions/fall.png" id="15_face_fall"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dead_spirit"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_dead_1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_dead_2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_dead_3")
+}],
+"loop": true,
+"name": &"dead_spirit",
+"speed": 6.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_left_foot"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_left_foot")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_right_foot"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_right_foot")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_left_arm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_left_hand")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_bottom"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_bottom")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_body"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_body")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_head"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_head")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_face_expression"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_face_fall")
+}],
+"loop": true,
+"name": &"fall",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_face_idle")
+}, {
+"duration": 0.18,
+"texture": ExtResource("13_face_blink")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("14_face_jump")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_right_arm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_right_hand")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="CustomRealPlayer" type="CharacterBody2D" unique_id=905331967]
+z_as_relative = false
+collision_layer = 2
+floor_snap_length = 4.0
+script = ExtResource("1_controller")
+
+[node name="DeadSpiritAnimated" type="AnimatedSprite2D" parent="." unique_id=28042013]
+visible = false
+position = Vector2(1, -8)
+sprite_frames = SubResource("SpriteFrames_dead_spirit")
+animation = &"dead_spirit"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=165776680]
+scale = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_player")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1192146963]
+visible = false
+offset = Vector2(0, -8)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=123888672]
+visible = false
+enabled = false
+zoom = Vector2(1.5, 1.5)
+
+[node name="PlayerVisual" type="Node2D" parent="." unique_id=187567658]
+position = Vector2(0, -8)
+
+[node name="BackSlot" type="Node2D" parent="PlayerVisual" unique_id=1527659901]
+z_index = -30
+
+[node name="BackItemAnimated" type="AnimatedSprite2D" parent="PlayerVisual/BackSlot" unique_id=2026196686]
+visible = false
+
+[node name="LeftFoot" type="Node2D" parent="PlayerVisual" unique_id=1373066068]
+
+[node name="BaseLeftFootAnimated" type="AnimatedSprite2D" parent="PlayerVisual/LeftFoot" unique_id=769266165]
+sprite_frames = SubResource("SpriteFrames_left_foot")
+
+[node name="LeftShoeAnimated" type="AnimatedSprite2D" parent="PlayerVisual/LeftFoot" unique_id=804605625]
+visible = false
+position = Vector2(0, 14)
+
+[node name="RightFoot" type="Node2D" parent="PlayerVisual" unique_id=1119635098]
+z_index = 5
+
+[node name="BaseRightFootAnimated" type="AnimatedSprite2D" parent="PlayerVisual/RightFoot" unique_id=399046377]
+sprite_frames = SubResource("SpriteFrames_right_foot")
+
+[node name="RightShoeAnimated" type="AnimatedSprite2D" parent="PlayerVisual/RightFoot" unique_id=230437392]
+visible = false
+position = Vector2(0, 14)
+
+[node name="LeftArm" type="Node2D" parent="PlayerVisual" unique_id=1856560460]
+z_index = 4
+
+[node name="BaseLeftArmAnimated" type="AnimatedSprite2D" parent="PlayerVisual/LeftArm" unique_id=2144024882]
+sprite_frames = SubResource("SpriteFrames_left_arm")
+
+[node name="LeftSleeveAnimated" type="AnimatedSprite2D" parent="PlayerVisual/LeftArm" unique_id=321455382]
+visible = false
+position = Vector2(5, 3)
+
+[node name="Bottom" type="Node2D" parent="PlayerVisual" unique_id=1952080821]
+z_index = 10
+
+[node name="BaseBottomAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Bottom" unique_id=299710374]
+sprite_frames = SubResource("SpriteFrames_bottom")
+
+[node name="PantsAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Bottom" unique_id=1614018827]
+visible = false
+position = Vector2(0, 9)
+
+[node name="Body" type="Node2D" parent="PlayerVisual" unique_id=90696831]
+z_index = 30
+
+[node name="BaseBodyAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Body" unique_id=2032973159]
+sprite_frames = SubResource("SpriteFrames_body")
+
+[node name="ShirtBodyAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Body" unique_id=2017351602]
+visible = false
+position = Vector2(1, 4)
+
+[node name="NecklaceAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Body" unique_id=971825104]
+visible = false
+position = Vector2(1, 4)
+
+[node name="Head" type="Node2D" parent="PlayerVisual" unique_id=1963567266]
+z_index = 40
+position = Vector2(1, 0)
+
+[node name="BaseHeadAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Head" unique_id=2059675878]
+sprite_frames = SubResource("SpriteFrames_head")
+
+[node name="FaceExpressionAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Head" unique_id=1158090073]
+sprite_frames = SubResource("SpriteFrames_face_expression")
+animation = &"idle"
+
+[node name="HairAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Head" unique_id=1455864299]
+visible = false
+position = Vector2(0, -14)
+
+[node name="BeardAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Head" unique_id=2085092269]
+visible = false
+
+[node name="EyewearAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Head" unique_id=1044435139]
+visible = false
+position = Vector2(8, -6)
+
+[node name="HatAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Head" unique_id=1846924727]
+visible = false
+
+[node name="HandItem" type="Node2D" parent="PlayerVisual" unique_id=144769841]
+z_index = 60
+
+[node name="HandItemAnimated" type="AnimatedSprite2D" parent="PlayerVisual/HandItem" unique_id=1411228327]
+visible = false
+position = Vector2(1, -1)
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="FishingLineStart" type="Marker2D" parent="PlayerVisual/HandItem" unique_id=1030716828]
+visible = false
+position = Vector2(34, 10)
+rotation = 0.034906585
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="ThunderStart" type="Marker2D" parent="PlayerVisual/HandItem" unique_id=1428556609]
+visible = false
+position = Vector2(34, 10)
+rotation = 0.034906585
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="RightArm" type="Node2D" parent="PlayerVisual" unique_id=262123034]
+z_index = 50
+rotation = 0.034906585
+
+[node name="BaseRightArmAnimated" type="AnimatedSprite2D" parent="PlayerVisual/RightArm" unique_id=2080151316]
+sprite_frames = SubResource("SpriteFrames_right_arm")
+
+[node name="RightSleeveAnimated" type="AnimatedSprite2D" parent="PlayerVisual/RightArm" unique_id=1608964599]
+visible = false
+position = Vector2(-5, 3)
+
+[node name="ChatBubbleAnchor" type="Marker2D" parent="." unique_id=1575674965]
+position = Vector2(0, -44)
+
+[node name="UsernameLabel" type="Label" parent="." unique_id=1759314419]
+custom_minimum_size = Vector2(140, 24)
+offset_left = -70.0
+offset_top = -84.0
+offset_right = 70.0
+offset_bottom = -54.0
+theme_override_font_sizes/font_size = 12
+text = "Player"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1551322056]
+
+[node name="Jump" type="AnimationPlayer" parent="." unique_id=1837223414]
+
+[node name="idle" type="AnimationPlayer" parent="." unique_id=1390508652]
+
+[node name="DebugLabel" type="Label" parent="." unique_id=583003530]
+offset_left = -70.0
+offset_top = -112.0
+offset_right = 70.0
+offset_bottom = -86.0
+theme_override_font_sizes/font_size = 10
+text = "peer"
+horizontal_alignment = 1
+vertical_alignment = 1

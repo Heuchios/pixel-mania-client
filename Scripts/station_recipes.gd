@@ -25,44 +25,82 @@ const CATEGORY_CURRENCY = "currency"
 const RECIPES = {
 	STATION_CRAFTING: [
 		{
-			"id": "pickaxe",
-			"name": "Pickaxe",
+			"id": "refined_bamboo_rod",
+			"name": "Refined Bamboo Rod",
 			"type": "tool",
-			"output": {"item_id": "pickaxe", "category": CATEGORY_TOOL, "amount": 1},
+			"output": {"item_id": "refined_bamboo_rod", "category": CATEGORY_TOOL, "amount": 1},
 			"cost": [
-				{"item_id": "wood", "category": CATEGORY_BLOCK, "amount": 10},
-				{"item_id": "stone", "category": CATEGORY_BLOCK, "amount": 5}
+				{"item_id": "bamboo_rod", "category": CATEGORY_TOOL, "amount": 1},
+				{"item_id": "seaweed", "category": CATEGORY_MATERIAL, "amount": 12},
+				{"item_id": "trash_can", "category": CATEGORY_MATERIAL, "amount": 4},
+				{"item_id": "gem", "category": CATEGORY_CURRENCY, "amount": 100}
 			]
 		},
 		{
-			"id": "axe",
-			"name": "Axe",
+			"id": "pristine_bamboo_rod",
+			"name": "Pristine Bamboo Rod",
 			"type": "tool",
-			"output": {"item_id": "axe", "category": CATEGORY_TOOL, "amount": 1},
+			"output": {"item_id": "pristine_bamboo_rod", "category": CATEGORY_TOOL, "amount": 1},
 			"cost": [
-				{"item_id": "wood", "category": CATEGORY_BLOCK, "amount": 8},
-				{"item_id": "stone", "category": CATEGORY_BLOCK, "amount": 3}
+				{"item_id": "refined_bamboo_rod", "category": CATEGORY_TOOL, "amount": 1},
+				{"item_id": "seaweed", "category": CATEGORY_MATERIAL, "amount": 20},
+				{"item_id": "clam", "category": CATEGORY_MATERIAL, "amount": 8},
+				{"item_id": "coral", "category": CATEGORY_MATERIAL, "amount": 6},
+				{"item_id": "pearl", "category": CATEGORY_MATERIAL, "amount": 1},
+				{"item_id": "gem", "category": CATEGORY_CURRENCY, "amount": 500}
 			]
 		},
 		{
-			"id": "shovel",
-			"name": "Shovel",
+			"id": "refined_fiberglass_rod",
+			"name": "Refined Fiberglass Rod",
 			"type": "tool",
-			"output": {"item_id": "shovel", "category": CATEGORY_TOOL, "amount": 1},
+			"output": {"item_id": "refined_fiberglass_rod", "category": CATEGORY_TOOL, "amount": 1},
 			"cost": [
-				{"item_id": "wood", "category": CATEGORY_BLOCK, "amount": 6},
-				{"item_id": "stone", "category": CATEGORY_BLOCK, "amount": 2}
+				{"item_id": "fiberglass_rod", "category": CATEGORY_TOOL, "amount": 1},
+				{"item_id": "refined_glass", "category": CATEGORY_MATERIAL, "amount": 10},
+				{"item_id": "coral", "category": CATEGORY_MATERIAL, "amount": 8},
+				{"item_id": "compass", "category": CATEGORY_MATERIAL, "amount": 1},
+				{"item_id": "gem", "category": CATEGORY_CURRENCY, "amount": 500}
 			]
 		},
 		{
-			"id": "furnace",
-			"name": "Furnace",
-			"type": "station",
-			"output": {"item_id": "furnace", "category": CATEGORY_BLOCK, "amount": 1},
+			"id": "pristine_fiberglass_rod",
+			"name": "Pristine Fiberglass Rod",
+			"type": "tool",
+			"output": {"item_id": "pristine_fiberglass_rod", "category": CATEGORY_TOOL, "amount": 1},
 			"cost": [
-				{"item_id": "stone", "category": CATEGORY_BLOCK, "amount": 30},
-				{"item_id": "lava", "category": CATEGORY_BLOCK, "amount": 3},
-				{"item_id": "gem", "category": CATEGORY_CURRENCY, "amount": 5}
+				{"item_id": "refined_fiberglass_rod", "category": CATEGORY_TOOL, "amount": 1},
+				{"item_id": "refined_glass", "category": CATEGORY_MATERIAL, "amount": 20},
+				{"item_id": "pearl", "category": CATEGORY_MATERIAL, "amount": 3},
+				{"item_id": "topaz_necklace", "category": CATEGORY_MATERIAL, "amount": 1},
+				{"item_id": "gem", "category": CATEGORY_CURRENCY, "amount": 1500}
+			]
+		},
+		{
+			"id": "refined_tungsten_rod",
+			"name": "Refined Tungsten Rod",
+			"type": "tool",
+			"output": {"item_id": "refined_tungsten_rod", "category": CATEGORY_TOOL, "amount": 1},
+			"cost": [
+				{"item_id": "tungsten_rod", "category": CATEGORY_TOOL, "amount": 1},
+				{"item_id": "metal_scrap", "category": CATEGORY_MATERIAL, "amount": 10},
+				{"item_id": "rusty_bicycle", "category": CATEGORY_MATERIAL, "amount": 3},
+				{"item_id": "lost_chapter", "category": CATEGORY_MATERIAL, "amount": 1},
+				{"item_id": "gem", "category": CATEGORY_CURRENCY, "amount": 2000}
+			]
+		},
+		{
+			"id": "pristine_tungsten_rod",
+			"name": "Pristine Tungsten Rod",
+			"type": "tool",
+			"output": {"item_id": "pristine_tungsten_rod", "category": CATEGORY_TOOL, "amount": 1},
+			"cost": [
+				{"item_id": "refined_tungsten_rod", "category": CATEGORY_TOOL, "amount": 1},
+				{"item_id": "metal_scrap", "category": CATEGORY_MATERIAL, "amount": 25},
+				{"item_id": "naval_mines", "category": CATEGORY_MATERIAL, "amount": 2},
+				{"item_id": "toxic_waste", "category": CATEGORY_MATERIAL, "amount": 2},
+				{"item_id": "topaz_necklace", "category": CATEGORY_MATERIAL, "amount": 2},
+				{"item_id": "gem", "category": CATEGORY_CURRENCY, "amount": 5000}
 			]
 		}
 	],

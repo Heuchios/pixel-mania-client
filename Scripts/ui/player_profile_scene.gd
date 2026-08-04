@@ -1,11 +1,13 @@
 extends "res://Scripts/player_menu_ui.gd"
 
+const EquipmentManagerScript = preload("res://Scripts/equipment_manager.gd")
 const PROFILE_BASE_SIZE := Vector2(1060.0, 620.0)
 const PROFILE_SCREEN_MARGIN := Vector2(32.0, 32.0)
 const MIN_PROFILE_SCALE := 0.42
 const MAX_PROFILE_BIO_LENGTH := 160
 const SECONDS_PER_DAY := 86400
-const PORTRAIT_PREVIEW_SCALE := 5.0
+const PORTRAIT_PREVIEW_SCALE := 4.0
+const PORTRAIT_PREVIEW_CENTER_OFFSET := Vector2(0.0, 20.0)
 
 var layout_root: Control = null
 var account_id_value_label: Label = null
@@ -20,8 +22,11 @@ var portrait_texture: TextureRect = null
 var portrait_placeholder_label: Label = null
 var portrait_viewport: SubViewport = null
 var portrait_preview_root: Node2D = null
+var portrait_preview_host: Node2D = null
 var portrait_preview_visual: Node2D = null
+var portrait_equipment_manager: Node = null
 var portrait_source_instance_id := 0
+var portrait_preview_signature := ""
 var showcase_badge_label: Label = null
 var showcase_item_label: Label = null
 var showcase_world_label: Label = null
@@ -150,7 +155,12 @@ func _configure_portrait_preview() -> void:
 	if portrait_viewport == null or portrait_texture == null:
 		return
 	portrait_viewport.transparent_bg = true
+	portrait_viewport.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 	portrait_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	portrait_texture.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	if portrait_preview_root != null:
+		portrait_preview_root.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		portrait_preview_root.position = Vector2(portrait_viewport.size) * 0.5 + PORTRAIT_PREVIEW_CENTER_OFFSET
 	portrait_texture.texture = portrait_viewport.get_texture()
 
 
@@ -393,7 +403,7 @@ func _get_account_age_days(profile_data: Dictionary) -> int:
 	}))
 	if created_midnight <= 0 or created_midnight > today_midnight:
 		return 0 if created_midnight > today_midnight else -1
-	return int((today_midnight - created_midnight) / SECONDS_PER_DAY)
+	return int(float(today_midnight - created_midnight) / float(SECONDS_PER_DAY))
 
 
 func _get_profile_created_at(profile_data: Dictionary) -> String:
@@ -421,11 +431,15 @@ func _update_portrait_preview() -> void:
 		return
 	var source_visual := _get_portrait_source_visual()
 	if source_visual == null or not is_instance_valid(source_visual):
+		if profile_mode == "remote":
+			_update_profile_equipment_portrait()
+			return
 		_clear_portrait_preview()
 		return
 
 	var source_instance_id := source_visual.get_instance_id()
-	if portrait_preview_visual == null or not is_instance_valid(portrait_preview_visual) or portrait_source_instance_id != source_instance_id:
+	var live_signature := "live:" + str(source_instance_id)
+	if portrait_preview_visual == null or not is_instance_valid(portrait_preview_visual) or portrait_source_instance_id != source_instance_id or portrait_preview_signature != live_signature:
 		_rebuild_portrait_preview(source_visual)
 		return
 
@@ -471,6 +485,83 @@ func _get_portrait_source_visual() -> Node2D:
 	return null
 
 
+func _update_profile_equipment_portrait() -> void:
+	if world == null:
+		_clear_portrait_preview()
+		return
+
+	var local_player_value: Variant = world.get("player")
+	if not (local_player_value is Node) or not is_instance_valid(local_player_value):
+		_clear_portrait_preview()
+		return
+
+	var base_visual := local_player_value.get_node_or_null("PlayerVisual") as Node2D
+	if base_visual == null:
+		_clear_portrait_preview()
+		return
+
+	var equipment_data := get_active_equipment_data(get_active_profile_data())
+	var equipment_signature := _get_portrait_equipment_signature(equipment_data)
+	var next_signature := "profile:" + str(base_visual.get_instance_id()) + "|" + equipment_signature
+	if portrait_preview_visual != null and is_instance_valid(portrait_preview_visual) and portrait_preview_signature == next_signature:
+		return
+
+	_rebuild_portrait_preview(base_visual)
+	if portrait_preview_visual == null or not is_instance_valid(portrait_preview_visual):
+		return
+
+	portrait_source_instance_id = 0
+	portrait_preview_signature = next_signature
+	_apply_portrait_equipment(equipment_data)
+
+
+func _get_portrait_equipment_item(equipment_data: Dictionary, slot_name: String, fallback_slot_name: String = "") -> String:
+	var item_id := str(equipment_data.get(slot_name, "")).strip_edges()
+	if item_id == "" and fallback_slot_name != "":
+		item_id = str(equipment_data.get(fallback_slot_name, "")).strip_edges()
+	return item_id
+
+
+func _get_portrait_equipment_signature(equipment_data: Dictionary) -> String:
+	return "|".join(PackedStringArray([
+		"hand=" + _get_portrait_equipment_item(equipment_data, "hand"),
+		"back=" + _get_portrait_equipment_item(equipment_data, "back"),
+		"hat=" + _get_portrait_equipment_item(equipment_data, "hat", "head"),
+		"hair=" + _get_portrait_equipment_item(equipment_data, "hair"),
+		"eyewear=" + _get_portrait_equipment_item(equipment_data, "eyewear", "eyes"),
+		"shirt=" + _get_portrait_equipment_item(equipment_data, "shirt"),
+		"pants=" + _get_portrait_equipment_item(equipment_data, "pants", "legs"),
+		"shoes=" + _get_portrait_equipment_item(equipment_data, "shoes", "feet"),
+		"ride=" + _get_portrait_equipment_item(equipment_data, "ride")
+	]))
+
+
+func _apply_portrait_equipment(equipment_data: Dictionary) -> void:
+	if portrait_preview_host == null or not is_instance_valid(portrait_preview_host):
+		return
+
+	portrait_equipment_manager = Node.new()
+	portrait_equipment_manager.name = "PortraitEquipmentManager"
+	portrait_equipment_manager.set_script(EquipmentManagerScript)
+	portrait_preview_host.add_child(portrait_equipment_manager)
+	if portrait_equipment_manager.has_method("setup"):
+		portrait_equipment_manager.setup(world, portrait_preview_host, false)
+	portrait_equipment_manager.set_process(false)
+	if portrait_equipment_manager.has_method("set_forced_animation_state"):
+		portrait_equipment_manager.set_forced_animation_state("idle")
+
+	var facing := 1
+	portrait_equipment_manager.update_equipped_tool_visual(_get_portrait_equipment_item(equipment_data, "hand"), facing)
+	portrait_equipment_manager.update_equipped_back_visual(_get_portrait_equipment_item(equipment_data, "back"), facing)
+	portrait_equipment_manager.update_equipped_hat_visual(_get_portrait_equipment_item(equipment_data, "hat", "head"), facing)
+	portrait_equipment_manager.update_equipped_hair_visual(_get_portrait_equipment_item(equipment_data, "hair"), facing)
+	portrait_equipment_manager.update_equipped_eyewear_visual(_get_portrait_equipment_item(equipment_data, "eyewear", "eyes"), facing)
+	portrait_equipment_manager.update_equipped_shirt_visual(_get_portrait_equipment_item(equipment_data, "shirt"), facing)
+	portrait_equipment_manager.update_equipped_pants_visual(_get_portrait_equipment_item(equipment_data, "pants", "legs"), facing)
+	portrait_equipment_manager.update_equipped_shoes_visual(_get_portrait_equipment_item(equipment_data, "shoes", "feet"), facing)
+	portrait_equipment_manager.update_equipped_ride_visual(_get_portrait_equipment_item(equipment_data, "ride"), facing)
+
+
 func _rebuild_portrait_preview(source_visual: Node2D) -> void:
 	_clear_portrait_preview()
 	var duplicated_visual := source_visual.duplicate()
@@ -478,10 +569,14 @@ func _rebuild_portrait_preview(source_visual: Node2D) -> void:
 		if duplicated_visual != null:
 			duplicated_visual.free()
 		return
+	portrait_preview_host = Node2D.new()
+	portrait_preview_host.name = "PreviewPlayer"
+	portrait_preview_root.add_child(portrait_preview_host)
 	portrait_preview_visual = duplicated_visual as Node2D
 	portrait_preview_visual.name = "PreviewPlayerVisual"
-	portrait_preview_root.add_child(portrait_preview_visual)
+	portrait_preview_host.add_child(portrait_preview_visual)
 	portrait_source_instance_id = source_visual.get_instance_id()
+	portrait_preview_signature = "live:" + str(portrait_source_instance_id)
 	_sync_portrait_visual(source_visual, portrait_preview_visual, false)
 	_apply_portrait_preview_transform(source_visual)
 	portrait_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
@@ -502,6 +597,7 @@ func _sync_portrait_visual(source_node: Node, preview_node: Node, sync_transform
 	if source_node is CanvasItem and preview_node is CanvasItem:
 		var source_canvas := source_node as CanvasItem
 		var preview_canvas := preview_node as CanvasItem
+		preview_canvas.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		preview_canvas.visible = source_canvas.visible
 		preview_canvas.modulate = source_canvas.modulate
 		preview_canvas.self_modulate = source_canvas.self_modulate
@@ -540,12 +636,17 @@ func _sync_portrait_visual(source_node: Node, preview_node: Node, sync_transform
 
 
 func _clear_portrait_preview() -> void:
-	if portrait_preview_visual != null and is_instance_valid(portrait_preview_visual):
-		if portrait_preview_visual.get_parent() != null:
-			portrait_preview_visual.get_parent().remove_child(portrait_preview_visual)
+	if portrait_preview_host != null and is_instance_valid(portrait_preview_host):
+		if portrait_preview_host.get_parent() != null:
+			portrait_preview_host.get_parent().remove_child(portrait_preview_host)
+		portrait_preview_host.queue_free()
+	elif portrait_preview_visual != null and is_instance_valid(portrait_preview_visual):
 		portrait_preview_visual.queue_free()
+	portrait_preview_host = null
 	portrait_preview_visual = null
+	portrait_equipment_manager = null
 	portrait_source_instance_id = 0
+	portrait_preview_signature = ""
 
 
 func _get_profile_bio_text(profile_data: Dictionary, profile_name: String) -> String:

@@ -1,0 +1,75 @@
+[gd_scene format=3 uid="uid://bppcml3rn10q3"]
+
+[ext_resource type="Script" uid="uid://cw7eqpglutlqo" path="res://Scripts/snow_storm_fx.gd" id="1_snow"]
+[ext_resource type="Texture2D" uid="uid://62p3nfqhvuiq" path="res://Assets/particles/snow_flake.png" id="2_qyin1"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_far"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(520, 28, 0)
+direction = Vector3(-0.12, 1, 0)
+spread = 13.0
+initial_velocity_min = 28.0
+initial_velocity_max = 52.0
+gravity = Vector3(-8, 18, 0)
+damping_min = 2.0
+damping_max = 7.0
+scale_min = 0.35
+scale_max = 0.7
+color = Color(0.76, 0.91, 1, 0.42)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_mid"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(560, 28, 0)
+direction = Vector3(-0.18, 1, 0)
+spread = 18.0
+initial_velocity_min = 42.0
+initial_velocity_max = 86.0
+gravity = Vector3(-16, 28, 0)
+damping_min = 1.0
+damping_max = 5.0
+scale_min = 0.55
+scale_max = 1.05
+color = Color(0.88, 0.97, 1, 0.74)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_near"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(600, 28, 0)
+direction = Vector3(-0.28, 1, 0)
+spread = 24.0
+initial_velocity_min = 72.0
+initial_velocity_max = 138.0
+gravity = Vector3(-28, 36, 0)
+damping_max = 3.0
+scale_min = 0.85
+scale_max = 1.65
+color = Color(1, 1, 1, 0.92)
+
+[node name="SnowStormFX" type="Node2D" unique_id=1767396506]
+z_as_relative = false
+script = ExtResource("1_snow")
+
+[node name="FarSnow" type="GPUParticles2D" parent="." unique_id=1239987256]
+z_index = -2
+amount = 95
+texture = ExtResource("2_qyin1")
+lifetime = 7.0
+preprocess = 7.0
+process_material = SubResource("ParticleProcessMaterial_far")
+
+[node name="MidSnow" type="GPUParticles2D" parent="." unique_id=1510569861]
+z_index = -1
+amount = 145
+texture = ExtResource("2_qyin1")
+lifetime = 5.8
+preprocess = 5.8
+process_material = SubResource("ParticleProcessMaterial_mid")
+
+[node name="NearGustSnow" type="GPUParticles2D" parent="." unique_id=6778056]
+amount = 70
+texture = ExtResource("2_qyin1")
+lifetime = 3.8
+preprocess = 3.8
+process_material = SubResource("ParticleProcessMaterial_near")

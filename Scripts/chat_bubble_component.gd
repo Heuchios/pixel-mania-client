@@ -1,18 +1,19 @@
 extends Control
 
-const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
+const CHAT_BUBBLE_PANEL_TEXTURE: Texture2D = preload("res://Assets/ui/lobby/inner_panel.png")
 
 const CHAT_BUBBLE_TIME := 4.0
 const CHAT_BUBBLE_ANCHOR_OFFSET_WORLD_PX := 96.0
 const CHAT_BUBBLE_USERNAME_GAP_SCREEN_PX := 2.0
 const CHAT_BUBBLE_MIN_WIDTH := 86.0
-const CHAT_BUBBLE_MAX_WIDTH := 260.0
+const CHAT_BUBBLE_MAX_WIDTH := 360.0
 const CHAT_BUBBLE_PAD_X := 14.0
 const CHAT_BUBBLE_PAD_Y := 8.0
 const CHAT_FONT_PATH := "res://Assets/font/font.ttf"
-const CHAT_BUBBLE_FONT_SIZE := 16
-const CHAT_BUBBLE_FONT_HEIGHT := 22.0
+const CHAT_BUBBLE_FONT_SIZE := 24
+const CHAT_BUBBLE_LINE_SPACING := 2
 const CHAT_BUBBLE_DEFAULT_TEXT_COLOR := Color(1.0, 1.0, 1.0, 1.0)
+const CHAT_BUBBLE_PANEL_PATCH_MARGIN := 4.0
 const NOTIFICATION_STACK_MAX_ENTRIES := 5
 const NOTIFICATION_STACK_GAP := 2.0
 const NOTIFICATION_ENTRY_LIFETIME_MSEC := 4000
@@ -91,6 +92,19 @@ static func get_widest_line_width(text: String, font, font_size: int) -> float:
 	for line in text.split("\n", true):
 		widest = max(widest, measure_text_width(str(line), font, font_size))
 	return widest
+
+
+static func get_text_line_height(font, font_size: int) -> float:
+	if font != null and font.has_method("get_height"):
+		return ceilf(float(font.get_height(font_size)))
+	return ceilf(float(font_size) * 1.25)
+
+
+static func measure_text_block_height(text: String, font, font_size: int) -> float:
+	var line_count := count_wrapped_lines(text)
+	var line_height := get_text_line_height(font, font_size)
+	var spacing_height := float(maxi(0, line_count - 1) * CHAT_BUBBLE_LINE_SPACING)
+	return maxf(1.0, float(line_count) * line_height + spacing_height)
 
 
 static func _wrap_paragraph_to_width(paragraph: String, max_width: float, font, font_size: int) -> PackedStringArray:
@@ -212,17 +226,9 @@ func _build_bubble_ui():
 		background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		background.z_as_relative = true
 		background.z_index = 0
-		background.add_theme_stylebox_override(
-			"panel",
-			PixelUIStyle.style_box(
-				Color(0.04, 0.08, 0.14, 0.62),
-				Color(0.55, 0.80, 1.0, 0.78),
-				2,
-				14,
-				0
-			)
-		)
 		add_child(background)
+	background.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	background.add_theme_stylebox_override("panel", _create_background_style())
 
 	label = get_node_or_null("Label")
 	if label == null:
@@ -250,6 +256,7 @@ func _build_bubble_ui():
 	label.z_index = 1
 	label.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 	label.add_theme_font_size_override("font_size", CHAT_BUBBLE_FONT_SIZE)
+	label.add_theme_constant_override("line_spacing", CHAT_BUBBLE_LINE_SPACING)
 	apply_chat_font_to_label()
 	label.add_theme_color_override("font_color", current_text_color)
 	label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 1.0))
@@ -286,6 +293,16 @@ func _build_bubble_ui():
 		add_child(hide_timer)
 
 
+func _create_background_style() -> StyleBoxTexture:
+	var panel_style := StyleBoxTexture.new()
+	panel_style.texture = CHAT_BUBBLE_PANEL_TEXTURE
+	panel_style.texture_margin_left = CHAT_BUBBLE_PANEL_PATCH_MARGIN
+	panel_style.texture_margin_top = CHAT_BUBBLE_PANEL_PATCH_MARGIN
+	panel_style.texture_margin_right = CHAT_BUBBLE_PANEL_PATCH_MARGIN
+	panel_style.texture_margin_bottom = CHAT_BUBBLE_PANEL_PATCH_MARGIN
+	return panel_style
+
+
 func _apply_label_settings():
 	if label == null:
 		return
@@ -295,6 +312,7 @@ func _apply_label_settings():
 
 	label_settings.font = get_chat_font()
 	label_settings.font_size = CHAT_BUBBLE_FONT_SIZE
+	label_settings.line_spacing = CHAT_BUBBLE_LINE_SPACING
 	label_settings.font_color = current_text_color
 	label_settings.outline_size = 3
 	label_settings.outline_color = Color(0.0, 0.0, 0.0, 1.0)
@@ -359,12 +377,19 @@ func show_notification_message(message: String, text_color: Color = CHAT_BUBBLE_
 
 	var now_msec := Time.get_ticks_msec()
 	prune_expired_notification_entries(now_msec)
+	var dedupe_key := get_notification_dedupe_key(clean_message)
+	if has_active_notification_dedupe_key(dedupe_key):
+		layout_notification_stack()
+		schedule_notification_expiry(now_msec)
+		return false
+
 	notification_sequence_id += 1
 	var entry_label := create_notification_label(text_color)
 	notification_stack.add_child(entry_label)
 	notification_entries.append({
 		"id": notification_sequence_id,
 		"message": clean_message,
+		"dedupe_key": dedupe_key,
 		"expires_at_msec": now_msec + NOTIFICATION_ENTRY_LIFETIME_MSEC,
 		"label": entry_label
 	})
@@ -385,6 +410,27 @@ func show_notification_message(message: String, text_color: Color = CHAT_BUBBLE_
 	return true
 
 
+func get_notification_dedupe_key(message: String) -> String:
+	var dedupe_key := message.strip_edges().to_lower()
+	dedupe_key = dedupe_key.replace("\r", " ").replace("\n", " ").replace("\t", " ")
+	while dedupe_key.find("  ") != -1:
+		dedupe_key = dedupe_key.replace("  ", " ")
+	return dedupe_key
+
+
+func has_active_notification_dedupe_key(dedupe_key: String) -> bool:
+	if dedupe_key == "":
+		return false
+	for entry in notification_entries:
+		var entry_key := str(entry.get(
+			"dedupe_key",
+			get_notification_dedupe_key(str(entry.get("message", "")))
+		))
+		if entry_key == dedupe_key:
+			return true
+	return false
+
+
 func create_notification_label(text_color: Color) -> Label:
 	var entry_label := Label.new()
 	entry_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -395,6 +441,7 @@ func create_notification_label(text_color: Color) -> Label:
 	entry_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	entry_label.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 	entry_label.add_theme_font_size_override("font_size", CHAT_BUBBLE_FONT_SIZE)
+	entry_label.add_theme_constant_override("line_spacing", CHAT_BUBBLE_LINE_SPACING)
 	var font := get_chat_font()
 	if font != null:
 		entry_label.add_theme_font_override("font", font)
@@ -423,8 +470,7 @@ func layout_notification_stack() -> void:
 	for entry_index in range(notification_entries.size()):
 		var entry: Dictionary = notification_entries[entry_index]
 		var wrapped_message := wrap_text_to_width(str(entry.get("message", "")), label_width_limit, font, CHAT_BUBBLE_FONT_SIZE)
-		var line_count := count_wrapped_lines(wrapped_message)
-		var entry_height := maxf(CHAT_BUBBLE_FONT_HEIGHT, float(line_count) * CHAT_BUBBLE_FONT_HEIGHT)
+		var entry_height := measure_text_block_height(wrapped_message, font, CHAT_BUBBLE_FONT_SIZE)
 		entry["wrapped_message"] = wrapped_message
 		entry["height"] = entry_height
 		notification_entries[entry_index] = entry
@@ -448,7 +494,7 @@ func layout_notification_stack() -> void:
 		if not (entry_label_value is Label) or not is_instance_valid(entry_label_value):
 			continue
 		var entry_label := entry_label_value as Label
-		var entry_height := float(entry.get("height", CHAT_BUBBLE_FONT_HEIGHT))
+		var entry_height := float(entry.get("height", get_text_line_height(font, CHAT_BUBBLE_FONT_SIZE)))
 		entry_label.text = str(entry.get("wrapped_message", entry.get("message", "")))
 		entry_label.custom_minimum_size = Vector2(content_width, entry_height)
 		entry_label.size = Vector2(content_width, entry_height)
@@ -504,24 +550,25 @@ func schedule_notification_expiry(now_msec: int = -1) -> void:
 
 
 func _layout_for_message(clean_message: String) -> String:
-	var label_width_limit = max(1.0, CHAT_BUBBLE_MAX_WIDTH - CHAT_BUBBLE_PAD_X * 2.0)
-	var font = get_chat_font()
+	var label_width_limit := maxf(1.0, CHAT_BUBBLE_MAX_WIDTH - CHAT_BUBBLE_PAD_X * 2.0)
+	var font := get_chat_font()
 	if font == null and label != null:
 		font = label.get_theme_font("font")
-	var wrapped_message = wrap_text_to_width(clean_message, label_width_limit, font, CHAT_BUBBLE_FONT_SIZE)
-	var line_count = count_wrapped_lines(wrapped_message)
-	var widest_line = get_widest_line_width(wrapped_message, font, CHAT_BUBBLE_FONT_SIZE)
+	var wrapped_message := wrap_text_to_width(clean_message, label_width_limit, font, CHAT_BUBBLE_FONT_SIZE)
+	var widest_line := get_widest_line_width(wrapped_message, font, CHAT_BUBBLE_FONT_SIZE)
+	var text_height := measure_text_block_height(wrapped_message, font, CHAT_BUBBLE_FONT_SIZE)
 
-	var clamped_width = clamp(widest_line + CHAT_BUBBLE_PAD_X * 2.0, CHAT_BUBBLE_MIN_WIDTH, CHAT_BUBBLE_MAX_WIDTH)
-	var clamped_height = max(1.0, float(line_count) * CHAT_BUBBLE_FONT_HEIGHT + CHAT_BUBBLE_PAD_Y * 2.0)
+	var clamped_width := clampf(widest_line + CHAT_BUBBLE_PAD_X * 2.0, CHAT_BUBBLE_MIN_WIDTH, CHAT_BUBBLE_MAX_WIDTH)
+	var clamped_height := maxf(1.0, text_height + CHAT_BUBBLE_PAD_Y * 2.0)
 
 	size = Vector2(clamped_width, clamped_height)
 	background.position = Vector2.ZERO
 	background.size = size
 
 	label.position = Vector2(CHAT_BUBBLE_PAD_X, CHAT_BUBBLE_PAD_Y)
-	var label_width = max(1.0, clamped_width - CHAT_BUBBLE_PAD_X * 2.0)
-	var label_height = max(1.0, clamped_height - CHAT_BUBBLE_PAD_Y * 2.0)
+	var label_width := maxf(1.0, clamped_width - CHAT_BUBBLE_PAD_X * 2.0)
+	var label_height := maxf(1.0, clamped_height - CHAT_BUBBLE_PAD_Y * 2.0)
+	label.custom_minimum_size = Vector2(label_width, label_height)
 	label.size = Vector2(label_width, label_height)
 	return wrapped_message
 

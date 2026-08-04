@@ -11,6 +11,13 @@ var profiles: Array = []
 var current_profile: String = ""
 
 
+func get_network_manager():
+	if not is_inside_tree():
+		return null
+
+	return get_tree().root.get_node_or_null("NetworkManager")
+
+
 func setup(world_ref):
 	world = world_ref
 	load_accounts()
@@ -92,7 +99,7 @@ func save_accounts():
 
 
 func get_network_session_username() -> String:
-	var network = get_node_or_null("/root/NetworkManager")
+	var network = get_network_manager()
 	if network != null and network.has_method("get_active_session_username"):
 		return str(network.get_active_session_username()).strip_edges()
 
@@ -306,6 +313,46 @@ func cache_server_account(raw_username: String, raw_email: String) -> Dictionary
 
 	save_accounts()
 	return {"ok": true, "message": "Account cached: " + current_profile, "username": current_profile, "email": email}
+
+
+func cache_dev_test_account(raw_username: String, raw_email: String) -> Dictionary:
+	var username_validation = validate_username(raw_username)
+
+	if not bool(username_validation.get("ok", false)):
+		return username_validation
+
+	var email_validation = validate_email(raw_email)
+
+	if not bool(email_validation.get("ok", false)):
+		return email_validation
+
+	var username = str(username_validation.get("username", ""))
+	var email = normalize_email(str(email_validation.get("email", raw_email)))
+	var profile_data = get_profile_data(username)
+	var now = Time.get_datetime_string_from_system(false, true)
+
+	if profile_data.is_empty():
+		profiles.append({
+			"username": username,
+			"email": email,
+			"server_account": false,
+			"created_at": now,
+			"last_login_at": now
+		})
+	else:
+		profile_data["username"] = username
+		profile_data["email"] = email
+		profile_data["server_account"] = false
+		if str(profile_data.get("created_at", "")) == "":
+			profile_data["created_at"] = now
+		profile_data["last_login_at"] = now
+
+	current_profile = get_stored_username(username)
+	if current_profile == "":
+		current_profile = username
+
+	save_accounts()
+	return {"ok": true, "message": "Dev test account cached: " + current_profile, "username": current_profile, "email": email}
 
 
 func create_or_switch_profile(raw_username: String) -> Dictionary:

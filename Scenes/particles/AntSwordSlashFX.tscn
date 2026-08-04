@@ -1,0 +1,117 @@
+[gd_scene format=3 uid="uid://b51dm3kqovklc"]
+
+[ext_resource type="Script" uid="uid://c4ecvjnyojmex" path="res://Scripts/ant_sword_slash_fx.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dg5hakrwsd773" path="res://Assets/effects/ant_sword_chip.svg" id="2_chip"]
+[ext_resource type="Texture2D" uid="uid://y38f0s3inh2" path="res://Assets/effects/ant_sword_spark.svg" id="3_spark"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_additive"]
+blend_mode = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_t1b1b"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(18, 4, 0)
+angle_min = -24.0
+angle_max = 24.0
+direction = Vector3(0.92, -0.28, 0)
+spread = 52.0
+initial_velocity_min = 36.0
+initial_velocity_max = 116.0
+angular_velocity_min = -260.0
+angular_velocity_max = 260.0
+gravity = Vector3(0, 46, 0)
+damping_min = 3.0
+damping_max = 7.5
+scale_min = 0.38
+scale_max = 0.84
+color = Color(1, 0.72, 0.08, 0.82)
+hue_variation_min = -0.04
+hue_variation_max = 0.04
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rbuk6"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(2, 3, 0)
+angle_min = -12.0
+angle_max = 12.0
+direction = Vector3(0.98, -0.16, 0)
+spread = 64.0
+initial_velocity_min = 72.0
+initial_velocity_max = 176.0
+angular_velocity_min = -160.0
+angular_velocity_max = 160.0
+gravity = Vector3(0, 18, 0)
+damping_min = 4.0
+damping_max = 9.0
+scale_min = 0.34
+scale_max = 0.72
+color = Color(1, 0.96, 0.58, 0.94)
+hue_variation_min = -0.02
+hue_variation_max = 0.03
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_jtwdf"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(9, 5, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(-0.3, 0.54, 0)
+spread = 136.0
+initial_velocity_min = 14.0
+initial_velocity_max = 58.0
+angular_velocity_min = -180.0
+angular_velocity_max = 180.0
+gravity = Vector3(0, 74, 0)
+damping_min = 4.0
+damping_max = 8.8
+scale_min = 0.24
+scale_max = 0.58
+color = Color(0.86, 0.28, 0.04, 0.58)
+hue_variation_min = -0.04
+hue_variation_max = 0.04
+
+[node name="AntSwordSlashFX" type="Node2D" unique_id=1834923512]
+z_index = 4091
+z_as_relative = false
+script = ExtResource("1_script")
+
+[node name="TrailGoldChips" type="GPUParticles2D" parent="." unique_id=1242458355]
+z_index = 2
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(12, -2)
+rotation = -0.25
+amount = 28
+texture = ExtResource("2_chip")
+lifetime = 0.28
+one_shot = true
+explosiveness = 0.94
+randomness = 0.48
+visibility_rect = Rect2(-42, -34, 104, 76)
+process_material = SubResource("ParticleProcessMaterial_t1b1b")
+
+[node name="TipWhiteSparks" type="GPUParticles2D" parent="." unique_id=2086559770]
+z_index = 4
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(49, 5)
+rotation = -0.18
+amount = 18
+texture = ExtResource("3_spark")
+lifetime = 0.22
+one_shot = true
+explosiveness = 1.0
+randomness = 0.32
+visibility_rect = Rect2(-16, -24, 58, 52)
+process_material = SubResource("ParticleProcessMaterial_rbuk6")
+
+[node name="AmberDust" type="GPUParticles2D" parent="." unique_id=875855073]
+z_index = 1
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(-6, 10)
+amount = 14
+texture = ExtResource("2_chip")
+lifetime = 0.42
+one_shot = true
+explosiveness = 0.92
+randomness = 0.72
+visibility_rect = Rect2(-38, -26, 88, 70)
+process_material = SubResource("ParticleProcessMaterial_jtwdf")

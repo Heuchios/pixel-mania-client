@@ -5,6 +5,14 @@ const IDLE_FRAME_TIME = 0.45
 const BODY_PART_TEXTURE_FOLDER = "res://Assets/player/body_parts/"
 const BODY_PART_FRAME_SEARCH_LIMIT = 8
 const BODY_LAYER_POSITION = Vector2(0, -8)
+const NETWORK_ANIMATION_STATES = ["idle", "walk", "jump", "fall", "punch", "place_animation", "hurt", "dead", "dead_spirit"]
+const NON_MOVEMENT_OVERLAY_ANIMATIONS = ["hurt"]
+const DEAD_SPIRIT_EFFECT_DURATION = 3.0
+const DEAD_SPIRIT_FADE_DELAY = 0.35
+const DEAD_SPIRIT_FLOAT_RADIUS_X = 26.0
+const DEAD_SPIRIT_FLOAT_RADIUS_Y = 20.0
+const DEAD_SPIRIT_FLOAT_MIN_STEP_TIME = 0.32
+const DEAD_SPIRIT_FLOAT_MAX_STEP_TIME = 0.58
 const BODY_PART_NODE_CONFIG = [
 	{"key": "left_arm", "node": "PlayerVisual/LeftArm/BaseLeftArmAnimated", "prefix": "left_hand"},
 	{"key": "right_foot", "node": "PlayerVisual/RightFoot/BaseRightFootAnimated", "prefix": "right_foot"},
@@ -29,6 +37,13 @@ var current_layered_animation = ""
 var current_movement_animation = ""
 var current_face_expression_animation = ""
 var current_dead_spirit_animation = ""
+var dead_spirit_base_position = Vector2.ZERO
+var dead_spirit_base_modulate = Color.WHITE
+var dead_spirit_base_visual_cached = false
+var dead_spirit_effect_active = false
+var dead_spirit_motion_tween = null
+var dead_spirit_fade_tween = null
+var dead_spirit_random = RandomNumberGenerator.new()
 
 var idle_texture = null
 var idle_textures = []
@@ -40,6 +55,7 @@ var idle_frame_index = 0
 var walk_timer = 0.0
 var walk_frame_index = 0
 var current_texture = null
+var forced_animation_state = ""
 
 
 func setup(parent_world, player_node):
@@ -49,7 +65,14 @@ func setup(parent_world, player_node):
 	movement_animation_player = player.get_node_or_null("AnimationPlayer") if player != null else null
 	face_expression_animated = player.get_node_or_null("PlayerVisual/Head/FaceExpressionAnimated") if player != null else null
 	dead_spirit_animated = get_dead_spirit_animated_node()
+	dead_spirit_random.randomize()
+	dead_spirit_base_visual_cached = false
+	dead_spirit_effect_active = false
+	kill_dead_spirit_effect_tweens()
+	forced_animation_state = ""
 	if dead_spirit_animated != null:
+		cache_dead_spirit_base_visual()
+		reset_dead_spirit_visual_state()
 		dead_spirit_animated.visible = false
 
 	setup_player_sprite()
@@ -167,6 +190,7 @@ func build_layered_body_sprite_frames(prefix: String):
 	add_layered_animation(sprite_frames, "jump", jump_paths, 1.0, false)
 	add_layered_animation(sprite_frames, "fall", fall_paths, 1.0, false)
 	add_layered_animation(sprite_frames, "punch", punch_paths, 1.0 / IDLE_FRAME_TIME, false)
+	add_layered_animation(sprite_frames, "place_animation", punch_paths, 1.0 / IDLE_FRAME_TIME, false)
 	return sprite_frames
 
 
@@ -351,22 +375,107 @@ func update_dead_spirit_visual(expression_name: String) -> bool:
 		dead_spirit_animated = get_dead_spirit_animated_node()
 
 	if dead_spirit_animated == null:
+		stop_dead_spirit_effect(false)
 		restore_normal_player_visual()
 		return false
 
 	if expression_name != "dead_spirit":
-		dead_spirit_animated.visible = false
+		stop_dead_spirit_effect()
 		restore_normal_player_visual()
 		return false
 
+	cache_dead_spirit_base_visual()
 	if player_visual != null:
 		player_visual.visible = false
 	if player_sprite != null:
 		player_sprite.visible = false
 
 	dead_spirit_animated.visible = true
+	start_dead_spirit_effect()
 	play_dead_spirit_animation()
 	return true
+
+
+func cache_dead_spirit_base_visual():
+	if dead_spirit_animated == null:
+		return
+
+	if dead_spirit_base_visual_cached:
+		return
+
+	dead_spirit_base_position = dead_spirit_animated.position
+	dead_spirit_base_modulate = dead_spirit_animated.modulate
+	dead_spirit_base_visual_cached = true
+
+
+func start_dead_spirit_effect():
+	if dead_spirit_animated == null:
+		return
+
+	if dead_spirit_effect_active:
+		return
+
+	dead_spirit_effect_active = true
+	cache_dead_spirit_base_visual()
+	reset_dead_spirit_visual_state()
+	kill_dead_spirit_effect_tweens()
+
+	var effect_duration = get_dead_spirit_effect_duration()
+	var remaining_time = effect_duration
+	dead_spirit_motion_tween = create_tween()
+	while remaining_time > 0.0:
+		var step_time = min(dead_spirit_random.randf_range(DEAD_SPIRIT_FLOAT_MIN_STEP_TIME, DEAD_SPIRIT_FLOAT_MAX_STEP_TIME), remaining_time)
+		remaining_time -= step_time
+		var target_position = dead_spirit_base_position + get_dead_spirit_random_offset()
+		dead_spirit_motion_tween.tween_property(dead_spirit_animated, "position", target_position, step_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+	dead_spirit_fade_tween = create_tween()
+	var fade_duration = max(0.1, effect_duration - DEAD_SPIRIT_FADE_DELAY)
+	var faded_modulate = Color(dead_spirit_base_modulate.r, dead_spirit_base_modulate.g, dead_spirit_base_modulate.b, 0.0)
+	dead_spirit_fade_tween.tween_property(dead_spirit_animated, "modulate", faded_modulate, fade_duration).set_delay(DEAD_SPIRIT_FADE_DELAY).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func stop_dead_spirit_effect(reset_visual := true):
+	dead_spirit_effect_active = false
+	kill_dead_spirit_effect_tweens()
+	if reset_visual:
+		reset_dead_spirit_visual_state()
+		if dead_spirit_animated != null:
+			dead_spirit_animated.visible = false
+
+
+func kill_dead_spirit_effect_tweens():
+	if dead_spirit_motion_tween != null:
+		dead_spirit_motion_tween.kill()
+		dead_spirit_motion_tween = null
+	if dead_spirit_fade_tween != null:
+		dead_spirit_fade_tween.kill()
+		dead_spirit_fade_tween = null
+
+
+func reset_dead_spirit_visual_state():
+	if dead_spirit_animated == null:
+		return
+
+	cache_dead_spirit_base_visual()
+	dead_spirit_animated.position = dead_spirit_base_position
+	dead_spirit_animated.modulate = dead_spirit_base_modulate
+
+
+func get_dead_spirit_effect_duration() -> float:
+	if player != null:
+		var duration = player.get_meta("dead_spirit_effect_duration", DEAD_SPIRIT_EFFECT_DURATION)
+		if duration is int or duration is float:
+			return max(0.25, float(duration))
+
+	return DEAD_SPIRIT_EFFECT_DURATION
+
+
+func get_dead_spirit_random_offset() -> Vector2:
+	return Vector2(
+		dead_spirit_random.randf_range(-DEAD_SPIRIT_FLOAT_RADIUS_X, DEAD_SPIRIT_FLOAT_RADIUS_X),
+		dead_spirit_random.randf_range(-DEAD_SPIRIT_FLOAT_RADIUS_Y, DEAD_SPIRIT_FLOAT_RADIUS_Y)
+	)
 
 
 func restore_normal_player_visual():
@@ -407,6 +516,9 @@ func get_available_dead_spirit_animation_name() -> String:
 
 
 func get_face_expression_animation_name(movement_state: String) -> String:
+	if ["hurt", "dead", "dead_spirit"].has(movement_state):
+		return movement_state
+
 	if player != null:
 		var override_expression = str(player.get_meta("face_expression_override", "")).strip_edges()
 		if override_expression != "":
@@ -440,7 +552,12 @@ func is_chat_typing_for_face_expression() -> bool:
 	if world == null:
 		return false
 
-	if world.has_method("is_chat_input_focused") and world.is_chat_input_focused():
+	if player != null and player.has_meta("remote_chat_typing"):
+		var remote_typing = player.get_meta("remote_chat_typing")
+		if typeof(remote_typing) == TYPE_BOOL:
+			return remote_typing
+
+	if world.player == player and world.has_method("is_chat_input_focused") and world.is_chat_input_focused():
 		return true
 
 	return false
@@ -471,23 +588,11 @@ func is_player_underwater_for_face_expression() -> bool:
 
 	for offset in sample_offsets:
 		var sample_position = player.global_position + offset
-		var floor_grid_pos = Vector2i(
-			int(floor(sample_position.x / block_size)),
-			int(floor(sample_position.y / block_size))
+		var grid_pos = Vector2i(
+			int(floor((sample_position.x + block_size * 0.5) / block_size)),
+			int(floor((sample_position.y + block_size * 0.5) / block_size))
 		)
-		if grid_position_has_water_for_face_expression(floor_grid_pos):
-			return true
-
-		var round_grid_pos = Vector2i(
-			int(round(sample_position.x / block_size)),
-			int(round(sample_position.y / block_size))
-		)
-		if grid_position_has_water_for_face_expression(round_grid_pos):
-			return true
-
-	if world.has_method("get_player_grid_position"):
-		var player_grid_pos = world.get_player_grid_position()
-		if player_grid_pos is Vector2i and grid_position_has_water_for_face_expression(player_grid_pos):
+		if grid_position_has_water_for_face_expression(grid_pos):
 			return true
 
 	return false
@@ -497,10 +602,7 @@ func grid_position_has_water_for_face_expression(grid_pos: Vector2i) -> bool:
 	if world == null:
 		return false
 
-	var block_sets = [
-		world.get("blocks"),
-		world.get("background_blocks")
-	]
+	var block_sets = [world.get("blocks")]
 
 	for block_set in block_sets:
 		if not (block_set is Dictionary):
@@ -581,16 +683,35 @@ func update_movement_animation_player(animation_name: String):
 		target_animation = "walk"
 	elif animation_name == "jump":
 		target_animation = "jump"
+	elif animation_name == "fall":
+		target_animation = "jump"
+	elif animation_name == "place_animation":
+		target_animation = "place_animation"
+	elif animation_name == "punch":
+		target_animation = get_active_punch_animation_name()
+	elif animation_name == "hurt":
+		target_animation = "hurt"
+	elif animation_name == "dead":
+		target_animation = "dead"
+	elif animation_name == "dead_spirit":
+		target_animation = "dead_spirit"
 	elif animation_name == "idle":
 		target_animation = "idle"
 
 	if target_animation != "":
 		var target_player = get_movement_animation_player(target_animation)
+		if target_player == null and animation_name == "punch" and target_animation != "punch":
+			target_animation = "punch"
+			target_player = get_movement_animation_player(target_animation)
 		if target_player == null:
 			reset_current_movement_animation_player()
 			return
 
 		var actual_animation = get_movement_animation_name(target_player, target_animation)
+		if actual_animation == "" and animation_name == "punch" and target_animation != "punch":
+			target_animation = "punch"
+			target_player = get_movement_animation_player(target_animation)
+			actual_animation = get_movement_animation_name(target_player, target_animation)
 		if actual_animation == "":
 			reset_current_movement_animation_player()
 			return
@@ -598,6 +719,7 @@ func update_movement_animation_player(animation_name: String):
 		if current_movement_animation_player != null and current_movement_animation_player != target_player:
 			reset_current_movement_animation_player()
 
+		stop_other_movement_animation_players(target_player)
 		current_movement_animation_player = target_player
 		if current_movement_animation != actual_animation:
 			current_movement_animation = actual_animation
@@ -607,6 +729,17 @@ func update_movement_animation_player(animation_name: String):
 		return
 
 	reset_current_movement_animation_player()
+
+
+func get_active_punch_animation_name() -> String:
+	if player == null:
+		return "punch"
+
+	var animation_name = str(player.get_meta("punch_animation_name", "punch")).strip_edges()
+	if animation_name == "":
+		return "punch"
+
+	return animation_name
 
 
 func get_movement_animation_player(animation_name: String):
@@ -653,13 +786,63 @@ func reset_current_movement_animation_player():
 		current_movement_animation = ""
 		return
 
-	if current_movement_animation != "":
-		current_movement_animation_player.stop()
-		if current_movement_animation_player.has_animation(current_movement_animation):
-			current_movement_animation_player.seek(0.0, true)
+	stop_movement_animation_player(current_movement_animation_player)
 
 	current_movement_animation = ""
 	current_movement_animation_player = null
+
+
+func reset_all_movement_animation_players():
+	for animation_player in get_all_movement_animation_players():
+		stop_movement_animation_player(animation_player)
+	current_movement_animation = ""
+	current_movement_animation_player = null
+
+
+func stop_other_movement_animation_players(active_player):
+	for animation_player in get_all_movement_animation_players():
+		if animation_player == active_player:
+			continue
+		stop_movement_animation_player(animation_player)
+
+
+func stop_movement_animation_player(animation_player):
+	if not (animation_player is AnimationPlayer):
+		return
+
+	var animation_to_reset = str(animation_player.current_animation)
+	if animation_player.is_playing() and NON_MOVEMENT_OVERLAY_ANIMATIONS.has(animation_to_reset):
+		return
+
+	if animation_to_reset == "" and current_movement_animation_player == animation_player:
+		animation_to_reset = current_movement_animation
+
+	animation_player.stop()
+	if animation_to_reset != "" and animation_player.has_animation(animation_to_reset):
+		animation_player.seek(0.0, true)
+	elif animation_player.has_animation("RESET"):
+		animation_player.play("RESET")
+		animation_player.stop()
+
+
+func get_all_movement_animation_players() -> Array:
+	var players = []
+	add_movement_animation_player(players, movement_animation_player)
+
+	if movement_animation_player != null:
+		for node_name in ["walk", "Walk", "jump", "Jump", "fall", "Fall", "idle", "Idle", "punch", "Punch", "dead", "Dead", "dead_spirit", "DeadSpirit"]:
+			add_movement_animation_player(players, movement_animation_player.get_node_or_null(node_name))
+
+	if player != null:
+		for node_name in ["walk", "Walk", "jump", "Jump", "fall", "Fall", "idle", "Idle", "punch", "Punch", "dead", "Dead", "dead_spirit", "DeadSpirit"]:
+			add_movement_animation_player(players, player.get_node_or_null(node_name))
+
+	return players
+
+
+func add_movement_animation_player(players: Array, candidate):
+	if candidate is AnimationPlayer and not players.has(candidate):
+		players.append(candidate)
 
 
 func update_movement_animation_player_legacy_walk(animation_name: String):
@@ -682,6 +865,26 @@ func update_movement_animation_player_legacy_walk(animation_name: String):
 
 
 func get_player_animation_name() -> String:
+	if forced_animation_state != "":
+		return forced_animation_state
+
+	if player != null:
+		var override_expression = str(player.get_meta("face_expression_override", "")).strip_edges().to_lower()
+		if ["hurt", "dead", "dead_spirit"].has(override_expression):
+			return override_expression
+
+		var hurt_until_msec = int(player.get_meta("face_hurt_until_msec", 0))
+		if hurt_until_msec > Time.get_ticks_msec():
+			return "hurt"
+
+		var place_animation_until_msec = int(player.get_meta("place_animation_until_msec", 0))
+		if place_animation_until_msec > Time.get_ticks_msec():
+			return "place_animation"
+
+		var punch_until_msec = int(player.get_meta("face_punch_until_msec", 0))
+		if punch_until_msec > Time.get_ticks_msec():
+			return "punch"
+
 	var velocity = Vector2.ZERO
 
 	if player is CharacterBody2D:
@@ -696,10 +899,26 @@ func get_player_animation_name() -> String:
 			return "fall"
 		return "jump"
 
+	if player != null and player.has_method("is_sliding_on_slideable_surface") and bool(player.is_sliding_on_slideable_surface()):
+		return "fall"
+
 	if abs(velocity.x) > 6.0:
 		return "walk"
 
 	return "idle"
+
+
+func set_forced_animation_state(animation_state: String):
+	var clean_state = animation_state.strip_edges().to_lower()
+	if not NETWORK_ANIMATION_STATES.has(clean_state):
+		clean_state = ""
+
+	if forced_animation_state == clean_state:
+		return
+
+	reset_all_movement_animation_players()
+	forced_animation_state = clean_state
+	current_layered_animation = ""
 
 
 func play_layered_animation(animation_name: String):

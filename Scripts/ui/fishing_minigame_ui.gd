@@ -165,7 +165,7 @@ func show_catch_result(fish_data: Dictionary) -> void:
 	var rarity: String = str(fish_data.get("rarity", "common")).to_lower()
 	var rarity_color: Color = get_rarity_color(rarity)
 	var fish_name: String = str(fish_data.get("name", fish_data.get("fish_id", "Fish")))
-	var weight_text: String = str(fish_data.get("weight", "Unknown"))
+	var amount_text: String = str(fish_data.get("amount", fish_data.get("weight", "x1")))
 	var value_text: String = str(fish_data.get("value", "0"))
 	var icon_value = fish_data.get("icon", null)
 	var is_new: bool = bool(fish_data.get("is_new", false))
@@ -173,7 +173,7 @@ func show_catch_result(fish_data: Dictionary) -> void:
 	catch_name_label.text = fish_name
 	catch_rarity_label.text = rarity.capitalize()
 	catch_rarity_label.add_theme_color_override("font_color", rarity_color)
-	catch_weight_label.text = "Weight: " + weight_text
+	catch_weight_label.text = "Amount: " + amount_text
 	catch_value_label.text = "Value: " + value_text + " gems"
 	catch_icon.texture = (icon_value as Texture2D) if icon_value is Texture2D else null
 	catch_icon_back.add_theme_stylebox_override("panel", PixelUIStyle.slot_style(rarity))
@@ -256,7 +256,7 @@ func hide_fishing_state() -> void:
 	reel_button_down = false
 
 
-func show_target_indicator(grid_pos: Vector2i) -> void:
+func show_target_indicator(_grid_pos: Vector2i) -> void:
 	return
 
 
@@ -564,6 +564,7 @@ func _build_catch_card() -> void:
 	catch_card.size = Vector2(CATCH_W, CATCH_H)
 	catch_card.pivot_offset = catch_card.size * 0.5
 	catch_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	catch_card.z_index = 240
 	catch_card.add_theme_stylebox_override("panel", PixelUIStyle.premium_panel_style())
 	add_child(catch_card)
 
@@ -749,6 +750,15 @@ func _position_catch_card() -> void:
 		clamp((ss.x - CATCH_W) * 0.5, 12.0, max(12.0, ss.x - CATCH_W - 12.0)),
 		clamp((ss.y - CATCH_H) * 0.5 - 30.0, 36.0, max(36.0, ss.y - CATCH_H - 24.0))
 	)
+
+
+func get_catch_card_confetti_position() -> Vector2:
+	if catch_card == null:
+		return Vector2(INF, INF)
+	if not catch_card.visible:
+		_position_catch_card()
+
+	return catch_card.global_position + catch_card.size * 0.5
 
 
 func _position_escape_panel() -> void:

@@ -1,0 +1,459 @@
+[gd_scene format=3 uid="uid://bv7q3y8wwsxs1"]
+
+[ext_resource type="Script" uid="uid://ciuamr6gxrdwp" path="res://Scripts/world_lock_scene_ui.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bgt0geyx2l4kd" path="res://Assets/ui/login/outer_panel.png" id="2_qnrgr"]
+[ext_resource type="Texture2D" uid="uid://ibwuhveruvw8" path="res://Assets/ui/hotbar/slot_normal.png" id="2_slot_normal"]
+[ext_resource type="Texture2D" uid="uid://b26xvfc2ty1no" path="res://Assets/ui/login/sign_on_normal.png" id="3_5ar1o"]
+[ext_resource type="Texture2D" uid="uid://bc4yqbdvnpqiy" path="res://Assets/ui/pixelmania/close_button.png" id="4_close"]
+[ext_resource type="Texture2D" uid="uid://cvx7ww6p2w78r" path="res://Assets/ui/login/sign_on_pressed.png" id="4_ttwt4"]
+[ext_resource type="Texture2D" uid="uid://xxxaiaynrj0l" path="res://Assets/ui/login/signon_hover.png" id="5_n5qox"]
+[ext_resource type="Texture2D" uid="uid://dhab7vxois5po" path="res://Assets/ui/hotbar/slot_legendary.png" id="5_slot_legendary"]
+[ext_resource type="Texture2D" uid="uid://dok76uyvip30c" path="res://Assets/inventory_icons/world_lock.png" id="6_world_lock_icon"]
+[ext_resource type="Texture2D" uid="uid://cwt3wjfewbxrf" path="res://Assets/ui/lobby/inner_panel.png" id="7_myr5u"]
+[ext_resource type="Texture2D" uid="uid://2qnimtqpohmh" path="res://Assets/ui/vending/button_green_normal.png" id="10_myr5u"]
+[ext_resource type="Texture2D" uid="uid://dse5ol0ii8raj" path="res://Assets/ui/vending/button_green_pressed.png" id="11_i3uo4"]
+[ext_resource type="Texture2D" uid="uid://5nj5jr1xgdbl" path="res://Assets/ui/vending/button_green_hover.png" id="12_dgynu"]
+[ext_resource type="Texture2D" uid="uid://hx1s0b2xwx84" path="res://Assets/ui/inventory/search_input.png" id="14_i3uo4"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_r1b6v"]
+texture = ExtResource("3_5ar1o")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ay72f"]
+texture = ExtResource("3_5ar1o")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qnrgr"]
+texture = ExtResource("4_ttwt4")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5ar1o"]
+texture = ExtResource("5_n5qox")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_id2gr"]
+texture = ExtResource("4_close")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wvb0d"]
+texture = ExtResource("4_close")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n5qox"]
+texture = ExtResource("2_slot_normal")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_myr5u"]
+texture = ExtResource("10_myr5u")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_i3uo4"]
+texture = ExtResource("11_i3uo4")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dgynu"]
+texture = ExtResource("12_dgynu")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1s4se"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wayak"]
+texture = ExtResource("3_5ar1o")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xmv3x"]
+texture = ExtResource("3_5ar1o")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a2y5g"]
+texture = ExtResource("4_ttwt4")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qhlxg"]
+texture = ExtResource("5_n5qox")
+
+[node name="WorldLockGUI" type="Control" unique_id=175426319]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="Backdrop" type="ColorRect" parent="." unique_id=1781232332]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0666667, 0.117647, 0.239216, 1)
+
+[node name="Dimmer" type="ColorRect" parent="." unique_id=199354528]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.38)
+
+[node name="Window" type="Control" parent="." unique_id=691571659]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -560.0
+offset_top = -340.0
+offset_right = 560.0
+offset_bottom = 340.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WindowSkin" type="NinePatchRect" parent="Window" unique_id=344660929]
+layout_mode = 0
+offset_right = 1120.0
+offset_bottom = 680.0
+texture = ExtResource("2_qnrgr")
+patch_margin_left = 36
+patch_margin_top = 36
+patch_margin_right = 36
+patch_margin_bottom = 36
+
+[node name="HeaderSkin" type="NinePatchRect" parent="Window" unique_id=1863911254]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 16.0
+offset_right = 1102.0
+offset_bottom = 82.0
+patch_margin_left = 26
+patch_margin_top = 24
+patch_margin_right = 26
+patch_margin_bottom = 24
+
+[node name="TitleLabel" type="Label" parent="Window" unique_id=74904277]
+layout_mode = 0
+offset_left = 38.0
+offset_top = 16.0
+offset_right = 370.0
+offset_bottom = 60.0
+text = "WORLD LOCK"
+vertical_alignment = 1
+
+[node name="LockBadge" type="Button" parent="Window" unique_id=1137798034]
+layout_mode = 0
+offset_left = 822.0
+offset_top = 18.0
+offset_right = 1028.0
+offset_bottom = 64.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_r1b6v")
+text = "LOCKED"
+
+[node name="GetKeyButton" type="Button" parent="Window" unique_id=1887142862]
+layout_mode = 0
+offset_left = 684.0
+offset_top = 18.0
+offset_right = 812.0
+offset_bottom = 64.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_ay72f")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_qnrgr")
+theme_override_styles/hover = SubResource("StyleBoxTexture_5ar1o")
+text = "GET KEY"
+
+[node name="CloseButton" type="Button" parent="Window" unique_id=601566547]
+layout_mode = 0
+offset_left = 1082.0
+offset_top = -16.0
+offset_right = 1138.0
+offset_bottom = 40.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_id2gr")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_wvb0d")
+
+[node name="InfoCard" type="NinePatchRect" parent="Window" unique_id=1124591124]
+modulate = Color(1, 1, 1, 0.92)
+layout_mode = 0
+offset_left = 28.0
+offset_top = 74.0
+offset_right = 1072.0
+offset_bottom = 200.0
+texture = ExtResource("7_myr5u")
+patch_margin_left = 26
+patch_margin_top = 24
+patch_margin_right = 26
+patch_margin_bottom = 24
+
+[node name="LockSlot" type="NinePatchRect" parent="Window" unique_id=1997884478]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 93.0
+offset_right = 129.0
+offset_bottom = 179.0
+texture = ExtResource("5_slot_legendary")
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="LockIconShadow" type="TextureRect" parent="Window" unique_id=861086085]
+modulate = Color(0, 0, 0, 0.36)
+layout_mode = 0
+offset_left = 58.0
+offset_top = 107.0
+offset_right = 122.0
+offset_bottom = 171.0
+texture = ExtResource("6_world_lock_icon")
+stretch_mode = 5
+
+[node name="LockIcon" type="TextureRect" parent="Window" unique_id=68575581]
+layout_mode = 0
+offset_left = 57.0
+offset_top = 106.0
+offset_right = 108.0
+offset_bottom = 158.0
+texture = ExtResource("6_world_lock_icon")
+stretch_mode = 5
+
+[node name="WorldLabel" type="Label" parent="Window" unique_id=5579077]
+layout_mode = 0
+offset_left = 139.0
+offset_top = 84.0
+offset_right = 541.0
+offset_bottom = 112.0
+text = "World: TEST"
+vertical_alignment = 1
+
+[node name="LockedLabel" type="Label" parent="Window" unique_id=816960183]
+layout_mode = 0
+offset_left = 823.0
+offset_top = 87.0
+offset_right = 1055.0
+offset_bottom = 115.0
+text = "Locked: YES"
+vertical_alignment = 1
+
+[node name="OwnerLabel" type="Label" parent="Window" unique_id=853502945]
+layout_mode = 0
+offset_left = 139.0
+offset_top = 111.0
+offset_right = 473.0
+offset_bottom = 137.0
+text = "Owner: USO"
+vertical_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="Window" unique_id=1316939558]
+layout_mode = 0
+offset_left = 139.0
+offset_top = 136.0
+offset_right = 973.0
+offset_bottom = 160.0
+text = "Status: Locked by USO | Owner/access only | Trusted builders: 0/6"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="PositionLabel" type="Label" parent="Window" unique_id=192178105]
+layout_mode = 0
+offset_left = 139.0
+offset_top = 160.0
+offset_right = 429.0
+offset_bottom = 183.0
+text = "Lock position: 50, 63"
+vertical_alignment = 1
+
+[node name="AccessTitle" type="Label" parent="Window" unique_id=1691124809]
+layout_mode = 0
+offset_left = 35.0
+offset_top = 205.0
+offset_right = 299.0
+offset_bottom = 235.0
+text = "ACCESS LIST"
+vertical_alignment = 1
+
+[node name="ActionsTitle" type="Label" parent="Window" unique_id=489655180]
+layout_mode = 0
+offset_left = 751.0
+offset_top = 205.0
+offset_right = 1065.0
+offset_bottom = 235.0
+text = "OWNER ACTIONS"
+vertical_alignment = 1
+
+[node name="AccessCard" type="NinePatchRect" parent="Window" unique_id=956631832]
+modulate = Color(1, 1, 1, 0.94)
+layout_mode = 0
+offset_left = 29.0
+offset_top = 237.0
+offset_right = 695.0
+offset_bottom = 658.0
+texture = ExtResource("7_myr5u")
+patch_margin_left = 28
+patch_margin_top = 28
+patch_margin_right = 28
+patch_margin_bottom = 28
+
+[node name="AccessScroll" type="ScrollContainer" parent="Window/AccessCard" unique_id=2077934245]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 18.0
+offset_right = 648.0
+offset_bottom = 260.0
+horizontal_scroll_mode = 0
+
+[node name="AccessList" type="VBoxContainer" parent="Window/AccessCard/AccessScroll" unique_id=1913360379]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="EmptyAccessLabel" type="Label" parent="Window/AccessCard" unique_id=2073462279]
+layout_mode = 0
+offset_left = 53.0
+offset_top = 183.0
+offset_right = 607.0
+offset_bottom = 217.0
+text = "No players have access yet."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ActionsCard" type="NinePatchRect" parent="Window" unique_id=858864643]
+modulate = Color(1, 1, 1, 0.94)
+layout_mode = 0
+offset_left = 724.0
+offset_top = 237.0
+offset_right = 1082.0
+offset_bottom = 658.0
+texture = ExtResource("7_myr5u")
+patch_margin_left = 28
+patch_margin_top = 28
+patch_margin_right = 28
+patch_margin_bottom = 28
+
+[node name="PublicBuildButton" type="Button" parent="Window/ActionsCard" unique_id=1119893701]
+layout_mode = 0
+offset_left = 76.0
+offset_top = 24.0
+offset_right = 265.0
+offset_bottom = 66.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_ay72f")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_qnrgr")
+theme_override_styles/hover = SubResource("StyleBoxTexture_5ar1o")
+text = "PUBLIC BUILD: OFF"
+
+[node name="LimitLabel" type="Label" parent="Window/ActionsCard" unique_id=727267753]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 66.0
+offset_right = 347.0
+offset_bottom = 89.0
+text = "TRUSTED BUILDER LIMIT (Trusted Slots: 0/6)"
+vertical_alignment = 1
+
+[node name="LimitField" type="Control" parent="Window/ActionsCard" unique_id=1992870933]
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 108.0
+offset_right = 110.0
+offset_bottom = 142.0
+
+[node name="LimitSkin" type="NinePatchRect" parent="Window/ActionsCard/LimitField" unique_id=1615659707]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+patch_margin_left = 24
+patch_margin_top = 16
+patch_margin_right = 24
+patch_margin_bottom = 16
+
+[node name="LimitInput" type="LineEdit" parent="Window/ActionsCard/LimitField" unique_id=421193345]
+layout_mode = 0
+offset_left = 6.0
+offset_top = -14.0
+offset_right = 74.5
+offset_bottom = 17.0
+theme_override_styles/normal = SubResource("StyleBoxTexture_n5qox")
+text = "6"
+alignment = 1
+
+[node name="SetLimitButton" type="Button" parent="Window/ActionsCard" unique_id=798288504]
+layout_mode = 0
+offset_left = 117.0
+offset_top = 92.0
+offset_right = 335.0
+offset_bottom = 126.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_myr5u")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_i3uo4")
+theme_override_styles/hover = SubResource("StyleBoxTexture_dgynu")
+text = "SET LIMIT"
+
+[node name="AddPlayerLabel" type="Label" parent="Window/ActionsCard" unique_id=1329073265]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 135.0
+offset_right = 336.0
+offset_bottom = 158.0
+text = "ADD PLAYER ACCESS"
+vertical_alignment = 1
+
+[node name="UsernameField" type="Control" parent="Window/ActionsCard" unique_id=744492366]
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 182.0
+offset_right = 230.0
+offset_bottom = 218.0
+
+[node name="UsernameSkin" type="NinePatchRect" parent="Window/ActionsCard/UsernameField" unique_id=402694497]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -3.0
+offset_top = -16.0
+offset_right = -3.0
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("14_i3uo4")
+patch_margin_left = 24
+patch_margin_top = 16
+patch_margin_right = 24
+patch_margin_bottom = 16
+
+[node name="UsernameInput" type="LineEdit" parent="Window/ActionsCard/UsernameField" unique_id=1987484204]
+layout_mode = 0
+offset_left = -4.0
+offset_top = -13.0
+offset_right = 205.0
+offset_bottom = 18.0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_1s4se")
+placeholder_text = "Username"
+alignment = 1
+
+[node name="RolePicker" type="OptionButton" parent="Window/ActionsCard" unique_id=1976212148]
+layout_mode = 0
+offset_left = 228.0
+offset_top = 168.0
+offset_right = 348.0
+offset_bottom = 204.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_wayak")
+
+[node name="AddAccessButton" type="Button" parent="Window/ActionsCard" unique_id=1417444865]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 281.0
+offset_right = 335.0
+offset_bottom = 323.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_xmv3x")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a2y5g")
+theme_override_styles/hover = SubResource("StyleBoxTexture_qhlxg")
+text = "ADD ACCESS"
+
+[node name="HintLabel" type="Label" parent="Window/ActionsCard" unique_id=790918985]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 328.0
+offset_right = 340.0
+offset_bottom = 404.0
+text = "Only owner can edit access. Public build controls who can build."
+autowrap_mode = 3

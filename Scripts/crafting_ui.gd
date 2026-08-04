@@ -285,18 +285,92 @@ func create_recipe_cards():
 	for child in recipe_root.get_children():
 		child.queue_free()
 
+	var visible_recipes := get_visible_recipes()
 	var columns = 3
-	var rows = int(ceil(float(recipes.size()) / float(columns)))
+	var rows = int(ceil(float(visible_recipes.size()) / float(columns)))
 	var content_height = max(RECIPE_ROOT_MIN_HEIGHT, rows * RECIPE_CARD_SIZE.y + max(0, rows - 1) * RECIPE_CARD_GAP.y)
 
 	recipe_root.size = Vector2(RECIPE_ROOT_WIDTH, content_height)
 	recipe_root.custom_minimum_size = Vector2(RECIPE_ROOT_WIDTH, content_height)
 
-	for i in range(recipes.size()):
-		var recipe = recipes[i]
+	for i in range(visible_recipes.size()):
+		var recipe = visible_recipes[i]
 		var column = i % columns
 		var row = int(floor(float(i) / float(columns)))
 		create_recipe_card(recipe, Vector2(column * (RECIPE_CARD_SIZE.x + RECIPE_CARD_GAP.x), row * (RECIPE_CARD_SIZE.y + RECIPE_CARD_GAP.y)), i)
+
+
+func get_visible_recipes() -> Array:
+	var visible_recipes: Array = []
+
+	for recipe in recipes:
+		if should_show_recipe(recipe):
+			visible_recipes.append(recipe)
+
+	return visible_recipes
+
+
+func should_show_recipe(recipe: Dictionary) -> bool:
+	if not is_rod_upgrade_recipe(recipe):
+		return true
+
+	var previous_rod_cost := get_recipe_previous_rod_cost(recipe)
+	if previous_rod_cost.is_empty():
+		return true
+
+	return get_crafting_cost_inventory_count(
+		str(previous_rod_cost.get("item_id", "")),
+		str(previous_rod_cost.get("category", ""))
+	) > 0
+
+
+func is_rod_upgrade_recipe(recipe: Dictionary) -> bool:
+	var output = recipe.get("output", {})
+	if not (output is Dictionary):
+		return false
+
+	var output_id := str(output.get("item_id", ""))
+	var output_category := str(output.get("category", ""))
+	if output_category != "tool":
+		return false
+
+	return is_fishing_rod_item_id(output_id)
+
+
+func get_recipe_previous_rod_cost(recipe: Dictionary) -> Dictionary:
+	var costs = recipe.get("cost", [])
+	if not (costs is Array):
+		return {}
+
+	for cost in costs:
+		if not (cost is Dictionary):
+			continue
+		if str(cost.get("category", "")) != "tool":
+			continue
+		if is_fishing_rod_item_id(str(cost.get("item_id", ""))):
+			return cost
+
+	return {}
+
+
+func is_fishing_rod_item_id(item_id: String) -> bool:
+	if world != null and world.item_database.has(item_id):
+		return bool(world.item_database[item_id].get("fishing_rod", false))
+
+	return item_id in [
+		"bamboo_rod",
+		"refined_bamboo_rod",
+		"pristine_bamboo_rod",
+		"fishing_rod",
+		"fiberglass_rod",
+		"refined_fiberglass_rod",
+		"pristine_fiberglass_rod",
+		"tungsten_rod",
+		"refined_tungsten_rod",
+		"pristine_tungsten_rod",
+		"platinum_prestige_rod",
+		"neptune_rod"
+	]
 
 
 func create_recipe_card(recipe: Dictionary, card_position: Vector2, _card_index: int):
@@ -406,7 +480,7 @@ func get_cost_text(recipe: Dictionary) -> String:
 		var item_id = str(cost["item_id"])
 		var category = str(cost["category"])
 		var amount = int(cost["amount"])
-		var owned = get_inventory_count(item_id, category)
+		var owned = get_crafting_cost_inventory_count(item_id, category)
 
 		parts.append(get_item_display_name(item_id, category) + " " + format_cost_amount(owned, category) + "/" + format_cost_amount(amount, category))
 
@@ -437,7 +511,7 @@ func craft_recipe(recipe: Dictionary):
 		return
 
 	for cost in recipe["cost"]:
-		remove_inventory_item(str(cost["item_id"]), str(cost["category"]), int(cost["amount"]))
+		remove_crafting_cost_item(str(cost["item_id"]), str(cost["category"]), int(cost["amount"]))
 
 	var output = recipe["output"]
 	add_inventory_item(str(output["item_id"]), str(output["category"]), int(output["amount"]))
@@ -497,10 +571,52 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 
 func can_craft(recipe: Dictionary) -> bool:
 	for cost in recipe["cost"]:
-		if get_inventory_count(str(cost["item_id"]), str(cost["category"])) < int(cost["amount"]):
+		if get_crafting_cost_inventory_count(str(cost["item_id"]), str(cost["category"])) < int(cost["amount"]):
 			return false
 
 	return true
+
+
+func get_crafting_cost_item_ids(item_id: String, category: String) -> Array:
+	var ids: Array = [item_id]
+	if str(category) != "tool":
+		return ids
+
+	if item_id == "bamboo_rod":
+		ids.append("fishing_rod")
+	elif item_id == "pristine_tungsten_rod":
+		ids.append("platinum_prestige_rod")
+
+	var unique_ids: Array = []
+	for candidate in ids:
+		var clean_candidate := str(candidate)
+		if clean_candidate != "" and not unique_ids.has(clean_candidate):
+			unique_ids.append(clean_candidate)
+	return unique_ids
+
+
+func get_crafting_cost_inventory_count(item_id: String, category: String) -> int:
+	var total := 0
+	for candidate_id in get_crafting_cost_item_ids(item_id, category):
+		total += get_inventory_count(str(candidate_id), category)
+	return total
+
+
+func remove_crafting_cost_item(item_id: String, category: String, amount: int):
+	var remaining: int = max(0, amount)
+	if remaining <= 0:
+		return
+
+	for candidate_id in get_crafting_cost_item_ids(item_id, category):
+		var available := get_inventory_count(str(candidate_id), category)
+		if available <= 0:
+			continue
+
+		var spend_amount: int = min(available, remaining)
+		remove_inventory_item(str(candidate_id), category, spend_amount)
+		remaining -= spend_amount
+		if remaining <= 0:
+			return
 
 
 func get_inventory_count(item_id: String, category: String) -> int:

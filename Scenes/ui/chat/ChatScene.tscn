@@ -1,0 +1,407 @@
+[gd_scene format=3 uid="uid://b82q7cwexlq4t"]
+
+[ext_resource type="Script" uid="uid://bl2p5yoxk8bto" path="res://Scripts/chat_ui.gd" id="0_chat_ui"]
+[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="2_p00yb"]
+[ext_resource type="Texture2D" uid="uid://dp3cg88aiem4v" path="res://Assets/ui/pink_button_hover_90x24.png" id="3_yg7m8"]
+[ext_resource type="Texture2D" uid="uid://i3nk3d4nfgx5" path="res://Assets/ui/pink_button_90x24.png" id="4_5g5r1"]
+[ext_resource type="Texture2D" uid="uid://tbchr2qk0dib" path="res://Assets/ui/close_button_hover.png" id="5_5g5r1"]
+[ext_resource type="Texture2D" uid="uid://lgw5p1ww3rh3" path="res://Assets/ui/scroll_bar.png" id="6_003sp"]
+[ext_resource type="Texture2D" uid="uid://bc4yqbdvnpqiy" path="res://Assets/ui/pixelmania/close_button.png" id="6_fm6fj"]
+[ext_resource type="Texture2D" uid="uid://cdd8rhkxp0cky" path="res://Assets/ui/close_button_pressed.png" id="6_tyt54"]
+[ext_resource type="Texture2D" uid="uid://d38x8eq37ddv7" path="res://Assets/ui/inventory/scroll_handle_small.png" id="7_fm6fj"]
+[ext_resource type="Texture2D" uid="uid://rcxc05omk26g" path="res://Assets/ui/inventory/scroll_bar.png" id="7_p00yb"]
+[ext_resource type="Texture2D" uid="uid://d4dgvkwluc6qy" path="res://Assets/ui/chat/send.png" id="9_5g5r1"]
+[ext_resource type="Texture2D" uid="uid://bg5sabtp5jnsv" path="res://Assets/ui/input_744x72.png" id="9_tyt54"]
+[ext_resource type="Texture2D" uid="uid://b8v0mkqsrenjy" path="res://Assets/ui/handle_down.png" id="13_5g5r1"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tab_selected"]
+texture = ExtResource("3_yg7m8")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tab_normal"]
+texture = ExtResource("4_5g5r1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5ntfa"]
+texture = ExtResource("5_5g5r1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_c8pld"]
+texture = ExtResource("6_tyt54")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_16opg"]
+texture = ExtResource("5_5g5r1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3v37g"]
+texture = ExtResource("6_fm6fj")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c8pld"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fm6fj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5ntfa"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_16opg"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w71hu"]
+texture = ExtResource("6_003sp")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gbkoy"]
+texture = ExtResource("7_fm6fj")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gbw5a"]
+texture = ExtResource("7_p00yb")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n6cpp"]
+texture = ExtResource("7_p00yb")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tyt54"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_normal"]
+texture = ExtResource("9_5g5r1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_pressed"]
+texture = ExtResource("9_5g5r1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_hover"]
+texture = ExtResource("9_5g5r1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_normal"]
+texture = ExtResource("13_5g5r1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_pressed"]
+texture = ExtResource("13_5g5r1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_hover"]
+texture = ExtResource("13_5g5r1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8jaiq"]
+texture = ExtResource("9_tyt54")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qon6k"]
+texture = ExtResource("9_5g5r1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_003sp"]
+texture = ExtResource("9_5g5r1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n532j"]
+texture = ExtResource("9_5g5r1")
+
+[node name="ChatScene" type="Control" unique_id=1213254687]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 283.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("0_chat_ui")
+
+[node name="ChatPanel" type="Control" parent="." unique_id=1762208411]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -560.0
+offset_top = -470.0
+offset_right = 560.0
+offset_bottom = -34.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="PanelSkin" type="NinePatchRect" parent="ChatPanel" unique_id=1065608273]
+layout_mode = 0
+offset_left = -152.5
+offset_top = -182.0
+offset_right = 1194.5
+offset_bottom = 436.0
+texture = ExtResource("2_p00yb")
+patch_margin_left = 36
+patch_margin_top = 36
+patch_margin_right = 36
+patch_margin_bottom = 36
+
+[node name="ChannelTabs" type="HBoxContainer" parent="ChatPanel" unique_id=1853564538]
+layout_mode = 0
+offset_left = -142.5
+offset_top = -160.0
+offset_right = 298.0
+offset_bottom = -116.0
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="WorldTab" type="Button" parent="ChatPanel/ChannelTabs" unique_id=544716429]
+custom_minimum_size = Vector2(124, 42)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_tab_selected")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_tab_selected")
+theme_override_styles/hover = SubResource("StyleBoxTexture_tab_selected")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "WORLD"
+
+[node name="LocalTab" type="Button" parent="ChatPanel/ChannelTabs" unique_id=1711968605]
+custom_minimum_size = Vector2(124, 42)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_tab_selected")
+theme_override_styles/hover = SubResource("StyleBoxTexture_tab_selected")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "LOCAL"
+
+[node name="SystemTab" type="Button" parent="ChatPanel/ChannelTabs" unique_id=896765129]
+custom_minimum_size = Vector2(124, 42)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_tab_selected")
+theme_override_styles/hover = SubResource("StyleBoxTexture_tab_selected")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "SYSTEM"
+
+[node name="CloseButton" type="Button" parent="ChatPanel" unique_id=947578256]
+custom_minimum_size = Vector2(54, 46)
+layout_mode = 0
+offset_left = 1128.5
+offset_top = -167.0
+offset_right = 1182.5
+offset_bottom = -115.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_5ntfa")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_c8pld")
+theme_override_styles/hover = SubResource("StyleBoxTexture_16opg")
+theme_override_styles/focus = SubResource("StyleBoxTexture_3v37g")
+text = "X"
+
+[node name="MessagesPanel" type="Control" parent="ChatPanel" unique_id=1160573752]
+anchors_preset = 0
+offset_left = 41.5
+offset_top = 107.0
+offset_right = 1086.0
+offset_bottom = 359.0
+
+[node name="MessagesScroll" type="ScrollContainer" parent="ChatPanel/MessagesPanel" unique_id=442089921]
+layout_mode = 0
+offset_left = -152.5
+offset_top = -207.0
+offset_right = 1107.5
+offset_bottom = 239.0
+horizontal_scroll_mode = 0
+
+[node name="MessagesRoot" type="VBoxContainer" parent="ChatPanel/MessagesPanel/MessagesScroll" unique_id=671447279]
+custom_minimum_size = Vector2(980, 198)
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="MessageRow_System" type="Label" parent="ChatPanel/MessagesPanel/MessagesScroll/MessagesRoot" unique_id=1630672586]
+custom_minimum_size = Vector2(980, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.95, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+theme_override_styles/focus = SubResource("StyleBoxEmpty_c8pld")
+text = "[System] Welcome to PixelMania."
+vertical_alignment = 1
+
+[node name="MessageRow_World" type="Label" parent="ChatPanel/MessagesPanel/MessagesScroll/MessagesRoot" unique_id=943565014]
+custom_minimum_size = Vector2(980, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fm6fj")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_5ntfa")
+text = "[World] Builder: Anyone selling seeds?"
+vertical_alignment = 1
+
+[node name="MessageRow_Me" type="Label" parent="ChatPanel/MessagesPanel/MessagesScroll/MessagesRoot" unique_id=741094146]
+custom_minimum_size = Vector2(980, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+theme_override_styles/focus = SubResource("StyleBoxEmpty_16opg")
+text = "[Me] I have some in storage."
+vertical_alignment = 1
+
+[node name="MessagesScrollSlider" type="VScrollBar" parent="ChatPanel" unique_id=1889023157]
+layout_mode = 0
+offset_left = 1148.5
+offset_top = -93.0
+offset_right = 1160.5
+offset_bottom = 371.0
+focus_mode = 0
+theme_override_styles/scroll = SubResource("StyleBoxTexture_w71hu")
+theme_override_styles/grabber = SubResource("StyleBoxTexture_gbkoy")
+theme_override_styles/grabber_highlight = SubResource("StyleBoxTexture_gbw5a")
+theme_override_styles/grabber_pressed = SubResource("StyleBoxTexture_n6cpp")
+step = 1.0
+page = 32.0
+
+[node name="InputBack" type="NinePatchRect" parent="ChatPanel" unique_id=1224471954]
+layout_mode = 0
+offset_left = -111.5
+offset_top = 357.0
+offset_right = 965.5
+offset_bottom = 405.0
+texture = ExtResource("9_tyt54")
+patch_margin_left = 24
+patch_margin_top = 16
+patch_margin_right = 24
+patch_margin_bottom = 16
+
+[node name="ChatInput" type="LineEdit" parent="ChatPanel" unique_id=1369791791]
+layout_mode = 0
+offset_left = -102.5
+offset_top = 364.0
+offset_right = 957.5
+offset_bottom = 398.0
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/font_placeholder_color = Color(0.76, 0.9, 1, 0.74)
+theme_override_colors/caret_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/selection_color = Color(0.2, 0.48, 0.82, 0.58)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxEmpty_tyt54")
+placeholder_text = "Type a message..."
+
+[node name="SendButton" type="Button" parent="ChatPanel" unique_id=1679907268]
+layout_mode = 0
+offset_left = 1033.5
+offset_top = 345.0
+offset_right = 1105.5
+offset_bottom = 417.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+
+[node name="ChatHandle" type="Button" parent="ChatPanel" unique_id=641912217]
+layout_mode = 0
+offset_left = 448.5
+offset_top = 436.0
+offset_right = 601.5
+offset_bottom = 483.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxTexture_button_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_button_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+
+[node name="QuickChatBar" type="Control" parent="." unique_id=528386480]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -346.5
+offset_top = 28.0
+offset_right = 284.5
+offset_bottom = 65.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="QuickChatInput" type="LineEdit" parent="QuickChatBar" unique_id=889036804]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 44.0
+offset_right = 645.0
+offset_bottom = 82.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_placeholder_color = Color(0.76, 0.9, 1, 0.74)
+theme_override_colors/caret_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/selection_color = Color(0.2, 0.48, 0.82, 0.58)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_8jaiq")
+placeholder_text = "   Type a message..."
+
+[node name="QuickChatSendButton" type="Button" parent="QuickChatBar" unique_id=1256060282]
+layout_mode = 0
+offset_left = 656.0
+offset_top = 26.0
+offset_right = 728.0
+offset_bottom = 98.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+
+[node name="ChatButton" type="Button" parent="." unique_id=1566833776]
+custom_minimum_size = Vector2(76, 76)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -45.0
+offset_top = -118.0
+offset_right = 31.0
+offset_bottom = -42.0
+grow_horizontal = 0
+grow_vertical = 0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_qon6k")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_003sp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_n532j")
+
+[node name="ChatButtonIconShadow" type="TextureRect" parent="ChatButton" unique_id=2029239807]
+modulate = Color(0, 0, 0, 0.35)
+layout_mode = 0
+offset_left = 18.0
+offset_top = 19.0
+offset_right = 62.0
+offset_bottom = 63.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ChatButtonIcon" type="TextureRect" parent="ChatButton" unique_id=1536176607]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 60.0
+offset_bottom = 60.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5

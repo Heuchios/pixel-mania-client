@@ -45,6 +45,10 @@ var remote_profile_data := {}
 var remote_profile_lookup_status := ""
 var remote_profile_request_id := ""
 var remote_profile_requested_username := ""
+var server_locked_world_entries: Array = []
+var locked_worlds_loading := false
+var locked_worlds_request_id := ""
+var locked_worlds_error := ""
 
 
 func setup(parent_world):
@@ -52,9 +56,22 @@ func setup(parent_world):
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	z_index = 145
+	connect_owned_locked_worlds_feed()
 
 	build_menu()
 	close_menu()
+
+
+func connect_owned_locked_worlds_feed():
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null:
+		return
+	if not network.has_signal("owned_locked_worlds_received"):
+		return
+
+	var callback := Callable(self, "_on_owned_locked_worlds_received")
+	if not network.is_connected("owned_locked_worlds_received", callback):
+		network.connect("owned_locked_worlds_received", callback)
 
 
 func _process(_delta):
@@ -953,6 +970,7 @@ func open_locked_worlds_panel():
 		return
 
 	refresh_locked_worlds_list()
+	request_owned_locked_worlds_refresh()
 	update_position()
 	if locked_worlds_blocker != null:
 		locked_worlds_blocker.visible = true
@@ -967,6 +985,55 @@ func close_locked_worlds_panel():
 		locked_worlds_panel.visible = false
 
 
+func request_owned_locked_worlds_refresh():
+	if profile_mode != "local":
+		return
+
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null or not network.has_method("request_owned_locked_worlds"):
+		locked_worlds_loading = false
+		locked_worlds_error = "Owned locked worlds are unavailable."
+		refresh_locked_worlds_list()
+		return
+
+	locked_worlds_request_id = "profile_owned_" + str(Time.get_ticks_msec())
+	locked_worlds_loading = true
+	locked_worlds_error = ""
+	refresh_locked_worlds_list()
+
+	if not bool(network.request_owned_locked_worlds(locked_worlds_request_id)):
+		locked_worlds_loading = false
+		locked_worlds_error = "Sign in to load owned locked worlds."
+		refresh_locked_worlds_list()
+
+
+func _on_owned_locked_worlds_received(data: Dictionary):
+	if locked_worlds_request_id != "":
+		var response_request_id = str(data.get("request_id", "")).strip_edges()
+		if response_request_id != "" and response_request_id != locked_worlds_request_id:
+			return
+
+	locked_worlds_loading = false
+	locked_worlds_error = ""
+
+	if not bool(data.get("ok", true)):
+		server_locked_world_entries.clear()
+		locked_worlds_error = str(data.get("message", "Could not load locked worlds.")).strip_edges()
+		if locked_worlds_error == "":
+			locked_worlds_error = "Could not load locked worlds."
+		refresh_locked_worlds_list()
+		return
+
+	var incoming = data.get("worlds", [])
+	server_locked_world_entries.clear()
+	if incoming is Array:
+		for raw_entry in incoming:
+			if raw_entry is Dictionary:
+				server_locked_world_entries.append(raw_entry.duplicate(true))
+
+	refresh_locked_worlds_list()
+
+
 func refresh_locked_worlds_list():
 	if locked_worlds_rows_root == null:
 		return
@@ -978,6 +1045,12 @@ func refresh_locked_worlds_list():
 
 	if locked_worlds_empty_label != null:
 		locked_worlds_empty_label.visible = entries.is_empty()
+		if locked_worlds_loading:
+			locked_worlds_empty_label.text = "Loading locked worlds from server..."
+		elif locked_worlds_error != "":
+			locked_worlds_empty_label.text = locked_worlds_error
+		else:
+			locked_worlds_empty_label.text = "No currently locked worlds owned by this profile."
 
 	var scroll_size = Vector2(LOCKED_WORLDS_W - 72, LOCKED_WORLDS_H - 142)
 	if entries.is_empty():
@@ -1004,8 +1077,8 @@ func get_owned_locked_world_entries() -> Array:
 	if owner_name == "":
 		return entries
 
-	mark_current_world_as_seen(seen_worlds)
 	add_current_locked_world_entry(entries, seen_worlds, owner_name)
+	add_server_locked_world_entries(entries, seen_worlds, owner_name)
 
 	if world == null:
 		return entries
@@ -1077,6 +1150,37 @@ func add_current_locked_world_entry(entries: Array, seen_worlds: Dictionary, own
 	})
 
 
+func add_server_locked_world_entries(entries: Array, seen_worlds: Dictionary, owner_name: String):
+	for raw_entry in server_locked_world_entries:
+		if not (raw_entry is Dictionary):
+			continue
+
+		var lock_owner = normalize_profile_name(str(raw_entry.get("owner_name", "")))
+		if lock_owner != owner_name:
+			continue
+
+		var world_name = str(raw_entry.get("world_name", "")).strip_edges().to_upper()
+		if world_name == "":
+			continue
+
+		var key = normalize_world_key(world_name)
+		if seen_worlds.has(key):
+			continue
+		seen_worlds[key] = true
+
+		entries.append({
+			"world_name": world_name,
+			"owner_name": lock_owner,
+			"lock_grid_x": int(raw_entry.get("lock_grid_x", 999999)),
+			"lock_grid_y": int(raw_entry.get("lock_grid_y", 999999)),
+			"access_count": max(0, int(raw_entry.get("access_count", 0))),
+			"public_build": bool(raw_entry.get("public_build", false)),
+			"trusted_builder_slot_limit": max(0, int(raw_entry.get("trusted_builder_slot_limit", 0))),
+			"current": false,
+			"source_label": str(raw_entry.get("source_label", "SERVER"))
+		})
+
+
 func add_locked_world_entry_from_file(entries: Array, seen_worlds: Dictionary, owner_name: String, file_path: String, file_name: String):
 	var file = FileAccess.open(file_path, FileAccess.READ)
 	if file == null:
@@ -1138,7 +1242,10 @@ func current_world_has_lock_at_position(lock_pos: Vector2i) -> bool:
 		return false
 	if not world.blocks.has(lock_pos):
 		return false
-	return str(world.blocks[lock_pos].get("type", "")) == "world_lock"
+	var block_type := str(world.blocks[lock_pos].get("type", ""))
+	if world.has_method("is_world_lock_block_type"):
+		return bool(world.is_world_lock_block_type(block_type))
+	return block_type == "world_lock" or block_type == "super_world_lock"
 
 
 func saved_world_has_lock_at_position(world_data: Dictionary, lock_x: int, lock_y: int) -> bool:
@@ -1153,7 +1260,10 @@ func saved_world_has_lock_at_position(world_data: Dictionary, lock_x: int, lock_
 			continue
 		if int(block_data.get("y", 999999)) != lock_y:
 			continue
-		return str(block_data.get("type", "")) == "world_lock"
+		var block_type := str(block_data.get("type", ""))
+		if world != null and world.has_method("is_world_lock_block_type"):
+			return bool(world.is_world_lock_block_type(block_type))
+		return block_type == "world_lock" or block_type == "super_world_lock"
 
 	return false
 

@@ -16,6 +16,14 @@ const SHADOW_SKIP_TYPES = [
 const SHADOW_OFFSET = Vector2(5.0, 4.0)
 const SHADOW_COLOR = Color(0.0, 0.01, 0.015, 1.0)
 const CAST_SHADOW_ALPHA = 0.24
+const LEGACY_BLOCK_SHADOWS_ENABLED := false
+
+
+func _ready():
+	if not LEGACY_BLOCK_SHADOWS_ENABLED:
+		visible = false
+		set_process(false)
+		queue_redraw()
 
 
 func setup(world_ref):
@@ -23,16 +31,26 @@ func setup(world_ref):
 	name = "BlockShadowManager"
 	z_index = -1
 	z_as_relative = false
+	visible = false
+	if not LEGACY_BLOCK_SHADOWS_ENABLED:
+		set_process(false)
+		return
 	set_process(true)
 	queue_redraw()
 
 
 func _process(_delta):
+	if not LEGACY_BLOCK_SHADOWS_ENABLED:
+		return
+
 	if world != null and bool(world.in_world):
 		queue_redraw()
 
 
 func _draw():
+	if not LEGACY_BLOCK_SHADOWS_ENABLED:
+		return
+
 	if world == null or not bool(world.in_world):
 		return
 
@@ -117,6 +135,16 @@ func should_cast_shadow(block_type: String) -> bool:
 			return false
 		if bool(item_data.get("hidden", false)):
 			return false
+		if not bool(item_data.get("cast_shadow", true)):
+			return false
+		if bool(item_data.get("background_block", false)):
+			return false
+		if bool(item_data.get("platform_collision", false)):
+			return false
+		if bool(item_data.get("entrance_block", false)):
+			return false
+		if bool(item_data.get("sign_block", false)):
+			return false
 
 	return true
 
@@ -129,7 +157,7 @@ func draw_block_shadow(grid_pos: Vector2i, block_type: String, pulse: float):
 	var block_size = get_block_shadow_size(block_type)
 	var center = Vector2(grid_pos.x * world.BLOCK_SIZE, grid_pos.y * world.BLOCK_SIZE) + get_block_shadow_visual_offset(block_type)
 	var shadow_offset = SHADOW_OFFSET * pulse
-	var texture = get_block_texture(block_type)
+	var texture = get_block_texture(grid_pos, block_type)
 
 	if texture != null:
 		draw_block_texture_cast_shadow(center, block_size, shadow_offset, texture, pulse)
@@ -137,7 +165,15 @@ func draw_block_shadow(grid_pos: Vector2i, block_type: String, pulse: float):
 		draw_block_rect_cast_shadow(center, block_size, shadow_offset, pulse)
 
 
-func get_block_texture(block_type: String):
+func get_block_texture(grid_pos: Vector2i, block_type: String):
+	if world != null and world.blocks.has(grid_pos):
+		var block_data = world.blocks[grid_pos]
+		var block_node = block_data.get("node", null)
+		if block_node != null and is_instance_valid(block_node):
+			var visual = block_node.get_node_or_null("Visual")
+			if visual is Sprite2D and visual.texture != null:
+				return visual.texture
+
 	if world.block_textures.has(block_type):
 		return world.block_textures[block_type]
 

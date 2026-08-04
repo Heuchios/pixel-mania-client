@@ -235,10 +235,10 @@ func update_position():
 	if panel == null:
 		return
 	var viewport_size := get_view_size()
-	var position := Vector2(floor((viewport_size.x - panel.size.x) * 0.5), floor(max(30.0, (viewport_size.y - panel.size.y) * 0.5)))
-	panel.position = position
+	var panel_position := Vector2(floor((viewport_size.x - panel.size.x) * 0.5), floor(max(30.0, (viewport_size.y - panel.size.y) * 0.5)))
+	panel.position = panel_position
 	if panel_shadow != null:
-		panel_shadow.position = position
+		panel_shadow.position = panel_position
 
 
 func has_donation_box_at_grid(grid_pos: Vector2i) -> bool:
@@ -427,7 +427,8 @@ func make_donation_card(index: int, entry: Dictionary, columns: int) -> Button:
 	var button := Button.new()
 	button.name = "Donation" + str(index)
 	button.size = Vector2(donation_card_width, donation_card_height)
-	button.position = Vector2(float(index % columns) * (donation_card_width + card_gap), float(index / columns) * (donation_card_height + card_gap))
+	var row_index := floori(float(index) / float(columns))
+	button.position = Vector2(float(index % columns) * (donation_card_width + card_gap), float(row_index) * (donation_card_height + card_gap))
 	button.clip_contents = true
 	button.add_theme_stylebox_override("normal", PixelUIStyle.style_box(card_fill_color, card_border_color, 3, 9, 7))
 	button.add_theme_stylebox_override("hover", PixelUIStyle.style_box(card_fill_color.lightened(0.10), accent_border_color, 4, 9, 9))

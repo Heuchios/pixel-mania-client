@@ -1,0 +1,379 @@
+[gd_scene format=3 uid="uid://bd15stcjs8n0m"]
+
+[ext_resource type="Script" uid="uid://cy5y5hqyixhx6" path="res://Scripts/generator_ui.gd" id="1_generator_ui"]
+[ext_resource type="Texture2D" uid="uid://ibwuhveruvw8" path="res://Assets/ui/inventory/slot_normal.png" id="2_vi5sj"]
+[ext_resource type="Texture2D" uid="uid://cqihscey74vtt" path="res://Assets/ui/inventory/panel_inner.png" id="3_panel_inner"]
+[ext_resource type="Texture2D" uid="uid://bc4yqbdvnpqiy" path="res://Assets/ui/pixelmania/close_button.png" id="5_close"]
+[ext_resource type="Texture2D" uid="uid://s86t568hvf46" path="res://Assets/ui/inventory/button_blue_normal.png" id="6_button_blue_normal"]
+[ext_resource type="Texture2D" uid="uid://bnltvy1oxa1aa" path="res://Assets/ui/inventory/button_blue_pressed.png" id="7_button_blue_pressed"]
+[ext_resource type="Texture2D" uid="uid://c1d276vpf4c7s" path="res://Assets/ui/inventory/button_blue_hover.png" id="8_button_blue_hover"]
+[ext_resource type="Texture2D" uid="uid://dx1irvghg5dl5" path="res://Assets/ui/pixelmania/button_normal.png" id="9_button_yellow_normal"]
+[ext_resource type="Texture2D" uid="uid://n6h86qfhnipx" path="res://Assets/ui/pixelmania/button_pressed.png" id="10_button_yellow_pressed"]
+[ext_resource type="Texture2D" uid="uid://bts85fo42v5f" path="res://Assets/ui/pixelmania/button_hover.png" id="11_button_yellow_hover"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_normal"]
+texture = ExtResource("5_close")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_pressed"]
+texture = ExtResource("5_close")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_hover"]
+texture = ExtResource("5_close")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yellow_normal"]
+texture = ExtResource("9_button_yellow_normal")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yellow_pressed"]
+texture = ExtResource("10_button_yellow_pressed")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yellow_hover"]
+texture = ExtResource("11_button_yellow_hover")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_normal"]
+texture = ExtResource("6_button_blue_normal")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_pressed"]
+texture = ExtResource("7_button_blue_pressed")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_hover"]
+texture = ExtResource("8_button_blue_hover")
+
+[node name="GeneratorGUI" type="Control" unique_id=452392725]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_generator_ui")
+
+[node name="Dimmer" type="ColorRect" parent="." unique_id=1336293193]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.00392157, 0.0156863, 0.027451, 0.48)
+
+[node name="Window" type="Control" parent="." unique_id=296466181]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -180.0
+offset_right = 260.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WindowSkin" type="NinePatchRect" parent="Window" unique_id=933233527]
+layout_mode = 0
+offset_left = -22.0
+offset_right = 546.0
+offset_bottom = 360.0
+texture = ExtResource("2_vi5sj")
+patch_margin_left = 36
+patch_margin_top = 36
+patch_margin_right = 36
+patch_margin_bottom = 36
+
+[node name="HeaderSkin" type="NinePatchRect" parent="Window" unique_id=1175066775]
+visible = false
+layout_mode = 0
+offset_left = 18.0
+offset_top = 16.0
+offset_right = 502.0
+offset_bottom = 82.0
+texture = ExtResource("3_panel_inner")
+patch_margin_left = 26
+patch_margin_top = 24
+patch_margin_right = 26
+patch_margin_bottom = 24
+
+[node name="TitleLabel" type="Label" parent="Window" unique_id=55949251]
+layout_mode = 0
+offset_left = 38.0
+offset_top = 20.0
+offset_right = 157.0
+offset_bottom = 48.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "TRANSFORMER"
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Window" unique_id=422094352]
+custom_minimum_size = Vector2(52, 44)
+layout_mode = 0
+offset_left = 503.0
+offset_top = -15.0
+offset_right = 563.0
+offset_bottom = 45.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_close_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_close_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_close_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "X"
+
+[node name="MeterCard" type="NinePatchRect" parent="Window" unique_id=2020216246]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 39.0
+offset_right = 485.0
+offset_bottom = 137.0
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="MeterTitle" type="Label" parent="Window/MeterCard" unique_id=900902816]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 12.0
+offset_right = 190.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "OUTPUT"
+vertical_alignment = 1
+
+[node name="WattsLabel" type="Label" parent="Window/MeterCard" unique_id=1943499638]
+layout_mode = 0
+offset_left = 258.0
+offset_top = 12.0
+offset_right = 432.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "0 / 1000W"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="Window/MeterCard" unique_id=1031358338]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 54.0
+offset_right = 436.0
+offset_bottom = 78.0
+mouse_filter = 2
+max_value = 1000.0
+show_percentage = false
+
+[node name="ConnectionsCard" type="NinePatchRect" parent="Window" unique_id=1328280052]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 126.0
+offset_right = 213.0
+offset_bottom = 270.0
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="ConnectionsTitle" type="Label" parent="Window/ConnectionsCard" unique_id=318740473]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 10.0
+offset_right = 152.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "LINKS"
+vertical_alignment = 1
+
+[node name="CircuitScroll" type="ScrollContainer" parent="Window/ConnectionsCard" unique_id=637065004]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 38.0
+offset_right = 168.0
+offset_bottom = 124.0
+horizontal_scroll_mode = 0
+
+[node name="CircuitList" type="VBoxContainer" parent="Window/ConnectionsCard/CircuitScroll" unique_id=1848996281]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 2
+
+[node name="CircuitALabel" type="Label" parent="Window/ConnectionsCard/CircuitScroll/CircuitList" unique_id=1062234811]
+custom_minimum_size = Vector2(132, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "Circuit A: 0/5"
+vertical_alignment = 1
+clip_text = true
+
+[node name="CircuitBLabel" type="Label" parent="Window/ConnectionsCard/CircuitScroll/CircuitList" unique_id=1431880248]
+custom_minimum_size = Vector2(132, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "Circuit B: 0/5"
+vertical_alignment = 1
+clip_text = true
+
+[node name="CircuitCLabel" type="Label" parent="Window/ConnectionsCard/CircuitScroll/CircuitList" unique_id=474038179]
+custom_minimum_size = Vector2(132, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "Circuit C: 0/5"
+vertical_alignment = 1
+clip_text = true
+
+[node name="CircuitDLabel" type="Label" parent="Window/ConnectionsCard/CircuitScroll/CircuitList" unique_id=2023713655]
+custom_minimum_size = Vector2(132, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "Circuit D: 0/5"
+vertical_alignment = 1
+clip_text = true
+
+[node name="TotalCircuitsLabel" type="Label" parent="Window/ConnectionsCard/CircuitScroll/CircuitList" unique_id=1726191832]
+custom_minimum_size = Vector2(132, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "Total: 0/20"
+vertical_alignment = 1
+clip_text = true
+
+[node name="OutputsCard" type="NinePatchRect" parent="Window" unique_id=1108721568]
+layout_mode = 0
+offset_left = 300.0
+offset_top = 126.0
+offset_right = 488.0
+offset_bottom = 270.0
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="OutputsTitle" type="Label" parent="Window/OutputsCard" unique_id=706672227]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 10.0
+offset_right = 152.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "OUTPUTS"
+vertical_alignment = 1
+
+[node name="OutputScroll" type="ScrollContainer" parent="Window/OutputsCard" unique_id=1644285774]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 38.0
+offset_right = 168.0
+offset_bottom = 124.0
+horizontal_scroll_mode = 0
+
+[node name="OutputList" type="VBoxContainer" parent="Window/OutputsCard/OutputScroll" unique_id=1873650159]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 2
+
+[node name="OutputALabel" type="Label" parent="Window/OutputsCard/OutputScroll/OutputList" unique_id=1413232190]
+custom_minimum_size = Vector2(132, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "LOAD A: 0/5"
+vertical_alignment = 1
+clip_text = true
+
+[node name="OutputBLabel" type="Label" parent="Window/OutputsCard/OutputScroll/OutputList" unique_id=1298781095]
+custom_minimum_size = Vector2(132, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "LOAD B: 0/5"
+vertical_alignment = 1
+clip_text = true
+
+[node name="OutputCLabel" type="Label" parent="Window/OutputsCard/OutputScroll/OutputList" unique_id=1107417209]
+custom_minimum_size = Vector2(132, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "LOAD C: 0/5"
+vertical_alignment = 1
+clip_text = true
+
+[node name="OutputDLabel" type="Label" parent="Window/OutputsCard/OutputScroll/OutputList" unique_id=109091648]
+custom_minimum_size = Vector2(132, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "LOAD D: 0/5"
+vertical_alignment = 1
+clip_text = true
+
+[node name="TotalOutputsLabel" type="Label" parent="Window/OutputsCard/OutputScroll/OutputList" unique_id=1233238545]
+custom_minimum_size = Vector2(132, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "Total: 0/20"
+vertical_alignment = 1
+clip_text = true

@@ -145,8 +145,14 @@ func _run() -> void:
 	assert(profile.get_node("%PlayerAgeValueLabel").text == "--")
 	assert(profile.get_node("%BioLabel").text == "Building bright little worlds.")
 	assert(profile.get_node("%PortraitViewport") is SubViewport)
+	assert(profile.get_node("%PortraitViewport").canvas_item_default_texture_filter == Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST)
+	assert(profile.get_node("%PortraitTexture").texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST)
+	assert(profile.get_node("%PortraitPreviewRoot").position == Vector2(122.0, 124.0))
 	assert(profile.portrait_preview_visual != null)
+	assert(profile.portrait_preview_visual.scale.abs() == Vector2(4.0, 4.0))
+	assert(profile.portrait_preview_visual.texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST)
 	assert(profile.portrait_preview_visual.get_node("Body/BaseBodyAnimated").sprite_frames != null)
+	assert(profile.portrait_preview_visual.get_node("Body/BaseBodyAnimated").texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST)
 	assert(not profile.get_node("CenterContainer/ProfileWindow/PortraitPanel/PortraitFrame/PortraitPlaceholderLabel").visible)
 	fake_world.player.get_node("PlayerVisual/RightArm").rotation = 0.5
 	profile.update_menu_info()
@@ -221,6 +227,26 @@ func _run() -> void:
 	profile._on_profile_world_pressed()
 	assert(fake_world.entered_world == "OTHER_WORLD")
 	assert(not profile.is_open())
+
+	var remote_root := fake_world.get_node("RemotePlayers")
+	var live_remote_player := remote_root.get_child(0)
+	remote_root.remove_child(live_remote_player)
+	live_remote_player.free()
+	profile.open_remote_profile({
+		"username": "OfflinePlayer",
+		"name": "OfflinePlayer",
+		"online": false,
+		"lookup_source": "command",
+		"equipment_slots": {}
+	})
+	profile.remote_profile_lookup_status = "offline"
+	profile.update_menu_info()
+	await process_frame
+	assert(profile.get_node("%DisplayNameLabel").text == "OFFLINEPLAYER")
+	assert(profile.portrait_preview_visual != null)
+	assert(profile.portrait_equipment_manager != null)
+	assert(profile.portrait_preview_signature.begins_with("profile:"))
+	assert(not profile.get_node("CenterContainer/ProfileWindow/PortraitPanel/PortraitFrame/PortraitPlaceholderLabel").visible)
 
 	profile.queue_free()
 	fake_world.queue_free()

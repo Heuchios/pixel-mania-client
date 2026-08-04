@@ -18,12 +18,8 @@ const SIGN_HOVER_WORLD_OFFSET = Vector2(0.0, -40.0)
 const SIGN_HOVER_FONT_SIZE = 24
 const SIGN_HOVER_OUTLINE_SIZE = 7
 const NOTIFICATION_BUBBLE_COOLDOWN := 0.42
-const NOTIFICATION_DUPLICATE_WINDOW := 1.8
 
 var last_notification_bubble_time := -999.0
-var last_notification_message := ""
-var last_notification_count := 0
-var last_notification_time := -999.0
 
 func setup(world_ref):
 	world = world_ref
@@ -273,12 +269,11 @@ func show_notification_bubble(message: String, forced_kind: String = ""):
 	if chat_ui_node.has_method("can_show_notification_bubble") and not bool(chat_ui_node.can_show_notification_bubble()):
 		return
 
-	var bubble_message := build_duplicate_notification_message(clean_message, now)
 	var notification_shown := false
 	if chat_ui_node.has_method("show_notification_bubble"):
-		notification_shown = bool(chat_ui_node.show_notification_bubble(bubble_message))
+		notification_shown = bool(chat_ui_node.show_notification_bubble(clean_message))
 	else:
-		chat_ui_node.show_chat_bubble(bubble_message)
+		chat_ui_node.show_chat_bubble(clean_message)
 		notification_shown = true
 
 	if notification_shown:
@@ -302,19 +297,6 @@ func get_notification_chat_ui():
 
 func get_notification_time_seconds() -> float:
 	return float(Time.get_ticks_msec()) / 1000.0
-
-
-func build_duplicate_notification_message(clean_message: String, now: float) -> String:
-	if clean_message == last_notification_message and now - last_notification_time <= NOTIFICATION_DUPLICATE_WINDOW:
-		last_notification_count += 1
-	else:
-		last_notification_message = clean_message
-		last_notification_count = 1
-
-	last_notification_time = now
-	if last_notification_count <= 1:
-		return clean_message
-	return clean_message + " x" + str(last_notification_count)
 
 
 func should_show_notification_bubble(kind: String, now: float) -> bool:

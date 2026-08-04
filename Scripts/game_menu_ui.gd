@@ -60,19 +60,38 @@ func _process(_delta):
 	update_menu_button_visibility()
 
 
+func get_hud_layer() -> Node:
+	if world != null and world.has_method("get_ui_hud_layer"):
+		var hud_layer = world.get_ui_hud_layer()
+		if hud_layer != null:
+			return hud_layer
+
+	return ui_layer_ref
+
+
 func setup_menu_button():
 	if ui_layer_ref == null:
 		return
+	var hud_layer = get_hud_layer()
+	if hud_layer == null:
+		return
 
-	menu_button = ui_layer_ref.get_node_or_null("GameMenuButton")
+	menu_button = hud_layer.get_node_or_null("GameMenuButton")
+	if menu_button == null and hud_layer != ui_layer_ref:
+		menu_button = ui_layer_ref.get_node_or_null("GameMenuButton")
 	if menu_button == null:
 		menu_button = Button.new()
 		menu_button.name = "GameMenuButton"
-		ui_layer_ref.add_child(menu_button)
+		hud_layer.add_child(menu_button)
+	elif menu_button.get_parent() != hud_layer:
+		var old_parent = menu_button.get_parent()
+		if old_parent != null:
+			old_parent.remove_child(menu_button)
+		hud_layer.add_child(menu_button)
 
 	menu_button.text = ""
 	menu_button.size = MENU_BUTTON_SIZE
-	menu_button.z_index = 84
+	menu_button.z_index = 186
 	menu_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	apply_menu_icon_button_style(menu_button)
 	setup_menu_button_icon()
@@ -712,8 +731,7 @@ func update_menu_button_visibility():
 		return
 
 	var in_world = world != null and world.has_method("is_player_in_world") and world.is_player_in_world()
-	var hud_clear = world == null or not (world.has_method("is_movement_blocking_ui_open") and bool(world.is_movement_blocking_ui_open()))
-	menu_button.visible = in_world and hud_clear
+	menu_button.visible = in_world
 
 
 func update_overlay_position():
@@ -792,8 +810,9 @@ func _on_respawn_pressed():
 
 
 func _on_settings_pressed():
-	if world != null and world.has_method("show_notification"):
-		world.show_notification("Settings will be added later.")
+	close_menu()
+	if world != null and world.has_method("open_settings_panel"):
+		world.open_settings_panel()
 
 
 func _on_main_menu_pressed():

@@ -1,0 +1,944 @@
+@tool
+extends "res://Scripts/ui/lobby_scene_layout_controls.gd"
+
+const PROFILE_PATH := "user://pixelmania_profile.cfg"
+const PLAYER_SAVE_FOLDER := "user://players/"
+const WORLD_SCENE := "res://Scenes/main.tscn"
+const LOGIN_SCENE := "res://Scenes/ui/login/LoginScene.tscn"
+const WORLD_LOADING_OVERLAY_SCENE_PATH := "res://Scenes/ui/WorldLoadingOverlay/WorldLoadingOverlay.tscn"
+const WORLD_LOADING_OVERLAY_SCENE: PackedScene = preload(WORLD_LOADING_OVERLAY_SCENE_PATH)
+const WorldScenePreloader = preload("res://Scripts/world_scene_preloader.gd")
+const WORLD_LOADING_CANVAS_LAYER := 4096
+const WORLD_JOIN_SCENE_CHANGE_DRAW_FRAMES := 1
+const LOBBY_HUB_WORLD := "START"
+const PLAYER_MAX_LEVEL := 100
+const WORLD_POPULATION_REFRESH_SECONDS := 5.0
+const ACTIVE_WORLD_LIST_SIDE_MARGIN := 20.0
+const ACTIVE_WORLD_LIST_TOP := 108.0
+const ACTIVE_WORLD_LIST_BOTTOM_MARGIN := 24.0
+const ACTIVE_WORLD_ROW_HEIGHT := 72.0
+const ACTIVE_WORLD_ROW_SEPARATION := 10
+const MENU_LOOP_SOUND_PATH := "res://Assets/sounds/login.wav"
+const MENU_LOOP_SOUND_VOLUME_DB := -12.0
+const MenuLoopSoundHelper = preload("res://Scripts/ui/menu_loop_sound_helper.gd")
+const LOBBY_PARALLAX_LAYERS := [
+	{"name": "Layer8", "texture": preload("res://Assets/background/space_theme/star_1.png"), "drift": 0.0, "speed": 0.0, "phase": 0.0, "overscan": 0.0},
+	{"name": "Layer7", "texture": preload("res://Assets/background/space_theme/star_2.png"), "drift": 18.0, "speed": 0.32, "phase": 0.0, "overscan": 24.0},
+	{"name": "Layer6", "texture": preload("res://Assets/background/space_theme/star_3.png"), "drift": 28.0, "speed": 0.39, "phase": 2.1, "overscan": 34.0},
+	{"name": "Layer5", "texture": preload("res://Assets/background/space_theme/star_4.png"), "drift": 40.0, "speed": 0.46, "phase": 4.2, "overscan": 46.0},
+]
+
+var world_input: LineEdit
+var join_button: Button
+var input_status_label: Label
+var username_label: Label
+var profile_level_label: Label
+var profile_xp_label: Label
+var profile_xp_fill: ColorRect
+var profile_gems_label: Label
+var profile_total_xp_label: Label
+var world_population_cache: Dictionary = {}
+var world_population_timer: Timer
+var active_world_scroll: ScrollContainer
+var active_world_rows: VBoxContainer
+var active_world_row_template: Button
+var active_world_empty_label: Label
+var active_world_list_signature := ""
+var join_scene_change_in_progress := false
+var lobby_parallax_layers: Array = []
+var lobby_parallax_time := 0.0
+
+
+func _ready() -> void:
+	super._ready()
+
+	if Engine.is_editor_hint():
+		return
+
+	_setup_lobby_parallax_background()
+	WorldScenePreloader.start()
+	MenuLoopSoundHelper.start_menu_loop_sound(self, MENU_LOOP_SOUND_PATH, "LoginLoopSound", MENU_LOOP_SOUND_VOLUME_DB)
+	_bind_scene_nodes()
+	_setup_active_world_list()
+	_connect_scene_buttons()
+	_load_profile()
+	_connect_world_population_feed()
+	_start_world_population_timer()
+	_request_world_population_refresh()
+	call_deferred("_prime_join_world_loading_overlay")
+
+
+func _process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
+	WorldScenePreloader.pump()
+	_update_lobby_parallax_background(delta)
+
+
+func _setup_lobby_parallax_background() -> void:
+	lobby_parallax_layers.clear()
+	lobby_parallax_time = 0.0
+
+	var base_layer := get_node_or_null("MountainBackground") as TextureRect
+	if base_layer == null:
+		return
+
+	for index in range(LOBBY_PARALLAX_LAYERS.size()):
+		var layer_data: Dictionary = LOBBY_PARALLAX_LAYERS[index]
+		var layer: TextureRect = base_layer
+		if index > 0:
+			layer = TextureRect.new()
+			layer.name = str(layer_data.get("name", "Layer" + str(8 - index)))
+			layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			layer.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			layer.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+			add_child(layer)
+			move_child(layer, base_layer.get_index() + index)
+
+		layer.texture = layer_data.get("texture", null) as Texture2D
+		layer.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		lobby_parallax_layers.append({
+			"node": layer,
+			"base_position": Vector2.ZERO,
+			"drift": float(layer_data.get("drift", 0.0)),
+			"speed": float(layer_data.get("speed", 0.0)),
+			"phase": float(layer_data.get("phase", 0.0)),
+			"overscan": float(layer_data.get("overscan", 0.0)),
+		})
+
+	if not resized.is_connected(_layout_lobby_parallax_background):
+		resized.connect(_layout_lobby_parallax_background)
+
+	_layout_lobby_parallax_background()
+	_update_lobby_parallax_background(0.0)
+
+
+func _layout_lobby_parallax_background() -> void:
+	var viewport_size := get_viewport_rect().size
+	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+		return
+
+	for layer_entry in lobby_parallax_layers:
+		var layer := layer_entry.get("node", null) as TextureRect
+		if layer == null or not is_instance_valid(layer):
+			continue
+
+		var margin := float(layer_entry.get("overscan", 0.0))
+		var base_position := Vector2(-margin, -margin)
+		layer.position = base_position
+		layer.size = viewport_size + Vector2(margin * 2.0, margin * 2.0)
+		layer_entry["base_position"] = base_position
+
+
+func _update_lobby_parallax_background(delta: float) -> void:
+	if lobby_parallax_layers.is_empty():
+		return
+
+	lobby_parallax_time += delta
+	for layer_entry in lobby_parallax_layers:
+		var layer := layer_entry.get("node", null) as TextureRect
+		if layer == null or not is_instance_valid(layer):
+			continue
+
+		var base_position := layer_entry.get("base_position", Vector2.ZERO) as Vector2
+		var drift := float(layer_entry.get("drift", 0.0))
+		var speed := float(layer_entry.get("speed", 0.0))
+		var phase := float(layer_entry.get("phase", 0.0))
+		var horizontal_offset := sin((lobby_parallax_time * speed) + phase) * drift
+		layer.position = base_position + Vector2(horizontal_offset, 0.0)
+
+
+func _bind_scene_nodes() -> void:
+	world_input = get_node_or_null("JoinPanel/WorldInput") as LineEdit
+	join_button = get_node_or_null("JoinPanel/JoinButton") as Button
+	input_status_label = get_node_or_null("JoinPanel/WorldInputLabel") as Label
+	username_label = get_node_or_null("ProfilePanel/ProfileCard/Username") as Label
+	profile_level_label = get_node_or_null("ProfilePanel/LevelText") as Label
+	profile_xp_label = get_node_or_null("ProfilePanel/XpText") as Label
+	profile_xp_fill = get_node_or_null("ProfilePanel/XpFill") as ColorRect
+	profile_gems_label = get_node_or_null("ProfilePanel/GemsRow/GemLabel") as Label
+	profile_total_xp_label = get_node_or_null("ProfilePanel/XpRow/TotalXpLabel") as Label
+
+
+func _setup_active_world_list() -> void:
+	var worlds_panel := get_node_or_null("WorldsPanel") as Control
+	var static_rows := get_node_or_null("WorldsPanel/WorldRows") as Control
+	var static_start := get_node_or_null("WorldsPanel/WorldStart") as Control
+	var template := get_node_or_null("WorldsPanel/WorldRows/WorldTest") as Button
+	if worlds_panel == null:
+		return
+
+	if static_start != null:
+		active_world_row_template = static_start.duplicate() as Button
+	elif template != null:
+		active_world_row_template = template.duplicate() as Button
+	else:
+		active_world_row_template = null
+	if active_world_row_template == null:
+		return
+	if static_start != null:
+		static_start.visible = false
+		static_start.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if static_rows != null:
+		static_rows.visible = false
+		static_rows.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	active_world_scroll = ScrollContainer.new()
+	active_world_scroll.name = "ActiveWorldScroll"
+	active_world_scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
+	active_world_scroll.offset_left = ACTIVE_WORLD_LIST_SIDE_MARGIN
+	active_world_scroll.offset_top = ACTIVE_WORLD_LIST_TOP
+	active_world_scroll.offset_right = -ACTIVE_WORLD_LIST_SIDE_MARGIN
+	active_world_scroll.offset_bottom = -ACTIVE_WORLD_LIST_BOTTOM_MARGIN
+	active_world_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	active_world_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	active_world_scroll.follow_focus = true
+	active_world_scroll.mouse_filter = Control.MOUSE_FILTER_STOP
+	worlds_panel.add_child(active_world_scroll)
+
+	active_world_rows = VBoxContainer.new()
+	active_world_rows.name = "ActiveWorldRows"
+	active_world_rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	active_world_rows.add_theme_constant_override("separation", ACTIVE_WORLD_ROW_SEPARATION)
+	active_world_scroll.add_child(active_world_rows)
+
+	active_world_empty_label = Label.new()
+	active_world_empty_label.name = "EmptyState"
+	active_world_empty_label.custom_minimum_size = Vector2(0.0, 96.0)
+	active_world_empty_label.text = "NO ACTIVE WORLDS RIGHT NOW"
+	active_world_empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	active_world_empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	active_world_empty_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	active_world_empty_label.add_theme_color_override("font_color", Color(0.870588, 0.960784, 1.0, 1.0))
+	active_world_empty_label.add_theme_color_override("font_shadow_color", Color.BLACK)
+	active_world_empty_label.add_theme_constant_override("shadow_offset_x", 2)
+	active_world_empty_label.add_theme_constant_override("shadow_offset_y", 2)
+	active_world_empty_label.add_theme_font_size_override("font_size", 16)
+	var template_name := _get_world_row_label(active_world_row_template, ["StartName", "Name"])
+	if template_name != null:
+		active_world_empty_label.add_theme_font_override("font", template_name.get_theme_font("font"))
+	active_world_rows.add_child(active_world_empty_label)
+
+	_refresh_world_rows()
+
+
+func _connect_scene_buttons() -> void:
+	if join_button != null:
+		_connect_button_once(join_button, Callable(self, "_on_join_pressed"))
+	if world_input != null:
+		var submitted := Callable(self, "_on_world_text_submitted")
+		if not world_input.text_submitted.is_connected(submitted):
+			world_input.text_submitted.connect(submitted)
+
+	_connect_button_by_path("TopButtons/ProfileButton", Callable(self, "_on_profile_switch_pressed"))
+	_connect_button_by_path("RightButtons/OrbitButton", Callable(self, "_on_start_world_pressed"))
+
+
+func _connect_button_by_path(path: String, callback: Callable) -> void:
+	var button := get_node_or_null(path) as Button
+	if button != null:
+		_connect_button_once(button, callback)
+
+
+func _connect_button_once(button: Button, callback: Callable) -> void:
+	if not button.pressed.is_connected(callback):
+		button.pressed.connect(callback)
+
+
+func _load_profile() -> void:
+	var cfg := ConfigFile.new()
+	var err := cfg.load(PROFILE_PATH)
+	var session_username := _get_network_session_username()
+	var username := session_username
+
+	if err == OK:
+		if username == "":
+			username = str(cfg.get_value("profile", "username", "")).strip_edges()
+
+		var last_world: String = _normalize_world_name(str(cfg.get_value("profile", "last_world", "")))
+		if last_world != "" and world_input != null:
+			world_input.text = last_world
+
+	if username == "":
+		username = _get_fallback_profile_name()
+
+	if username_label != null and username != "":
+		username_label.text = username.strip_edges().to_upper()
+
+	_refresh_profile_progression()
+
+
+func _get_fallback_profile_name() -> String:
+	if username_label != null:
+		var current := username_label.text.strip_edges()
+		if current != "":
+			return current
+	return "Player"
+
+
+func _connect_world_population_feed() -> void:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null:
+		return
+
+	if network.has_method("get_world_population_counts"):
+		_apply_world_population_counts(network.get_world_population_counts(), true)
+
+	var callback := Callable(self, "_on_world_population_changed")
+	if network.has_signal("world_population_changed") and not network.is_connected("world_population_changed", callback):
+		network.connect("world_population_changed", callback)
+
+
+func _start_world_population_timer() -> void:
+	if world_population_timer != null:
+		return
+
+	world_population_timer = Timer.new()
+	world_population_timer.name = "WorldPopulationRefreshTimer"
+	world_population_timer.wait_time = WORLD_POPULATION_REFRESH_SECONDS
+	world_population_timer.autostart = true
+	world_population_timer.timeout.connect(_request_world_population_refresh)
+	add_child(world_population_timer)
+
+
+func _request_world_population_refresh() -> void:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null:
+		return
+	if network.has_method("get_world_population_counts"):
+		_apply_world_population_counts(network.get_world_population_counts(), true)
+	if network.has_method("request_world_population"):
+		network.request_world_population()
+
+
+func _on_world_population_changed(world_counts: Dictionary) -> void:
+	_apply_world_population_counts(world_counts, true)
+
+
+func _apply_world_population_counts(world_counts: Dictionary, replace_existing: bool) -> void:
+	var next_counts: Dictionary = {} if replace_existing else world_population_cache.duplicate()
+
+	for world_name in world_counts.keys():
+		var clean_world := _normalize_world_name(str(world_name))
+		if clean_world == "":
+			continue
+
+		var count := maxi(0, int(world_counts.get(world_name, 0)))
+		next_counts[clean_world] = count
+
+	if next_counts != world_population_cache:
+		world_population_cache = next_counts
+		_refresh_world_rows()
+
+
+func _refresh_world_rows() -> void:
+	if active_world_rows == null or active_world_row_template == null:
+		return
+
+	var start_player_count := maxi(0, int(world_population_cache.get(LOBBY_HUB_WORLD, 0)))
+	var entries: Array[Dictionary] = [{"world": LOBBY_HUB_WORLD, "count": start_player_count}]
+	for raw_world in world_population_cache.keys():
+		var world_name := _normalize_world_name(str(raw_world))
+		var count := maxi(0, int(world_population_cache.get(raw_world, 0)))
+		if world_name == "" or world_name == LOBBY_HUB_WORLD or count <= 0:
+			continue
+		entries.append({"world": world_name, "count": count})
+	entries.sort_custom(_sort_active_world_entries)
+
+	var next_signature := JSON.stringify(entries)
+	if next_signature == active_world_list_signature:
+		return
+	active_world_list_signature = next_signature
+
+	for child in active_world_rows.get_children():
+		if child == active_world_empty_label:
+			continue
+		active_world_rows.remove_child(child)
+		child.queue_free()
+
+	active_world_empty_label.visible = entries.is_empty()
+	for entry in entries:
+		_add_active_world_row(str(entry.get("world", "")), int(entry.get("count", 0)))
+
+
+func _sort_active_world_entries(left: Dictionary, right: Dictionary) -> bool:
+	var left_world := str(left.get("world", ""))
+	var right_world := str(right.get("world", ""))
+	if left_world == LOBBY_HUB_WORLD and right_world != LOBBY_HUB_WORLD:
+		return true
+	if right_world == LOBBY_HUB_WORLD and left_world != LOBBY_HUB_WORLD:
+		return false
+
+	var left_count := int(left.get("count", 0))
+	var right_count := int(right.get("count", 0))
+	if left_count != right_count:
+		return left_count > right_count
+	return left_world < right_world
+
+
+func _add_active_world_row(world_name: String, player_count: int) -> void:
+	if active_world_rows == null or active_world_row_template == null:
+		return
+
+	var row := active_world_row_template.duplicate() as Button
+	if row == null:
+		return
+	row.name = "World_" + world_name.validate_node_name()
+	row.visible = true
+	row.custom_minimum_size = Vector2(0.0, ACTIVE_WORLD_ROW_HEIGHT)
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.set_meta("world_name", world_name)
+	var is_start_hub := world_name == LOBBY_HUB_WORLD
+
+	var hub_icon := row.get_node_or_null("HubIcon") as Label
+	if hub_icon != null:
+		hub_icon.text = "H" if is_start_hub else world_name.substr(0, 1).to_upper()
+
+	var name_label := _get_world_row_label(row, ["StartName", "Name"])
+	if name_label != null:
+		name_label.text = world_name
+	var meta_label := _get_world_row_label(row, ["StartMeta", "Meta"])
+	if meta_label != null:
+		var source_label := "OFFICIAL" if is_start_hub else "LIVE"
+		meta_label.text = source_label + " | OPEN | " + _get_player_count_text(player_count)
+	var badge_label := _get_world_row_label(row, ["OfficialBadge"])
+	if badge_label != null:
+		badge_label.text = "OFFICIAL HUB" if is_start_hub else "ACTIVE WORLD"
+		badge_label.visible = true
+	var player_label := _get_world_row_label(row, ["StartPlayers"])
+	if player_label != null:
+		player_label.text = _get_player_count_text(player_count).to_upper()
+	var row_join_button := _get_world_row_join_button(row)
+	if row_join_button != null:
+		row_join_button.mouse_filter = Control.MOUSE_FILTER_STOP
+		_connect_button_once(row_join_button, Callable(self, "_on_active_world_join_pressed").bind(world_name))
+
+	active_world_rows.add_child(row)
+
+
+func _get_world_row_label(row: Node, label_names: Array[String]) -> Label:
+	if row == null:
+		return null
+	for label_name in label_names:
+		var label := row.get_node_or_null(label_name) as Label
+		if label != null:
+			return label
+	return null
+
+
+func _get_world_row_join_button(row: Node) -> Button:
+	if row == null:
+		return null
+	var join_button_names := ["StartJoin", "Join"]
+	for button_name in join_button_names:
+		var button := row.get_node_or_null(button_name) as Button
+		if button != null:
+			return button
+	return null
+
+
+func _on_active_world_join_pressed(world_name: String) -> void:
+	var clean_world := _normalize_world_name(world_name)
+	if clean_world == "":
+		return
+	if world_input != null:
+		world_input.text = clean_world
+	_join_world_name(clean_world)
+
+
+func _get_player_count_text(count: int) -> String:
+	if count == 1:
+		return "1 player"
+	return str(count) + " players"
+
+
+func _on_world_text_submitted(_text: String) -> void:
+	_on_join_pressed()
+
+
+func _on_join_pressed() -> void:
+	if world_input == null:
+		return
+	_join_world_name(world_input.text)
+
+
+func _on_start_world_pressed() -> void:
+	_join_world_name(LOBBY_HUB_WORLD)
+
+
+func _on_world_join_pressed(row_path: String) -> void:
+	var row := get_node_or_null(row_path) as Button
+	var world_name := _get_world_name_from_row(row)
+	if world_name == "":
+		return
+	if world_input != null:
+		world_input.text = world_name
+	_join_world_name(world_name)
+
+
+func _get_world_name_from_row(row: Button) -> String:
+	if row == null:
+		return ""
+
+	var name_label := row.get_node_or_null("Name") as Label
+	if name_label != null:
+		return _normalize_world_name(name_label.text)
+
+	return _normalize_world_name(row.text)
+
+
+func _join_world_name(raw_world_name: String) -> void:
+	if join_scene_change_in_progress:
+		return
+
+	var world_name := _normalize_world_name(raw_world_name)
+	if world_name.is_empty():
+		_set_input_status("ENTER WORLD NAME FIRST")
+		return
+
+	join_scene_change_in_progress = true
+	_set_input_status("JOINING " + world_name)
+	if world_input != null:
+		world_input.text = world_name
+
+	var profile_name := _get_network_session_username()
+	if profile_name == "" and username_label != null:
+		profile_name = username_label.text.strip_edges()
+
+	var network = get_node_or_null("/root/NetworkManager")
+	if network != null and network.has_method("set_pending_join"):
+		network.set_pending_join(world_name, profile_name)
+	if network != null and network.has_method("send_join_world_if_needed"):
+		# Start server admission immediately while the world scene finishes loading.
+		# If authentication is still completing, the pending-join path sends it later.
+		network.send_join_world_if_needed(world_name)
+
+	_show_join_world_loading_overlay(world_name)
+	await _wait_for_join_world_loading_overlay_to_draw()
+
+	var world_scene := await _wait_for_world_scene_ready()
+	if world_scene == null:
+		if network != null and network.has_method("cancel_active_join_request"):
+			network.cancel_active_join_request()
+		join_scene_change_in_progress = false
+		_set_input_status("COULD NOT OPEN WORLD")
+		_set_join_world_loading_message("Could not prepare the world. Please try again.")
+		await get_tree().create_timer(0.8).timeout
+		_hide_join_world_loading_overlay()
+		return
+
+	_set_join_world_loading_progress(1.0)
+	var change_error := get_tree().change_scene_to_packed(world_scene)
+	if change_error != OK:
+		if network != null and network.has_method("cancel_active_join_request"):
+			network.cancel_active_join_request()
+		join_scene_change_in_progress = false
+		_set_input_status("COULD NOT OPEN WORLD")
+		_hide_join_world_loading_overlay()
+
+
+func _set_input_status(text: String) -> void:
+	if input_status_label != null:
+		input_status_label.text = text
+
+
+func _save_recent_world_name(world_name: String) -> void:
+	var clean_name := _normalize_world_name(world_name)
+	if clean_name == "":
+		return
+
+	var cfg := ConfigFile.new()
+	cfg.load(PROFILE_PATH)
+	_update_recent_world_name_in_config(cfg, clean_name)
+	cfg.save(PROFILE_PATH)
+
+
+func _update_recent_world_name_in_config(cfg: ConfigFile, world_name: String) -> void:
+	var clean_name := _normalize_world_name(world_name)
+	if clean_name == "":
+		return
+
+	var old_recent = cfg.get_value("profile", "recent_worlds", [])
+	var new_recent: Array = [clean_name]
+
+	if old_recent is Array:
+		for value in old_recent:
+			var old_name := _normalize_world_name(str(value))
+			if old_name == "" or old_name == clean_name:
+				continue
+			if not new_recent.has(old_name):
+				new_recent.append(old_name)
+			if new_recent.size() >= 8:
+				break
+
+	cfg.set_value("profile", "recent_worlds", new_recent)
+
+
+func _normalize_world_name(world_name: String) -> String:
+	var clean := world_name.strip_edges().to_lower()
+	var allowed := "abcdefghijklmnopqrstuvwxyz0123456789_-"
+	var result := ""
+
+	for i in range(clean.length()):
+		var character := clean.substr(i, 1)
+		if allowed.find(character) != -1:
+			result += character
+		elif character == " ":
+			result += "_"
+
+	return result.to_upper()
+
+
+func _sanitize_player_name_for_path(raw_name: String) -> String:
+	var clean := raw_name.strip_edges().to_lower()
+	if clean == "":
+		clean = "guest"
+
+	var allowed := "abcdefghijklmnopqrstuvwxyz0123456789_-"
+	var result := ""
+	for i in range(clean.length()):
+		var character := clean.substr(i, 1)
+		if allowed.find(character) != -1:
+			result += character
+		elif character == " ":
+			result += "_"
+
+	return result if result != "" else "guest"
+
+
+func _load_profile_progression_data(profile_name: String) -> Dictionary:
+	var save_path := PLAYER_SAVE_FOLDER + _sanitize_player_name_for_path(profile_name) + ".json"
+	if not FileAccess.file_exists(save_path):
+		return {}
+
+	var file := FileAccess.open(save_path, FileAccess.READ)
+	if file == null:
+		return {}
+
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if data is Dictionary:
+		var nested = data.get("player_data", null)
+		if nested is Dictionary:
+			return nested
+		return data
+
+	return {}
+
+
+func _get_xp_needed_for_level(level: int) -> int:
+	var safe_level: int = clampi(level, 1, PLAYER_MAX_LEVEL)
+	if safe_level >= PLAYER_MAX_LEVEL:
+		return 0
+
+	var level_index: int = safe_level - 1
+	return 300 + (level_index * 120) + int(floor(pow(float(level_index), 1.6) * 42.0))
+
+
+func _get_profile_title(level: int) -> String:
+	if level >= 100:
+		return "PIXEL LEGEND"
+	if level >= 80:
+		return "WORLDSMITH"
+	if level >= 60:
+		return "ARCHITECT"
+	if level >= 40:
+		return "TRAILBLAZER"
+	if level >= 25:
+		return "CRAFTER"
+	if level >= 10:
+		return "BUILDER"
+	return "EXPLORER"
+
+
+func _format_lobby_amount(value: int) -> String:
+	var text := str(max(0, value))
+	var result := ""
+	var count := 0
+
+	for i in range(text.length() - 1, -1, -1):
+		if count > 0 and count % 3 == 0:
+			result = "," + result
+		result = text.substr(i, 1) + result
+		count += 1
+
+	return result
+
+
+func _refresh_profile_progression() -> void:
+	var profile_name := _get_current_profile_name()
+	var data := _load_profile_progression_data(profile_name)
+	if data.is_empty():
+		return
+
+	var level: int = clampi(int(data.get("player_level", data.get("level", 1))), 1, PLAYER_MAX_LEVEL)
+	var xp: int = maxi(0, int(data.get("player_xp", data.get("xp", 0))))
+	var xp_needed: int = maxi(0, int(data.get("player_xp_needed", data.get("xp_needed", _get_xp_needed_for_level(level)))))
+	var total_xp: int = maxi(0, int(data.get("player_total_xp", data.get("total_xp", 0))))
+	var title := str(data.get("player_title", _get_profile_title(level))).strip_edges().to_upper()
+	if title == "":
+		title = _get_profile_title(level)
+
+	if profile_level_label != null:
+		profile_level_label.text = "LEVEL " + str(level) + "   |   " + title
+	if profile_xp_label != null:
+		profile_xp_label.text = "MAX" if xp_needed <= 0 else str(xp) + " / " + str(xp_needed)
+
+	var ratio: float = 1.0 if xp_needed <= 0 else clampf(float(xp) / float(maxi(1, xp_needed)), 0.0, 1.0)
+	if profile_xp_fill != null:
+		var fill_left: float = profile_xp_fill.position.x
+		var xp_back := get_node_or_null("ProfilePanel/XpBack") as Control
+		var max_width: float = 205.0
+		if xp_back != null:
+			max_width = max(0.0, xp_back.size.x - ((fill_left - xp_back.position.x) * 2.0))
+		profile_xp_fill.size = Vector2(round(max_width * ratio), profile_xp_fill.size.y)
+
+	var currency = data.get("currency_inventory", {})
+	var gems: int = 0
+	if currency is Dictionary:
+		gems = maxi(0, int(currency.get("gem", 0)))
+	if profile_gems_label != null:
+		profile_gems_label.text = "GM " + _format_lobby_amount(gems)
+	if profile_total_xp_label != null:
+		profile_total_xp_label.text = "XP " + _format_lobby_amount(total_xp)
+
+
+func _get_current_profile_name() -> String:
+	var session_username := _get_network_session_username()
+	if session_username != "":
+		return session_username
+
+	var cfg := ConfigFile.new()
+	if cfg.load(PROFILE_PATH) == OK:
+		var profile_name := str(cfg.get_value("profile", "username", "")).strip_edges()
+		if profile_name != "":
+			return profile_name
+
+	if username_label != null:
+		return username_label.text.strip_edges()
+
+	return ""
+
+
+func _show_join_world_loading_overlay(world_name: String) -> void:
+	var overlay_scene_instance: Node = _get_or_create_root_loading_overlay()
+	if overlay_scene_instance == null:
+		return
+
+	var loading_canvas = _find_loading_canvas(overlay_scene_instance)
+	if loading_canvas == null:
+		return
+
+	if overlay_scene_instance is CanvasItem:
+		overlay_scene_instance.visible = true
+
+	if loading_canvas is CanvasLayer:
+		loading_canvas.layer = WORLD_LOADING_CANVAS_LAYER
+		loading_canvas.process_mode = Node.PROCESS_MODE_ALWAYS
+		loading_canvas.visible = true
+
+	var loading_root = _find_loading_root(loading_canvas)
+	if loading_root is Control:
+		loading_root.visible = true
+		loading_root.modulate = Color(1, 1, 1, 1)
+		loading_root.mouse_filter = Control.MOUSE_FILTER_STOP
+
+	var clean_world_name := world_name.strip_edges().to_upper()
+	if clean_world_name == "":
+		clean_world_name = "WORLD"
+
+	var title_label := _find_loading_label(loading_canvas, "Title")
+	if title_label != null:
+		title_label.text = _format_loading_title(clean_world_name)
+
+	var message_label := _find_loading_label(loading_canvas, "Message")
+	if message_label != null:
+		message_label.text = "Loading " + clean_world_name + "..."
+
+	var dots_label := _find_loading_label(loading_canvas, "Dots")
+	if dots_label != null:
+		dots_label.text = "..."
+
+	var parent_node := overlay_scene_instance.get_parent()
+	if parent_node != null:
+		parent_node.move_child(overlay_scene_instance, parent_node.get_child_count() - 1)
+
+
+func _set_join_world_loading_message(message: String) -> void:
+	var overlay_scene_instance: Node = get_tree().root.get_node_or_null("WorldLoadingOverlay")
+	if overlay_scene_instance == null:
+		return
+	var loading_canvas = _find_loading_canvas(overlay_scene_instance)
+	var message_label := _find_loading_label(loading_canvas, "Message")
+	if message_label != null:
+		message_label.text = message
+
+
+func _set_join_world_loading_progress(progress_ratio: float) -> void:
+	var overlay_scene_instance: Node = get_tree().root.get_node_or_null("WorldLoadingOverlay")
+	if overlay_scene_instance == null:
+		return
+	var loading_canvas = _find_loading_canvas(overlay_scene_instance)
+	if not (loading_canvas is Node):
+		return
+
+	var normalized_progress := clampf(progress_ratio, 0.0, 1.0)
+	var progress_bar := (loading_canvas as Node).find_child("ProgressBar", true, false) as Range
+	if progress_bar != null:
+		progress_bar.value = normalized_progress * 100.0
+	var progress_label := _find_loading_label(loading_canvas, "ProgressPercent")
+	if progress_label != null:
+		progress_label.text = str(roundi(normalized_progress * 100.0)) + "%"
+
+
+func _hide_join_world_loading_overlay() -> void:
+	var overlay_scene_instance: Node = get_tree().root.get_node_or_null("WorldLoadingOverlay")
+	if overlay_scene_instance == null:
+		return
+
+	var loading_canvas = _find_loading_canvas(overlay_scene_instance)
+	if loading_canvas is CanvasLayer:
+		loading_canvas.visible = false
+
+	var loading_root = _find_loading_root(loading_canvas)
+	if loading_root is Control:
+		loading_root.visible = false
+
+
+func _wait_for_join_world_loading_overlay_to_draw() -> void:
+	var tree := get_tree()
+	if tree == null:
+		return
+
+	for _i in range(WORLD_JOIN_SCENE_CHANGE_DRAW_FRAMES):
+		await tree.process_frame
+
+
+func _wait_for_world_scene_ready() -> PackedScene:
+	var request_error := WorldScenePreloader.start()
+	if request_error != OK:
+		push_error("[WorldEntry] Could not start threaded world scene load: " + error_string(request_error))
+		return null
+
+	while is_inside_tree():
+		WorldScenePreloader.pump()
+		if WorldScenePreloader.is_ready():
+			return WorldScenePreloader.get_loaded_scene()
+		var world_status := WorldScenePreloader.get_status()
+		var item_database_status := WorldScenePreloader.get_item_database_status()
+		if world_status == ResourceLoader.THREAD_LOAD_FAILED or item_database_status == ResourceLoader.THREAD_LOAD_FAILED:
+			push_error("[WorldEntry] Threaded world resources failed to load (scene=" + str(world_status) + ", items=" + str(item_database_status) + ")")
+			return null
+
+		var progress_ratio := WorldScenePreloader.get_combined_progress()
+		_set_join_world_loading_progress(progress_ratio)
+		_set_join_world_loading_message("Preparing world... " + str(roundi(progress_ratio * 100.0)) + "%")
+		await get_tree().process_frame
+
+	return null
+
+
+func _prime_join_world_loading_overlay() -> void:
+	var overlay_scene_instance := _get_or_create_root_loading_overlay()
+	if overlay_scene_instance != null:
+		_hide_join_world_loading_overlay()
+
+
+func _get_or_create_root_loading_overlay() -> Node:
+	var root_node := get_tree().root
+	if root_node == null:
+		return null
+
+	var existing_overlay := root_node.get_node_or_null("WorldLoadingOverlay")
+	if existing_overlay != null:
+		return existing_overlay
+
+	if WORLD_LOADING_OVERLAY_SCENE == null:
+		return null
+	var overlay_scene_instance: Node = WORLD_LOADING_OVERLAY_SCENE.instantiate()
+	overlay_scene_instance.name = "WorldLoadingOverlay"
+	root_node.add_child(overlay_scene_instance)
+	return overlay_scene_instance
+
+
+func _find_loading_canvas(root_node):
+	if root_node == null or not is_instance_valid(root_node):
+		return null
+	if root_node is CanvasLayer:
+		return root_node
+	if not (root_node is Node):
+		return null
+
+	for preferred_name in ["LoadingCanvas", "CanvasLayer", "WorldLoadingOverlay"]:
+		var named_canvas = root_node.get_node_or_null(preferred_name)
+		if named_canvas is CanvasLayer:
+			return named_canvas
+
+	for child in root_node.get_children():
+		if child is CanvasLayer:
+			return child
+
+	for child in root_node.get_children():
+		if child is Node:
+			var found_canvas = _find_loading_canvas(child)
+			if found_canvas is CanvasLayer:
+				return found_canvas
+
+	return null
+
+
+func _find_loading_root(loading_canvas):
+	if loading_canvas == null or not is_instance_valid(loading_canvas):
+		return null
+	if not (loading_canvas is Node):
+		return null
+
+	var root_node = loading_canvas.get_node_or_null("Root")
+	if root_node == null:
+		root_node = loading_canvas.find_child("Root", true, false)
+	return root_node
+
+
+func _find_loading_label(loading_canvas, label_name: String) -> Label:
+	if loading_canvas == null or not is_instance_valid(loading_canvas):
+		return null
+	if not (loading_canvas is Node):
+		return null
+
+	var direct_label = loading_canvas.get_node_or_null("Root/Center/Box/" + label_name)
+	if direct_label == null:
+		direct_label = loading_canvas.find_child(label_name, true, false)
+	if direct_label is Label:
+		return direct_label
+	return null
+
+
+func _format_loading_title(world_name: String) -> String:
+	var clean_world_name := str(world_name).strip_edges().to_upper()
+	if clean_world_name == "" or clean_world_name == "WORLD":
+		return "LOADING WORLD"
+	return "LOADING WORLD: " + clean_world_name
+
+
+func _on_profile_switch_pressed() -> void:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network != null and network.has_method("clear_active_session"):
+		network.clear_active_session()
+
+	var cfg := ConfigFile.new()
+	cfg.load(PROFILE_PATH)
+	cfg.set_value("pending_join", "enabled", false)
+	cfg.set_value("pending_join", "world_name", "")
+	cfg.set_value("pending_join", "profile_name", "")
+	cfg.save(PROFILE_PATH)
+
+	get_tree().change_scene_to_file(LOGIN_SCENE)
+
+
+func _get_network_session_username() -> String:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network != null and network.has_method("get_active_session_username"):
+		return str(network.get_active_session_username()).strip_edges()
+
+	return ""

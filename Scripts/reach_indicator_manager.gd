@@ -80,10 +80,7 @@ func _draw():
 					continue
 			else:
 				# Wrench mode: only blocks that are actually interactable
-				if not world.blocks.has(grid_pos):
-					continue
-				var btype = str(world.blocks[grid_pos].get("type", ""))
-				if not _is_interactable(btype):
+				if not _is_interactable_grid(grid_pos):
 					continue
 
 			var block_tl = Vector2(gx * bs - bs * 0.5, gy * bs - bs * 0.5)
@@ -186,8 +183,31 @@ func _draw_wrench(center: Vector2, r: float, color: Color):
 	)
 
 
+func _is_interactable_grid(grid_pos: Vector2i) -> bool:
+	if world.has_method("is_visible_generator_at") and bool(world.is_visible_generator_at(grid_pos)):
+		return true
+
+	if world.blocks.has(grid_pos):
+		return _is_interactable(str(world.blocks[grid_pos].get("type", "")))
+
+	return false
+
+
 func _is_interactable(block_type: String) -> bool:
-	if block_type == "world_lock":                                                   return true
+	if world.has_method("is_interactable_block") and world.is_interactable_block(block_type): return true
+	if world.has_method("is_area_lock_block_type") and world.is_area_lock_block_type(block_type): return true
+	if world.has_method("is_vending_machine_block_type") and world.is_vending_machine_block_type(block_type): return true
+	if world.has_method("is_mailbox_block_type") and world.is_mailbox_block_type(block_type): return true
+	if world.has_method("is_bulletin_board_block_type") and world.is_bulletin_board_block_type(block_type): return true
+	if world.has_method("is_display_block_type") and world.is_display_block_type(block_type): return true
+	if world.has_method("is_toggle_block") and world.is_toggle_block(block_type): return true
+	if world.has_method("is_anti_punch_block_type") and world.is_anti_punch_block_type(block_type): return true
+	if world.has_method("is_anti_talk_block_type") and world.is_anti_talk_block_type(block_type): return true
+	if world.has_method("is_anti_gravity_block_type") and world.is_anti_gravity_block_type(block_type): return true
+	if world.has_method("is_theme_machine_block_type") and world.is_theme_machine_block_type(block_type): return true
+	if world.has_method("is_cctv_block_type") and world.is_cctv_block_type(block_type): return true
+	if world.has_method("is_oil_refinery_block_type") and world.is_oil_refinery_block_type(block_type): return true
+	if world.has_method("is_world_lock_block_type") and world.is_world_lock_block_type(block_type): return true
 	if world.has_method("is_entrance_gate_block") and world.is_entrance_gate_block(block_type): return true
 	if world.has_method("is_crafting_station_block") and world.is_crafting_station_block(block_type): return true
 	if world.has_method("is_furnace_block") and world.is_furnace_block(block_type): return true

@@ -46,8 +46,8 @@ func handle_command(raw_command: String, server_verified: bool = false, server_r
 		return
 
 	if command == "ahelp" or command == "adminhelp":
-		if not is_developer_account_active():
-			respond("Admin commands require admin or developer access.")
+		if not is_admin_command_account_active():
+			respond("Admin commands require admin, developer, or designer access.")
 			return
 		show_admin_help()
 		return
@@ -67,8 +67,8 @@ func handle_command(raw_command: String, server_verified: bool = false, server_r
 		return
 
 	if not server_verified:
-		if not is_developer_account_active():
-			respond("Developer commands require admin or developer access.")
+		if not is_admin_command_account_active():
+			respond("Admin commands require admin, developer, or designer access.")
 			return
 
 		if command == "give":
@@ -97,8 +97,8 @@ func handle_command(raw_command: String, server_verified: bool = false, server_r
 			respond("Developer command could not be sent.")
 		return
 
-	if not is_developer_account_active():
-		respond("Server command rejected: this account is not admin/developer.")
+	if not is_admin_command_account_active():
+		respond("Server command rejected: this account cannot use admin commands.")
 		return
 
 	if server_request_id != "":
@@ -161,7 +161,7 @@ func handle_command(raw_command: String, server_verified: bool = false, server_r
 			respond("Unknown command. Type /help")
 
 
-func execute_verified_developer_command(raw_command: String, request_id: String = "", server_message: String = ""):
+func execute_verified_developer_command(raw_command: String, request_id: String = "", server_message: String = "", server_data: Dictionary = {}):
 	var command_text = raw_command.strip_edges()
 	var command_key = normalize_developer_command_key(command_text)
 
@@ -171,6 +171,7 @@ func execute_verified_developer_command(raw_command: String, request_id: String 
 
 		if pending_developer_commands.has(request_id):
 			pending_developer_commands.erase(request_id)
+		completed_developer_command_requests[request_id] = true
 	else:
 		var matching_request_id = find_pending_developer_command_request_id(command_key)
 		if matching_request_id != "":
@@ -180,12 +181,15 @@ func execute_verified_developer_command(raw_command: String, request_id: String 
 			return
 
 	if requires_server_delivery(command_text):
+		var applied_local_state = apply_server_delivered_command_state(command_text, server_data)
 		if server_message.strip_edges() != "":
 			set_developer_panel_status(server_message)
-			respond(server_message)
+			if not applied_local_state:
+				respond(server_message)
 		else:
 			set_developer_panel_status("Server completed developer command.")
-			respond("Server completed developer command.")
+			if not applied_local_state:
+				respond("Server completed developer command.")
 		return
 
 	handle_command(command_text, true, request_id)
@@ -218,6 +222,14 @@ func is_developer_account_active() -> bool:
 		return bool(network.is_developer_session())
 
 	return false
+
+
+func is_admin_command_account_active() -> bool:
+	var network = world.get_node_or_null("/root/NetworkManager") if world != null else null
+	if network != null and network.has_method("is_admin_command_session"):
+		return bool(network.is_admin_command_session())
+
+	return is_developer_account_active()
 
 
 func is_moderator_account_active() -> bool:
@@ -312,6 +324,19 @@ func is_server_world_command(command_name: String) -> bool:
 	return ["clear", "resetworld", "reset_world", "reworld", "snapshot", "snapshot_world"].has(command_name)
 
 
+func is_producer_speedup_command(command_name: String) -> bool:
+	return [
+		"speedproduce",
+		"speed_produce",
+		"fastproduce",
+		"fast_produce",
+		"speedgrow",
+		"speed_grow",
+		"fastgrow",
+		"fast_grow"
+	].has(command_name)
+
+
 func make_developer_command_request_id() -> String:
 	developer_command_request_counter += 1
 	return str(Time.get_ticks_msec()) + "_" + str(developer_command_request_counter)
@@ -361,8 +386,7 @@ func _wait_for_developer_command_confirmation(request_id: String):
 	pending_developer_commands.erase(request_id)
 
 	if requires_server_delivery(command_text):
-		completed_developer_command_requests[request_id] = true
-		respond("Command was not confirmed. Nothing changed.")
+		respond("Command is still waiting for server confirmation.")
 		return
 
 	if not ALLOW_LOCAL_DEVELOPER_FALLBACK:
@@ -394,6 +418,20 @@ func find_pending_developer_command_request_id(command_key: String) -> String:
 	return ""
 
 
+func apply_server_delivered_command_state(command_text: String, server_data: Dictionary) -> bool:
+	var command_name = get_developer_command_name(command_text)
+	if command_name == "noc" or command_name == "noclip":
+		if world == null:
+			return false
+		if server_data.has("noclip_enabled") and world.has_method("set_noclip_enabled"):
+			world.set_noclip_enabled(bool(server_data.get("noclip_enabled", false)))
+			return true
+		if world.has_method("toggle_noclip"):
+			world.toggle_noclip()
+			return true
+	return false
+
+
 func requires_server_delivery(command_text: String) -> bool:
 	var command_name = get_developer_command_name(command_text)
 	if is_server_world_command(command_name):
@@ -405,13 +443,24 @@ func requires_server_delivery(command_text: String) -> bool:
 		"tp", "teleport",
 		"spawn",
 		"clear_drops",
+		"speedproduce", "speed_produce", "fastproduce", "fast_produce",
+		"speedgrow", "speed_grow", "fastgrow", "fast_grow",
+		"event", "world_event", "forceevent",
 		"save", "load", "reload",
 		"noc", "noclip",
 		"equip", "unequip",
 		"ban", "mute", "tradeban", "worldban",
 		"unban", "unmute", "untradeban", "unworldban",
 		"trade_ban", "world_ban", "untrade_ban", "unworld_ban",
-		"punishments", "punishment", "punish"
+		"punishments", "punishment", "punish",
+		"itemaudit", "audititems", "item_audit", "audit_items",
+		"itemcopies", "itemowners", "item_copies", "item_owners", "itemcopy", "item_owner",
+		"itemfreeze", "freezeitem", "item_freeze",
+		"itemunfreeze", "unfreezeitem", "item_unfreeze",
+		"itemretire", "retireitem", "item_retire",
+		"itemdelete", "deleteitem", "item_delete",
+		"itemtransfer", "transferitem", "item_transfer",
+		"itemflag", "flagitem", "item_flag"
 	]
 	return server_owned_commands.has(command_name)
 
@@ -444,6 +493,18 @@ func build_developer_command_metadata(command_text: String) -> Dictionary:
 	var parts = get_developer_command_parts(command_text)
 	if parts.size() == 0:
 		return {}
+
+	if is_producer_speedup_command(command_name):
+		var speedup_data = parse_producer_speedup_arguments(parts)
+		var speedup_world = str(speedup_data.get("world", get_current_world_name_for_server_command()))
+		return {
+			"command_type": "producer_speedup",
+			"world": speedup_world,
+			"world_name": speedup_world,
+			"target_world": speedup_world,
+			"remaining_seconds": int(speedup_data.get("remaining_seconds", 0)),
+			"mode": str(speedup_data.get("mode", "ready"))
+		}
 
 	if command_name == "give":
 		var give_data = parse_give_arguments(parts)
@@ -516,6 +577,14 @@ func build_developer_command_metadata(command_text: String) -> Dictionary:
 			"command_type": "clear_drops",
 			"world": drop_world,
 			"world_name": drop_world
+		}
+
+	if command_name == "event" or command_name == "world_event" or command_name == "forceevent":
+		var event_world = get_current_world_name_for_server_command()
+		return {
+			"command_type": "force_event" if command_name == "forceevent" else "world_event",
+			"world": event_world,
+			"world_name": event_world
 		}
 
 	if command_name == "save":
@@ -611,7 +680,10 @@ func get_clear_protected_foreground(target_world: String = "") -> Array:
 	if target_world.strip_edges() != "" and target_world.strip_edges().to_upper() != current_world:
 		return protected_entries
 
-	var protected_types = ["entrance_gate", "world_lock", "bedrock"]
+	if world.has_method("ensure_entrance_gate"):
+		world.ensure_entrance_gate()
+
+	var protected_types = ["entrance_gate", "world_lock", "super_world_lock", "bedrock"]
 	for grid_pos in world.blocks.keys():
 		if not (world.blocks[grid_pos] is Dictionary):
 			continue
@@ -627,6 +699,85 @@ func get_clear_protected_foreground(target_world: String = "") -> Array:
 		})
 
 	return protected_entries
+
+
+func parse_producer_speedup_duration_seconds(raw_value: String) -> int:
+	var clean = raw_value.strip_edges().to_lower()
+	if clean == "":
+		return -1
+
+	if ["ready", "now", "instant", "done", "finish", "finished"].has(clean):
+		return 0
+
+	var number_text = clean
+	var multiplier := 1.0
+	var suffixes = [
+		["seconds", 1.0],
+		["second", 1.0],
+		["secs", 1.0],
+		["sec", 1.0],
+		["s", 1.0],
+		["minutes", 60.0],
+		["minute", 60.0],
+		["mins", 60.0],
+		["min", 60.0],
+		["m", 60.0],
+		["hours", 3600.0],
+		["hour", 3600.0],
+		["hrs", 3600.0],
+		["hr", 3600.0],
+		["h", 3600.0]
+	]
+
+	for suffix_data in suffixes:
+		var suffix = str(suffix_data[0])
+		if clean.ends_with(suffix):
+			number_text = clean.substr(0, clean.length() - suffix.length()).strip_edges()
+			multiplier = float(suffix_data[1])
+			break
+
+	if number_text == "" or not number_text.is_valid_float():
+		return -1
+
+	return max(0, int(ceil(float(number_text) * multiplier)))
+
+
+func parse_producer_speedup_arguments(parts: Array) -> Dictionary:
+	var remaining_seconds := 0
+	var remaining_set := false
+	var world_parts := []
+
+	for i in range(1, parts.size()):
+		var arg = str(parts[i]).strip_edges()
+		if arg == "":
+			continue
+
+		var lower_arg = arg.to_lower()
+		if lower_arg.begins_with("world="):
+			var world_value = arg.substr("world=".length()).strip_edges()
+			if world_value != "":
+				world_parts.append(world_value)
+			continue
+
+		var parsed_seconds = parse_producer_speedup_duration_seconds(arg)
+		if parsed_seconds >= 0 and not remaining_set:
+			remaining_seconds = parsed_seconds
+			remaining_set = true
+			continue
+
+		world_parts.append(arg)
+
+	var target_world = get_current_world_name_for_server_command()
+	if world_parts.size() > 0:
+		var parsed_world = sanitize_server_world_name("_".join(world_parts))
+		if parsed_world != "":
+			target_world = parsed_world
+
+	return {
+		"remaining_seconds": remaining_seconds,
+		"mode": "ready" if remaining_seconds <= 0 else "remaining",
+		"world": target_world
+	}
 
 
 func parse_give_arguments(parts: Array) -> Dictionary:
@@ -705,7 +856,11 @@ func show_moderator_help():
 
 
 func show_admin_help():
-	respond("Admin commands: /dev, /give item amount, /give username item amount, /remove username item amount, /ban user [time] reason, /mute user [time] reason, /tradeban user [time] reason, /worldban user world [time] reason, /unban user, /unmute user, /untradeban user, /unworldban user world, /punishments user, /heal, /health amount, /tp x y, /spawn block x y, /clear_drops, /save, /load, /noc, /snapshot [world], /clear [world], /resetworld [world]")
+	var shared_commands = "/give item amount, /give username item amount, /remove username item amount, /ban user [time] reason, /mute user [time] reason, /tradeban user [time] reason, /worldban user world [time] reason, /unban user, /unmute user, /untradeban user, /unworldban user world, /punishments user, /itemaudit, /itemcopies id_or_item, /itemfreeze id reason, /itemunfreeze id reason, /itemretire id reason, /itemtransfer id user reason, /itemflag id reason, /heal, /health amount, /tp x y, /spawn block x y, /clear_drops, /speedproduce [ready|seconds] [world], /forceevent snow_storm, /event snow_storm start|end, /save, /load, /noc, /snapshot [world], /clear [world], /resetworld [world]"
+	if is_developer_account_active():
+		respond("Admin commands: /dev, " + shared_commands)
+	else:
+		respond("Designer commands: " + shared_commands)
 
 
 func show_help():
@@ -1041,9 +1196,12 @@ func command_clear(_parts: Array):
 	if world == null:
 		return
 
-	# /clear — removes all blocks except entrance gate, world lock, and bedrock.
+	# /clear removes all blocks except entrance gate, lock blocks, and bedrock.
 	# World lock data and permissions are fully preserved.
-	var protected = ["entrance_gate", "world_lock", "bedrock"]
+	var protected = ["entrance_gate", "world_lock", "super_world_lock", "bedrock"]
+	var sync_manager: Variant = world.get("world_state_sync_manager")
+	if sync_manager != null and sync_manager.has_method("notify_world_collision_snapshot_rebuilding"):
+		sync_manager.notify_world_collision_snapshot_rebuilding("local-clear-world-start")
 
 	var to_remove = []
 	for grid_pos in world.blocks.keys():
@@ -1065,6 +1223,8 @@ func command_clear(_parts: Array):
 
 	# Ensure entrance gate is still intact with its bedrock support
 	world.ensure_entrance_gate()
+	if sync_manager != null and sync_manager.has_method("mark_world_collision_snapshot_changed"):
+		sync_manager.mark_world_collision_snapshot_changed("local-clear-world")
 
 	world.save_world()
 	respond("World cleared. " + str(to_remove.size()) + " blocks removed.")
@@ -1160,10 +1320,22 @@ func add_item_to_correct_inventory(item_id: String, amount: int) -> bool:
 		world.add_item_to_inventory_stack(world.back_inventory, item_id, category, amount)
 		return true
 
+	if category == "hat":
+		if not world.hat_inventory.has(item_id):
+			world.hat_inventory[item_id] = 0
+		world.add_item_to_inventory_stack(world.hat_inventory, item_id, category, amount)
+		return true
+
 	if category == "hair":
 		if not world.hair_inventory.has(item_id):
 			world.hair_inventory[item_id] = 0
 		world.add_item_to_inventory_stack(world.hair_inventory, item_id, category, amount)
+		return true
+
+	if category == "eyewear":
+		if not world.eyewear_inventory.has(item_id):
+			world.eyewear_inventory[item_id] = 0
+		world.add_item_to_inventory_stack(world.eyewear_inventory, item_id, category, amount)
 		return true
 
 	if category == "shirt":
@@ -1184,6 +1356,12 @@ func add_item_to_correct_inventory(item_id: String, amount: int) -> bool:
 		world.add_item_to_inventory_stack(world.shoes_inventory, item_id, category, amount)
 		return true
 
+	if category == "ride":
+		if not world.ride_inventory.has(item_id):
+			world.ride_inventory[item_id] = 0
+		world.add_item_to_inventory_stack(world.ride_inventory, item_id, category, amount)
+		return true
+
 	if category == "lure":
 		if not world.lure_inventory.has(item_id):
 			world.lure_inventory[item_id] = 0
@@ -1193,7 +1371,10 @@ func add_item_to_correct_inventory(item_id: String, amount: int) -> bool:
 	if category == "fish":
 		if not world.fish_inventory.has(item_id):
 			world.fish_inventory[item_id] = 0
-		world.add_item_to_inventory_stack(world.fish_inventory, item_id, category, amount)
+		var current_fish_count: int = max(0, int(floor(float(world.fish_inventory.get(item_id, 0)))))
+		world.fish_inventory[item_id] = current_fish_count + max(0, amount)
+		if world.has_method("refresh_ui_after_item_change"):
+			world.refresh_ui_after_item_change(item_id, category)
 		return true
 
 	return false
@@ -1215,14 +1396,20 @@ func remove_item_from_correct_inventory(item_id: String, amount: int) -> bool:
 		target_inventory = world.material_inventory
 	elif category == "back":
 		target_inventory = world.back_inventory
+	elif category == "hat":
+		target_inventory = world.hat_inventory
 	elif category == "hair":
 		target_inventory = world.hair_inventory
+	elif category == "eyewear":
+		target_inventory = world.eyewear_inventory
 	elif category == "shirt":
 		target_inventory = world.shirt_inventory
 	elif category == "pants":
 		target_inventory = world.pants_inventory
 	elif category == "shoes":
 		target_inventory = world.shoes_inventory
+	elif category == "ride":
+		target_inventory = world.ride_inventory
 	elif category == "lure":
 		target_inventory = world.lure_inventory
 	elif category == "fish":
@@ -1236,6 +1423,20 @@ func remove_item_from_correct_inventory(item_id: String, amount: int) -> bool:
 
 	if int(target_inventory[item_id]) <= 0:
 		return false
+
+	if category == "fish":
+		var remove_count: int = max(0, amount)
+		var current_count: int = max(0, int(floor(float(target_inventory[item_id]))))
+		if remove_count <= 0 or current_count < remove_count:
+			return false
+		var remaining_count: int = current_count - remove_count
+		if remaining_count <= 0:
+			target_inventory.erase(item_id)
+		else:
+			target_inventory[item_id] = remaining_count
+		if world.has_method("refresh_ui_after_item_change"):
+			world.refresh_ui_after_item_change(item_id, category)
+		return true
 
 	world.spend_item_from_inventory_stack(target_inventory, item_id, category, amount)
 	return true

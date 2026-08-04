@@ -581,15 +581,21 @@ func create_section_line(line_name: String, line_position: Vector2, line_width: 
 
 
 func get_world_lock_icon_texture():
+	var lock_item_id := "world_lock"
+	if world != null and world.has_method("get_world_lock_block_type"):
+		lock_item_id = str(world.get_world_lock_block_type())
 	if world != null:
 		if world.has_method("get_inventory_icon_texture"):
-			var icon_texture = world.get_inventory_icon_texture("world_lock", "block")
+			var icon_texture = world.get_inventory_icon_texture(lock_item_id, "block")
 			if icon_texture != null:
 				return icon_texture
-		if world.block_textures.has("world_lock"):
-			return world.block_textures["world_lock"]
-	if ResourceLoader.exists("res://Assets/locks/world_lock.png"):
-		return load("res://Assets/locks/world_lock.png")
+		if world.block_textures.has(lock_item_id):
+			return world.block_textures[lock_item_id]
+	var lock_texture_path: String = "res://Assets/locks/world_lock.png"
+	if lock_item_id == "super_world_lock":
+		lock_texture_path = "res://Assets/locks/super_world_lock.png"
+	if ResourceLoader.exists(lock_texture_path):
+		return load(lock_texture_path)
 	return null
 
 

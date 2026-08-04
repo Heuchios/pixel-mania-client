@@ -1,0 +1,967 @@
+[gd_scene format=3 uid="uid://cbh6sycrk86rb"]
+
+[ext_resource type="Texture2D" uid="uid://d1iyedaf3iij2" path="res://Assets/ui/backgrounds/mountain_background.png" id="1_background"]
+[ext_resource type="FontFile" uid="uid://e0ivgh0c6uck" path="res://Assets/font/font.ttf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://j4ejipojb8m2" path="res://Assets/player/body/player_idle.png" id="3_player"]
+[ext_resource type="Texture2D" uid="uid://dnuvhhyohskng" path="res://Assets/ui/logo/Logo_6.png" id="4_nkht7"]
+[ext_resource type="Texture2D" uid="uid://bh3a64ssqlhuu" path="res://Assets/ui/left_arrow.png" id="5_py5ev"]
+[ext_resource type="Texture2D" uid="uid://1r52n51qmhsd" path="res://Assets/ui/left_arrow_pressed.png" id="6_adnwb"]
+[ext_resource type="Texture2D" uid="uid://ibwuhveruvw8" path="res://Assets/ui/inventory/slot_normal.png" id="6_kueqq"]
+[ext_resource type="Texture2D" uid="uid://cbkcby5bwgu05" path="res://Assets/ui/lobby/setting.png" id="7_fcc0e"]
+[ext_resource type="Texture2D" uid="uid://thfjk6bwsct3" path="res://Assets/ui/left_arrow_hover.png" id="7_i3ycd"]
+[ext_resource type="Texture2D" uid="uid://by4xsjd5ld8le" path="res://Assets/ui/lobby/menu_button.png" id="8_k5jpr"]
+[ext_resource type="Texture2D" uid="uid://ce7wm78x85n4m" path="res://Assets/ui/lobby/setting_pressed.png" id="8_xnxb1"]
+[ext_resource type="Texture2D" uid="uid://b6y5aqq8liae8" path="res://Assets/ui/lobby/menu_button_pressed.png" id="9_wc2hy"]
+[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="13_o6w7i"]
+[ext_resource type="Texture2D" uid="uid://bg5sabtp5jnsv" path="res://Assets/ui/input_744x72.png" id="14_ncyao"]
+[ext_resource type="Texture2D" uid="uid://dv3n0c8gekb8k" path="res://Assets/ui/lobby/slot_legendary.png" id="14_slot_legendary"]
+[ext_resource type="Script" uid="uid://b8vyed8xbki4t" path="res://Scripts/ui/lobby_scene.gd" id="15_layout_controls"]
+[ext_resource type="Texture2D" uid="uid://d1swv78ujslt6" path="res://Assets/ui/right_arrow.png" id="15_ncyao"]
+[ext_resource type="Texture2D" uid="uid://djpgneln57xal" path="res://Assets/ui/right_arrow_pressed.png" id="16_ncyao"]
+[ext_resource type="Texture2D" uid="uid://bvk6n5xc53nr5" path="res://Assets/ui/lobby/home_button.png" id="16_wc2hy"]
+[ext_resource type="Texture2D" uid="uid://ni7luwsx1nns" path="res://Assets/ui/home.png" id="17_adnwb"]
+[ext_resource type="Texture2D" uid="uid://gijbperhgf7x" path="res://Assets/ui/lobby/home_button_pressed.png" id="17_fcc0e"]
+[ext_resource type="Texture2D" uid="uid://bmk27qdrjub1b" path="res://Assets/ui/right_arrow_hover.png" id="17_o6w7i"]
+[ext_resource type="Texture2D" uid="uid://c0s1vj8wepsbi" path="res://Assets/ui/green_button_normal_90x24.png" id="21_ncyao"]
+[ext_resource type="Texture2D" uid="uid://pyw7s5lcdhmt" path="res://Assets/ui/green_button_pressed_90x24.png" id="22_o6w7i"]
+[ext_resource type="Texture2D" uid="uid://chi56jflgj38e" path="res://Assets/ui/inner_panel_604x150.png" id="22_py5ev"]
+[ext_resource type="Texture2D" uid="uid://opqgsn2jk7ie" path="res://Assets/ui/green_button_hover_90x24.png" id="23_py5ev"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ox2yu"]
+texture = ExtResource("4_nkht7")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_normal"]
+texture = ExtResource("5_py5ev")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_pressed"]
+texture = ExtResource("6_adnwb")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_hover"]
+texture = ExtResource("7_i3ycd")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ncyao"]
+texture = ExtResource("7_fcc0e")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_o6w7i"]
+texture = ExtResource("8_xnxb1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_py5ev"]
+texture = ExtResource("7_fcc0e")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_adnwb"]
+texture = ExtResource("8_k5jpr")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_i3ycd"]
+texture = ExtResource("9_wc2hy")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_falkf"]
+texture = ExtResource("8_k5jpr")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_d2k66"]
+texture = ExtResource("14_ncyao")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_drop_pressed"]
+texture = ExtResource("14_ncyao")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_drop_hover"]
+texture = ExtResource("14_ncyao")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mqkg4"]
+texture = ExtResource("17_adnwb")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vwihr"]
+texture = ExtResource("15_ncyao")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6jbpl"]
+texture = ExtResource("16_ncyao")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mg45h"]
+texture = ExtResource("17_o6w7i")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_join"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_io6ju"]
+texture = ExtResource("16_wc2hy")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8adxn"]
+texture = ExtResource("17_fcc0e")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1dker"]
+texture = ExtResource("16_wc2hy")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nkht7"]
+texture = ExtResource("14_ncyao")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_input"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_drop_normal"]
+texture = ExtResource("21_ncyao")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w816g"]
+texture = ExtResource("22_o6w7i")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_i8c6c"]
+texture = ExtResource("23_py5ev")
+
+[node name="LobbyScene" type="Control" unique_id=1901958929]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("15_layout_controls")
+
+[node name="MountainBackground" type="TextureRect" parent="." unique_id=2043708089]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("1_background")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BackgroundShade" type="ColorRect" parent="." unique_id=401138428]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.0156863, 0.0235294, 0.0392157, 0.22)
+
+[node name="TopBar" type="ColorRect" parent="." unique_id=379504010]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 122.0
+grow_horizontal = 2
+mouse_filter = 2
+color = Color(0.0470588, 0.117647, 0.168627, 0.92)
+
+[node name="TopCyanLine" type="ColorRect" parent="." unique_id=1984613899]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 118.0
+offset_bottom = 122.0
+grow_horizontal = 2
+mouse_filter = 2
+color = Color(0.184314, 0.780392, 1, 0.82)
+
+[node name="TopGoldLine" type="ColorRect" parent="." unique_id=895480613]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 122.0
+offset_bottom = 126.0
+grow_horizontal = 2
+mouse_filter = 2
+color = Color(1, 0.760784, 0.117647, 0.62)
+
+[node name="Logo" type="Label" parent="." unique_id=1745514632]
+layout_mode = 0
+offset_left = 680.0
+offset_top = -101.0
+offset_right = 1339.0
+offset_bottom = 426.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 54
+theme_override_styles/normal = SubResource("StyleBoxTexture_ox2yu")
+vertical_alignment = 1
+
+[node name="LogoSub" type="Label" parent="." unique_id=1834075553]
+visible = false
+layout_mode = 0
+offset_left = 50.0
+offset_top = 78.0
+offset_right = 240.0
+offset_bottom = 105.0
+theme_override_colors/font_color = Color(0.870588, 0.960784, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 14
+text = "PIXELMANIA"
+vertical_alignment = 1
+
+[node name="TopButtons" type="Control" parent="." unique_id=2137327634]
+anchors_preset = 0
+offset_left = 686.0
+offset_top = 20.0
+offset_right = 1164.0
+offset_bottom = 106.0
+
+[node name="ProfileButton" type="Button" parent="TopButtons" unique_id=1783436965]
+custom_minimum_size = Vector2(86, 86)
+layout_mode = 0
+offset_left = -603.0
+offset_top = 898.0
+offset_right = -517.0
+offset_bottom = 984.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+
+[node name="SettingsButton" type="Button" parent="TopButtons" unique_id=1727256676]
+visible = false
+custom_minimum_size = Vector2(86, 86)
+layout_mode = 0
+offset_left = 98.0
+offset_right = 184.0
+offset_bottom = 86.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_ncyao")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_o6w7i")
+theme_override_styles/hover = SubResource("StyleBoxTexture_py5ev")
+
+[node name="AvatarButton" type="Button" parent="TopButtons" unique_id=1083374410]
+visible = false
+custom_minimum_size = Vector2(86, 86)
+layout_mode = 0
+offset_left = 196.0
+offset_right = 282.0
+offset_bottom = 86.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+text = "ME"
+
+[node name="MenuButton" type="Button" parent="TopButtons" unique_id=227836340]
+visible = false
+custom_minimum_size = Vector2(86, 86)
+layout_mode = 0
+offset_left = 294.0
+offset_right = 380.0
+offset_bottom = 86.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_adnwb")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_i3ycd")
+theme_override_styles/hover = SubResource("StyleBoxTexture_falkf")
+
+[node name="FriendsButton" type="Button" parent="TopButtons" unique_id=190946480]
+visible = false
+custom_minimum_size = Vector2(86, 86)
+layout_mode = 0
+offset_left = 392.0
+offset_right = 478.0
+offset_bottom = 86.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+text = "HELP"
+
+[node name="ProfilePanel" type="NinePatchRect" parent="." unique_id=567654863]
+visible = false
+layout_mode = 0
+offset_left = 48.0
+offset_top = 200.0
+offset_right = 548.0
+offset_bottom = 540.0
+texture = ExtResource("6_kueqq")
+patch_margin_left = 36
+patch_margin_top = 36
+patch_margin_right = 36
+patch_margin_bottom = 36
+
+[node name="ProfileCard" type="NinePatchRect" parent="ProfilePanel" unique_id=1691941883]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 16.0
+offset_right = 482.0
+offset_bottom = 112.0
+patch_margin_left = 26
+patch_margin_top = 24
+patch_margin_right = 26
+patch_margin_bottom = 24
+
+[node name="AvatarSlot" type="TextureRect" parent="ProfilePanel/ProfileCard" unique_id=1974946265]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 16.0
+offset_right = 82.0
+offset_bottom = 84.0
+texture = ExtResource("14_slot_legendary")
+expand_mode = 1
+
+[node name="Avatar" type="TextureRect" parent="ProfilePanel/ProfileCard" unique_id=518640687]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 18.0
+offset_right = 74.0
+offset_bottom = 78.0
+texture = ExtResource("3_player")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Username" type="Label" parent="ProfilePanel/ProfileCard" unique_id=691942023]
+layout_mode = 0
+offset_left = 98.0
+offset_top = 20.0
+offset_right = 290.0
+offset_bottom = 56.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 30
+text = "USO"
+vertical_alignment = 1
+
+[node name="ReadyText" type="Label" parent="ProfilePanel/ProfileCard" unique_id=793281643]
+layout_mode = 0
+offset_left = 100.0
+offset_top = 58.0
+offset_right = 320.0
+offset_bottom = 80.0
+theme_override_colors/font_color = Color(0.870588, 0.960784, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 13
+text = "READY TO EXPLORE"
+vertical_alignment = 1
+
+[node name="LevelText" type="Label" parent="ProfilePanel" unique_id=1936236861]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 126.0
+offset_right = 471.0
+offset_bottom = 160.0
+theme_override_colors/font_color = Color(1, 0.890196, 0.188235, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "LEVEL 16   |   BUILDER"
+vertical_alignment = 1
+
+[node name="XpBack" type="NinePatchRect" parent="ProfilePanel" unique_id=1032182693]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 166.0
+offset_right = 482.0
+offset_bottom = 198.0
+texture = ExtResource("6_kueqq")
+patch_margin_left = 24
+patch_margin_top = 20
+patch_margin_right = 24
+patch_margin_bottom = 20
+
+[node name="XpFill" type="ColorRect" parent="ProfilePanel" unique_id=1639888364]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 174.0
+offset_right = 230.0
+offset_bottom = 190.0
+color = Color(0.117647, 0.635294, 1, 0.58)
+
+[node name="XpText" type="Label" parent="ProfilePanel" unique_id=1264813516]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 166.0
+offset_right = 482.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "2501 / 5298"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GemsRow" type="NinePatchRect" parent="ProfilePanel" unique_id=95032349]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 208.0
+offset_right = 482.0
+offset_bottom = 260.0
+patch_margin_left = 24
+patch_margin_top = 20
+patch_margin_right = 24
+patch_margin_bottom = 20
+
+[node name="GemLabel" type="Label" parent="ProfilePanel/GemsRow" unique_id=1899257769]
+layout_mode = 0
+offset_left = 12.0
+offset_right = 276.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(0.184314, 0.780392, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 30
+text = "GM 10,247,351"
+vertical_alignment = 1
+
+[node name="GemPlus" type="Button" parent="ProfilePanel/GemsRow" unique_id=1799789939]
+visible = false
+custom_minimum_size = Vector2(54, 44)
+layout_mode = 0
+offset_left = 382.0
+offset_top = 4.0
+offset_right = 436.0
+offset_bottom = 48.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+text = "+"
+
+[node name="XpRow" type="NinePatchRect" parent="ProfilePanel" unique_id=1927078823]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 276.0
+offset_right = 482.0
+offset_bottom = 328.0
+patch_margin_left = 24
+patch_margin_top = 20
+patch_margin_right = 24
+patch_margin_bottom = 20
+
+[node name="TotalXpLabel" type="Label" parent="ProfilePanel/XpRow" unique_id=162561208]
+layout_mode = 0
+offset_left = 12.0
+offset_right = 220.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(1, 0.760784, 0.117647, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 30
+text = "XP 33,279"
+vertical_alignment = 1
+
+[node name="XpPlus" type="Button" parent="ProfilePanel/XpRow" unique_id=1610919137]
+visible = false
+custom_minimum_size = Vector2(54, 44)
+layout_mode = 0
+offset_left = 244.0
+offset_top = 4.0
+offset_right = 298.0
+offset_bottom = 48.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+text = "+"
+
+[node name="WorldsPanel" type="NinePatchRect" parent="." unique_id=1702774396]
+layout_mode = 0
+offset_left = 616.0
+offset_top = 472.0
+offset_right = 1402.0
+offset_bottom = 1003.0
+texture = ExtResource("13_o6w7i")
+patch_margin_left = 36
+patch_margin_top = 36
+patch_margin_right = 36
+patch_margin_bottom = 36
+
+[node name="WorldsHeader" type="NinePatchRect" parent="WorldsPanel" unique_id=694937360]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 18.0
+offset_right = 766.0
+offset_bottom = 96.0
+patch_margin_left = 26
+patch_margin_top = 24
+patch_margin_right = 26
+patch_margin_bottom = 24
+
+[node name="WorldsTitle" type="Label" parent="WorldsPanel/WorldsHeader" unique_id=65762868]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 8.0
+offset_right = 420.0
+offset_bottom = 66.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 34
+text = "ACTIVE WORLDS"
+vertical_alignment = 1
+
+[node name="LiveChip" type="Button" parent="WorldsPanel/WorldsHeader" unique_id=700498164]
+visible = false
+custom_minimum_size = Vector2(112, 46)
+layout_mode = 0
+offset_left = 618.0
+offset_top = 16.0
+offset_right = 730.0
+offset_bottom = 62.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.721569, 1, 0.780392, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+text = "LIVE"
+
+[node name="WorldStart" type="Button" parent="WorldsPanel" unique_id=240492253]
+custom_minimum_size = Vector2(744, 72)
+layout_mode = 0
+offset_left = 20.0
+offset_top = 108.0
+offset_right = 764.0
+offset_bottom = 180.0
+focus_mode = 0
+mouse_filter = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_d2k66")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_drop_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_drop_hover")
+
+[node name="HubIcon" type="Label" parent="WorldsPanel/WorldStart" unique_id=257309808]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 10.0
+offset_right = 63.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxTexture_mqkg4")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartName" type="Label" parent="WorldsPanel/WorldStart" unique_id=209462149]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 8.0
+offset_right = 250.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+text = "START"
+vertical_alignment = 1
+
+[node name="StartMeta" type="Label" parent="WorldsPanel/WorldStart" unique_id=166715640]
+layout_mode = 0
+offset_left = 74.0
+offset_top = 35.0
+offset_right = 386.0
+offset_bottom = 59.0
+theme_override_colors/font_color = Color(0.870588, 0.960784, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 13
+text = "OFFICIAL | OPEN | 0 players"
+vertical_alignment = 1
+
+[node name="OfficialBadge" type="Label" parent="WorldsPanel/WorldStart" unique_id=1905817647]
+layout_mode = 0
+offset_left = 282.0
+offset_top = 12.0
+offset_right = 408.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(1, 0.890196, 0.188235, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+text = "OFFICIAL HUB"
+horizontal_alignment = 1
+
+[node name="StartPlayers" type="Label" parent="WorldsPanel/WorldStart" unique_id=1189554715]
+visible = false
+layout_mode = 0
+offset_left = 543.0
+offset_top = 22.0
+offset_right = 655.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(0.184314, 0.780392, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 13
+text = "0 PLAYERS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartJoin" type="Button" parent="WorldsPanel/WorldStart" unique_id=1578419956]
+layout_mode = 0
+offset_left = 670.0
+offset_top = 9.0
+offset_right = 725.0
+offset_bottom = 60.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 0.956863, 0.25098, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.88, 0.16, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 0.52, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_vwihr")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_6jbpl")
+theme_override_styles/hover = SubResource("StyleBoxTexture_mg45h")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_join")
+icon_alignment = 1
+
+[node name="WorldRows" type="Control" parent="WorldsPanel" unique_id=524144701]
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 190.0
+offset_right = 764.0
+offset_bottom = 408.0
+
+[node name="WorldTest" type="Button" parent="WorldsPanel/WorldRows" unique_id=1828489666]
+custom_minimum_size = Vector2(744, 62)
+layout_mode = 0
+offset_right = 744.0
+offset_bottom = 62.0
+focus_mode = 0
+mouse_filter = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+
+[node name="Name" type="Label" parent="WorldsPanel/WorldRows/WorldTest" unique_id=2009600112]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 6.0
+offset_right = 250.0
+offset_bottom = 31.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "TEST"
+
+[node name="Meta" type="Label" parent="WorldsPanel/WorldRows/WorldTest" unique_id=838189888]
+layout_mode = 0
+offset_left = 74.0
+offset_top = 32.0
+offset_right = 390.0
+offset_bottom = 54.0
+theme_override_colors/font_color = Color(0.870588, 0.960784, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 13
+text = "LAST | OPEN | 0 players"
+
+[node name="Join" type="Button" parent="WorldsPanel/WorldRows/WorldTest" unique_id=761231633]
+layout_mode = 0
+offset_left = 466.0
+offset_top = 19.0
+offset_right = 558.0
+offset_bottom = 45.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 0.956863, 0.25098, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.88, 0.16, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 0.52, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxEmpty_join")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_join")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_join")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_join")
+text = "JOIN"
+flat = true
+
+[node name="WorldFarm" type="Button" parent="WorldsPanel/WorldRows" unique_id=1799397807]
+custom_minimum_size = Vector2(744, 62)
+layout_mode = 0
+offset_top = 78.0
+offset_right = 744.0
+offset_bottom = 140.0
+focus_mode = 0
+mouse_filter = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+
+[node name="Name" type="Label" parent="WorldsPanel/WorldRows/WorldFarm" unique_id=804055785]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 6.0
+offset_right = 250.0
+offset_bottom = 31.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "FARM"
+
+[node name="Meta" type="Label" parent="WorldsPanel/WorldRows/WorldFarm" unique_id=797166611]
+layout_mode = 0
+offset_left = 74.0
+offset_top = 32.0
+offset_right = 390.0
+offset_bottom = 54.0
+theme_override_colors/font_color = Color(0.870588, 0.960784, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 13
+text = "RECENT | OPEN | 0 players"
+
+[node name="Join" type="Button" parent="WorldsPanel/WorldRows/WorldFarm" unique_id=391408887]
+layout_mode = 0
+offset_left = 466.0
+offset_top = 19.0
+offset_right = 558.0
+offset_bottom = 45.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 0.956863, 0.25098, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.88, 0.16, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 0.52, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxEmpty_join")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_join")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_join")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_join")
+text = "JOIN"
+flat = true
+
+[node name="WorldBuild" type="Button" parent="WorldsPanel/WorldRows" unique_id=709391639]
+custom_minimum_size = Vector2(744, 62)
+layout_mode = 0
+offset_top = 156.0
+offset_right = 744.0
+offset_bottom = 218.0
+focus_mode = 0
+mouse_filter = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+
+[node name="Name" type="Label" parent="WorldsPanel/WorldRows/WorldBuild" unique_id=468715349]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 6.0
+offset_right = 250.0
+offset_bottom = 31.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "BUILD"
+
+[node name="Meta" type="Label" parent="WorldsPanel/WorldRows/WorldBuild" unique_id=2123223229]
+layout_mode = 0
+offset_left = 74.0
+offset_top = 32.0
+offset_right = 390.0
+offset_bottom = 54.0
+theme_override_colors/font_color = Color(0.870588, 0.960784, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 13
+text = "RECENT | OPEN | 0 players"
+
+[node name="Join" type="Button" parent="WorldsPanel/WorldRows/WorldBuild" unique_id=70372350]
+layout_mode = 0
+offset_left = 466.0
+offset_top = 20.0
+offset_right = 558.0
+offset_bottom = 46.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 0.956863, 0.25098, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.88, 0.16, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 0.52, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxEmpty_join")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_join")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_join")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_join")
+text = "JOIN"
+flat = true
+
+[node name="RightButtons" type="Control" parent="." unique_id=1544136499]
+visible = false
+anchors_preset = 0
+offset_left = 1766.0
+offset_top = 260.0
+offset_right = 1894.0
+offset_bottom = 746.0
+
+[node name="CrownButton" type="Button" parent="RightButtons" unique_id=1918210621]
+custom_minimum_size = Vector2(124, 104)
+layout_mode = 0
+offset_right = 124.0
+offset_bottom = 104.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+text = "CROWN"
+
+[node name="StarButton" type="Button" parent="RightButtons" unique_id=1105963630]
+custom_minimum_size = Vector2(124, 104)
+layout_mode = 0
+offset_top = 126.0
+offset_right = 124.0
+offset_bottom = 230.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+text = "STAR"
+
+[node name="LockButton" type="Button" parent="RightButtons" unique_id=1124600417]
+custom_minimum_size = Vector2(124, 104)
+layout_mode = 0
+offset_top = 252.0
+offset_right = 124.0
+offset_bottom = 356.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+text = "LOCK"
+
+[node name="OrbitButton" type="Button" parent="RightButtons" unique_id=884877532]
+custom_minimum_size = Vector2(124, 104)
+layout_mode = 0
+offset_top = 378.0
+offset_right = 124.0
+offset_bottom = 482.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_io6ju")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8adxn")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1dker")
+
+[node name="JoinPanel" type="NinePatchRect" parent="." unique_id=1186213477]
+layout_mode = 0
+offset_left = 616.0
+offset_top = 379.0
+offset_right = 1402.0
+offset_bottom = 462.0
+texture = ExtResource("22_py5ev")
+patch_margin_left = 26
+patch_margin_top = 24
+patch_margin_right = 26
+patch_margin_bottom = 24
+
+[node name="ActiveWorldsTab" type="Button" parent="JoinPanel" unique_id=1974141446]
+visible = false
+custom_minimum_size = Vector2(478, 36)
+layout_mode = 0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 490.0
+offset_bottom = 48.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+text = "ACTIVE WORLDS"
+
+[node name="WorldInputLabel" type="Label" parent="JoinPanel" unique_id=738811975]
+visible = false
+layout_mode = 0
+offset_left = 28.0
+offset_top = 27.0
+offset_right = 327.0
+offset_bottom = 67.0
+theme_override_colors/font_color = Color(0.870588, 0.960784, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 16
+text = "ENTER WORLD NAME"
+vertical_alignment = 1
+
+[node name="WorldInput" type="LineEdit" parent="JoinPanel" unique_id=339740]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 14.0
+offset_right = 565.0
+offset_bottom = 68.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_placeholder_color = Color(0.870588, 0.960784, 1, 0.5)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_nkht7")
+theme_override_styles/focus = SubResource("StyleBoxTexture_input")
+text = "ENTER WORLD NAME..."
+placeholder_text = "ENTER WORLD NAME..."
+alignment = 1
+
+[node name="JoinButton" type="Button" parent="JoinPanel" unique_id=2029794244]
+layout_mode = 0
+offset_left = 573.0
+offset_top = 13.0
+offset_right = 765.0
+offset_bottom = 68.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxTexture_drop_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w816g")
+theme_override_styles/hover = SubResource("StyleBoxTexture_i8c6c")
+text = "JOIN"

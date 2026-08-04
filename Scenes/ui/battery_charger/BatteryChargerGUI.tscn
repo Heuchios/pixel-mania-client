@@ -1,0 +1,345 @@
+[gd_scene format=3 uid="uid://dl3wnrog8x6y6"]
+
+[ext_resource type="Script" uid="uid://cb4iuadqolvy8" path="res://Scripts/battery_charger_ui.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ibwuhveruvw8" path="res://Assets/ui/inventory/slot_normal.png" id="2_6a5ks"]
+[ext_resource type="Texture2D" uid="uid://bc4yqbdvnpqiy" path="res://Assets/ui/pixelmania/close_button.png" id="3_3ffc3"]
+[ext_resource type="Texture2D" uid="uid://683ebx6h1263" path="res://Assets/ui/battery_charger/slot_normal.png" id="4_slot"]
+[ext_resource type="Texture2D" uid="uid://70a0lpbs82w2" path="res://Assets/ui/battery_charger/button_blue_normal.png" id="5_blue_normal"]
+[ext_resource type="Texture2D" uid="uid://ol7ex5xxv1kb" path="res://Assets/ui/battery_charger/button_blue_pressed.png" id="6_blue_pressed"]
+[ext_resource type="Texture2D" uid="uid://cr6latrpijp3e" path="res://Assets/ui/battery_charger/button_blue_hover.png" id="7_blue_hover"]
+[ext_resource type="Texture2D" uid="uid://c6l6h8g5ver62" path="res://Assets/ui/battery_charger/drop_button_normal.png" id="8_drop_normal"]
+[ext_resource type="Texture2D" uid="uid://7xtukv8dr85e" path="res://Assets/ui/battery_charger/drop_button_pressed.png" id="9_drop_pressed"]
+[ext_resource type="Texture2D" uid="uid://1fohmq54mxn" path="res://Assets/ui/battery_charger/drop_button_hover.png" id="10_drop_hover"]
+[ext_resource type="Texture2D" uid="uid://cexoax4fixdao" path="res://Assets/blocks/electric/battery.png" id="11_battery"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cbgmd"]
+texture = ExtResource("3_3ffc3")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_555i3"]
+texture = ExtResource("3_3ffc3")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3ffc3"]
+texture = ExtResource("3_3ffc3")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6a5ks"]
+texture = ExtResource("3_3ffc3")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_normal"]
+texture = ExtResource("5_blue_normal")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_pressed"]
+texture = ExtResource("6_blue_pressed")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_hover"]
+texture = ExtResource("7_blue_hover")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_drop_normal"]
+texture = ExtResource("8_drop_normal")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_drop_pressed"]
+texture = ExtResource("9_drop_pressed")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_drop_hover"]
+texture = ExtResource("10_drop_hover")
+
+[node name="BatteryChargerUI" type="Control" unique_id=42617944]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="Dimmer" type="ColorRect" parent="." unique_id=198862584]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.00392157, 0.0156863, 0.027451, 0.42)
+
+[node name="Window" type="Control" parent="." unique_id=2115534325]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -310.0
+offset_top = -195.0
+offset_right = 310.0
+offset_bottom = 195.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WindowSkin" type="NinePatchRect" parent="Window" unique_id=1761343740]
+layout_mode = 0
+offset_right = 620.0
+offset_bottom = 390.0
+texture = ExtResource("2_6a5ks")
+patch_margin_left = 36
+patch_margin_top = 36
+patch_margin_right = 36
+patch_margin_bottom = 36
+
+[node name="HeaderCard" type="NinePatchRect" parent="Window" unique_id=1635218487]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 16.0
+offset_right = 602.0
+offset_bottom = 88.0
+mouse_filter = 0
+patch_margin_left = 26
+patch_margin_top = 24
+patch_margin_right = 26
+patch_margin_bottom = 24
+
+[node name="TitleLabel" type="Label" parent="Window/HeaderCard" unique_id=1031079839]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 8.0
+offset_right = 310.0
+offset_bottom = 42.0
+theme_override_font_sizes/font_size = 27
+text = "BATTERY CHARGER"
+vertical_alignment = 1
+
+[node name="StatusBadge" type="Label" parent="Window/HeaderCard" unique_id=1991504208]
+layout_mode = 0
+offset_left = 393.0
+offset_top = 7.0
+offset_right = 517.0
+offset_bottom = 45.0
+theme_override_font_sizes/font_size = 18
+text = "IDLE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Window" unique_id=2061971699]
+custom_minimum_size = Vector2(52, 44)
+layout_mode = 0
+offset_left = 568.0
+offset_top = -8.0
+offset_right = 628.0
+offset_bottom = 52.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_cbgmd")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_555i3")
+theme_override_styles/hover = SubResource("StyleBoxTexture_3ffc3")
+theme_override_styles/focus = SubResource("StyleBoxTexture_6a5ks")
+text = "X"
+
+[node name="BatteryCard" type="NinePatchRect" parent="Window" unique_id=1088409925]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 106.0
+offset_right = 251.0
+offset_bottom = 344.0
+mouse_filter = 0
+texture = ExtResource("2_6a5ks")
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="BatteryTitle" type="Label" parent="Window/BatteryCard" unique_id=608015276]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 10.0
+offset_right = 160.0
+offset_bottom = 34.0
+theme_override_font_sizes/font_size = 17
+text = "BATTERIES"
+vertical_alignment = 1
+
+[node name="OutputBatterySlot" type="NinePatchRect" parent="Window/BatteryCard" unique_id=1024827472]
+layout_mode = 0
+offset_left = 68.0
+offset_top = 63.0
+offset_right = 148.0
+offset_bottom = 143.0
+texture = ExtResource("4_slot")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+
+[node name="OutputBatteryIcon" type="TextureRect" parent="Window/BatteryCard/OutputBatterySlot" unique_id=1083077388]
+visible = false
+layout_mode = 0
+offset_left = 13.0
+offset_top = 12.0
+offset_right = 67.0
+offset_bottom = 66.0
+mouse_filter = 2
+texture = ExtResource("11_battery")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CollectButton" type="Button" parent="Window/BatteryCard" unique_id=266111382]
+custom_minimum_size = Vector2(100, 34)
+layout_mode = 0
+offset_left = 59.0
+offset_top = 180.0
+offset_right = 159.0
+offset_bottom = 214.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.75)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+disabled = true
+text = "COLLECT"
+
+[node name="ChargeCard" type="NinePatchRect" parent="Window" unique_id=1343915562]
+layout_mode = 0
+offset_left = 266.0
+offset_top = 106.0
+offset_right = 596.0
+offset_bottom = 228.0
+mouse_filter = 0
+texture = ExtResource("2_6a5ks")
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="ChargeTitle" type="Label" parent="Window/ChargeCard" unique_id=569025104]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 10.0
+offset_right = 148.0
+offset_bottom = 34.0
+theme_override_font_sizes/font_size = 17
+text = "CHARGE"
+vertical_alignment = 1
+
+[node name="ChargeValueLabel" type="Label" parent="Window/ChargeCard" unique_id=634437029]
+layout_mode = 0
+offset_left = 210.0
+offset_top = 12.0
+offset_right = 304.0
+offset_bottom = 36.0
+theme_override_font_sizes/font_size = 17
+text = "0%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ChargeMeterBack" type="Panel" parent="Window/ChargeCard" unique_id=766983341]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 50.0
+offset_right = 310.0
+offset_bottom = 74.0
+mouse_filter = 2
+
+[node name="ChargeFill" type="ColorRect" parent="Window/ChargeCard/ChargeMeterBack" unique_id=1498505711]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 4.0
+offset_bottom = 20.0
+mouse_filter = 2
+color = Color(1, 0.84, 0.05, 1)
+
+[node name="PowerLabel" type="Label" parent="Window/ChargeCard" unique_id=1642052121]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 84.0
+offset_right = 156.0
+offset_bottom = 106.0
+theme_override_font_sizes/font_size = 14
+text = "Power: offline"
+vertical_alignment = 1
+
+[node name="StoredLabel" type="Label" parent="Window/ChargeCard" unique_id=741047818]
+layout_mode = 0
+offset_left = 164.0
+offset_top = 84.0
+offset_right = 310.0
+offset_bottom = 106.0
+theme_override_font_sizes/font_size = 14
+text = "Stored: 0h / 24h"
+horizontal_alignment = 2
+vertical_alignment = 1
+clip_text = true
+
+[node name="ActionCard" type="NinePatchRect" parent="Window" unique_id=390205344]
+layout_mode = 0
+offset_left = 266.0
+offset_top = 246.0
+offset_right = 596.0
+offset_bottom = 344.0
+mouse_filter = 0
+texture = ExtResource("2_6a5ks")
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
+
+[node name="ActionTitle" type="Label" parent="Window/ActionCard" unique_id=77104456]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 10.0
+offset_right = 110.0
+offset_bottom = 34.0
+theme_override_font_sizes/font_size = 17
+text = "ACTION"
+vertical_alignment = 1
+
+[node name="StartButton" type="Button" parent="Window/ActionCard" unique_id=144507681]
+custom_minimum_size = Vector2(94, 38)
+layout_mode = 0
+offset_left = 138.0
+offset_top = 43.0
+offset_right = 232.0
+offset_bottom = 81.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.75)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_blue_normal")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "START"
+
+[node name="EjectButton" type="Button" parent="Window/ActionCard" unique_id=1670237245]
+custom_minimum_size = Vector2(84, 38)
+layout_mode = 0
+offset_left = 34.0
+offset_top = 42.0
+offset_right = 118.0
+offset_bottom = 80.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.75)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_drop_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_drop_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_drop_hover")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_drop_normal")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+disabled = true
+text = "EJECT"

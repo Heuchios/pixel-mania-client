@@ -1,0 +1,95 @@
+[gd_scene format=3 uid="uid://62fkrgk0yq81"]
+
+[ext_resource type="PackedScene" uid="uid://c3kvnyj18kku" path="res://Scenes/particles/CeilingLightParticlesFX.tscn" id="1_lightfx_scene"]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_block"]
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[node name="CeilingLightParticlesFXPreview" type="Node2D" unique_id=276654960]
+
+[node name="PreviewDarkness" type="CanvasModulate" parent="." unique_id=1980740061]
+color = Color(0.045, 0.055, 0.075, 1)
+
+[node name="BackWall" type="Polygon2D" parent="." unique_id=352458139]
+color = Color(0.12, 0.15, 0.19, 1)
+polygon = PackedVector2Array(-160, -112, 160, -112, 160, 112, -160, 112)
+
+[node name="Floor" type="Node2D" parent="." unique_id=2101963709]
+position = Vector2(0, 80)
+
+[node name="Visual" type="Polygon2D" parent="Floor" unique_id=812951454]
+color = Color(0.23, 0.24, 0.27, 1)
+polygon = PackedVector2Array(-112, -16, 112, -16, 112, 16, -112, 16)
+
+[node name="Occluder" type="LightOccluder2D" parent="Floor" unique_id=1775255080]
+occluder = SubResource("OccluderPolygon2D_block")
+
+[node name="LeftWall" type="Node2D" parent="." unique_id=2045874425]
+position = Vector2(-64, 16)
+
+[node name="Visual" type="Polygon2D" parent="LeftWall" unique_id=349804571]
+color = Color(0.22, 0.24, 0.28, 1)
+polygon = PackedVector2Array(-16, -80, 16, -80, 16, 80, -16, 80)
+
+[node name="OccluderTop" type="LightOccluder2D" parent="LeftWall" unique_id=638687456]
+position = Vector2(0, -48)
+occluder = SubResource("OccluderPolygon2D_block")
+
+[node name="OccluderMid" type="LightOccluder2D" parent="LeftWall" unique_id=1347858184]
+position = Vector2(0, -16)
+occluder = SubResource("OccluderPolygon2D_block")
+
+[node name="OccluderLow" type="LightOccluder2D" parent="LeftWall" unique_id=316112198]
+position = Vector2(0, 16)
+occluder = SubResource("OccluderPolygon2D_block")
+
+[node name="RightWall" type="Node2D" parent="." unique_id=1163572321]
+position = Vector2(64, 16)
+
+[node name="Visual" type="Polygon2D" parent="RightWall" unique_id=2032170633]
+color = Color(0.22, 0.24, 0.28, 1)
+polygon = PackedVector2Array(-16, -80, 16, -80, 16, 80, -16, 80)
+
+[node name="OccluderTop" type="LightOccluder2D" parent="RightWall" unique_id=1295488800]
+position = Vector2(0, -48)
+occluder = SubResource("OccluderPolygon2D_block")
+
+[node name="OccluderMid" type="LightOccluder2D" parent="RightWall" unique_id=1964890159]
+position = Vector2(0, -16)
+occluder = SubResource("OccluderPolygon2D_block")
+
+[node name="OccluderLow" type="LightOccluder2D" parent="RightWall" unique_id=2048705179]
+position = Vector2(0, 16)
+occluder = SubResource("OccluderPolygon2D_block")
+
+[node name="Ceiling" type="Node2D" parent="." unique_id=192257913]
+position = Vector2(0, -48)
+
+[node name="Visual" type="Polygon2D" parent="Ceiling" unique_id=1884079559]
+color = Color(0.26, 0.27, 0.3, 1)
+polygon = PackedVector2Array(-112, -16, 112, -16, 112, 16, -112, 16)
+
+[node name="LeftOccluder" type="LightOccluder2D" parent="Ceiling" unique_id=1121572686]
+position = Vector2(-64, 0)
+occluder = SubResource("OccluderPolygon2D_block")
+
+[node name="MidLeftOccluder" type="LightOccluder2D" parent="Ceiling" unique_id=1882044208]
+position = Vector2(-32, 0)
+occluder = SubResource("OccluderPolygon2D_block")
+
+[node name="MidRightOccluder" type="LightOccluder2D" parent="Ceiling" unique_id=1069561348]
+position = Vector2(32, 0)
+occluder = SubResource("OccluderPolygon2D_block")
+
+[node name="RightOccluder" type="LightOccluder2D" parent="Ceiling" unique_id=2051157363]
+position = Vector2(64, 0)
+occluder = SubResource("OccluderPolygon2D_block")
+
+[node name="CeilingLightParticlesFX" parent="." unique_id=2018637556 instance=ExtResource("1_lightfx_scene")]
+position = Vector2(0, -46)
+light_color = Color(1, 0.78, 0.38, 1)
+light_energy = 1.35
+bulb_glow_energy = 0.45
+beam_alpha = 0.42
+show_fixture = true
+flicker_strength = 0.08

@@ -1,0 +1,177 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/wing_dual_sparkle_particles_fx.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ci2m11blt7mtx" path="res://Assets/effects/angel_wing_sparkle.svg" id="2_sparkle"]
+[ext_resource type="Texture2D" uid="uid://dt76qpdgrjdoh" path="res://Assets/particles/fire.png" id="3_fire"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_additive"]
+blend_mode = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_idle_fall_gold"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(5, 2, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 22.0
+initial_velocity_min = 8.0
+initial_velocity_max = 24.0
+angular_velocity_min = -240.0
+angular_velocity_max = 240.0
+gravity = Vector3(0, 14, 0)
+damping_min = 1.0
+damping_max = 2.8
+scale_min = 0.12
+scale_max = 0.42
+color = Color(1, 0.88, 0.2, 0.9)
+hue_variation_min = -0.04
+hue_variation_max = 0.06
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_idle_fall_fire"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(5, 2, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 22.0
+initial_velocity_min = 8.0
+initial_velocity_max = 24.0
+angular_velocity_min = -300.0
+angular_velocity_max = 300.0
+gravity = Vector3(0, 14, 0)
+damping_min = 1.0
+damping_max = 2.8
+scale_min = 0.12
+scale_max = 0.42
+color = Color(1, 0.33, 0.08, 0.95)
+hue_variation_min = -0.05
+hue_variation_max = 0.12
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_idle_soft"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(18, 5, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 36.0
+initial_velocity_min = 5.0
+initial_velocity_max = 16.0
+angular_velocity_min = -120.0
+angular_velocity_max = 120.0
+gravity = Vector3(0, 10, 0)
+damping_min = 1.4
+damping_max = 3.4
+scale_min = 0.08
+scale_max = 0.24
+color = Color(1, 0.96, 0.48, 0.46)
+hue_variation_min = -0.02
+hue_variation_max = 0.05
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_move_trail_gold"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(4, 6, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(-1, 0.12, 0)
+spread = 34.0
+initial_velocity_min = 34.0
+initial_velocity_max = 86.0
+angular_velocity_min = -540.0
+angular_velocity_max = 540.0
+color = Color(1, 0.88, 0.18, 0.84)
+gravity = Vector3(0, 12, 0)
+damping_min = 5.0
+damping_max = 11.0
+scale_min = 0.1
+scale_max = 0.36
+hue_variation_min = -0.04
+hue_variation_max = 0.07
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_move_trail_fire"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(4, 6, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(-1, 0.12, 0)
+spread = 34.0
+initial_velocity_min = 34.0
+initial_velocity_max = 86.0
+angular_velocity_min = -540.0
+angular_velocity_max = 540.0
+color = Color(1, 0.28, 0.03, 0.88)
+gravity = Vector3(0, 12, 0)
+damping_min = 5.0
+damping_max = 11.0
+scale_min = 0.1
+scale_max = 0.36
+hue_variation_min = -0.07
+hue_variation_max = 0.12
+
+[node name="WingDualSparkleParticlesFX" type="Node2D"]
+z_index = 72
+script = ExtResource("1_script")
+
+[node name="IdleLeftFireSparkles" type="GPUParticles2D" parent="."]
+z_index = 4
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(-18, 7)
+amount = 18
+texture = ExtResource("3_fire")
+lifetime = 1.15
+preprocess = 1.15
+randomness = 0.56
+visibility_rect = Rect2(-18, -10, 36, 58)
+process_material = SubResource("ParticleProcessMaterial_idle_fall_fire")
+
+[node name="IdleRightGoldSparkles" type="GPUParticles2D" parent="."]
+z_index = 4
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(18, 7)
+amount = 18
+texture = ExtResource("2_sparkle")
+lifetime = 1.15
+preprocess = 1.15
+randomness = 0.56
+visibility_rect = Rect2(-18, -10, 36, 58)
+process_material = SubResource("ParticleProcessMaterial_idle_fall_gold")
+
+[node name="IdleSoftFallingGlow" type="GPUParticles2D" parent="."]
+z_index = 3
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(0, 5)
+amount = 20
+texture = ExtResource("2_sparkle")
+lifetime = 1.35
+preprocess = 1.35
+randomness = 0.68
+visibility_rect = Rect2(-28, -12, 56, 64)
+process_material = SubResource("ParticleProcessMaterial_idle_soft")
+
+[node name="TrailLeftFireSparkles" type="GPUParticles2D" parent="."]
+z_index = 5
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(-20, 7)
+amount = 32
+texture = ExtResource("3_fire")
+lifetime = 0.58
+preprocess = 0.58
+randomness = 0.42
+visibility_rect = Rect2(-66, -18, 74, 42)
+process_material = SubResource("ParticleProcessMaterial_move_trail_fire")
+
+[node name="TrailRightGoldSparkles" type="GPUParticles2D" parent="."]
+z_index = 5
+material = SubResource("CanvasItemMaterial_additive")
+position = Vector2(20, 7)
+amount = 32
+texture = ExtResource("2_sparkle")
+lifetime = 0.58
+preprocess = 0.58
+randomness = 0.42
+visibility_rect = Rect2(-66, -18, 74, 42)
+process_material = SubResource("ParticleProcessMaterial_move_trail_gold")
