@@ -5075,6 +5075,14 @@ func update_back_item_animation(delta: float):
 		equipment_manager.update_back_item_animation(delta)
 
 
+func is_applying_server_player_state() -> bool:
+	if save_manager == null:
+		return false
+	if not ("applying_server_player_data" in save_manager):
+		return false
+	return bool(save_manager.applying_server_player_data)
+
+
 func update_equipment_visual():
 	if MovementMode.is_netfox_real():
 		if player != null:
@@ -5121,6 +5129,15 @@ func update_equipment_visual():
 	equipped_ride_item = str(equipped_ride_item)
 
 	if equipment_manager == null:
+		return
+
+	# While authoritative player state is being applied, the equipped_* fields are
+	# written twice: first from the server copy (which still holds the previously
+	# equipped item until our own save lands), then restored to the local loadout.
+	# Only the second value is real. Rendering the first one rebuilds SpriteFrames
+	# for every slot for nothing and can briefly show the old item. The applier
+	# calls this again once the loadout has settled.
+	if is_applying_server_player_state():
 		return
 
 	var equipment_visual_key: String = str(player_facing_direction) + "|" + equipped_tool + "|" + equipped_back_item + "|" + equipped_hat_item + "|" + equipped_hair_item + "|" + equipped_eyewear_item + "|" + equipped_shirt_item + "|" + equipped_pants_item + "|" + equipped_shoes_item + "|" + equipped_ride_item

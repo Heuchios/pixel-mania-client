@@ -2327,6 +2327,11 @@ func apply_network_player_state(data: Dictionary):
 	world.player_data_loaded_from_file = true
 	save_player_data(false)
 	applying_server_player_data = false
+	# Equipment refreshes were suppressed for the whole apply above, because the
+	# server copy is written before the local loadout is restored over it. Render
+	# the settled loadout exactly once, so the previously equipped item is never
+	# put on screen on the way through.
+	world.update_equipment_visual()
 	last_server_player_state_username = normalized_username
 	last_server_player_state_hash = payload_hash
 	last_server_player_state_saved_at = payload_saved_at
