@@ -4290,6 +4290,29 @@ const ITEMS = {
 		"order": 204
 	},
 
+	"flaming_hair": {
+		"category": "hair",
+		"display_name": "Flaming Hair",
+		"rarity": "common",
+		"texture": "flaming_hair_1",
+		"inventory_icon": "flaming_hair_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"animation_fps": 5.0,
+		"hair_animations": {
+			"idle": {
+				"frames": ["flaming_hair_1", "flaming_hair_2", "flaming_hair_3", "flaming_hair_4"],
+				"fps": 5.0,
+				"loop": true
+			}
+		},
+		"order": 204
+	},
+
 	"hairpack": {
 		"category": "material",
 		"display_name": "Hair Pack",
