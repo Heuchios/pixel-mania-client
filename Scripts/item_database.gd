@@ -4267,6 +4267,29 @@ const ITEMS = {
 		"order": 204
 	},
 
+	"frosty_hair": {
+		"category": "hair",
+		"display_name": "Frosty Hair",
+		"rarity": "common",
+		"texture": "frosty_hair_1",
+		"inventory_icon": "frosty_hair_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"animation_fps": 5.0,
+		"hair_animations": {
+			"idle": {
+				"frames": ["frosty_hair_1", "frosty_hair_2", "frosty_hair_3", "frosty_hair_4"],
+				"fps": 5.0,
+				"loop": true
+			}
+		},
+		"order": 204
+	},
+
 	"hairpack": {
 		"category": "material",
 		"display_name": "Hair Pack",
