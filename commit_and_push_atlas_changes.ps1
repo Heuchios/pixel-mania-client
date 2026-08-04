@@ -51,14 +51,15 @@ if (-not $staged) {
 }
 
 $commitMessage = @"
-Add frosty_hair item with 4-frame idle animation
+Add flaming_hair item with 4-frame idle animation
 
-- Add frosty_hair atlas frames (icon @12,9; animated hair @13,9-16,9
-  in wearable.png) to wearable_atlas.json.
-- Add frosty_hair item to item_database.gd using the hair_animations
-  map (same mechanism as void_visor's eyewear_animations) so the
-  4-frame sparkle loops continuously via the idle animation, copied
-  to walk/jump/fall by ensure_standard_wearable_animations.
+- Add flaming_hair atlas frames (icon @12,10; animated hair @13,10-16,10
+  in wearable.png) to wearable_atlas.json, same layout pattern as
+  frosty_hair one row up.
+- Add flaming_hair item to item_database.gd using the hair_animations
+  map (same mechanism as frosty_hair/void_visor) so the 4-frame flame
+  flicker loops continuously via the idle animation, copied to
+  walk/jump/fall by ensure_standard_wearable_animations.
 "@
 
 Write-Host ""

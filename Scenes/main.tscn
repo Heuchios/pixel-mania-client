@@ -26,6 +26,7 @@
 [ext_resource type="Texture2D" uid="uid://csq4ysed4e5v2" path="res://Assets/player/expressions/underwater.png" id="20_r33sp"]
 [ext_resource type="FontFile" uid="uid://e0ivgh0c6uck" path="res://Assets/font/font.ttf" id="23_u50mg"]
 [ext_resource type="Texture2D" uid="uid://clbfwpmntdmj" path="res://image.png" id="26_cbgmd"]
+[ext_resource type="Texture2D" uid="uid://bmgnqd6c8iis8" path="res://Assets/items/wearable.png" id="27_1w6v2"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_gt3je"]
 animations = [{
@@ -219,7 +220,41 @@ animations = [{
 "speed": 1.0
 }]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_1w6v2"]
+atlas = ExtResource("27_1w6v2")
+region = Rect2(416, 288, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ueoa1"]
+atlas = ExtResource("27_1w6v2")
+region = Rect2(448, 288, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6vcvc"]
+atlas = ExtResource("27_1w6v2")
+region = Rect2(480, 288, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7k868"]
+atlas = ExtResource("27_1w6v2")
+region = Rect2(512, 288, 32, 32)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_8gbba"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1w6v2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ueoa1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6vcvc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7k868")
+}],
+"loop": 1,
+"name": &"hair",
+"speed": 5.0
+}]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_beard"]
 
@@ -3196,7 +3231,8 @@ z_index = 4
 sprite_frames = SubResource("SpriteFrames_kry3j")
 
 [node name="LeftSleeveAnimated" type="AnimatedSprite2D" parent="Player/PlayerVisual/LeftArm" unique_id=580323188]
-position = Vector2(6, 3)
+visible = false
+position = Vector2(13, -4)
 sprite_frames = SubResource("SpriteFrames_21xkr")
 
 [node name="Bottom" type="Node2D" parent="Player/PlayerVisual" unique_id=150284632]
@@ -3206,8 +3242,7 @@ z_index = 10
 sprite_frames = SubResource("SpriteFrames_344ge")
 
 [node name="PantsAnimated" type="AnimatedSprite2D" parent="Player/PlayerVisual/Bottom" unique_id=911096895]
-visible = false
-position = Vector2(0, 10)
+position = Vector2(0, 11)
 sprite_frames = SubResource("SpriteFrames_pants_item")
 
 [node name="Tsunami" type="Sprite2D" parent="Player/PlayerVisual/Bottom" unique_id=224058720]
@@ -3223,7 +3258,7 @@ sprite_frames = SubResource("SpriteFrames_body")
 
 [node name="ShirtBodyAnimated" type="AnimatedSprite2D" parent="Player/PlayerVisual/Body" unique_id=975217255]
 visible = false
-position = Vector2(1, 4)
+position = Vector2(1, -4)
 sprite_frames = SubResource("SpriteFrames_shirt_item")
 
 [node name="NecklaceAnimated" type="AnimatedSprite2D" parent="Player/PlayerVisual/Body" unique_id=1412660288]
@@ -3247,8 +3282,10 @@ sprite_frames = SubResource("SpriteFrames_face_expression")
 animation = &"dead"
 
 [node name="HairAnimated" type="AnimatedSprite2D" parent="Player/PlayerVisual/Head" unique_id=477111210]
-position = Vector2(0, -13)
+position = Vector2(-1, -12)
 sprite_frames = SubResource("SpriteFrames_8gbba")
+animation = &"hair"
+frame_progress = 0.126365
 
 [node name="BeardAnimated" type="AnimatedSprite2D" parent="Player/PlayerVisual/Head" unique_id=207813128]
 visible = false
@@ -3259,7 +3296,8 @@ visible = false
 sprite_frames = SubResource("SpriteFrames_eyewear")
 
 [node name="HatAnimated" type="AnimatedSprite2D" parent="Player/PlayerVisual/Head" unique_id=2007669365]
-position = Vector2(0, -16)
+visible = false
+position = Vector2(-1, -12)
 sprite_frames = SubResource("SpriteFrames_jjvhh")
 
 [node name="HandItem" type="Node2D" parent="Player/PlayerVisual" unique_id=1006858322]
@@ -3292,8 +3330,7 @@ position = Vector2(-0.0025634766, -0.083099365)
 sprite_frames = SubResource("SpriteFrames_right_hand")
 
 [node name="RightSleeveAnimated" type="AnimatedSprite2D" parent="Player/PlayerVisual/RightArm" unique_id=1665327662]
-visible = false
-position = Vector2(-5.9993896, 3.034912)
+position = Vector2(1.0006104, -3.965088)
 sprite_frames = SubResource("SpriteFrames_right_sleeve")
 
 [node name="ChatBubbleAnchor" type="Marker2D" parent="Player" unique_id=1926947233]
