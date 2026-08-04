@@ -3448,7 +3448,7 @@ const ITEMS = {
 		"category": "material",
 		"display_name": "Basic Items Pack",
 		"rarity": "common",
-		"texture": "res://Assets/items/basic_items_pack/messy_brown_hair.png",
+		"texture": "messy_brown_hair_icon",
 		"starting_count": 0,
 		"shop_pack": true,
 		"pack_rewards": BASIC_ITEMS_PACK_REWARDS,
