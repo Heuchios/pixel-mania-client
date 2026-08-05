@@ -17,6 +17,7 @@ var left_foot_animated = null
 var hat_item_animated = null
 var hair_item_animated = null
 var eyewear_item_animated = null
+var beard_item_animated = null
 var facial_item_animated = null
 var right_sleeve_animated = null
 var right_hand_item_animated = null
@@ -143,6 +144,7 @@ func setup(parent_world, player_node, enable_profile_equipment_saving: bool = tr
 	update_equipped_hat_visual("", 1)
 	update_equipped_hair_visual("", 1)
 	update_equipped_eyewear_visual("", 1)
+	update_equipped_beard_visual("", 1)
 	update_equipped_shirt_visual("", 1)
 	update_equipped_pants_visual("", 1)
 	update_equipped_shoes_visual("", 1)
@@ -173,6 +175,7 @@ func clear_player_references():
 	hat_item_animated = null
 	hair_item_animated = null
 	eyewear_item_animated = null
+	beard_item_animated = null
 	facial_item_animated = null
 	right_sleeve_animated = null
 	right_hand_item_animated = null
@@ -249,6 +252,7 @@ func setup_wearable_animated_parts():
 	hat_item_animated = setup_wearable_part_node("hat", "PlayerVisual/Head/HatAnimated", null, DEFAULT_HEAD_ITEM_OFFSET, 3)
 	hair_item_animated = setup_wearable_part_node("hair", "PlayerVisual/Head/HairAnimated", null, DEFAULT_HEAD_ITEM_OFFSET, 2)
 	eyewear_item_animated = setup_wearable_part_node("eyewear", "PlayerVisual/Head/EyewearAnimated", null, DEFAULT_HEAD_ITEM_OFFSET, 3)
+	beard_item_animated = setup_wearable_part_node("beard", "PlayerVisual/Head/BeardAnimated", null, DEFAULT_HEAD_ITEM_OFFSET, 3)
 	facial_item_animated = setup_wearable_part_node("facial", "PlayerVisual/Head/FaceExpressionAnimated", null, DEFAULT_HEAD_ITEM_OFFSET, 3)
 	right_sleeve_animated = setup_wearable_part_node("right_sleeve", "PlayerVisual/RightArm/RightSleeveAnimated", null, DEFAULT_RIGHT_SLEEVE_OFFSET, 1)
 	left_sleeve_animated = setup_wearable_part_node("left_sleeve", "PlayerVisual/LeftArm/LeftSleeveAnimated", null, DEFAULT_LEFT_SLEEVE_OFFSET, 1)
@@ -464,7 +468,6 @@ func set_wearable_part(
 		return false
 
 	var current_item_id = str(wearable_part_item_ids.get(part_key, ""))
-	var rebuilt_sprite_frames := false
 	if current_item_id != item_id or part.sprite_frames == null:
 		var sprite_frames = build_wearable_sprite_frames(item_data, part_key, texture_specs)
 		if sprite_frames == null:
@@ -472,15 +475,9 @@ func set_wearable_part(
 			return false
 		part.sprite_frames = sprite_frames
 		wearable_part_item_ids[part_key] = item_id
-		rebuilt_sprite_frames = true
 
 	part.visible = true
-	# A rebuilt SpriteFrames must be re-latched even when the animation name did
-	# not change. Without this the sprite keeps playing at its old frame index and
-	# renders the previously equipped item until it happens to catch up, which is
-	# only visible when swapping item to item (an empty slot is hidden, so it has
-	# nothing stale to show).
-	play_wearable_part_animation(part, get_current_wearable_animation_name(), rebuilt_sprite_frames)
+	play_wearable_part_animation(part, get_current_wearable_animation_name())
 	return true
 
 
@@ -727,7 +724,7 @@ func set_forced_animation_state(animation_state: String):
 	wearable_animation_state = ""
 
 
-func play_wearable_part_animation(part: AnimatedSprite2D, animation_name: String, force_restart: bool = false):
+func play_wearable_part_animation(part: AnimatedSprite2D, animation_name: String):
 	if part == null or part.sprite_frames == null:
 		return
 
@@ -748,8 +745,7 @@ func play_wearable_part_animation(part: AnimatedSprite2D, animation_name: String
 	if part.sprite_frames.get_frame_count(target_animation) <= 1:
 		part.stop()
 		part.frame = 0
-	elif animation_changed or force_restart:
-		part.frame = 0
+	elif animation_changed:
 		part.play(target_animation)
 	elif not part.is_playing() and part.sprite_frames.get_animation_loop(target_animation):
 		part.play(target_animation)
@@ -1017,6 +1013,42 @@ func update_equipped_eyewear_visual(eyewear_item, facing_direction: int):
 	var scale_value = float(item_data.get("slot_scale", 1.0))
 	var z_value = int(item_data.get("slot_z_index", 3))
 	set_wearable_part("eyewear", eyewear_item, item_data, [texture], part_position, is_facing_left, bool(item_data.get("eyewear_flip_with_facing", true)), scale_value, z_value)
+
+
+func update_equipped_beard_visual(beard_item, facing_direction: int):
+	if player == null:
+		return
+
+	if beard_item == null:
+		beard_item = ""
+
+	beard_item = str(beard_item)
+
+	if beard_item == "":
+		hide_wearable_part("beard")
+		return
+
+	var item_data = {}
+	if world != null and world.item_database.has(beard_item):
+		var raw_data = world.item_database[beard_item]
+		if raw_data is Dictionary:
+			item_data = raw_data
+
+	var texture = null
+	if world != null and "beard_textures" in world and world.beard_textures.has(beard_item):
+		texture = world.beard_textures[beard_item]
+	else:
+		texture = AtlasTextureFactory.load_texture(item_data.get("texture", null))
+
+	if texture == null:
+		hide_wearable_part("beard")
+		return
+
+	var is_facing_left = facing_direction < 0
+	var part_position = Vector2.ZERO
+	var scale_value = float(item_data.get("slot_scale", 1.0))
+	var z_value = int(item_data.get("slot_z_index", 3))
+	set_wearable_part("beard", beard_item, item_data, [texture], part_position, is_facing_left, bool(item_data.get("beard_flip_with_facing", true)), scale_value, z_value)
 
 
 func update_equipped_shirt_visual(shirt_item, facing_direction: int):

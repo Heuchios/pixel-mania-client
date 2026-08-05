@@ -960,6 +960,7 @@ func collect_tradable_items() -> Array:
 	add_inventory_items(items, "hat", "hat_inventory")
 	add_inventory_items(items, "hair", "hair_inventory")
 	add_inventory_items(items, "eyewear", "eyewear_inventory")
+	add_inventory_items(items, "beard", "beard_inventory")
 	add_inventory_items(items, "shirt", "shirt_inventory")
 	add_inventory_items(items, "pants", "pants_inventory")
 	add_inventory_items(items, "shoes", "shoes_inventory")

@@ -2786,6 +2786,7 @@ func handle_network_player_position(player_data: Dictionary):
 			"hat": str(player_data.get("equipped_hat_item", "")),
 			"hair": str(player_data.get("equipped_hair_item", "")),
 			"eyewear": str(player_data.get("equipped_eyewear_item", "")),
+			"beard": str(player_data.get("equipped_beard_item", "")),
 			"shirt": str(player_data.get("equipped_shirt_item", "")),
 			"pants": str(player_data.get("equipped_pants_item", "")),
 			"shoes": str(player_data.get("equipped_shoes_item", "")),
@@ -3015,6 +3016,7 @@ func normalize_remote_equipment_slots(raw_slots) -> Dictionary:
 		"hat": "",
 		"hair": "",
 		"eyewear": "",
+		"beard": "",
 		"shirt": "",
 		"pants": "",
 		"shoes": "",
@@ -4884,7 +4886,7 @@ func update_remote_equipment_visuals(remote_player):
 		remote_player.add_child(equipment_root)
 
 	var known_slots = [
-		"back", "hand", "hair", "eyewear", "head", "hat", "eyes", "face",
+		"back", "hand", "hair", "eyewear", "beard", "head", "hat", "eyes", "face",
 		"shirt", "pants", "legs", "feet", "shoes", "ride",
 		"neck", "aura"
 	]
@@ -4922,6 +4924,8 @@ func update_remote_shared_equipment_visuals(remote_player) -> bool:
 		equipment_manager.update_equipped_hair_visual(str(equipment_slots.get("hair", "")), facing)
 	if equipment_manager.has_method("update_equipped_eyewear_visual"):
 		equipment_manager.update_equipped_eyewear_visual(str(equipment_slots.get("eyewear", "")), facing)
+	if equipment_manager.has_method("update_equipped_beard_visual"):
+		equipment_manager.update_equipped_beard_visual(str(equipment_slots.get("beard", "")), facing)
 	if equipment_manager.has_method("update_equipped_shirt_visual"):
 		equipment_manager.update_equipped_shirt_visual(str(equipment_slots.get("shirt", "")), facing)
 	if equipment_manager.has_method("update_equipped_pants_visual"):
@@ -4956,7 +4960,7 @@ func refresh_remote_equipment_slot_transforms(remote_player):
 		return
 
 	var known_slots = [
-		"back", "hand", "hair", "eyewear", "head", "hat", "eyes", "face",
+		"back", "hand", "hair", "eyewear", "beard", "head", "hat", "eyes", "face",
 		"shirt", "pants", "legs", "feet", "shoes", "ride",
 		"neck", "aura"
 	]
@@ -5030,6 +5034,9 @@ func get_remote_item_texture(item_id: String, slot_name: String, item_data: Dict
 		if slot_name == "eyewear" and world.eyewear_textures.has(item_id):
 			return world.eyewear_textures[item_id]
 
+		if slot_name == "beard" and world.beard_textures.has(item_id):
+			return world.beard_textures[item_id]
+
 		if slot_name == "shirt" and world.shirt_textures.has(item_id):
 			return world.shirt_textures[item_id]
 
@@ -5056,6 +5063,9 @@ func get_remote_item_texture(item_id: String, slot_name: String, item_data: Dict
 
 		if world.eyewear_textures.has(item_id):
 			return world.eyewear_textures[item_id]
+
+		if world.beard_textures.has(item_id):
+			return world.beard_textures[item_id]
 
 		if world.shirt_textures.has(item_id):
 			return world.shirt_textures[item_id]
@@ -5231,6 +5241,7 @@ func apply_remote_generic_slot_transform(remote_player, slot_sprite: Sprite2D, s
 	var default_offsets = {
 		"hair": Vector2(0, -28),
 		"eyewear": Vector2(0, -28),
+		"beard": Vector2(0, -22),
 		"head": Vector2(0, -30),
 		"hat": Vector2(0, -38),
 		"eyes": Vector2(0, -23),
@@ -5255,7 +5266,7 @@ func apply_remote_generic_slot_transform(remote_player, slot_sprite: Sprite2D, s
 		slot_sprite.rotation_degrees = float(item_data.get("front_rotation", 0.0))
 	elif slot_name == "pants":
 		base_position = get_remote_pant_slot_position(facing_left)
-	elif slot_name == "hair" or slot_name == "eyewear":
+	elif slot_name == "hair" or slot_name == "eyewear" or slot_name == "beard":
 		base_position = get_remote_hair_slot_position(facing_left)
 
 	slot_sprite.position = base_position + (offset_left if facing_left else offset) + get_remote_slot_animation_offset(remote_player, slot_name, facing_left)
@@ -5279,7 +5290,7 @@ func get_remote_slot_animation_offset(remote_player, slot_name: String, facing_l
 			return Vector2(0.0, -abs(sin(phase)) * 1.0)
 		if ["pants", "legs", "feet", "shoes"].has(slot_name):
 			return Vector2(0.0, sin(phase) * 1.25)
-		if ["hair", "eyewear", "head", "hat", "eyes", "face"].has(slot_name):
+		if ["hair", "eyewear", "beard", "head", "hat", "eyes", "face"].has(slot_name):
 			return Vector2(0.0, -abs(sin(phase)) * 0.75)
 	if animation_state == "jump":
 		return Vector2(0.0, -1.5)

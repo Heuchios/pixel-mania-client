@@ -1338,6 +1338,12 @@ func add_item_to_correct_inventory(item_id: String, amount: int) -> bool:
 		world.add_item_to_inventory_stack(world.eyewear_inventory, item_id, category, amount)
 		return true
 
+	if category == "beard":
+		if not world.beard_inventory.has(item_id):
+			world.beard_inventory[item_id] = 0
+		world.add_item_to_inventory_stack(world.beard_inventory, item_id, category, amount)
+		return true
+
 	if category == "shirt":
 		if not world.shirt_inventory.has(item_id):
 			world.shirt_inventory[item_id] = 0
@@ -1402,6 +1408,8 @@ func remove_item_from_correct_inventory(item_id: String, amount: int) -> bool:
 		target_inventory = world.hair_inventory
 	elif category == "eyewear":
 		target_inventory = world.eyewear_inventory
+	elif category == "beard":
+		target_inventory = world.beard_inventory
 	elif category == "shirt":
 		target_inventory = world.shirt_inventory
 	elif category == "pants":

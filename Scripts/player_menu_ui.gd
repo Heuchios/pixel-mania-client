@@ -784,6 +784,7 @@ func get_active_equipment_data(profile_data: Dictionary) -> Dictionary:
 			"hat": str(world.equipped_hat_item),
 			"hair": str(world.equipped_hair_item),
 			"eyewear": str(world.equipped_eyewear_item),
+			"beard": str(world.equipped_beard_item),
 			"shirt": str(world.equipped_shirt_item),
 			"pants": str(world.equipped_pants_item)
 		}
@@ -798,6 +799,8 @@ func get_active_equipment_data(profile_data: Dictionary) -> Dictionary:
 		equipment_data["hair"] = str(profile_data.get("equipped_hair_item", ""))
 	if not equipment_data.has("eyewear"):
 		equipment_data["eyewear"] = str(profile_data.get("equipped_eyewear_item", ""))
+	if not equipment_data.has("beard"):
+		equipment_data["beard"] = str(profile_data.get("equipped_beard_item", ""))
 	if not equipment_data.has("shirt"):
 		equipment_data["shirt"] = str(profile_data.get("equipped_shirt_item", ""))
 	if not equipment_data.has("pants"):

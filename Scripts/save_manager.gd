@@ -42,6 +42,7 @@ const PLAYER_INVENTORY_SAVE_KEYS = [
 	"hat_inventory",
 	"hair_inventory",
 	"eyewear_inventory",
+	"beard_inventory",
 	"shirt_inventory",
 	"pants_inventory",
 	"shoes_inventory",
@@ -60,6 +61,7 @@ const PLAYER_LOADOUT_SAVE_KEYS = [
 	"equipped_hat_item",
 	"equipped_hair_item",
 	"equipped_eyewear_item",
+	"equipped_beard_item",
 	"equipped_shirt_item",
 	"equipped_pants_item",
 	"equipped_shoes_item",
@@ -1542,6 +1544,7 @@ func get_player_save_data() -> Dictionary:
 		"hat_inventory": world.hat_inventory,
 		"hair_inventory": world.hair_inventory,
 		"eyewear_inventory": world.eyewear_inventory,
+		"beard_inventory": world.beard_inventory,
 		"shirt_inventory": world.shirt_inventory,
 		"pants_inventory": world.pants_inventory,
 		"shoes_inventory": world.shoes_inventory,
@@ -1557,6 +1560,7 @@ func get_player_save_data() -> Dictionary:
 		"equipped_hat_item": str(world.equipped_hat_item) if world.equipped_hat_item != null else "",
 		"equipped_hair_item": str(world.equipped_hair_item) if world.equipped_hair_item != null else "",
 		"equipped_eyewear_item": str(world.equipped_eyewear_item) if world.equipped_eyewear_item != null else "",
+		"equipped_beard_item": str(world.equipped_beard_item) if world.equipped_beard_item != null else "",
 		"equipped_shirt_item": str(world.equipped_shirt_item) if world.equipped_shirt_item != null else "",
 		"equipped_pants_item": str(world.equipped_pants_item) if world.equipped_pants_item != null else "",
 		"equipped_shoes_item": str(world.equipped_shoes_item) if world.equipped_shoes_item != null else "",
@@ -1908,6 +1912,9 @@ func has_useful_player_data(data: Dictionary) -> bool:
 	if str(data.get("equipped_eyewear_item", "")) != "":
 		return true
 
+	if str(data.get("equipped_beard_item", "")) != "":
+		return true
+
 	if str(data.get("equipped_shirt_item", "")) != "":
 		return true
 
@@ -1950,6 +1957,7 @@ func reset_player_data_to_defaults():
 	world.equipped_hat_item = ""
 	world.equipped_hair_item = ""
 	world.equipped_eyewear_item = ""
+	world.equipped_beard_item = ""
 	world.equipped_shirt_item = ""
 	world.equipped_pants_item = ""
 	world.equipped_shoes_item = ""
@@ -1962,6 +1970,7 @@ func reset_player_data_to_defaults():
 	world.hat_inventory.clear()
 	world.hair_inventory.clear()
 	world.eyewear_inventory.clear()
+	world.beard_inventory.clear()
 	world.shirt_inventory.clear()
 	world.pants_inventory.clear()
 	world.shoes_inventory.clear()
@@ -1993,6 +2002,8 @@ func reset_player_data_to_defaults():
 				world.hair_inventory[item_id] = starting_count
 			"eyewear":
 				world.eyewear_inventory[item_id] = starting_count
+			"beard":
+				world.beard_inventory[item_id] = starting_count
 			"shirt":
 				world.shirt_inventory[item_id] = starting_count
 			"pants":
@@ -2061,6 +2072,7 @@ func apply_player_data(data: Dictionary):
 	apply_saved_inventory_counts(world.hat_inventory, data.get("hat_inventory", {}), true)
 	apply_saved_inventory_counts(world.hair_inventory, data.get("hair_inventory", {}), true)
 	apply_saved_inventory_counts(world.eyewear_inventory, data.get("eyewear_inventory", {}), true)
+	apply_saved_inventory_counts(world.beard_inventory, data.get("beard_inventory", {}), true)
 	apply_saved_inventory_counts(world.shirt_inventory, data.get("shirt_inventory", {}), true)
 	apply_saved_inventory_counts(world.pants_inventory, data.get("pants_inventory", {}), true)
 	apply_saved_inventory_counts(world.shoes_inventory, data.get("shoes_inventory", {}), true)
@@ -2125,6 +2137,16 @@ func apply_player_data(data: Dictionary):
 
 	if world.equipped_eyewear_item != "" and (not world.eyewear_inventory.has(world.equipped_eyewear_item) or _safe_int(world.eyewear_inventory[world.equipped_eyewear_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
 		world.equipped_eyewear_item = ""
+
+	var loaded_equipped_beard_item = data.get("equipped_beard_item", world.equipped_beard_item)
+
+	if loaded_equipped_beard_item == null:
+		loaded_equipped_beard_item = ""
+
+	world.equipped_beard_item = _safe_string(loaded_equipped_beard_item, "", MAX_INVENTORY_STRING_LEN)
+
+	if world.equipped_beard_item != "" and (not world.beard_inventory.has(world.equipped_beard_item) or _safe_int(world.beard_inventory[world.equipped_beard_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
+		world.equipped_beard_item = ""
 
 	var loaded_equipped_shirt_item = data.get("equipped_shirt_item", world.equipped_shirt_item)
 
@@ -2225,6 +2247,10 @@ func restore_local_transaction_loadout(snapshot: Dictionary):
 	if previous_eyewear_item == "" or can_restore_local_loadout_item(previous_eyewear_item, "eyewear"):
 		world.equipped_eyewear_item = previous_eyewear_item
 
+	var previous_beard_item = str(snapshot.get("equipped_beard_item", ""))
+	if previous_beard_item == "" or can_restore_local_loadout_item(previous_beard_item, "beard"):
+		world.equipped_beard_item = previous_beard_item
+
 	var previous_shirt_item = str(snapshot.get("equipped_shirt_item", ""))
 	if previous_shirt_item == "" or can_restore_local_loadout_item(previous_shirt_item, "shirt"):
 		world.equipped_shirt_item = previous_shirt_item
@@ -2310,6 +2336,7 @@ func apply_network_player_state(data: Dictionary):
 			"equipped_hat_item": str(world.equipped_hat_item) if world.equipped_hat_item != null else "",
 			"equipped_hair_item": str(world.equipped_hair_item) if world.equipped_hair_item != null else "",
 			"equipped_eyewear_item": str(world.equipped_eyewear_item) if world.equipped_eyewear_item != null else "",
+		"equipped_beard_item": str(world.equipped_beard_item) if world.equipped_beard_item != null else "",
 			"equipped_shirt_item": str(world.equipped_shirt_item) if world.equipped_shirt_item != null else "",
 			"equipped_pants_item": str(world.equipped_pants_item) if world.equipped_pants_item != null else "",
 			"equipped_shoes_item": str(world.equipped_shoes_item) if world.equipped_shoes_item != null else "",
@@ -2455,6 +2482,7 @@ func get_player_data_dedup_hash(player_data: Dictionary) -> int:
 		"equipped_hat_item": _safe_string(player_data.get("equipped_hat_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_hair_item": _safe_string(player_data.get("equipped_hair_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_eyewear_item": _safe_string(player_data.get("equipped_eyewear_item", ""), "", MAX_INVENTORY_STRING_LEN),
+		"equipped_beard_item": _safe_string(player_data.get("equipped_beard_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_shirt_item": _safe_string(player_data.get("equipped_shirt_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_pants_item": _safe_string(player_data.get("equipped_pants_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_shoes_item": _safe_string(player_data.get("equipped_shoes_item", ""), "", MAX_INVENTORY_STRING_LEN),
@@ -2466,6 +2494,7 @@ func get_player_data_dedup_hash(player_data: Dictionary) -> int:
 		"hat_inventory": player_data.get("hat_inventory", {}) if player_data.get("hat_inventory", null) is Dictionary else {},
 		"hair_inventory": player_data.get("hair_inventory", {}) if player_data.get("hair_inventory", null) is Dictionary else {},
 		"eyewear_inventory": player_data.get("eyewear_inventory", {}) if player_data.get("eyewear_inventory", null) is Dictionary else {},
+		"beard_inventory": player_data.get("beard_inventory", {}) if player_data.get("beard_inventory", null) is Dictionary else {},
 		"shirt_inventory": player_data.get("shirt_inventory", {}) if player_data.get("shirt_inventory", null) is Dictionary else {},
 		"pants_inventory": player_data.get("pants_inventory", {}) if player_data.get("pants_inventory", null) is Dictionary else {},
 		"shoes_inventory": player_data.get("shoes_inventory", {}) if player_data.get("shoes_inventory", null) is Dictionary else {},
@@ -2504,6 +2533,7 @@ func get_current_player_state_dedup_hash() -> int:
 		"equipped_hat_item": _safe_string(world.equipped_hat_item, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_hair_item": _safe_string(world.equipped_hair_item, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_eyewear_item": _safe_string(world.equipped_eyewear_item, "", MAX_INVENTORY_STRING_LEN),
+		"equipped_beard_item": _safe_string(world.equipped_beard_item, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_shirt_item": _safe_string(world.equipped_shirt_item, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_pants_item": _safe_string(world.equipped_pants_item, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_shoes_item": _safe_string(world.equipped_shoes_item, "", MAX_INVENTORY_STRING_LEN),
@@ -2515,6 +2545,7 @@ func get_current_player_state_dedup_hash() -> int:
 		"hat_inventory": world.hat_inventory.duplicate(true) if world.hat_inventory is Dictionary else {},
 		"hair_inventory": world.hair_inventory.duplicate(true) if world.hair_inventory is Dictionary else {},
 		"eyewear_inventory": world.eyewear_inventory.duplicate(true) if world.eyewear_inventory is Dictionary else {},
+		"beard_inventory": world.beard_inventory.duplicate(true) if world.beard_inventory is Dictionary else {},
 		"shirt_inventory": world.shirt_inventory.duplicate(true) if world.shirt_inventory is Dictionary else {},
 		"pants_inventory": world.pants_inventory.duplicate(true) if world.pants_inventory is Dictionary else {},
 		"shoes_inventory": world.shoes_inventory.duplicate(true) if world.shoes_inventory is Dictionary else {},
@@ -2666,6 +2697,7 @@ func save_world():
 		"hat_inventory": world.hat_inventory,
 		"hair_inventory": world.hair_inventory,
 		"eyewear_inventory": world.eyewear_inventory,
+		"beard_inventory": world.beard_inventory,
 		"shirt_inventory": world.shirt_inventory,
 		"pants_inventory": world.pants_inventory,
 		"shoes_inventory": world.shoes_inventory,
@@ -2681,6 +2713,7 @@ func save_world():
 		"equipped_hat_item": str(world.equipped_hat_item) if world.equipped_hat_item != null else "",
 		"equipped_hair_item": str(world.equipped_hair_item) if world.equipped_hair_item != null else "",
 		"equipped_eyewear_item": str(world.equipped_eyewear_item) if world.equipped_eyewear_item != null else "",
+		"equipped_beard_item": str(world.equipped_beard_item) if world.equipped_beard_item != null else "",
 		"equipped_shirt_item": str(world.equipped_shirt_item) if world.equipped_shirt_item != null else "",
 		"equipped_pants_item": str(world.equipped_pants_item) if world.equipped_pants_item != null else "",
 		"equipped_shoes_item": str(world.equipped_shoes_item) if world.equipped_shoes_item != null else "",
@@ -2876,6 +2909,7 @@ func load_world():
 	apply_saved_inventory_counts(world.hat_inventory, data.get("hat_inventory", {}), true)
 	apply_saved_inventory_counts(world.hair_inventory, data.get("hair_inventory", {}), true)
 	apply_saved_inventory_counts(world.eyewear_inventory, data.get("eyewear_inventory", {}), true)
+	apply_saved_inventory_counts(world.beard_inventory, data.get("beard_inventory", {}), true)
 	apply_saved_inventory_counts(world.shirt_inventory, data.get("shirt_inventory", {}), true)
 	apply_saved_inventory_counts(world.pants_inventory, data.get("pants_inventory", {}), true)
 	apply_saved_inventory_counts(world.shoes_inventory, data.get("shoes_inventory", {}), true)
@@ -2930,6 +2964,14 @@ func load_world():
 
 	if world.equipped_eyewear_item != "" and (not world.eyewear_inventory.has(world.equipped_eyewear_item) or _safe_int(world.eyewear_inventory[world.equipped_eyewear_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
 		world.equipped_eyewear_item = ""
+
+	var loaded_equipped_beard_item = data.get("equipped_beard_item", world.equipped_beard_item)
+	if loaded_equipped_beard_item == null:
+		loaded_equipped_beard_item = ""
+	world.equipped_beard_item = _safe_string(loaded_equipped_beard_item, "", MAX_INVENTORY_STRING_LEN)
+
+	if world.equipped_beard_item != "" and (not world.beard_inventory.has(world.equipped_beard_item) or _safe_int(world.beard_inventory[world.equipped_beard_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
+		world.equipped_beard_item = ""
 
 	var loaded_equipped_shirt_item = data.get("equipped_shirt_item", world.equipped_shirt_item)
 	if loaded_equipped_shirt_item == null:

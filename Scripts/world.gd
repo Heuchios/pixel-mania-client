@@ -213,6 +213,7 @@ var equipped_back_item = ""
 var equipped_hat_item = ""
 var equipped_hair_item = ""
 var equipped_eyewear_item = ""
+var equipped_beard_item = ""
 var equipped_shirt_item = ""
 var equipped_pants_item = ""
 var equipped_shoes_item = ""
@@ -315,6 +316,7 @@ var back_inventory = {}
 var hat_inventory = {}
 var hair_inventory = {}
 var eyewear_inventory = {}
+var beard_inventory = {}
 var shirt_inventory = {}
 var pants_inventory = {}
 var shoes_inventory = {}
@@ -333,6 +335,7 @@ var back_textures = {}
 var hat_textures = {}
 var hair_textures = {}
 var eyewear_textures = {}
+var beard_textures = {}
 var shirt_textures = {}
 var pants_textures = {}
 var shoes_textures = {}
@@ -345,6 +348,7 @@ var back_items = []
 var hat_items = []
 var hair_items = []
 var eyewear_items = []
+var beard_items = []
 var shirt_items = []
 var pants_items = []
 var shoes_items = []
@@ -523,6 +527,8 @@ func get_equipped_property_for_inventory_category(category: String) -> String:
 			return "equipped_hair_item"
 		"eyewear":
 			return "equipped_eyewear_item"
+		"beard":
+			return "equipped_beard_item"
 		"shirt":
 			return "equipped_shirt_item"
 		"pants":
@@ -632,6 +638,8 @@ func apply_network_inventory_delta(delta: Dictionary) -> bool:
 			target_inventory = hair_inventory
 		"eyewear":
 			target_inventory = eyewear_inventory
+		"beard":
+			target_inventory = beard_inventory
 		"shirt":
 			target_inventory = shirt_inventory
 		"pants":
@@ -1359,6 +1367,7 @@ func setup_item_database():
 	hat_inventory.clear()
 	hair_inventory.clear()
 	eyewear_inventory.clear()
+	beard_inventory.clear()
 	shirt_inventory.clear()
 	pants_inventory.clear()
 	shoes_inventory.clear()
@@ -1372,6 +1381,7 @@ func setup_item_database():
 	hat_textures.clear()
 	hair_textures.clear()
 	eyewear_textures.clear()
+	beard_textures.clear()
 	shirt_textures.clear()
 	pants_textures.clear()
 	shoes_textures.clear()
@@ -1385,6 +1395,7 @@ func setup_item_database():
 	hat_items.clear()
 	hair_items.clear()
 	eyewear_items.clear()
+	beard_items.clear()
 	shirt_items.clear()
 	pants_items.clear()
 	shoes_items.clear()
@@ -1525,6 +1536,14 @@ func setup_item_database():
 			if eyewear_texture != null:
 				eyewear_textures[item_id] = eyewear_texture
 
+		elif category == "beard":
+			beard_inventory[item_id] = int(item_data.get("starting_count", 0))
+			beard_items.append(item_id)
+
+			var beard_texture = load_item_texture_spec(item_data)
+			if beard_texture != null:
+				beard_textures[item_id] = beard_texture
+
 		elif category == "shirt":
 			shirt_inventory[item_id] = int(item_data.get("starting_count", 0))
 			shirt_items.append(item_id)
@@ -1598,6 +1617,7 @@ func setup_item_database():
 	hat_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
 	hair_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
 	eyewear_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
+	beard_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
 	shirt_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
 	pants_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
 	shoes_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
@@ -5106,6 +5126,9 @@ func update_equipment_visual():
 	if equipped_eyewear_item == null:
 		equipped_eyewear_item = ""
 
+	if equipped_beard_item == null:
+		equipped_beard_item = ""
+
 	if equipped_shirt_item == null:
 		equipped_shirt_item = ""
 
@@ -5123,6 +5146,7 @@ func update_equipment_visual():
 	equipped_hat_item = str(equipped_hat_item)
 	equipped_hair_item = str(equipped_hair_item)
 	equipped_eyewear_item = str(equipped_eyewear_item)
+	equipped_beard_item = str(equipped_beard_item)
 	equipped_shirt_item = str(equipped_shirt_item)
 	equipped_pants_item = str(equipped_pants_item)
 	equipped_shoes_item = str(equipped_shoes_item)
@@ -5140,7 +5164,7 @@ func update_equipment_visual():
 	if is_applying_server_player_state():
 		return
 
-	var equipment_visual_key: String = str(player_facing_direction) + "|" + equipped_tool + "|" + equipped_back_item + "|" + equipped_hat_item + "|" + equipped_hair_item + "|" + equipped_eyewear_item + "|" + equipped_shirt_item + "|" + equipped_pants_item + "|" + equipped_shoes_item + "|" + equipped_ride_item
+	var equipment_visual_key: String = str(player_facing_direction) + "|" + equipped_tool + "|" + equipped_back_item + "|" + equipped_hat_item + "|" + equipped_hair_item + "|" + equipped_eyewear_item + "|" + equipped_beard_item + "|" + equipped_shirt_item + "|" + equipped_pants_item + "|" + equipped_shoes_item + "|" + equipped_ride_item
 	if equipment_visual_key == last_equipment_visual_key:
 		return
 	last_equipment_visual_key = equipment_visual_key
@@ -5159,6 +5183,9 @@ func update_equipment_visual():
 
 	if equipment_manager != null and equipment_manager.has_method("update_equipped_eyewear_visual"):
 		equipment_manager.update_equipped_eyewear_visual(equipped_eyewear_item, player_facing_direction)
+
+	if equipment_manager != null and equipment_manager.has_method("update_equipped_beard_visual"):
+		equipment_manager.update_equipped_beard_visual(equipped_beard_item, player_facing_direction)
 
 	if equipment_manager != null and equipment_manager.has_method("update_equipped_shirt_visual"):
 		equipment_manager.update_equipped_shirt_visual(equipped_shirt_item, player_facing_direction)

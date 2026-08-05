@@ -29,6 +29,7 @@ const CATEGORY_BACK = "back"
 const CATEGORY_HAT = "hat"
 const CATEGORY_HAIR = "hair"
 const CATEGORY_EYEWEAR = "eyewear"
+const CATEGORY_BEARD = "beard"
 const CATEGORY_SHIRT = "shirt"
 const CATEGORY_PANTS = "pants"
 const CATEGORY_SHOES = "shoes"
@@ -4833,6 +4834,36 @@ const ITEMS = {
 		"slot_scale": 1.0,
 		"slot_z_index": 3,
 		"order": 206
+	},
+
+	"sunglasses": {
+		"category": "eyewear",
+		"display_name": "Sunglasses",
+		"rarity": "common",
+		"texture": "sunglasses",
+		"inventory_icon": "sunglasses_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "eyewear",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 448
+	},
+
+	"black_beard": {
+		"category": "beard",
+		"display_name": "Black Beard",
+		"rarity": "common",
+		"texture": "black_beard",
+		"inventory_icon": "black_beard_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "beard",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 449
 	},
 
 	"basic_blue_shirt": {

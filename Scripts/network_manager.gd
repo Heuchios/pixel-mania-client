@@ -3565,6 +3565,7 @@ func _build_player_position_payload(position: Vector2, safe_facing: int, clean_w
 		payload["equipped_hat_item"] = str(equipment_slots.get("hat", ""))
 		payload["equipped_hair_item"] = str(equipment_slots.get("hair", ""))
 		payload["equipped_eyewear_item"] = str(equipment_slots.get("eyewear", ""))
+		payload["equipped_beard_item"] = str(equipment_slots.get("beard", ""))
 		payload["equipped_shirt_item"] = str(equipment_slots.get("shirt", ""))
 		payload["equipped_pants_item"] = str(equipment_slots.get("pants", ""))
 		payload["equipped_shoes_item"] = str(equipment_slots.get("shoes", ""))
@@ -6675,6 +6676,7 @@ func get_equipment_slots() -> Dictionary:
 		"hat": "equipped_hat_item",
 		"hair": "equipped_hair_item",
 		"eyewear": "equipped_eyewear_item",
+		"beard": "equipped_beard_item",
 		"shirt": "equipped_shirt_item",
 		"pants": "equipped_pants_item",
 		"shoes": "equipped_shoes_item",

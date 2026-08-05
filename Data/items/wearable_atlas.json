@@ -107,7 +107,11 @@
 	"top_hat_icon": [544, 320, 32, 32],
 	"top_hat": [576, 320, 32, 32],
 	"black_fedora_icon": [544, 352, 32, 32],
-	"black_fedora": [576, 352, 32, 32]
+	"black_fedora": [576, 352, 32, 32],
+	"sunglasses_icon": [704, 0, 32, 32],
+	"sunglasses": [736, 0, 32, 32],
+	"black_beard_icon": [704, 32, 32, 32],
+	"black_beard": [736, 32, 32, 32]
   },
   "aliases": {}
 }
