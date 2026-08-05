@@ -399,6 +399,16 @@ const HAIR_PACK_REWARDS = [
 	{"item_id": "long_grey_hair", "weight": 999},
 	{"item_id": "long_pink_hair", "weight": 999},
 	{"item_id": "long_red_hair", "weight": 999},
+	{"item_id": "black_slick_hair", "weight": 999},
+	{"item_id": "black_combed_hair", "weight": 999},
+	{"item_id": "frosty_hair", "weight": 999},
+	{"item_id": "flaming_hair", "weight": 999},
+	{"item_id": "old_men_hair", "weight": 999},
+	{"item_id": "brown_fringe", "weight": 999},
+	{"item_id": "brown_combed_hair", "weight": 999},
+	{"item_id": "blonde_hair", "weight": 999},
+	{"item_id": "brunette_hair", "weight": 999},
+	{"item_id": "crazy_hair", "weight": 999},
 	{"item_id": "baby_hair", "weight": 15}
 ]
 
@@ -4310,6 +4320,96 @@ const ITEMS = {
 				"loop": true
 			}
 		},
+		"order": 204
+	},
+
+	"old_men_hair": {
+		"category": "hair",
+		"display_name": "Old Men Hair",
+		"rarity": "common",
+		"texture": "old_men_hair",
+		"inventory_icon": "old_men_hair_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 204
+	},
+
+	"brown_fringe": {
+		"category": "hair",
+		"display_name": "Brown Fringe",
+		"rarity": "common",
+		"texture": "brown_fringe",
+		"inventory_icon": "brown_fringe_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 204
+	},
+
+	"brown_combed_hair": {
+		"category": "hair",
+		"display_name": "Brown Combed Hair",
+		"rarity": "common",
+		"texture": "brown_combed_hair",
+		"inventory_icon": "brown_combed_hair_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 204
+	},
+
+	"blonde_hair": {
+		"category": "hair",
+		"display_name": "Blonde Hair",
+		"rarity": "common",
+		"texture": "blonde_hair",
+		"inventory_icon": "blonde_hair_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 204
+	},
+
+	"brunette_hair": {
+		"category": "hair",
+		"display_name": "Brunette Hair",
+		"rarity": "common",
+		"texture": "brunette_hair",
+		"inventory_icon": "brunette_hair_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 204
+	},
+
+	"crazy_hair": {
+		"category": "hair",
+		"display_name": "Crazy Hair",
+		"rarity": "common",
+		"texture": "crazy_hair",
+		"inventory_icon": "crazy_hair_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hair",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
 		"order": 204
 	},
 
