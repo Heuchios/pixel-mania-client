@@ -464,6 +464,7 @@ func set_wearable_part(
 		return false
 
 	var current_item_id = str(wearable_part_item_ids.get(part_key, ""))
+	var rebuilt_sprite_frames := false
 	if current_item_id != item_id or part.sprite_frames == null:
 		var sprite_frames = build_wearable_sprite_frames(item_data, part_key, texture_specs)
 		if sprite_frames == null:
@@ -471,9 +472,15 @@ func set_wearable_part(
 			return false
 		part.sprite_frames = sprite_frames
 		wearable_part_item_ids[part_key] = item_id
+		rebuilt_sprite_frames = true
 
 	part.visible = true
-	play_wearable_part_animation(part, get_current_wearable_animation_name())
+	# A rebuilt SpriteFrames must be re-latched even when the animation name did
+	# not change. Without this the sprite keeps playing at its old frame index and
+	# renders the previously equipped item until it happens to catch up, which is
+	# only visible when swapping item to item (an empty slot is hidden, so it has
+	# nothing stale to show).
+	play_wearable_part_animation(part, get_current_wearable_animation_name(), rebuilt_sprite_frames)
 	return true
 
 
@@ -720,7 +727,7 @@ func set_forced_animation_state(animation_state: String):
 	wearable_animation_state = ""
 
 
-func play_wearable_part_animation(part: AnimatedSprite2D, animation_name: String):
+func play_wearable_part_animation(part: AnimatedSprite2D, animation_name: String, force_restart: bool = false):
 	if part == null or part.sprite_frames == null:
 		return
 
@@ -741,7 +748,8 @@ func play_wearable_part_animation(part: AnimatedSprite2D, animation_name: String
 	if part.sprite_frames.get_frame_count(target_animation) <= 1:
 		part.stop()
 		part.frame = 0
-	elif animation_changed:
+	elif animation_changed or force_restart:
+		part.frame = 0
 		part.play(target_animation)
 	elif not part.is_playing() and part.sprite_frames.get_animation_loop(target_animation):
 		part.play(target_animation)

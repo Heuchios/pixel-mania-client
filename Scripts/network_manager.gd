@@ -4913,6 +4913,14 @@ func handle_player_state_message(data: Dictionary) -> void:
 	if not is_player_state_for_active_profile(data):
 		return
 	pending_server_player_state = data.duplicate(true)
+	# Every other path queues through queue_player_state_payload_if_present(),
+	# which stamps this flag. A raw server message has no such key, and
+	# save_manager reads it as `data.get("preserve_local_loadout", false)` - so
+	# without this the server's copy of the loadout overwrites whatever the player
+	# just equipped, and restore_local_transaction_loadout() never runs. That is
+	# what made a freshly equipped item flip back to the previous one for the
+	# length of a server round trip.
+	pending_server_player_state["preserve_local_loadout"] = true
 	apply_pending_server_player_state_if_ready()
 
 
