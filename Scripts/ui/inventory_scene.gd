@@ -71,7 +71,7 @@ const TAB_CATEGORIES := {
 	"seeds": ["seed"],
 	"tools": ["tool"],
 	"materials": ["material", "lure", "fish", "currency"],
-	"gear": ["back", "hat", "hair", "eyewear", "shirt", "pants", "shoes", "ride"]
+	"gear": ["back", "hat", "hair", "eyewear", "beard", "shirt", "pants", "shoes", "ride"]
 }
 
 @export var use_preview_items: bool = false
@@ -401,6 +401,7 @@ func set_inventory_from_world(source: Object) -> void:
 	_append_world_inventory(items, source, "hat_inventory", "hat", item_database)
 	_append_world_inventory(items, source, "hair_inventory", "hair", item_database)
 	_append_world_inventory(items, source, "eyewear_inventory", "eyewear", item_database)
+	_append_world_inventory(items, source, "beard_inventory", "beard", item_database)
 	_append_world_inventory(items, source, "shirt_inventory", "shirt", item_database)
 	_append_world_inventory(items, source, "pants_inventory", "pants", item_database)
 	_append_world_inventory(items, source, "shoes_inventory", "shoes", item_database)
@@ -2257,6 +2258,8 @@ func _inventory_property_for_category(category: String) -> String:
 			return "hair_inventory"
 		"eyewear":
 			return "eyewear_inventory"
+		"beard":
+			return "beard_inventory"
 		"shirt":
 			return "shirt_inventory"
 		"pants":
@@ -2426,7 +2429,7 @@ func _rarity_pip_fill_color(rarity: String) -> Color:
 
 
 func _is_equipment_category(category: String) -> bool:
-	return category in ["tool", "back", "hat", "hair", "eyewear", "shirt", "pants", "shoes", "ride"]
+	return category in ["tool", "back", "hat", "hair", "eyewear", "beard", "shirt", "pants", "shoes", "ride"]
 
 
 func _equipped_property_for_category(category: String) -> String:
@@ -2441,6 +2444,8 @@ func _equipped_property_for_category(category: String) -> String:
 			return "equipped_hair_item"
 		"eyewear":
 			return "equipped_eyewear_item"
+		"beard":
+			return "equipped_beard_item"
 		"shirt":
 			return "equipped_shirt_item"
 		"pants":
