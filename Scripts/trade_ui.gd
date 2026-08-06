@@ -36,7 +36,17 @@ func setup(parent_world):
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	z_index = 150
 	build_ui()
-	close_trade_ui()
+	# Reach the closed state, but skip the inventory round trip when there is nothing to end.
+	# close_trade_ui() calls world.end_trade_item_select(), which unconditionally runs
+	# update_inventory_window() and rebuilds all ~300 inventory slots -- measured at ~555 ms of
+	# setup()'s 564 ms, while build_ui() itself is only ~9 ms. setup() runs from the post-spawn
+	# optional-UI warmup, so that landed as a half-second freeze on a trade UI the player had
+	# not opened, with controls already unlocked. On a freshly built UI trade_select_active is
+	# already false, so the rebuild changes nothing.
+	#
+	# If a selection somehow IS active (setup can run again on an existing TradeUI node), the
+	# full close path still runs -- correctness before speed.
+	_close_trade_ui(_is_trade_item_selecting())
 
 
 func build_ui():
@@ -555,11 +565,23 @@ func decline_pending_request_from(requester_username: String) -> bool:
 
 
 func close_trade_ui():
+	_close_trade_ui(true)
+
+
+func _is_trade_item_selecting() -> bool:
+	if world == null or not world.has_method("is_trade_item_selecting"):
+		return false
+	return bool(world.is_trade_item_selecting())
+
+
+## Statement order is identical to the original close path. end_inventory_trade_select gates
+## only the world.end_trade_item_select() call -- the expensive part, since it rebuilds the
+## whole inventory window. Every real close still passes true.
+func _close_trade_ui(end_inventory_trade_select: bool) -> void:
 	visible = false
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if world != null and world.has_method("end_trade_item_select"):
-		var close_inventory = world.has_method("is_trade_item_selecting") and bool(world.is_trade_item_selecting())
-		world.end_trade_item_select(close_inventory)
+	if end_inventory_trade_select and world != null and world.has_method("end_trade_item_select"):
+		world.end_trade_item_select(_is_trade_item_selecting())
 	close_picker()
 	if final_overlay != null:
 		final_overlay.visible = false

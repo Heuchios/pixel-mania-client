@@ -69,6 +69,18 @@ var atlas_variant_texture_cache: Dictionary = {}
 # keyed by "block_type|visual_block_type|background". Derived purely from the item
 # database, so it stays valid for the lifetime of the loaded item data.
 var tilemap_metadata_cache: Dictionary = {}
+# get_block_item_data() is called once per block during a world build -- 692 calls on a ~757
+# block world, 62 ms of self time in the profiler -- but a world only contains a few dozen
+# distinct block types. Every call re-runs str()/strip_edges()/to_lower() and
+# normalize_legacy_block_id(), then on a miss falls through to ITEM_ATLAS_DB, all to arrive at
+# the same dictionary. Memoize on the raw argument.
+#
+# Invalidation: world.item_database is reassigned wholesale in setup_item_database() and also
+# gains generated seed entries at runtime, so the cache is dropped whenever its size changes.
+# Only non-empty results are stored, so a type that does not resolve yet is retried rather
+# than pinned to {} forever.
+var block_item_data_cache: Dictionary = {}
+var block_item_data_cache_source_size: int = -1
 var existing_variant_path_cache: Dictionary = {}
 var connected_variant_component_cache: Dictionary = {}
 var authoritative_break_request_keys: Dictionary = {}
@@ -1955,15 +1967,32 @@ func is_lower_water_layer_cell(grid_pos: Vector2i) -> bool:
 
 
 func get_block_item_data(block_type: String) -> Dictionary:
+	# Explicit int: world is untyped here, so .size() is Variant to the parser.
+	var source_size: int = world.item_database.size() if world != null else -1
+	if source_size != block_item_data_cache_source_size:
+		block_item_data_cache.clear()
+		block_item_data_cache_source_size = source_size
+	var cached_item_data = block_item_data_cache.get(block_type)
+	if cached_item_data is Dictionary:
+		return cached_item_data
+
 	var clean_type := normalize_legacy_block_id(str(block_type).strip_edges().to_lower())
 	if world != null and world.item_database.has(clean_type):
-		return world.item_database[clean_type]
+		# Cache the live reference, exactly as the original returned it -- callers that mutate
+		# the entry must still be mutating the database row itself.
+		var item_data = world.item_database[clean_type]
+		if item_data is Dictionary:
+			block_item_data_cache[block_type] = item_data
+		return item_data
 
 	var atlas_item_id := ITEM_ATLAS_DB.get_item_id_for_key(clean_type)
 	if atlas_item_id > 0:
 		var atlas_entries := ITEM_ATLAS_DB.get_item_database_entries()
 		if atlas_entries.has(clean_type):
-			return atlas_entries[clean_type]
+			var atlas_item_data = atlas_entries[clean_type]
+			if atlas_item_data is Dictionary:
+				block_item_data_cache[block_type] = atlas_item_data
+			return atlas_item_data
 
 	return {}
 
