@@ -35,11 +35,16 @@ RollbackLivenessServer="*res://addons/netfox/servers/rollback-liveness-server.gd
 WindowTiler="*res://addons/netfox.extras/window-tiler.gd"
 NetworkSimulator="*res://addons/netfox.extras/network-simulator.gd"
 MCPRuntime="*uid://cstodc22p4p7g"
+ClientUpdateGate="*res://Scripts/ui/client_update_required_overlay.gd"
 
 [display]
 
 window/size/mode=3
 window/stretch/scale_mode="integer"
+
+[editor]
+
+run/main_run_args="-- --pixelmania-api-base https://staging-api.pixelmaniagame.com --pixelmania-ws-url wss://staging-api.pixelmaniagame.com/ws"
 
 [editor_plugins]
 

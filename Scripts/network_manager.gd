@@ -4,6 +4,7 @@ signal server_auth_finished(data)
 signal server_connection_changed(is_connected)
 signal world_population_changed(world_counts)
 signal owned_locked_worlds_received(data)
+signal client_update_required(payload)
 
 const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
 
@@ -52,6 +53,7 @@ var world_population_authoritative := {}
 var world_movement_guidance := {}
 var owned_locked_worlds_cache: Array = []
 var login_notice_message := ""
+var client_update_payload: Dictionary = {}
 var auth_request_counter := 0
 var developer_pin_unlock_request_counter := 0
 var reconnect_timer := 0.0
@@ -99,7 +101,9 @@ var WORLD_ROUTE_WS_URLS: Array[String] = [
 	"wss://api.pixelmaniagame.com/ws-a",
 	"wss://api.pixelmaniagame.com/ws-b"
 ]
-const CLIENT_VERSION := "1.0.4"
+# Keep in sync with export_presets.cfg "version/name" on every release build.
+# The server gates packets against this value via MIN_CLIENT_VERSION.
+const CLIENT_VERSION := "1.1.0"
 const CLIENT_PLATFORM := "godot"
 const DEBUG_SERVER_PACKETS := false
 const DEBUG_ACTION_POSITION_FLOW := false
@@ -934,6 +938,100 @@ func get_login_notice_message() -> String:
 
 func set_login_notice_message(message: String) -> void:
 	login_notice_message = message
+
+
+func get_client_update_payload() -> Dictionary:
+	return client_update_payload.duplicate(true)
+
+
+func is_client_update_required() -> bool:
+	return not client_update_payload.is_empty()
+
+
+# Compares dotted versions the same way the server does
+# (PixelManiaServer/src/server_version_helpers.ts): three numeric parts, a
+# leading "v" tolerated, anything after "-" or "+" ignored. Returns
+# -1 / 0 / 1, or 0 when either side cannot be parsed so an unreadable version
+# never locks a player out on the client side.
+func _compare_client_versions(a: String, b: String) -> int:
+	var left := _parse_client_version_parts(a)
+	var right := _parse_client_version_parts(b)
+	if left.is_empty() or right.is_empty():
+		return 0
+	for index in range(3):
+		if left[index] > right[index]:
+			return 1
+		if left[index] < right[index]:
+			return -1
+	return 0
+
+
+func _parse_client_version_parts(value: String) -> Array[int]:
+	var parts: Array[int] = []
+	var clean := value.strip_edges()
+	if clean.begins_with("v") or clean.begins_with("V"):
+		clean = clean.substr(1)
+	clean = clean.split("-")[0].split("+")[0]
+	if clean == "":
+		return parts
+	for chunk in clean.split("."):
+		var digits := ""
+		for character in chunk:
+			if character < "0" or character > "9":
+				break
+			digits += character
+		parts.append(int(digits) if digits != "" else 0)
+		if parts.size() >= 3:
+			break
+	while parts.size() < 3:
+		parts.append(0)
+	return parts
+
+
+# The server advertises the required version on the `connected` packet so the
+# gate can appear immediately, rather than only after the first packet is
+# rejected. The server still enforces this on every inbound message; this is a
+# UX shortcut, never the authority.
+func _check_connected_client_version(data: Dictionary) -> void:
+	var minimum := str(data.get("min_client_version", "")).strip_edges()
+	if minimum == "":
+		return
+	if _compare_client_versions(CLIENT_VERSION, minimum) >= 0:
+		return
+
+	_store_client_update_payload({
+		"message": "A new PixelMania update is live. Update your client to version %s or newer to keep playing." % minimum,
+		"client_version": CLIENT_VERSION,
+		"min_client_version": minimum,
+		"server_client_version": str(data.get("server_client_version", "")),
+		"update_url": str(data.get("update_url", "")),
+	})
+
+
+func _store_client_update_payload(data: Dictionary) -> void:
+	# The server rejects every packet from an out-of-date build, so this arrives
+	# repeatedly. Latch the first payload and only act once so the update gate is
+	# not rebuilt, and the player is not ejected twice, on each rejected message.
+	var already_latched := not client_update_payload.is_empty()
+	client_update_payload = {
+		"message": str(data.get("message", "Please update PixelMania.")),
+		"client_version": str(data.get("client_version", CLIENT_VERSION)),
+		"min_client_version": str(data.get("min_client_version", "")),
+		"server_client_version": str(data.get("server_client_version", "")),
+		"update_url": str(data.get("update_url", "")),
+	}
+	if already_latched:
+		return
+
+	client_update_required.emit(client_update_payload.duplicate(true))
+
+	# An out-of-date build cannot do anything useful in a world, so tear the
+	# session down and send the player back to the login screen. Reuses the
+	# existing disconnect path so world entry, join and route state are cleared
+	# exactly as they are on any other forced sign-out. The saved login is kept
+	# so the player can sign straight back in once they have updated.
+	if has_active_session() or not _is_login_scene_active():
+		_end_authenticated_session(str(client_update_payload.get("message", "")), false, true)
 
 
 func get_active_session_username() -> String:
@@ -4184,10 +4282,12 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 			player_id = _safe_string(data.get("player_id", ""), "", MAX_REQUEST_ID_LENGTH)
 			if game_player_id.strip_edges() == "":
 				game_player_id = player_id
+			_check_connected_client_version(data)
 		"login_ok":
 			player_name = _safe_string(data.get("name", player_name), player_name, MAX_USERNAME_LENGTH)
 		"client_update_required":
 			login_notice_message = str(data.get("message", "Please update PixelMania."))
+			_store_client_update_payload(data)
 			server_auth_finished.emit(data)
 		"account_auth_ok":
 			handle_account_auth_ok(data)
