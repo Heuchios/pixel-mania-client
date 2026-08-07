@@ -806,7 +806,12 @@ func handle_server_world_entry_rejected(data: Dictionary) -> bool:
 		"player_persistence_flush_failed",
 		"persistence_flush_failed",
 		"postgres_authority_unavailable",
-		"postgres_unavailable"
+		"postgres_unavailable",
+		# The server is still holding an earlier entry for this connection. Tearing the
+		# overlay down here would abandon a load the server considers healthy (and, when
+		# the earlier entry really is stuck, drop the player at the lobby instead of
+		# letting the retry ladder outlive the server's provisional-entry timeout).
+		"world_entry_already_loading"
 	]
 	if reason in retryable_reasons or message.to_lower().contains("still loading"):
 		if world.has_method("update_smooth_world_load_message"):
@@ -851,6 +856,14 @@ func handle_client_world_loading_failed(reason: String, message: String) -> bool
 		"reason": clean_reason,
 		"world": str(world.current_world_name)
 	})
+
+	# The server holds this entry in its provisional "snapshot_sent" state until it is told
+	# otherwise, and only world_entry_ready or leave_world tell it. Abandoning the load
+	# silently left that entry pending, and every later join_world on this connection was
+	# rejected with "A world is already loading." until the game was restarted. Release it
+	# here, while the world name is still known and before in_world is cleared -- the lobby
+	# return path below is gated on in_world, so this does not double-send.
+	notify_network_leave_world(str(world.current_world_name).strip_edges())
 
 	waiting_for_server_world_state = false
 	world_entry_pending_announce = false
