@@ -125,7 +125,14 @@
 	"devil_wings_2": {"atlas": "res://Assets/items/back_item.png", "region": [96, 32, 64, 32]},
 	"devil_wings_3": {"atlas": "res://Assets/items/back_item.png", "region": [160, 32, 64, 32]},
 	"devil_wings_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 32, 64, 32]},
-	"devil_wings_5": {"atlas": "res://Assets/items/back_item.png", "region": [288, 32, 64, 32]}
+	"devil_wings_5": {"atlas": "res://Assets/items/back_item.png", "region": [288, 32, 64, 32]},
+
+	"dragon_rusty_wings_icon": {"atlas": "res://Assets/items/back_item.png", "region": [0, 64, 32, 32]},
+	"dragon_rusty_wings_1": {"atlas": "res://Assets/items/back_item.png", "region": [32, 64, 64, 32]},
+	"dragon_rusty_wings_2": {"atlas": "res://Assets/items/back_item.png", "region": [96, 64, 64, 32]},
+	"dragon_rusty_wings_3": {"atlas": "res://Assets/items/back_item.png", "region": [160, 64, 64, 32]},
+	"dragon_rusty_wings_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 64, 64, 32]},
+	"dragon_rusty_wings_5": {"atlas": "res://Assets/items/back_item.png", "region": [288, 64, 64, 32]}
   },
   "aliases": {}
 }
