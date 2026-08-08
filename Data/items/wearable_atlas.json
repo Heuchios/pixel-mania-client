@@ -144,7 +144,51 @@
 	"spiky_wings_1": {"atlas": "res://Assets/items/back_item.png", "region": [32, 160, 64, 32]},
 	"spiky_wings_2": {"atlas": "res://Assets/items/back_item.png", "region": [96, 160, 64, 32]},
 	"spiky_wings_3": {"atlas": "res://Assets/items/back_item.png", "region": [160, 160, 64, 32]},
-	"spiky_wings_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 160, 64, 32]}
+	"spiky_wings_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 160, 64, 32]},
+
+	"carboard_wings_icon": {"atlas": "res://Assets/items/back_item.png", "region": [0, 128, 32, 32]},
+	"carboard_wings_1": {"atlas": "res://Assets/items/back_item.png", "region": [32, 128, 64, 32]},
+	"carboard_wings_2": {"atlas": "res://Assets/items/back_item.png", "region": [96, 128, 64, 32]},
+	"carboard_wings_3": {"atlas": "res://Assets/items/back_item.png", "region": [160, 128, 64, 32]},
+
+	"angel_wings_icon": {"atlas": "res://Assets/items/back_item.png", "region": [0, 192, 32, 32]},
+	"angel_wings_1": {"atlas": "res://Assets/items/back_item.png", "region": [32, 192, 64, 32]},
+	"angel_wings_2": {"atlas": "res://Assets/items/back_item.png", "region": [96, 192, 64, 32]},
+	"angel_wings_3": {"atlas": "res://Assets/items/back_item.png", "region": [160, 192, 64, 32]},
+	"angel_wings_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 192, 64, 32]},
+	"angel_wings_5": {"atlas": "res://Assets/items/back_item.png", "region": [288, 192, 64, 32]},
+
+	"golden_angel_wings_icon": {"atlas": "res://Assets/items/back_item.png", "region": [0, 224, 32, 32]},
+	"golden_angel_wings_1": {"atlas": "res://Assets/items/back_item.png", "region": [32, 224, 64, 32]},
+	"golden_angel_wings_2": {"atlas": "res://Assets/items/back_item.png", "region": [96, 224, 64, 32]},
+	"golden_angel_wings_3": {"atlas": "res://Assets/items/back_item.png", "region": [160, 224, 64, 32]},
+	"golden_angel_wings_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 224, 64, 32]},
+	"golden_angel_wings_5": {"atlas": "res://Assets/items/back_item.png", "region": [288, 224, 64, 32]},
+
+	"void_aura_icon": {"atlas": "res://Assets/items/back_item.png", "region": [0, 256, 32, 32]},
+	"void_aura_1": {"atlas": "res://Assets/items/back_item.png", "region": [32, 256, 64, 64]},
+	"void_aura_2": {"atlas": "res://Assets/items/back_item.png", "region": [96, 256, 64, 64]},
+	"void_aura_3": {"atlas": "res://Assets/items/back_item.png", "region": [160, 256, 64, 64]},
+	"void_aura_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 256, 64, 64]},
+
+	"blue_jetpack_icon": {"atlas": "res://Assets/items/back_item.png", "region": [0, 320, 32, 32]},
+	"blue_jetpack_1": {"atlas": "res://Assets/items/back_item.png", "region": [32, 320, 64, 64]},
+	"blue_jetpack_2": {"atlas": "res://Assets/items/back_item.png", "region": [96, 320, 64, 64]},
+	"blue_jetpack_3": {"atlas": "res://Assets/items/back_item.png", "region": [160, 320, 64, 64]},
+	"blue_jetpack_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 320, 64, 64]},
+
+	"green_jetpack_icon": {"atlas": "res://Assets/items/back_item.png", "region": [0, 384, 32, 32]},
+	"green_jetpack_1": {"atlas": "res://Assets/items/back_item.png", "region": [32, 384, 64, 64]},
+	"green_jetpack_2": {"atlas": "res://Assets/items/back_item.png", "region": [96, 384, 64, 64]},
+	"green_jetpack_3": {"atlas": "res://Assets/items/back_item.png", "region": [160, 384, 64, 64]},
+	"green_jetpack_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 384, 64, 64]},
+
+	"dragon_fire_wings_icon": {"atlas": "res://Assets/items/back_item.png", "region": [0, 448, 32, 32]},
+	"dragon_fire_wings_1": {"atlas": "res://Assets/items/back_item.png", "region": [32, 448, 64, 32]},
+	"dragon_fire_wings_2": {"atlas": "res://Assets/items/back_item.png", "region": [96, 448, 64, 32]},
+	"dragon_fire_wings_3": {"atlas": "res://Assets/items/back_item.png", "region": [160, 448, 64, 32]},
+	"dragon_fire_wings_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 448, 64, 32]},
+	"dragon_fire_wings_5": {"atlas": "res://Assets/items/back_item.png", "region": [288, 448, 64, 32]}
   },
   "aliases": {}
 }
