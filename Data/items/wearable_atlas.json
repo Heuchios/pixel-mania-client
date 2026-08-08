@@ -132,7 +132,13 @@
 	"dragon_rusty_wings_2": {"atlas": "res://Assets/items/back_item.png", "region": [96, 64, 64, 32]},
 	"dragon_rusty_wings_3": {"atlas": "res://Assets/items/back_item.png", "region": [160, 64, 64, 32]},
 	"dragon_rusty_wings_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 64, 64, 32]},
-	"dragon_rusty_wings_5": {"atlas": "res://Assets/items/back_item.png", "region": [288, 64, 64, 32]}
+	"dragon_rusty_wings_5": {"atlas": "res://Assets/items/back_item.png", "region": [288, 64, 64, 32]},
+
+	"parrot_wings_icon": {"atlas": "res://Assets/items/back_item.png", "region": [0, 96, 32, 32]},
+	"parrot_wings_1": {"atlas": "res://Assets/items/back_item.png", "region": [32, 96, 64, 32]},
+	"parrot_wings_2": {"atlas": "res://Assets/items/back_item.png", "region": [96, 96, 64, 32]},
+	"parrot_wings_3": {"atlas": "res://Assets/items/back_item.png", "region": [160, 96, 64, 32]},
+	"parrot_wings_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 96, 64, 32]}
   },
   "aliases": {}
 }
