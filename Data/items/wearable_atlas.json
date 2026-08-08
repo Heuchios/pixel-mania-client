@@ -191,11 +191,11 @@
 	"dragon_fire_wings_5": {"atlas": "res://Assets/items/back_item.png", "region": [288, 448, 64, 32]},
 
 	"phoenix_wings_icon": {"atlas": "res://Assets/items/back_item.png", "region": [0, 480, 32, 32]},
-	"phoenix_wings_1": {"atlas": "res://Assets/items/back_item.png", "region": [32, 480, 64, 32]},
-	"phoenix_wings_2": {"atlas": "res://Assets/items/back_item.png", "region": [96, 480, 64, 32]},
-	"phoenix_wings_3": {"atlas": "res://Assets/items/back_item.png", "region": [160, 480, 64, 32]},
-	"phoenix_wings_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 480, 64, 32]},
-	"phoenix_wings_5": {"atlas": "res://Assets/items/back_item.png", "region": [288, 480, 64, 32]}
+	"phoenix_wings_1": {"atlas": "res://Assets/items/back_item.png", "region": [32, 480, 64, 64]},
+	"phoenix_wings_2": {"atlas": "res://Assets/items/back_item.png", "region": [96, 480, 64, 64]},
+	"phoenix_wings_3": {"atlas": "res://Assets/items/back_item.png", "region": [160, 480, 64, 64]},
+	"phoenix_wings_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 480, 64, 64]},
+	"phoenix_wings_5": {"atlas": "res://Assets/items/back_item.png", "region": [288, 480, 64, 64]}
   },
   "aliases": {}
 }
