@@ -5766,13 +5766,21 @@ const ITEMS = {
 		"category": "tool",
 		"display_name": "Void Saber",
 		"rarity": "legendary",
-		"texture": "res://Assets/items/swords/void_saber.png",
-		"inventory_icon": "res://Assets/items/swords/void_saber_icon.png",
+		"texture": "void_saber_1",
+		"inventory_icon": "void_saber_icon",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "hand",
 		"hand_item": true,
 		"punch_animation": "punch_sword",
+		"animation_fps": 6.0,
+		"hand_item_animations": {
+			"idle": {
+				"frames": ["void_saber_1", "void_saber_2", "void_saber_3"],
+				"fps": 6.0,
+				"loop": true
+			}
+		},
 		"order": 57
 	},
 "stone_pickaxe": {
