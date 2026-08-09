@@ -5121,6 +5121,66 @@ const ITEMS = {
 		"order": 460
 	},
 
+	"life_jacket": {
+		"category": "body_accessory",
+		"display_name": "Life Jacket",
+		"rarity": "common",
+		"texture": "life_jacket",
+		"inventory_icon": "life_jacket_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "body_accessory",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 461
+	},
+
+	"chefs_apron": {
+		"category": "body_accessory",
+		"display_name": "Chefs Apron",
+		"rarity": "common",
+		"texture": "chefs_apron",
+		"inventory_icon": "chefs_apron_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "body_accessory",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 462
+	},
+
+	"workshop_apron": {
+		"category": "body_accessory",
+		"display_name": "Workshop Apron",
+		"rarity": "common",
+		"texture": "workshop_apron",
+		"inventory_icon": "workshop_apron_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "body_accessory",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 463
+	},
+
+	"bronze_pendant": {
+		"category": "body_accessory",
+		"display_name": "Bronze Pendant",
+		"rarity": "common",
+		"texture": "bronze_pendant",
+		"inventory_icon": "bronze_pendant_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "body_accessory",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 464
+	},
+
 	"basic_blue_shirt": {
 		"category": "shirt",
 		"display_name": "Blue Shirt",

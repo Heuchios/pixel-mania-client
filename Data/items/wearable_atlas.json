@@ -338,7 +338,15 @@
 	"orange_teashades_3": [800, 384, 32, 32],
 
 	"red_scarf_icon": [896, 32, 32, 32],
-	"red_scarf": [928, 32, 32, 32]
+	"red_scarf": [928, 32, 32, 32],
+	"life_jacket_icon": [896, 64, 32, 32],
+	"life_jacket": [928, 64, 32, 32],
+	"chefs_apron_icon": [896, 96, 32, 32],
+	"chefs_apron": [928, 96, 32, 32],
+	"workshop_apron_icon": [896, 128, 32, 32],
+	"workshop_apron": [928, 128, 32, 32],
+	"bronze_pendant_icon": [896, 160, 32, 32],
+	"bronze_pendant": [928, 160, 32, 32]
   },
   "aliases": {}
 }
