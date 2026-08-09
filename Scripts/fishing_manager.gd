@@ -127,15 +127,11 @@ func is_fishing_rod_item(item_id: String) -> bool:
 		return bool(world.is_fishing_rod_item(item_id))
 	var clean_item_id := normalize_fishing_rod_id(item_id)
 	return clean_item_id in [
-		"bamboo_rod",
-		"refined_bamboo_rod",
-		"pristine_bamboo_rod",
-		"fiberglass_rod",
-		"refined_fiberglass_rod",
-		"pristine_fiberglass_rod",
-		"tungsten_rod",
-		"refined_tungsten_rod",
-		"pristine_tungsten_rod",
+		"wooden_fishing_rod",
+		"bamboo_fishing_rod",
+		"fiberglass_fishing_rod",
+		"platinum_rod",
+		"golden_fishing_rod",
 		"neptune_rod"
 	]
 
@@ -144,9 +140,9 @@ func normalize_fishing_rod_id(item_id: String) -> String:
 	var clean_item_id := str(item_id).strip_edges()
 	match clean_item_id:
 		"fishing_rod":
-			return "bamboo_rod"
+			return "bamboo_fishing_rod"
 		"platinum_prestige_rod":
-			return "pristine_tungsten_rod"
+			return "golden_fishing_rod"
 		_:
 			return clean_item_id
 

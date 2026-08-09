@@ -5422,12 +5422,47 @@ const ITEMS = {
 	# ============================================================
 	# FISHING ITEMS
 	# ============================================================
-"bamboo_rod": {
+# ============================================================
+# FISHING ITEMS
+# ============================================================
+"wooden_fishing_rod": {
 		"category": "tool",
-		"display_name": "Bamboo Rod",
+		"display_name": "Wooden Fishing Rod",
+		"rarity": "common",
+		"texture": "wooden_fishing_rod_1",
+		"inventory_icon": "wooden_fishing_rod_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"fishing_rod": true,
+		"hand_item": true,
+		"hand_mode": "auto_anchor",
+		"hand_hold_point": [24, 45],
+		"hand_scale": 1.15,
+		"hand_rotation": -8,
+		"hand_rotation_left": 8,
+		"fishing_line_tip_offset": [50, 38],
+		"animation_fps": 6.0,
+		"hand_item_animations": {
+			"idle": {
+				"frames": ["wooden_fishing_rod_1", "wooden_fishing_rod_2", "wooden_fishing_rod_3"],
+				"fps": 6.0,
+				"loop": true
+			},
+			"casting": {
+				"frames": ["wooden_fishing_rod_casting"],
+				"fps": 6.0,
+				"loop": false
+			}
+		},
+		"order": 39
+	},
+"bamboo_fishing_rod": {
+		"category": "tool",
+		"display_name": "Bamboo Fishing Rod",
 		"rarity": "uncommon",
-		"texture": "res://Assets/items/fishing/bamboo_rod.png",
-		"inventory_icon": "res://Assets/items/fishing/bamboo_rod.png",
+		"texture": "bamboo_fishing_rod_1",
+		"inventory_icon": "bamboo_fishing_rod_icon",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "hand",
@@ -5439,59 +5474,33 @@ const ITEMS = {
 		"hand_rotation": -8,
 		"hand_rotation_left": 8,
 		"fishing_line_tip_offset": [50, 38],
-
+		"animation_fps": 6.0,
+		"hand_item_animations": {
+			"idle": {
+				"frames": ["bamboo_fishing_rod_1", "bamboo_fishing_rod_2", "bamboo_fishing_rod_3"],
+				"fps": 6.0,
+				"loop": true
+			},
+			"casting": {
+				"frames": ["bamboo_fishing_rod_casting"],
+				"fps": 6.0,
+				"loop": false
+			}
+		},
 		"order": 40
-	},
-"refined_bamboo_rod": {
-		"category": "tool",
-		"display_name": "Refined Bamboo Rod",
-		"rarity": "rare",
-		"texture": "res://Assets/items/fishing/refined_bamboo_rod.png",
-		"inventory_icon": "res://Assets/items/fishing/refined_bamboo_rod.png",
-		"starting_count": 0,
-		"equipable": true,
-		"equipment_slot": "hand",
-		"fishing_rod": true,
-		"hand_item": true,
-		"hand_mode": "auto_anchor",
-		"hand_hold_point": [24, 45],
-		"hand_scale": 1.15,
-		"hand_rotation": -8,
-		"hand_rotation_left": 8,
-		"fishing_line_tip_offset": [50, 38],
-		"order": 41
-	},
-"pristine_bamboo_rod": {
-		"category": "tool",
-		"display_name": "Pristine Bamboo Rod",
-		"rarity": "epic",
-		"texture": "res://Assets/items/fishing/pristige_bamboo_rod.png",
-		"inventory_icon": "res://Assets/items/fishing/pristige_bamboo_rod.png",
-		"starting_count": 0,
-		"equipable": true,
-		"equipment_slot": "hand",
-		"fishing_rod": true,
-		"hand_item": true,
-		"hand_mode": "auto_anchor",
-		"hand_hold_point": [24, 45],
-		"hand_scale": 1.15,
-		"hand_rotation": -8,
-		"hand_rotation_left": 8,
-		"fishing_line_tip_offset": [54, 40],
-		"order": 42
 	},
 "fishing_rod": {
 		"category": "tool",
-		"display_name": "Bamboo Rod",
+		"display_name": "Bamboo Fishing Rod",
 		"rarity": "uncommon",
-		"texture": "res://Assets/items/fishing/bamboo_rod.png",
-		"inventory_icon": "res://Assets/items/fishing/bamboo_rod.png",
+		"texture": "bamboo_fishing_rod_1",
+		"inventory_icon": "bamboo_fishing_rod_icon",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "hand",
 		"fishing_rod": true,
 		"legacy_item_id": true,
-		"canonical_item_id": "bamboo_rod",
+		"canonical_item_id": "bamboo_fishing_rod",
 		"hand_item": true,
 		"hand_mode": "auto_anchor",
 		"hand_hold_point": [24, 45],
@@ -5501,12 +5510,12 @@ const ITEMS = {
 		"fishing_line_tip_offset": [50, 38],
 		"order": 43
 	},
-"fiberglass_rod": {
+"fiberglass_fishing_rod": {
 		"category": "tool",
-		"display_name": "Fiberglass Rod",
+		"display_name": "Fiberglass Fishing Rod",
 		"rarity": "rare",
-		"texture": "res://Assets/items/fishing/fiberglass_rod.png",
-		"inventory_icon": "res://Assets/items/fishing/fiberglass_rod.png",
+		"texture": "fiberglass_fishing_rod_1",
+		"inventory_icon": "fiberglass_fishing_rod_icon",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "hand",
@@ -5518,52 +5527,27 @@ const ITEMS = {
 		"hand_rotation": -8,
 		"hand_rotation_left": 8,
 		"fishing_line_tip_offset": [53, 42],
+		"animation_fps": 6.0,
+		"hand_item_animations": {
+			"idle": {
+				"frames": ["fiberglass_fishing_rod_1", "fiberglass_fishing_rod_2", "fiberglass_fishing_rod_3"],
+				"fps": 6.0,
+				"loop": true
+			},
+			"casting": {
+				"frames": ["fiberglass_fishing_rod_casting"],
+				"fps": 6.0,
+				"loop": false
+			}
+		},
 		"order": 44
 	},
-"refined_fiberglass_rod": {
+"platinum_rod": {
 		"category": "tool",
-		"display_name": "Refined Fiberglass Rod",
+		"display_name": "Platinum Rod",
 		"rarity": "epic",
-		"texture": "res://Assets/items/fishing/refined_fiberglass_rod.png",
-		"inventory_icon": "res://Assets/items/fishing/refined_fiberglass_rod.png",
-		"starting_count": 0,
-		"equipable": true,
-		"equipment_slot": "hand",
-		"fishing_rod": true,
-		"hand_item": true,
-		"hand_mode": "auto_anchor",
-		"hand_hold_point": [25, 46],
-		"hand_scale": 1.15,
-		"hand_rotation": -8,
-		"hand_rotation_left": 8,
-		"fishing_line_tip_offset": [58, 40],
-		"order": 54
-	},
-"pristine_fiberglass_rod": {
-		"category": "tool",
-		"display_name": "Pristine Fiberglass Rod",
-		"rarity": "legendary",
-		"texture": "res://Assets/items/fishing/pristine_fiberglass_rod.png",
-		"inventory_icon": "res://Assets/items/fishing/pristine_fiberglass_rod.png",
-		"starting_count": 0,
-		"equipable": true,
-		"equipment_slot": "hand",
-		"fishing_rod": true,
-		"hand_item": true,
-		"hand_mode": "auto_anchor",
-		"hand_hold_point": [25, 47],
-		"hand_scale": 1.15,
-		"hand_rotation": -8,
-		"hand_rotation_left": 8,
-		"fishing_line_tip_offset": [59, 41],
-		"order": 46
-	},
-"tungsten_rod": {
-		"category": "tool",
-		"display_name": "Tungsten Rod",
-		"rarity": "epic",
-		"texture": "res://Assets/items/fishing/tungsten_rod.png",
-		"inventory_icon": "res://Assets/items/fishing/tungsten_rod.png",
+		"texture": "platinum_rod_1",
+		"inventory_icon": "platinum_rod_icon",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "hand",
@@ -5575,33 +5559,27 @@ const ITEMS = {
 		"hand_rotation": -8,
 		"hand_rotation_left": 8,
 		"fishing_line_tip_offset": [63, 38],
+		"animation_fps": 6.0,
+		"hand_item_animations": {
+			"idle": {
+				"frames": ["platinum_rod_1", "platinum_rod_2", "platinum_rod_3"],
+				"fps": 6.0,
+				"loop": true
+			},
+			"casting": {
+				"frames": ["platinum_rod_casting"],
+				"fps": 6.0,
+				"loop": false
+			}
+		},
 		"order": 47
 	},
-"refined_tungsten_rod": {
+"golden_fishing_rod": {
 		"category": "tool",
-		"display_name": "Refined Tungsten Rod",
+		"display_name": "Golden Fishing Rod",
 		"rarity": "legendary",
-		"texture": "res://Assets/items/fishing/refined_tungsten_rod.png",
-		"inventory_icon": "res://Assets/items/fishing/refined_tungsten_rod.png",
-		"starting_count": 0,
-		"equipable": true,
-		"equipment_slot": "hand",
-		"fishing_rod": true,
-		"hand_item": true,
-		"hand_mode": "auto_anchor",
-		"hand_hold_point": [62, 80],
-		"hand_scale": 1.15,
-		"hand_rotation": -8,
-		"hand_rotation_left": 8,
-		"fishing_line_tip_offset": [100, 70],
-		"order": 48
-	},
-"pristine_tungsten_rod": {
-		"category": "tool",
-		"display_name": "Pristine Tungsten Rod",
-		"rarity": "legendary",
-		"texture": "res://Assets/items/fishing/pristine_tungsten_rod.png",
-		"inventory_icon": "res://Assets/items/fishing/pristine_tungsten_rod.png",
+		"texture": "golden_fishing_rod_1",
+		"inventory_icon": "golden_fishing_rod_icon",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "hand",
@@ -5613,20 +5591,33 @@ const ITEMS = {
 		"hand_rotation": -8,
 		"hand_rotation_left": 8,
 		"fishing_line_tip_offset": [103, 68],
+		"animation_fps": 6.0,
+		"hand_item_animations": {
+			"idle": {
+				"frames": ["golden_fishing_rod_1", "golden_fishing_rod_2", "golden_fishing_rod_3"],
+				"fps": 6.0,
+				"loop": true
+			},
+			"casting": {
+				"frames": ["golden_fishing_rod_casting"],
+				"fps": 6.0,
+				"loop": false
+			}
+		},
 		"order": 49
 	},
 "platinum_prestige_rod": {
 		"category": "tool",
-		"display_name": "Pristine Tungsten Rod",
+		"display_name": "Golden Fishing Rod",
 		"rarity": "legendary",
-		"texture": "res://Assets/items/fishing/pristine_tungsten_rod.png",
-		"inventory_icon": "res://Assets/items/fishing/pristine_tungsten_rod.png",
+		"texture": "golden_fishing_rod_1",
+		"inventory_icon": "golden_fishing_rod_icon",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "hand",
 		"fishing_rod": true,
 		"legacy_item_id": true,
-		"canonical_item_id": "pristine_tungsten_rod",
+		"canonical_item_id": "golden_fishing_rod",
 		"hand_item": true,
 		"hand_mode": "auto_anchor",
 		"hand_hold_point": [62, 82],
