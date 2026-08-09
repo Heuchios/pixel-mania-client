@@ -335,7 +335,10 @@
 	"orange_teashades_icon": [704, 384, 32, 32],
 	"orange_teashades_1": [736, 384, 32, 32],
 	"orange_teashades_2": [768, 384, 32, 32],
-	"orange_teashades_3": [800, 384, 32, 32]
+	"orange_teashades_3": [800, 384, 32, 32],
+
+	"red_scarf_icon": [896, 32, 32, 32],
+	"red_scarf": [928, 32, 32, 32]
   },
   "aliases": {}
 }

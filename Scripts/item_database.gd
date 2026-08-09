@@ -5106,6 +5106,21 @@ const ITEMS = {
 		"order": 458
 	},
 
+	"red_scarf": {
+		"category": "body_accessory",
+		"display_name": "Red Scarf",
+		"rarity": "common",
+		"texture": "red_scarf",
+		"inventory_icon": "red_scarf_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "body_accessory",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 2,
+		"order": 460
+	},
+
 	"basic_blue_shirt": {
 		"category": "shirt",
 		"display_name": "Blue Shirt",
