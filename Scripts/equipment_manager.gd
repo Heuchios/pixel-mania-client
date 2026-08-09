@@ -145,6 +145,7 @@ func setup(parent_world, player_node, enable_profile_equipment_saving: bool = tr
 	update_equipped_hair_visual("", 1)
 	update_equipped_eyewear_visual("", 1)
 	update_equipped_beard_visual("", 1)
+	update_equipped_body_accessory_visual("", 1)
 	update_equipped_shirt_visual("", 1)
 	update_equipped_pants_visual("", 1)
 	update_equipped_shoes_visual("", 1)
@@ -1049,6 +1050,42 @@ func update_equipped_beard_visual(beard_item, facing_direction: int):
 	var scale_value = float(item_data.get("slot_scale", 1.0))
 	var z_value = int(item_data.get("slot_z_index", 3))
 	set_wearable_part("beard", beard_item, item_data, [texture], part_position, is_facing_left, bool(item_data.get("beard_flip_with_facing", true)), scale_value, z_value)
+
+
+func update_equipped_body_accessory_visual(body_accessory_item, facing_direction: int):
+	if player == null:
+		return
+
+	if body_accessory_item == null:
+		body_accessory_item = ""
+
+	body_accessory_item = str(body_accessory_item)
+
+	if body_accessory_item == "":
+		hide_wearable_part("body_accessory")
+		return
+
+	var item_data = {}
+	if world != null and world.item_database.has(body_accessory_item):
+		var raw_data = world.item_database[body_accessory_item]
+		if raw_data is Dictionary:
+			item_data = raw_data
+
+	var texture = null
+	if world != null and "body_accessory_textures" in world and world.body_accessory_textures.has(body_accessory_item):
+		texture = world.body_accessory_textures[body_accessory_item]
+	else:
+		texture = AtlasTextureFactory.load_texture(item_data.get("texture", null))
+
+	if texture == null:
+		hide_wearable_part("body_accessory")
+		return
+
+	var is_facing_left = facing_direction < 0
+	var part_position = Vector2.ZERO
+	var scale_value = float(item_data.get("slot_scale", 1.0))
+	var z_value = int(item_data.get("slot_z_index", 2))
+	set_wearable_part("body_accessory", body_accessory_item, item_data, [texture], part_position, is_facing_left, bool(item_data.get("body_accessory_flip_with_facing", true)), scale_value, z_value)
 
 
 func update_equipped_shirt_visual(shirt_item, facing_direction: int):

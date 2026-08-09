@@ -2787,6 +2787,7 @@ func handle_network_player_position(player_data: Dictionary):
 			"hair": str(player_data.get("equipped_hair_item", "")),
 			"eyewear": str(player_data.get("equipped_eyewear_item", "")),
 			"beard": str(player_data.get("equipped_beard_item", "")),
+			"body_accessory": str(player_data.get("equipped_body_accessory_item", "")),
 			"shirt": str(player_data.get("equipped_shirt_item", "")),
 			"pants": str(player_data.get("equipped_pants_item", "")),
 			"shoes": str(player_data.get("equipped_shoes_item", "")),
@@ -3017,6 +3018,7 @@ func normalize_remote_equipment_slots(raw_slots) -> Dictionary:
 		"hair": "",
 		"eyewear": "",
 		"beard": "",
+		"body_accessory": "",
 		"shirt": "",
 		"pants": "",
 		"shoes": "",
@@ -4886,7 +4888,7 @@ func update_remote_equipment_visuals(remote_player):
 		remote_player.add_child(equipment_root)
 
 	var known_slots = [
-		"back", "hand", "hair", "eyewear", "beard", "head", "hat", "eyes", "face",
+		"back", "hand", "hair", "eyewear", "beard", "body_accessory", "head", "hat", "eyes", "face",
 		"shirt", "pants", "legs", "feet", "shoes", "ride",
 		"neck", "aura"
 	]
@@ -4926,6 +4928,8 @@ func update_remote_shared_equipment_visuals(remote_player) -> bool:
 		equipment_manager.update_equipped_eyewear_visual(str(equipment_slots.get("eyewear", "")), facing)
 	if equipment_manager.has_method("update_equipped_beard_visual"):
 		equipment_manager.update_equipped_beard_visual(str(equipment_slots.get("beard", "")), facing)
+	if equipment_manager.has_method("update_equipped_body_accessory_visual"):
+		equipment_manager.update_equipped_body_accessory_visual(str(equipment_slots.get("body_accessory", "")), facing)
 	if equipment_manager.has_method("update_equipped_shirt_visual"):
 		equipment_manager.update_equipped_shirt_visual(str(equipment_slots.get("shirt", "")), facing)
 	if equipment_manager.has_method("update_equipped_pants_visual"):
@@ -4960,7 +4964,7 @@ func refresh_remote_equipment_slot_transforms(remote_player):
 		return
 
 	var known_slots = [
-		"back", "hand", "hair", "eyewear", "beard", "head", "hat", "eyes", "face",
+		"back", "hand", "hair", "eyewear", "beard", "body_accessory", "head", "hat", "eyes", "face",
 		"shirt", "pants", "legs", "feet", "shoes", "ride",
 		"neck", "aura"
 	]
@@ -5037,6 +5041,9 @@ func get_remote_item_texture(item_id: String, slot_name: String, item_data: Dict
 		if slot_name == "beard" and world.beard_textures.has(item_id):
 			return world.beard_textures[item_id]
 
+		if slot_name == "body_accessory" and world.body_accessory_textures.has(item_id):
+			return world.body_accessory_textures[item_id]
+
 		if slot_name == "shirt" and world.shirt_textures.has(item_id):
 			return world.shirt_textures[item_id]
 
@@ -5066,6 +5073,9 @@ func get_remote_item_texture(item_id: String, slot_name: String, item_data: Dict
 
 		if world.beard_textures.has(item_id):
 			return world.beard_textures[item_id]
+
+		if world.body_accessory_textures.has(item_id):
+			return world.body_accessory_textures[item_id]
 
 		if world.shirt_textures.has(item_id):
 			return world.shirt_textures[item_id]
@@ -5253,7 +5263,8 @@ func apply_remote_generic_slot_transform(remote_player, slot_sprite: Sprite2D, s
 		"shoes": Vector2(0, 8),
 		"ride": Vector2.ZERO,
 		"neck": Vector2(0, -12),
-		"aura": Vector2(0, -8)
+		"aura": Vector2(0, -8),
+		"body_accessory": Vector2(0, -12)
 	}
 
 	var fallback = default_offsets.get(slot_name, Vector2.ZERO)
@@ -5286,7 +5297,7 @@ func get_remote_slot_animation_offset(remote_player, slot_name: String, facing_l
 	if animation_state == "walk":
 		if slot_name == "hand":
 			return Vector2(direction * sin(phase) * 1.5, cos(phase) * 1.5)
-		if ["shirt", "back", "ride", "neck", "aura"].has(slot_name):
+		if ["shirt", "back", "ride", "neck", "aura", "body_accessory"].has(slot_name):
 			return Vector2(0.0, -abs(sin(phase)) * 1.0)
 		if ["pants", "legs", "feet", "shoes"].has(slot_name):
 			return Vector2(0.0, sin(phase) * 1.25)

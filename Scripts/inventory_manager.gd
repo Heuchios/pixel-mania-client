@@ -2267,6 +2267,8 @@ func get_item_count(item_type: String, category: String) -> int:
 		return int(world.shoes_inventory[item_type])
 	if category == "ride" and world.ride_inventory.has(item_type):
 		return int(world.ride_inventory[item_type])
+	if category == "body_accessory" and world.body_accessory_inventory.has(item_type):
+		return int(world.body_accessory_inventory[item_type])
 	return 0
 
 
@@ -6548,6 +6550,14 @@ func remove_inventory_item(item_type: String, category: String, amount: float) -
 				world.update_equipment_visual()
 		notify_inventory_item_changed(item_type, category)
 		return true
+	if category == "body_accessory" and world.body_accessory_inventory.has(item_type):
+		world.spend_item_from_inventory_stack(world.body_accessory_inventory, item_type, category, whole_amount)
+		if world.equipped_body_accessory_item == item_type and int(world.body_accessory_inventory[item_type]) <= 0:
+			world.equipped_body_accessory_item = ""
+			if world.has_method("update_equipment_visual"):
+				world.update_equipment_visual()
+		notify_inventory_item_changed(item_type, category)
+		return true
 	if world.has_method("show_notification"):
 		world.show_notification("Cannot remove " + get_item_display_name(item_type, category) + ".")
 	return false
@@ -6778,7 +6788,7 @@ func get_inventory_slot_style_key(rarity: String, selected: bool, hovered: bool)
 func is_inventory_item_equipped(item_type: String, category: String) -> bool:
 	if world == null:
 		return false
-	return (category == "tool" and world.equipped_tool == item_type) or (category == "back" and world.equipped_back_item == item_type) or (category == "hat" and world.equipped_hat_item == item_type) or (category == "hair" and world.equipped_hair_item == item_type) or (category == "eyewear" and world.equipped_eyewear_item == item_type) or (category == "shirt" and world.equipped_shirt_item == item_type) or (category == "pants" and world.equipped_pants_item == item_type) or (category == "shoes" and world.equipped_shoes_item == item_type) or (category == "ride" and world.equipped_ride_item == item_type)
+	return (category == "tool" and world.equipped_tool == item_type) or (category == "back" and world.equipped_back_item == item_type) or (category == "hat" and world.equipped_hat_item == item_type) or (category == "hair" and world.equipped_hair_item == item_type) or (category == "eyewear" and world.equipped_eyewear_item == item_type) or (category == "shirt" and world.equipped_shirt_item == item_type) or (category == "pants" and world.equipped_pants_item == item_type) or (category == "shoes" and world.equipped_shoes_item == item_type) or (category == "ride" and world.equipped_ride_item == item_type) or (category == "body_accessory" and world.equipped_body_accessory_item == item_type)
 
 
 func update_inventory_slot_state(slot, item_type: String, category: String, count: int, refresh_static_visuals: bool = false) -> void:
@@ -7306,7 +7316,7 @@ func update_inventory_window():
 		slot.tooltip_text = get_item_display_name(item_type, category) + " " + format_inventory_amount(item_type, category, count)
 		var equipped_label = slot.get_node_or_null("EquippedLabel")
 		if equipped_label != null:
-			equipped_label.visible = (category == "tool" and world.equipped_tool == item_type) or (category == "back" and world.equipped_back_item == item_type) or (category == "hat" and world.equipped_hat_item == item_type) or (category == "hair" and world.equipped_hair_item == item_type) or (category == "eyewear" and world.equipped_eyewear_item == item_type) or (category == "shirt" and world.equipped_shirt_item == item_type) or (category == "pants" and world.equipped_pants_item == item_type) or (category == "shoes" and world.equipped_shoes_item == item_type) or (category == "ride" and world.equipped_ride_item == item_type)
+			equipped_label.visible = (category == "tool" and world.equipped_tool == item_type) or (category == "back" and world.equipped_back_item == item_type) or (category == "hat" and world.equipped_hat_item == item_type) or (category == "hair" and world.equipped_hair_item == item_type) or (category == "eyewear" and world.equipped_eyewear_item == item_type) or (category == "shirt" and world.equipped_shirt_item == item_type) or (category == "pants" and world.equipped_pants_item == item_type) or (category == "shoes" and world.equipped_shoes_item == item_type) or (category == "ride" and world.equipped_ride_item == item_type) or (category == "body_accessory" and world.equipped_body_accessory_item == item_type)
 
 	cache_visible_inventory_items(filtered_items)
 	update_inventory_detail_panel()

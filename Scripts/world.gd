@@ -110,6 +110,8 @@ const SNOW_STORM_FX_SCENE_PATH = "res://Scenes/particles/SnowStormFX.tscn"
 const SNOW_STORM_WIND_FX_SCENE_PATH = "res://Scenes/particles/WindGustFX.tscn"
 const ROTATING_SWORD_SLASH_FX_SCENE_PATH = "res://Scenes/particles/RotatingSwordSlashFX.tscn"
 const ANT_SWORD_SLASH_REMOTE_DEDUPE_MSEC := 140
+const SWORD_FIRE_HIT_FX_SCENE_PATH = "res://Scenes/particles/SwordFireHitFX.tscn"
+const PHOENIX_SWORD_FIRE_HIT_REMOTE_DEDUPE_MSEC := 140
 const PLAYER_MANAGER_SCRIPT_PATH = "res://Scripts/player_manager.gd"
 const OPTIONAL_WORLD_UI_SETUP_METHODS := [
 	&"setup_player_menu_ui",
@@ -139,6 +141,7 @@ const OPTIONAL_WORLD_UI_SETUP_METHODS := [
 
 var block_scene = preload("res://Scenes/block.tscn")
 var rotating_sword_slash_scene: PackedScene = null
+var sword_fire_hit_fx_scene: PackedScene = null
 var blocks = {}
 var vending_states = {}
 var safe_states = {}
@@ -215,6 +218,7 @@ var equipped_hat_item = ""
 var equipped_hair_item = ""
 var equipped_eyewear_item = ""
 var equipped_beard_item = ""
+var equipped_body_accessory_item = ""
 var equipped_shirt_item = ""
 var equipped_pants_item = ""
 var equipped_shoes_item = ""
@@ -318,6 +322,7 @@ var hat_inventory = {}
 var hair_inventory = {}
 var eyewear_inventory = {}
 var beard_inventory = {}
+var body_accessory_inventory = {}
 var shirt_inventory = {}
 var pants_inventory = {}
 var shoes_inventory = {}
@@ -337,6 +342,7 @@ var hat_textures = {}
 var hair_textures = {}
 var eyewear_textures = {}
 var beard_textures = {}
+var body_accessory_textures = {}
 var shirt_textures = {}
 var pants_textures = {}
 var shoes_textures = {}
@@ -350,6 +356,7 @@ var hat_items = []
 var hair_items = []
 var eyewear_items = []
 var beard_items = []
+var body_accessory_items = []
 var shirt_items = []
 var pants_items = []
 var shoes_items = []
@@ -532,6 +539,8 @@ func get_equipped_property_for_inventory_category(category: String) -> String:
 			return "equipped_eyewear_item"
 		"beard":
 			return "equipped_beard_item"
+		"body_accessory":
+			return "equipped_body_accessory_item"
 		"shirt":
 			return "equipped_shirt_item"
 		"pants":
@@ -643,6 +652,8 @@ func apply_network_inventory_delta(delta: Dictionary) -> bool:
 			target_inventory = eyewear_inventory
 		"beard":
 			target_inventory = beard_inventory
+		"body_accessory":
+			target_inventory = body_accessory_inventory
 		"shirt":
 			target_inventory = shirt_inventory
 		"pants":
@@ -1371,6 +1382,7 @@ func setup_item_database():
 	hair_inventory.clear()
 	eyewear_inventory.clear()
 	beard_inventory.clear()
+	body_accessory_inventory.clear()
 	shirt_inventory.clear()
 	pants_inventory.clear()
 	shoes_inventory.clear()
@@ -1385,6 +1397,7 @@ func setup_item_database():
 	hair_textures.clear()
 	eyewear_textures.clear()
 	beard_textures.clear()
+	body_accessory_textures.clear()
 	shirt_textures.clear()
 	pants_textures.clear()
 	shoes_textures.clear()
@@ -1399,6 +1412,7 @@ func setup_item_database():
 	hair_items.clear()
 	eyewear_items.clear()
 	beard_items.clear()
+	body_accessory_items.clear()
 	shirt_items.clear()
 	pants_items.clear()
 	shoes_items.clear()
@@ -1549,6 +1563,14 @@ func setup_item_database():
 			if beard_texture != null:
 				beard_textures[item_id] = beard_texture
 
+		elif category == "body_accessory":
+			body_accessory_inventory[item_id] = int(item_data.get("starting_count", 0))
+			body_accessory_items.append(item_id)
+
+			var body_accessory_texture = load_item_texture_spec(item_data)
+			if body_accessory_texture != null:
+				body_accessory_textures[item_id] = body_accessory_texture
+
 		elif category == "shirt":
 			shirt_inventory[item_id] = int(item_data.get("starting_count", 0))
 			shirt_items.append(item_id)
@@ -1623,6 +1645,7 @@ func setup_item_database():
 	hair_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
 	eyewear_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
 	beard_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
+	body_accessory_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
 	shirt_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
 	pants_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
 	shoes_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
@@ -4224,6 +4247,10 @@ func spawn_neptune_trident_block_hit_particles(grid_pos: Vector2i, _block_type: 
 		spawn_ant_sword_slash_particles(get_block_center_world_position(grid_pos))
 		return
 
+	if is_phoenix_sword_source_tool(source_tool):
+		spawn_phoenix_sword_fire_hit_particles(get_block_center_world_position(grid_pos))
+		return
+
 	if not is_neptune_trident_source_tool(source_tool):
 		return
 
@@ -4234,6 +4261,9 @@ func spawn_neptune_trident_block_hit_particles(grid_pos: Vector2i, _block_type: 
 func spawn_hand_item_swing_particles(target_world_position: Vector2 = Vector2(INF, INF), source_tool: String = "") -> bool:
 	if is_ant_sword_source_tool(source_tool):
 		return spawn_ant_sword_slash_particles(target_world_position)
+
+	if is_phoenix_sword_source_tool(source_tool):
+		return spawn_phoenix_sword_fire_hit_particles(target_world_position)
 
 	if is_neptune_trident_source_tool(source_tool):
 		return spawn_neptune_trident_swing_particles(target_world_position)
@@ -4311,12 +4341,78 @@ func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type
 			ant_actor.set_meta("last_ant_sword_slash_fx_msec", now_msec)
 		return
 
+	if is_phoenix_sword_source_tool(source_tool, false):
+		var phoenix_target_position := get_block_center_world_position(grid_pos)
+		var phoenix_actor_facing := get_network_actor_facing(source_data)
+		var phoenix_actor = get_network_actor_node(source_data)
+		var phoenix_now_msec := Time.get_ticks_msec()
+		if phoenix_actor != null and is_instance_valid(phoenix_actor):
+			var phoenix_recent_msec := phoenix_now_msec - int(phoenix_actor.get_meta("last_phoenix_sword_fire_hit_fx_msec", 0))
+			if phoenix_recent_msec >= 0 and phoenix_recent_msec < PHOENIX_SWORD_FIRE_HIT_REMOTE_DEDUPE_MSEC:
+				return
+
+		var phoenix_spawned := spawn_sword_fire_hit_fx_at(phoenix_target_position, phoenix_actor_facing)
+		if phoenix_spawned and phoenix_actor != null and is_instance_valid(phoenix_actor):
+			phoenix_actor.set_meta("last_phoenix_sword_fire_hit_fx_msec", phoenix_now_msec)
+		return
+
 	if not is_neptune_trident_source_tool(source_tool, false):
 		return
 
 	var target_position := get_block_center_world_position(grid_pos)
 	var actor_facing := get_network_actor_facing(source_data)
 	spawn_water_surge_beam_particles(get_network_actor_weapon_edge_world_position(source_data, target_position), target_position, actor_facing < 0)
+
+
+func get_sword_fire_hit_fx_scene() -> PackedScene:
+	if sword_fire_hit_fx_scene != null:
+		if sword_fire_hit_fx_scene.resource_path == SWORD_FIRE_HIT_FX_SCENE_PATH:
+			return sword_fire_hit_fx_scene
+		sword_fire_hit_fx_scene = null
+	if not ResourceLoader.exists(SWORD_FIRE_HIT_FX_SCENE_PATH):
+		return null
+
+	var loaded_fire_hit_scene = load(SWORD_FIRE_HIT_FX_SCENE_PATH)
+	if loaded_fire_hit_scene is PackedScene:
+		sword_fire_hit_fx_scene = loaded_fire_hit_scene
+	return sword_fire_hit_fx_scene
+
+
+func spawn_sword_fire_hit_fx_at(world_position: Vector2, facing_direction: int = 1) -> bool:
+	if not is_finite(world_position.x) or not is_finite(world_position.y):
+		return false
+
+	var fire_hit_scene := get_sword_fire_hit_fx_scene()
+	if fire_hit_scene == null:
+		return false
+
+	var effect = fire_hit_scene.instantiate()
+	if not (effect is Node2D):
+		if effect != null:
+			effect.queue_free()
+		return false
+
+	var fire_hit_node := effect as Node2D
+	fire_hit_node.set("preview_emitting", false)
+	fire_hit_node.set("auto_restart_preview", false)
+	fire_hit_node.set("loop_in_game", false)
+	add_child(fire_hit_node)
+	fire_hit_node.global_position = world_position
+
+	if fire_hit_node.has_method("play_once"):
+		fire_hit_node.play_once(facing_direction)
+	elif fire_hit_node.has_method("restart"):
+		fire_hit_node.restart()
+
+	return true
+
+
+func spawn_phoenix_sword_fire_hit_particles(target_world_position: Vector2 = Vector2(INF, INF)) -> bool:
+	var target_position: Vector2 = target_world_position
+	if not is_finite(target_position.x) or not is_finite(target_position.y):
+		target_position = get_local_hand_item_swing_target_position()
+
+	return spawn_sword_fire_hit_fx_at(target_position, player_facing_direction)
 
 
 func get_rotating_sword_slash_scene() -> PackedScene:
@@ -4577,6 +4673,22 @@ func is_ant_sword_source_tool(source_tool: String = "", allow_equipped_fallback:
 		clean_tool = str(selected_item_type).strip_edges().to_lower()
 
 	return clean_tool == "ant_sword"
+
+
+func is_phoenix_sword_source_tool(source_tool: String = "", allow_equipped_fallback: bool = true) -> bool:
+	var clean_tool := str(source_tool).strip_edges().to_lower()
+	if clean_tool == "phoenix_sword":
+		return true
+
+	if allow_equipped_fallback:
+		var clean_equipped := str(equipped_tool).strip_edges().to_lower()
+		if clean_equipped == "phoenix_sword":
+			return true
+
+	if clean_tool == "" and selected_item_category == "tool":
+		clean_tool = str(selected_item_type).strip_edges().to_lower()
+
+	return clean_tool == "phoenix_sword"
 
 
 func spawn_block_break_particles(grid_pos: Vector2i, block_type: String = "", layer: String = "foreground"):
@@ -5147,6 +5259,9 @@ func update_equipment_visual():
 	if equipped_beard_item == null:
 		equipped_beard_item = ""
 
+	if equipped_body_accessory_item == null:
+		equipped_body_accessory_item = ""
+
 	if equipped_shirt_item == null:
 		equipped_shirt_item = ""
 
@@ -5165,6 +5280,7 @@ func update_equipment_visual():
 	equipped_hair_item = str(equipped_hair_item)
 	equipped_eyewear_item = str(equipped_eyewear_item)
 	equipped_beard_item = str(equipped_beard_item)
+	equipped_body_accessory_item = str(equipped_body_accessory_item)
 	equipped_shirt_item = str(equipped_shirt_item)
 	equipped_pants_item = str(equipped_pants_item)
 	equipped_shoes_item = str(equipped_shoes_item)
@@ -5182,7 +5298,7 @@ func update_equipment_visual():
 	if is_applying_server_player_state():
 		return
 
-	var equipment_visual_key: String = str(player_facing_direction) + "|" + equipped_tool + "|" + equipped_back_item + "|" + equipped_hat_item + "|" + equipped_hair_item + "|" + equipped_eyewear_item + "|" + equipped_beard_item + "|" + equipped_shirt_item + "|" + equipped_pants_item + "|" + equipped_shoes_item + "|" + equipped_ride_item
+	var equipment_visual_key: String = str(player_facing_direction) + "|" + equipped_tool + "|" + equipped_back_item + "|" + equipped_hat_item + "|" + equipped_hair_item + "|" + equipped_eyewear_item + "|" + equipped_beard_item + "|" + equipped_body_accessory_item + "|" + equipped_shirt_item + "|" + equipped_pants_item + "|" + equipped_shoes_item + "|" + equipped_ride_item
 	if equipment_visual_key == last_equipment_visual_key:
 		return
 	last_equipment_visual_key = equipment_visual_key
@@ -5204,6 +5320,9 @@ func update_equipment_visual():
 
 	if equipment_manager != null and equipment_manager.has_method("update_equipped_beard_visual"):
 		equipment_manager.update_equipped_beard_visual(equipped_beard_item, player_facing_direction)
+
+	if equipment_manager != null and equipment_manager.has_method("update_equipped_body_accessory_visual"):
+		equipment_manager.update_equipped_body_accessory_visual(equipped_body_accessory_item, player_facing_direction)
 
 	if equipment_manager != null and equipment_manager.has_method("update_equipped_shirt_visual"):
 		equipment_manager.update_equipped_shirt_visual(equipped_shirt_item, player_facing_direction)
@@ -6404,6 +6523,10 @@ func is_vending_machine_block_type(block_type: String) -> bool:
 func update_vending_machine_preview(grid_pos: Vector2i):
 	if vending_preview_manager != null and vending_preview_manager.has_method("update_vending_machine_preview"):
 		vending_preview_manager.update_vending_machine_preview(grid_pos)
+
+func update_vending_machine_visual(grid_pos: Vector2i):
+	if block_manager != null and block_manager.has_method("update_vending_machine_visual"):
+		block_manager.update_vending_machine_visual(grid_pos)
 
 func is_mailbox_block_type(block_type: String) -> bool:
 	if item_database.has(block_type):

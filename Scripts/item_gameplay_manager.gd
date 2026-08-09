@@ -217,6 +217,8 @@ func toggle_equip_item(item_type: String, category: String):
 		equip_shoes_item(item_type)
 	elif category == "ride":
 		equip_ride_item(item_type)
+	elif category == "body_accessory":
+		equip_body_accessory_item(item_type)
 	else:
 		world.show_notification(get_item_display_name(item_type, category) + " cannot be equipped yet.")
 
@@ -427,6 +429,32 @@ func get_equipped_ride_text() -> String:
 		return "None"
 
 	return get_item_display_name(world.equipped_ride_item, "ride")
+
+
+func equip_body_accessory_item(item_type: String):
+	if not world.body_accessory_inventory.has(item_type):
+		world.show_notification("You do not have " + get_item_display_name(item_type, "body_accessory") + ".")
+		return
+
+	if int(world.body_accessory_inventory[item_type]) <= 0:
+		world.show_notification("You do not have " + get_item_display_name(item_type, "body_accessory") + ".")
+		return
+
+	if world.equipped_body_accessory_item == item_type:
+		world.equipped_body_accessory_item = ""
+	else:
+		world.equipped_body_accessory_item = item_type
+
+	world.update_equipment_visual()
+	world.update_all_ui()
+	save_equipment_state()
+
+
+func get_equipped_body_accessory_text() -> String:
+	if world.equipped_body_accessory_item == "":
+		return "None"
+
+	return get_item_display_name(world.equipped_body_accessory_item, "body_accessory")
 
 
 func equip_tool(item_type: String):
@@ -863,6 +891,9 @@ func get_item_count(item_type: String, category: String) -> int:
 	if category == "ride" and world.ride_inventory.has(item_type):
 		return int(world.ride_inventory[item_type])
 
+	if category == "body_accessory" and world.body_accessory_inventory.has(item_type):
+		return int(world.body_accessory_inventory[item_type])
+
 	if category == "material" and world.material_inventory.has(item_type):
 		return int(world.material_inventory[item_type])
 
@@ -900,7 +931,8 @@ func get_local_equipment_debug_snapshot() -> Dictionary:
 		"shirt": str(world.equipped_shirt_item),
 		"pants": str(world.equipped_pants_item),
 		"shoes": str(world.equipped_shoes_item),
-		"ride": str(world.equipped_ride_item)
+		"ride": str(world.equipped_ride_item),
+		"body_accessory": str(world.equipped_body_accessory_item)
 	}
 
 

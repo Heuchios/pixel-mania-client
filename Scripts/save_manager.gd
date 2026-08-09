@@ -43,6 +43,7 @@ const PLAYER_INVENTORY_SAVE_KEYS = [
 	"hair_inventory",
 	"eyewear_inventory",
 	"beard_inventory",
+	"body_accessory_inventory",
 	"shirt_inventory",
 	"pants_inventory",
 	"shoes_inventory",
@@ -62,6 +63,7 @@ const PLAYER_LOADOUT_SAVE_KEYS = [
 	"equipped_hair_item",
 	"equipped_eyewear_item",
 	"equipped_beard_item",
+	"equipped_body_accessory_item",
 	"equipped_shirt_item",
 	"equipped_pants_item",
 	"equipped_shoes_item",
@@ -1558,6 +1560,7 @@ func get_player_save_data() -> Dictionary:
 		"hair_inventory": world.hair_inventory,
 		"eyewear_inventory": world.eyewear_inventory,
 		"beard_inventory": world.beard_inventory,
+		"body_accessory_inventory": world.body_accessory_inventory,
 		"shirt_inventory": world.shirt_inventory,
 		"pants_inventory": world.pants_inventory,
 		"shoes_inventory": world.shoes_inventory,
@@ -1574,6 +1577,7 @@ func get_player_save_data() -> Dictionary:
 		"equipped_hair_item": str(world.equipped_hair_item) if world.equipped_hair_item != null else "",
 		"equipped_eyewear_item": str(world.equipped_eyewear_item) if world.equipped_eyewear_item != null else "",
 		"equipped_beard_item": str(world.equipped_beard_item) if world.equipped_beard_item != null else "",
+		"equipped_body_accessory_item": str(world.equipped_body_accessory_item) if world.equipped_body_accessory_item != null else "",
 		"equipped_shirt_item": str(world.equipped_shirt_item) if world.equipped_shirt_item != null else "",
 		"equipped_pants_item": str(world.equipped_pants_item) if world.equipped_pants_item != null else "",
 		"equipped_shoes_item": str(world.equipped_shoes_item) if world.equipped_shoes_item != null else "",
@@ -1928,6 +1932,9 @@ func has_useful_player_data(data: Dictionary) -> bool:
 	if str(data.get("equipped_beard_item", "")) != "":
 		return true
 
+	if str(data.get("equipped_body_accessory_item", "")) != "":
+		return true
+
 	if str(data.get("equipped_shirt_item", "")) != "":
 		return true
 
@@ -1971,6 +1978,7 @@ func reset_player_data_to_defaults():
 	world.equipped_hair_item = ""
 	world.equipped_eyewear_item = ""
 	world.equipped_beard_item = ""
+	world.equipped_body_accessory_item = ""
 	world.equipped_shirt_item = ""
 	world.equipped_pants_item = ""
 	world.equipped_shoes_item = ""
@@ -1984,6 +1992,7 @@ func reset_player_data_to_defaults():
 	world.hair_inventory.clear()
 	world.eyewear_inventory.clear()
 	world.beard_inventory.clear()
+	world.body_accessory_inventory.clear()
 	world.shirt_inventory.clear()
 	world.pants_inventory.clear()
 	world.shoes_inventory.clear()
@@ -2017,6 +2026,8 @@ func reset_player_data_to_defaults():
 				world.eyewear_inventory[item_id] = starting_count
 			"beard":
 				world.beard_inventory[item_id] = starting_count
+			"body_accessory":
+				world.body_accessory_inventory[item_id] = starting_count
 			"shirt":
 				world.shirt_inventory[item_id] = starting_count
 			"pants":
@@ -2043,7 +2054,7 @@ func reset_player_data_to_defaults():
 	world.update_all_ui()
 
 
-func apply_player_data(data: Dictionary):
+func apply_player_data(data: Dictionary, skip_hotbar_render: bool = false):
 	world.selected_item_type = _safe_string(data.get("selected_item_type", data.get("selected_block_type", world.selected_item_type)), world.selected_item_type, MAX_INVENTORY_STRING_LEN)
 	world.selected_item_category = _safe_string(data.get("selected_item_category", world.selected_item_category), world.selected_item_category, MAX_INVENTORY_STRING_LEN)
 	world.primary_hotbar_tool = _safe_string(data.get("primary_hotbar_tool", world.primary_hotbar_tool), world.primary_hotbar_tool, MAX_INVENTORY_STRING_LEN)
@@ -2086,6 +2097,7 @@ func apply_player_data(data: Dictionary):
 	apply_saved_inventory_counts(world.hair_inventory, data.get("hair_inventory", {}), true)
 	apply_saved_inventory_counts(world.eyewear_inventory, data.get("eyewear_inventory", {}), true)
 	apply_saved_inventory_counts(world.beard_inventory, data.get("beard_inventory", {}), true)
+	apply_saved_inventory_counts(world.body_accessory_inventory, data.get("body_accessory_inventory", {}), true)
 	apply_saved_inventory_counts(world.shirt_inventory, data.get("shirt_inventory", {}), true)
 	apply_saved_inventory_counts(world.pants_inventory, data.get("pants_inventory", {}), true)
 	apply_saved_inventory_counts(world.shoes_inventory, data.get("shoes_inventory", {}), true)
@@ -2095,7 +2107,12 @@ func apply_player_data(data: Dictionary):
 	apply_saved_inventory_counts(world.lure_inventory, data.get("lure_inventory", {}), true)
 	apply_saved_fish_count_inventory(data.get("fish_inventory", {}), true, str(data.get("fish_inventory_unit", "")))
 	world.normalize_hotbar()
-	world.setup_hotbar()
+	# skip_hotbar_render lets callers that are about to immediately re-render the
+	# hotbar again (e.g. apply_network_player_state restoring the local loadout
+	# right after this) suppress this intermediate rebuild, so the expensive
+	# setup_scene_hotbar() full rebuild happens once per update instead of twice.
+	if not skip_hotbar_render:
+		world.setup_hotbar()
 	if world.fishing_manager != null and world.fishing_manager.has_method("apply_fishing_records"):
 		var fishing_records_data = data.get("fishing_records", {})
 		var fishing_records_dictionary: Dictionary = (fishing_records_data as Dictionary) if fishing_records_data is Dictionary else {}
@@ -2161,6 +2178,16 @@ func apply_player_data(data: Dictionary):
 	if world.equipped_beard_item != "" and (not world.beard_inventory.has(world.equipped_beard_item) or _safe_int(world.beard_inventory[world.equipped_beard_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
 		world.equipped_beard_item = ""
 
+	var loaded_equipped_body_accessory_item = data.get("equipped_body_accessory_item", world.equipped_body_accessory_item)
+
+	if loaded_equipped_body_accessory_item == null:
+		loaded_equipped_body_accessory_item = ""
+
+	world.equipped_body_accessory_item = _safe_string(loaded_equipped_body_accessory_item, "", MAX_INVENTORY_STRING_LEN)
+
+	if world.equipped_body_accessory_item != "" and (not world.body_accessory_inventory.has(world.equipped_body_accessory_item) or _safe_int(world.body_accessory_inventory[world.equipped_body_accessory_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
+		world.equipped_body_accessory_item = ""
+
 	var loaded_equipped_shirt_item = data.get("equipped_shirt_item", world.equipped_shirt_item)
 
 	if loaded_equipped_shirt_item == null:
@@ -2218,7 +2245,7 @@ func can_restore_local_loadout_item(item_type: String, category: String) -> bool
 	return int(world.get_item_count(item_type, category)) > 0
 
 
-func restore_local_transaction_loadout(snapshot: Dictionary):
+func restore_local_transaction_loadout(snapshot: Dictionary, skip_hotbar_render: bool = false):
 	if world == null:
 		return
 
@@ -2226,19 +2253,36 @@ func restore_local_transaction_loadout(snapshot: Dictionary):
 	if previous_primary_tool == "punch" or previous_primary_tool == "wrench":
 		world.primary_hotbar_tool = previous_primary_tool
 
+	# Restore the LOCAL selected item/category before touching hotbar_items or
+	# calling normalize_hotbar() below. apply_player_data() (called right before
+	# this function, earlier in apply_network_player_state) just set
+	# world.selected_item_type/category from the SERVER's copy, which can be
+	# stale or simply different from what the player has selected locally right
+	# now. normalize_hotbar() force-inserts whatever world.selected_item_type
+	# currently is into hotbar slot 2 if it isn't already present in the array
+	# -- so if we normalize before restoring the local selection, the server's
+	# stale selected item gets spliced into the freshly-restored local hotbar,
+	# displacing a real slot. This is the same stale-selection phantom-insert
+	# bug as the original hotbar shuffle fix, just triggered from the network
+	# sync path instead of a local inventory click. Same fix: select before
+	# rebuilding the hotbar array.
+	var previous_selected_type = str(snapshot.get("selected_item_type", world.selected_item_type))
+	var previous_selected_category = str(snapshot.get("selected_item_category", world.selected_item_category))
+	if can_restore_local_loadout_item(previous_selected_type, previous_selected_category):
+		world.selected_item_type = previous_selected_type
+		world.selected_item_category = previous_selected_category
+
 	var previous_hotbar_items = snapshot.get("hotbar_items", [])
 	var previous_hotbar_categories = snapshot.get("hotbar_item_categories", [])
 	if previous_hotbar_items is Array and previous_hotbar_categories is Array and previous_hotbar_items.size() > 0:
 		world.hotbar_items = previous_hotbar_items.duplicate(true)
 		world.hotbar_item_categories = previous_hotbar_categories.duplicate(true)
 		world.normalize_hotbar()
-		world.setup_hotbar()
-
-	var previous_selected_type = str(snapshot.get("selected_item_type", world.selected_item_type))
-	var previous_selected_category = str(snapshot.get("selected_item_category", world.selected_item_category))
-	if can_restore_local_loadout_item(previous_selected_type, previous_selected_category):
-		world.selected_item_type = previous_selected_type
-		world.selected_item_category = previous_selected_category
+		# See apply_player_data's skip_hotbar_render: apply_network_player_state
+		# does exactly one final setup_hotbar() after this returns, so skip the
+		# intermediate rebuild here too instead of rendering twice per update.
+		if not skip_hotbar_render:
+			world.setup_hotbar()
 
 	var previous_equipped_tool = str(snapshot.get("equipped_tool", ""))
 	if previous_equipped_tool == "" or can_restore_local_loadout_item(previous_equipped_tool, "tool"):
@@ -2263,6 +2307,10 @@ func restore_local_transaction_loadout(snapshot: Dictionary):
 	var previous_beard_item = str(snapshot.get("equipped_beard_item", ""))
 	if previous_beard_item == "" or can_restore_local_loadout_item(previous_beard_item, "beard"):
 		world.equipped_beard_item = previous_beard_item
+
+	var previous_body_accessory_item = str(snapshot.get("equipped_body_accessory_item", ""))
+	if previous_body_accessory_item == "" or can_restore_local_loadout_item(previous_body_accessory_item, "body_accessory"):
+		world.equipped_body_accessory_item = previous_body_accessory_item
 
 	var previous_shirt_item = str(snapshot.get("equipped_shirt_item", ""))
 	if previous_shirt_item == "" or can_restore_local_loadout_item(previous_shirt_item, "shirt"):
@@ -2350,6 +2398,7 @@ func apply_network_player_state(data: Dictionary):
 			"equipped_hair_item": str(world.equipped_hair_item) if world.equipped_hair_item != null else "",
 			"equipped_eyewear_item": str(world.equipped_eyewear_item) if world.equipped_eyewear_item != null else "",
 		"equipped_beard_item": str(world.equipped_beard_item) if world.equipped_beard_item != null else "",
+			"equipped_body_accessory_item": str(world.equipped_body_accessory_item) if world.equipped_body_accessory_item != null else "",
 			"equipped_shirt_item": str(world.equipped_shirt_item) if world.equipped_shirt_item != null else "",
 			"equipped_pants_item": str(world.equipped_pants_item) if world.equipped_pants_item != null else "",
 			"equipped_shoes_item": str(world.equipped_shoes_item) if world.equipped_shoes_item != null else "",
@@ -2357,13 +2406,32 @@ func apply_network_player_state(data: Dictionary):
 		}
 
 	applying_server_player_data = true
-	apply_player_data(player_data)
+	# apply_player_data() and restore_local_transaction_loadout() each used to call
+	# world.setup_hotbar() independently, so every single server player_state push
+	# (which happens on nearly every inventory-affecting event -- not just literal
+	# "player_state" messages, but trade/inventory_delta/etc acks too, often every
+	# ~90ms in bursts) triggered two full hotbar rebuilds back-to-back. That double
+	# rebuild is what caused the hotbar to visibly flicker/reset during rapid
+	# item pickup. Both sub-calls now skip their own intermediate render, and we
+	# render the settled hotbar exactly once below, mirroring the same
+	# render-once pattern already used for update_equipment_visual().
+	apply_player_data(player_data, true)
 	if preserve_local_loadout:
-		restore_local_transaction_loadout(local_loadout_snapshot)
+		restore_local_transaction_loadout(local_loadout_snapshot, true)
 	elif should_select_first_hotbar_slot:
 		world.normalize_hotbar()
 		select_first_hotbar_slot_silent()
-		world.setup_hotbar()
+	# Rendering exactly once per call was still not enough on its own: this
+	# function fires on nearly every server round-trip, not just discrete hotbar
+	# edits, and world.setup_hotbar() always does the expensive full rebuild
+	# (destroys/reinstantiates or reparents the Hotbar scene and rebuilds all 6
+	# slot nodes) even when the resulting hotbar_items are identical to what's
+	# already on screen. world.update_hotbar() is the cheap incremental path --
+	# it only updates each existing slot's icon/frame/count/selection in place,
+	# and transparently falls back to the full rebuild only when the scene
+	# structurally needs it (no hotbar yet, e.g. first login, or slot count
+	# changed). Using it here removes the per-sync flicker while staying correct.
+	world.update_hotbar()
 	world.player_data_loaded_from_file = true
 	save_player_data(false)
 	applying_server_player_data = false
@@ -2496,6 +2564,7 @@ func get_player_data_dedup_hash(player_data: Dictionary) -> int:
 		"equipped_hair_item": _safe_string(player_data.get("equipped_hair_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_eyewear_item": _safe_string(player_data.get("equipped_eyewear_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_beard_item": _safe_string(player_data.get("equipped_beard_item", ""), "", MAX_INVENTORY_STRING_LEN),
+		"equipped_body_accessory_item": _safe_string(player_data.get("equipped_body_accessory_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_shirt_item": _safe_string(player_data.get("equipped_shirt_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_pants_item": _safe_string(player_data.get("equipped_pants_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_shoes_item": _safe_string(player_data.get("equipped_shoes_item", ""), "", MAX_INVENTORY_STRING_LEN),
@@ -2508,6 +2577,7 @@ func get_player_data_dedup_hash(player_data: Dictionary) -> int:
 		"hair_inventory": player_data.get("hair_inventory", {}) if player_data.get("hair_inventory", null) is Dictionary else {},
 		"eyewear_inventory": player_data.get("eyewear_inventory", {}) if player_data.get("eyewear_inventory", null) is Dictionary else {},
 		"beard_inventory": player_data.get("beard_inventory", {}) if player_data.get("beard_inventory", null) is Dictionary else {},
+		"body_accessory_inventory": player_data.get("body_accessory_inventory", {}) if player_data.get("body_accessory_inventory", null) is Dictionary else {},
 		"shirt_inventory": player_data.get("shirt_inventory", {}) if player_data.get("shirt_inventory", null) is Dictionary else {},
 		"pants_inventory": player_data.get("pants_inventory", {}) if player_data.get("pants_inventory", null) is Dictionary else {},
 		"shoes_inventory": player_data.get("shoes_inventory", {}) if player_data.get("shoes_inventory", null) is Dictionary else {},
@@ -2547,6 +2617,7 @@ func get_current_player_state_dedup_hash() -> int:
 		"equipped_hair_item": _safe_string(world.equipped_hair_item, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_eyewear_item": _safe_string(world.equipped_eyewear_item, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_beard_item": _safe_string(world.equipped_beard_item, "", MAX_INVENTORY_STRING_LEN),
+		"equipped_body_accessory_item": _safe_string(world.equipped_body_accessory_item, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_shirt_item": _safe_string(world.equipped_shirt_item, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_pants_item": _safe_string(world.equipped_pants_item, "", MAX_INVENTORY_STRING_LEN),
 		"equipped_shoes_item": _safe_string(world.equipped_shoes_item, "", MAX_INVENTORY_STRING_LEN),
@@ -2559,6 +2630,7 @@ func get_current_player_state_dedup_hash() -> int:
 		"hair_inventory": world.hair_inventory.duplicate(true) if world.hair_inventory is Dictionary else {},
 		"eyewear_inventory": world.eyewear_inventory.duplicate(true) if world.eyewear_inventory is Dictionary else {},
 		"beard_inventory": world.beard_inventory.duplicate(true) if world.beard_inventory is Dictionary else {},
+		"body_accessory_inventory": world.body_accessory_inventory.duplicate(true) if world.body_accessory_inventory is Dictionary else {},
 		"shirt_inventory": world.shirt_inventory.duplicate(true) if world.shirt_inventory is Dictionary else {},
 		"pants_inventory": world.pants_inventory.duplicate(true) if world.pants_inventory is Dictionary else {},
 		"shoes_inventory": world.shoes_inventory.duplicate(true) if world.shoes_inventory is Dictionary else {},
@@ -2711,6 +2783,7 @@ func save_world():
 		"hair_inventory": world.hair_inventory,
 		"eyewear_inventory": world.eyewear_inventory,
 		"beard_inventory": world.beard_inventory,
+		"body_accessory_inventory": world.body_accessory_inventory,
 		"shirt_inventory": world.shirt_inventory,
 		"pants_inventory": world.pants_inventory,
 		"shoes_inventory": world.shoes_inventory,
@@ -2727,6 +2800,7 @@ func save_world():
 		"equipped_hair_item": str(world.equipped_hair_item) if world.equipped_hair_item != null else "",
 		"equipped_eyewear_item": str(world.equipped_eyewear_item) if world.equipped_eyewear_item != null else "",
 		"equipped_beard_item": str(world.equipped_beard_item) if world.equipped_beard_item != null else "",
+		"equipped_body_accessory_item": str(world.equipped_body_accessory_item) if world.equipped_body_accessory_item != null else "",
 		"equipped_shirt_item": str(world.equipped_shirt_item) if world.equipped_shirt_item != null else "",
 		"equipped_pants_item": str(world.equipped_pants_item) if world.equipped_pants_item != null else "",
 		"equipped_shoes_item": str(world.equipped_shoes_item) if world.equipped_shoes_item != null else "",
@@ -2923,6 +2997,7 @@ func load_world():
 	apply_saved_inventory_counts(world.hair_inventory, data.get("hair_inventory", {}), true)
 	apply_saved_inventory_counts(world.eyewear_inventory, data.get("eyewear_inventory", {}), true)
 	apply_saved_inventory_counts(world.beard_inventory, data.get("beard_inventory", {}), true)
+	apply_saved_inventory_counts(world.body_accessory_inventory, data.get("body_accessory_inventory", {}), true)
 	apply_saved_inventory_counts(world.shirt_inventory, data.get("shirt_inventory", {}), true)
 	apply_saved_inventory_counts(world.pants_inventory, data.get("pants_inventory", {}), true)
 	apply_saved_inventory_counts(world.shoes_inventory, data.get("shoes_inventory", {}), true)
@@ -2985,6 +3060,14 @@ func load_world():
 
 	if world.equipped_beard_item != "" and (not world.beard_inventory.has(world.equipped_beard_item) or _safe_int(world.beard_inventory[world.equipped_beard_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
 		world.equipped_beard_item = ""
+
+	var loaded_equipped_body_accessory_item = data.get("equipped_body_accessory_item", world.equipped_body_accessory_item)
+	if loaded_equipped_body_accessory_item == null:
+		loaded_equipped_body_accessory_item = ""
+	world.equipped_body_accessory_item = _safe_string(loaded_equipped_body_accessory_item, "", MAX_INVENTORY_STRING_LEN)
+
+	if world.equipped_body_accessory_item != "" and (not world.body_accessory_inventory.has(world.equipped_body_accessory_item) or _safe_int(world.body_accessory_inventory[world.equipped_body_accessory_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
+		world.equipped_body_accessory_item = ""
 
 	var loaded_equipped_shirt_item = data.get("equipped_shirt_item", world.equipped_shirt_item)
 	if loaded_equipped_shirt_item == null:

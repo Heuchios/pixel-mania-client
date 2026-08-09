@@ -3664,6 +3664,7 @@ func _build_player_position_payload(position: Vector2, safe_facing: int, clean_w
 		payload["equipped_hair_item"] = str(equipment_slots.get("hair", ""))
 		payload["equipped_eyewear_item"] = str(equipment_slots.get("eyewear", ""))
 		payload["equipped_beard_item"] = str(equipment_slots.get("beard", ""))
+		payload["equipped_body_accessory_item"] = str(equipment_slots.get("body_accessory", ""))
 		payload["equipped_shirt_item"] = str(equipment_slots.get("shirt", ""))
 		payload["equipped_pants_item"] = str(equipment_slots.get("pants", ""))
 		payload["equipped_shoes_item"] = str(equipment_slots.get("shoes", ""))
@@ -5480,10 +5481,17 @@ func _accept_world_entry_session_from_join_ack(data: Dictionary) -> bool:
 func _is_message_for_active_world_entry_session(data: Dictionary) -> bool:
 	var incoming_session_id: String = _get_message_world_entry_session_id(data)
 	if incoming_session_id == "":
-		return not world_entry_requires_ready and active_world_entry_session_id == ""
-	if active_world_entry_session_id == "":
+		if not world_entry_requires_ready and active_world_entry_session_id == "":
+			return true
+		log_world_entry_drop("entry_session_missing_on_packet", data)
 		return false
-	return incoming_session_id == active_world_entry_session_id
+	if active_world_entry_session_id == "":
+		log_world_entry_drop("no_active_entry_session", data)
+		return false
+	if incoming_session_id == active_world_entry_session_id:
+		return true
+	log_world_entry_drop("entry_session_mismatch", data)
+	return false
 
 
 func _accept_world_entry_snapshot_metadata(data: Dictionary) -> bool:
@@ -5782,11 +5790,29 @@ func _handle_world_entry_rejected_message(data: Dictionary) -> void:
 		save_manager_value.handle_server_world_entry_rejected(data)
 
 
+func log_world_entry_drop(reason: String, data: Dictionary = {}) -> void:
+	# Dropped world-entry packets are abnormal by definition, so they always print.
+	# Silent drops in this path have historically parked players at 88% loading with
+	# no evidence anywhere; never add a silent return to this pipeline again.
+	print("[world-entry-drop] ", reason, " ", JSON.stringify({
+		"world": str(data.get("world", "")),
+		"type": str(data.get("type", "")),
+		"incoming_join_request_id": _get_message_join_request_id(data),
+		"active_join_request_id": active_join_request_id,
+		"incoming_session": _get_message_world_entry_session_id(data),
+		"active_session": active_world_entry_session_id,
+		"active_join_world": active_join_world_name
+	}))
+
+
 func _is_message_for_active_join_request(data: Dictionary) -> bool:
 	var incoming_request_id: String = _get_message_join_request_id(data)
 	if incoming_request_id == "" or active_join_request_id == "":
 		return true
-	return incoming_request_id == active_join_request_id
+	if incoming_request_id == active_join_request_id:
+		return true
+	log_world_entry_drop("join_request_id_mismatch", data)
+	return false
 
 
 func process_pending_world_state_stream_timeout() -> void:
@@ -6043,6 +6069,7 @@ func _handle_world_state_stream_end(data: Dictionary, wire_bytes: int = 0) -> vo
 
 
 func _fail_pending_world_state_stream(reason: String, data: Dictionary = {}) -> void:
+	print("[world-entry-drop] stream_failed reason=", reason, " world=", str(data.get("world", pending_world_state_stream.get("world", ""))))
 	var retry_payload: Dictionary = data.duplicate(true)
 	if not pending_world_state_stream.is_empty():
 		var metadata_value: Variant = pending_world_state_stream.get("metadata", {})
@@ -6777,6 +6804,7 @@ func get_equipment_slots() -> Dictionary:
 		"hair": "equipped_hair_item",
 		"eyewear": "equipped_eyewear_item",
 		"beard": "equipped_beard_item",
+		"body_accessory": "equipped_body_accessory_item",
 		"shirt": "equipped_shirt_item",
 		"pants": "equipped_pants_item",
 		"shoes": "equipped_shoes_item",
