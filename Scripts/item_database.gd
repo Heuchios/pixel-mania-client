@@ -4236,8 +4236,8 @@ const ITEMS = {
 		"category": "hat",
 		"display_name": "Neptune Crown",
 		"rarity": "legendary",
-		"texture": "res://Assets/clothes/head/neptune_crown.png",
-		"inventory_icon": "res://Assets/clothes/head/neptune_crown_icon.png",
+		"texture": "neptune_crown",
+		"inventory_icon": "neptune_crown_icon",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "hat",
@@ -4904,10 +4904,10 @@ const ITEMS = {
 
 	"electric_goggles": {
 		"category": "eyewear",
-		"display_name": "Electric Goggles",
+		"display_name": "Orange Shutters",
 		"rarity": "rare",
-		"texture": "res://Assets/blocks/electric/electric_goggles.png",
-		"inventory_icon": "res://Assets/blocks/electric/electric_goggles_icon.png",
+		"texture": "orange_shutters",
+		"inventory_icon": "orange_shutters_icon",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "eyewear",
@@ -4945,6 +4945,165 @@ const ITEMS = {
 		"slot_scale": 1.0,
 		"slot_z_index": 3,
 		"order": 449
+	},
+
+	"brown_beard": {
+		"category": "beard",
+		"display_name": "Brown Beard",
+		"rarity": "common",
+		"texture": "brown_beard",
+		"inventory_icon": "brown_beard_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "beard",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 450
+	},
+
+	"reading_glasses": {
+		"category": "eyewear",
+		"display_name": "Reading Glasses",
+		"rarity": "common",
+		"texture": "reading_glasses",
+		"inventory_icon": "reading_glasses_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "eyewear",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 451
+	},
+
+	"pink_shutters": {
+		"category": "eyewear",
+		"display_name": "Pink Shutters",
+		"rarity": "common",
+		"texture": "pink_shutters",
+		"inventory_icon": "pink_shutters_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "eyewear",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 452
+	},
+
+	"yellow_shades": {
+		"category": "eyewear",
+		"display_name": "Yellow Shades",
+		"rarity": "common",
+		"texture": "yellow_shades",
+		"inventory_icon": "yellow_shades_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "eyewear",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 453
+	},
+
+	"blue_shades": {
+		"category": "eyewear",
+		"display_name": "Blue Shades",
+		"rarity": "common",
+		"texture": "blue_shades",
+		"inventory_icon": "blue_shades_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "eyewear",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 454
+	},
+
+	"pink_shades": {
+		"category": "eyewear",
+		"display_name": "Pink Shades",
+		"rarity": "common",
+		"texture": "pink_shades",
+		"inventory_icon": "pink_shades_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "eyewear",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 455
+	},
+
+	"straw": {
+		"category": "eyewear",
+		"display_name": "Straw",
+		"rarity": "common",
+		"texture": "straw_1",
+		"inventory_icon": "straw_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "eyewear",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"animation_fps": 6.0,
+		"eyewear_animations": {
+			"idle": {
+				"frames": ["straw_1", "straw_2", "straw_3", "straw_2", "straw_1"],
+				"fps": 6.0,
+				"loop": true
+			}
+		},
+		"order": 456
+	},
+
+	"green_teashades": {
+		"category": "eyewear",
+		"display_name": "Green Teashades",
+		"rarity": "common",
+		"texture": "green_teashades_1",
+		"inventory_icon": "green_teashades_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "eyewear",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"animation_fps": 6.0,
+		"eyewear_animations": {
+			"idle": {
+				"frames": ["green_teashades_1", "green_teashades_2", "green_teashades_3", "green_teashades_2", "green_teashades_1"],
+				"fps": 6.0,
+				"loop": true
+			}
+		},
+		"order": 457
+	},
+
+	"orange_teashades": {
+		"category": "eyewear",
+		"display_name": "Orange Teashades",
+		"rarity": "common",
+		"texture": "orange_teashades_1",
+		"inventory_icon": "orange_teashades_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "eyewear",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"animation_fps": 6.0,
+		"eyewear_animations": {
+			"idle": {
+				"frames": ["orange_teashades_1", "orange_teashades_2", "orange_teashades_3", "orange_teashades_2", "orange_teashades_1"],
+				"fps": 6.0,
+				"loop": true
+			}
+		},
+		"order": 458
 	},
 
 	"basic_blue_shirt": {
@@ -5127,6 +5286,66 @@ const ITEMS = {
 		"order": 220
 	},
 
+	"red_stripe_shirt": {
+		"category": "shirt",
+		"display_name": "Red Stripe Shirt",
+		"rarity": "common",
+		"texture": "red_stripe_shirt_body",
+		"inventory_icon": "red_stripe_shirt_icon",
+		"arm_texture": "red_stripe_shirt_arm",
+		"left_arm_texture": "red_stripe_shirt_arm_left",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [0, 0],
+		"right_arm_offset": [-7, -5],
+		"left_arm_offset": [6, -5],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"arm_z_index": 1,
+		"order": 902
+	},
+
+	"red_lumberjack_shirt": {
+		"category": "shirt",
+		"display_name": "Red Lumberjack Shirt",
+		"rarity": "common",
+		"texture": "red_lumberjack_shirt_body",
+		"inventory_icon": "red_lumberjack_shirt_icon",
+		"arm_texture": "red_lumberjack_shirt_arm",
+		"left_arm_texture": "red_lumberjack_shirt_arm_left",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [0, 0],
+		"right_arm_offset": [-7, -5],
+		"left_arm_offset": [6, -5],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"arm_z_index": 1,
+		"order": 903
+	},
+
+	"blue_lumberjack_shirt": {
+		"category": "shirt",
+		"display_name": "Blue Lumberjack Shirt",
+		"rarity": "common",
+		"texture": "blue_lumberjack_shirt_body",
+		"inventory_icon": "blue_lumberjack_shirt_icon",
+		"arm_texture": "blue_lumberjack_shirt_arm",
+		"left_arm_texture": "blue_lumberjack_shirt_arm_left",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [0, 0],
+		"right_arm_offset": [-7, -5],
+		"left_arm_offset": [6, -5],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"arm_z_index": 1,
+		"order": 904
+	},
+
 "basic_black_pants": {
 		"category": "pants",
 		"display_name": "Black Pants",
@@ -5215,6 +5434,36 @@ const ITEMS = {
 		"slot_scale": 1.0,
 		"slot_z_index": 1,
 		"order": 235
+	},
+
+	"black_dress_pants": {
+		"category": "pants",
+		"display_name": "Black Dress Pants",
+		"rarity": "common",
+		"texture": "black_dress_pants",
+		"inventory_icon": "black_dress_pants_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "pants",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"order": 236
+	},
+
+	"blue_dress_pants": {
+		"category": "pants",
+		"display_name": "Blue Dress Pants",
+		"rarity": "common",
+		"texture": "blue_dress_pants",
+		"inventory_icon": "blue_dress_pants_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "pants",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"order": 237
 	},
 
 "basic_brown_shoes": {
