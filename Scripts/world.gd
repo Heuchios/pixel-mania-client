@@ -115,6 +115,7 @@ const OPTIONAL_WORLD_UI_SETUP_METHODS := [
 	&"setup_player_menu_ui",
 	&"setup_game_menu_ui",
 	&"setup_settings_panel_ui",
+	&"setup_recipe_book_ui",
 	&"setup_friends_ui",
 	&"setup_developer_panel_ui",
 	&"setup_trade_ui",
@@ -392,6 +393,7 @@ var command_manager = null
 var player_menu_ui = null
 var game_menu_ui = null
 var settings_panel_ui = null
+var recipe_book_ui = null
 var friends_ui = null
 var developer_panel_ui = null
 var trade_ui = null
@@ -417,6 +419,7 @@ var world_generation_manager = null
 var block_manager = null
 var item_atlas_refresh_pending := false
 var particle_manager = null
+var water_surface_manager = null
 var block_shadow_manager = null
 var interaction_manager = null
 var player_manager = null
@@ -1412,9 +1415,10 @@ func setup_item_database():
 			"display_name": "World Lock",
 			"rarity": "legendary",
 			"block_health": 8,
-			"texture": "res://Assets/locks/world_lock.png",
-			"world_lock_access_texture": "res://Assets/locks/world_lock_access.png",
-			"world_lock_no_access_texture": "res://Assets/locks/world_lock_no_access.png",
+			"texture": {"atlas": "res://image.png", "cell": [3, 0], "cell_size": [32, 32]},
+			"inventory_icon": {"atlas": "res://image.png", "cell": [3, 0], "cell_size": [32, 32]},
+			"world_lock_access_atlas_coords": Vector2i(5, 0),
+			"world_lock_no_access_atlas_coords": Vector2i(4, 0),
 			"interaction_permission": "owner_only",
 			"seed": "",
 			"collidable": true,
@@ -1430,9 +1434,10 @@ func setup_item_database():
 			"display_name": "Super World Lock",
 			"rarity": "legendary",
 			"block_health": 8,
-			"texture": "res://Assets/locks/super_world_lock.png",
-			"world_lock_access_texture": "res://Assets/locks/super_world_lock_access.png",
-			"world_lock_no_access_texture": "res://Assets/locks/super_world_lock_no_access.png",
+			"texture": {"atlas": "res://image.png", "cell": [6, 0], "cell_size": [32, 32]},
+			"inventory_icon": {"atlas": "res://image.png", "cell": [6, 0], "cell_size": [32, 32]},
+			"world_lock_access_atlas_coords": Vector2i(8, 0),
+			"world_lock_no_access_atlas_coords": Vector2i(7, 0),
 			"interaction_permission": "owner_only",
 			"seed": "",
 			"max_stack": 400,
@@ -1626,7 +1631,7 @@ func setup_item_database():
 	lure_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
 	fish_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
 
-	var bedrock_texture = load_texture_spec("res://Assets/blocks/Tier_1/basic blocks/bedrock_block.png")
+	var bedrock_texture = load_texture_spec({"atlas": "res://image.png", "cell": [7, 2], "cell_size": [32, 32]})
 	if bedrock_texture != null:
 		block_textures["bedrock"] = bedrock_texture
 
@@ -1713,6 +1718,7 @@ func _ready():
 	setup_block_manager()
 	setup_electricity_manager()
 	setup_particle_manager()
+	setup_water_surface_manager()
 	setup_block_shadow_manager()
 	setup_interaction_manager()
 	setup_player_manager()
@@ -3265,6 +3271,18 @@ func setup_particle_manager():
 
 	if particle_manager.has_method("setup"):
 		particle_manager.setup(self)
+
+
+func setup_water_surface_manager():
+	if water_surface_manager == null:
+		var water_surface_script = preload("res://Scripts/water_surface_manager.gd")
+		water_surface_manager = MeshInstance2D.new()
+		water_surface_manager.name = "WaterSurfaceManager"
+		water_surface_manager.set_script(water_surface_script)
+		add_child(water_surface_manager)
+
+	if water_surface_manager.has_method("setup"):
+		water_surface_manager.setup(self)
 
 
 func setup_block_shadow_manager():
@@ -7453,6 +7471,8 @@ func is_major_ui_open() -> bool:
 		return true
 	if has_method("is_settings_panel_open") and is_settings_panel_open():
 		return true
+	if has_method("is_recipe_book_open") and is_recipe_book_open():
+		return true
 	if has_method("is_friends_panel_open") and is_friends_panel_open():
 		return true
 	if is_world_menu_open():
@@ -7513,6 +7533,8 @@ func is_movement_blocking_ui_open() -> bool:
 	if is_game_menu_open():
 		return true
 	if has_method("is_settings_panel_open") and is_settings_panel_open():
+		return true
+	if has_method("is_recipe_book_open") and is_recipe_book_open():
 		return true
 	if has_method("is_friends_panel_open") and is_friends_panel_open():
 		return true
@@ -7685,6 +7707,13 @@ func setup_game_menu_ui():
 func setup_settings_panel_ui():
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("setup_settings_panel_ui"):
 		return gameplay_ui_manager.setup_settings_panel_ui()
+
+	return
+
+
+func setup_recipe_book_ui():
+	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("setup_recipe_book_ui"):
+		return gameplay_ui_manager.setup_recipe_book_ui()
 
 	return
 
@@ -7870,6 +7899,36 @@ func close_settings_panel():
 func is_settings_panel_open() -> bool:
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("is_settings_panel_open"):
 		return gameplay_ui_manager.is_settings_panel_open()
+
+	return false
+
+
+func open_recipe_book():
+	setup_recipe_book_ui()
+	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_recipe_book"):
+		return gameplay_ui_manager.open_recipe_book()
+
+	return
+
+
+func close_recipe_book():
+	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("close_recipe_book"):
+		return gameplay_ui_manager.close_recipe_book()
+
+	return
+
+
+func toggle_recipe_book():
+	setup_recipe_book_ui()
+	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("toggle_recipe_book"):
+		return gameplay_ui_manager.toggle_recipe_book()
+
+	return
+
+
+func is_recipe_book_open() -> bool:
+	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("is_recipe_book_open"):
+		return gameplay_ui_manager.is_recipe_book_open()
 
 	return false
 

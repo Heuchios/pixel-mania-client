@@ -73,7 +73,7 @@ var shop_items = [
 		"description": "Main station for tools and special recipes."
 	},
 	{
-		"item_id": "vend_empty",
+		"item_id": "vending_machine",
 		"amount": 1,
 		"price": 7500,
 		"section": "special",
@@ -1467,7 +1467,6 @@ func get_inventory_snapshot() -> Dictionary:
 	add_inventory_dictionary_to_snapshot(snapshot, "hat", world.hat_inventory)
 	add_inventory_dictionary_to_snapshot(snapshot, "hair", world.hair_inventory)
 	add_inventory_dictionary_to_snapshot(snapshot, "eyewear", world.eyewear_inventory)
-	add_inventory_dictionary_to_snapshot(snapshot, "beard", world.beard_inventory)
 	add_inventory_dictionary_to_snapshot(snapshot, "shirt", world.shirt_inventory)
 	add_inventory_dictionary_to_snapshot(snapshot, "pants", world.pants_inventory)
 	add_inventory_dictionary_to_snapshot(snapshot, "shoes", world.shoes_inventory)
@@ -1498,7 +1497,6 @@ func get_inventory_delta(before_snapshot: Dictionary) -> Array:
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "hat", world.hat_inventory)
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "hair", world.hair_inventory)
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "eyewear", world.eyewear_inventory)
-	add_inventory_delta_from_dictionary(rewards, before_snapshot, "beard", world.beard_inventory)
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "shirt", world.shirt_inventory)
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "pants", world.pants_inventory)
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "shoes", world.shoes_inventory)
@@ -2046,12 +2044,6 @@ func add_item_to_inventory(item_id: String, amount: int):
 		world.add_item_to_inventory_stack(world.eyewear_inventory, item_id, category, amount)
 		return
 
-	if category == "beard":
-		if not world.beard_inventory.has(item_id):
-			world.beard_inventory[item_id] = 0
-		world.add_item_to_inventory_stack(world.beard_inventory, item_id, category, amount)
-		return
-
 	if category == "shirt":
 		if not world.shirt_inventory.has(item_id):
 			world.shirt_inventory[item_id] = 0
@@ -2146,9 +2138,6 @@ func get_item_texture(item_id: String):
 
 	if category == "eyewear" and world.eyewear_textures.has(item_id):
 		return world.eyewear_textures[item_id]
-
-	if category == "beard" and world.beard_textures.has(item_id):
-		return world.beard_textures[item_id]
 
 	if category == "shirt" and world.shirt_textures.has(item_id):
 		return world.shirt_textures[item_id]

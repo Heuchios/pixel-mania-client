@@ -126,9 +126,6 @@ func get_selected_item_text() -> String:
 	if world.selected_item_category == "eyewear":
 		return "EYEWEAR: " + display_name
 
-	if world.selected_item_category == "beard":
-		return "BEARD: " + display_name
-
 	if world.selected_item_category == "shirt":
 		return "SHIRT: " + display_name
 
@@ -185,7 +182,7 @@ func is_item_equipable(item_type: String, category: String) -> bool:
 		return false
 	if get_item_count(item_type, category) <= 0:
 		return false
-	if category == "back" or category == "hat" or category == "hair" or category == "eyewear" or category == "beard" or category == "shirt" or category == "pants" or category == "shoes" or category == "ride":
+	if category == "back" or category == "hat" or category == "hair" or category == "eyewear" or category == "shirt" or category == "pants" or category == "shoes" or category == "ride":
 		return true
 	if category == "tool":
 		if world.item_database.has(item_type):
@@ -212,8 +209,6 @@ func toggle_equip_item(item_type: String, category: String):
 		equip_hair_item(item_type)
 	elif category == "eyewear":
 		equip_eyewear_item(item_type)
-	elif category == "beard":
-		equip_beard_item(item_type)
 	elif category == "shirt":
 		equip_shirt_item(item_type)
 	elif category == "pants":
@@ -328,32 +323,6 @@ func get_equipped_eyewear_text() -> String:
 		return "None"
 
 	return get_item_display_name(world.equipped_eyewear_item, "eyewear")
-
-
-func equip_beard_item(item_type: String):
-	if not world.beard_inventory.has(item_type):
-		world.show_notification("You do not have " + get_item_display_name(item_type, "beard") + ".")
-		return
-
-	if int(world.beard_inventory[item_type]) <= 0:
-		world.show_notification("You do not have " + get_item_display_name(item_type, "beard") + ".")
-		return
-
-	if world.equipped_beard_item == item_type:
-		world.equipped_beard_item = ""
-	else:
-		world.equipped_beard_item = item_type
-
-	world.update_equipment_visual()
-	world.update_all_ui()
-	save_equipment_state()
-
-
-func get_equipped_beard_text() -> String:
-	if world.equipped_beard_item == "":
-		return "None"
-
-	return get_item_display_name(world.equipped_beard_item, "beard")
 
 
 func equip_shirt_item(item_type: String):
@@ -583,7 +552,7 @@ func get_block_rarity(block_type: String) -> String:
 func should_always_return_block_on_break(block_type: String) -> bool:
 	if block_type == "crafting_station" or block_type == "furnace":
 		return true
-	if (world.has_method("is_world_lock_block_type") and world.is_world_lock_block_type(block_type)) or block_type == "vend_empty" or block_type == "safe" or block_type == "fish_monger":
+	if (world.has_method("is_world_lock_block_type") and world.is_world_lock_block_type(block_type)) or block_type == "vending_machine" or block_type == "vend_empty" or block_type == "vend_pending" or block_type == "vend_sold" or block_type == "safe" or block_type == "fish_monger":
 		return true
 	if world.item_database.has(block_type):
 		var block_data: Dictionary = world.item_database[block_type]
@@ -840,9 +809,6 @@ func get_item_texture(item_type: String, category: String):
 	if category == "eyewear" and world.eyewear_textures.has(item_type):
 		return world.eyewear_textures[item_type]
 
-	if category == "beard" and world.beard_textures.has(item_type):
-		return world.beard_textures[item_type]
-
 	if category == "shirt" and world.shirt_textures.has(item_type):
 		return world.shirt_textures[item_type]
 
@@ -884,9 +850,6 @@ func get_item_count(item_type: String, category: String) -> int:
 
 	if category == "eyewear" and world.eyewear_inventory.has(item_type):
 		return int(world.eyewear_inventory[item_type])
-
-	if category == "beard" and world.beard_inventory.has(item_type):
-		return int(world.beard_inventory[item_type])
 
 	if category == "shirt" and world.shirt_inventory.has(item_type):
 		return int(world.shirt_inventory[item_type])
@@ -934,7 +897,6 @@ func get_local_equipment_debug_snapshot() -> Dictionary:
 		"hat": str(world.equipped_hat_item),
 		"hair": str(world.equipped_hair_item),
 		"eyewear": str(world.equipped_eyewear_item),
-		"beard": str(world.equipped_beard_item),
 		"shirt": str(world.equipped_shirt_item),
 		"pants": str(world.equipped_pants_item),
 		"shoes": str(world.equipped_shoes_item),

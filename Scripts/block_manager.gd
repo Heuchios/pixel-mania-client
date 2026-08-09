@@ -242,6 +242,7 @@ const CAVE_BACKGROUND_TEXTURE_PATHS := [
 	"res://Assets/background/cave_background_2.png",
 	"res://Assets/background/cave_background_3.png"
 ]
+const DEFAULT_BLOCKS_ATLAS_PATH := "res://image.png"
 
 func setup(world_ref):
 	world = world_ref
@@ -1933,6 +1934,8 @@ func normalize_legacy_block_id(block_type: String) -> String:
 		return "wood"
 	if block_type == "pillar_top" or block_type == "pillar_middle" or block_type == "pillar_bottom":
 		return "pillar"
+	if block_type == "vend_empty" or block_type == "vend_pending" or block_type == "vend_sold":
+		return "vending_machine"
 	return block_type
 
 
@@ -2080,7 +2083,7 @@ func get_block_tilemap_metadata(block_type: String, visual_block_type: String = 
 
 
 func get_stateful_block_atlas_texture(block_type: String, visual_block_type: String, grid_pos: Vector2i, background := false) -> Texture2D:
-	if background or grid_pos == NO_VARIANT_GRID_POS:
+	if grid_pos == NO_VARIANT_GRID_POS:
 		return null
 
 	var clean_block_type := str(block_type).strip_edges().to_lower()
@@ -2102,43 +2105,50 @@ func get_block_atlas_cell_texture(metadata: Dictionary) -> Texture2D:
 	if not metadata_has_tilemap_atlas_coords(metadata):
 		return null
 
-	var atlas_item_id := int(metadata.get("atlas_item_id", 0))
-	if atlas_item_id <= 0:
-		return null
-
 	var atlas_coords := parse_block_vector2i(metadata.get("atlas_coords", Vector2i.ZERO), Vector2i.ZERO)
+	var atlas_item_id := int(metadata.get("atlas_item_id", 0))
 	var source_id := int(metadata.get("source_id", 0))
 	var source_texture: Texture2D = null
 	var region_size := Vector2i(32, 32)
 	var margins := Vector2i.ZERO
 	var separation := Vector2i.ZERO
 
-	var atlas_tile_set: TileSet = null
-	if world != null and world.has_method("get_item_atlas_tile_set"):
-		atlas_tile_set = world.get_item_atlas_tile_set()
-	if atlas_tile_set != null and atlas_tile_set.has_source(source_id):
-		var raw_source = atlas_tile_set.get_source(source_id)
-		if raw_source is TileSetAtlasSource:
-			var atlas_source := raw_source as TileSetAtlasSource
-			source_texture = atlas_source.texture
-			region_size = atlas_source.texture_region_size
-			margins = atlas_source.margins
-			separation = atlas_source.separation
-			if region_size == Vector2i.ZERO:
-				region_size = atlas_tile_set.tile_size
+	if atlas_item_id > 0:
+		var atlas_tile_set: TileSet = null
+		if world != null and world.has_method("get_item_atlas_tile_set"):
+			atlas_tile_set = world.get_item_atlas_tile_set()
+		if atlas_tile_set != null and atlas_tile_set.has_source(source_id):
+			var raw_source = atlas_tile_set.get_source(source_id)
+			if raw_source is TileSetAtlasSource:
+				var atlas_source := raw_source as TileSetAtlasSource
+				source_texture = atlas_source.texture
+				region_size = atlas_source.texture_region_size
+				margins = atlas_source.margins
+				separation = atlas_source.separation
+				if region_size == Vector2i.ZERO:
+					region_size = atlas_tile_set.tile_size
+
+		if source_texture == null:
+			var base_icon := ITEM_ATLAS_DB.get_item_icon(atlas_item_id, atlas_tile_set)
+			if base_icon != null and base_icon.atlas != null:
+				source_texture = base_icon.atlas
+				region_size = Vector2i(roundi(base_icon.region.size.x), roundi(base_icon.region.size.y))
+				var atlas_item := ITEM_ATLAS_DB.get_item(atlas_item_id)
+				var base_coords := parse_block_vector2i(atlas_item.get("atlas_coords", Vector2i.ZERO), Vector2i.ZERO)
+				margins = Vector2i(
+					roundi(base_icon.region.position.x) - base_coords.x * region_size.x,
+					roundi(base_icon.region.position.y) - base_coords.y * region_size.y
+				)
 
 	if source_texture == null:
-		var base_icon := ITEM_ATLAS_DB.get_item_icon(atlas_item_id, atlas_tile_set)
-		if base_icon == null or base_icon.atlas == null:
-			return null
-		source_texture = base_icon.atlas
-		region_size = Vector2i(roundi(base_icon.region.size.x), roundi(base_icon.region.size.y))
-		var atlas_item := ITEM_ATLAS_DB.get_item(atlas_item_id)
-		var base_coords := parse_block_vector2i(atlas_item.get("atlas_coords", Vector2i.ZERO), Vector2i.ZERO)
-		margins = Vector2i(
-			roundi(base_icon.region.position.x) - base_coords.x * region_size.x,
-			roundi(base_icon.region.position.y) - base_coords.y * region_size.y
-		)
+		# Items that carry dynamic atlas_coords (weighted variants, state textures,
+		# vertical variants, ...) but aren't registered in the TileSet atlas manifest
+		# (atlas_items.json) still resolve straight against the shared blocks atlas
+		# image, at the standard 32x32 grid, with no margins/separation.
+		source_texture = AtlasTextureFactory.load_texture_path(DEFAULT_BLOCKS_ATLAS_PATH)
+		region_size = Vector2i(32, 32)
+		margins = Vector2i.ZERO
+		separation = Vector2i.ZERO
 
 	if source_texture == null or region_size.x <= 0 or region_size.y <= 0:
 		return null
@@ -3318,35 +3328,17 @@ func get_visual_block_variant(base_block_id: String, grid_pos: Vector2i, backgro
 		return ""
 
 	if background:
-		if base_block_id == "cave_background":
-			var cave_paths = get_existing_variant_paths(CAVE_BACKGROUND_TEXTURE_PATHS)
-			if cave_paths.is_empty():
-				return ""
-			return cave_paths[get_stable_variant_index(grid_pos, cave_paths.size(), 21)]
+		# cave_background's weighted variant selection now lives in
+		# get_stateful_block_atlas_data() (atlas-coordinate based, sourced from
+		# the shared blocks atlas image) so it can be reached from the
+		# background render pass too.
 		return ""
 
 	if str(base_block_id).strip_edges().to_lower() == BARN_BLOCK_TYPE:
 		return ""
 
-	# Dirt and water use vertical visual rules. The block type saved for gameplay
-	# stays as the base ID, while only the Sprite2D texture changes.
-	if base_block_id == "dirt":
-		var above_pos = Vector2i(grid_pos.x, grid_pos.y - 1)
-		if uses_lower_dirt_variant_when_above(get_foreground_block_type_at(above_pos)):
-			var dirt_lower_paths = get_existing_variant_paths(DIRT_LOWER_TEXTURE_PATHS)
-			if dirt_lower_paths.is_empty():
-				return DIRT_TOP_TEXTURE_PATH
-			var dirt_variant_index = min(get_weighted_stable_variant_index(grid_pos, [85, 15], 11), dirt_lower_paths.size() - 1)
-			return dirt_lower_paths[dirt_variant_index]
-		return DIRT_TOP_TEXTURE_PATH
-
-	if base_block_id == "stone":
-		var stone_paths = get_existing_variant_paths(STONE_TEXTURE_PATHS)
-		if stone_paths.is_empty():
-			return ""
-		var stone_variant_index = min(get_weighted_stable_variant_index(grid_pos, [65, 25, 10], 31), stone_paths.size() - 1)
-		return stone_paths[stone_variant_index]
-
+	# Dirt and stone weighted variants now live in get_stateful_block_atlas_data()
+	# (atlas-coordinate based). Water still uses the legacy path-based override.
 	if base_block_id == "water":
 		var above_water_pos = Vector2i(grid_pos.x, grid_pos.y - 1)
 		if get_foreground_block_type_at(above_water_pos) == "water":
@@ -3364,15 +3356,9 @@ func get_visual_block_variant(base_block_id: String, grid_pos: Vector2i, backgro
 			return TREE_TRUNK_TOP_TEXTURE_PATH
 		return TREE_TRUNK_BOTTOM_TEXTURE_PATH
 
-	if base_block_id == "climbing_vine":
-		var has_vine_above = has_climbing_vine_neighbor(Vector2i(grid_pos.x, grid_pos.y - 1))
-		var has_vine_below = has_climbing_vine_neighbor(Vector2i(grid_pos.x, grid_pos.y + 1))
-
-		if has_vine_above and has_vine_below:
-			return CLIMBING_VINE_MIDDLE_TEXTURE_PATH
-		if has_vine_below:
-			return CLIMBING_VINE_TOP_TEXTURE_PATH
-		return CLIMBING_VINE_BOTTOM_TEXTURE_PATH
+	# climbing_vine's 4-way (top/middle/bottom/single) variant now lives in the
+	# generic vertical_variant_atlas_coords system (see item_database.gd), which
+	# is already dispatched from get_stateful_block_atlas_data().
 
 	if has_platform_variant_textures(base_block_id):
 		var platform_variant_key := get_platform_variant_key(base_block_id, grid_pos)
@@ -3449,7 +3435,7 @@ func get_stateful_block_texture_path(base_block_id: String, grid_pos: Vector2i, 
 
 
 func get_stateful_block_atlas_data(base_block_id: String, grid_pos: Vector2i, background := false) -> Dictionary:
-	if background or grid_pos == NO_VARIANT_GRID_POS:
+	if grid_pos == NO_VARIANT_GRID_POS:
 		return {}
 	if world == null:
 		return {}
@@ -3459,6 +3445,38 @@ func get_stateful_block_atlas_data(base_block_id: String, grid_pos: Vector2i, ba
 		return {}
 
 	var item_data = world.item_database[clean_base_id]
+
+	if background:
+		# Only cave_background's weighted variant selection runs on the
+		# background render pass; everything else below is foreground-only.
+		if clean_base_id == "cave_background":
+			var cave_atlas_data := get_weighted_atlas_variant_data(item_data, grid_pos, "cave_background_atlas_variants", "cave_background_atlas_weights", 21)
+			if not cave_atlas_data.is_empty():
+				return cave_atlas_data
+		return {}
+
+	if clean_base_id == "dirt":
+		var above_pos = Vector2i(grid_pos.x, grid_pos.y - 1)
+		if uses_lower_dirt_variant_when_above(get_foreground_block_type_at(above_pos)):
+			var dirt_atlas_data := get_weighted_atlas_variant_data(item_data, grid_pos, "dirt_lower_atlas_variants", "dirt_lower_atlas_weights", 11)
+			if not dirt_atlas_data.is_empty():
+				return dirt_atlas_data
+
+	if clean_base_id == "stone":
+		var stone_atlas_data := get_weighted_atlas_variant_data(item_data, grid_pos, "stone_atlas_variants", "stone_atlas_weights", 31)
+		if not stone_atlas_data.is_empty():
+			return stone_atlas_data
+
+	if is_world_lock_block_type(clean_base_id):
+		var world_lock_atlas_data := get_world_lock_access_atlas_coords(clean_base_id, grid_pos)
+		if not world_lock_atlas_data.is_empty():
+			return world_lock_atlas_data
+
+	if bool(item_data.get("vending_machine_block", false)):
+		var vending_atlas_data := get_vending_machine_atlas_data(grid_pos, item_data)
+		if not vending_atlas_data.is_empty():
+			return vending_atlas_data
+
 	if clean_base_id == WATER_BLOCK_TYPE and is_lower_water_layer_cell(grid_pos):
 		return {
 			"atlas_coords": parse_block_vector2i(item_data.get("water_lower_atlas_coords", WATER_LOWER_ATLAS_COORDS), WATER_LOWER_ATLAS_COORDS)
@@ -3547,6 +3565,94 @@ func get_stateful_block_atlas_data(base_block_id: String, grid_pos: Vector2i, ba
 			}
 
 	return {}
+
+
+func get_weighted_atlas_variant_data(item_data: Dictionary, grid_pos: Vector2i, variants_key: String, weights_key: String, salt: int) -> Dictionary:
+	var variants = item_data.get(variants_key, [])
+	if not (variants is Array) or variants.is_empty():
+		return {}
+
+	var weights = item_data.get(weights_key, [])
+	var variant_index := 0
+	if weights is Array and weights.size() == variants.size():
+		variant_index = get_weighted_stable_variant_index(grid_pos, weights, salt)
+	else:
+		variant_index = get_stable_variant_index(grid_pos, variants.size(), salt)
+	variant_index = clampi(variant_index, 0, variants.size() - 1)
+
+	return {
+		"atlas_coords": parse_block_vector2i(variants[variant_index], Vector2i.ZERO)
+	}
+
+
+func get_world_lock_access_atlas_coords(block_type: String, grid_pos: Vector2i) -> Dictionary:
+	if world == null or grid_pos == NO_VARIANT_GRID_POS:
+		return {}
+
+	var clean_type := str(block_type).strip_edges().to_lower()
+	if not is_world_lock_block_type(clean_type):
+		return {}
+	if world.world_lock_manager == null:
+		return {}
+
+	var manager = world.world_lock_manager
+	if "is_locked" in manager and not bool(manager.is_locked):
+		return {}
+	if "lock_grid_pos" in manager and manager.lock_grid_pos is Vector2i:
+		if manager.lock_grid_pos != grid_pos:
+			return {}
+
+	var has_access := false
+	if manager.has_method("is_current_player_owner_or_access"):
+		has_access = bool(manager.is_current_player_owner_or_access())
+
+	var item_data := get_block_item_data(clean_type)
+	if item_data.is_empty():
+		return {}
+
+	var atlas_key := "world_lock_access_atlas_coords" if has_access else "world_lock_no_access_atlas_coords"
+	if not item_data.has(atlas_key):
+		return {}
+
+	return {
+		"atlas_coords": parse_block_vector2i(item_data.get(atlas_key), Vector2i.ZERO)
+	}
+
+
+func get_vending_machine_atlas_data(grid_pos: Vector2i, item_data: Dictionary) -> Dictionary:
+	if world == null or grid_pos == NO_VARIANT_GRID_POS:
+		return {}
+	if not ("vending_states" in world):
+		return {}
+
+	var raw_state: Variant = world.vending_states.get(grid_pos, {})
+	var state := get_wrapped_state_payload(raw_state)
+	var listing_value = state.get("listing", {})
+	var listing: Dictionary = listing_value if listing_value is Dictionary else {}
+	var has_listing := not listing.is_empty()
+	var pending := int(state.get("pending_wls", 0))
+	var status := str(state.get("status", "")).strip_edges().to_lower()
+	var is_sold := pending > 0 or status == "sold"
+
+	# Mirrors vending_preview_manager.gd's is_sold_out_vending_state() precedence:
+	# a listing with stock<=0 wins over the transient "sold" flash.
+	var atlas_key := "vending_empty_atlas_coords"
+	if has_listing:
+		if listing.has("stock") and int(listing.get("stock", 0)) <= 0:
+			atlas_key = "vending_out_of_stock_atlas_coords"
+		elif is_sold:
+			atlas_key = "vending_sold_atlas_coords"
+		else:
+			atlas_key = "vending_full_atlas_coords"
+	elif is_sold:
+		atlas_key = "vending_sold_atlas_coords"
+
+	if not item_data.has(atlas_key):
+		return {}
+
+	return {
+		"atlas_coords": parse_block_vector2i(item_data.get(atlas_key), Vector2i.ZERO)
+	}
 
 
 func get_wrapped_state_payload(state_value) -> Dictionary:

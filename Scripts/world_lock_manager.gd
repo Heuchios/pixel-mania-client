@@ -867,7 +867,10 @@ func can_current_player_pass_door() -> bool:
 
 
 func is_vending_machine_block(block_type: String) -> bool:
-	return block_type == "vend_empty" or block_type == "vend_pending" or block_type == "vend_sold"
+	# "vend_empty"/"vend_pending"/"vend_sold" are legacy ids kept only so blocks
+	# placed before the blocks-atlas migration keep working; new placements are
+	# always "vending_machine".
+	return block_type == "vending_machine" or block_type == "vend_empty" or block_type == "vend_pending" or block_type == "vend_sold"
 
 
 func is_safe_block(block_type: String) -> bool:

@@ -26,7 +26,9 @@ func setup(world_ref):
 
 
 func is_vending_machine_block_type(block_type: String) -> bool:
-	return block_type == "vend_empty" or block_type == "vend_pending" or block_type == "vend_sold"
+	# Legacy ids kept only so blocks placed before the blocks-atlas migration
+	# keep showing their item preview; new placements are always "vending_machine".
+	return block_type == "vending_machine" or block_type == "vend_empty" or block_type == "vend_pending" or block_type == "vend_sold"
 
 
 func get_vend_state_dictionary(raw_state) -> Dictionary:
