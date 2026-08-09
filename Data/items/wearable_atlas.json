@@ -197,10 +197,10 @@
 	"phoenix_wings_4": {"atlas": "res://Assets/items/back_item.png", "region": [224, 480, 64, 64]},
 	"phoenix_wings_5": {"atlas": "res://Assets/items/back_item.png", "region": [288, 480, 64, 64]},
 
-	"void_saber_icon": {"atlas": "res://Assets/items/wearable_64x32.png", "region": [0, 576, 32, 32]},
-	"void_saber_1": {"atlas": "res://Assets/items/wearable_64x32.png", "region": [64, 576, 64, 32]},
-	"void_saber_2": {"atlas": "res://Assets/items/wearable_64x32.png", "region": [128, 576, 64, 32]},
-	"void_saber_3": {"atlas": "res://Assets/items/wearable_64x32.png", "region": [192, 576, 64, 32]}
+	"void_saber_icon": {"atlas": "res://Assets/items/wearable_64x32.png", "region": [0, 1120, 32, 32]},
+	"void_saber_1": {"atlas": "res://Assets/items/wearable_64x32.png", "region": [32, 1120, 64, 32]},
+	"void_saber_2": {"atlas": "res://Assets/items/wearable_64x32.png", "region": [96, 1120, 64, 32]},
+	"void_saber_3": {"atlas": "res://Assets/items/wearable_64x32.png", "region": [160, 1120, 64, 32]}
   },
   "aliases": {}
 }
