@@ -12,6 +12,8 @@ const BATTERY_CHARGER_SCENE_PATH = "res://Scenes/ui/battery_charger/BatteryCharg
 const SETTINGS_PANEL_SCENE_PATH = "res://Scenes/ui/settings/SettingsPanel.tscn"
 const WORLD_LOCK_SCENE_PATH = "res://Scenes/ui/locks/WorldLockGUI.tscn"
 const PLAYER_PROFILE_SCENE_PATH = "res://Scenes/ui/player_profile/PlayerProfileScene.tscn"
+const RECIPE_BOOK_SCENE_PATH = "res://Scenes/ui/recipe_book/RecipeBookScene.tscn"
+const TRADE_SCENE_PATH = "res://Scenes/ui/trade/TradeScene.tscn"
 const SIGN_HOVER_LABEL_WIDTH = 380.0
 const SIGN_HOVER_LABEL_HEIGHT = 54.0
 const SIGN_HOVER_WORLD_OFFSET = Vector2(0.0, -40.0)
@@ -529,6 +531,13 @@ func setup_player_menu_ui():
 			world.player_menu_ui = Control.new()
 			world.player_menu_ui.set_script(menu_script)
 		world.player_menu_ui.name = "PlayerMenuUI"
+		# Without this it defaults to z_index 0, which sits BELOW the hotbar (z_index 176,
+		# see inventory_manager.gd HOTBAR_Z_INDEX) even though both are children of
+		# ModalLayer/HudLayer under the same UI CanvasLayer -- the hotbar was drawing on top
+		# of the profile popup's showcase row and Add Friend button. Matches
+		# settings_panel_ui's z_index (see setup_settings_panel_ui below) so profile and
+		# settings sit at the same tier, both above the hotbar and below the recipe book (240).
+		world.player_menu_ui.z_index = 220
 		parent_node.add_child(world.player_menu_ui)
 
 	if world.player_menu_ui.has_method("setup"):
@@ -578,6 +587,35 @@ func setup_settings_panel_ui():
 	world.settings_panel_ui.visible = false
 
 
+func setup_recipe_book_ui():
+	if world.ui_layer == null:
+		return
+
+	var parent_node: Node = world.ui_layer
+	if world.has_method("get_ui_modal_layer"):
+		parent_node = world.get_ui_modal_layer()
+
+	world.recipe_book_ui = parent_node.get_node_or_null("RecipeBookUI")
+	if world.recipe_book_ui != null and world.recipe_book_ui.scene_file_path != RECIPE_BOOK_SCENE_PATH:
+		parent_node.remove_child(world.recipe_book_ui)
+		world.recipe_book_ui.queue_free()
+		world.recipe_book_ui = null
+
+	if world.recipe_book_ui == null:
+		var recipe_book_scene = load(RECIPE_BOOK_SCENE_PATH)
+		if not (recipe_book_scene is PackedScene):
+			return
+		world.recipe_book_ui = recipe_book_scene.instantiate()
+		world.recipe_book_ui.name = "RecipeBookUI"
+		# Sits above the settings panel so it can open on top of the profile.
+		world.recipe_book_ui.z_index = 240
+		parent_node.add_child(world.recipe_book_ui)
+
+	if world.recipe_book_ui.has_method("setup"):
+		world.recipe_book_ui.setup(world)
+	world.recipe_book_ui.visible = false
+
+
 func setup_friends_ui():
 	if world.ui_layer == null:
 		return
@@ -617,12 +655,17 @@ func setup_trade_ui():
 		return
 
 	world.trade_ui = world.ui_layer.get_node_or_null("TradeUI")
+	if world.trade_ui != null and world.trade_ui.scene_file_path != TRADE_SCENE_PATH:
+		world.ui_layer.remove_child(world.trade_ui)
+		world.trade_ui.queue_free()
+		world.trade_ui = null
 
 	if world.trade_ui == null:
-		var trade_script = preload("res://Scripts/trade_ui.gd")
-		world.trade_ui = Control.new()
+		var trade_scene = load(TRADE_SCENE_PATH)
+		if not (trade_scene is PackedScene):
+			return
+		world.trade_ui = trade_scene.instantiate()
 		world.trade_ui.name = "TradeUI"
-		world.trade_ui.set_script(trade_script)
 		world.ui_layer.add_child(world.trade_ui)
 
 	if world.trade_ui.has_method("setup"):
@@ -1119,6 +1162,33 @@ func close_settings_panel():
 func is_settings_panel_open() -> bool:
 	if world.settings_panel_ui != null:
 		return world.settings_panel_ui.visible
+
+	return false
+
+
+func open_recipe_book():
+	if world.recipe_book_ui == null:
+		setup_recipe_book_ui()
+
+	if world.recipe_book_ui != null and world.recipe_book_ui.has_method("open_recipe_book"):
+		world.recipe_book_ui.open_recipe_book()
+
+
+func close_recipe_book():
+	if world.recipe_book_ui != null and world.recipe_book_ui.has_method("close_recipe_book"):
+		world.recipe_book_ui.close_recipe_book()
+
+
+func toggle_recipe_book():
+	if is_recipe_book_open():
+		close_recipe_book()
+		return
+	open_recipe_book()
+
+
+func is_recipe_book_open() -> bool:
+	if world.recipe_book_ui != null:
+		return world.recipe_book_ui.visible
 
 	return false
 
