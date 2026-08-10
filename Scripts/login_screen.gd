@@ -16,15 +16,11 @@ const STARRY_NIGHT_LAYERS := [
 ]
 const AccountManagerScript = preload("res://Scripts/account_manager.gd")
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
-const LOGIN_SOUND_PATH := "res://Assets/sounds/login.wav"
-const LOGIN_SOUND_VOLUME_DB := -12.0
-const MenuLoopSoundHelper = preload("res://Scripts/ui/menu_loop_sound_helper.gd")
 const WorldScenePreloader = preload("res://Scripts/world_scene_preloader.gd")
 
 var parallax_background: Control
 var parallax_layers: Array = []
 var parallax_time := 0.0
-var login_sound_player: AudioStreamPlayer = null
 var username_input: LineEdit
 var email_input: LineEdit
 var password_input: LineEdit
@@ -176,11 +172,6 @@ func _run_backend_dev_login_bypass() -> void:
 	get_tree().change_scene_to_file(WORLD_SCENE)
 
 
-func _exit_tree() -> void:
-	if login_sound_player != null and is_instance_valid(login_sound_player):
-		login_sound_player.stop()
-
-
 func _process(delta: float) -> void:
 	WorldScenePreloader.pump()
 	_update_background_parallax(delta)
@@ -261,7 +252,12 @@ func _enter_dev_test_world_scene() -> void:
 
 
 func _setup_login_sound() -> void:
-	login_sound_player = MenuLoopSoundHelper.start_menu_loop_sound(self, LOGIN_SOUND_PATH, "LoginLoopSound", LOGIN_SOUND_VOLUME_DB)
+	# Plays on the MusicManager autoload (not a child of this scene) so it survives the
+	# login -> lobby scene change instead of being freed and restarted from 0:00 -- see
+	# music_manager.gd for why. Safe to call even if it's already looping (e.g. player came
+	# back here via a logout/profile-switch from the lobby): it just no-ops.
+	if MusicManager != null and MusicManager.has_method("start_login_loop"):
+		MusicManager.start_login_loop()
 
 
 func _setup_account_manager() -> void:
@@ -1026,11 +1022,20 @@ func _try_enter_authenticated_netfox_launch_world(auth_data: Dictionary = {}) ->
 		return
 
 	print("[WorldJoinHandoff] World scene ready elapsed_ms=%.3f" % float(Time.get_ticks_msec() - handoff_started_at))
+	# Unlike the LOBBY_SCENE transitions above, this path enters the world directly and
+	# skips the lobby menu entirely -- the menu loop should stop here, it won't be picked
+	# back up by a lobby _ready() the way it would on the normal login -> lobby path.
+	if MusicManager != null and MusicManager.has_method("stop_login_loop"):
+		MusicManager.stop_login_loop()
 	var change_error := get_tree().change_scene_to_packed(world_scene)
 	if change_error != OK:
 		netfox_launch_scene_change_in_progress = false
 		push_error("[WorldJoinHandoff] World scene transition failed with error %d." % change_error)
 		_show_message("Could not enter the world. Try again.")
+		# Scene change didn't happen -- we're still on the login screen, so resume the loop
+		# instead of leaving it stopped.
+		if MusicManager != null and MusicManager.has_method("start_login_loop"):
+			MusicManager.start_login_loop()
 
 
 func _wait_for_preloaded_world_scene() -> PackedScene:

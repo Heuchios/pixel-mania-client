@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 MovementMode="*res://Scripts/networking/movement_mode.gd"
 GlobalFontManager="*res://Scripts/ui/global_font_manager.gd"
+MusicManager="*res://Scripts/music_manager.gd"
 NetworkManager="*uid://b235pvewnt643"
 NetworkTime="*res://addons/netfox/network-time.gd"
 NetworkTimeSynchronizer="*res://addons/netfox/network-time-synchronizer.gd"

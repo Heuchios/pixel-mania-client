@@ -18,9 +18,6 @@ const ACTIVE_WORLD_LIST_TOP := 108.0
 const ACTIVE_WORLD_LIST_BOTTOM_MARGIN := 24.0
 const ACTIVE_WORLD_ROW_HEIGHT := 72.0
 const ACTIVE_WORLD_ROW_SEPARATION := 10
-const MENU_LOOP_SOUND_PATH := "res://Assets/sounds/login.wav"
-const MENU_LOOP_SOUND_VOLUME_DB := -12.0
-const MenuLoopSoundHelper = preload("res://Scripts/ui/menu_loop_sound_helper.gd")
 const LOBBY_PARALLAX_LAYERS := [
 	{"name": "Layer8", "texture": preload("res://Assets/background/space_theme/star_1.png"), "drift": 0.0, "speed": 0.0, "phase": 0.0, "overscan": 0.0},
 	{"name": "Layer7", "texture": preload("res://Assets/background/space_theme/star_2.png"), "drift": 18.0, "speed": 0.32, "phase": 0.0, "overscan": 24.0},
@@ -57,7 +54,11 @@ func _ready() -> void:
 
 	_setup_lobby_parallax_background()
 	WorldScenePreloader.start()
-	MenuLoopSoundHelper.start_menu_loop_sound(self, MENU_LOOP_SOUND_PATH, "LoginLoopSound", MENU_LOOP_SOUND_VOLUME_DB)
+	# Same MusicManager autoload login_screen.gd uses -- if we arrived here straight from
+	# login, this is a no-op (already playing, keeps going uninterrupted); if the lobby was
+	# somehow entered without login having started it, this starts it fresh.
+	if MusicManager != null and MusicManager.has_method("start_login_loop"):
+		MusicManager.start_login_loop()
 	_bind_scene_nodes()
 	_setup_active_world_list()
 	_connect_scene_buttons()
@@ -529,6 +530,9 @@ func _join_world_name(raw_world_name: String) -> void:
 		return
 
 	_set_join_world_loading_progress(1.0)
+	# Stop the menu loop here -- gameplay shouldn't have the login/lobby music under it.
+	if MusicManager != null and MusicManager.has_method("stop_login_loop"):
+		MusicManager.stop_login_loop()
 	var change_error := get_tree().change_scene_to_packed(world_scene)
 	if change_error != OK:
 		if network != null and network.has_method("cancel_active_join_request"):
@@ -536,6 +540,9 @@ func _join_world_name(raw_world_name: String) -> void:
 		join_scene_change_in_progress = false
 		_set_input_status("COULD NOT OPEN WORLD")
 		_hide_join_world_loading_overlay()
+		# Scene change didn't happen -- we're still in the lobby, so resume the loop.
+		if MusicManager != null and MusicManager.has_method("start_login_loop"):
+			MusicManager.start_login_loop()
 
 
 func _set_input_status(text: String) -> void:
