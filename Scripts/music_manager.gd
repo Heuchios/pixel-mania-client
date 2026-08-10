@@ -75,23 +75,36 @@ func _ensure_player() -> void:
 		push_warning("[MusicManager] Could not load stream at " + LOGIN_LOOP_SOUND_PATH)
 	if stream is AudioStreamWAV:
 		var wav_stream := stream as AudioStreamWAV
-		print("[MusicManager] imported loop settings: loop_mode=%d loop_begin=%d loop_end=%d mix_rate=%d" % [
-			wav_stream.loop_mode, wav_stream.loop_begin, wav_stream.loop_end, wav_stream.mix_rate
+		print("[MusicManager] baked loop settings (before fixup): loop_mode=%d loop_begin=%d loop_end=%d mix_rate=%d length=%.2fs" % [
+			wav_stream.loop_mode, wav_stream.loop_begin, wav_stream.loop_end, wav_stream.mix_rate, wav_stream.get_length()
 		])
-		# IMPORTANT: do NOT set loop_begin/loop_end here. login.wav.import already has
-		# edit/loop_mode=1, edit/loop_begin=0, edit/loop_end=-1, and the WAV importer bakes
-		# that -1 ("use full length") into the real positive sample count when it compiles
-		# the resource -- the loaded AudioStreamWAV already has the correct loop_end. -1 is
-		# only a valid "auto" sentinel in the .import file's edit/loop_end *import* setting;
-		# the runtime AudioStreamWAV.loop_end property takes a literal sample index with no
-		# such sentinel. A previous version of this code re-set loop_begin=0/loop_end=-1
-		# here directly on the runtime resource, which collapsed the loop into a
-		# near-zero-length region at sample 0 -- Godot then looped that instantly forever,
-		# so AudioStreamPlayer.playing correctly stayed true (it never actually stopped)
-		# while producing no audible output the entire time. Only fix loop_mode, and only
-		# if it somehow isn't already set.
+		# login.wav.import says edit/loop_mode=1 (forward), edit/loop_begin=0,
+		# edit/loop_end=-1 ("use full length"), which the WAV importer is supposed to
+		# resolve into a real positive sample count when it bakes the compiled
+		# .godot/imported/*.sample resource. In practice the currently-baked resource on
+		# disk reports loop_mode=0 (disabled) and loop_end=0 -- a stale import cache from
+		# before the .import file's loop settings were last edited (Godot only re-bakes a
+		# resource when you reimport it through the editor; a hand-edited .import file
+		# doesn't trigger that by itself). Re-importing login.wav via the editor's Import
+		# dock (select the file -> Import tab -> Reimport) will fix the baked resource
+		# directly, but we also fix it defensively here at runtime so playback is correct
+		# even if that reimport step is ever missed: if looping is enabled but loop_end
+		# isn't meaningfully past loop_begin (a zero/near-zero-length loop region --
+		# exactly what caused the earlier "playing=true but silent" bug, whether from a
+		# bad runtime override or, as turned out to be the actual case here, a stale
+		# import bake), fall back to the real full length computed from the stream itself
+		# instead of trusting whatever got baked in.
 		if wav_stream.loop_mode == AudioStreamWAV.LOOP_DISABLED:
 			wav_stream.loop_mode = LOGIN_LOOP_MODE
+		if wav_stream.loop_end <= wav_stream.loop_begin:
+			var computed_loop_end := int(round(wav_stream.get_length() * wav_stream.mix_rate))
+			push_warning("[MusicManager] baked loop_end (%d) <= loop_begin (%d) -- stale/broken import data, falling back to computed full-length loop_end=%d" % [
+				wav_stream.loop_end, wav_stream.loop_begin, computed_loop_end
+			])
+			wav_stream.loop_end = computed_loop_end
+		print("[MusicManager] loop settings after fixup: loop_mode=%d loop_begin=%d loop_end=%d" % [
+			wav_stream.loop_mode, wav_stream.loop_begin, wav_stream.loop_end
+		])
 	_player.stream = stream
 
 	# Fallback in case the native WAV loop ever doesn't fire (e.g. stream swapped to a

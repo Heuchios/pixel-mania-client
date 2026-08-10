@@ -4,28 +4,37 @@
 # fixed the music restarting on every login<->lobby scene change by moving playback onto a
 # MusicManager autoload. After that shipped, the user reported "i dont hear it playing" --
 # the music was still completely silent, even though the login/lobby screens displayed
-# properly and other game sounds (SFX) worked fine in the same session.
+# properly and other game sounds (SFX) worked fine in the same session. This turned out to
+# be TWO stacked bugs, both diagnosed via print()s added to music_manager.gd:
 #
-# Root cause (found via diagnostic prints added to music_manager.gd): _ensure_player() was
-# setting, directly on the loaded runtime AudioStreamWAV:
+# Bug A: _ensure_player() was setting, directly on the loaded runtime AudioStreamWAV:
 #     wav_stream.loop_begin = 0
 #     wav_stream.loop_end = -1
 # -1 is only a valid "use full length" sentinel in login.wav.import's [params] section
-# (edit/loop_end=-1), which the WAV importer resolves into the real positive sample count
-# when it bakes the compiled resource at import time. The RUNTIME AudioStreamWAV.loop_end
+# (edit/loop_end=-1), meant to be resolved into the real positive sample count when the WAV
+# importer bakes the compiled resource at import time. The RUNTIME AudioStreamWAV.loop_end
 # property has no such sentinel -- it's a literal sample-frame index. Writing a literal -1
-# onto the already-correctly-baked resource collapsed the loop into a near-zero-length
-# region at sample 0, which Godot's mixer looped instantly forever. That's why every
-# diagnostic signal looked healthy (AudioStreamPlayer.playing stayed true, Master bus wasn't
-# muted, volume was 0.0 dB, stream length reported the full 32.95s) while nothing was
-# actually audible -- the "loop" was too short to perceive, not stopped or muted.
+# there collapsed the loop into a near-zero-length region at sample 0.
 #
-# The fix: stopped overwriting loop_begin/loop_end at runtime. login.wav.import already has
-# edit/loop_mode=1, edit/loop_begin=0, edit/loop_end=-1 baked in correctly, so the loaded
-# AudioStreamWAV already has the right values -- music_manager.gd now only fixes loop_mode,
-# and only if it somehow isn't already set. Also added a diagnostic print of the imported
-# loop_mode/loop_begin/loop_end/mix_rate values so this can be confirmed from the Output
-# panel after testing (expect a large positive loop_end, not -1, and loop_mode=1).
+# Bug B: after removing that override (expecting the import-baked loop_end to already be
+# correct), a new diagnostic print revealed the *actual* baked resource reports
+# loop_mode=0 (disabled) and loop_end=0 -- NOT the positive value login.wav.import's
+# settings should have produced. The compiled .godot/imported/*.sample resource was stale:
+# Godot only re-bakes a resource when it's reimported through the editor, not just because
+# the .import file's [params] text changed on disk, so the actual binary the game loads
+# still reflected an older loop-disabled bake.
+#
+# Both bugs produce the same symptom (a zero/near-zero-length loop that Godot's mixer loops
+# instantly forever), which is why every diagnostic signal looked healthy the whole time
+# (AudioStreamPlayer.playing stayed true, Master bus wasn't muted, volume was 0.0 dB, stream
+# length reported the full ~33s) while nothing was actually audible.
+#
+# The fix: music_manager.gd no longer trusts the baked loop_begin/loop_end at all. It still
+# fixes loop_mode if disabled, but now also checks if loop_end <= loop_begin (catches both
+# bugs above) and, if so, computes the real full-length sample count directly from the
+# stream's own reported length/mix_rate and uses that instead. This makes playback correct
+# regardless of whether the compiled resource is ever properly reimported. Diagnostic prints
+# of the before/after loop values were kept so this can be confirmed from the Output panel.
 #
 # Files touched:
 #   Scripts/music_manager.gd
@@ -33,6 +42,10 @@
 # NOTE: project.godot is NOT touched by this fix (no new/changed autoload), so a plain
 # script reload in the Godot editor is enough this time -- no need to close/reopen the
 # project.
+#
+# OPTIONAL (not required by this fix, but good hygiene): in the Godot editor, select
+# Assets/sounds/login.wav in the FileSystem dock, open the "Import" tab, and click
+# "Reimport" so the compiled resource's own loop settings match login.wav.import directly.
 
 $ErrorActionPreference = "Stop"
 
@@ -67,22 +80,30 @@ git status
 $commitMessage = @"
 fix(audio): stop collapsing the login music loop to near-zero length
 
-music_manager.gd was setting wav_stream.loop_begin = 0 / loop_end = -1
-directly on the loaded runtime AudioStreamWAV. -1 is only a valid "use
-full length" sentinel in login.wav.import's edit/loop_end *import*
-setting, which the WAV importer resolves into the real positive sample
-count when it bakes the compiled resource. The runtime
-AudioStreamWAV.loop_end property takes a literal sample index with no
-such sentinel, so writing -1 there collapsed the loop into a
-near-zero-length region at sample 0 -- Godot looped that instantly
-forever, so AudioStreamPlayer.playing correctly stayed true (matching
-the diagnostic logs) while producing no audible output the entire
-time.
+Two stacked bugs made login.wav's loop collapse to near-zero length,
+which Godot then looped instantly forever -- AudioStreamPlayer.playing
+stayed true and no error was raised, so it looked like normal playback
+while producing no audible sound:
 
-Stopped overwriting loop_begin/loop_end at runtime and trust the
-already-correct import-baked values instead; only fix loop_mode, and
-only if it isn't already set. Added a diagnostic print of the imported
-loop settings to confirm from the Output panel.
+1. music_manager.gd was setting wav_stream.loop_begin = 0 / loop_end =
+   -1 directly on the loaded runtime AudioStreamWAV. -1 is only a
+   valid "use full length" sentinel in login.wav.import's
+   edit/loop_end *import* setting; the runtime AudioStreamWAV.loop_end
+   property takes a literal sample index with no such sentinel.
+
+2. Even after removing that override, the actual compiled
+   .godot/imported/*.sample resource turned out to be stale relative
+   to login.wav.import's settings (baked with looping disabled and
+   loop_end=0) -- editing a .import file's [params] doesn't by itself
+   trigger Godot to re-bake the resource.
+
+Fix: music_manager.gd no longer trusts the baked loop_end. It still
+fixes loop_mode if disabled, and now also detects a degenerate loop
+region (loop_end <= loop_begin) and computes the real full-length
+sample count from the stream's own reported length/mix_rate instead,
+so playback is correct regardless of the compiled resource's state.
+Diagnostic prints of the before/after loop values were kept for future
+verification.
 "@
 
 git commit -m $commitMessage
@@ -102,5 +123,7 @@ Write-Host "This is a client-only GDScript change -- no server build or deploy n
 Write-Host "project.godot was NOT changed this time, so a plain script reload (or just" -ForegroundColor Yellow
 Write-Host "re-running the scene / restarting Play) is enough -- no need to close/reopen the project." -ForegroundColor Yellow
 Write-Host "Test: login screen and lobby should now actually have audible music. Check the Output" -ForegroundColor Yellow
-Write-Host "panel for a line like '[MusicManager] imported loop settings: loop_mode=1 loop_begin=0" -ForegroundColor Yellow
-Write-Host "loop_end=<big positive number> mix_rate=<...>' -- loop_end should NOT be -1 or 0." -ForegroundColor Yellow
+Write-Host "panel for a '[MusicManager] loop settings after fixup: ...' line -- loop_end should be a" -ForegroundColor Yellow
+Write-Host "large positive number there (roughly length_in_seconds * mix_rate), not 0 or -1. If you" -ForegroundColor Yellow
+Write-Host "also see a '[MusicManager] baked loop_end (...) <= loop_begin (...)' warning, that just" -ForegroundColor Yellow
+Write-Host "confirms the fallback kicked in because the compiled resource is still stale -- harmless." -ForegroundColor Yellow
