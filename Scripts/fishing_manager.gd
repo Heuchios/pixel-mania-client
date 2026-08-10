@@ -26,6 +26,18 @@ const BITE_MAX_TIME        = 5.5
 const REACTION_WINDOW_TIME = 2.2
 const MINIGAME_DURATION    = 5.0
 const CATCH_POPUP_DURATION = 3.6
+# How long the client waits for the server to acknowledge a "fishing_start" request before
+# giving up and re-enabling casting. Without this, a dropped/lost server response (network
+# hiccup, especially common on mobile connections) left the client stuck showing "Casting
+# with X..." forever: fishing_active never gets set to true (that only happens once the
+# server's ack arrives, in start_local_cast()), so there was nothing to time out and no way
+# to retry short of leaving the world.
+const CAST_ACK_TIMEOUT_TIME = 8.0
+# How long the reeling minigame allows the player to do nothing before the fish gets away.
+# Previously there was no timeout at all: mg_progress/mg_tension are clamped to >= 0.0, so an
+# idle (or AFK, or mobile reel-button-missed) player just sat at 0 forever with the minigame
+# never resolving either way.
+const MINIGAME_AFK_TIMEOUT_TIME = 20.0
 const FISHING_LINE_SEGMENTS = 16
 const FISHING_LINE_SAG = 26.0
 const FISHING_LINE_WAVE_AMPLITUDE = 2.0
@@ -48,6 +60,8 @@ var pending_reward_category = "fish"
 var pending_fish_data   = {}
 var server_fishing_session_id = ""
 var waiting_for_server_catch = false
+var awaiting_cast_ack    = false
+var cast_ack_timer       = 0.0
 
 # ── Minigame state ────────────────────────────────────────────
 var mg_cursor_t         = 0.0
@@ -63,6 +77,7 @@ var mg_reel_rate        = 0.22
 var mg_tension_gain     = 0.22
 var mg_tension_release  = 0.32
 var mg_progress_decay   = 0.030
+var mg_afk_timer        = 0.0
 
 # ── Dedicated fishing UI ──────────────────────────────────────
 var fishing_ui          = null
@@ -162,6 +177,10 @@ func use_fishing_rod_at_mouse(preferred_lure_id: String = ""):
 		handle_fishing_action()
 		return
 
+	if awaiting_cast_ack:
+		world.show_notification("Still casting, please wait...")
+		return
+
 	var target_grid = world.get_mouse_grid_position()
 
 	if not can_reach_fishing_grid(target_grid):
@@ -218,12 +237,16 @@ func cancel_fishing():
 func start_cast(target_grid: Vector2i, lure_id: String):
 	if world != null and world.has_method("should_use_server_authoritative_world_actions") and bool(world.should_use_server_authoritative_world_actions()):
 		if request_server_fishing_start(target_grid, lure_id):
+			awaiting_cast_ack = true
+			cast_ack_timer    = 0.0
 			world.show_notification("Casting with " + world.get_item_display_name(lure_id, "lure") + "...")
 		else:
 			world.show_notification("Almost ready. Try again in a moment.")
 		return
 
 	if request_server_fishing_start(target_grid, lure_id):
+		awaiting_cast_ack = true
+		cast_ack_timer    = 0.0
 		world.show_notification("Casting with " + world.get_item_display_name(lure_id, "lure") + "...")
 		return
 
@@ -231,6 +254,8 @@ func start_cast(target_grid: Vector2i, lure_id: String):
 
 
 func start_local_cast(target_grid: Vector2i, lure_id: String, spend_lure: bool = true, session_id: String = "", fish_data: Dictionary = {}):
+	awaiting_cast_ack = false
+	cast_ack_timer    = 0.0
 	if spend_lure:
 		world.lure_inventory[lure_id] = max(0, int(world.lure_inventory.get(lure_id, 0)) - 1)
 
@@ -627,6 +652,18 @@ func handle_fishing_action():
 # ── Update loop ───────────────────────────────────────────────
 
 func update_fishing(delta: float):
+	# This check must run even while fishing_active is still false: the client doesn't flip
+	# fishing_active to true until start_local_cast() runs, which only happens once the
+	# server's "fishing_start" ack arrives (see start_cast()/handle_inventory_transaction_result).
+	# If that ack is dropped, awaiting_cast_ack would otherwise stay true forever with nothing
+	# ever ticking it down.
+	if awaiting_cast_ack:
+		cast_ack_timer += delta
+		if cast_ack_timer >= CAST_ACK_TIMEOUT_TIME:
+			awaiting_cast_ack = false
+			cast_ack_timer    = 0.0
+			world.show_notification("Casting failed. Try again.")
+
 	if not world.fishing_active:
 		if state != STATE_IDLE:
 			reset_fishing_state(false)
@@ -698,6 +735,7 @@ func trigger_bite():
 func start_minigame():
 	state         = STATE_MINIGAME
 	mg_time_left  = MINIGAME_DURATION
+	mg_afk_timer  = 0.0
 	_configure_minigame(pending_fish_id, current_lure_id)
 	if fishing_ui != null and fishing_ui.has_method("show_reeling"):
 		fishing_ui.show_reeling(mg_progress, mg_tension, false)
@@ -752,10 +790,12 @@ func _update_minigame(delta: float):
 	var reeling := _is_reeling_input_down()
 
 	if reeling:
+		mg_afk_timer = 0.0
 		var safe_tension = clamp(1.0 - max(0.0, mg_tension - 0.62) * 0.82, 0.35, 1.0)
 		mg_progress += mg_reel_rate * safe_tension * (1.0 - fish_resist * 0.20) * delta
 		mg_tension += (mg_tension_gain + fish_resist * 0.20) * delta
 	else:
+		mg_afk_timer += delta
 		mg_progress -= mg_progress_decay * delta
 		mg_tension -= mg_tension_release * delta
 
@@ -771,6 +811,13 @@ func _update_minigame(delta: float):
 
 	if mg_tension >= 1.0:
 		fail_fishing("The fish snapped the line!")
+		return
+
+	# No timeout previously existed here at all -- mg_progress/mg_tension are clamped to
+	# >= 0.0, so an AFK (or unresponsive-input) player just sat at 0 forever with the
+	# minigame never resolving. 20 continuous seconds of no reeling input now ends it.
+	if mg_afk_timer >= MINIGAME_AFK_TIMEOUT_TIME:
+		fail_fishing("The fish swam away while you were away.")
 		return
 
 
@@ -1128,6 +1175,8 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 		return false
 
 	if action == "fishing_start":
+		awaiting_cast_ack = false
+		cast_ack_timer    = 0.0
 		if not bool(data.get("ok", false)):
 			world.show_notification(str(data.get("message", "Could not start fishing.")))
 			return true
@@ -1198,6 +1247,8 @@ func fail_fishing(message: String):
 
 
 func reset_fishing_state(delay_bobber: bool = true):
+	awaiting_cast_ack = false
+	cast_ack_timer    = 0.0
 	world.fishing_active      = false
 	world.fishing_timer       = 0.0
 	world.fishing_lure_id     = ""
