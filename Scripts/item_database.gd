@@ -64,7 +64,7 @@ const TIER_1_SPLICE_BALANCE = {
 		"tree_block_range": [4, 7],
 		"tree_seed_range": [2, 4]
 	},
-	"vines": {
+	"hanging_vine": {
 		"recipe": ["grass_seed", "leaf_seed"],
 		"grow_time": 36.0,
 		"block_drop_chance": 0.80,
@@ -80,7 +80,7 @@ const TIER_1_SPLICE_BALANCE = {
 		"tree_block_range": [4, 7],
 		"tree_seed_range": [2, 4]
 	},
-	"tulip": {
+	"sunflower": {
 		"recipe": ["sand_seed", "leaf_seed"],
 		"grow_time": 40.0,
 		"block_drop_chance": 0.75,
@@ -445,7 +445,7 @@ const ITEMS = {
 		"rarity": "common",
 		"block_health": 3,
 		"texture": "res://Assets/blocks/Tier_1/basic blocks/grass_block.png",
-		"atlas_coords": Vector2i(0, 0),
+		"atlas_coords": Vector2i(0, 4),
 		"animated": true,
 		"animation_frames": [
 			"res://Assets/blocks/Tier_1/basic blocks/grass_block.png",
@@ -453,6 +453,13 @@ const ITEMS = {
 			"res://Assets/blocks/Tier_1/basic blocks/grass_block_3.png",
 			"res://Assets/blocks/Tier_1/basic blocks/grass_block_2.png",
 			"res://Assets/blocks/Tier_1/basic blocks/grass_block.png"
+		],
+		"animation_atlas_coords": [
+			Vector2i(0, 4),
+			Vector2i(1, 4),
+			Vector2i(2, 4),
+			Vector2i(1, 4),
+			Vector2i(0, 4)
 		],
 		"animation_frame_seconds": 0.24,
 		"seed": "grass_seed",
@@ -528,6 +535,11 @@ const ITEMS = {
 		"block_health": 3,
 		"texture": "res://Assets/blocks/Tier_1/basic blocks/tree_trunk_bottom.png",
 		"atlas_coords": Vector2i(9, 4),
+		"vertical_variant_atlas_coords": {
+			"top": Vector2i(9, 2),
+			"middle": Vector2i(9, 3),
+			"bottom": Vector2i(9, 4)
+		},
 		"seed": "wood_seed",
 		"no_collision": true,
 		"order": 3
@@ -587,6 +599,8 @@ const ITEMS = {
 		"block_health": 3,
 		"texture": "res://Assets/blocks/Tier_1/basic blocks/sand_block.png",
 		"atlas_coords": Vector2i(11, 5),
+		"sand_atlas_variants": [Vector2i(11, 5), Vector2i(12, 5), Vector2i(11, 6)],
+		"sand_atlas_weights": [75, 15, 15],
 		"seed": "sand_seed",
 		"order": 6
 	},
@@ -800,9 +814,9 @@ const ITEMS = {
 		"drop_gems": false,
 		"order": 132
 	},
-"ice_block_2": {
+"ice_treasure": {
 		"category": "block",
-		"display_name": "Treasure Ice",
+		"display_name": "Ice Treasure",
 		"rarity": "rare",
 		"block_health": 4,
 		"texture": "res://Assets/events/snow_storm/blocks/ice_block_2.png",
@@ -843,6 +857,7 @@ const ITEMS = {
 		"block_health": 1,
 		"texture": "res://Assets/events/snow_storm/items/frozen_treasure_1.png",
 		"inventory_icon": "res://Assets/inventory_icons/frozen_treasure_1.png",
+		"atlas_coords": Vector2i(12, 4),
 		"seed": "",
 		"no_collision": true,
 		"dropable": false,
@@ -857,6 +872,7 @@ const ITEMS = {
 		"block_health": 1,
 		"texture": "res://Assets/events/snow_storm/items/frozen_treasure_2.png",
 		"inventory_icon": "res://Assets/events/snow_storm/items/frozen_treasure_2.png",
+		"atlas_coords": Vector2i(13, 4),
 		"seed": "",
 		"no_collision": true,
 		"dropable": false,
@@ -897,12 +913,20 @@ const ITEMS = {
 		"block_health": 3,
 		"texture": "res://Assets/events/snow_storm/blocks/frozen_grass_1.png",
 		"inventory_icon": "res://Assets/inventory_icons/frozen_grass_1.png",
+		"atlas_coords": Vector2i(13, 3),
 		"animation_frames": [
 			"res://Assets/events/snow_storm/blocks/frozen_grass_1.png",
 			"res://Assets/events/snow_storm/blocks/frozen_grass_2.png",
 			"res://Assets/events/snow_storm/blocks/frozen_grass_3.png",
 			"res://Assets/events/snow_storm/blocks/frozen_grass_2.png",
 			"res://Assets/events/snow_storm/blocks/frozen_grass_1.png"
+		],
+		"animation_atlas_coords": [
+			Vector2i(13, 3),
+			Vector2i(14, 3),
+			Vector2i(15, 3),
+			Vector2i(14, 3),
+			Vector2i(13, 3)
 		],
 		"animation_frame_seconds": 0.24,
 		"seed": "",
@@ -919,6 +943,7 @@ const ITEMS = {
 		"block_health": 3,
 		"texture": "res://Assets/events/snow_storm/blocks/frozen_grass_1.png",
 		"inventory_icon": "res://Assets/inventory_icons/frozen_grass_1.png",
+		"atlas_coords": Vector2i(13, 3),
 		"seed": "",
 		"no_collision": true,
 		"placeable": false,
@@ -934,6 +959,7 @@ const ITEMS = {
 		"block_health": 3,
 		"texture": "res://Assets/events/snow_storm/blocks/frozen_grass_2.png",
 		"inventory_icon": "res://Assets/events/snow_storm/blocks/frozen_grass_2.png",
+		"atlas_coords": Vector2i(14, 3),
 		"seed": "",
 		"no_collision": true,
 		"placeable": false,
@@ -949,6 +975,7 @@ const ITEMS = {
 		"block_health": 3,
 		"texture": "res://Assets/events/snow_storm/blocks/frozen_grass_3.png",
 		"inventory_icon": "res://Assets/events/snow_storm/blocks/frozen_grass_3.png",
+		"atlas_coords": Vector2i(15, 3),
 		"seed": "",
 		"no_collision": true,
 		"placeable": false,
@@ -964,6 +991,7 @@ const ITEMS = {
 		"block_health": 1,
 		"texture": "res://Assets/events/snow_storm/blocks/snow_bank.png",
 		"inventory_icon": "res://Assets/events/snow_storm/blocks/snow_bank.png",
+		"atlas_coords": Vector2i(12, 3),
 		"seed": "",
 		"no_collision": true,
 		"placeable": false,
@@ -1597,28 +1625,31 @@ const ITEMS = {
 		"block_health": 2,
 		"texture": "res://Assets/blocks/Tier_1/basic blocks/rose.png",
 		"inventory_icon": "res://Assets/inventory_icons/rose.png",
+		"atlas_coords": Vector2i(3, 4),
 		"seed": "rose_seed",
 		"no_collision": true,
 		"order": 16
 	},
-"tulip": {
+"sunflower": {
 		"category": "block",
-		"display_name": "Tulip",
+		"display_name": "Sunflower",
 		"rarity": "uncommon",
 		"block_health": 2,
 		"texture": "res://Assets/blocks/Tier_1/basic blocks/tulip.png",
 		"inventory_icon": "res://Assets/inventory_icons/tulip.png",
+		"atlas_coords": Vector2i(5, 4),
 		"seed": "tulip_seed",
 		"no_collision": true,
 		"order": 17
 	},
-"vines": {
+"hanging_vine": {
 		"category": "block",
-		"display_name": "Vines",
+		"display_name": "Hanging Vine",
 		"rarity": "common",
 		"block_health": 2,
 		"texture": "res://Assets/blocks/Tier_1/basic blocks/vines.png",
 		"inventory_icon": "res://Assets/inventory_icons/vines.png",
+		"atlas_coords": Vector2i(6, 3),
 		"seed": "vines_seed",
 		"no_collision": true,
 		"order": 18
@@ -1630,6 +1661,7 @@ const ITEMS = {
 		"block_health": 2,
 		"texture": "res://Assets/blocks/Tier_1/basic blocks/apple.png",
 		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/apple.png",
+		"atlas_coords": Vector2i(8, 3),
 		"seed": "apple_seed",
 		"no_collision": true,
 		"drop_rules": {
@@ -1677,6 +1709,7 @@ const ITEMS = {
 		"texture": "res://Assets/blocks/Tier_1/basic blocks/sun_flower.png",
 		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/sun_flower.png",
 		"seed": "sun_flower_seed",
+		"hidden": true,
 		"no_collision": true,
 		"drop_rules": {
 			"seed_chance": 0,
@@ -1716,6 +1749,7 @@ const ITEMS = {
 		"block_health": 2,
 		"texture": "res://Assets/blocks/Tier_1/basic blocks/lily.png",
 		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/lily.png",
+		"atlas_coords": Vector2i(4, 4),
 		"seed": "lily_seed",
 		"no_collision": true,
 		"drop_rules": {
@@ -2195,12 +2229,13 @@ const ITEMS = {
 		"rarity": "uncommon",
 		"block_health": 2,
 		"texture": "res://Assets/blocks/Tier_1/wooden/wood_platform.png",
+		"atlas_coords": Vector2i(0, 5),
 		"seed": "wood_platform_seed",
 		"platform_collision": true,
-		"platform_variant_textures": {
-			"left": "res://Assets/blocks/Tier_1/wooden/wood_platform_left_end.png",
-			"middle": "res://Assets/blocks/Tier_1/wooden/wood_platform_middle.png",
-			"right": "res://Assets/blocks/Tier_1/wooden/wood_platform_right_end.png"
+		"platform_variant_atlas_coords": {
+			"left": Vector2i(1, 5),
+			"middle": Vector2i(2, 5),
+			"right": Vector2i(3, 5)
 		},
 		"craft_only": false,
 		"order": 36
@@ -2241,12 +2276,54 @@ const ITEMS = {
 		"rarity": "uncommon",
 		"block_health": 2,
 		"texture": "res://Assets/blocks/Tier_1/wooden/sign.png",
+		"atlas_coords": Vector2i(5, 5),
 		"seed": "sign_seed",
 		"sign_block": true,
 		"no_collision": true,
 		"collidable": false,
 		"splice_only": false,
 		"order": 37
+	},
+"wooden_treasure_chest": {
+		"category": "block",
+		"display_name": "Wooden Treasure Chest",
+		"rarity": "uncommon",
+		"block_health": 2,
+		"texture": {"atlas": "res://image.png", "cell": [9, 5], "cell_size": [32, 32]},
+		"inventory_icon": {"atlas": "res://image.png", "cell": [9, 5], "cell_size": [32, 32]},
+		"atlas_coords": Vector2i(9, 5),
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "wooden_treasure_chest", "item_category": "block", "amount": 1}
+			]
+		},
+		"craft_only": false,
+		"order": 46
+	},
+"wooden_treasure_chest_open": {
+		"category": "block",
+		"display_name": "Opened Wooden Treasure Chest",
+		"rarity": "uncommon",
+		"block_health": 2,
+		"texture": {"atlas": "res://image.png", "cell": [10, 5], "cell_size": [32, 32]},
+		"inventory_icon": {"atlas": "res://image.png", "cell": [10, 5], "cell_size": [32, 32]},
+		"atlas_coords": Vector2i(10, 5),
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"placeable": false,
+		"dropable": false,
+		"hidden": true,
+		"order": 47
 	},
 "mechanical_entrance": {
 		"category": "block",
@@ -2397,9 +2474,14 @@ const ITEMS = {
 		"block_health": 2,
 		"texture": "res://Assets/blocks/Tier_1/mushroom_1.png",
 		"inventory_icon": "res://Assets/inventory_icons/mushroom.png",
+		"atlas_coords": Vector2i(7, 4),
 		"springboard_animation_frames": [
 			"res://Assets/blocks/Tier_1/mushroom_1.png",
 			"res://Assets/blocks/Tier_1/mushroom_2.png"
+		],
+		"springboard_animation_atlas_frames": [
+			Vector2i(7, 4),
+			Vector2i(8, 4)
 		],
 		"springboard_animation_frame_seconds": 0.22,
 		"seed": "mushroom_seed",
@@ -2986,7 +3068,7 @@ const ITEMS = {
 		"rarity": "uncommon",
 		"texture": "res://Assets/seeds/tulip_seed.png",
 		"inventory_icon": "res://Assets/inventory_icons/tulip_seed.png",
-		"grows_into": "tulip",
+		"grows_into": "sunflower",
 		"order": 16,
 		"tree_textures": [
 			"res://Assets/seed_tree_sprites/tulip_tree_stage0.png",
@@ -3001,7 +3083,7 @@ const ITEMS = {
 		"rarity": "common",
 		"texture": "res://Assets/seeds/vines_seed.png",
 		"inventory_icon": "res://Assets/inventory_icons/vines_seed.png",
-		"grows_into": "vines",
+		"grows_into": "hanging_vine",
 		"order": 17,
 		"tree_textures": [
 			"res://Assets/seed_tree_sprites/vines_tree_stage0.png",

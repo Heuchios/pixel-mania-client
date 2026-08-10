@@ -372,7 +372,7 @@ func get_current_block_hit_source_tool() -> String:
 	if world == null:
 		return ""
 	var equipped = world.get("equipped_tool")
-	if equipped != null and ["neptune_trident", "ant_sword"].has(str(equipped).strip_edges().to_lower()):
+	if equipped != null and ["neptune_trident", "ant_sword", "phoenix_sword"].has(str(equipped).strip_edges().to_lower()):
 		return str(equipped).strip_edges()
 	if str(world.get("selected_item_category")) == "tool":
 		var selected_tool := str(world.get("selected_item_type")).strip_edges()
@@ -1903,7 +1903,7 @@ func get_snow_storm_ice_block_type(grid_pos: Vector2i) -> String:
 	if roll < 2:
 		return "ice_fossil"
 	if roll < 7:
-		return "ice_block_2"
+		return "ice_treasure"
 	return "ice_block"
 
 
@@ -1936,6 +1936,12 @@ func normalize_legacy_block_id(block_type: String) -> String:
 		return "pillar"
 	if block_type == "vend_empty" or block_type == "vend_pending" or block_type == "vend_sold":
 		return "vending_machine"
+	if block_type == "vines":
+		return "hanging_vine"
+	if block_type == "ice_block_2":
+		return "ice_treasure"
+	if block_type == "tulip":
+		return "sunflower"
 	return block_type
 
 
@@ -3346,15 +3352,9 @@ func get_visual_block_variant(base_block_id: String, grid_pos: Vector2i, backgro
 		# Top water keeps the normal animated water frames; only lower water gets a static visual override.
 		return ""
 
-	if base_block_id == "wood":
-		var has_trunk_above = has_tree_trunk_neighbor(Vector2i(grid_pos.x, grid_pos.y - 1))
-		var has_trunk_below = has_tree_trunk_neighbor(Vector2i(grid_pos.x, grid_pos.y + 1))
-
-		if has_trunk_above and has_trunk_below:
-			return TREE_TRUNK_MIDDLE_TEXTURE_PATH
-		if has_trunk_below:
-			return TREE_TRUNK_TOP_TEXTURE_PATH
-		return TREE_TRUNK_BOTTOM_TEXTURE_PATH
+	# "wood" (tree trunk) top/middle/bottom stacking now lives in the generic
+	# vertical_variant_atlas_coords system (see item_database.gd), which is
+	# already dispatched from get_stateful_block_atlas_data().
 
 	# climbing_vine's 4-way (top/middle/bottom/single) variant now lives in the
 	# generic vertical_variant_atlas_coords system (see item_database.gd), which
@@ -3466,6 +3466,11 @@ func get_stateful_block_atlas_data(base_block_id: String, grid_pos: Vector2i, ba
 		var stone_atlas_data := get_weighted_atlas_variant_data(item_data, grid_pos, "stone_atlas_variants", "stone_atlas_weights", 31)
 		if not stone_atlas_data.is_empty():
 			return stone_atlas_data
+
+	if clean_base_id == "sand":
+		var sand_atlas_data := get_weighted_atlas_variant_data(item_data, grid_pos, "sand_atlas_variants", "sand_atlas_weights", 41)
+		if not sand_atlas_data.is_empty():
+			return sand_atlas_data
 
 	if is_world_lock_block_type(clean_base_id):
 		var world_lock_atlas_data := get_world_lock_access_atlas_coords(clean_base_id, grid_pos)
@@ -3634,13 +3639,14 @@ func get_vending_machine_atlas_data(grid_pos: Vector2i, item_data: Dictionary) -
 	var status := str(state.get("status", "")).strip_edges().to_lower()
 	var is_sold := pending > 0 or status == "sold"
 
-	# Mirrors vending_preview_manager.gd's is_sold_out_vending_state() precedence:
-	# a listing with stock<=0 wins over the transient "sold" flash.
+	# Out-of-stock (stock<=0) does NOT swap this block's own tile -- that would
+	# double-stamp the same out-of-stock icon, since it is already drawn as a
+	# separate overlay layer by vending_preview_manager.gd (is_sold_out_vending_state()
+	# / SOLD_OUT_VEND_PREVIEW_TEXTURE, atlas cell (6,1)). The base tile keeps showing
+	# the active listing ("full") until a sale flashes "sold".
 	var atlas_key := "vending_empty_atlas_coords"
 	if has_listing:
-		if listing.has("stock") and int(listing.get("stock", 0)) <= 0:
-			atlas_key = "vending_out_of_stock_atlas_coords"
-		elif is_sold:
+		if is_sold:
 			atlas_key = "vending_sold_atlas_coords"
 		else:
 			atlas_key = "vending_full_atlas_coords"
@@ -5344,6 +5350,32 @@ func refresh_all_donation_box_visuals():
 		var block_data = world.blocks.get(raw_grid_pos, {})
 		if block_data is Dictionary and is_donation_box_block_type(str(block_data.get("type", ""))):
 			update_donation_box_visual(raw_grid_pos)
+
+
+func update_vending_machine_visual(grid_pos: Vector2i):
+	# The base block tile (empty/full/sold atlas coords from get_vending_machine_atlas_data)
+	# is baked into this block's own Sprite2D texture at draw time -- it does not
+	# repaint itself just because world.vending_states changed. Without this, players had
+	# to leave and rejoin the world to see a vending machine flip between empty/listed/sold,
+	# because rejoining is what re-runs set_block_texture() for every block from scratch.
+	if world == null or not world.blocks.has(grid_pos):
+		return
+	var block_data = world.blocks.get(grid_pos, {})
+	if not (block_data is Dictionary):
+		return
+	var block_type := str(block_data.get("type", ""))
+	var item_data := get_block_item_data(block_type)
+	if not bool(item_data.get("vending_machine_block", false)):
+		return
+	var block_node = block_data.get("node", null)
+	if block_node != null and is_instance_valid(block_node):
+		set_block_texture(block_node, block_type, grid_pos, false)
+	elif materialize_foreground_block_node(grid_pos):
+		var refreshed_data = world.blocks.get(grid_pos, {})
+		if refreshed_data is Dictionary:
+			var refreshed_node = refreshed_data.get("node", null)
+			if refreshed_node != null and is_instance_valid(refreshed_node):
+				set_block_texture(refreshed_node, block_type, grid_pos, false)
 
 
 func update_tackle_box_visual(grid_pos: Vector2i):
