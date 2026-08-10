@@ -27,10 +27,31 @@ var _player: AudioStreamPlayer = null
 func start_login_loop() -> void:
 	_ensure_player()
 	if _player == null:
+		print("[MusicManager] start_login_loop: _player is null after _ensure_player(), aborting.")
 		return
 	if _player.playing:
+		print("[MusicManager] start_login_loop: already playing, no-op.")
 		return
+	print("[MusicManager] start_login_loop: stream=%s bus=%s volume_db=%.1f -- calling play()." % [_player.stream, _player.bus, _player.volume_db])
 	_player.call_deferred("play")
+	call_deferred("_log_playback_state")
+
+
+func _log_playback_state() -> void:
+	# Runs one deferred call after play() -- confirms whether Godot actually started
+	# playback, and whether the "Master" bus itself is muted or has its volume pulled down
+	# (both would produce exactly "no errors, no sound").
+	if _player == null:
+		return
+	var master_idx := AudioServer.get_bus_index("Master")
+	var master_muted := master_idx != -1 and AudioServer.is_bus_mute(master_idx)
+	var master_db := AudioServer.get_bus_volume_db(master_idx) if master_idx != -1 else 0.0
+	print("[MusicManager] after play(): playing=%s stream_len=%.2fs master_bus_muted=%s master_bus_volume_db=%.1f" % [
+		_player.playing,
+		_player.stream.get_length() if _player.stream != null else -1.0,
+		master_muted,
+		master_db,
+	])
 
 
 func stop_login_loop() -> void:
@@ -50,14 +71,27 @@ func _ensure_player() -> void:
 		_player.bus = "Master"
 
 	var stream = load(LOGIN_LOOP_SOUND_PATH)
+	if stream == null:
+		push_warning("[MusicManager] Could not load stream at " + LOGIN_LOOP_SOUND_PATH)
 	if stream is AudioStreamWAV:
-		# The .wav.import already has edit/loop_mode=1 (forward) baked in, so this is
-		# belt-and-suspenders -- makes the loop correct even if the import settings ever
-		# change, since AudioStreamWAV.loop_* are what the engine actually reads at runtime.
 		var wav_stream := stream as AudioStreamWAV
-		wav_stream.loop_mode = LOGIN_LOOP_MODE
-		wav_stream.loop_begin = 0
-		wav_stream.loop_end = -1
+		print("[MusicManager] imported loop settings: loop_mode=%d loop_begin=%d loop_end=%d mix_rate=%d" % [
+			wav_stream.loop_mode, wav_stream.loop_begin, wav_stream.loop_end, wav_stream.mix_rate
+		])
+		# IMPORTANT: do NOT set loop_begin/loop_end here. login.wav.import already has
+		# edit/loop_mode=1, edit/loop_begin=0, edit/loop_end=-1, and the WAV importer bakes
+		# that -1 ("use full length") into the real positive sample count when it compiles
+		# the resource -- the loaded AudioStreamWAV already has the correct loop_end. -1 is
+		# only a valid "auto" sentinel in the .import file's edit/loop_end *import* setting;
+		# the runtime AudioStreamWAV.loop_end property takes a literal sample index with no
+		# such sentinel. A previous version of this code re-set loop_begin=0/loop_end=-1
+		# here directly on the runtime resource, which collapsed the loop into a
+		# near-zero-length region at sample 0 -- Godot then looped that instantly forever,
+		# so AudioStreamPlayer.playing correctly stayed true (it never actually stopped)
+		# while producing no audible output the entire time. Only fix loop_mode, and only
+		# if it somehow isn't already set.
+		if wav_stream.loop_mode == AudioStreamWAV.LOOP_DISABLED:
+			wav_stream.loop_mode = LOGIN_LOOP_MODE
 	_player.stream = stream
 
 	# Fallback in case the native WAV loop ever doesn't fire (e.g. stream swapped to a
