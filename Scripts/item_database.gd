@@ -176,7 +176,7 @@ const TIER_1_SPLICE_BALANCE = {
 		"tree_block_range": [2, 5],
 		"tree_seed_range": [0, 4]
 	},
-	"wooden_background": {
+	"wooden_wallpaper": {
 		"recipe": ["wood_plank_seed", "cave_background_seed"],
 		"grow_time": 135.0,
 		"block_drop_chance": 0.58,
@@ -208,7 +208,7 @@ const TIER_1_SPLICE_BALANCE = {
 		"tree_block_range": [2, 5],
 		"tree_seed_range": [0, 4]
 	},
-	"wooden_frame": {
+	"wooden_window": {
 		"recipe": ["wooden_fence_seed", "wood_plank_seed"],
 		"grow_time": 190.0,
 		"block_drop_chance": 0.50,
@@ -241,7 +241,7 @@ const TIER_1_SPLICE_BALANCE = {
 		"tree_block_range": [1, 4],
 		"tree_seed_range": [0, 4]
 	},
-	"gem_block": {
+	"rainbow_block": {
 		"recipe": ["glass_seed", "lava_seed"],
 		"grow_time": 300.0,
 		"block_drop_chance": 0.35,
@@ -1055,13 +1055,14 @@ const ITEMS = {
 		"collidable": false,
 		"order": 9
 	},
-"white_bg": {
+"white_wallpaper": {
 		"category": "block",
-		"display_name": "White Background",
+		"display_name": "White Wallpaper",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/background/colour_background/white_bg.png",
+		"texture": {"atlas": "res://image.png", "cell": [0, 10], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(0, 10),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [0, 10], "cell_size": [32, 32]},
 		"seed": "",
 		"background_block": true,
 		"place_layer": "background",
@@ -1069,13 +1070,14 @@ const ITEMS = {
 		"collidable": false,
 		"order": 80
 	},
-"grey_bg": {
+"grey_wallpaper": {
 		"category": "block",
-		"display_name": "Grey Background",
+		"display_name": "Grey Wallpaper",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/background/colour_background/grey_bg.png",
+		"texture": {"atlas": "res://image.png", "cell": [0, 11], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(0, 11),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [0, 11], "cell_size": [32, 32]},
 		"seed": "",
 		"background_block": true,
 		"place_layer": "background",
@@ -1083,13 +1085,14 @@ const ITEMS = {
 		"collidable": false,
 		"order": 81
 	},
-"black_bg": {
+"black_wallpaper": {
 		"category": "block",
-		"display_name": "Black Background",
+		"display_name": "Black Wallpaper",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/background/colour_background/black_bg.png",
+		"texture": {"atlas": "res://image.png", "cell": [0, 12], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(0, 12),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [0, 12], "cell_size": [32, 32]},
 		"seed": "",
 		"background_block": true,
 		"place_layer": "background",
@@ -1097,13 +1100,14 @@ const ITEMS = {
 		"collidable": false,
 		"order": 82
 	},
-"red_bg": {
+"red_wallpaper": {
 		"category": "block",
-		"display_name": "Red Background",
+		"display_name": "Red Wallpaper",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/background/colour_background/red_bg.png",
+		"texture": {"atlas": "res://image.png", "cell": [1, 10], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(1, 10),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [1, 10], "cell_size": [32, 32]},
 		"seed": "",
 		"background_block": true,
 		"place_layer": "background",
@@ -1111,13 +1115,14 @@ const ITEMS = {
 		"collidable": false,
 		"order": 83
 	},
-"orange_bg": {
+"orange_wallpaper": {
 		"category": "block",
-		"display_name": "Orange Background",
+		"display_name": "Orange Wallpaper",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/background/colour_background/orange_bg.png",
+		"texture": {"atlas": "res://image.png", "cell": [1, 11], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(1, 11),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [1, 11], "cell_size": [32, 32]},
 		"seed": "",
 		"background_block": true,
 		"place_layer": "background",
@@ -1125,13 +1130,14 @@ const ITEMS = {
 		"collidable": false,
 		"order": 84
 	},
-"yellow_bg": {
+"yellow_wallpaper": {
 		"category": "block",
-		"display_name": "Yellow Background",
+		"display_name": "Yellow Wallpaper",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/background/colour_background/yellow_bg.png",
+		"texture": {"atlas": "res://image.png", "cell": [1, 12], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(1, 12),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [1, 12], "cell_size": [32, 32]},
 		"seed": "",
 		"background_block": true,
 		"place_layer": "background",
@@ -1139,13 +1145,14 @@ const ITEMS = {
 		"collidable": false,
 		"order": 85
 	},
-"green_bg": {
+"green_wallpaper": {
 		"category": "block",
-		"display_name": "Green Background",
+		"display_name": "Green Wallpaper",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/background/colour_background/green_bg.png",
+		"texture": {"atlas": "res://image.png", "cell": [2, 10], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(2, 10),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [2, 10], "cell_size": [32, 32]},
 		"seed": "",
 		"background_block": true,
 		"place_layer": "background",
@@ -1153,13 +1160,14 @@ const ITEMS = {
 		"collidable": false,
 		"order": 86
 	},
-"aqua_bg": {
+"aqua_wallpaper": {
 		"category": "block",
-		"display_name": "Aqua Background",
+		"display_name": "Aqua Wallpaper",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/background/colour_background/aqua_bg.png",
+		"texture": {"atlas": "res://image.png", "cell": [2, 11], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(2, 11),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [2, 11], "cell_size": [32, 32]},
 		"seed": "",
 		"background_block": true,
 		"place_layer": "background",
@@ -1167,13 +1175,14 @@ const ITEMS = {
 		"collidable": false,
 		"order": 87
 	},
-"blue_bg": {
+"blue_wallpaper": {
 		"category": "block",
-		"display_name": "Blue Background",
+		"display_name": "Blue Wallpaper",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/background/colour_background/blue_bg.png",
+		"texture": {"atlas": "res://image.png", "cell": [2, 12], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(2, 12),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [2, 12], "cell_size": [32, 32]},
 		"seed": "",
 		"background_block": true,
 		"place_layer": "background",
@@ -1181,13 +1190,14 @@ const ITEMS = {
 		"collidable": false,
 		"order": 88
 	},
-"purple_bg": {
+"purple_wallpaper": {
 		"category": "block",
-		"display_name": "Purple Background",
+		"display_name": "Purple Wallpaper",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/background/colour_background/purple_bg.png",
+		"texture": {"atlas": "res://image.png", "cell": [3, 11], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(3, 11),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [3, 11], "cell_size": [32, 32]},
 		"seed": "",
 		"background_block": true,
 		"place_layer": "background",
@@ -1195,13 +1205,14 @@ const ITEMS = {
 		"collidable": false,
 		"order": 89
 	},
-"pink_bg": {
+"pink_wallpaper": {
 		"category": "block",
-		"display_name": "Pink Background",
+		"display_name": "Pink Wallpaper",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/background/colour_background/pink_bg.png",
+		"texture": {"atlas": "res://image.png", "cell": [3, 12], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(3, 12),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [3, 12], "cell_size": [32, 32]},
 		"seed": "",
 		"background_block": true,
 		"place_layer": "background",
@@ -1209,13 +1220,14 @@ const ITEMS = {
 		"collidable": false,
 		"order": 90
 	},
-"brown_bg": {
+"brown_wallpaper": {
 		"category": "block",
-		"display_name": "Brown Background",
+		"display_name": "Brown Wallpaper",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/background/colour_background/brown_bg.png",
+		"texture": {"atlas": "res://image.png", "cell": [3, 10], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(3, 10),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [3, 10], "cell_size": [32, 32]},
 		"seed": "",
 		"background_block": true,
 		"place_layer": "background",
@@ -1241,9 +1253,9 @@ const ITEMS = {
 		"display_name": "Red Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/red_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [1, 7], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(1, 7),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/red_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [1, 7], "cell_size": [32, 32]},
 		"seed": "red_block_seed",
 		"order": 11
 	},
@@ -1252,9 +1264,9 @@ const ITEMS = {
 		"display_name": "Blue Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/blue_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [2, 9], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(2, 9),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/blue_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [2, 9], "cell_size": [32, 32]},
 		"seed": "blue_block_seed",
 		"order": 12
 	},
@@ -1263,8 +1275,9 @@ const ITEMS = {
 		"display_name": "Green Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/green_block.png",
-		"inventory_icon": "res://Assets/blocks/colour_blocks/green_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [2, 7], "cell_size": [32, 32]},
+		"atlas_coords": Vector2i(2, 7),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [2, 7], "cell_size": [32, 32]},
 		"seed": "green_block_seed",
 		"order": 13
 	},
@@ -1273,9 +1286,9 @@ const ITEMS = {
 		"display_name": "Purple Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/purple_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [3, 8], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(3, 8),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/purple_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [3, 8], "cell_size": [32, 32]},
 		"seed": "purple_block_seed",
 		"order": 14
 	},
@@ -1284,9 +1297,9 @@ const ITEMS = {
 		"display_name": "Yellow Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/yellow_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [1, 9], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(1, 9),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/yellow_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [1, 9], "cell_size": [32, 32]},
 		"seed": "yellow_block_seed",
 		"order": 15
 	},
@@ -1295,9 +1308,9 @@ const ITEMS = {
 		"display_name": "Aqua Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/aqua_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [2, 8], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(2, 8),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/aqua_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [2, 8], "cell_size": [32, 32]},
 		"seed": "aqua_block_seed",
 		"order": 100
 	},
@@ -1306,9 +1319,9 @@ const ITEMS = {
 		"display_name": "Black Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/black_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [0, 9], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(0, 9),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/black_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [0, 9], "cell_size": [32, 32]},
 		"seed": "black_block_seed",
 		"order": 101
 	},
@@ -1317,9 +1330,9 @@ const ITEMS = {
 		"display_name": "Blue Pastel Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/blue_pastel_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [8, 9], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(8, 9),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/blue_pastel_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [8, 9], "cell_size": [32, 32]},
 		"seed": "blue_pastel_block_seed",
 		"order": 102
 	},
@@ -1328,9 +1341,9 @@ const ITEMS = {
 		"display_name": "Brown Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/brown_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [3, 7], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(3, 7),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/brown_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [3, 7], "cell_size": [32, 32]},
 		"seed": "brown_block_seed",
 		"order": 103
 	},
@@ -1339,9 +1352,9 @@ const ITEMS = {
 		"display_name": "Dark Aqua Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/dark_aqua_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [5, 8], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(5, 8),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_aqua_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [5, 8], "cell_size": [32, 32]},
 		"seed": "dark_aqua_block_seed",
 		"order": 104
 	},
@@ -1350,9 +1363,9 @@ const ITEMS = {
 		"display_name": "Dark Blue Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/dark_blue_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [5, 9], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(5, 9),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_blue_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [5, 9], "cell_size": [32, 32]},
 		"seed": "dark_blue_block_seed",
 		"order": 105
 	},
@@ -1361,9 +1374,9 @@ const ITEMS = {
 		"display_name": "Dark Brown Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/dark_brown_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [6, 7], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(6, 7),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_brown_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [6, 7], "cell_size": [32, 32]},
 		"seed": "dark_brown_block_seed",
 		"order": 106
 	},
@@ -1372,9 +1385,9 @@ const ITEMS = {
 		"display_name": "Dark Green Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/dark_green_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [5, 7], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(5, 7),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_green_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [5, 7], "cell_size": [32, 32]},
 		"seed": "dark_green_block_seed",
 		"order": 107
 	},
@@ -1383,9 +1396,9 @@ const ITEMS = {
 		"display_name": "Dark Pink Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/dark_pink_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [6, 9], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(6, 9),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_pink_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [6, 9], "cell_size": [32, 32]},
 		"seed": "dark_pink_block_seed",
 		"order": 108
 	},
@@ -1394,20 +1407,20 @@ const ITEMS = {
 		"display_name": "Dark Purple Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/dark_purple_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [6, 8], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(6, 8),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_purple_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [6, 8], "cell_size": [32, 32]},
 		"seed": "dark_purple_block_seed",
 		"order": 109
 	},
-"dark_red_block": {
+"maroon_block": {
 		"category": "block",
-		"display_name": "Dark Red Block",
+		"display_name": "Maroon Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/dark_red_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [4, 7], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(4, 7),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_red_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [4, 7], "cell_size": [32, 32]},
 		"seed": "dark_red_block_seed",
 		"order": 110
 	},
@@ -1416,9 +1429,9 @@ const ITEMS = {
 		"display_name": "Dark Yellow Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/dark_yellow_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [4, 9], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(4, 9),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/dark_yellow_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [4, 9], "cell_size": [32, 32]},
 		"seed": "dark_yellow_block_seed",
 		"order": 111
 	},
@@ -1427,9 +1440,9 @@ const ITEMS = {
 		"display_name": "Green Pastel Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/green_pastel_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [8, 7], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(8, 7),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/green_pastel_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [8, 7], "cell_size": [32, 32]},
 		"seed": "green_pastel_block_seed",
 		"order": 112
 	},
@@ -1438,9 +1451,9 @@ const ITEMS = {
 		"display_name": "Grey Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/grey_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [0, 8], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(0, 8),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/grey_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [0, 8], "cell_size": [32, 32]},
 		"seed": "grey_block_seed",
 		"order": 113
 	},
@@ -1449,20 +1462,20 @@ const ITEMS = {
 		"display_name": "Happy Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/happy_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [9, 8], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(9, 8),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/happy_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [9, 8], "cell_size": [32, 32]},
 		"seed": "happy_block_seed",
 		"order": 114
 	},
-"light_brown_block": {
+"dark_orange_block": {
 		"category": "block",
-		"display_name": "Light Brown Block",
+		"display_name": "Dark Orange Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/light_brown_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [4, 8], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(4, 8),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/light_brown_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [4, 8], "cell_size": [32, 32]},
 		"seed": "light_brown_block_seed",
 		"order": 115
 	},
@@ -1471,9 +1484,9 @@ const ITEMS = {
 		"display_name": "Orange Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/orange_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [1, 8], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(1, 8),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/orange_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [1, 8], "cell_size": [32, 32]},
 		"seed": "orange_block_seed",
 		"order": 116
 	},
@@ -1482,9 +1495,9 @@ const ITEMS = {
 		"display_name": "Orange Pastel Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/orange_pastel_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [8, 8], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(8, 8),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/orange_pastel_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [8, 8], "cell_size": [32, 32]},
 		"seed": "orange_pastel_block_seed",
 		"order": 117
 	},
@@ -1493,9 +1506,9 @@ const ITEMS = {
 		"display_name": "Pastel Flower Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/pastel_flower_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [9, 9], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(9, 9),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/pastel_flower_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [9, 9], "cell_size": [32, 32]},
 		"seed": "pastel_flower_block_seed",
 		"order": 118
 	},
@@ -1504,9 +1517,9 @@ const ITEMS = {
 		"display_name": "Pink Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/pink_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [3, 9], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(3, 9),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/pink_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [3, 9], "cell_size": [32, 32]},
 		"seed": "pink_block_seed",
 		"order": 119
 	},
@@ -1515,9 +1528,9 @@ const ITEMS = {
 		"display_name": "Pink Pastel Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/pink_pastel_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [7, 9], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(7, 9),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/pink_pastel_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [7, 9], "cell_size": [32, 32]},
 		"seed": "pink_pastel_block_seed",
 		"order": 120
 	},
@@ -1526,9 +1539,9 @@ const ITEMS = {
 		"display_name": "Purple Pastel Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/purple_pastel_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [9, 7], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(9, 7),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/purple_pastel_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [9, 7], "cell_size": [32, 32]},
 		"seed": "purple_pastel_block_seed",
 		"order": 121
 	},
@@ -1537,9 +1550,9 @@ const ITEMS = {
 		"display_name": "Red Pastel Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/red_pastel_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [7, 7], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(7, 7),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/red_pastel_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [7, 7], "cell_size": [32, 32]},
 		"seed": "red_pastel_block_seed",
 		"order": 122
 	},
@@ -1548,9 +1561,9 @@ const ITEMS = {
 		"display_name": "White Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/white_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [0, 7], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(0, 7),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/white_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [0, 7], "cell_size": [32, 32]},
 		"seed": "white_block_seed",
 		"order": 123
 	},
@@ -1559,9 +1572,9 @@ const ITEMS = {
 		"display_name": "Yellow Pastel Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/colour_blocks/yellow_pastel_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [7, 8], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(7, 8),
-		"inventory_icon": "res://Assets/blocks/colour_blocks/yellow_pastel_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [7, 8], "cell_size": [32, 32]},
 		"seed": "yellow_pastel_block_seed",
 		"order": 124
 	},
@@ -1775,8 +1788,9 @@ const ITEMS = {
 		"display_name": "Sand Castle",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/blocks/Tier_1/basic blocks/sand_castle.png",
-		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/sand_castle.png",
+		"texture": {"atlas": "res://image.png", "cell": [12, 6], "cell_size": [32, 32]},
+		"atlas_coords": Vector2i(12, 6),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [12, 6], "cell_size": [32, 32]},
 		"seed": "sand_castle_seed",
 		"no_collision": true,
 		"drop_rules": {
@@ -1795,8 +1809,9 @@ const ITEMS = {
 		"display_name": "Pile Of Sand",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/blocks/Tier_1/basic blocks/pile_of_sand.png",
-		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/pile_of_sand.png",
+		"texture": {"atlas": "res://image.png", "cell": [13, 6], "cell_size": [32, 32]},
+		"atlas_coords": Vector2i(13, 6),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [13, 6], "cell_size": [32, 32]},
 		"seed": "pile_of_sand_seed",
 		"no_collision": true,
 		"drop_rules": {
@@ -2220,12 +2235,14 @@ const ITEMS = {
 		"craft_only": false,
 		"order": 32
 	},
-"gem_block": {
+"rainbow_block": {
 		"category": "block",
-		"display_name": "Gem Block",
+		"display_name": "Rainbow Block",
 		"rarity": "epic",
 		"block_health": 5,
-		"texture": "res://Assets/blocks/crafting_station/blocks/gem_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [10, 7], "cell_size": [32, 32]},
+		"atlas_coords": Vector2i(10, 7),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [10, 7], "cell_size": [32, 32]},
 		"seed": "gem_block_seed",
 		"craft_only": true,
 		"order": 34
@@ -2504,8 +2521,9 @@ const ITEMS = {
 		"display_name": "Wooden Door",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/Tier_1/wooden/door.png",
-		"inventory_icon": "res://Assets/inventory_icons/door.png",
+		"texture": {"atlas": "res://image.png", "cell": [3, 6], "cell_size": [32, 32]},
+		"atlas_coords": Vector2i(3, 6),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [3, 6], "cell_size": [32, 32]},
 		"seed": "wooden_door_seed",
 		"no_collision": true,
 		"collidable": false,
@@ -2518,20 +2536,20 @@ const ITEMS = {
 		"display_name": "Wooden Block",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/Tier_1/wooden/wood_block.png",
+		"texture": {"atlas": "res://image.png", "cell": [0, 6], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(0, 6),
-		"inventory_icon": "res://Assets/inventory_icons/wooden_block.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [0, 6], "cell_size": [32, 32]},
 		"seed": "wooden_block_seed",
 		"order": 40
 	},
-"wooden_background": {
+"wooden_wallpaper": {
 		"category": "block",
-		"display_name": "Wooden Background",
+		"display_name": "Wooden Wallpaper",
 		"rarity": "common",
 		"block_health": 2,
-		"texture": "res://Assets/blocks/Tier_1/wooden/wooden_background.png",
+		"texture": {"atlas": "res://image.png", "cell": [1, 6], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(1, 6),
-		"inventory_icon": "res://Assets/inventory_icons/wooden_background.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [1, 6], "cell_size": [32, 32]},
 		"seed": "wooden_background_seed",
 		"background_block": true,
 		"place_layer": "background",
@@ -2544,22 +2562,23 @@ const ITEMS = {
 		"display_name": "Wooden Fence",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/Tier_1/wooden/wooden_fence.png",
-		"inventory_icon": "res://Assets/inventory_icons/wooden_fence.png",
+		"texture": {"atlas": "res://image.png", "cell": [4, 6], "cell_size": [32, 32]},
+		"atlas_coords": Vector2i(4, 6),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [4, 6], "cell_size": [32, 32]},
 		"seed": "wooden_fence_seed",
 		"no_collision": true,
 		"collidable": false,
 		"foreground_over_player": true,
 		"order": 42
 	},
-"wooden_frame": {
+"wooden_window": {
 		"category": "block",
-		"display_name": "Wooden Frame",
+		"display_name": "Wooden Window",
 		"rarity": "uncommon",
 		"block_health": 3,
-		"texture": "res://Assets/blocks/Tier_1/wooden/wooden_frame.png",
+		"texture": {"atlas": "res://image.png", "cell": [2, 6], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(2, 6),
-		"inventory_icon": "res://Assets/inventory_icons/wooden_frame.png",
+		"inventory_icon": {"atlas": "res://image.png", "cell": [2, 6], "cell_size": [32, 32]},
 		"seed": "wooden_frame_seed",
 		"order": 43
 	},
@@ -2568,7 +2587,9 @@ const ITEMS = {
 		"display_name": "Wooden Chair",
 		"rarity": "uncommon",
 		"block_health": 2,
+		"texture": {"atlas": "res://image.png", "cell": [5, 6], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(5, 6),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [5, 6], "cell_size": [32, 32]},
 		"seed": "",
 		"no_collision": true,
 		"collidable": false,
@@ -2588,7 +2609,9 @@ const ITEMS = {
 		"display_name": "Wooden Table",
 		"rarity": "uncommon",
 		"block_health": 2,
+		"texture": {"atlas": "res://image.png", "cell": [6, 6], "cell_size": [32, 32]},
 		"atlas_coords": Vector2i(6, 6),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [6, 6], "cell_size": [32, 32]},
 		"seed": "",
 		"platform_collision": true,
 		"platform_variant_atlas_coords": {
@@ -2604,6 +2627,29 @@ const ITEMS = {
 			]
 		},
 		"order": 45
+	},
+"wooden_crappy_sign": {
+		"category": "block",
+		"display_name": "Wooden Crappy Sign",
+		"rarity": "uncommon",
+		"block_health": 2,
+		"texture": {"atlas": "res://image.png", "cell": [10, 6], "cell_size": [32, 32]},
+		"atlas_coords": Vector2i(10, 6),
+		"inventory_icon": {"atlas": "res://image.png", "cell": [10, 6], "cell_size": [32, 32]},
+		"seed": "",
+		"sign_block": true,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "wooden_crappy_sign", "item_category": "block", "amount": 1}
+			]
+		},
+		"order": 54
 	},
 "wooden_ladder": {
 		"category": "block",
@@ -2927,7 +2973,7 @@ const ITEMS = {
 		"rarity": "uncommon",
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
-		"grows_into": "dark_red_block",
+		"grows_into": "maroon_block",
 		"order": 110
 	},
 "dark_yellow_block_seed": {
@@ -2972,7 +3018,7 @@ const ITEMS = {
 		"rarity": "uncommon",
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
-		"grows_into": "light_brown_block",
+		"grows_into": "dark_orange_block",
 		"order": 115
 	},
 "orange_block_seed": {
@@ -3325,7 +3371,7 @@ const ITEMS = {
 		"display_name": "Gem Block Seed",
 		"rarity": "epic",
 		"texture": "res://Assets/seeds/special/gem_block_seed.png",
-		"grows_into": "gem_block",
+		"grows_into": "rainbow_block",
 		"order": 36,
 		"tree_textures": [
 			"res://Assets/seed_tree_sprites/special/gem_block_tree_stage0.png",
@@ -3351,7 +3397,7 @@ const ITEMS = {
 		"rarity": "common",
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
-		"grows_into": "wooden_background",
+		"grows_into": "wooden_wallpaper",
 		"grow_time": 135.0,
 		"max_grow_time": 135.0,
 		"order": 38
@@ -3395,7 +3441,7 @@ const ITEMS = {
 		"rarity": "uncommon",
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
-		"grows_into": "wooden_frame",
+		"grows_into": "wooden_window",
 		"grow_time": 190.0,
 		"max_grow_time": 190.0,
 		"order": 42
@@ -7874,13 +7920,13 @@ const ITEMS = {
 			},
 			"order": 430
 		},
-	"shift_block": {
+	"shifty_block": {
 			"category": "block",
-			"display_name": "Shift Block",
+			"display_name": "Shifty Block",
 			"rarity": "rare",
 			"block_health": 3,
-			"texture": "res://image.png",
-			"inventory_icon": "res://image.png",
+			"texture": {"atlas": "res://image.png", "cell": [10, 8], "cell_size": [32, 32]},
+			"inventory_icon": {"atlas": "res://image.png", "cell": [10, 8], "cell_size": [32, 32]},
 			"atlas_item_id": 57,
 			"atlas_coords": Vector2i(10, 8),
 			"seed": "",
@@ -7897,7 +7943,7 @@ const ITEMS = {
 				"seed_chance": 0,
 				"gem_range": [0, 0],
 				"fixed_drops": [
-					{"item_id": "shift_block", "item_category": "block", "amount": 1}
+					{"item_id": "shifty_block", "item_category": "block", "amount": 1}
 				]
 			},
 			"order": 431

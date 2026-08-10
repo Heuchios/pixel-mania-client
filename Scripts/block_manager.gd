@@ -1942,6 +1942,42 @@ func normalize_legacy_block_id(block_type: String) -> String:
 		return "ice_treasure"
 	if block_type == "tulip":
 		return "sunflower"
+	if block_type == "wooden_background":
+		return "wooden_wallpaper"
+	if block_type == "wooden_frame":
+		return "wooden_window"
+	if block_type == "dark_red_block":
+		return "maroon_block"
+	if block_type == "light_brown_block":
+		return "dark_orange_block"
+	if block_type == "gem_block":
+		return "rainbow_block"
+	if block_type == "shift_block":
+		return "shifty_block"
+	if block_type == "white_bg":
+		return "white_wallpaper"
+	if block_type == "grey_bg":
+		return "grey_wallpaper"
+	if block_type == "black_bg":
+		return "black_wallpaper"
+	if block_type == "red_bg":
+		return "red_wallpaper"
+	if block_type == "orange_bg":
+		return "orange_wallpaper"
+	if block_type == "yellow_bg":
+		return "yellow_wallpaper"
+	if block_type == "green_bg":
+		return "green_wallpaper"
+	if block_type == "aqua_bg":
+		return "aqua_wallpaper"
+	if block_type == "blue_bg":
+		return "blue_wallpaper"
+	if block_type == "purple_bg":
+		return "purple_wallpaper"
+	if block_type == "pink_bg":
+		return "pink_wallpaper"
+	if block_type == "brown_bg":
+		return "brown_wallpaper"
 	return block_type
 
 
