@@ -346,7 +346,25 @@
 	"workshop_apron_icon": [896, 128, 32, 32],
 	"workshop_apron": [928, 128, 32, 32],
 	"bronze_pendant_icon": [896, 160, 32, 32],
-	"bronze_pendant": [928, 160, 32, 32]
+	"bronze_pendant": [928, 160, 32, 32],
+	"brown_shoes_icon": [1056, 0, 32, 32],
+	"brown_shoes_left": [1088, 0, 32, 32],
+	"brown_shoes_right": [1216, 0, 32, 32],
+	"black_shoes_icon": [1056, 32, 32, 32],
+	"black_shoes_left": [1088, 32, 32, 32],
+	"black_shoes_right": [1216, 32, 32, 32],
+	"red_shoes_icon": [1056, 64, 32, 32],
+	"red_shoes_left": [1088, 64, 32, 32],
+	"red_shoes_right": [1216, 64, 32, 32],
+	"blue_shoes_icon": [1056, 96, 32, 32],
+	"blue_shoes_left": [1088, 96, 32, 32],
+	"blue_shoes_right": [1216, 96, 32, 32],
+	"light_blue_shoes_icon": [1056, 128, 32, 32],
+	"light_blue_shoes_left": [1088, 128, 32, 32],
+	"light_blue_shoes_right": [1216, 128, 32, 32],
+	"yellow_shoes_icon": [1056, 160, 32, 32],
+	"yellow_shoes_left": [1088, 160, 32, 32],
+	"yellow_shoes_right": [1216, 160, 32, 32]
   },
   "aliases": {}
 }
