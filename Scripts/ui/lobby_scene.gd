@@ -25,6 +25,17 @@ const LOBBY_PARALLAX_LAYERS := [
 	{"name": "Layer5", "texture": preload("res://Assets/background/space_theme/star_4.png"), "drift": 40.0, "speed": 0.46, "phase": 4.2, "overscan": 46.0},
 ]
 
+# Landfill seasonal event -- see Scripts/server_landfill_event.ts (server) and
+# landfill_seasonal_event_design.md for the full design. This was originally wired into
+# Scripts/lobby_menu.gd, which is NOT the script attached to LobbyScene.tscn (lobby_menu.gd/
+# lobby_menu.tscn are an orphaned, unused pair). Ported here so it actually runs in the live
+# lobby. Mirrors the world-population-poll pattern already in this file (_start_world_population_timer/
+# _request_world_population_refresh) and reuses the already-proven _join_world_name() for the
+# actual join, same as the original lobby_menu.gd implementation did.
+const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
+const LandfillUI = preload("res://Scripts/landfill_ui.gd")
+const LANDFILL_STATUS_REFRESH_SECONDS := 15.0
+
 var world_input: LineEdit
 var join_button: Button
 var input_status_label: Label
@@ -44,6 +55,15 @@ var active_world_list_signature := ""
 var join_scene_change_in_progress := false
 var lobby_parallax_layers: Array = []
 var lobby_parallax_time := 0.0
+
+var landfill_status_timer: Timer
+var landfill_event_active := false
+var landfill_season_key := ""
+var landfill_join_button: Button
+var landfill_leaderboard_button: Button
+var landfill_join_in_progress := false
+var landfill_join_request_id := ""
+var landfill_ui_panel: Control = null
 
 
 func _ready() -> void:
@@ -67,6 +87,10 @@ func _ready() -> void:
 	_start_world_population_timer()
 	_request_world_population_refresh()
 	call_deferred("_prime_join_world_loading_overlay")
+	_add_landfill_buttons()
+	_connect_landfill_feed()
+	_start_landfill_status_timer()
+	_request_landfill_status_refresh()
 
 
 func _process(delta: float) -> void:
@@ -947,5 +971,142 @@ func _get_network_session_username() -> String:
 	var network = get_node_or_null("/root/NetworkManager")
 	if network != null and network.has_method("get_active_session_username"):
 		return str(network.get_active_session_username()).strip_edges()
-
 	return ""
+
+
+# ---------------------------------------------------------------------------
+# Landfill seasonal event: lobby-driven status polling, join, and leaderboard.
+# ---------------------------------------------------------------------------
+
+func _add_landfill_buttons() -> void:
+	landfill_join_button = Button.new()
+	landfill_join_button.name = "LandfillJoinButton"
+	landfill_join_button.text = "🏁  JOIN THE LANDFILL RACE"
+	landfill_join_button.layout_mode = 0
+	landfill_join_button.offset_left = 616.0
+	landfill_join_button.offset_top = 326.0
+	landfill_join_button.offset_right = 1240.0
+	landfill_join_button.offset_bottom = 372.0
+	landfill_join_button.tooltip_text = "Join the Landfill Race"
+	landfill_join_button.visible = landfill_event_active
+	PixelUIStyle.apply_yellow_button(landfill_join_button, 22)
+	landfill_join_button.pressed.connect(_on_landfill_join_pressed)
+	add_child(landfill_join_button)
+
+	landfill_leaderboard_button = Button.new()
+	landfill_leaderboard_button.name = "LandfillLeaderboardButton"
+	landfill_leaderboard_button.text = "🏆 LEADERBOARD"
+	landfill_leaderboard_button.layout_mode = 0
+	landfill_leaderboard_button.offset_left = 1250.0
+	landfill_leaderboard_button.offset_top = 326.0
+	landfill_leaderboard_button.offset_right = 1402.0
+	landfill_leaderboard_button.offset_bottom = 372.0
+	landfill_leaderboard_button.tooltip_text = "Landfill Leaderboard"
+	# Always visible (not gated on landfill_event_active) so standings/claims stay reachable
+	# after the join window closes -- prizes are only forfeited at season rollover.
+	landfill_leaderboard_button.visible = true
+	PixelUIStyle.apply_blue_button(landfill_leaderboard_button, 16)
+	landfill_leaderboard_button.pressed.connect(_on_landfill_leaderboard_pressed)
+	add_child(landfill_leaderboard_button)
+
+
+func _connect_landfill_feed() -> void:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null:
+		return
+
+	var status_callback := Callable(self, "_on_landfill_status_received")
+	if network.has_signal("landfill_status_received") and not network.is_connected("landfill_status_received", status_callback):
+		network.connect("landfill_status_received", status_callback)
+
+	var join_callback := Callable(self, "_on_landfill_join_result_received")
+	if network.has_signal("landfill_join_result_received") and not network.is_connected("landfill_join_result_received", join_callback):
+		network.connect("landfill_join_result_received", join_callback)
+
+
+func _start_landfill_status_timer() -> void:
+	if landfill_status_timer != null:
+		return
+
+	landfill_status_timer = Timer.new()
+	landfill_status_timer.name = "LandfillStatusRefreshTimer"
+	landfill_status_timer.wait_time = LANDFILL_STATUS_REFRESH_SECONDS
+	landfill_status_timer.autostart = true
+	landfill_status_timer.timeout.connect(_request_landfill_status_refresh)
+	add_child(landfill_status_timer)
+
+
+func _request_landfill_status_refresh() -> void:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null or not network.has_method("request_landfill_status"):
+		return
+	network.request_landfill_status()
+
+
+func _on_landfill_status_received(data: Dictionary) -> void:
+	landfill_event_active = bool(data.get("event_active", false))
+	landfill_season_key = str(data.get("season_key", "")).strip_edges()
+
+	if landfill_join_button != null:
+		landfill_join_button.visible = landfill_event_active
+		landfill_join_button.tooltip_text = "Join the Landfill Race" + (" (Season " + landfill_season_key + ")" if landfill_season_key != "" else "")
+
+
+func _on_landfill_join_pressed() -> void:
+	if landfill_join_in_progress or join_scene_change_in_progress:
+		return
+
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null or not network.has_method("request_landfill_join"):
+		_set_input_status("THE LANDFILL RACE IS UNAVAILABLE RIGHT NOW")
+		return
+
+	landfill_join_request_id = "landfill_join_" + str(Time.get_ticks_msec())
+	landfill_join_in_progress = true
+	_set_input_status("FINDING A LANDFILL RACE INSTANCE...")
+
+	if not bool(network.request_landfill_join(landfill_join_request_id)):
+		landfill_join_in_progress = false
+		_set_input_status("SIGN IN TO JOIN THE LANDFILL RACE")
+
+
+func _on_landfill_join_result_received(data: Dictionary) -> void:
+	if landfill_join_request_id != "":
+		var response_request_id := str(data.get("request_id", "")).strip_edges()
+		if response_request_id != "" and response_request_id != landfill_join_request_id:
+			return
+
+	landfill_join_in_progress = false
+
+	if bool(data.get("ok", false)):
+		var world_name := str(data.get("world_name", "")).strip_edges()
+		if world_name != "":
+			_join_world_name(world_name)
+			return
+		_set_input_status("COULD NOT JOIN THE LANDFILL RACE")
+		return
+
+	var reason := str(data.get("reason", "")).strip_edges()
+	if reason == "event_not_active":
+		_set_input_status("THE LANDFILL RACE ISN'T OPEN RIGHT NOW")
+	else:
+		_set_input_status("COULD NOT JOIN THE LANDFILL RACE")
+
+
+func _on_landfill_leaderboard_pressed() -> void:
+	var ui_panel := _get_or_create_landfill_ui_panel()
+	if ui_panel != null:
+		ui_panel.open_panel()
+
+
+func _get_or_create_landfill_ui_panel() -> Control:
+	if landfill_ui_panel != null and is_instance_valid(landfill_ui_panel):
+		return landfill_ui_panel
+
+	var ui_panel: Control = LandfillUI.new()
+	ui_panel.name = "LandfillUI"
+	add_child(ui_panel)
+	if ui_panel.has_method("setup"):
+		ui_panel.setup(self)
+	landfill_ui_panel = ui_panel
+	return landfill_ui_panel

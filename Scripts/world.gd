@@ -442,6 +442,7 @@ var account_manager = null
 var world_lock_manager = null
 var world_lock_ui = null
 var area_lock_ui = null
+var landfill_waiting_room_ui = null
 var area_lock_highlight_overlay = null
 var username_label_manager = null
 var background_manager = null
@@ -1775,6 +1776,7 @@ func _ready():
 	setup_command_manager()
 	setup_chat_ui()
 	setup_notification_ui()
+	setup_landfill_waiting_room_ui()
 
 	if _is_netfox_real_server_launch():
 		_finish_netfox_real_server_startup()
@@ -4825,6 +4827,30 @@ func setup_area_lock_ui():
 		ui_layer.add_child(area_lock_ui)
 	if area_lock_ui.has_method("setup"):
 		area_lock_ui.setup(self, world_lock_manager)
+
+
+# Landfill event: shows a small, non-blocking HUD panel ("Waiting for players: X / Y") while the
+# player is sitting in a Landfill instance's entry pen. Fully self-contained (see
+# Scripts/landfill_waiting_room_ui.gd) -- it polls NetworkManager.current_world_name directly
+# rather than depending on this script's own world-change hooks, so it's safe to set up once,
+# eagerly, here in _ready() and then leave alone; it shows/hides itself as the player moves
+# between Landfill and non-Landfill worlds (including re-joining a different Landfill instance
+# without a full scene reload, if that ever happens).
+func setup_landfill_waiting_room_ui():
+	if ui_hud_layer == null:
+		return
+	if landfill_waiting_room_ui == null:
+		landfill_waiting_room_ui = ui_hud_layer.get_node_or_null("LandfillWaitingRoomUI")
+	if landfill_waiting_room_ui == null:
+		var waiting_room_script = load("res://Scripts/landfill_waiting_room_ui.gd")
+		if waiting_room_script == null:
+			return
+		landfill_waiting_room_ui = Control.new()
+		landfill_waiting_room_ui.name = "LandfillWaitingRoomUI"
+		landfill_waiting_room_ui.set_script(waiting_room_script)
+		ui_hud_layer.add_child(landfill_waiting_room_ui)
+	if landfill_waiting_room_ui.has_method("setup"):
+		landfill_waiting_room_ui.setup(self)
 
 
 func setup_area_lock_highlight_overlay():
