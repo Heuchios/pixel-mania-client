@@ -18,7 +18,9 @@ const LOBBY_HUB_WORLD := "START"
 const MAX_ACTIVE_WORLD_ROWS := 6
 const WORLD_POPULATION_REFRESH_SECONDS := 5.0
 const PLAYER_MAX_LEVEL := 100
+const LANDFILL_STATUS_REFRESH_SECONDS := 15.0
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
+const LandfillUI = preload("res://Scripts/landfill_ui.gd")
 
 var world_input: LineEdit
 var status_label: Label
@@ -42,6 +44,13 @@ var owned_locked_worlds_request_id := ""
 var owned_locked_worlds_error := ""
 var world_population_timer: Timer
 var join_scene_change_in_progress := false
+var landfill_status_timer: Timer
+var landfill_event_active := false
+var landfill_season_key := ""
+var landfill_join_button: Button
+var landfill_join_in_progress := false
+var landfill_join_request_id := ""
+var landfill_ui_panel: Control = null
 
 
 func _ready() -> void:
@@ -51,6 +60,9 @@ func _ready() -> void:
 	_connect_world_population_feed()
 	_start_world_population_timer()
 	_request_world_population_refresh()
+	_connect_landfill_feed()
+	_start_landfill_status_timer()
+	_request_landfill_status_refresh()
 	call_deferred("_start_lobby_idle_animation")
 
 
@@ -1465,7 +1477,7 @@ func _add_right_buttons() -> void:
 	side.add_theme_constant_override("separation", 22)
 	add_child(side)
 
-	for txt in ["♕", "★", "🔒", "🪐"]:
+	for txt in ["♕", "★", "🔒", "🪐", "🏁", "🏆"]:
 		var b := _make_round_button(txt)
 		side.add_child(b)
 
@@ -1490,6 +1502,16 @@ func _wire_right_side_buttons(side: VBoxContainer) -> void:
 			button.tooltip_text = "Go to START"
 			if not button.pressed.is_connected(_on_start_world_pressed):
 				button.pressed.connect(_on_start_world_pressed)
+		elif i == 4:
+			landfill_join_button = button
+			landfill_join_button.tooltip_text = "Join the Landfill Race"
+			landfill_join_button.visible = landfill_event_active
+			if not landfill_join_button.pressed.is_connected(_on_landfill_join_pressed):
+				landfill_join_button.pressed.connect(_on_landfill_join_pressed)
+		elif i == 5:
+			button.tooltip_text = "Landfill Leaderboard"
+			if not button.pressed.is_connected(_on_landfill_leaderboard_pressed):
+				button.pressed.connect(_on_landfill_leaderboard_pressed)
 
 
 func _make_icon_button(text: String) -> Button:
@@ -1677,6 +1699,49 @@ func _on_owned_locked_worlds_received(data: Dictionary) -> void:
 		_refresh_recent_worlds_panel()
 
 
+func _connect_landfill_feed() -> void:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null:
+		return
+
+	var status_callback := Callable(self, "_on_landfill_status_received")
+	if network.has_signal("landfill_status_received") and not network.is_connected("landfill_status_received", status_callback):
+		network.connect("landfill_status_received", status_callback)
+
+	var join_callback := Callable(self, "_on_landfill_join_result_received")
+	if network.has_signal("landfill_join_result_received") and not network.is_connected("landfill_join_result_received", join_callback):
+		network.connect("landfill_join_result_received", join_callback)
+
+
+func _start_landfill_status_timer() -> void:
+	if landfill_status_timer != null:
+		return
+
+	landfill_status_timer = Timer.new()
+	landfill_status_timer.name = "LandfillStatusRefreshTimer"
+	landfill_status_timer.wait_time = LANDFILL_STATUS_REFRESH_SECONDS
+	landfill_status_timer.autostart = true
+	landfill_status_timer.timeout.connect(_request_landfill_status_refresh)
+	add_child(landfill_status_timer)
+
+
+func _request_landfill_status_refresh() -> void:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null or not network.has_method("request_landfill_status"):
+		return
+
+	network.request_landfill_status()
+
+
+func _on_landfill_status_received(data: Dictionary) -> void:
+	landfill_event_active = bool(data.get("event_active", false))
+	landfill_season_key = str(data.get("season_key", "")).strip_edges()
+
+	if landfill_join_button != null:
+		landfill_join_button.visible = landfill_event_active
+		landfill_join_button.tooltip_text = "Join the Landfill Race" + (" (Season " + landfill_season_key + ")" if landfill_season_key != "" else "")
+
+
 func _get_known_world_names_for_population_request() -> Array:
 	var names: Array = [LOBBY_HUB_WORLD]
 	var entries: Array = _get_visible_world_entries()
@@ -1771,6 +1836,67 @@ func _on_start_world_pressed() -> void:
 
 func _on_join_pressed() -> void:
 	_join_world_name(world_input.text)
+
+
+func _on_landfill_join_pressed() -> void:
+	if landfill_join_in_progress or join_scene_change_in_progress:
+		return
+
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null or not network.has_method("request_landfill_join"):
+		status_label.text = "The Landfill Race is unavailable right now."
+		return
+
+	landfill_join_request_id = "landfill_join_" + str(Time.get_ticks_msec())
+	landfill_join_in_progress = true
+	status_label.text = "Finding a Landfill race instance..."
+
+	if not bool(network.request_landfill_join(landfill_join_request_id)):
+		landfill_join_in_progress = false
+		status_label.text = "Sign in to join the Landfill Race."
+
+
+func _on_landfill_join_result_received(data: Dictionary) -> void:
+	if landfill_join_request_id != "":
+		var response_request_id: String = str(data.get("request_id", "")).strip_edges()
+		if response_request_id != "" and response_request_id != landfill_join_request_id:
+			return
+
+	landfill_join_in_progress = false
+
+	if not bool(data.get("ok", false)):
+		var reason: String = str(data.get("reason", "")).strip_edges()
+		if reason == "event_not_active":
+			status_label.text = "The Landfill Race isn't open right now."
+		else:
+			status_label.text = "Could not join the Landfill Race."
+		return
+
+	var world_name: String = str(data.get("world_name", "")).strip_edges()
+	if world_name == "":
+		status_label.text = "Could not join the Landfill Race."
+		return
+
+	_join_world_name(world_name)
+
+
+func _on_landfill_leaderboard_pressed() -> void:
+	var ui_panel := _get_or_create_landfill_ui_panel()
+	if ui_panel != null:
+		ui_panel.open_panel()
+
+
+func _get_or_create_landfill_ui_panel() -> Control:
+	if landfill_ui_panel != null and is_instance_valid(landfill_ui_panel):
+		return landfill_ui_panel
+
+	var ui_panel: Control = LandfillUI.new()
+	ui_panel.name = "LandfillUI"
+	add_child(ui_panel)
+	if ui_panel.has_method("setup"):
+		ui_panel.setup(self)
+	landfill_ui_panel = ui_panel
+	return landfill_ui_panel
 
 
 func _join_world_name(raw_world_name: String) -> void:

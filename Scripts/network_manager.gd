@@ -5,6 +5,12 @@ signal server_connection_changed(is_connected)
 signal world_population_changed(world_counts)
 signal owned_locked_worlds_received(data)
 signal client_update_required(payload)
+signal iap_checkout_session_result(data)
+signal iap_purchase_result(data)
+signal landfill_status_received(data)
+signal landfill_join_result_received(data)
+signal landfill_leaderboard_received(data)
+signal landfill_claim_result_received(data)
 
 const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
 
@@ -190,6 +196,9 @@ const MAX_TRADE_SLOT_INDEX := 31
 const MAX_TRADE_ID_LENGTH := 96
 const MAX_WORLD_POPULATION_RATE_PER_SECOND := 10
 const MAX_OWNED_LOCKED_WORLDS_RATE_PER_SECOND := 4
+const MAX_LANDFILL_STATUS_RATE_PER_SECOND := 4
+const MAX_LANDFILL_LEADERBOARD_RATE_PER_SECOND := 4
+const MAX_LANDFILL_ACTION_RATE_PER_SECOND := 2
 const MAX_WORLD_POPULATION_REQUEST_SIZE := 64
 const MAX_WORLD_INTERACTION_TEXT_LENGTH := 128
 const MAX_DOOR_ID_LENGTH := 32
@@ -1864,6 +1873,32 @@ func send_inventory_upgrade_purchase_request(upgrade_data: Dictionary = {}) -> b
 	return send_message(attach_session_auth(payload))
 
 
+func send_iap_create_stripe_checkout_request(pack_id: String) -> String:
+	if not is_server_session_authenticated():
+		return ""
+	var request_id = make_auth_request_id()
+	send_message(attach_session_auth({
+		"type": "iap_create_stripe_checkout_request",
+		"request_id": request_id,
+		"pack_id": pack_id
+	}))
+	return request_id
+
+
+func send_iap_submit_google_play_purchase_request(pack_id: String, purchase_token: String, product_id: String) -> String:
+	if not is_server_session_authenticated():
+		return ""
+	var request_id = make_auth_request_id()
+	send_message(attach_session_auth({
+		"type": "iap_submit_google_play_purchase_request",
+		"request_id": request_id,
+		"pack_id": pack_id,
+		"purchase_token": purchase_token,
+		"product_id": product_id
+	}))
+	return request_id
+
+
 func _extract_player_state_request_id(data: Dictionary) -> String:
 	if data == null:
 		return ""
@@ -2168,6 +2203,79 @@ func request_owned_locked_worlds(request_id: String = "") -> bool:
 
 	return send_message(attach_session_auth({
 		"type": "owned_locked_worlds_request",
+		"request_id": safe_request_id
+	}))
+
+
+# ---------------------------------------------------------------------------
+# Landfill seasonal event: lobby-driven status polling, join, leaderboard, and
+# prize claim requests. These mirror request_owned_locked_worlds's shape
+# exactly (auth check -> rate limit check -> request_id sanitize/generate ->
+# attach_session_auth send) since, like that request, they are issued from
+# the lobby before a world node exists -- they must NOT depend on
+# is_world_node_active() or any in-world delegation pattern.
+# ---------------------------------------------------------------------------
+
+func request_landfill_status(request_id: String = "") -> bool:
+	if not is_server_session_authenticated():
+		return false
+	if not _can_send_rate_limited("landfill_status", MAX_LANDFILL_STATUS_RATE_PER_SECOND):
+		return false
+
+	var safe_request_id = _safe_string(request_id, "", MAX_REQUEST_ID_LENGTH)
+	if safe_request_id == "":
+		safe_request_id = make_auth_request_id()
+
+	return send_message(attach_session_auth({
+		"type": "landfill_status_request",
+		"request_id": safe_request_id
+	}))
+
+
+func request_landfill_join(request_id: String = "") -> bool:
+	if not is_server_session_authenticated():
+		return false
+	if not _can_send_rate_limited("landfill_join", MAX_LANDFILL_ACTION_RATE_PER_SECOND):
+		return false
+
+	var safe_request_id = _safe_string(request_id, "", MAX_REQUEST_ID_LENGTH)
+	if safe_request_id == "":
+		safe_request_id = make_auth_request_id()
+
+	return send_message(attach_session_auth({
+		"type": "landfill_join_request",
+		"request_id": safe_request_id
+	}))
+
+
+func request_landfill_leaderboard(request_id: String = "") -> bool:
+	if not is_server_session_authenticated():
+		return false
+	if not _can_send_rate_limited("landfill_leaderboard", MAX_LANDFILL_LEADERBOARD_RATE_PER_SECOND):
+		return false
+
+	var safe_request_id = _safe_string(request_id, "", MAX_REQUEST_ID_LENGTH)
+	if safe_request_id == "":
+		safe_request_id = make_auth_request_id()
+
+	return send_message(attach_session_auth({
+		"type": "landfill_leaderboard_request",
+		"request_id": safe_request_id
+	}))
+
+
+func request_landfill_claim_prize(request_id: String = "") -> bool:
+	if not is_server_session_authenticated():
+		return false
+	if not _can_send_rate_limited("landfill_claim_prize", MAX_LANDFILL_ACTION_RATE_PER_SECOND):
+		return false
+
+	var safe_request_id = _safe_string(request_id, "", MAX_REQUEST_ID_LENGTH)
+	if safe_request_id == "":
+		safe_request_id = make_auth_request_id()
+
+	return send_message(attach_session_auth({
+		"type": "landfill_claim_prize_request",
 		"request_id": safe_request_id
 	}))
 
@@ -4543,10 +4651,22 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 						apply_server_movement_guidance(clean_guided_world, guidance_map.get(raw_guided_world))
 		"owned_locked_worlds_result":
 			handle_owned_locked_worlds_result(data)
+		"landfill_status":
+			handle_landfill_status_result(data)
+		"landfill_join_result":
+			handle_landfill_join_result(data)
+		"landfill_leaderboard":
+			handle_landfill_leaderboard_result(data)
+		"landfill_claim_result":
+			handle_landfill_claim_result(data)
 		"world_route_redirect":
 			handle_world_route_redirect(data)
 		"inventory_transaction_result":
 			handle_inventory_transaction_result(data)
+		"iap_checkout_session_result":
+			handle_iap_checkout_session_result(data)
+		"iap_purchase_result":
+			handle_iap_purchase_result(data)
 		"fishing_reward_fx":
 			handle_fishing_reward_fx(data)
 		"action_rejected":
@@ -5024,6 +5144,14 @@ func handle_player_state_message(data: Dictionary) -> void:
 	# length of a server round trip.
 	pending_server_player_state["preserve_local_loadout"] = true
 	apply_pending_server_player_state_if_ready()
+
+
+func handle_iap_checkout_session_result(data: Dictionary) -> void:
+	iap_checkout_session_result.emit(data)
+
+
+func handle_iap_purchase_result(data: Dictionary) -> void:
+	iap_purchase_result.emit(data)
 
 
 func handle_inventory_transaction_result(data: Dictionary) -> void:
@@ -7071,6 +7199,63 @@ func handle_owned_locked_worlds_result(data: Dictionary) -> void:
 	var payload := data.duplicate(true)
 	payload["worlds"] = sanitized_worlds
 	owned_locked_worlds_received.emit(payload)
+
+
+func handle_landfill_status_result(data: Dictionary) -> void:
+	var payload := {
+		"request_id": _safe_string(data.get("request_id", ""), "", MAX_REQUEST_ID_LENGTH),
+		"event_active": _safe_bool(data.get("event_active", false), false),
+		"season_key": _safe_string(data.get("season_key", ""), "", 32),
+		"min_players_to_start": _safe_int(data.get("min_players_to_start", 0), 0, 0, 50),
+		"max_players_per_instance": _safe_int(data.get("max_players_per_instance", 0), 0, 0, 50),
+	}
+	landfill_status_received.emit(payload)
+
+
+func handle_landfill_join_result(data: Dictionary) -> void:
+	var payload := {
+		"request_id": _safe_string(data.get("request_id", ""), "", MAX_REQUEST_ID_LENGTH),
+		"ok": _safe_bool(data.get("ok", false), false),
+		"reason": _safe_string(data.get("reason", ""), "", 64),
+		"world_name": _safe_world_name(data.get("world_name", "")),
+	}
+	landfill_join_result_received.emit(payload)
+
+
+func handle_landfill_leaderboard_result(data: Dictionary) -> void:
+	var sanitized_entries: Array = []
+	var raw_entries = data.get("entries", [])
+	if raw_entries is Array:
+		for raw_entry in raw_entries:
+			if not (raw_entry is Dictionary):
+				continue
+			var entry_username := _safe_string(raw_entry.get("username", ""), "", MAX_USERNAME_LENGTH).to_upper()
+			if entry_username == "":
+				continue
+			sanitized_entries.append({
+				"username": entry_username,
+				"kilograms": _safe_int(raw_entry.get("kilograms", 0), 0, 0, 2000000000),
+				"rank": _safe_int(raw_entry.get("rank", 0), 0, 0, 1000),
+			})
+
+	var payload := {
+		"request_id": _safe_string(data.get("request_id", ""), "", MAX_REQUEST_ID_LENGTH),
+		"season_key": _safe_string(data.get("season_key", ""), "", 32),
+		"entries": sanitized_entries,
+		"your_kilograms": _safe_int(data.get("your_kilograms", 0), 0, 0, 2000000000),
+		"your_rank": _safe_int(data.get("your_rank", 0), 0, 0, 1000),
+	}
+	landfill_leaderboard_received.emit(payload)
+
+
+func handle_landfill_claim_result(data: Dictionary) -> void:
+	var payload := {
+		"request_id": _safe_string(data.get("request_id", ""), "", MAX_REQUEST_ID_LENGTH),
+		"ok": _safe_bool(data.get("ok", false), false),
+		"reason": _safe_string(data.get("reason", ""), "", 64),
+		"message": _safe_string(data.get("message", ""), "", 256),
+	}
+	landfill_claim_result_received.emit(payload)
 
 
 func _safe_int(value, fallback: int, min_value: int = -2147483648, max_value: int = 2147483647) -> int:
