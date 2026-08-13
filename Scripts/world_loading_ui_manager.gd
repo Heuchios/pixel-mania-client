@@ -1437,6 +1437,11 @@ const TERMINAL_JOIN_WORLD_REJECTION_REASONS := [
 	"instance_full",
 	"instance_locked",
 	"event_not_active",
+	# Entering a Landfill world without having been routed there by the lobby's Join Race flow.
+	# Retrying is pointless -- admission is only ever granted by that flow, never by the join
+	# itself -- so fail immediately rather than burning the full retry budget on a refusal that
+	# cannot change.
+	"join_race_required",
 ]
 
 

@@ -35,6 +35,18 @@ const LOBBY_PARALLAX_LAYERS := [
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 const LandfillUI = preload("res://Scripts/landfill_ui.gd")
 const LANDFILL_STATUS_REFRESH_SECONDS := 15.0
+# Landfill event card (badge art + "Go Green!" join button), pinned to the TOP-RIGHT corner.
+#
+# Anchored rather than placed at fixed offsets like the rest of this lobby: every other control
+# here hardcodes a position in the design canvas, which only stays correct while the canvas is the
+# size those numbers were written against. Anchoring to the right edge keeps the card in the corner
+# at any window size or stretch scale, so it cannot drift off-screen or collide with the world list.
+const LANDFILL_EVENT_ICON_PATH := "res://Assets/events/landfill/icon.png"
+const LANDFILL_CARD_MARGIN := 28.0
+const LANDFILL_CARD_W := 200.0
+const LANDFILL_ICON_H := 168.0
+const LANDFILL_CARD_BUTTON_H := 46.0
+const LANDFILL_CARD_H := LANDFILL_ICON_H + 8.0 + LANDFILL_CARD_BUTTON_H
 
 var world_input: LineEdit
 var join_button: Button
@@ -61,6 +73,9 @@ var landfill_event_active := false
 var landfill_season_key := ""
 var landfill_join_button: Button
 var landfill_leaderboard_button: Button
+# Container for the event badge + "Go Green!" join button. Toggling this one node's visibility
+# governs the whole card, so the icon and its button can never end up in disagreeing states.
+var landfill_event_card: Control
 var landfill_join_in_progress := false
 var landfill_join_request_id := ""
 var landfill_ui_panel: Control = null
@@ -979,19 +994,66 @@ func _get_network_session_username() -> String:
 # ---------------------------------------------------------------------------
 
 func _add_landfill_buttons() -> void:
+	# The event is presented as an icon card on the right margin -- the badge art carries the
+	# branding the old wide yellow "JOIN THE LANDFILL RACE" bar was doing in words, and the green
+	# "Go Green!" button underneath is the single join entry point. Deliberately ONE way in: two
+	# controls firing the same request invites a double-join race between them.
+	landfill_event_card = Control.new()
+	landfill_event_card.name = "LandfillEventCard"
+	# PRESET_TOP_RIGHT makes both horizontal anchors the right edge, so the offsets below are
+	# measured leftward from that edge and the card stays glued to the corner.
+	landfill_event_card.set_anchors_preset(Control.PRESET_TOP_RIGHT, false)
+	landfill_event_card.offset_left = -(LANDFILL_CARD_W + LANDFILL_CARD_MARGIN)
+	landfill_event_card.offset_right = -LANDFILL_CARD_MARGIN
+	landfill_event_card.offset_top = LANDFILL_CARD_MARGIN
+	landfill_event_card.offset_bottom = LANDFILL_CARD_MARGIN + LANDFILL_CARD_H
+	landfill_event_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Gated on the event window exactly like the old join button was, so players are never shown a
+	# join control that would only refuse them.
+	landfill_event_card.visible = landfill_event_active
+	add_child(landfill_event_card)
+
+	var icon_texture: Texture2D = null
+	if ResourceLoader.exists(LANDFILL_EVENT_ICON_PATH):
+		icon_texture = load(LANDFILL_EVENT_ICON_PATH) as Texture2D
+
+	if icon_texture != null:
+		var icon_rect := TextureRect.new()
+		icon_rect.name = "EventIcon"
+		icon_rect.texture = icon_texture
+		icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon_rect.position = Vector2.ZERO
+		icon_rect.size = Vector2(LANDFILL_CARD_W, LANDFILL_ICON_H)
+		icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		landfill_event_card.add_child(icon_rect)
+	else:
+		# Missing art must not cost the player the ability to join, so fall back to a text badge
+		# rather than leaving an invisible gap above the button.
+		var fallback := Label.new()
+		fallback.name = "EventIconFallback"
+		fallback.text = "LANDFILL EVENT"
+		fallback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		fallback.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		fallback.position = Vector2.ZERO
+		fallback.size = Vector2(LANDFILL_CARD_W, LANDFILL_ICON_H)
+		fallback.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		PixelUIStyle.apply_label_shadow(fallback, 18, PixelUIStyle.GOLD_SOFT)
+		landfill_event_card.add_child(fallback)
+
 	landfill_join_button = Button.new()
 	landfill_join_button.name = "LandfillJoinButton"
-	landfill_join_button.text = "🏁  JOIN THE LANDFILL RACE"
+	landfill_join_button.text = "Go Green!"
 	landfill_join_button.layout_mode = 0
-	landfill_join_button.offset_left = 616.0
-	landfill_join_button.offset_top = 326.0
-	landfill_join_button.offset_right = 1240.0
-	landfill_join_button.offset_bottom = 372.0
+	landfill_join_button.position = Vector2(0.0, LANDFILL_ICON_H + 8.0)
+	landfill_join_button.size = Vector2(LANDFILL_CARD_W, LANDFILL_CARD_BUTTON_H)
 	landfill_join_button.tooltip_text = "Join the Landfill Race"
-	landfill_join_button.visible = landfill_event_active
-	PixelUIStyle.apply_yellow_button(landfill_join_button, 22)
+	# Parented to the card, so toggling the card's visibility governs the button too and the two
+	# can never disagree about whether the event is joinable.
+	landfill_join_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	PixelUIStyle.apply_green_button(landfill_join_button, 20)
 	landfill_join_button.pressed.connect(_on_landfill_join_pressed)
-	add_child(landfill_join_button)
+	landfill_event_card.add_child(landfill_join_button)
 
 	landfill_leaderboard_button = Button.new()
 	landfill_leaderboard_button.name = "LandfillLeaderboardButton"
@@ -1047,8 +1109,13 @@ func _on_landfill_status_received(data: Dictionary) -> void:
 	landfill_event_active = bool(data.get("event_active", false))
 	landfill_season_key = str(data.get("season_key", "")).strip_edges()
 
+	# Toggle the CARD, not the button: the button is a child of the card, so hiding the card hides
+	# the badge art with it. Toggling only the button would leave an orphaned icon advertising an
+	# event with no way to enter it.
+	if landfill_event_card != null and is_instance_valid(landfill_event_card):
+		landfill_event_card.visible = landfill_event_active
+
 	if landfill_join_button != null:
-		landfill_join_button.visible = landfill_event_active
 		landfill_join_button.tooltip_text = "Join the Landfill Race" + (" (Season " + landfill_season_key + ")" if landfill_season_key != "" else "")
 
 
