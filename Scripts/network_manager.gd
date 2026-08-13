@@ -7,6 +7,8 @@ signal owned_locked_worlds_received(data)
 signal client_update_required(payload)
 signal iap_checkout_session_result(data)
 signal iap_purchase_result(data)
+signal landfill_race_state_received(data)
+signal landfill_race_results_received(data)
 signal landfill_status_received(data)
 signal landfill_join_result_received(data)
 signal landfill_leaderboard_received(data)
@@ -2244,6 +2246,25 @@ func request_landfill_join(request_id: String = "") -> bool:
 
 	return send_message(attach_session_auth({
 		"type": "landfill_join_request",
+		"request_id": safe_request_id
+	}))
+
+
+# Asks the server to push the current race state for the world we are in. Used once on world
+# entry so the HUD populates immediately instead of waiting for the next coalesced broadcast.
+# Carries no state of its own -- it is a request, not a report.
+func request_landfill_race_state(request_id: String = "") -> bool:
+	if not is_server_session_authenticated():
+		return false
+	if not _can_send_rate_limited("landfill_race_state", MAX_LANDFILL_STATUS_RATE_PER_SECOND):
+		return false
+
+	var safe_request_id = _safe_string(request_id, "", MAX_REQUEST_ID_LENGTH)
+	if safe_request_id == "":
+		safe_request_id = make_auth_request_id()
+
+	return send_message(attach_session_auth({
+		"type": "landfill_race_state_request",
 		"request_id": safe_request_id
 	}))
 
@@ -4651,6 +4672,10 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 						apply_server_movement_guidance(clean_guided_world, guidance_map.get(raw_guided_world))
 		"owned_locked_worlds_result":
 			handle_owned_locked_worlds_result(data)
+		"landfill_race_state":
+			handle_landfill_race_state(data)
+		"landfill_race_results":
+			handle_landfill_race_results(data)
 		"landfill_status":
 			handle_landfill_status_result(data)
 		"landfill_join_result":
@@ -7211,6 +7236,60 @@ func handle_owned_locked_worlds_result(data: Dictionary) -> void:
 	var payload := data.duplicate(true)
 	payload["worlds"] = sanitized_worlds
 	owned_locked_worlds_received.emit(payload)
+
+
+func _sanitize_landfill_competitor_list(raw_entries) -> Array:
+	# Every field is re-clamped here rather than forwarded raw, matching how every other landfill
+	# payload is handled in this file. These values only drive a HUD, but a malformed or hostile
+	# packet should produce a harmless panel, never a crash mid-race.
+	var sanitized: Array = []
+	if not (raw_entries is Array):
+		return sanitized
+	for entry in raw_entries:
+		if not (entry is Dictionary):
+			continue
+		var username: String = _safe_string(entry.get("username", ""), "", MAX_USERNAME_LENGTH)
+		if username == "":
+			continue
+		sanitized.append({
+			"username": username,
+			"display_name": _safe_string(entry.get("display_name", username), username, MAX_USERNAME_LENGTH),
+			"kilograms": _safe_int(entry.get("kilograms", 0), 0, 0, 2000000000),
+			"placement": _safe_int(entry.get("placement", 0), 0, 0, 1000),
+			"awarded_kilograms": _safe_int(entry.get("awarded_kilograms", 0), 0, 0, 2000000000),
+			"connected": _safe_bool(entry.get("connected", true), true),
+		})
+	return sanitized
+
+
+# Server-pushed live race state. There is deliberately no outbound counterpart carrying progress,
+# placement or phase -- those are server-authoritative and a client that could report them could
+# lie about them. request_landfill_race_state() below only ASKS for the current state.
+func handle_landfill_race_state(data: Dictionary) -> void:
+	var payload := {
+		"session_id": _safe_string(data.get("session_id", ""), "", MAX_REQUEST_ID_LENGTH),
+		"world": _safe_world_name(data.get("world", "")),
+		"state": _safe_string(data.get("state", ""), "", 32),
+		"server_time_ms": _safe_int(data.get("server_time_ms", 0), 0, 0, 9007199254740991),
+		"countdown_ends_at_ms": _safe_int(data.get("countdown_ends_at_ms", 0), 0, 0, 9007199254740991),
+		"race_started_at_ms": _safe_int(data.get("race_started_at_ms", 0), 0, 0, 9007199254740991),
+		"race_ends_at_ms": _safe_int(data.get("race_ends_at_ms", 0), 0, 0, 9007199254740991),
+		"min_players_to_start": _safe_int(data.get("min_players_to_start", 2), 2, 0, 50),
+		"max_players": _safe_int(data.get("max_players", 0), 0, 0, 50),
+		"connected_players": _safe_int(data.get("connected_players", 0), 0, 0, 50),
+		"competitors": _sanitize_landfill_competitor_list(data.get("competitors", [])),
+	}
+	landfill_race_state_received.emit(payload)
+
+
+func handle_landfill_race_results(data: Dictionary) -> void:
+	var payload := {
+		"session_id": _safe_string(data.get("session_id", ""), "", MAX_REQUEST_ID_LENGTH),
+		"world": _safe_world_name(data.get("world", "")),
+		"season_key": _safe_string(data.get("season_key", ""), "", 32),
+		"results": _sanitize_landfill_competitor_list(data.get("results", [])),
+	}
+	landfill_race_results_received.emit(payload)
 
 
 func handle_landfill_status_result(data: Dictionary) -> void:

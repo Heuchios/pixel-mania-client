@@ -443,6 +443,7 @@ var world_lock_manager = null
 var world_lock_ui = null
 var area_lock_ui = null
 var landfill_waiting_room_ui = null
+var landfill_race_hud = null
 var area_lock_highlight_overlay = null
 var username_label_manager = null
 var background_manager = null
@@ -1776,7 +1777,12 @@ func _ready():
 	setup_command_manager()
 	setup_chat_ui()
 	setup_notification_ui()
-	setup_landfill_waiting_room_ui()
+	# The old top-centre "waiting for players" bar is superseded by the top-left race HUD, which
+	# shows the same waiting count plus the countdown, race clock and live scoreboard in one panel.
+	# Running both put two overlapping panels on screen saying the same thing, so this one is no
+	# longer created. setup_landfill_waiting_room_ui() and its script are left in place -- re-adding
+	# the call is the only step needed to bring it back.
+	setup_landfill_race_hud()
 
 	if _is_netfox_real_server_launch():
 		_finish_netfox_real_server_startup()
@@ -4851,6 +4857,45 @@ func setup_landfill_waiting_room_ui():
 		ui_hud_layer.add_child(landfill_waiting_room_ui)
 	if landfill_waiting_room_ui.has_method("setup"):
 		landfill_waiting_room_ui.setup(self)
+
+
+# Top-left competitor panel for the Landfill race. Same eager, once-only setup as the waiting-room
+# panel above: it is a HUD element, so it is created here in _ready() rather than lazily, and then
+# shows/hides itself from NetworkManager state. See Scripts/landfill_race_hud.gd.
+func setup_landfill_race_hud():
+	if ui_hud_layer == null:
+		return
+	if landfill_race_hud == null:
+		landfill_race_hud = ui_hud_layer.get_node_or_null("LandfillRaceHud")
+	if landfill_race_hud == null:
+		var race_hud_script = load("res://Scripts/landfill_race_hud.gd")
+		if race_hud_script == null:
+			return
+		landfill_race_hud = Control.new()
+		landfill_race_hud.name = "LandfillRaceHud"
+		landfill_race_hud.set_script(race_hud_script)
+		ui_hud_layer.add_child(landfill_race_hud)
+	if landfill_race_hud.has_method("setup"):
+		landfill_race_hud.setup(self)
+
+
+# Called by the race HUD once the post-race results have been on screen long enough. Routed through
+# world_menu_ui.return_to_lobby_menu rather than a bare change_scene_to_file so the exit is the
+# SAME one the world menu's own "Worlds" button performs: it waits for pending authoritative block
+# edits to settle, sends leave_world so the server releases presence/occupancy for this world, and
+# is re-entrancy guarded. Skipping any of that would leave a ghost player in a finished session.
+#
+# save_current_world is false on purpose: a Landfill race world is destroyed server-side when the
+# session retires, so persisting it would be wasted work and pure exit latency.
+func return_to_lobby_from_landfill_race() -> void:
+	setup_world_menu_ui()
+	if world_menu_ui != null and is_instance_valid(world_menu_ui) and world_menu_ui.has_method("return_to_lobby_menu"):
+		world_menu_ui.return_to_lobby_menu(false)
+		return
+	# Fallback if the world menu could not be built for any reason -- still leave the race rather
+	# than stranding the player in a world that is about to be deleted.
+	if save_manager != null and save_manager.has_method("exit_to_main_menu"):
+		save_manager.exit_to_main_menu(false)
 
 
 func setup_area_lock_highlight_overlay():

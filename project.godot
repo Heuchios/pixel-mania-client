@@ -40,7 +40,6 @@ MusicManager="*res://Scripts/music_manager.gd"
 
 [display]
 
-window/size/mode=3
 window/stretch/scale_mode="integer"
 
 [editor]
