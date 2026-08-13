@@ -20,7 +20,6 @@ config/icon="res://icon.svg"
 
 MovementMode="*res://Scripts/networking/movement_mode.gd"
 GlobalFontManager="*res://Scripts/ui/global_font_manager.gd"
-MusicManager="*res://Scripts/music_manager.gd"
 NetworkManager="*uid://b235pvewnt643"
 NetworkTime="*res://addons/netfox/network-time.gd"
 NetworkTimeSynchronizer="*res://addons/netfox/network-time-synchronizer.gd"
@@ -37,6 +36,7 @@ WindowTiler="*res://addons/netfox.extras/window-tiler.gd"
 NetworkSimulator="*res://addons/netfox.extras/network-simulator.gd"
 MCPRuntime="*uid://cstodc22p4p7g"
 ClientUpdateGate="*res://Scripts/ui/client_update_required_overlay.gd"
+MusicManager="*res://Scripts/music_manager.gd"
 
 [display]
 
@@ -107,6 +107,8 @@ netfox/host="127.0.0.1"
 netfox/port=24566
 netfox/max_clients=50
 network/world_route_ws_urls=PackedStringArray("wss://api.pixelmaniagame.com/ws-a", "wss://api.pixelmaniagame.com/ws-b")
+network/api_base="https://staging-api.pixelmaniagame.com"
+network/ws_url="wss://staging-api.pixelmaniagame.com/ws"
 
 [rendering]
 

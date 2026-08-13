@@ -151,6 +151,20 @@ func setup(world_ref):
 
 
 func _process(delta: float) -> void:
+	# The stalled-entry watchdog must tick whenever we are waiting on the server, but
+	# it used to be driven ONLY from world.gd's _process(), which opens with
+	# "if not in_world: return". On the post-login auto-join path NetworkManager sends
+	# join_world directly, without save_manager.enter_world_by_name, so in_world is
+	# still false and the watchdog never ran: no retry, no timeout, no failure, no
+	# return to the lobby. Any server hiccup therefore parked the player on the loading
+	# overlay at its passive 88% cap FOREVER, with no output anywhere.
+	#
+	# This manager is a Node in the tree whose _process provably runs during loading --
+	# it animates the progress bar and the dots on that very screen -- so drive the
+	# watchdog from here as well. update_timeout() self-throttles on
+	# next_server_retry_msec, so world.gd's existing call staying in place is harmless.
+	update_timeout()
+
 	if world_loading_overlay == null or not is_instance_valid(world_loading_overlay):
 		return
 	if not bool(world_loading_overlay.visible):
@@ -825,16 +839,113 @@ func _defer_finish_for_authoritative_pending(operation_id: int, reason: String) 
 
 func _request_world_ready_snapshot_retry(reason: String) -> bool:
 	var network_manager: Node = _get_network_manager()
+	var restart_sent := false
 	if network_manager != null and network_manager.has_method("request_current_world_entry_snapshot_restart"):
-		var restart_sent := bool(network_manager.call("request_current_world_entry_snapshot_restart", reason))
+		restart_sent = bool(network_manager.call("request_current_world_entry_snapshot_restart", reason))
 		if restart_sent:
 			return true
 
 	var save_manager_value = _get_save_manager_value()
+	var save_retry_sent := false
 	if save_manager_value != null and save_manager_value.has_method("retry_server_world_entry"):
-		return bool(save_manager_value.retry_server_world_entry(reason))
+		save_retry_sent = bool(save_manager_value.retry_server_world_entry(reason))
+		if save_retry_sent:
+			return true
 
+	# Route 3 -- re-send join_world.
+	#
+	# Measured on a real stalled START join: join_request_pending=true with a known
+	# target world, authenticated and connected, but entry_session_id="" and
+	# save_waiting_for_server_world_state=false. Route 1 needs an entry session, which
+	# only exists after join_world_ok; route 2 needs save_manager to be in its
+	# world-entry state, which the post-login auto-join never enters because
+	# NetworkManager issues join_world directly rather than through
+	# save_manager.enter_world_by_name. So both refuse, and the player has no recovery
+	# at all for the one case that actually happens: a join_world that the server never
+	# answered.
+	#
+	# Re-sending it is the correct action there -- the original request produced no
+	# join_world_ok and no rejection, so there is nothing to resume, only to reissue.
+	# Guarded to that exact state: never fires once an entry session exists (route 1
+	# owns that), nor after the entry is active, nor while disconnected.
+	if (
+		network_manager != null
+		and network_manager.has_method("send_join_world")
+		and network_manager.has_method("is_server_session_authenticated")
+		and bool(network_manager.is_server_session_authenticated())
+		and str(network_manager.get("active_world_entry_session_id")) == ""
+		and not bool(network_manager.get("world_entry_active"))
+	):
+		# Capture the target BEFORE cancelling: cancel_active_join_request() clears
+		# active_join_world_name as part of tombstoning the old request.
+		var target_world := str(network_manager.get("active_join_world_name")).strip_edges()
+		if target_world == "":
+			target_world = str(network_manager.get("pending_join_world_name")).strip_edges()
+		if target_world == "" and world != null:
+			target_world = str(world.get("current_world_name")).strip_edges()
+		if target_world != "":
+			# Clears the in-flight request id so send_join_world is not suppressed as a
+			# duplicate by has_incomplete_join_lifecycle_for_world().
+			if network_manager.has_method("cancel_active_join_request"):
+				network_manager.call("cancel_active_join_request")
+			var rejoin_sent := bool(network_manager.call("send_join_world", target_world))
+			print("[world-entry-retry] re-sent join_world world=", target_world, " sent=", rejoin_sent, " reason=", reason)
+			if rejoin_sent:
+				return true
+
+	# Every recovery route declined. Each returns a bare false from several different
+	# preconditions, so "requested_retry=false" on its own says nothing about WHY the
+	# client cannot recover. Print the state the routes actually test, so a single
+	# failed join names the blocking condition instead of requiring another round of
+	# guessing. Always printed: a declined retry is abnormal by definition.
+	print("[world-entry-retry-declined] ", reason, " ", _describe_retry_failure(network_manager, save_manager_value))
 	return false
+
+
+func _describe_retry_failure(network_manager, save_manager_value) -> String:
+	var details: Dictionary = {}
+
+	# Route 1 -- network_manager.request_current_world_entry_snapshot_restart() bails
+	# unless the join reached join_world_ok (world_entry_requires_ready + a live
+	# world_entry_session_id) and send_message() succeeds.
+	if network_manager == null:
+		details["network_manager"] = "missing"
+	else:
+		details["route1_has_method"] = network_manager.has_method("request_current_world_entry_snapshot_restart")
+		details["world_entry_requires_ready"] = bool(network_manager.get("world_entry_requires_ready"))
+		details["entry_session_id"] = str(network_manager.get("active_world_entry_session_id"))
+		details["world_entry_active"] = bool(network_manager.get("world_entry_active"))
+		details["join_request_id"] = str(network_manager.get("active_join_request_id"))
+		details["join_world"] = str(network_manager.get("active_join_world_name"))
+		details["join_request_pending"] = bool(network_manager.get("active_join_request_pending"))
+		details["pending_join_world"] = str(network_manager.get("pending_join_world_name"))
+		details["redirect_pending"] = bool(network_manager.get("world_route_redirect_pending"))
+		if network_manager.has_method("is_server_session_authenticated"):
+			details["authenticated"] = bool(network_manager.is_server_session_authenticated())
+		if network_manager.has_method("is_connected_to_server"):
+			details["connected"] = bool(network_manager.is_connected_to_server())
+
+	# Route 2 -- save_manager.retry_server_world_entry() bails unless it is still
+	# waiting_for_server_world_state and no world apply is in flight.
+	if save_manager_value == null:
+		details["save_manager"] = "missing"
+	else:
+		details["route2_has_method"] = save_manager_value.has_method("retry_server_world_entry")
+		if "waiting_for_server_world_state" in save_manager_value:
+			details["save_waiting_for_server_world_state"] = bool(save_manager_value.get("waiting_for_server_world_state"))
+
+	if world != null:
+		details["applying_network_world_update"] = bool(world.get("applying_network_world_update"))
+		details["in_world"] = bool(world.get("in_world"))
+		details["current_world"] = str(world.get("current_world_name"))
+		details["entry_in_progress"] = bool(world.get_meta("world_entry_in_progress", false))
+		details["bulk_load_in_progress"] = bool(world.get_meta("world_bulk_load_in_progress", false))
+
+	details["loading_stage"] = _get_loading_stage_name()
+	details["server_retry_attempt"] = server_retry_attempt_count
+	return JSON.stringify(details)
+
+
 
 
 func _get_save_manager_value():
@@ -1053,6 +1164,9 @@ func cancel_smooth_world_load():
 	loading_started_msec = 0
 
 
+var applying_world_wait_ticks: int = 0
+
+
 func update_timeout():
 	if not waiting_for_server_state:
 		return
@@ -1067,9 +1181,19 @@ func update_timeout():
 
 	# A server-backed entry intentionally has no local terrain while it waits for
 	# the authoritative snapshot. Never fail open into that empty staging state.
+	# This branch pushes the deadline out indefinitely, so it must never be silent:
+	# a stuck applying_network_world_update flag would otherwise hold the overlay
+	# open forever with no evidence at all.
 	if world != null and bool(world.get("applying_network_world_update")):
 		update_message("Building " + str(world.get("current_world_name")).strip_edges().to_upper() + "...")
 		next_server_retry_msec = now_msec + WORLD_LOADING_TIMEOUT_MSEC
+		applying_world_wait_ticks += 1
+		if applying_world_wait_ticks % 5 == 1:
+			_debug(
+				"Waiting on applying_network_world_update; retry deadline deferred"
+				+ " world=" + str(world.get("current_world_name"))
+				+ " deferrals=" + str(applying_world_wait_ticks)
+			)
 		return
 
 	server_retry_attempt_count += 1
@@ -1294,6 +1418,59 @@ func _record_world_entry_profile_stage(stage: String, extra: Dictionary = {}) ->
 	var network := _get_network_manager()
 	if network != null and network.has_method("record_world_entry_stage"):
 		network.record_world_entry_stage(stage, extra)
+
+
+# Reasons the server sends with a join_world action_rejected that mean "this exact request will
+# NEVER succeed no matter how many times it is retried" -- all four are Landfill-instance-specific
+# (see canPlayerJoinLandfillInstance / requestJoinLandfillRace in server_landfill_event.ts). This
+# is deliberately an allowlist, not a denylist: join_world can also be rejected for reasons that
+# ARE expected to self-heal on retry -- most notably reason=world_route_redirect /
+# world_route_unavailable from ensureWorldRouteForAction in server.ts, which fires routinely right
+# after a server restart while it re-claims Redis ownership of a world it already owns (a fenced
+# claim that succeeds a few seconds later). Treating that as fatal here broke joining EVERY world,
+# not just Landfill -- see the incident this comment is guarding against. When in doubt, leave the
+# reason off this list: worst case the player waits out the existing retry/timeout watchdog like
+# before this hook existed, instead of getting a false "world unavailable" for a world that was
+# about to succeed on its own.
+const TERMINAL_JOIN_WORLD_REJECTION_REASONS := [
+	"instance_not_found",
+	"instance_full",
+	"instance_locked",
+	"event_not_active",
+]
+
+
+# Called by NetworkManager (see handle_action_rejected) when the server explicitly rejects the
+# join_world request this overlay is currently waiting on with one of the reasons above -- e.g.
+# reason=instance_not_found for a Landfill instance that no longer exists on this server process.
+# Before this hook existed there was no path from an action_rejected packet into the loading
+# overlay at all: the overlay would just sit at its passive progress cap until its own
+# timeout/retry watchdog (update_timeout(), WORLD_LOADING_SERVER_RETRY_MAX_ATTEMPTS retries at
+# ~8s each) gave up on its own, roughly 1-2 minutes later, having silently resent the same request
+# that had already been rejected every time. Fail fast instead so the player gets an accurate
+# message and a clean return to the lobby immediately. Returns false (and does nothing, leaving
+# the normal retry/timeout watchdog in charge) for any non-terminal reason, or if there is no
+# loading operation actually in flight right now -- NetworkManager falls back to its normal
+# generic rejection handling in either case.
+func notify_join_world_rejected(message: String, data: Dictionary = {}) -> bool:
+	var stage := int(loading_stage)
+	if stage == LoadingStage.IDLE or stage == LoadingStage.READY or stage == LoadingStage.FAILED:
+		return false
+
+	var reason := str(data.get("reason", "")).strip_edges()
+	if not TERMINAL_JOIN_WORLD_REJECTION_REASONS.has(reason):
+		return false
+
+	var display_message := message.strip_edges()
+	if display_message == "":
+		display_message = "That world is no longer available to join. Returning to the lobby."
+
+	_fail_loading_operation(reason, display_message, {
+		"server_rejected_action": str(data.get("action", "join_world")),
+		"server_rejected_world": str(data.get("world", "")),
+		"server_rejected_reason": reason
+	})
+	return true
 
 
 func _fail_loading_operation(reason: String, message: String, extra: Dictionary = {}) -> void:

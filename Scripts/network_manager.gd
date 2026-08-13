@@ -5260,6 +5260,18 @@ func handle_action_rejected(data: Dictionary) -> void:
 		if save_manager_value != null and save_manager_value.has_method("handle_server_world_entry_rejected"):
 			if bool(save_manager_value.handle_server_world_entry_rejected(data)):
 				return
+	# We already confirmed above (via _is_message_for_active_join_request) that this rejection is
+	# for the join_world request currently in flight -- not a stale one. Previously nothing told
+	# the loading overlay about it: it would just sit at its passive progress cap and keep
+	# silently resending the same already-rejected request until its own retry/timeout watchdog
+	# gave up minutes later (see world_loading_ui_manager.gd's notify_join_world_rejected doc
+	# comment). Fail the overlay immediately instead so the player gets an accurate message and a
+	# clean return to the lobby right away.
+	if normalized_action == "join_world" and world_node != null and "world_loading_ui_manager" in world_node:
+		var loading_ui_value: Variant = world_node.get("world_loading_ui_manager")
+		if loading_ui_value != null and is_instance_valid(loading_ui_value) and loading_ui_value.has_method("notify_join_world_rejected"):
+			if bool(loading_ui_value.notify_join_world_rejected(message, data)):
+				return
 	if normalized_action == "world_block_update":
 		trace_world_block_event("received_action_rejected", data)
 	if normalized_action == "player_position" and not MovementMode.is_websocket():
