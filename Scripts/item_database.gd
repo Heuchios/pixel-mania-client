@@ -6278,6 +6278,32 @@ const ITEMS = {
 		},
 		"order": 67
 	},
+"wizards_staff": {
+		"category": "tool",
+		"display_name": "Wizard's Staff",
+		"rarity": "legendary",
+		"texture": "wizards_staff_1",
+		"inventory_icon": "wizards_staff_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"hand_item": true,
+		"punch_animation": "punch_sword",
+		"animation_fps": 6.0,
+		"hand_item_animations": {
+			"idle": {
+				"frames": [
+					"wizards_staff_1",
+					"wizards_staff_2",
+					"wizards_staff_3",
+					"wizards_staff_4"
+				],
+				"fps": 6.0,
+				"loop": true
+			}
+		},
+		"order": 68
+	},
 "neptune_trident": {
 		"category": "tool",
 		"display_name": "Neptune Trident",
