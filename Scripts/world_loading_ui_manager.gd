@@ -29,6 +29,10 @@ const WORLD_LOADING_PASSIVE_PROGRESS_PER_SECOND := 7.5
 const WORLD_LOADING_PROGRESS_APPROACH_SPEED := 42.0
 const DEBUG_WORLD_LOADING_UI := true
 const WORLD_LOADING_CANVAS_LAYER := 4096
+# Must match world_menu_ui.gd's LOBBY_SCENE and save_manager.gd's LOBBY_SCENE_PATH. Only
+# used by the last-resort fallback in _cleanup_failed_world_entry() when save_manager is
+# unavailable entirely.
+const LOBBY_SCENE_PATH := "res://Scenes/ui/lobby/LobbyScene.tscn"
 
 # Exact loading scene path used by world entry.
 # Your scene must be saved here:
@@ -1521,6 +1525,37 @@ func _cleanup_failed_world_entry(reason: String, message: String) -> void:
 		if "in_world" in world:
 			world.set("in_world", false)
 	cancel_smooth_world_load()
+
+	# This fallback runs only when save_manager could not handle the failure at all. It used
+	# to stop here, having just hidden the loading overlay and cleared in_world without
+	# navigating anywhere -- the same dead end that produced the grey screen on the main path.
+	# Always leave for the lobby.
+	#
+	# Prefer save_manager's authoritative recovery, but ONLY when it actually has a world to
+	# act on: handle_client_world_loading_failed() returns false precisely when its world
+	# reference is null, and return_to_lobby_after_failed_world_entry() bails out immediately
+	# on that same condition. Delegating blindly would therefore no-op in the exact scenario
+	# this fallback exists for, so check first and otherwise change scene here directly.
+	var save_manager_has_world := (
+		save_manager_value != null
+		and save_manager_value.has_method("return_to_lobby_after_failed_world_entry")
+		and save_manager_value.get("world") != null
+	)
+	if save_manager_has_world:
+		save_manager_value.return_to_lobby_after_failed_world_entry("loading_ui_fallback:" + str(reason))
+		return
+
+	if world == null or not is_instance_valid(world):
+		return
+	var scene_tree: SceneTree = world.get_tree()
+	if scene_tree == null:
+		return
+	var change_error: int = scene_tree.change_scene_to_file(LOBBY_SCENE_PATH)
+	if change_error != OK:
+		push_error(
+			"[WorldEntryRecovery] Loading-UI fallback could not change to the lobby scene: "
+			+ error_string(change_error)
+		)
 
 
 func _finalize_loading_operation(operation_id: int, debug_message: String) -> void:

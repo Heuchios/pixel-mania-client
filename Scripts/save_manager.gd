@@ -23,6 +23,10 @@ var network_player_state_request_in_flight := false
 var network_player_state_request_username := ""
 var network_player_state_request_started_ms := 0
 var world_entry_final_entrance_snap_id := 0
+# Re-entrancy guard for return_to_lobby_after_failed_world_entry(). Several failure
+# sources can fire for one bad join (a server rejection AND the client-side retry ladder
+# timing out, for example); only the first may drive the exit.
+var returning_to_lobby_after_failed_entry := false
 
 # Turn this on only when you want console proof that saving is happening.
 # Leaving it false avoids printing "World saved." every second.
@@ -30,6 +34,16 @@ var print_save_messages := false
 const WORLD_ENTRY_FINAL_ENTRANCE_SNAP_FRAMES := 2
 const PLAYER_SAVE_FOLDER = "user://players/"
 const LOBBY_PROFILE_PATH = "user://pixelmania_profile.cfg"
+# Must match world_menu_ui.gd's LOBBY_SCENE. Only used by the last-resort direct scene
+# change in return_to_lobby_after_failed_world_entry(); the normal exit still routes
+# through world_menu_ui.return_to_lobby_menu().
+const LOBBY_SCENE_PATH = "res://Scenes/ui/lobby/LobbyScene.tscn"
+# How long return_to_lobby_after_failed_world_entry() waits before confirming the lobby
+# actually loaded. Deliberately longer than WORLD_EXIT_BLOCK_UPDATE_DRAIN_TIMEOUT_MS (1800)
+# below: a user-initiated return_to_lobby_menu(true) that is already parked awaiting that
+# drain must be allowed to finish and save, rather than being pre-empted by this watchdog.
+# Still short enough that a genuinely stuck client is not left staring at nothing.
+const LOBBY_RETURN_VERIFY_SECONDS := 2.5
 const LEGACY_PLAYER_MIGRATION_MARKER = "user://players/_legacy_player_data_migrated.txt"
 const LEGACY_SERVER_INVENTORY_IMPORT_MARKER_PREFIX = "user://players/_legacy_server_inventory_import_confirmed_"
 const LEGACY_SERVER_INVENTORY_IMPORT_MAX_ATTEMPTS := 3
@@ -794,7 +808,210 @@ func retry_server_world_entry(reason: String = "world_state_timeout") -> bool:
 	return sent
 
 
+# ============================================================
+# FAILED WORLD ENTRY -> LOBBY RECOVERY
+# ============================================================
+# The single authoritative exit for every unsuccessful world entry.
+#
+# Why this exists (this was the grey-screen bug): handle_server_world_entry_rejected()
+# and handle_client_world_loading_failed() below both used to end with a bare
+#
+#     if world.world_menu_ui != null and world.world_menu_ui.has_method("return_to_lobby_menu"):
+#         world.world_menu_ui.call_deferred("return_to_lobby_menu", false)
+#     elif world.world_menu_ui != null and world.world_menu_ui.has_method("open_main_menu"):
+#         world.world_menu_ui.call_deferred("open_main_menu")
+#
+# with NO else branch. world.world_menu_ui is null for the entire duration of a join that
+# never succeeds: world.gd's _ready() never calls setup_world_menu_ui(), and the only
+# thing that builds it lazily is start_optional_world_ui_warmup(), whose sole caller is
+# _finish_world_entry_noncritical_work() -- i.e. it only ever runs AFTER a world entry has
+# already completed. So on a failed join both branches were silently skipped and nothing
+# navigated anywhere, while the lines immediately above had already set in_world = false and
+# called set_gameplay_world_active(false) (hides the player, every block, background block
+# and dropped item), set_gameplay_ui_visible(false) (hides every ui_layer child) and
+# cancel_smooth_world_load() (hides the loading overlay). main.tscn has no ColorRect or
+# authored background and its TileMapLayers were still empty because world data never
+# arrived, so the viewport fell through to the project's default clear colour -- the grey
+# screen -- with the player permanently stranded there.
+#
+# Build the world menu on demand (the same lazy pattern world.gd's
+# return_to_lobby_from_landfill_race() already uses correctly) so the normal,
+# re-entrancy-guarded return_to_lobby_menu() path runs: it settles pending authoritative
+# block edits, persists lobby profile state and only then changes scene. Reusing it keeps one
+# exit path rather than a second half-complete implementation. Only if that genuinely cannot
+# be built do we fall back to changing scene directly, so no UI construction failure can
+# strand the player again.
+#
+# Note it will NOT send leave_world for us: world_menu_ui._notify_network_leave_for_lobby()
+# is gated on world.in_world, and both callers clear that before getting here. Both therefore
+# call notify_network_leave_world() themselves first, while the world name is still known.
+#
+# Safe to call twice: the guard makes every call after the first a no-op, and
+# return_to_lobby_menu() carries its own return_to_lobby_menu_in_progress guard as well.
+func return_to_lobby_after_failed_world_entry(reason: String = "world_entry_failed") -> void:
+	if world == null or not is_instance_valid(world):
+		return
+	if returning_to_lobby_after_failed_entry:
+		return
+	returning_to_lobby_after_failed_entry = true
+
+	debug_action_position_flow("return_to_lobby_after_failed_world_entry", {
+		"reason": reason,
+		"world": str(world.current_world_name),
+		"had_world_menu_ui": world.world_menu_ui != null
+	})
+
+	# Drop the standing "please join this world" intent BEFORE the world menu is built.
+	# Two reasons, both load-bearing:
+	#  1. world_menu_ui.setup() ends with call_deferred("_try_auto_enter_pending_lobby_world"),
+	#     which immediately re-enters whatever pending join it can find. Building the menu
+	#     here with the intent still set would re-join the world we just failed to enter and
+	#     fail again -- an endless join/fail loop instead of a return to the lobby.
+	#  2. pending_join_enabled also drives NetworkManager.handle_account_auth_ok()'s
+	#     auto-resend after a reconnect, so leaving it set means a later reconnect silently
+	#     retries a join the player has already been told failed.
+	# cancel_active_join_request() does NOT cover this -- it only invalidates the in-flight
+	# request id, not the standing intent. The player is being returned to the lobby exactly
+	# so they can choose again.
+	_clear_pending_join_after_failed_world_entry()
+
+	if world.world_menu_ui == null and world.has_method("setup_world_menu_ui"):
+		world.setup_world_menu_ui()
+
+	if world.world_menu_ui != null and is_instance_valid(world.world_menu_ui):
+		# The menu only needs to EXIST so its return_to_lobby_menu() can run. Keep it
+		# hidden: set_gameplay_ui_visible(false) has already hidden every other ui_layer
+		# child by this point, so showing a freshly built menu would flash it for a frame.
+		world.world_menu_ui.visible = false
+		if world.world_menu_ui.has_method("return_to_lobby_menu"):
+			world.world_menu_ui.call_deferred("return_to_lobby_menu", false)
+			_verify_lobby_return_took_effect()
+			return
+
+	push_warning(
+		"[WorldEntryRecovery] World menu UI unavailable (reason=" + str(reason)
+		+ "); changing to the lobby scene directly."
+	)
+	call_deferred("_change_scene_to_lobby_directly")
+
+
+func _verify_lobby_return_took_effect() -> void:
+	# world_menu_ui.return_to_lobby_menu() ends in change_scene_to_file() but discards the
+	# returned Error, and it latches its own return_to_lobby_menu_in_progress guard before
+	# getting there. So if that scene load ever fails, BOTH that guard and ours stay latched
+	# and every later failure source no-ops -- stranding the player on the grey screen exactly
+	# as the original bug did. Nothing else would notice. Re-check shortly afterwards and
+	# force the change ourselves if we are somehow still in the world scene.
+	#
+	# On the normal path the scene change frees the world (and this manager with it), so the
+	# is_instance_valid() checks below simply end the coroutine.
+	if world == null or not is_instance_valid(world):
+		return
+	var scene_tree: SceneTree = world.get_tree()
+	if scene_tree == null:
+		return
+
+	# Connect rather than await. On the normal path the scene change frees this manager (it
+	# is a child of the world node) while the SceneTreeTimer belongs to the SceneTree and
+	# outlives it, so awaiting would resume into a freed instance and print
+	# "Resumed function ... after await, but class instance is gone" on EVERY successful
+	# recovery -- harmless, but it reads as a real error in the log. A signal connection is
+	# severed automatically when the receiver is freed, so once the lobby is up this check
+	# simply never runs.
+	var verify_timer := scene_tree.create_timer(LOBBY_RETURN_VERIFY_SECONDS)
+	verify_timer.timeout.connect(_on_lobby_return_verify_timeout, CONNECT_ONE_SHOT)
+
+
+func _on_lobby_return_verify_timeout() -> void:
+	if world == null or not is_instance_valid(world) or not world.is_inside_tree():
+		return
+
+	push_warning(
+		"[WorldEntryRecovery] Lobby return did not take effect within "
+		+ str(LOBBY_RETURN_VERIFY_SECONDS) + "s; forcing a direct scene change."
+	)
+	# Un-latch first: _change_scene_to_lobby_directly() re-latches on failure only, and a
+	# spent-but-ineffective guard must never be what keeps the player stuck.
+	returning_to_lobby_after_failed_entry = false
+	_change_scene_to_lobby_directly()
+
+
+# Stashed in the lobby profile config rather than shown here: show_notification() would render
+# into ui_layer children that set_gameplay_ui_visible(false) just hid and that the scene change
+# frees in the same frame, so the player never actually sees it. LobbyScene reads and clears
+# this on _ready() and shows it in its own status label -- i.e. cleanup, then lobby restored,
+# then the reason, in that order.
+func _store_world_join_failure_message_for_lobby(message: String) -> void:
+	var clean_message := str(message).strip_edges()
+	if clean_message == "":
+		return
+	var cfg := ConfigFile.new()
+	cfg.load(LOBBY_PROFILE_PATH)
+	cfg.set_value("world_join_failure", "message", clean_message)
+	var save_error := cfg.save(LOBBY_PROFILE_PATH)
+	if save_error != OK:
+		push_warning(
+			"[WorldEntryRecovery] Could not store the join failure message: "
+			+ error_string(save_error)
+		)
+
+
+func _clear_pending_join_after_failed_world_entry() -> void:
+	if world != null and is_instance_valid(world):
+		var network = world.get_node_or_null("/root/NetworkManager")
+		# consume_pending_join() clears unconditionally; clear_completed_pending_join_for_world()
+		# deliberately no-ops when the names disagree, which is not what we want here.
+		if network != null and network.has_method("consume_pending_join"):
+			network.consume_pending_join()
+
+	# world_menu_ui._try_auto_enter_pending_lobby_world() falls back to reading this config
+	# section whenever NetworkManager has no in-memory pending join, and login_screen.gd,
+	# lobby_menu.gd and world_menu_ui.gd all write enabled=true into it -- so clearing only
+	# the in-memory copy would still leave an auto-rejoin armed on disk.
+	var cfg := ConfigFile.new()
+	cfg.load(LOBBY_PROFILE_PATH)
+	cfg.set_value("pending_join", "enabled", false)
+	cfg.set_value("pending_join", "world_name", "")
+	cfg.set_value("pending_join", "profile_name", "")
+	var save_error := cfg.save(LOBBY_PROFILE_PATH)
+	if save_error != OK:
+		push_warning(
+			"[WorldEntryRecovery] Could not clear the pending-join config: "
+			+ error_string(save_error)
+		)
+
+
+func _change_scene_to_lobby_directly() -> void:
+	if world == null or not is_instance_valid(world):
+		return
+	var scene_tree: SceneTree = world.get_tree()
+	if scene_tree == null:
+		return
+	var change_error: int = scene_tree.change_scene_to_file(LOBBY_SCENE_PATH)
+	if change_error != OK:
+		# Clear the guard so a later failure (or the retry ladder) can try again rather
+		# than being permanently suppressed by a one-off scene-change error.
+		returning_to_lobby_after_failed_entry = false
+		push_error(
+			"[WorldEntryRecovery] Could not change to the lobby scene: "
+			+ error_string(change_error)
+		)
+
+
 func handle_server_world_entry_rejected(data: Dictionary) -> bool:
+	# DELIBERATELY still gated on waiting_for_server_world_state, which is set only by
+	# enter_world_by_name() and begin_server_door_world_entry(). It is tempting to relax this
+	# to "any world entry is in flight" so the lobby -> main.tscn auto-join path (where
+	# NetworkManager sends join_world directly and this flag stays false) gets a faster exit
+	# than waiting out the retry ladder. Do not: this function's reason handling is a
+	# DENYLIST -- anything not in retryable_reasons below is treated as terminal. Making it
+	# the first responder on that path would turn self-healing rejections into hard ejections,
+	# most importantly world_route_redirect / world_route_unavailable, which fire routinely
+	# right after a server restart and which handle_world_route_redirect() declines to
+	# intercept whenever the redirect target is the host we are already on. That is the exact
+	# regression world_loading_ui_manager.gd's TERMINAL_JOIN_WORLD_REJECTION_REASONS comment
+	# records as having "broke joining EVERY world". That file owns retryability for this
+	# path via an ALLOWLIST and must keep it; returning false here hands it over correctly.
 	if world == null or not waiting_for_server_world_state:
 		return false
 
@@ -820,6 +1037,15 @@ func handle_server_world_entry_rejected(data: Dictionary) -> bool:
 			world.update_smooth_world_load_message(message + " Retrying...")
 		return true
 
+	# Release the entry server-side while the world name is still known and BEFORE in_world is
+	# cleared, exactly as handle_client_world_loading_failed() does. The lobby exit below
+	# cannot do it for us: world_menu_ui._notify_network_leave_for_lobby() is gated on
+	# in_world, which is false by the time it runs. Without this, a rejected door transition
+	# from world A to world B navigates to the lobby while the server still holds presence in
+	# A, and the server keeps this connection's provisional entry open -- which makes every
+	# later join_world on the same connection fail with "A world is already loading."
+	notify_network_leave_world(str(world.current_world_name).strip_edges())
+
 	waiting_for_server_world_state = false
 	world_entry_pending_announce = false
 	world.set_meta("world_entry_in_progress", false)
@@ -836,10 +1062,10 @@ func handle_server_world_entry_rejected(data: Dictionary) -> bool:
 	if network != null and network.has_method("cancel_active_join_request"):
 		network.cancel_active_join_request()
 
-	if world.world_menu_ui != null and world.world_menu_ui.has_method("return_to_lobby_menu"):
-		world.world_menu_ui.call_deferred("return_to_lobby_menu", false)
-	elif world.world_menu_ui != null and world.world_menu_ui.has_method("open_main_menu"):
-		world.world_menu_ui.call_deferred("open_main_menu")
+	var rejection_reason: String = reason if reason != "" else "world_entry_rejected"
+	var rejection_message: String = message if message != "" else "Could not enter that world."
+	_store_world_join_failure_message_for_lobby(rejection_message)
+	return_to_lobby_after_failed_world_entry("server_rejected:" + rejection_reason)
 	return true
 
 
@@ -885,13 +1111,14 @@ func handle_client_world_loading_failed(reason: String, message: String) -> bool
 	if world.has_method("cancel_smooth_world_load"):
 		world.cancel_smooth_world_load()
 
-	if world.world_menu_ui != null and world.world_menu_ui.has_method("return_to_lobby_menu"):
-		world.world_menu_ui.call_deferred("return_to_lobby_menu", false)
-	elif world.world_menu_ui != null and world.world_menu_ui.has_method("open_main_menu"):
-		world.world_menu_ui.call_deferred("open_main_menu")
-
-	if world.has_method("show_notification"):
-		world.call_deferred("show_notification", clean_message)
+	# Hand the reason to the lobby rather than calling world.show_notification() here. That
+	# used to be a deferred call into ui_layer children which set_gameplay_ui_visible(false)
+	# had just hidden and which the scene change frees in the same frame, so the player never
+	# got a single rendered frame of it -- the failure looked like an unexplained bounce.
+	# Storing it means cleanup -> lobby restored -> reason shown, and the message cannot
+	# delay or block the exit.
+	_store_world_join_failure_message_for_lobby(clean_message)
+	return_to_lobby_after_failed_world_entry("client_load_failed:" + clean_reason)
 	return true
 
 

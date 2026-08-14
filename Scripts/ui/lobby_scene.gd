@@ -106,6 +106,30 @@ func _ready() -> void:
 	_connect_landfill_feed()
 	_start_landfill_status_timer()
 	_request_landfill_status_refresh()
+	# Last, so it wins the status label over anything the setup above wrote: if we got here
+	# because a world join failed, this is where the player finds out why.
+	_show_pending_world_join_failure_message()
+
+
+# A failed world entry cannot show its own error -- by the time save_manager knows the join
+# failed it has already hidden every ui_layer child, and the scene change frees them in the
+# same frame, so a notification there gets zero rendered frames. save_manager stashes the
+# reason in the profile config instead (_store_world_join_failure_message_for_lobby) and we
+# surface it here, once the lobby is actually back up. Read-once: cleared immediately so the
+# message never reappears on a later, unrelated visit to the lobby.
+func _show_pending_world_join_failure_message() -> void:
+	var cfg := ConfigFile.new()
+	if cfg.load(PROFILE_PATH) != OK:
+		return
+
+	var stored_message := str(cfg.get_value("world_join_failure", "message", "")).strip_edges()
+	if stored_message == "":
+		return
+
+	cfg.set_value("world_join_failure", "message", "")
+	cfg.save(PROFILE_PATH)
+
+	_set_input_status(stored_message.to_upper())
 
 
 func _process(delta: float) -> void:
