@@ -6252,6 +6252,32 @@ const ITEMS = {
 		},
 		"order": 64
 	},
+"fire_staff": {
+		"category": "tool",
+		"display_name": "Fire Staff",
+		"rarity": "legendary",
+		"texture": "fire_staff_1",
+		"inventory_icon": "fire_staff_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"equipment_slot": "hand",
+		"hand_item": true,
+		"punch_animation": "punch_sword",
+		"animation_fps": 6.0,
+		"hand_item_animations": {
+			"idle": {
+				"frames": [
+					"fire_staff_1",
+					"fire_staff_2",
+					"fire_staff_3",
+					"fire_staff_4"
+				],
+				"fps": 6.0,
+				"loop": true
+			}
+		},
+		"order": 67
+	},
 "neptune_trident": {
 		"category": "tool",
 		"display_name": "Neptune Trident",
