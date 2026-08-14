@@ -3383,6 +3383,15 @@ func apply_remote_player_action_animation(remote_id: String, animation_state: St
 	remote_player.set_meta("remote_action_animation_state", animation_state)
 	remote_player.set_meta("remote_action_animation_until_msec", Time.get_ticks_msec() + maxi(1, duration_msec))
 	remote_player.set_meta("animation_state", animation_state)
+	if animation_state == "punch":
+		# Mirrors player.gd/play_player_punch_animation()'s LOCAL-only
+		# face_punch_until_msec set. Without this, the body/arm swing already
+		# reads as a punch (via remote_action_animation_state above) but the
+		# face never shows the punch expression, since
+		# player_animation_manager.gd's get_face_expression_animation_name()
+		# reads this exact meta and it was previously only ever set on
+		# world.player -- never on a remote_player node.
+		remote_player.set_meta("face_punch_until_msec", Time.get_ticks_msec() + PUNCH_FACE_EXPRESSION_TIME_MSEC)
 	if previous_remote_animation_state != animation_state:
 		remote_player.set_meta("animation_phase", 0.0)
 		maybe_spawn_remote_ant_sword_punch_slash(remote_player, previous_remote_animation_state, animation_state)
@@ -3408,6 +3417,35 @@ func play_remote_player_place_animation(data: Dictionary) -> void:
 	if player_data is Dictionary and player_data.has("facing"):
 		facing = _safe_int(player_data.get("facing", facing), facing, -1, 1)
 	apply_remote_player_action_animation(remote_id, "place_animation", facing, PLACE_ANIMATION_TIME_MSEC)
+
+
+# Mirrors play_remote_player_place_animation() above -- world_state_sync_manager.gd
+# already called world.play_remote_player_place_animation() for action == "place" network
+# block updates, but had no equivalent for action == "break", so breaking a block never
+# played the punch/break swing animation (or its face expression, see
+# apply_remote_player_action_animation) on any OTHER client watching that player.
+# Breaking uses the same "punch" animation family this game already uses for attacking
+# another player (get_current_player_punch_animation_name()/play_player_punch_animation()
+# locally), so this reuses that same "punch" remote action-animation state rather than
+# inventing a separate one.
+func play_remote_player_break_animation(data: Dictionary) -> void:
+	if not MovementMode.is_websocket() or world == null:
+		return
+	var remote_id := resolve_remote_attacker_id_from_punch_payload(data)
+	if remote_id == "":
+		return
+	var remote_player = remote_players.get(remote_id, null)
+	if remote_player == null or not is_instance_valid(remote_player):
+		return
+	var facing := int(remote_player.get_meta("facing", 1))
+	if data.has("facing"):
+		facing = _safe_int(data.get("facing", facing), facing, -1, 1)
+	elif data.has("actor_facing"):
+		facing = _safe_int(data.get("actor_facing", facing), facing, -1, 1)
+	var player_data = data.get("player_data", {})
+	if player_data is Dictionary and player_data.has("facing"):
+		facing = _safe_int(player_data.get("facing", facing), facing, -1, 1)
+	apply_remote_player_action_animation(remote_id, "punch", facing)
 
 
 func is_local_player_punch_target(data: Dictionary) -> bool:

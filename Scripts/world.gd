@@ -3235,6 +3235,11 @@ func play_remote_player_place_animation(data: Dictionary) -> void:
 	if player_manager != null and player_manager.has_method("play_remote_player_place_animation"):
 		player_manager.play_remote_player_place_animation(data)
 
+
+func play_remote_player_break_animation(data: Dictionary) -> void:
+	if player_manager != null and player_manager.has_method("play_remote_player_break_animation"):
+		player_manager.play_remote_player_break_animation(data)
+
 func update_block_damage_recovery(delta):
 	if block_manager != null and block_manager.has_method("update_block_damage_recovery"):
 		block_manager.update_block_damage_recovery(delta)

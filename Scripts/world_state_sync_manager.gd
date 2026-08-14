@@ -1957,9 +1957,18 @@ func apply_network_block_update(data: Dictionary):
 
 	var apply_instant_death := _block_update_targets_local_player_for_instant_death(data)
 	world.applying_network_world_update = old_flag
-	if action == "place" and not is_bulk_network_update and not is_local_confirmed_update and _has_network_actor(data):
-		if world.has_method("play_remote_player_place_animation"):
-			world.play_remote_player_place_animation(data)
+	if not is_bulk_network_update and not is_local_confirmed_update and _has_network_actor(data):
+		if action == "place":
+			if world.has_method("play_remote_player_place_animation"):
+				world.play_remote_player_place_animation(data)
+		elif action == "break":
+			# Same idea as the "place" branch above -- lets any OTHER client watching
+			# this player see the punch/break swing (and its face expression) when
+			# they break a block, not just when they place one. See
+			# player_manager.gd::play_remote_player_break_animation() for why this
+			# reuses the "punch" animation state.
+			if world.has_method("play_remote_player_break_animation"):
+				world.play_remote_player_break_animation(data)
 	if apply_instant_death:
 		_apply_block_update_instant_death_if_targeted(data, true)
 	if not is_bulk_network_update and not _is_world_bulk_load_active() and world.has_method("refresh_area_lock_highlight_overlay"):
@@ -2161,6 +2170,8 @@ func apply_network_world_interaction_update(data: Dictionary):
 		var state_payload = normalize_vending_state_payload(data, vend_grid_pos)
 		world.vending_states[vend_grid_pos] = state_payload
 		world.update_vending_machine_preview(vend_grid_pos)
+		if world.has_method("update_vending_machine_visual"):
+			world.update_vending_machine_visual(vend_grid_pos)
 		if world.vending_ui != null and world.vending_ui.has_method("handle_vend_state"):
 			world.vending_ui.handle_vend_state(state_payload)
 
