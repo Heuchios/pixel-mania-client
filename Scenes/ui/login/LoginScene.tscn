@@ -21,7 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://pyw7s5lcdhmt" path="res://Assets/ui/green_button_pressed_90x24.png" id="20_ox2yu"]
 [ext_resource type="Texture2D" uid="uid://opqgsn2jk7ie" path="res://Assets/ui/green_button_hover_90x24.png" id="21_ui2s7"]
 [ext_resource type="Texture2D" uid="uid://d1n2gwvwc6eay" path="res://Assets/ui/red_button_normal_90x24.png" id="22_0axv6"]
-[ext_resource type="AudioStream" uid="uid://dp1j3cf0ac7wf" path="res://Assets/sounds/login.wav" id="23_login_sound"]
+[ext_resource type="AudioStream" uid="uid://b2081fvdx1xwo" path="res://Assets/sounds/login.wav" id="23_login_sound"]
 [ext_resource type="Texture2D" uid="uid://b7ngun3bstbwq" path="res://Assets/ui/red_button_pressed_90x24.png" id="23_ox2yu"]
 [ext_resource type="Texture2D" uid="uid://u2iiji1cp4cs" path="res://Assets/ui/red_button_hover_90x24.png" id="24_ui2s7"]
 [ext_resource type="Script" uid="uid://ca4fq8loi3owy" path="res://Scripts/ui/custom_icon_check_box.gd" id="27_custom_checkbox"]
@@ -207,6 +207,77 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 18
 text = "Server Online"
 vertical_alignment = 1
+
+[node name="NewsPanel" type="Control" parent="." unique_id=501000001]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -664.0
+offset_top = -296.0
+offset_right = -284.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Skin" type="NinePatchRect" parent="NewsPanel" unique_id=501000002]
+modulate = Color(1, 1, 1, 0.46)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("7_0axv6")
+patch_margin_left = 36
+patch_margin_top = 36
+patch_margin_right = 36
+patch_margin_bottom = 36
+
+[node name="TitleLabel" type="Label" parent="NewsPanel" unique_id=501000003]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 356.0
+offset_bottom = 58.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 26
+text = "NEWS"
+vertical_alignment = 1
+
+[node name="NewsScroll" type="ScrollContainer" parent="NewsPanel" unique_id=501000004]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 66.0
+offset_right = 360.0
+offset_bottom = 576.0
+horizontal_scroll_mode = 0
+
+[node name="NewsList" type="VBoxContainer" parent="NewsPanel/NewsScroll" unique_id=501000005]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="EmptyNewsLabel" type="Label" parent="NewsPanel" unique_id=501000006]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 260.0
+offset_right = 360.0
+offset_bottom = 320.0
+theme_override_colors/font_color = Color(0.82, 0.9, 1.0, 0.86)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "Loading news..."
 
 [node name="LoginPanel" type="Control" parent="." unique_id=1108261510]
 layout_mode = 1

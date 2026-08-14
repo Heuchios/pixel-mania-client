@@ -17,6 +17,10 @@ const STARRY_NIGHT_LAYERS := [
 const AccountManagerScript = preload("res://Scripts/account_manager.gd")
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 const WorldScenePreloader = preload("res://Scripts/world_scene_preloader.gd")
+const NEWS_API_PATH := "/news"
+const NEWS_FALLBACK_API_BASE := "https://api.pixelmaniagame.com"
+const NEWS_REQUEST_TIMEOUT_SECONDS := 8.0
+const NEWS_MAX_ENTRIES := 20
 
 var parallax_background: Control
 var parallax_layers: Array = []
@@ -29,6 +33,8 @@ var message_label: Label
 var server_status_panel: Control
 var server_status_dot: Panel
 var server_status_label: Label
+var news_list_root: VBoxContainer
+var empty_news_label: Label
 var account_manager = null
 var profile_path: String = PROFILE_PATH
 var saved_session_username := ""
@@ -67,6 +73,7 @@ func _ready() -> void:
 	_update_server_status_indicator(_is_network_connected(_get_network_manager()))
 	_show_network_login_notice()
 	call_deferred("_try_enter_authenticated_netfox_launch_world")
+	call_deferred("_fetch_login_news")
 
 
 func _try_custom_movement_test_redirect() -> bool:
@@ -295,6 +302,11 @@ func _bind_login_scene_ui() -> bool:
 	server_status_panel = get_node_or_null("ServerStatusPill") as Control
 	server_status_dot = get_node_or_null("ServerStatusPill/StatusDot") as Panel
 	server_status_label = get_node_or_null("ServerStatusPill/StatusLabel") as Label
+	# News panel is optional -- an older/modified LoginScene without it should still let
+	# players log in, so these are looked up softly rather than added to the required-node
+	# `missing` list below.
+	news_list_root = get_node_or_null("NewsPanel/NewsScroll/NewsList") as VBoxContainer
+	empty_news_label = get_node_or_null("NewsPanel/EmptyNewsLabel") as Label
 
 	var register_button := get_node_or_null("LoginPanel/Form/RegisterButton") as Button
 	var sign_button := get_node_or_null("LoginPanel/Form/SignOnButton") as Button
@@ -401,6 +413,133 @@ func _update_server_status_indicator(is_online: bool) -> void:
 	server_status_label.text = "Server Online" if is_online else "Server Offline"
 	server_status_label.add_theme_color_override("font_color", color)
 	server_status_dot.add_theme_stylebox_override("panel", _status_dot_style(color))
+
+
+# ---- News panel ----
+# Fetches GET <api-base>/news from the server (see server_phase11a_runtime.ts) and renders
+# the returned entries into NewsPanel/NewsScroll/NewsList. The server reads its news.json
+# fresh on every request, so editing that file on the server updates what players see here
+# with no client rebuild and no server restart required.
+
+func _get_news_api_base() -> String:
+	var network = _get_network_manager()
+	if network != null and "active_api_base" in network:
+		var configured_base := str(network.get("active_api_base")).strip_edges()
+		if configured_base != "":
+			return configured_base
+	return NEWS_FALLBACK_API_BASE
+
+
+func _fetch_login_news() -> void:
+	if news_list_root == null:
+		return
+
+	if empty_news_label != null:
+		empty_news_label.visible = true
+		empty_news_label.text = "Loading news..."
+
+	var api_base := _get_news_api_base()
+	var url := api_base + NEWS_API_PATH
+
+	var request := HTTPRequest.new()
+	request.name = "LoginNewsRequest"
+	request.timeout = NEWS_REQUEST_TIMEOUT_SECONDS
+	add_child(request)
+
+	var error := request.request(url, PackedStringArray(), HTTPClient.METHOD_GET)
+	if error != OK:
+		request.queue_free()
+		push_warning("[LoginNews] Could not start news request. error=%s" % str(error))
+		_render_login_news([])
+		return
+
+	var response = await request.request_completed
+	if not is_instance_valid(request):
+		return
+	request.queue_free()
+
+	var response_code := 0
+	var body := PackedByteArray()
+	if response is Array and response.size() >= 4:
+		response_code = int(response[1])
+		body = response[3]
+
+	if response_code != 200:
+		push_warning("[LoginNews] News request failed. status=%d" % response_code)
+		_render_login_news([])
+		return
+
+	var parsed = JSON.parse_string(body.get_string_from_utf8())
+	if not (parsed is Dictionary) or not bool(parsed.get("ok", false)):
+		push_warning("[LoginNews] News response was rejected or invalid.")
+		_render_login_news([])
+		return
+
+	var entries: Array = parsed.get("entries", [])
+	if not (entries is Array):
+		entries = []
+	_render_login_news(entries)
+
+
+func _render_login_news(entries: Array) -> void:
+	if news_list_root == null:
+		return
+
+	for child in news_list_root.get_children():
+		child.queue_free()
+
+	if entries.is_empty():
+		if empty_news_label != null:
+			empty_news_label.visible = true
+			empty_news_label.text = "No news yet."
+		return
+
+	if empty_news_label != null:
+		empty_news_label.visible = false
+
+	for raw_entry in entries.slice(0, NEWS_MAX_ENTRIES):
+		if not (raw_entry is Dictionary):
+			continue
+		_create_news_entry_row(raw_entry)
+
+
+func _create_news_entry_row(entry: Dictionary) -> void:
+	var date_text := str(entry.get("date", "")).strip_edges()
+	var title_text := str(entry.get("title", "")).strip_edges()
+	var body_text := str(entry.get("body", "")).strip_edges()
+	if title_text == "" and body_text == "":
+		return
+
+	var row := VBoxContainer.new()
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_theme_constant_override("separation", 4)
+	news_list_root.add_child(row)
+
+	if title_text != "" or date_text != "":
+		var header := Label.new()
+		header.text = "[%s] %s" % [date_text, title_text] if date_text != "" else title_text
+		header.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		header.add_theme_color_override("font_color", Color(1.0, 0.86, 0.42, 1.0))
+		header.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 1))
+		header.add_theme_constant_override("shadow_offset_x", 2)
+		header.add_theme_constant_override("shadow_offset_y", 2)
+		header.add_theme_font_size_override("font_size", 15)
+		row.add_child(header)
+
+	if body_text != "":
+		var body_label := Label.new()
+		body_label.text = body_text
+		body_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		body_label.add_theme_color_override("font_color", Color(0.92, 0.96, 1.0, 0.92))
+		body_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 1))
+		body_label.add_theme_constant_override("shadow_offset_x", 1)
+		body_label.add_theme_constant_override("shadow_offset_y", 1)
+		body_label.add_theme_font_size_override("font_size", 13)
+		row.add_child(body_label)
+
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(0, 4)
+	row.add_child(spacer)
 
 
 func _layout_parallax_background() -> void:
