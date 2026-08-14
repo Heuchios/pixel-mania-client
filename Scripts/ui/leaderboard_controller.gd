@@ -49,14 +49,24 @@ var leaderboard_request_id := ""
 var leaderboard_loading := false
 var leaderboard_error := ""
 
+# Whatever LeaderboardScene.tscn was authored with, captured at build time. The live tab
+# restores these rather than hardcoding strings here, so editing the title/badge/subtitle in
+# the scene keeps working and the controller never silently overrides the design.
+var designed_title := ""
+var designed_badge := ""
+var designed_subtitle := ""
+
 var claim_request_id := ""
 var claim_in_progress := false
 var claim_message := ""
 
+# Ticks the "EVENT ENDS IN" countdown while the panel is open. Only runs while is_open, so it
+# costs nothing while the panel is hidden.
+var countdown_timer: Timer = null
+
 
 func setup(_host = null) -> void:
 	name = "LeaderboardController"
-	set_anchors_preset(Control.PRESET_FULL_RECT)
 	# IGNORE so the controller itself never eats clicks; the scene's own Dimmer/Root use STOP.
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Above gameplay HUD and the hotbar (176) / settings (220) / recipe book (240) tiers, and
@@ -65,6 +75,52 @@ func setup(_host = null) -> void:
 	visible = false
 	_build_scene()
 	_connect_network_signals()
+	_fit_to_viewport()
+
+	# Keep filling the screen when the window is resized. Without this the scene keeps its
+	# old size and the centred window drifts off-centre.
+	var viewport := get_viewport()
+	if viewport != null:
+		var fit_callable := Callable(self, "_fit_to_viewport")
+		if not viewport.size_changed.is_connected(fit_callable):
+			viewport.size_changed.connect(fit_callable)
+
+	if countdown_timer == null:
+		countdown_timer = Timer.new()
+		countdown_timer.name = "CountdownTimer"
+		countdown_timer.wait_time = 1.0
+		countdown_timer.one_shot = false
+		countdown_timer.autostart = false
+		add_child(countdown_timer)
+		countdown_timer.timeout.connect(_on_countdown_tick)
+
+
+# LeaderboardScene centres its window with a CenterContainer, which centres within its OWN
+# rect -- so the scene root must actually BE the size of the screen. Under world.ui_layer (a
+# CanvasLayer, not a Control) that size is not inherited reliably, and a zero-sized root
+# centres the 1032x688 window on (0,0): its lower-right quadrant lands in the top-left corner
+# of the screen and the rest is off-screen. Setting anchors AND offsets AND an explicit size
+# makes it deterministic instead of depending on how anchors resolve under a CanvasLayer.
+#
+# Resizing the scene root also fires its own NOTIFICATION_RESIZED, which is what drives
+# leaderboard_scene.gd's _update_window_scale() -- so this is also what makes the window
+# shrink to fit small viewports.
+func _fit_to_viewport() -> void:
+	if not is_inside_tree():
+		return
+
+	var viewport_size := get_viewport_rect().size
+	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+		return
+
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	position = Vector2.ZERO
+	size = viewport_size
+
+	if scene_instance != null and is_instance_valid(scene_instance):
+		scene_instance.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		scene_instance.position = Vector2.ZERO
+		scene_instance.size = viewport_size
 
 
 func _build_scene() -> void:
@@ -85,13 +141,36 @@ func _build_scene() -> void:
 
 	scene_instance = built as Control
 	scene_instance.name = "LeaderboardScene"
-	scene_instance.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(scene_instance)
 
-	# The scene is @tool and ships sample rows for editor previewing. Turn that off the moment
-	# it is live so an empty/loading state never shows fake players.
+	# ---- Everything in this block MUST happen before add_child() ----
+	# add_child() is what runs the scene's _ready(), and _ready() is where it re-applies the
+	# @export styles/content over the nodes. Setting these afterwards is too late.
+
+	# THE reason the in-game panel didn't match the editor. leaderboard_scene.gd separates two
+	# passes: apply_exported_content() fills the authored nodes with data (needed -- it is what
+	# puts real players in the rows), and apply_exported_styles() repaints every panel, row and
+	# label from the script's @export colors. That style pass overwrites styling hand-edited on
+	# the child nodes in the editor -- e.g. it forces ChampionBadge/TrophyBack/Cup to a flat
+	# orange panel -- which is why the editor (showing saved node edits) and the game (showing
+	# the repaint) looked different. The scene's own editor_note says exactly this: turn these
+	# off when you want direct node edits to stay untouched. So: styles OFF, content ON.
+	if "apply_exported_styles_on_ready" in scene_instance:
+		scene_instance.set("apply_exported_styles_on_ready", false)
+	if "apply_exported_content_on_ready" in scene_instance:
+		scene_instance.set("apply_exported_content_on_ready", true)
+
+	# The scene is @tool and ships sample rows for editor previewing. Turn that off before
+	# _ready() so a loading/empty state never flashes fake players.
 	if "show_sample_data_when_empty" in scene_instance:
 		scene_instance.set("show_sample_data_when_empty", false)
+
+	# Capture the authored text BEFORE anything is overwritten.
+	designed_title = str(scene_instance.get("title_text")) if "title_text" in scene_instance else "LANDFILL"
+	designed_badge = str(scene_instance.get("badge_text")) if "badge_text" in scene_instance else "EVENT LEADERBOARD"
+	designed_subtitle = str(scene_instance.get("subtitle_text")) if "subtitle_text" in scene_instance else ""
+
+	add_child(scene_instance)
+	scene_instance.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 	if scene_instance.has_signal("close_pressed"):
 		scene_instance.close_pressed.connect(_on_scene_close_pressed)
@@ -99,8 +178,6 @@ func _build_scene() -> void:
 		scene_instance.rewards_pressed.connect(_on_scene_rewards_pressed)
 	if scene_instance.has_signal("tab_selected"):
 		scene_instance.tab_selected.connect(_on_scene_tab_selected)
-
-	_push_tabs()
 
 
 func _connect_network_signals() -> void:
@@ -129,11 +206,20 @@ func open_leaderboard(_grid_pos: Vector2i = Vector2i.ZERO) -> void:
 	is_open = true
 	visible = true
 	scene_instance.visible = true
+	# Re-fit on every open: the viewport may have been resized while this panel was hidden, and
+	# a hidden Control does not always get a correct rect until it is shown. Deferred as well,
+	# so the fit also runs once layout for this frame has settled.
+	_fit_to_viewport()
+	call_deferred("_fit_to_viewport")
 	claim_message = ""
 	selected_tab = TAB_LANDFILL
 	if scene_instance.has_method("select_tab"):
 		scene_instance.select_tab(selected_tab)
 	_refresh_active_tab()
+
+	if countdown_timer != null:
+		_on_countdown_tick()
+		countdown_timer.start()
 
 
 func close_leaderboard() -> void:
@@ -141,6 +227,8 @@ func close_leaderboard() -> void:
 	visible = false
 	if scene_instance != null and is_instance_valid(scene_instance):
 		scene_instance.visible = false
+	if countdown_timer != null:
+		countdown_timer.stop()
 	closed.emit()
 
 
@@ -152,22 +240,12 @@ func is_leaderboard_open() -> bool:
 # TABS
 # ============================================================
 
-func _push_tabs() -> void:
-	if scene_instance == null or not is_instance_valid(scene_instance):
-		return
-	if not scene_instance.has_method("set_tabs_from_dictionaries"):
-		return
-
-	var tab_dicts: Array = []
-	for tab_definition in TAB_DEFINITIONS:
-		tab_dicts.append({
-			"label": str(tab_definition.get("label", "TAB")),
-			# Deliberately NOT disabled: the player can open Weekly/Global and read the
-			# coming-soon message. A disabled tab just looks broken.
-			"disabled": false,
-			"tooltip": "" if bool(tab_definition.get("live", false)) else "Coming soon",
-		})
-	scene_instance.set_tabs_from_dictionaries(tab_dicts)
+# The tabs are NOT pushed from here. LeaderboardScene.tscn already authors TabLandfill /
+# TabWeekly / TabGlobal with their own labels, icons and styling, and calling
+# set_tabs_from_dictionaries() would rebuild them AND re-run apply_exported_styles()
+# internally -- undoing the whole point of leaving the authored styling alone. TAB_DEFINITIONS
+# below is kept purely as this controller's own live/coming-soon lookup, and its order must
+# match the tab order in the scene.
 
 
 func _on_scene_tab_selected(index: int, _tab_data: Resource) -> void:
@@ -313,14 +391,12 @@ func _render() -> void:
 	if scene_instance == null or not is_instance_valid(scene_instance):
 		return
 
-	_set_scene_text("title_text", _tab_label(selected_tab))
+	# Keep the scene's authored header exactly as designed on the live tab -- only the subtitle
+	# is borrowed, and only when there is real status to report.
+	_set_scene_text("title_text", designed_title)
+	_set_scene_text("badge_text", designed_badge)
 
-	var badge := "EVENT LEADERBOARD"
-	if season_key != "":
-		badge = "SEASON " + season_key.to_upper()
-	_set_scene_text("badge_text", badge)
-
-	var subtitle := "Compete in the Landfill Race and earn points!"
+	var subtitle := designed_subtitle
 	if leaderboard_loading:
 		subtitle = "Loading leaderboard..."
 	elif leaderboard_error != "":
@@ -336,11 +412,92 @@ func _render() -> void:
 
 	if scene_instance.has_method("set_personal_summary"):
 		var rank_text := str(your_rank) if your_rank > 0 else "--"
-		# The server's landfill payloads carry no event end timestamp (neither
-		# landfill_leaderboard nor landfill_status include one), so there is nothing honest to
-		# count down to yet. Shown as "--" rather than a made-up value; wire a real countdown
-		# here if an ends_at field is ever added server-side.
-		scene_instance.set_personal_summary(rank_text, your_kilograms, "--")
+		scene_instance.set_personal_summary(rank_text, your_kilograms, _current_countdown_text())
+
+
+# ============================================================
+# COUNTDOWN
+# ============================================================
+#
+# The server never stores an "event ends at" timestamp for the Landfill season -- see
+# server_landfill_event.ts: a season is just the current calendar month in UTC
+# (getSeasonKeyForDate -> "YYYY-MM", checked fresh on every request), and it rolls over the
+# instant the wall clock crosses into a new UTC month. There is nothing to add server-side: the
+# season_key already sent on every landfill_leaderboard_received payload IS the answer, so the
+# end instant is computed from it here -- the first moment (00:00 UTC) of the following month.
+
+func _on_countdown_tick() -> void:
+	if not is_open or scene_instance == null or not is_instance_valid(scene_instance):
+		return
+	if not _is_tab_live(selected_tab):
+		return
+	if scene_instance.has_method("set_personal_summary"):
+		var rank_text := str(your_rank) if your_rank > 0 else "--"
+		scene_instance.set_personal_summary(rank_text, your_kilograms, _current_countdown_text())
+
+
+func _current_countdown_text() -> String:
+	if season_key == "":
+		return "--"
+
+	var end_seconds := _season_end_unix_seconds(season_key)
+	if end_seconds <= 0:
+		return "--"
+
+	var now_seconds := int(Time.get_unix_time_from_system())
+	var remaining := end_seconds - now_seconds
+	if remaining <= 0:
+		return "ENDING SOON"
+
+	return _format_duration(remaining)
+
+
+# season_key is always "YYYY-MM" (see getSeasonKeyForDate server-side). Returns the Unix
+# timestamp, in seconds, of 00:00 UTC on the 1st of the FOLLOWING month -- i.e. the instant the
+# season rolls over. Returns 0 on any unexpected shape so callers fall back to "--" instead of
+# showing a bogus countdown.
+func _season_end_unix_seconds(key: String) -> int:
+	if key.length() != 7 or key[4] != "-":
+		return 0
+
+	var year_part := key.substr(0, 4)
+	var month_part := key.substr(5, 2)
+	if not year_part.is_valid_int() or not month_part.is_valid_int():
+		return 0
+
+	var year := int(year_part)
+	var month := int(month_part)
+	if month < 1 or month > 12:
+		return 0
+
+	var next_year := year
+	var next_month := month + 1
+	if next_month > 12:
+		next_month = 1
+		next_year += 1
+
+	var datetime_dict := {
+		"year": next_year,
+		"month": next_month,
+		"day": 1,
+		"hour": 0,
+		"minute": 0,
+		"second": 0,
+	}
+	return int(Time.get_unix_time_from_datetime_dict(datetime_dict))
+
+
+func _format_duration(total_seconds: int) -> String:
+	var days := total_seconds / 86400
+	var hours := (total_seconds % 86400) / 3600
+	var minutes := (total_seconds % 3600) / 60
+	var seconds := total_seconds % 60
+
+	if days > 0:
+		return "%dD %02dH %02dM" % [days, hours, minutes]
+	if hours > 0:
+		return "%dH %02dM %02dS" % [hours, minutes, seconds]
+	return "%dM %02dS" % [minutes, seconds]
 
 
 func _build_entry_dicts() -> Array:
