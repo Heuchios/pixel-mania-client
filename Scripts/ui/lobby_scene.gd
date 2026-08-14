@@ -214,6 +214,16 @@ func _update_lobby_parallax_background(delta: float) -> void:
 
 func _bind_scene_nodes() -> void:
 	world_input = get_node_or_null("JoinPanel/WorldInput") as LineEdit
+	# The world name box ALWAYS starts empty, every time the lobby is entered -- fresh from
+	# login, after leaving a world, and after a failed join (which now returns here too).
+	# It used to be seeded from profile/last_world in _load_profile(), so the previous world
+	# name was still sitting there and had to be cleared by hand before typing a new one.
+	# Cleared here rather than there so it holds even if the .tscn ever ships authored text.
+	# profile/last_world is still WRITTEN and still used elsewhere -- world.gd's
+	# get_pending_join_world_name_early() falls back to it on the auto-rejoin path -- it is
+	# just no longer used to pre-fill this box.
+	if world_input != null:
+		world_input.text = ""
 	join_button = get_node_or_null("JoinPanel/JoinButton") as Button
 	input_status_label = get_node_or_null("JoinPanel/WorldInputLabel") as Label
 	username_label = get_node_or_null("ProfilePanel/ProfileCard/Username") as Label
@@ -318,10 +328,6 @@ func _load_profile() -> void:
 	if err == OK:
 		if username == "":
 			username = str(cfg.get_value("profile", "username", "")).strip_edges()
-
-		var last_world: String = _normalize_world_name(str(cfg.get_value("profile", "last_world", "")))
-		if last_world != "" and world_input != null:
-			world_input.text = last_world
 
 	if username == "":
 		username = _get_fallback_profile_name()

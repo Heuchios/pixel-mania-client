@@ -1536,11 +1536,15 @@ func _cleanup_failed_world_entry(reason: String, message: String) -> void:
 	# reference is null, and return_to_lobby_after_failed_world_entry() bails out immediately
 	# on that same condition. Delegating blindly would therefore no-op in the exact scenario
 	# this fallback exists for, so check first and otherwise change scene here directly.
-	var save_manager_has_world := (
-		save_manager_value != null
-		and save_manager_value.has_method("return_to_lobby_after_failed_world_entry")
-		and save_manager_value.get("world") != null
-	)
+	# NOTE: declared with an explicit `: bool` rather than `:=`. save_manager_value is untyped
+	# (Variant), so an `and` chain involving it has no inferred type and `:=` is a hard parse
+	# error -- "Cannot infer the type of ... because the value doesn't have a set type". That
+	# error made this whole script fail to parse, which made world.gd fail to compile, which
+	# left every join stuck on the loading overlay at 100%. Do not "tidy" this back to `:=`.
+	var save_manager_has_world: bool = false
+	if save_manager_value != null and save_manager_value.has_method("return_to_lobby_after_failed_world_entry"):
+		save_manager_has_world = save_manager_value.get("world") != null
+
 	if save_manager_has_world:
 		save_manager_value.return_to_lobby_after_failed_world_entry("loading_ui_fallback:" + str(reason))
 		return
