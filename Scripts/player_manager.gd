@@ -1097,6 +1097,11 @@ const PLAYER_PUNCH_REMOTE_COLLISION_SAMPLE_OFFSETS = [
 ]
 const REMOTE_WATER_SPLASH_MOVE_COOLDOWN_MSEC := 420
 const REMOTE_WATER_SPLASH_MOVE_SPEED := 55.0
+# Mirrors player.gd's WATER_SURFACE_RIPPLE_IMPULSE / collision-rect fallback size so a
+# remote player's splash disturbs the living-water surface with the same weight and
+# footprint a local splash would.
+const REMOTE_WATER_RIPPLE_IMPULSE := 280.0
+const REMOTE_WATER_RIPPLE_BODY_HALF_EXTENTS := Vector2(10.0, 16.0)
 const REMOTE_WATER_BUBBLE_INTERVAL_MIN_MSEC := 2100
 const REMOTE_WATER_BUBBLE_INTERVAL_MAX_MSEC := 4000
 const REMOTE_WATER_BUBBLE_INITIAL_DELAY_MIN_MSEC := 450
@@ -1719,13 +1724,42 @@ func update_remote_water_splash(remote_player, target_position: Vector2, had_pos
 	if in_water and not was_in_water:
 		var enter_intensity := 0.78 + clampf(abs(velocity_y) / 140.0, 0.0, 1.0) * 0.55
 		world.spawn_water_splash_particles(get_remote_water_splash_position(target_position), enter_intensity)
+		ripple_water_surface_for_remote(target_position, enter_intensity)
 		remote_player.set_meta("water_splash_ready_msec", now_msec + REMOTE_WATER_SPLASH_MOVE_COOLDOWN_MSEC)
 		return
 
 	var horizontal_speed = maxf(abs(velocity_x), target_speed_hint)
 	if in_water and horizontal_speed >= REMOTE_WATER_SPLASH_MOVE_SPEED and now_msec >= ready_msec:
 		world.spawn_water_splash_particles(get_remote_water_splash_position(target_position), 0.42)
+		ripple_water_surface_for_remote(target_position, 0.42)
 		remote_player.set_meta("water_splash_ready_msec", now_msec + REMOTE_WATER_SPLASH_MOVE_COOLDOWN_MSEC)
+
+
+## Mirrors player.gd::ripple_water_surface() (the LOCAL player's path) for a REMOTE
+## player's splash, so the rippling water surface (water_surface_manager.gd) reacts the
+## same way regardless of which player caused the splash. Before this, world.gd's
+## spawn_water_splash_particles() only ever produced the particle burst for remote
+## splashes -- the actual wave/ripple mesh only moved for the local player, because
+## ripple_water_surface() lived exclusively in player.gd and nothing called its
+## equivalent from here. Purely visual, same as the local path: the surface manager
+## owns no state the server cares about, so this is safe to skip when absent.
+func ripple_water_surface_for_remote(target_position: Vector2, intensity: float) -> void:
+	if world == null or not is_instance_valid(world):
+		return
+	var manager = world.get("water_surface_manager")
+	if manager == null or not is_instance_valid(manager):
+		return
+	if not manager.has_method("disturb_span"):
+		return
+
+	var half_extents := REMOTE_WATER_RIPPLE_BODY_HALF_EXTENTS
+	var collision_rect := Rect2(target_position - half_extents, half_extents * 2.0)
+	manager.disturb_span(
+		collision_rect.position.x,
+		collision_rect.end.x,
+		-absf(intensity) * REMOTE_WATER_RIPPLE_IMPULSE,
+		collision_rect.end.y
+	)
 
 
 func is_remote_position_on_water(position: Vector2) -> bool:
@@ -2787,7 +2821,6 @@ func handle_network_player_position(player_data: Dictionary):
 			"hair": str(player_data.get("equipped_hair_item", "")),
 			"eyewear": str(player_data.get("equipped_eyewear_item", "")),
 			"beard": str(player_data.get("equipped_beard_item", "")),
-			"body_accessory": str(player_data.get("equipped_body_accessory_item", "")),
 			"shirt": str(player_data.get("equipped_shirt_item", "")),
 			"pants": str(player_data.get("equipped_pants_item", "")),
 			"shoes": str(player_data.get("equipped_shoes_item", "")),
@@ -3018,7 +3051,6 @@ func normalize_remote_equipment_slots(raw_slots) -> Dictionary:
 		"hair": "",
 		"eyewear": "",
 		"beard": "",
-		"body_accessory": "",
 		"shirt": "",
 		"pants": "",
 		"shoes": "",
@@ -4888,7 +4920,7 @@ func update_remote_equipment_visuals(remote_player):
 		remote_player.add_child(equipment_root)
 
 	var known_slots = [
-		"back", "hand", "hair", "eyewear", "beard", "body_accessory", "head", "hat", "eyes", "face",
+		"back", "hand", "hair", "eyewear", "beard", "head", "hat", "eyes", "face",
 		"shirt", "pants", "legs", "feet", "shoes", "ride",
 		"neck", "aura"
 	]
@@ -4928,8 +4960,6 @@ func update_remote_shared_equipment_visuals(remote_player) -> bool:
 		equipment_manager.update_equipped_eyewear_visual(str(equipment_slots.get("eyewear", "")), facing)
 	if equipment_manager.has_method("update_equipped_beard_visual"):
 		equipment_manager.update_equipped_beard_visual(str(equipment_slots.get("beard", "")), facing)
-	if equipment_manager.has_method("update_equipped_body_accessory_visual"):
-		equipment_manager.update_equipped_body_accessory_visual(str(equipment_slots.get("body_accessory", "")), facing)
 	if equipment_manager.has_method("update_equipped_shirt_visual"):
 		equipment_manager.update_equipped_shirt_visual(str(equipment_slots.get("shirt", "")), facing)
 	if equipment_manager.has_method("update_equipped_pants_visual"):
@@ -4964,7 +4994,7 @@ func refresh_remote_equipment_slot_transforms(remote_player):
 		return
 
 	var known_slots = [
-		"back", "hand", "hair", "eyewear", "beard", "body_accessory", "head", "hat", "eyes", "face",
+		"back", "hand", "hair", "eyewear", "beard", "head", "hat", "eyes", "face",
 		"shirt", "pants", "legs", "feet", "shoes", "ride",
 		"neck", "aura"
 	]
@@ -5041,9 +5071,6 @@ func get_remote_item_texture(item_id: String, slot_name: String, item_data: Dict
 		if slot_name == "beard" and world.beard_textures.has(item_id):
 			return world.beard_textures[item_id]
 
-		if slot_name == "body_accessory" and world.body_accessory_textures.has(item_id):
-			return world.body_accessory_textures[item_id]
-
 		if slot_name == "shirt" and world.shirt_textures.has(item_id):
 			return world.shirt_textures[item_id]
 
@@ -5073,9 +5100,6 @@ func get_remote_item_texture(item_id: String, slot_name: String, item_data: Dict
 
 		if world.beard_textures.has(item_id):
 			return world.beard_textures[item_id]
-
-		if world.body_accessory_textures.has(item_id):
-			return world.body_accessory_textures[item_id]
 
 		if world.shirt_textures.has(item_id):
 			return world.shirt_textures[item_id]
@@ -5263,8 +5287,7 @@ func apply_remote_generic_slot_transform(remote_player, slot_sprite: Sprite2D, s
 		"shoes": Vector2(0, 8),
 		"ride": Vector2.ZERO,
 		"neck": Vector2(0, -12),
-		"aura": Vector2(0, -8),
-		"body_accessory": Vector2(0, -12)
+		"aura": Vector2(0, -8)
 	}
 
 	var fallback = default_offsets.get(slot_name, Vector2.ZERO)
@@ -5297,7 +5320,7 @@ func get_remote_slot_animation_offset(remote_player, slot_name: String, facing_l
 	if animation_state == "walk":
 		if slot_name == "hand":
 			return Vector2(direction * sin(phase) * 1.5, cos(phase) * 1.5)
-		if ["shirt", "back", "ride", "neck", "aura", "body_accessory"].has(slot_name):
+		if ["shirt", "back", "ride", "neck", "aura"].has(slot_name):
 			return Vector2(0.0, -abs(sin(phase)) * 1.0)
 		if ["pants", "legs", "feet", "shoes"].has(slot_name):
 			return Vector2(0.0, sin(phase) * 1.25)
