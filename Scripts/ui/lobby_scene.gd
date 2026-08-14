@@ -1169,5 +1169,3 @@ func _on_landfill_join_result_received(data: Dictionary) -> void:
 		_set_input_status("THE LANDFILL RACE ISN'T OPEN RIGHT NOW")
 	else:
 		_set_input_status("COULD NOT JOIN THE LANDFILL RACE")
-
-
