@@ -2310,6 +2310,41 @@ const ITEMS = {
 		"splice_only": false,
 		"order": 37
 	},
+	# Walk-through interactable that opens the event leaderboard UI. Any player can use it,
+	# including visitors with no build access in the world -- that bypass lives in
+	# world_lock_manager.gd (can_current_player_interact_with_block /
+	# can_current_player_interact_with_block_at), not here.
+	#
+	# The collision flags are load-bearing and MUST stay in sync with the server definition in
+	# PixelManiaServer/src/server_item_database.ts. The server defaults collision_type to
+	# "full", so a server entry that merely omits these is SOLID while the client is not --
+	# which does not read as a collision bug in game, it hard-snaps the player back every
+	# frame and reads as being physically trapped. scripts/check_item_database_sync.js
+	# asserts this parity; see the block_collision_model project note.
+	"leaderboard": {
+		"category": "block",
+		"display_name": "Leaderboard",
+		"rarity": "epic",
+		"block_health": 4,
+		"texture": {"atlas": "res://image.png", "cell": [21, 15], "cell_size": [32, 32]},
+		"inventory_icon": {"atlas": "res://image.png", "cell": [21, 15], "cell_size": [32, 32]},
+		"atlas_coords": Vector2i(21, 15),
+		"seed": "",
+		"leaderboard_block": true,
+		"interact_rules": true,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [0, 0],
+			"fixed_drops": [
+				{"item_id": "leaderboard", "item_category": "block", "amount": 1}
+			]
+		},
+		"order": 416
+	},
 "wooden_treasure_chest": {
 		"category": "block",
 		"display_name": "Wooden Treasure Chest",

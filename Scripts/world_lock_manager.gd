@@ -695,6 +695,12 @@ func can_current_player_interact_with_block(block_type: String) -> bool:
 	if is_bulletin_board_block(block_type):
 		return true
 
+	# Public by design -- read-only, no world state is mutated by opening it. This arm is the
+	# fallback for callers that go through world.gd's can_current_player_interact_with_block()
+	# rather than the ..._at() variant above.
+	if is_leaderboard_block(block_type):
+		return true
+
 	if is_display_block(block_type):
 		return is_locked and is_current_player_owner()
 
@@ -892,6 +898,12 @@ func is_bulletin_board_block(block_type: String) -> bool:
 	if world != null and world.has_method("is_bulletin_board_block_type"):
 		return bool(world.is_bulletin_board_block_type(block_type))
 	return block_type == "bulletin_board"
+
+
+func is_leaderboard_block(block_type: String) -> bool:
+	if world != null and world.has_method("is_leaderboard_block_type"):
+		return bool(world.is_leaderboard_block_type(block_type))
+	return block_type.strip_edges().to_lower() == "leaderboard"
 
 
 func is_display_block(block_type: String) -> bool:
@@ -1776,6 +1788,14 @@ func can_current_player_break_block_at(block_type: String = "", grid_pos: Vector
 
 func can_current_player_interact_with_block_at(block_type: String, grid_pos: Vector2i) -> bool:
 	if is_area_lock_block_type(block_type):
+		return true
+	# Leaderboard is read-only and deliberately public: ANY player may open it, including
+	# visitors with no access in a locked world. Returning true here (rather than deferring to
+	# can_current_player_interact_with_block) also skips the area-lock check below, which
+	# otherwise reuses the BUILD predicate -- so a leaderboard placed inside someone's area
+	# lock would be unusable to exactly the visitors it exists for. Same shape as the
+	# area-lock short-circuit directly above.
+	if is_leaderboard_block(block_type):
 		return true
 	if is_donation_box_block(block_type):
 		return can_current_player_interact_with_block(block_type)

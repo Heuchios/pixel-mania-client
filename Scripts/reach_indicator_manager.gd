@@ -199,6 +199,7 @@ func _is_interactable(block_type: String) -> bool:
 	if world.has_method("is_vending_machine_block_type") and world.is_vending_machine_block_type(block_type): return true
 	if world.has_method("is_mailbox_block_type") and world.is_mailbox_block_type(block_type): return true
 	if world.has_method("is_bulletin_board_block_type") and world.is_bulletin_board_block_type(block_type): return true
+	if world.has_method("is_leaderboard_block_type") and world.is_leaderboard_block_type(block_type): return true
 	if world.has_method("is_display_block_type") and world.is_display_block_type(block_type): return true
 	if world.has_method("is_toggle_block") and world.is_toggle_block(block_type): return true
 	if world.has_method("is_anti_punch_block_type") and world.is_anti_punch_block_type(block_type): return true

@@ -126,6 +126,7 @@ const OPTIONAL_WORLD_UI_SETUP_METHODS := [
 	&"setup_donation_box_ui",
 	&"setup_mailbox_ui",
 	&"setup_bulletin_board_ui",
+	&"setup_leaderboard_ui",
 	&"setup_display_ui",
 	&"setup_fish_monger_ui",
 	&"setup_cctv_ui",
@@ -409,6 +410,7 @@ var safe_ui = null
 var donation_box_ui = null
 var mailbox_ui = null
 var bulletin_board_ui = null
+var leaderboard_ui = null
 var display_ui = null
 var fish_monger_ui = null
 var cctv_ui = null
@@ -2662,6 +2664,7 @@ func is_panel_ui_at_point(point: Vector2) -> bool:
 		donation_box_ui,
 		mailbox_ui,
 		bulletin_board_ui,
+		leaderboard_ui,
 		display_ui,
 		fish_monger_ui,
 		cctv_ui,
@@ -6609,6 +6612,12 @@ func is_donation_box_block_type(block_type: String) -> bool:
 		return bool(item_database[block_type].get("donation_box_block", false))
 	return block_type.strip_edges().to_lower() == "donation_box"
 
+func is_leaderboard_block_type(block_type: String) -> bool:
+	if item_database.has(block_type):
+		return bool(item_database[block_type].get("leaderboard_block", false))
+	return block_type.strip_edges().to_lower() == "leaderboard"
+
+
 func is_bulletin_board_block_type(block_type: String) -> bool:
 	if item_database.has(block_type):
 		return bool(item_database[block_type].get("bulletin_board_block", false))
@@ -7681,6 +7690,9 @@ func is_major_ui_open() -> bool:
 		return true
 	if has_method("is_mailbox_open") and is_mailbox_open():
 		return true
+	if has_method("is_leaderboard_open") and is_leaderboard_open():
+		return true
+
 	if has_method("is_bulletin_board_open") and is_bulletin_board_open():
 		return true
 	if has_method("is_display_open") and is_display_open():
@@ -7744,6 +7756,9 @@ func is_movement_blocking_ui_open() -> bool:
 		return true
 	if has_method("is_mailbox_open") and is_mailbox_open():
 		return true
+	if has_method("is_leaderboard_open") and is_leaderboard_open():
+		return true
+
 	if has_method("is_bulletin_board_open") and is_bulletin_board_open():
 		return true
 	if has_method("is_display_open") and is_display_open():
@@ -7803,6 +7818,9 @@ func is_gameplay_hud_blocked() -> bool:
 		return true
 	if has_method("is_mailbox_open") and is_mailbox_open():
 		return true
+	if has_method("is_leaderboard_open") and is_leaderboard_open():
+		return true
+
 	if has_method("is_bulletin_board_open") and is_bulletin_board_open():
 		return true
 	if has_method("is_display_open") and is_display_open():
@@ -7955,6 +7973,11 @@ func setup_mailbox_ui():
 		return gameplay_ui_manager.setup_mailbox_ui()
 
 	return
+
+func setup_leaderboard_ui():
+	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("setup_leaderboard_ui"):
+		return gameplay_ui_manager.setup_leaderboard_ui()
+
 
 func setup_bulletin_board_ui():
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("setup_bulletin_board_ui"):
@@ -8274,6 +8297,23 @@ func is_mailbox_open() -> bool:
 		return gameplay_ui_manager.is_mailbox_open()
 
 	return false
+
+func open_leaderboard_ui(grid_pos: Vector2i = Vector2i.ZERO):
+	setup_leaderboard_ui()
+	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("open_leaderboard_ui"):
+		return gameplay_ui_manager.open_leaderboard_ui(grid_pos)
+
+
+func close_leaderboard_ui():
+	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("close_leaderboard_ui"):
+		return gameplay_ui_manager.close_leaderboard_ui()
+
+
+func is_leaderboard_open() -> bool:
+	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("is_leaderboard_open"):
+		return gameplay_ui_manager.is_leaderboard_open()
+	return false
+
 
 func open_bulletin_board_ui(grid_pos: Vector2i):
 	setup_bulletin_board_ui()

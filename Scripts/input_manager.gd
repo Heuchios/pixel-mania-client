@@ -142,6 +142,7 @@ func _any_ui_blocking() -> bool:
 	if world.has_method("is_safe_open") and world.is_safe_open(): return true
 	if world.has_method("is_mailbox_open") and world.is_mailbox_open(): return true
 	if world.has_method("is_bulletin_board_open") and world.is_bulletin_board_open(): return true
+	if world.has_method("is_leaderboard_open") and world.is_leaderboard_open(): return true
 	if world.has_method("is_display_open") and world.is_display_open(): return true
 	if world.has_method("is_fish_monger_open") and world.is_fish_monger_open(): return true
 	if world.has_method("is_cctv_open") and world.is_cctv_open(): return true
@@ -196,6 +197,7 @@ func _non_chat_ui_blocking() -> bool:
 	if world.has_method("is_safe_open") and world.is_safe_open(): return true
 	if world.has_method("is_mailbox_open") and world.is_mailbox_open(): return true
 	if world.has_method("is_bulletin_board_open") and world.is_bulletin_board_open(): return true
+	if world.has_method("is_leaderboard_open") and world.is_leaderboard_open(): return true
 	if world.has_method("is_display_open") and world.is_display_open(): return true
 	if world.has_method("is_fish_monger_open") and world.is_fish_monger_open(): return true
 	if world.has_method("is_cctv_open") and world.is_cctv_open(): return true
@@ -309,6 +311,8 @@ func handle_back_request() -> bool:
 		world.close_mailbox_ui()
 	elif world.has_method("is_bulletin_board_open") and world.is_bulletin_board_open():
 		world.close_bulletin_board_ui()
+	elif world.has_method("is_leaderboard_open") and world.is_leaderboard_open():
+		world.close_leaderboard_ui()
 	elif world.has_method("is_display_open") and world.is_display_open():
 		world.close_display_ui()
 	elif world.has_method("is_fish_monger_open") and world.is_fish_monger_open():

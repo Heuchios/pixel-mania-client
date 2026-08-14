@@ -763,6 +763,50 @@ func setup_bulletin_board_ui():
 		world.bulletin_board_ui.setup(world, world.ui_layer)
 
 
+# The in-world half of the leaderboard. The controller instances
+# Scenes/ui/leaderboard/LeaderboardScene.tscn and owns all the networking itself, so this is
+# just lifecycle -- the same controller script is also created directly by the lobby, which
+# has no world node at all.
+func setup_leaderboard_ui():
+	if world.ui_layer == null:
+		return
+
+	world.leaderboard_ui = world.ui_layer.get_node_or_null("LeaderboardController")
+
+	if world.leaderboard_ui == null:
+		var leaderboard_script: Resource = load("res://Scripts/ui/leaderboard_controller.gd")
+		if leaderboard_script == null:
+			push_warning("Leaderboard UI script could not be loaded.")
+			return
+		world.leaderboard_ui = Control.new()
+		world.leaderboard_ui.name = "LeaderboardController"
+		world.leaderboard_ui.set_script(leaderboard_script)
+		world.ui_layer.add_child(world.leaderboard_ui)
+
+	if world.leaderboard_ui.has_method("setup"):
+		world.leaderboard_ui.setup(world)
+
+
+func open_leaderboard_ui(grid_pos: Vector2i = Vector2i.ZERO):
+	if world.leaderboard_ui == null:
+		setup_leaderboard_ui()
+
+	if world.leaderboard_ui != null and world.leaderboard_ui.has_method("open_leaderboard"):
+		world.leaderboard_ui.open_leaderboard(grid_pos)
+
+
+func close_leaderboard_ui():
+	if world.leaderboard_ui != null and world.leaderboard_ui.has_method("close_leaderboard"):
+		world.leaderboard_ui.close_leaderboard()
+
+
+func is_leaderboard_open() -> bool:
+	if world.leaderboard_ui != null and world.leaderboard_ui.has_method("is_leaderboard_open"):
+		return world.leaderboard_ui.is_leaderboard_open()
+
+	return false
+
+
 func setup_display_ui():
 	if world.ui_layer == null:
 		return

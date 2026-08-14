@@ -98,6 +98,9 @@ func use_selected_item_at_mouse():
 	if world.has_method("is_bulletin_board_open") and world.is_bulletin_board_open():
 		return
 
+	if world.has_method("is_leaderboard_open") and world.is_leaderboard_open():
+		return
+
 	if world.has_method("is_display_open") and world.is_display_open():
 		return
 
@@ -367,6 +370,10 @@ func interact_with_grid(grid_pos: Vector2i):
 
 	if is_bulletin_board_block(block_type):
 		open_bulletin_board_ui(grid_pos)
+		return
+
+	if is_leaderboard_block(block_type):
+		open_leaderboard_ui(grid_pos)
 		return
 
 	if is_fish_hanger_block(block_type):
@@ -650,6 +657,8 @@ func is_interactable_block(block_type: String) -> bool:
 	if is_mailbox_block(clean_type):
 		return true
 	if is_bulletin_board_block(clean_type):
+		return true
+	if is_leaderboard_block(clean_type):
 		return true
 	if is_display_block(clean_type):
 		return true
@@ -1550,7 +1559,10 @@ func get_theme_machine_theme_label(theme_name: String) -> String:
 
 
 func is_vending_machine_block(block_type: String) -> bool:
-	return block_type == "vend_empty" or block_type == "vend_pending" or block_type == "vend_sold"
+	# "vend_empty"/"vend_pending"/"vend_sold" are legacy ids kept only so blocks
+	# placed before the blocks-atlas migration keep working; new placements are
+	# always "vending_machine".
+	return block_type == "vending_machine" or block_type == "vend_empty" or block_type == "vend_pending" or block_type == "vend_sold"
 
 
 func is_safe_block(block_type: String) -> bool:
@@ -1578,6 +1590,13 @@ func is_bulletin_board_block(block_type: String) -> bool:
 	if world != null and world.item_database.has(block_type):
 		return bool(world.item_database[block_type].get("bulletin_board_block", false))
 	return block_type == "bulletin_board"
+
+func is_leaderboard_block(block_type: String) -> bool:
+	if world != null and world.has_method("is_leaderboard_block_type"):
+		return bool(world.is_leaderboard_block_type(block_type))
+	if world != null and world.item_database.has(block_type):
+		return bool(world.item_database[block_type].get("leaderboard_block", false))
+	return block_type.strip_edges().to_lower() == "leaderboard"
 
 
 func is_display_block(block_type: String) -> bool:
@@ -1632,6 +1651,12 @@ func open_bulletin_board_ui(grid_pos: Vector2i):
 		world.open_bulletin_board_ui(grid_pos)
 	else:
 		world.show_notification("Bulletin Board UI is not ready.")
+
+func open_leaderboard_ui(grid_pos: Vector2i):
+	if world != null and world.has_method("open_leaderboard_ui"):
+		world.open_leaderboard_ui(grid_pos)
+	else:
+		world.show_notification("Leaderboard UI is not ready.")
 
 
 func open_display_ui(grid_pos: Vector2i):

@@ -33,7 +33,6 @@ const LOBBY_PARALLAX_LAYERS := [
 # _request_world_population_refresh) and reuses the already-proven _join_world_name() for the
 # actual join, same as the original lobby_menu.gd implementation did.
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
-const LandfillUI = preload("res://Scripts/landfill_ui.gd")
 const LANDFILL_STATUS_REFRESH_SECONDS := 15.0
 # Landfill event card (badge art + "Go Green!" join button), pinned to the TOP-RIGHT corner.
 #
@@ -72,13 +71,11 @@ var landfill_status_timer: Timer
 var landfill_event_active := false
 var landfill_season_key := ""
 var landfill_join_button: Button
-var landfill_leaderboard_button: Button
 # Container for the event badge + "Go Green!" join button. Toggling this one node's visibility
 # governs the whole card, so the icon and its button can never end up in disagreeing states.
 var landfill_event_card: Control
 var landfill_join_in_progress := false
 var landfill_join_request_id := ""
-var landfill_ui_panel: Control = null
 
 
 func _ready() -> void:
@@ -1085,22 +1082,6 @@ func _add_landfill_buttons() -> void:
 	landfill_join_button.pressed.connect(_on_landfill_join_pressed)
 	landfill_event_card.add_child(landfill_join_button)
 
-	landfill_leaderboard_button = Button.new()
-	landfill_leaderboard_button.name = "LandfillLeaderboardButton"
-	landfill_leaderboard_button.text = "🏆 LEADERBOARD"
-	landfill_leaderboard_button.layout_mode = 0
-	landfill_leaderboard_button.offset_left = 1250.0
-	landfill_leaderboard_button.offset_top = 326.0
-	landfill_leaderboard_button.offset_right = 1402.0
-	landfill_leaderboard_button.offset_bottom = 372.0
-	landfill_leaderboard_button.tooltip_text = "Landfill Leaderboard"
-	# Always visible (not gated on landfill_event_active) so standings/claims stay reachable
-	# after the join window closes -- prizes are only forfeited at season rollover.
-	landfill_leaderboard_button.visible = true
-	PixelUIStyle.apply_blue_button(landfill_leaderboard_button, 16)
-	landfill_leaderboard_button.pressed.connect(_on_landfill_leaderboard_pressed)
-	add_child(landfill_leaderboard_button)
-
 
 func _connect_landfill_feed() -> void:
 	var network = get_node_or_null("/root/NetworkManager")
@@ -1190,20 +1171,3 @@ func _on_landfill_join_result_received(data: Dictionary) -> void:
 		_set_input_status("COULD NOT JOIN THE LANDFILL RACE")
 
 
-func _on_landfill_leaderboard_pressed() -> void:
-	var ui_panel := _get_or_create_landfill_ui_panel()
-	if ui_panel != null:
-		ui_panel.open_panel()
-
-
-func _get_or_create_landfill_ui_panel() -> Control:
-	if landfill_ui_panel != null and is_instance_valid(landfill_ui_panel):
-		return landfill_ui_panel
-
-	var ui_panel: Control = LandfillUI.new()
-	ui_panel.name = "LandfillUI"
-	add_child(ui_panel)
-	if ui_panel.has_method("setup"):
-		ui_panel.setup(self)
-	landfill_ui_panel = ui_panel
-	return landfill_ui_panel
