@@ -3747,8 +3747,11 @@ func send_player_position(position: Vector2, facing: int, world_name: String, al
 	if sent:
 		local_position_batch_sends += 1
 		_clear_local_position_payload_queue()
-	return sent
+		return true
 
+	# This used to be unreachable (an unconditional `return sent` sat above it), so a failed
+	# send was silently dropped instead of being queued for retry. Restoring it as the actual
+	# else-branch it was written to be.
 	local_position_batch_sends += 1
 	_set_local_position_payload_queue(clean_world, _build_player_position_payload(position, safe_facing, clean_world, allow_join, false, position_reason), "send_failed")
 	return false

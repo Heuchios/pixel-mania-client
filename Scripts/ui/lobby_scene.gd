@@ -1071,7 +1071,6 @@ func _add_landfill_buttons() -> void:
 	landfill_join_button = Button.new()
 	landfill_join_button.name = "LandfillJoinButton"
 	landfill_join_button.text = "Go Green!"
-	landfill_join_button.layout_mode = 0
 	landfill_join_button.position = Vector2(0.0, LANDFILL_ICON_H + 8.0)
 	landfill_join_button.size = Vector2(LANDFILL_CARD_W, LANDFILL_CARD_BUTTON_H)
 	landfill_join_button.tooltip_text = "Join the Landfill Race"

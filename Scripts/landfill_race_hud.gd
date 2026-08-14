@@ -268,7 +268,9 @@ func _server_now_ms() -> int:
 
 
 func _format_clock(remaining_ms: int) -> String:
+	@warning_ignore("integer_division")
 	var total_seconds: int = int(max(0, remaining_ms)) / 1000
+	@warning_ignore("integer_division")
 	var minutes: int = total_seconds / 60
 	var seconds: int = total_seconds % 60
 	return "%02d:%02d" % [minutes, seconds]
@@ -329,7 +331,7 @@ func _rebuild_rows() -> void:
 		var display_name: String = str(entry.get("display_name", entry.get("username", "")))
 		var kilograms: int = int(entry.get("kilograms", 0))
 		var placement: int = int(entry.get("placement", shown + 1))
-		var is_connected: bool = bool(entry.get("connected", true))
+		var is_player_connected: bool = bool(entry.get("connected", true))
 
 		var left_text: String = ""
 		var right_text: String = ""
@@ -341,7 +343,7 @@ func _rebuild_rows() -> void:
 		else:
 			left_text = "%d. %s" % [placement, display_name]
 			right_text = "%d kg" % kilograms
-		if not is_connected:
+		if not is_player_connected:
 			right_text = "DNF"
 
 		rows_root.add_child(_make_row(left_text, right_text))
