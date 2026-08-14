@@ -5,7 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://cvjfqv4kccwo0" path="res://Assets/background/space_theme/star_2.png" id="3_ox2yu"]
 [ext_resource type="Texture2D" uid="uid://dsnopy0fnnne2" path="res://Assets/background/space_theme/star_3.png" id="4_ui2s7"]
 [ext_resource type="Texture2D" uid="uid://bd6iwmw6k8s4x" path="res://Assets/background/space_theme/star_4.png" id="5_fk7no"]
+[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="6_ui2s7"]
 [ext_resource type="Texture2D" uid="uid://b8ypi1cqq13s6" path="res://Assets/ui/inner_panel_887x408.png" id="7_0axv6"]
+[ext_resource type="Texture2D" uid="uid://bdqewvpbuib1a" path="res://Assets/ui/panel_outer_403x130.png" id="7_fk7no"]
 [ext_resource type="Texture2D" uid="uid://dnuvhhyohskng" path="res://Assets/ui/logo/Logo_6.png" id="9_logo"]
 [ext_resource type="Texture2D" uid="uid://dhwabrvcekyrx" path="res://Assets/ui/input_470x52.png" id="9_ox2yu"]
 [ext_resource type="Texture2D" uid="uid://dnyf6mdepwrxc" path="res://Assets/ui/inventory/panel_inventory_grid.png" id="10_panel_grid"]
@@ -25,6 +27,9 @@
 [ext_resource type="Texture2D" uid="uid://b7ngun3bstbwq" path="res://Assets/ui/red_button_pressed_90x24.png" id="23_ox2yu"]
 [ext_resource type="Texture2D" uid="uid://u2iiji1cp4cs" path="res://Assets/ui/red_button_hover_90x24.png" id="24_ui2s7"]
 [ext_resource type="Script" uid="uid://ca4fq8loi3owy" path="res://Scripts/ui/custom_icon_check_box.gd" id="27_custom_checkbox"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dt5w5"]
+texture = ExtResource("7_fk7no")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_logo"]
 atlas = ExtResource("9_logo")
@@ -215,10 +220,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -664.0
-offset_top = -296.0
-offset_right = -284.0
-offset_bottom = 300.0
+offset_left = -427.0
+offset_top = -116.0
+offset_right = -47.0
+offset_bottom = 272.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -228,34 +233,39 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 9.0
+offset_top = 44.0
+offset_right = -3.0
+offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("7_0axv6")
+texture = ExtResource("6_ui2s7")
 patch_margin_left = 36
 patch_margin_top = 36
 patch_margin_right = 36
 patch_margin_bottom = 36
 
 [node name="TitleLabel" type="Label" parent="NewsPanel" unique_id=501000003]
+z_index = 1
 layout_mode = 0
-offset_left = 24.0
-offset_top = 20.0
-offset_right = 356.0
-offset_bottom = 58.0
+offset_left = 10.0
+offset_right = 376.0
+offset_bottom = 38.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 26
-text = "NEWS"
+theme_override_styles/normal = SubResource("StyleBoxTexture_dt5w5")
+text = " NEWS"
 vertical_alignment = 1
 
 [node name="NewsScroll" type="ScrollContainer" parent="NewsPanel" unique_id=501000004]
 layout_mode = 0
-offset_left = 20.0
-offset_top = 66.0
-offset_right = 360.0
-offset_bottom = 576.0
+offset_left = 10.0
+offset_top = 50.0
+offset_right = 367.0
+offset_bottom = 381.0
 horizontal_scroll_mode = 0
 
 [node name="NewsList" type="VBoxContainer" parent="NewsPanel/NewsScroll" unique_id=501000005]
@@ -266,18 +276,18 @@ theme_override_constants/separation = 12
 
 [node name="EmptyNewsLabel" type="Label" parent="NewsPanel" unique_id=501000006]
 layout_mode = 0
-offset_left = 20.0
-offset_top = 260.0
-offset_right = 360.0
-offset_bottom = 320.0
-theme_override_colors/font_color = Color(0.82, 0.9, 1.0, 0.86)
+offset_left = 25.0
+offset_top = 180.0
+offset_right = 365.0
+offset_bottom = 240.0
+theme_override_colors/font_color = Color(0.82, 0.9, 1, 0.86)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 15
+text = "Loading news..."
 horizontal_alignment = 1
 vertical_alignment = 1
-text = "Loading news..."
 
 [node name="LoginPanel" type="Control" parent="." unique_id=1108261510]
 layout_mode = 1
@@ -323,9 +333,9 @@ patch_margin_bottom = 36
 [node name="Logo" type="TextureRect" parent="LoginPanel" unique_id=1052561195]
 layout_mode = 0
 offset_left = 70.0
-offset_top = -72.0
-offset_right = 512.0
-offset_bottom = 155.0
+offset_top = -26.0
+offset_right = 476.0
+offset_bottom = 168.0
 mouse_filter = 2
 texture = SubResource("AtlasTexture_logo")
 expand_mode = 1
