@@ -396,7 +396,7 @@ func get_current_block_hit_source_tool() -> String:
 	if world == null:
 		return ""
 	var equipped = world.get("equipped_tool")
-	if equipped != null and ["neptune_trident", "ant_sword", "phoenix_sword"].has(str(equipped).strip_edges().to_lower()):
+	if equipped != null and ["neptune_trident", "ant_sword", "phoenix_sword", "fire_staff", "wizards_staff"].has(str(equipped).strip_edges().to_lower()):
 		return str(equipped).strip_edges()
 	if str(world.get("selected_item_category")) == "tool":
 		var selected_tool := str(world.get("selected_item_type")).strip_edges()
