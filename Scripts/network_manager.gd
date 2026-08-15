@@ -981,6 +981,13 @@ func append_unique_world_route_url(target: Array[String], value: String) -> void
 
 func get_configured_world_route_urls() -> Array[String]:
 	var urls: Array[String] = []
+	# Same rule as configure_network_urls()'s api_override/ws_override: a custom world-route
+	# URL configured via ProjectSettings must never leak into a production build's trusted
+	# redirect list. Without this gate, a release export carrying a staging pixelmania/network/
+	# world_route_ws_urls value (set via Project Settings, independent of --pixelmania-* launch
+	# args) would accept a server-directed redirect to that staging URL as trusted.
+	if not should_allow_network_override():
+		return urls
 	var raw_value = ProjectSettings.get_setting(NETWORK_WORLD_ROUTE_WS_URLS_SETTING, [])
 	if raw_value is Array:
 		for entry in raw_value:
