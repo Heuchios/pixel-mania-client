@@ -6145,8 +6145,8 @@ const ITEMS = {
 		"category": "tool",
 		"display_name": "Neptune Rod",
 		"rarity": "legendary",
-		"texture": "res://Assets/items/fishing/neptune_rod_1.png",
-		"inventory_icon": "res://Assets/items/fishing/neptune_rod_1.png",
+		"texture": "neptune_rod_1",
+		"inventory_icon": "neptune_rod_icon",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "hand",
@@ -6162,13 +6162,13 @@ const ITEMS = {
 		"hand_item_animations": {
 			"idle": {
 				"frames": [
-					"res://Assets/items/fishing/neptune_rod_1.png",
-					"res://Assets/items/fishing/neptune_rod_2.png",
-					"res://Assets/items/fishing/neptune_rod_3.png",
-					"res://Assets/items/fishing/neptune_rod_4.png",
-					"res://Assets/items/fishing/neptune_rod_3.png",
-					"res://Assets/items/fishing/neptune_rod_2.png",
-					"res://Assets/items/fishing/neptune_rod_1.png"
+					"neptune_rod_1",
+					"neptune_rod_2",
+					"neptune_rod_3",
+					"neptune_rod_4",
+					"neptune_rod_3",
+					"neptune_rod_2",
+					"neptune_rod_1"
 				],
 				"fps": 6.0,
 				"loop": true
@@ -6189,15 +6189,29 @@ const ITEMS = {
 		"punch_animation": "punch_sword",
 		"order": 52
 	},
-"pulu_pulu": {
+"serpent_staff": {
 		"category": "tool",
-		"display_name": "Pulu Pulu",
+		"display_name": "Serpent Staff",
 		"rarity": "legendary",
-		"texture": "res://Assets/items/swords/pulu_pulu.png",
+		"texture": "serpent_staff_1",
+		"inventory_icon": "serpent_staff_icon",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "hand",
 		"hand_item": true,
+		"animation_fps": 6.0,
+		"hand_item_animations": {
+			"idle": {
+				"frames": [
+					"serpent_staff_1",
+					"serpent_staff_2",
+					"serpent_staff_3",
+					"serpent_staff_4"
+				],
+				"fps": 6.0,
+				"loop": true
+			}
+		},
 		"order": 44
 	},
 "angelic_sword": {
