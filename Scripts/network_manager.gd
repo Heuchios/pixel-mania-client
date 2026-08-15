@@ -397,7 +397,8 @@ func begin_world_entry_profile(world_name: String, request_id: String) -> void:
 		"frame_stall_count": 0,
 		"last_loading_percent": -1,
 		"activated_at_msec": 0,
-		"pending_controls_extra": {}
+		"pending_controls_extra": {},
+		"stage_history": []
 	}
 	record_world_entry_stage("client_join_request")
 
@@ -430,6 +431,9 @@ func record_world_entry_stage(stage: String, extra: Dictionary = {}) -> void:
 	for key in extra.keys():
 		event[key] = extra[key]
 	print("[world-entry] " + JSON.stringify(event))
+	var stage_history: Variant = world_entry_profile.get("stage_history", [])
+	if stage_history is Array:
+		(stage_history as Array).append({"stage": stage, "stage_ms": event["stage_ms"]})
 
 
 func _record_world_entry_packet(message_type: String, wire_bytes: int, parse_usec: int) -> void:
@@ -513,7 +517,57 @@ func complete_world_entry_profile(extra: Dictionary = {}) -> void:
 	if activated_at_msec > 0:
 		merged_extra["reveal_tail_ms"] = maxi(0, Time.get_ticks_msec() - activated_at_msec)
 	record_world_entry_stage("client_controls_enabled", merged_extra)
+	_log_world_join_profile_summary()
 	world_entry_profile["active"] = false
+
+
+# Permanent, lightweight join-latency telemetry (dev/debug builds only, same gating as the
+# rest of world_entry_profile -- see is_world_entry_profile_enabled()). The per-stage
+# "[world-entry]" lines above are precise but require manually scanning/correlating many
+# lines to find what was actually slow; this prints ONE consolidated line per completed
+# join plus an explicit warning naming the slowest stage whenever the total exceeds 1s, so
+# a regression is visible without reconstructing the timeline by hand. See world-join
+# latency investigation, section 21 ("permanent world-join telemetry").
+func _log_world_join_profile_summary() -> void:
+	if world_entry_profile.is_empty():
+		return
+	var total_ms := snappedf(
+		float(int(world_entry_profile.get("last_stage_usec", 0)) - int(world_entry_profile.get("started_usec", 0))) / 1000.0,
+		0.001
+	)
+	var stage_history: Variant = world_entry_profile.get("stage_history", [])
+	var slowest_stage := ""
+	var slowest_stage_ms := 0.0
+	if stage_history is Array:
+		for entry in (stage_history as Array):
+			if not (entry is Dictionary):
+				continue
+			var stage_ms := float((entry as Dictionary).get("stage_ms", 0.0))
+			if stage_ms > slowest_stage_ms:
+				slowest_stage_ms = stage_ms
+				slowest_stage = str((entry as Dictionary).get("stage", ""))
+	var first_world_byte_usec := int(world_entry_profile.get("first_world_byte_usec", 0))
+	var started_usec := int(world_entry_profile.get("started_usec", 0))
+	var transfer_ms := 0.0
+	if first_world_byte_usec > 0:
+		transfer_ms = snappedf(float(first_world_byte_usec - started_usec) / 1000.0, 0.001)
+	print("[WORLD_JOIN_PROFILE] " + JSON.stringify({
+		"world": str(world_entry_profile.get("world", "")),
+		"request_id": str(world_entry_profile.get("request_id", "")),
+		"transfer_ms": transfer_ms,
+		"wire_bytes": int(world_entry_profile.get("wire_bytes", 0)),
+		"packet_count": int(world_entry_profile.get("packet_count", 0)),
+		"parse_ms": snappedf(float(world_entry_profile.get("parse_usec", 0)) / 1000.0, 0.001),
+		"frame_stall_count": int(world_entry_profile.get("frame_stall_count", 0)),
+		"slowest_stage": slowest_stage,
+		"slowest_stage_ms": slowest_stage_ms,
+		"TOTAL_JOIN_ms": total_ms
+	}))
+	if total_ms > 1000.0:
+		push_warning(
+			"[WORLD_JOIN_PROFILE] world join exceeded 1000ms (TOTAL_JOIN=%.1fms) -- slowest stage: %s (%.1fms)"
+			% [total_ms, slowest_stage, slowest_stage_ms]
+		)
 
 
 func cancel_world_entry_profile(reason: String) -> void:

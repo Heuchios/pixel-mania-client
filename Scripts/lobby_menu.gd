@@ -10,6 +10,7 @@ const WORLD_JOIN_SCENE_CHANGE_DRAW_FRAMES := 2
 const PLAYER_IDLE_TEXTURE := "res://Assets/player/body/player_idle.png"
 const BACKGROUND_TEXTURE := "res://Assets/ui/backgrounds/mountain_background.png"
 const MenuLoopSoundHelper = preload("res://Scripts/ui/menu_loop_sound_helper.gd")
+const WorldScenePreloader = preload("res://Scripts/world_scene_preloader.gd")
 const MENU_LOOP_SOUND_PATH := "res://Assets/sounds/login.wav"
 const MENU_LOOP_SOUND_VOLUME_DB := -12.0
 const GRASS_BLOCK_TEXTURE := "res://Assets/blocks/Tier_1/basic blocks/grass_block.png"
@@ -51,6 +52,16 @@ var landfill_join_button: Button
 var landfill_join_in_progress := false
 var landfill_join_request_id := ""
 var landfill_ui_panel: Control = null
+
+
+func _process(_delta: float) -> void:
+	# Advance WorldScenePreloader's threaded critical-script/world-scene/item-DB loads and
+	# (once enabled) its visual-texture warmup pass while the player is browsing the lobby
+	# choosing a world. Previously only login_screen.gd called pump() here, so background
+	# preload progress stopped being captured the moment a player left the login screen --
+	# meaning a player who spent time in the lobby before clicking Join got no benefit from
+	# that extra time. See world-join latency investigation, client finding #8.
+	WorldScenePreloader.pump()
 
 
 func _ready() -> void:

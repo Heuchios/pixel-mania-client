@@ -64,6 +64,17 @@ func _ready() -> void:
 		return
 
 	WorldScenePreloader.start()
+	# Start visual/texture warmup (ALWAYS_WARM_VISUAL_PATHS + every item's STARTUP_TEXTURE_KEYS
+	# textures) right away instead of waiting for a world join to finish once, like this
+	# session's other calls to start_optional_warmup() do. Previously the very first world
+	# join of every session was guaranteed cold for any texture outside the tiny fixed warm
+	# list, because nothing enabled this pass until after that first join already completed.
+	# Enabling it here lets it run in the background for the entire time a player spends on
+	# the login screen and lobby before ever clicking Join, at effectively zero cost: it is a
+	# no-op per pump() call until the threaded item-database load (also started above)
+	# finishes, and safe to leave enabled afterward -- it is idempotent once a resource is
+	# cached. See world-join latency investigation, client finding #6.
+	WorldScenePreloader.start_optional_warmup()
 	_setup_login_sound()
 	_setup_account_manager()
 	if not _bind_login_scene_ui():

@@ -48,7 +48,16 @@ const STARTUP_TEXTURE_KEYS := [
 	"body_texture",
 	"tree_textures",
 	"world_lock_access_texture",
-	"world_lock_no_access_texture"
+	"world_lock_no_access_texture",
+	# Dropped items whose category isn't block/seed resolve their world-drop visual from
+	# this key (see drop_manager.gd get_item_drop_texture()) and previously fell outside
+	# every warm list here, so the first time any given item type was ever seen dropped in
+	# a world this session, tile/entity population paid a synchronous cold ResourceLoader
+	# load inline in the yielded-but-still-blocking apply loop -- a real contributor to
+	# "sometimes fast, sometimes slow" world joins. _prepare_visual_requests() below
+	# already walks every item in the item database for each key in this list, so adding
+	# this key is enough to fold inventory icons into the same threaded warmup pass.
+	"inventory_icon"
 ]
 const ALWAYS_WARM_VISUAL_PATHS := [
 	"res://Assets/atlases/items.png",
