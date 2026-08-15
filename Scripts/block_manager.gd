@@ -69,6 +69,21 @@ var atlas_variant_texture_cache: Dictionary = {}
 # keyed by "block_type|visual_block_type|background". Derived purely from the item
 # database, so it stays valid for the lifetime of the loaded item data.
 var tilemap_metadata_cache: Dictionary = {}
+# Memoized ITEM_ATLAS_DB.get_item() results, keyed by atlas item id.
+#
+# get_item() ends in `(item as Dictionary).duplicate(true)` (ItemAtlasDB.gd:139) -- a DEEP copy
+# of the item dictionary on every call. That is the correct default for callers that mutate the
+# result, but get_block_tilemap_metadata() only ever READS it (is_empty / get "atlas_enabled" /
+# "atlas_coords" / "source_id" / "alternative_tile"), and the tilemap_metadata_cache above
+# cannot absorb it: that cache is deliberately bypassed whenever grid_pos != NO_VARIANT_GRID_POS
+# (see can_cache_metadata), which is exactly the shape the world-load path uses. So during a
+# world build this deep copy ran per block, several times per block, across all of the
+# finalize_world_load_block_variants passes -- O(tiles) allocation churn for data that never
+# changes after the atlas DB is loaded.
+#
+# The atlas database is static once loaded, so one shared read-only copy per id is safe.
+# Treat entries as IMMUTABLE: never mutate a dictionary returned from here.
+var atlas_item_metadata_cache: Dictionary = {}
 # get_block_item_data() is called once per block during a world build -- 692 calls on a ~757
 # block world, 62 ms of self time in the profiler -- but a world only contains a few dozen
 # distinct block types. Every call re-runs str()/strip_edges()/to_lower() and
@@ -123,6 +138,15 @@ const FOREGROUND_TEXTURE_REFRESH_PROCESS_USEC := 2500
 # Final world-load visual pass. Bulk loading skips neighbor refresh per block,
 # so one batched pass fixes dirt/water/tree/vine/platform variants before gameplay starts.
 const WORLD_LOAD_VARIANT_FINALIZE_BATCH_SIZE := 768
+# Batch size used when this finalize pass runs as part of an INITIAL world entry, i.e. with the
+# loading overlay covering the screen and the player not yet in control. Same reasoning as
+# WORLD_ENTRY_APPLY_DESKTOP_BUDGET_USEC in world_state_sync_manager.gd: at 768 blocks per yield,
+# finalizing a full 100x70 world (~7,000 foreground + ~7,000 background entries) costs ~18
+# `await get_tree().process_frame` waits, and each of those burns a whole ~16.7ms vsync frame to
+# buy a few ms of work. That is ~300ms of the join spent deliberately idle so a loading spinner
+# stays smooth. During entry we want time-to-playable instead. The yields are kept (not removed)
+# so the overlay can still repaint and so a cancelled/superseded join is not starved.
+const WORLD_ENTRY_VARIANT_FINALIZE_BATCH_SIZE := 8192
 const MAX_CONNECTED_VARIANT_COMPONENT_CELLS := 8192
 const BLOCK_TEXTURE_SHADOW_NAME := "TextureShadow"
 const BLOCK_TEXTURE_SHADOW_OFFSET := Vector2(1.5, 1.5)
@@ -2053,6 +2077,19 @@ func get_atlas_item_id_for_block_type(block_type: String) -> int:
 	return ITEM_ATLAS_DB.get_item_id_for_key(clean_type)
 
 
+# Read-only, memoized accessor for ITEM_ATLAS_DB.get_item(). See atlas_item_metadata_cache.
+# NEVER mutate the returned dictionary -- callers share one instance. If a caller needs to
+# mutate, it must call ITEM_ATLAS_DB.get_item() directly (which still deep-copies) or
+# .duplicate() the result itself.
+func _get_cached_atlas_item(atlas_item_id: int) -> Dictionary:
+	var cached: Variant = atlas_item_metadata_cache.get(atlas_item_id)
+	if cached is Dictionary:
+		return cached as Dictionary
+	var item := ITEM_ATLAS_DB.get_item(atlas_item_id)
+	atlas_item_metadata_cache[atlas_item_id] = item
+	return item
+
+
 func get_block_tilemap_metadata(block_type: String, visual_block_type: String = "", grid_pos: Vector2i = NO_VARIANT_GRID_POS, background := false) -> Dictionary:
 	var clean_type := str(block_type).strip_edges().to_lower()
 	var clean_visual_type := str(visual_block_type).strip_edges().to_lower()
@@ -2081,7 +2118,7 @@ func get_block_tilemap_metadata(block_type: String, visual_block_type: String = 
 	var atlas_item_id := get_atlas_item_id_for_block_type(clean_visual_type)
 	if atlas_item_id <= 0 and clean_visual_type != clean_type:
 		atlas_item_id = get_atlas_item_id_for_block_type(clean_type)
-	var atlas_item := ITEM_ATLAS_DB.get_item(atlas_item_id) if atlas_item_id > 0 else {}
+	var atlas_item := _get_cached_atlas_item(atlas_item_id) if atlas_item_id > 0 else {}
 	var atlas_item_visual_enabled := not atlas_item.is_empty() and bool(atlas_item.get("atlas_enabled", true))
 	var stateful_atlas_data := get_stateful_block_atlas_data(clean_visual_type, grid_pos, background)
 	if stateful_atlas_data.is_empty() and clean_visual_type != clean_type:
@@ -6368,8 +6405,8 @@ func apply_display_preview_fit(preview: Sprite2D, texture: Texture2D, max_size: 
 	var target_max_size := maxf(max_size, 1.0)
 	# Keep display previews for direct displays consistent with inventory slot sizing.
 	if inventory_style:
-		var largest_dimension := maxf(texture_size.x, texture_size.y)
-		preview.scale = Vector2.ONE * (target_max_size / largest_dimension if largest_dimension > 0.0 else 1.0)
+		var inventory_largest_dimension := maxf(texture_size.x, texture_size.y)
+		preview.scale = Vector2.ONE * (target_max_size / inventory_largest_dimension if inventory_largest_dimension > 0.0 else 1.0)
 		preview.offset = Vector2.ZERO
 		return
 
@@ -6740,9 +6777,57 @@ func process_pending_anti_control_visual_refresh() -> void:
 	if not pending_anti_control_visual_refresh:
 		return
 	pending_anti_control_visual_refresh = false
-	refresh_all_anti_punch_visuals()
-	refresh_all_anti_talk_visuals()
-	refresh_all_anti_gravity_visuals()
+	_refresh_all_anti_control_visuals_single_pass()
+
+
+# refresh_all_anti_punch_visuals / _anti_talk_ / _anti_gravity_ each walk the FULL
+# world.blocks dictionary. Called back-to-back (which is the only way they are ever called --
+# see the single call site above, reached from finalize_world_load_block_variants ->
+# queue_anti_control_visual_refresh at the end of every world load) that is three complete
+# scans of up to ~7,000 blocks, unbatched and un-awaited, all inside one frame: a guaranteed
+# frame spike at the exact moment the player is waiting to be handed control.
+#
+# This collapses them into ONE pass with identical semantics -- same per-type states-dict
+# priority pass, same "skip if already refreshed from the states dict" rule, same
+# update_anti_*_visual calls, just one traversal of world.blocks instead of three. The three
+# original functions are left intact for the other paths that call them individually.
+func _refresh_all_anti_control_visuals_single_pass() -> void:
+	if world == null or not ("blocks" in world):
+		return
+
+	var refreshed_punch: Dictionary = {}
+	var refreshed_talk: Dictionary = {}
+	var refreshed_gravity: Dictionary = {}
+
+	if "anti_punch_states" in world and world.anti_punch_states is Dictionary:
+		for raw_grid_pos in world.anti_punch_states.keys():
+			if raw_grid_pos is Vector2i:
+				update_anti_punch_visual(raw_grid_pos)
+				refreshed_punch[raw_grid_pos] = true
+	if "anti_talk_states" in world and world.anti_talk_states is Dictionary:
+		for raw_grid_pos in world.anti_talk_states.keys():
+			if raw_grid_pos is Vector2i:
+				update_anti_talk_visual(raw_grid_pos)
+				refreshed_talk[raw_grid_pos] = true
+	if "anti_gravity_states" in world and world.anti_gravity_states is Dictionary:
+		for raw_grid_pos in world.anti_gravity_states.keys():
+			if raw_grid_pos is Vector2i:
+				update_anti_gravity_visual(raw_grid_pos)
+				refreshed_gravity[raw_grid_pos] = true
+
+	for raw_grid_pos in world.blocks.keys():
+		if not (raw_grid_pos is Vector2i):
+			continue
+		var block_data = world.blocks.get(raw_grid_pos, {})
+		if not (block_data is Dictionary):
+			continue
+		var block_type := str(block_data.get("type", ""))
+		if not refreshed_punch.has(raw_grid_pos) and is_anti_punch_block_type(block_type):
+			update_anti_punch_visual(raw_grid_pos)
+		if not refreshed_talk.has(raw_grid_pos) and is_anti_talk_block_type(block_type):
+			update_anti_talk_visual(raw_grid_pos)
+		if not refreshed_gravity.has(raw_grid_pos) and is_anti_gravity_block_type(block_type):
+			update_anti_gravity_visual(raw_grid_pos)
 
 
 func refresh_stateful_block_animation_after_texture_refresh(grid_pos: Vector2i, block_type: String, block_node: Node = null) -> void:
@@ -8621,16 +8706,53 @@ func finalize_world_load_block_variants(batch_size: int = WORLD_LOAD_VARIANT_FIN
 	if world == null:
 		return
 
+	# Stop any background variant pass still running from a previous world load before starting
+	# this one. Covers the case where the previous join deferred nothing (so it never bumped the
+	# generation itself) and the new world happens to have the same name.
+	cancel_deferred_variant_finalize()
+
 	clear_connected_variant_component_cache()
 	var safe_batch_size: int = maxi(1, batch_size)
+	# Initial world entry: the screen is covered by the loading overlay, so trade loading-screen
+	# frame rate for time-to-playable. See WORLD_ENTRY_VARIANT_FINALIZE_BATCH_SIZE.
+	if batch_size == WORLD_LOAD_VARIANT_FINALIZE_BATCH_SIZE and is_bulk_world_load_active():
+		safe_batch_size = WORLD_ENTRY_VARIANT_FINALIZE_BATCH_SIZE
 	var processed: int = 0
 
 	var foreground_keys: Array = []
 	if "blocks" in world and world.blocks is Dictionary:
 		foreground_keys = world.blocks.keys()
+	var background_keys: Array = background_blocks.keys()
+
+	# Spawn-prioritized variant finalize.
+	#
+	# Measured on a real join: this pass cost ~350ms on BOTH a 42KB world and a 135KB world.
+	# It is invariant to world CONTENT because it is proportional to the world GRID -- every
+	# world is 100x70 and fully generated, so all of them carry ~7,000 foreground blocks, and
+	# each one costs ~50us of genuine variant work (dirt picking its lower variant from the
+	# block above, stone/sand picking weighted variants from grid position, platform/vertical/
+	# connected joins). None of that is redundant, so no cache removes it -- the only way to
+	# stop paying it at join time is to do fewer blocks before handing over control.
+	#
+	# The player can only SEE roughly one screen (~40x23 cells) at the instant they gain
+	# control, which is about a tenth of the grid. So finalize the region around the spawn
+	# point first, hand over control, and resolve the remainder in the background.
+	#
+	# What can be seen while the background pass runs: an offscreen block briefly showing its
+	# base texture rather than its variant (plain dirt before the "dirt with a block above it"
+	# variant applies). Collision, block identity, drops and locks are all unaffected -- those
+	# come from the authoritative snapshot and were already applied before this pass runs.
+	# normalize_block_variant_at is purely a visual-atlas refresh.
+	var prioritize := is_bulk_world_load_active()
+	var deferred_foreground: Array = []
+	var deferred_background: Array = []
+	var priority_center := _get_variant_finalize_priority_center()
 
 	for raw_grid_pos in foreground_keys:
 		if not (raw_grid_pos is Vector2i):
+			continue
+		if prioritize and not _is_within_variant_finalize_priority(raw_grid_pos, priority_center):
+			deferred_foreground.append(raw_grid_pos)
 			continue
 
 		normalize_block_variant_at(raw_grid_pos, false)
@@ -8640,9 +8762,11 @@ func finalize_world_load_block_variants(batch_size: int = WORLD_LOAD_VARIANT_FIN
 			processed = 0
 			await get_tree().process_frame
 
-	var background_keys: Array = background_blocks.keys()
 	for raw_bg_grid_pos in background_keys:
 		if not (raw_bg_grid_pos is Vector2i):
+			continue
+		if prioritize and not _is_within_variant_finalize_priority(raw_bg_grid_pos, priority_center):
+			deferred_background.append(raw_bg_grid_pos)
 			continue
 
 		normalize_block_variant_at(raw_bg_grid_pos, true)
@@ -8653,6 +8777,11 @@ func finalize_world_load_block_variants(batch_size: int = WORLD_LOAD_VARIANT_FIN
 			await get_tree().process_frame
 
 	await optimize_node_backed_blocks_to_tilemap(safe_batch_size)
+
+	# Hand the offscreen remainder to a background pass. Started AFTER the visible region and
+	# the node-backed conversion are complete, so nothing the player can see is waiting on it.
+	if deferred_foreground.size() > 0 or deferred_background.size() > 0:
+		_start_deferred_variant_finalize(deferred_foreground, deferred_background)
 	queue_anti_control_visual_refresh()
 
 	# Recompute the active chunks after the entry spawn/camera changed, then rebuild
@@ -8665,6 +8794,116 @@ func finalize_world_load_block_variants(batch_size: int = WORLD_LOAD_VARIANT_FIN
 		renderer.call("_process_dirty_chunks", true)
 
 	await get_tree().process_frame
+
+
+# Half-extents (in cells) of the region finalized synchronously before the player gains
+# control. A 1280x720 viewport at BLOCK_SIZE 32 shows 40x23 cells, so 30x18 half-extents cover
+# the visible screen plus a generous margin on every side -- the player would have to teleport,
+# not walk, to reach unfinalized ground before the background pass gets there.
+const VARIANT_FINALIZE_PRIORITY_HALF_WIDTH := 30
+const VARIANT_FINALIZE_PRIORITY_HALF_HEIGHT := 18
+# Blocks per frame in the background pass. Deliberately smaller than the entry batch size: by
+# the time this runs the player is in control, so this pass must NOT cause gameplay hitches.
+const DEFERRED_VARIANT_FINALIZE_BATCH_SIZE := 256
+
+var deferred_variant_finalize_generation: int = 0
+
+
+func _get_variant_finalize_priority_center() -> Vector2i:
+	# The player has already been placed at the entry spawn by the time this pass runs (see the
+	# entrance-gate/door placement in world_state_sync_manager before client_world_objects_applied),
+	# so their grid position is the correct centre for "what can be seen right now".
+	if world != null and world.has_method("get_player_grid_position"):
+		var grid_value = world.get_player_grid_position()
+		# get_player_grid_position() returns Vector2i.ZERO when the player node is missing, and
+		# (0,0) is the top-left corner of the world -- never a real spawn. Treat it as "unknown"
+		# so we centre on the world instead of finalizing an empty corner of the sky.
+		if grid_value is Vector2i and (grid_value as Vector2i) != Vector2i.ZERO:
+			return grid_value as Vector2i
+	# Fall back to the middle of the world rather than (0,0), which would bias the priority box
+	# into the top-left corner and leave the actual spawn area unfinalized.
+	var width: int = int(world.WORLD_WIDTH) if world != null and "WORLD_WIDTH" in world else 100
+	var height: int = int(world.WORLD_HEIGHT) if world != null and "WORLD_HEIGHT" in world else 70
+	return Vector2i(int(width / 2.0), int(height / 2.0))
+
+
+func _is_within_variant_finalize_priority(grid_pos: Vector2i, center: Vector2i) -> bool:
+	return (
+		absi(grid_pos.x - center.x) <= VARIANT_FINALIZE_PRIORITY_HALF_WIDTH
+		and absi(grid_pos.y - center.y) <= VARIANT_FINALIZE_PRIORITY_HALF_HEIGHT
+	)
+
+
+func cancel_deferred_variant_finalize() -> void:
+	# Bump the generation so any in-flight background pass stops on its next batch. Called when a
+	# new world load begins so a stale pass cannot write variants into the newly loaded world.
+	deferred_variant_finalize_generation += 1
+
+
+# Finishes variant normalization for the offscreen blocks that finalize_world_load_block_variants
+# skipped. Runs while the player is already in control, so it yields frequently and aborts
+# immediately if the world changes underneath it.
+func _start_deferred_variant_finalize(foreground_keys: Array, background_keys: Array) -> void:
+	deferred_variant_finalize_generation += 1
+	var generation: int = deferred_variant_finalize_generation
+	var world_name := ""
+	if world != null:
+		world_name = str(world.current_world_name).strip_edges().to_upper()
+	_run_deferred_variant_finalize(foreground_keys, background_keys, generation, world_name)
+
+
+func _is_deferred_variant_finalize_current(generation: int, world_name: String) -> bool:
+	if generation != deferred_variant_finalize_generation:
+		return false
+	if world == null or not is_instance_valid(world):
+		return false
+	if get_tree() == null:
+		return false
+	return str(world.current_world_name).strip_edges().to_upper() == world_name
+
+
+func _run_deferred_variant_finalize(
+	foreground_keys: Array,
+	background_keys: Array,
+	generation: int,
+	world_name: String
+) -> void:
+	var processed: int = 0
+
+	for raw_grid_pos in foreground_keys:
+		if not _is_deferred_variant_finalize_current(generation, world_name):
+			return
+		if not (raw_grid_pos is Vector2i):
+			continue
+		# The block may have been broken or replaced by live gameplay since it was deferred.
+		if not world.blocks.has(raw_grid_pos):
+			continue
+		normalize_block_variant_at(raw_grid_pos, false)
+		processed += 1
+		if processed >= DEFERRED_VARIANT_FINALIZE_BATCH_SIZE:
+			processed = 0
+			await get_tree().process_frame
+
+	for raw_bg_grid_pos in background_keys:
+		if not _is_deferred_variant_finalize_current(generation, world_name):
+			return
+		if not (raw_bg_grid_pos is Vector2i):
+			continue
+		if not background_blocks.has(raw_bg_grid_pos):
+			continue
+		normalize_block_variant_at(raw_bg_grid_pos, true)
+		processed += 1
+		if processed >= DEFERRED_VARIANT_FINALIZE_BATCH_SIZE:
+			processed = 0
+			await get_tree().process_frame
+
+	if not _is_deferred_variant_finalize_current(generation, world_name):
+		return
+	# Flush whatever the deferred writes marked dirty so the offscreen variants are present in
+	# the tilemap before the player streams into those chunks.
+	var renderer = ensure_tilemap_renderer()
+	if renderer != null and renderer.has_method("_process_dirty_chunks"):
+		renderer.call("_process_dirty_chunks", true)
 
 
 func schedule_world_entry_tilemap_visual_reconciliation() -> void:
