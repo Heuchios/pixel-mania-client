@@ -31,6 +31,26 @@ const WORLD_STATE_APPLY_MIN_BATCH_SIZE := 128
 const WORLD_STATE_APPLY_MAX_BATCH_SIZE := 2048
 const WORLD_STATE_APPLY_DESKTOP_BUDGET_USEC := 6000
 const WORLD_STATE_APPLY_MOBILE_BUDGET_USEC := 3500
+
+# Initial world ENTRY budgets, ~17x the live budgets above.
+#
+# The budgets above keep the game at 60 FPS while a LIVE world-state update is applied
+# under the player's feet -- correct, because a visible hitch mid-gameplay is bad. But the
+# same code path also builds the world during a join, where a full-screen loading overlay
+# is up, nothing is visible, and the player cannot act.
+#
+# At the live budget each `await process_frame` costs a whole vsync frame (~16.7ms at 60Hz)
+# but only buys 6ms of work, so the build runs at ~36% duty cycle: 1ms of real work costs
+# ~2.8ms of wall clock. A full 100x70 world (~14,000 entries) therefore spends most of the
+# join idle, waiting on vsync purely to animate a spinner smoothly.
+#
+# During entry we optimize for time-to-playable instead. The yields are NOT removed -- they
+# are what lets the overlay repaint and what keeps the is_world_state_apply_current()
+# cancellation checks running, so removing them would break join cancellation and world
+# switching.
+const WORLD_ENTRY_APPLY_DESKTOP_BUDGET_USEC := 100000
+const WORLD_ENTRY_APPLY_MOBILE_BUDGET_USEC := 50000
+const WORLD_ENTRY_APPLY_MAX_BATCH_SIZE := 16384
 const WORLD_STATE_SPAWN_PRIORITY_RADIUS := 12
 # Give the loading CanvasLayer a chance to draw before heavy world-state work.
 const WORLD_STATE_OVERLAY_DRAW_FRAMES := 2
@@ -110,10 +130,33 @@ func _safe_string(value, fallback: String = "", max_length: int = 0) -> String:
 	return text
 
 
+func _is_mobile_runtime() -> bool:
+	return OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios")
+
+
+# True only while the loading overlay owns the screen for an initial world entry -- the
+# player is not in the world yet and cannot see or do anything. Live mid-gameplay updates
+# return false and keep the original small, frame-friendly budget.
+func _is_initial_world_entry_apply() -> bool:
+	if world == null:
+		return false
+	return bool(world.get_meta("world_bulk_load_in_progress", false))
+
+
 func _get_world_state_apply_budget_usec() -> int:
-	if OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios"):
+	if _is_initial_world_entry_apply():
+		if _is_mobile_runtime():
+			return WORLD_ENTRY_APPLY_MOBILE_BUDGET_USEC
+		return WORLD_ENTRY_APPLY_DESKTOP_BUDGET_USEC
+	if _is_mobile_runtime():
 		return WORLD_STATE_APPLY_MOBILE_BUDGET_USEC
 	return WORLD_STATE_APPLY_DESKTOP_BUDGET_USEC
+
+
+func _get_world_state_apply_max_batch_size() -> int:
+	if _is_initial_world_entry_apply():
+		return WORLD_ENTRY_APPLY_MAX_BATCH_SIZE
+	return WORLD_STATE_APPLY_MAX_BATCH_SIZE
 
 
 func _should_yield_world_state_apply(entries_since_yield: int) -> bool:
@@ -121,7 +164,7 @@ func _should_yield_world_state_apply(entries_since_yield: int) -> bool:
 		return false
 	var now_usec: int = Time.get_ticks_usec()
 	if (
-		entries_since_yield < WORLD_STATE_APPLY_MAX_BATCH_SIZE
+		entries_since_yield < _get_world_state_apply_max_batch_size()
 		and now_usec - world_state_apply_batch_started_usec < _get_world_state_apply_budget_usec()
 	):
 		return false

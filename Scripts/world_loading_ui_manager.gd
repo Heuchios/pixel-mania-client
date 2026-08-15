@@ -17,9 +17,17 @@ const WORLD_READY_RETRY_MAX_ATTEMPTS := 6
 # Keep a short minimum visible time so a fast join does not flash the overlay, drop
 # the post-ready hold entirely, and shorten the fade. The player is now unlocked when
 # the fade STARTS (see _fade_out_loading_overlay), so the fade no longer gates control.
-const WORLD_LOADING_MIN_VISIBLE_MSEC := 90
+# Was 90. A measured join showed 220.6ms between client_controls_unlocked and
+# client_controls_enabled -- the world was ready and the player already unlocked, but the
+# join was still "unfinished" for a fifth of a second to satisfy this floor and the fade
+# below. The overlay is visible for the whole build regardless (hundreds of ms), so this
+# only ever fires on joins that were already fast.
+const WORLD_LOADING_MIN_VISIBLE_MSEC := 0
 const WORLD_LOADING_READY_HOLD_MSEC := 0
-const WORLD_LOADING_REVEAL_FADE_SECONDS := 0.18
+# Was 0.18. The player is handed control before this fade starts, but the world is still
+# behind a fading overlay, so by "world visible AND player can act" the join is not done
+# until it completes. 0.08 still reads as a soft reveal rather than a hard cut.
+const WORLD_LOADING_REVEAL_FADE_SECONDS := 0.08
 const WORLD_LOADING_REVEAL_FADE_TRANS: Tween.TransitionType = Tween.TRANS_SINE
 const WORLD_LOADING_REVEAL_FADE_EASE: Tween.EaseType = Tween.EASE_IN_OUT
 const WORLD_LOADING_DOTS_INTERVAL := 0.32

@@ -987,9 +987,22 @@ func _apply_cell(layer_key: String, grid_pos: Vector2i, cell_data: Variant) -> b
 		return false
 
 	layer.set_cell(grid_pos, source_id, _get_cell_atlas_coords(cell_data), _get_cell_alternative_tile(cell_data))
-	if not _physical_cell_matches(layer_key, grid_pos, cell_data):
-		_erase_applied_cell(layer_key, grid_pos)
-		return false
+	# Skip the post-write read-back during bulk world load.
+	#
+	# _physical_cell_matches re-reads the cell with three more TileMapLayer calls
+	# (get_cell_source_id / get_cell_atlas_coords / get_cell_alternative_tile) plus another
+	# layer lookup, turning one logical write into ~4 TileMap round trips. Fine for a single
+	# runtime placement; during a world build it runs for ~7,000+ foreground and ~7,000+
+	# background cells.
+	#
+	# It is also redundant here: _is_cell_data_valid_for_layer() ran a few lines above and
+	# already verified against the real TileSet that the source exists, the atlas source has
+	# this tile, and the alternative tile is valid -- exactly the conditions under which
+	# set_cell would refuse the write. Runtime writes keep the check, where it costs one cell.
+	if not _is_bulk_cell_load_active():
+		if not _physical_cell_matches(layer_key, grid_pos, cell_data):
+			_erase_applied_cell(layer_key, grid_pos)
+			return false
 
 	var applied_cells: Dictionary = applied_cells_by_layer.get(layer_key, {})
 	applied_cells[grid_pos] = cell_data
