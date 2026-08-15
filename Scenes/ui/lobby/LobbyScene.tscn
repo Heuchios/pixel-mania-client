@@ -522,7 +522,7 @@ anchors_preset = 0
 offset_left = 320.0
 offset_top = 472.0
 offset_right = 600.0
-offset_bottom = 864.0
+offset_bottom = 1003.0
 
 [node name="FavoritesButton" type="Button" parent="LeftButtons" unique_id=419470658]
 custom_minimum_size = Vector2(280, 84)
