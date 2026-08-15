@@ -7613,6 +7613,7 @@ func sync_tilemap_only_foreground_block(grid_pos: Vector2i, block_type: String) 
 	var clean_type := str(block_type).strip_edges().to_lower()
 	var visual_synced := false
 	var metadata := get_block_tilemap_metadata(block_type, visual_block_type, grid_pos, false)
+
 	if should_use_foreground_over_player_tilemap_layer(block_type, false):
 		if renderer.has_method("erase_block_cell"):
 			renderer.erase_block_cell(grid_pos, false)
@@ -7632,6 +7633,7 @@ func sync_tilemap_only_foreground_block(grid_pos: Vector2i, block_type: String) 
 		clear_tilemap_cell(grid_pos, false)
 		clear_foreground_tilemap_collision_cell(grid_pos)
 		return false
+
 	sync_tilemap_foreground_animation_cell(grid_pos, block_type, visual_block_type)
 
 	if not is_tilemap_only_foreground_candidate(block_type, visual_block_type, texture):
@@ -8782,6 +8784,7 @@ func finalize_world_load_block_variants(batch_size: int = WORLD_LOAD_VARIANT_FIN
 	# the node-backed conversion are complete, so nothing the player can see is waiting on it.
 	if deferred_foreground.size() > 0 or deferred_background.size() > 0:
 		_start_deferred_variant_finalize(deferred_foreground, deferred_background)
+
 	queue_anti_control_visual_refresh()
 
 	# Recompute the active chunks after the entry spawn/camera changed, then rebuild
@@ -8868,6 +8871,26 @@ func _run_deferred_variant_finalize(
 	generation: int,
 	world_name: String
 ) -> void:
+	# FIX (2026-08-15, measured via [WORLD_JOIN_PROFILE] finalize_variants_breakdown /
+	# deferred_kickoff_ms): _start_deferred_variant_finalize() calls this function WITHOUT
+	# `await`, on the assumption that it's fully non-blocking -- "Started AFTER the visible
+	# region ... so nothing the player can see is waiting on it" (see call site) and
+	# DEFERRED_VARIANT_FINALIZE_BATCH_SIZE's own comment: "by the time this runs the player is
+	# in control, so this pass must NOT cause gameplay hitches."
+	#
+	# But GDScript coroutines run synchronously on the CALLER's stack up to their own first
+	# `await`, regardless of whether the caller awaits them. Without a yield here, the first
+	# DEFERRED_VARIANT_FINALIZE_BATCH_SIZE (256) blocks' worth of normalize_block_variant_at()
+	# calls ran blocking, inside finalize_world_load_block_variants() itself, directly
+	# contradicting the design intent above. Measured on a real join: 99.13ms of blocking work
+	# (~387us/block for 256 blocks) attributed to what every comment here assumed was a
+	# zero-cost kickoff.
+	#
+	# Yielding immediately, before any per-block work, guarantees this coroutine always
+	# suspends on entry and never runs synchronously on the caller's stack -- true fire-and-
+	# forget, independent of whether the caller awaits it.
+	await get_tree().process_frame
+
 	var processed: int = 0
 
 	for raw_grid_pos in foreground_keys:

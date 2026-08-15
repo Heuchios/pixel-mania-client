@@ -1804,6 +1804,22 @@ func _ready():
 		call_deferred("_run_backend_dev_login_and_enter_world")
 	else:
 		exit_to_main_menu(false)
+		# Finding B fix: exit_to_main_menu() above unconditionally resets
+		# world_entry_force_entrance_spawn to false (save_manager.gd's reset for the general
+		# "leaving a world" case). For the post-login auto-join flow -- the common case, where
+		# NetworkManager sends join_world directly and save_manager.enter_world_by_name() (the
+		# only other place that sets this meta true) never runs at all -- that reset is the last
+		# word: nothing else in this flow ever asks for the real entrance-gate placement. The
+		# player was landing at whatever default position the client started at and only getting
+		# moved to the correct spot ~1.5-1.9s later, via the movement anti-cheat's ordinary
+		# position-correction fallback (measured directly: apply_server_player_position_correction
+		# firing with server_x/y matching the entrance gate). Re-request the real, immediate
+		# placement here for exactly the case that fallback was covering for: a genuine pending
+		# join into a specific world (get_pending_join_world_name_early() only returns non-empty
+		# when NetworkManager.has_pending_join() or the persisted pending-join config says so --
+		# this World._ready() would not exist for any other reason on this branch).
+		if get_pending_join_world_name_early() != "":
+			set_meta("world_entry_force_entrance_spawn", true)
 	update_all_ui()
 	# End of the synchronous World._ready() block (scene instantiate + ~45 setup_* calls).
 	# Everything from client_scene_change_requested to here is one uninterruptible main-thread

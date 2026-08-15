@@ -1716,6 +1716,7 @@ func apply_network_world_state(data: Dictionary):
 		# initial placement branch did not succeed.
 		debug_action_position_flow("world_state fallback entry spawn", get_world_state_debug_summary(data))
 		world.force_place_player_at_current_entrance_gate(true)
+
 	_profile_world_entry_stage("client_world_objects_applied", {
 		"elapsed_ms": snappedf(float(Time.get_ticks_usec() - apply_started_usec) / 1000.0, 0.001)
 	})
@@ -1870,6 +1871,7 @@ func apply_network_block_update(data: Dictionary):
 		var existing_block_data = world.blocks.get(grid_pos, {})
 		if existing_block_data is Dictionary:
 			existing_door_name_for_update = _safe_string(existing_block_data.get("door_name", existing_block_data.get("name", "")), "", MAX_DOOR_NAME_LENGTH)
+
 	var should_claim_world_lock_place := false
 	var should_emit_confirmed_particles := true
 	var confirmation_was_predicted := false
