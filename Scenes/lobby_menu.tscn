@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cvxtgtec46nni"]
 
 [ext_resource type="Script" uid="uid://dh6iim8xrqiha" path="res://Scripts/lobby_menu.gd" id="1"]
-[ext_resource type="AudioStream" uid="uid://dp1j3cf0ac7wf" path="res://Assets/sounds/login.wav" id="2"]
+[ext_resource type="AudioStream" uid="uid://b2081fvdx1xwo" path="res://Assets/sounds/login.wav" id="2"]
 
 [node name="LobbyMenu" type="Control" unique_id=1054058678]
 layout_mode = 3

@@ -1224,7 +1224,7 @@ func _update_detail() -> void:
 	_sync_drop_amount_controls()
 
 
-func _update_footer(filtered_items: Array) -> void:
+func _update_footer(_filtered_items: Array) -> void:
 	_update_selected_footer()
 	var occupied_slots: int = _count_usable_inventory_slots(inventory_items)
 	var total_slots: int = _resolve_inventory_slot_count_from_source(inventory_source)

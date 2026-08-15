@@ -1,28 +1,85 @@
 extends Control
 
+# TradeUI
+# ---------------------------------------------------------------------------
+# Backed by Scenes/ui/trade/TradeScene.tscn. The scene owns layout/positions/
+# static panel styling (baked StyleBoxFlat resources); this script wires
+# signals, applies the shared PixelUIStyle text/button styling (which needs
+# the runtime game font, so it stays in code rather than baked into the
+# scene), and owns all trade state/network logic. Node names below match the
+# scene 1:1 -- rename in one place, update the other.
+#
+# Skinning / customizing your own look:
+#   Panels (PanelBack, TopBar, LocalColumn, RemoteColumn, PickerPanel,
+#   AmountPanel, FinalPanel) use baked StyleBoxFlat resources on their
+#   "panel" theme override -- open TradeScene.tscn and swap any of those for
+#   a StyleBoxTexture (or add your own TextureRect/NinePatchRect children) to
+#   reskin a panel. Nothing at runtime touches panel styleboxes, so editor
+#   changes there always stick.
+#
+#   Buttons and slots are different: by default this script re-applies the
+#   shared PixelUIStyle look every time it (re)styles, which would overwrite
+#   hand styling done in the editor. Set `use_pixel_ui_style = false` below
+#   (an @export, so it's a checkbox on the TradeUI root node in the
+#   Inspector) to turn that off entirely -- once disabled, whatever you set
+#   in the editor on AcceptButton/CancelButton/CloseButton/the slot buttons/
+#   etc. (including swapping in your own PixelButton-based custom buttons)
+#   is left alone. The dynamic per-slot "filled vs empty" tint still applies
+#   when the default styling is on, but its four colors are exposed as
+#   exports below so you can retint them without touching code.
+#
+#   The picker's item-list buttons are generated at runtime (one tradable
+#   item = one button, so the count isn't known ahead of time). They are
+#   duplicated from the hidden PickerItemTemplate node under
+#   InventoryPicker/PickerPanel/Scroll/PickerList -- style that one template
+#   node in the editor and every generated item button inherits it.
+# ---------------------------------------------------------------------------
+
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 const SLOT_COUNT := 6
 
+## Master switch for the automatic PixelUIStyle look. Turn off to keep
+## whatever button/label styling you set up by hand in TradeScene.tscn.
+@export var use_pixel_ui_style: bool = true
+
+@export_group("Slot Colors")
+@export var slot_fill_empty: Color = Color(0.05, 0.12, 0.18, 0.42)
+@export var slot_border_empty: Color = Color(0.01, 0.04, 0.08, 0.64)
+@export var slot_fill_filled: Color = Color(0.10, 0.34, 0.56, 0.46)
+@export var slot_border_filled: Color = Color(0.32, 0.70, 1.0, 0.72)
+
 var world = null
-var panel = null
-var overlay = null
-var status_label = null
-var local_name_label = null
-var remote_name_label = null
-var local_check_label = null
-var remote_check_label = null
-var accept_button = null
-var cancel_button = null
-var local_slots = []
-var remote_slots = []
-var picker_overlay = null
-var picker_list = null
-var amount_panel = null
-var amount_label = null
-var amount_spin = null
-var final_overlay = null
-var final_summary_label = null
-var final_confirm_button = null
+
+@onready var panel: Control = get_node_or_null("TradePanel") as Control
+@onready var status_label: Label = get_node_or_null("TradePanel/StatusLabel") as Label
+@onready var title_label: Label = get_node_or_null("TradePanel/Title") as Label
+@onready var top_close_button: Button = get_node_or_null("TradePanel/CloseButton") as Button
+@onready var local_name_label: Label = get_node_or_null("TradePanel/LocalColumn/NameLabel") as Label
+@onready var remote_name_label: Label = get_node_or_null("TradePanel/RemoteColumn/NameLabel") as Label
+@onready var local_check_label: Label = get_node_or_null("TradePanel/LocalColumn/AcceptCheck") as Label
+@onready var remote_check_label: Label = get_node_or_null("TradePanel/RemoteColumn/AcceptCheck") as Label
+@onready var accept_button: Button = get_node_or_null("TradePanel/AcceptButton") as Button
+@onready var cancel_button: Button = get_node_or_null("TradePanel/CancelButton") as Button
+
+@onready var picker_overlay: Control = get_node_or_null("InventoryPicker") as Control
+@onready var picker_title_label: Label = get_node_or_null("InventoryPicker/PickerPanel/Title") as Label
+@onready var picker_close_button: Button = get_node_or_null("InventoryPicker/PickerPanel/CloseButton") as Button
+@onready var picker_list: VBoxContainer = get_node_or_null("InventoryPicker/PickerPanel/Scroll/PickerList") as VBoxContainer
+@onready var picker_item_template: Button = get_node_or_null("InventoryPicker/PickerPanel/Scroll/PickerList/PickerItemTemplate") as Button
+@onready var amount_panel: Panel = get_node_or_null("InventoryPicker/PickerPanel/AmountPanel") as Panel
+@onready var amount_label: Label = get_node_or_null("InventoryPicker/PickerPanel/AmountPanel/AmountLabel") as Label
+@onready var amount_spin: SpinBox = get_node_or_null("InventoryPicker/PickerPanel/AmountPanel/AmountSpin") as SpinBox
+@onready var picker_add_button: Button = get_node_or_null("InventoryPicker/PickerPanel/AmountPanel/AddButton") as Button
+@onready var picker_clear_button: Button = get_node_or_null("InventoryPicker/PickerPanel/AmountPanel/ClearSelectedButton") as Button
+
+@onready var final_overlay: Control = get_node_or_null("FinalConfirmOverlay") as Control
+@onready var final_title_label: Label = get_node_or_null("FinalConfirmOverlay/FinalPanel/Title") as Label
+@onready var final_summary_label: Label = get_node_or_null("FinalConfirmOverlay/FinalPanel/FinalSummaryLabel") as Label
+@onready var final_confirm_button: Button = get_node_or_null("FinalConfirmOverlay/FinalPanel/FinalConfirmButton") as Button
+@onready var final_back_button: Button = get_node_or_null("FinalConfirmOverlay/FinalPanel/BackButton") as Button
+
+var local_slots: Array = []
+var remote_slots: Array = []
 
 var current_trade := {}
 var pending_requests_by_name := {}
@@ -30,402 +87,123 @@ var selected_picker_slot := -1
 var selected_picker_item := {}
 
 
-func setup(parent_world):
-	world = parent_world
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	set_anchors_preset(Control.PRESET_FULL_RECT)
-	z_index = 150
-	build_ui()
+func _ready() -> void:
+	_connect_signals()
+	_populate_slot_arrays()
+	_apply_styles()
 	# Reach the closed state, but skip the inventory round trip when there is nothing to end.
 	# close_trade_ui() calls world.end_trade_item_select(), which unconditionally runs
 	# update_inventory_window() and rebuilds all ~300 inventory slots -- measured at ~555 ms of
-	# setup()'s 564 ms, while build_ui() itself is only ~9 ms. setup() runs from the post-spawn
-	# optional-UI warmup, so that landed as a half-second freeze on a trade UI the player had
-	# not opened, with controls already unlocked. On a freshly built UI trade_select_active is
-	# already false, so the rebuild changes nothing.
+	# the old setup()'s 564 ms, while the scene's own _ready() work above is only a few ms. This
+	# runs from the post-spawn optional-UI warmup, so an unconditional close landed as a half
+	# second freeze on a trade UI the player had not opened, with controls already unlocked. On a
+	# freshly ready UI trade_select_active is already false, so the rebuild would change nothing.
 	#
 	# If a selection somehow IS active (setup can run again on an existing TradeUI node), the
 	# full close path still runs -- correctness before speed.
 	_close_trade_ui(_is_trade_item_selecting())
 
 
-func build_ui():
-	for child in get_children():
-		child.queue_free()
-
-	overlay = ColorRect.new()
-	overlay.name = "TradeOverlay"
-	overlay.color = Color(0.0, 0.0, 0.0, 0.18)
-	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
-	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(overlay)
-
-	panel = Control.new()
-	panel.name = "TradePanel"
-	panel.size = Vector2(920, 560)
-	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.gui_input.connect(_on_panel_gui_input)
-	add_child(panel)
-
-	var panel_back = Panel.new()
-	panel_back.name = "PanelBack"
-	panel_back.position = Vector2.ZERO
-	panel_back.size = panel.size
-	panel_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_PANEL_STRONG,
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		4,
-		14,
-		7
-	))
-	panel.add_child(panel_back)
-
-	var top_bar = Panel.new()
-	top_bar.name = "TopBar"
-	top_bar.position = Vector2(16, 16)
-	top_bar.size = Vector2(888, 58)
-	top_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	top_bar.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_HEADER,
-		PixelUIStyle.GLASS_BORDER,
-		4,
-		12,
-		5
-	))
-	panel.add_child(top_bar)
-
-	var title = Label.new()
-	title.name = "Title"
-	title.text = "PLAYER TRADE"
-	title.position = Vector2(34, 28)
-	title.size = Vector2(360, 34)
-	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(title, 28)
-	panel.add_child(title)
-
-	status_label = Label.new()
-	status_label.name = "StatusLabel"
-	status_label.text = ""
-	status_label.position = Vector2(360, 30)
-	status_label.size = Vector2(430, 28)
-	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	status_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(status_label, 16)
-	panel.add_child(status_label)
-
-	var close_button = Button.new()
-	close_button.name = "CloseButton"
-	close_button.text = "X"
-	close_button.position = Vector2(846, 26)
-	close_button.size = Vector2(42, 36)
-	close_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	PixelUIStyle.apply_close_button(close_button)
-	close_button.pressed.connect(_on_cancel_pressed)
-	panel.add_child(close_button)
-
-	create_trade_column(true, Vector2(32, 98), "YOU")
-	create_trade_column(false, Vector2(488, 98), "OTHER PLAYER")
-	create_bottom_buttons()
-	create_picker_overlay()
-	create_final_overlay()
-	update_position()
+func setup(parent_world):
+	world = parent_world
 
 
-func create_trade_column(is_local: bool, column_position: Vector2, title_text: String):
-	var column = Panel.new()
-	column.name = "LocalColumn" if is_local else "RemoteColumn"
-	column.position = column_position
-	column.size = Vector2(400, 360)
-	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	column.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_SECTION,
-		PixelUIStyle.GLASS_BORDER,
-		3,
-		12,
-		4
-	))
-	panel.add_child(column)
+func _connect_signals() -> void:
+	if panel != null and not panel.gui_input.is_connected(_on_panel_gui_input):
+		panel.gui_input.connect(_on_panel_gui_input)
+	if top_close_button != null and not top_close_button.pressed.is_connected(_on_cancel_pressed):
+		top_close_button.pressed.connect(_on_cancel_pressed)
+	if accept_button != null and not accept_button.pressed.is_connected(_on_accept_pressed):
+		accept_button.pressed.connect(_on_accept_pressed)
+	if cancel_button != null and not cancel_button.pressed.is_connected(_on_cancel_pressed):
+		cancel_button.pressed.connect(_on_cancel_pressed)
+	if picker_close_button != null and not picker_close_button.pressed.is_connected(close_picker):
+		picker_close_button.pressed.connect(close_picker)
+	if picker_add_button != null and not picker_add_button.pressed.is_connected(_on_add_selected_item_pressed):
+		picker_add_button.pressed.connect(_on_add_selected_item_pressed)
+	if picker_clear_button != null and not picker_clear_button.pressed.is_connected(_on_clear_selected_slot_pressed):
+		picker_clear_button.pressed.connect(_on_clear_selected_slot_pressed)
+	if final_confirm_button != null and not final_confirm_button.pressed.is_connected(_on_final_confirm_pressed):
+		final_confirm_button.pressed.connect(_on_final_confirm_pressed)
+	if final_back_button != null and not final_back_button.pressed.is_connected(_on_cancel_pressed):
+		final_back_button.pressed.connect(_on_cancel_pressed)
 
-	var name_label = Label.new()
-	name_label.name = "NameLabel"
-	name_label.text = title_text
-	name_label.position = Vector2(16, 12)
-	name_label.size = Vector2(300, 28)
-	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(name_label, 22)
-	column.add_child(name_label)
 
-	var check_label = Label.new()
-	check_label.name = "AcceptCheck"
-	check_label.text = "✓"
-	check_label.position = Vector2(342, 12)
-	check_label.size = Vector2(36, 28)
-	check_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	check_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	check_label.visible = false
-	check_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(check_label, 24, Color(0.45, 1.0, 0.20, 1.0))
-	column.add_child(check_label)
+func _populate_slot_arrays() -> void:
+	local_slots.clear()
+	remote_slots.clear()
 
-	var grid = GridContainer.new()
-	grid.name = "SlotGrid"
-	grid.position = Vector2(20, 58)
-	grid.size = Vector2(360, 278)
-	grid.columns = 3
-	grid.add_theme_constant_override("h_separation", 12)
-	grid.add_theme_constant_override("v_separation", 12)
-	column.add_child(grid)
+	var local_grid = get_node_or_null("TradePanel/LocalColumn/SlotGrid")
+	var remote_grid = get_node_or_null("TradePanel/RemoteColumn/SlotGrid")
 
 	for i in range(SLOT_COUNT):
-		var slot = Button.new()
-		slot.name = ("LocalSlot" if is_local else "RemoteSlot") + str(i)
-		slot.custom_minimum_size = Vector2(112, 84)
-		slot.text = ""
-		slot.mouse_filter = Control.MOUSE_FILTER_STOP if is_local else Control.MOUSE_FILTER_IGNORE
-		slot.clip_text = true
-		PixelUIStyle.apply_button_text(slot, 14)
-		_apply_slot_style(slot, false)
+		var local_slot: Button = null
+		if local_grid != null:
+			local_slot = local_grid.get_node_or_null("LocalSlot" + str(i)) as Button
+		local_slots.append(local_slot)
+		if local_slot != null and not local_slot.pressed.is_connected(_on_local_slot_pressed):
+			local_slot.pressed.connect(_on_local_slot_pressed.bind(i))
+		if local_slot != null:
+			var clear_button = local_slot.get_node_or_null("ClearButton")
+			if clear_button != null and not clear_button.pressed.is_connected(_on_clear_slot_button_pressed):
+				clear_button.pressed.connect(_on_clear_slot_button_pressed.bind(i))
 
-		var slot_icon = TextureRect.new()
-		slot_icon.name = "ItemIcon"
-		slot_icon.position = Vector2(37, 7)
-		slot_icon.size = Vector2(38, 34)
-		slot_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		slot_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		slot_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		slot_icon.visible = false
-		slot.add_child(slot_icon)
-
-		var slot_label = Label.new()
-		slot_label.name = "ItemLabel"
-		slot_label.position = Vector2(5, 40)
-		slot_label.size = Vector2(102, 38)
-		slot_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		slot_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		slot_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		slot_label.clip_text = true
-		slot_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		PixelUIStyle.apply_small_label(slot_label, 12)
-		slot.add_child(slot_label)
-
-		if is_local:
-			var clear_button = Button.new()
-			clear_button.name = "ClearButton"
-			clear_button.text = "X"
-			clear_button.position = Vector2(84, 5)
-			clear_button.size = Vector2(22, 22)
-			clear_button.visible = false
-			clear_button.mouse_filter = Control.MOUSE_FILTER_STOP
-			PixelUIStyle.apply_close_button(clear_button)
-			clear_button.pressed.connect(_on_clear_slot_button_pressed.bind(i))
-			slot.add_child(clear_button)
-
-			slot.pressed.connect(_on_local_slot_pressed.bind(i))
-			local_slots.append(slot)
-		else:
-			remote_slots.append(slot)
-
-		grid.add_child(slot)
-
-	if is_local:
-		local_name_label = name_label
-		local_check_label = check_label
-	else:
-		remote_name_label = name_label
-		remote_check_label = check_label
+		var remote_slot: Button = null
+		if remote_grid != null:
+			remote_slot = remote_grid.get_node_or_null("RemoteSlot" + str(i)) as Button
+		remote_slots.append(remote_slot)
 
 
-func create_bottom_buttons():
-	accept_button = Button.new()
-	accept_button.name = "AcceptButton"
-	accept_button.text = "Accept"
-	accept_button.position = Vector2(520, 488)
-	accept_button.size = Vector2(180, 46)
-	accept_button.mouse_filter = Control.MOUSE_FILTER_STOP
+func _apply_styles() -> void:
+	if not use_pixel_ui_style:
+		return
+
+	PixelUIStyle.apply_label_shadow(title_label, 28)
+	PixelUIStyle.apply_small_label(status_label, 16)
+	PixelUIStyle.apply_close_button(top_close_button)
+
+	PixelUIStyle.apply_label_shadow(local_name_label, 22)
+	PixelUIStyle.apply_label_shadow(remote_name_label, 22)
+	PixelUIStyle.apply_label_shadow(local_check_label, 24, Color(0.45, 1.0, 0.20, 1.0))
+	PixelUIStyle.apply_label_shadow(remote_check_label, 24, Color(0.45, 1.0, 0.20, 1.0))
+
+	for slot in local_slots:
+		_style_slot(slot, true)
+	for slot in remote_slots:
+		_style_slot(slot, false)
+
 	PixelUIStyle.apply_yellow_button(accept_button, 18)
-	accept_button.pressed.connect(_on_accept_pressed)
-	panel.add_child(accept_button)
-
-	cancel_button = Button.new()
-	cancel_button.name = "CancelButton"
-	cancel_button.text = "Cancel"
-	cancel_button.position = Vector2(718, 488)
-	cancel_button.size = Vector2(170, 46)
-	cancel_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	PixelUIStyle.apply_close_button(cancel_button)
 	cancel_button.text = "Cancel"
-	cancel_button.pressed.connect(_on_cancel_pressed)
-	panel.add_child(cancel_button)
 
-
-func create_picker_overlay():
-	picker_overlay = Control.new()
-	picker_overlay.name = "InventoryPicker"
-	picker_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	picker_overlay.visible = false
-	picker_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(picker_overlay)
-
-	var shade = ColorRect.new()
-	shade.name = "Shade"
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0, 0, 0, 0.24)
-	shade.mouse_filter = Control.MOUSE_FILTER_STOP
-	picker_overlay.add_child(shade)
-
-	var picker_panel = Panel.new()
-	picker_panel.name = "PickerPanel"
-	picker_panel.size = Vector2(620, 470)
-	picker_panel.position = Vector2(0, 0)
-	picker_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	picker_panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_PANEL_STRONG,
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		4,
-		14,
-		7
-	))
-	picker_overlay.add_child(picker_panel)
-
-	var title = Label.new()
-	title.text = "SELECT ITEM"
-	title.position = Vector2(22, 18)
-	title.size = Vector2(300, 30)
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(title, 24)
-	picker_panel.add_child(title)
-
-	var close_button = Button.new()
-	close_button.text = "X"
-	close_button.position = Vector2(558, 16)
-	close_button.size = Vector2(40, 34)
-	PixelUIStyle.apply_close_button(close_button)
-	close_button.pressed.connect(close_picker)
-	picker_panel.add_child(close_button)
-
-	var scroll = ScrollContainer.new()
-	scroll.name = "Scroll"
-	scroll.position = Vector2(20, 62)
-	scroll.size = Vector2(580, 292)
-	scroll.mouse_filter = Control.MOUSE_FILTER_STOP
-	picker_panel.add_child(scroll)
-
-	picker_list = VBoxContainer.new()
-	picker_list.name = "PickerList"
-	picker_list.add_theme_constant_override("separation", 7)
-	scroll.add_child(picker_list)
-
-	amount_panel = Panel.new()
-	amount_panel.name = "AmountPanel"
-	amount_panel.position = Vector2(20, 372)
-	amount_panel.size = Vector2(580, 78)
-	amount_panel.visible = false
-	amount_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	amount_panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_SECTION,
-		PixelUIStyle.GLASS_BORDER,
-		3,
-		12,
-		4
-	))
-	picker_panel.add_child(amount_panel)
-
-	amount_label = Label.new()
-	amount_label.position = Vector2(14, 10)
-	amount_label.size = Vector2(290, 26)
-	amount_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	PixelUIStyle.apply_label_shadow(picker_title_label, 24)
+	PixelUIStyle.apply_close_button(picker_close_button)
 	PixelUIStyle.apply_small_label(amount_label, 16)
-	amount_panel.add_child(amount_label)
+	PixelUIStyle.apply_yellow_button(picker_add_button, 15)
+	PixelUIStyle.apply_blue_button(picker_clear_button, 15)
 
-	amount_spin = SpinBox.new()
-	amount_spin.position = Vector2(16, 40)
-	amount_spin.size = Vector2(150, 30)
-	amount_spin.min_value = 1
-	amount_spin.max_value = 1
-	amount_spin.step = 1
-	amount_spin.value = 1
-	amount_panel.add_child(amount_spin)
-
-	var add_button = Button.new()
-	add_button.text = "Add"
-	add_button.position = Vector2(390, 36)
-	add_button.size = Vector2(86, 34)
-	PixelUIStyle.apply_yellow_button(add_button, 15)
-	add_button.pressed.connect(_on_add_selected_item_pressed)
-	amount_panel.add_child(add_button)
-
-	var clear_button = Button.new()
-	clear_button.text = "Clear"
-	clear_button.position = Vector2(484, 36)
-	clear_button.size = Vector2(82, 34)
-	PixelUIStyle.apply_blue_button(clear_button, 15)
-	clear_button.pressed.connect(_on_clear_selected_slot_pressed)
-	amount_panel.add_child(clear_button)
-
-
-func create_final_overlay():
-	final_overlay = Control.new()
-	final_overlay.name = "FinalConfirmOverlay"
-	final_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	final_overlay.visible = false
-	final_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(final_overlay)
-
-	var shade = ColorRect.new()
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0, 0, 0, 0.32)
-	shade.mouse_filter = Control.MOUSE_FILTER_STOP
-	final_overlay.add_child(shade)
-
-	var final_panel = Panel.new()
-	final_panel.name = "FinalPanel"
-	final_panel.size = Vector2(640, 430)
-	final_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	final_panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.18, 0.32, 0.43, 0.56),
-		Color(1.0, 0.84, 0.05, 0.82),
-		4,
-		14,
-		7
-	))
-	final_overlay.add_child(final_panel)
-
-	var title = Label.new()
-	title.text = "FINAL CONFIRMATION"
-	title.position = Vector2(24, 18)
-	title.size = Vector2(500, 34)
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(title, 26)
-	final_panel.add_child(title)
-
-	final_summary_label = Label.new()
-	final_summary_label.position = Vector2(28, 70)
-	final_summary_label.size = Vector2(584, 260)
-	final_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	final_summary_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	PixelUIStyle.apply_label_shadow(final_title_label, 26)
 	PixelUIStyle.apply_small_label(final_summary_label, 17)
-	final_panel.add_child(final_summary_label)
-
-	final_confirm_button = Button.new()
-	final_confirm_button.text = "Final Accept"
-	final_confirm_button.position = Vector2(326, 356)
-	final_confirm_button.size = Vector2(150, 44)
 	PixelUIStyle.apply_yellow_button(final_confirm_button, 16)
-	final_confirm_button.pressed.connect(_on_final_confirm_pressed)
-	final_panel.add_child(final_confirm_button)
+	PixelUIStyle.apply_close_button(final_back_button)
+	final_back_button.text = "Cancel"
 
-	var back_button = Button.new()
-	back_button.text = "Cancel"
-	back_button.position = Vector2(492, 356)
-	back_button.size = Vector2(120, 44)
-	PixelUIStyle.apply_close_button(back_button)
-	back_button.text = "Cancel"
-	back_button.pressed.connect(_on_cancel_pressed)
-	final_panel.add_child(back_button)
+	if picker_item_template != null:
+		PixelUIStyle.apply_blue_button(picker_item_template, 15)
+
+
+func _style_slot(slot: Button, is_local: bool) -> void:
+	if slot == null:
+		return
+	PixelUIStyle.apply_button_text(slot, 14)
+	var label = slot.get_node_or_null("ItemLabel")
+	if label != null:
+		PixelUIStyle.apply_small_label(label, 12)
+	if is_local:
+		var clear_button = slot.get_node_or_null("ClearButton")
+		if clear_button != null:
+			PixelUIStyle.apply_close_button(clear_button)
+	_apply_slot_style(slot, false)
 
 
 func update_position():
@@ -759,7 +537,8 @@ func set_slot_visual(button: Button, item, label_text: String, is_local: bool, e
 			icon.visible = icon.texture != null
 		if label != null:
 			label.text = label_text
-			PixelUIStyle.apply_small_label(label, 12)
+			if use_pixel_ui_style:
+				PixelUIStyle.apply_small_label(label, 12)
 		button.tooltip_text = label_text.replace("\n", " ")
 		if clear_button != null:
 			clear_button.visible = is_local and editable
@@ -769,15 +548,18 @@ func set_slot_visual(button: Button, item, label_text: String, is_local: bool, e
 			icon.visible = false
 		if label != null:
 			label.text = label_text
-			PixelUIStyle.apply_small_label(label, 13)
+			if use_pixel_ui_style:
+				PixelUIStyle.apply_small_label(label, 13)
 		button.tooltip_text = ""
 		if clear_button != null:
 			clear_button.visible = false
 
 
 func _apply_slot_style(button: Button, filled: bool):
-	var fill = Color(0.10, 0.34, 0.56, 0.46) if filled else Color(0.05, 0.12, 0.18, 0.42)
-	var border = Color(0.32, 0.70, 1.0, 0.72) if filled else Color(0.01, 0.04, 0.08, 0.64)
+	if not use_pixel_ui_style or button == null:
+		return
+	var fill = slot_fill_filled if filled else slot_fill_empty
+	var border = slot_border_filled if filled else slot_border_empty
 	button.add_theme_stylebox_override("normal", PixelUIStyle.style_box(fill, border, 3, 10, 4))
 	button.add_theme_stylebox_override("hover", PixelUIStyle.style_box(fill.lightened(0.12), border, 3, 10, 4))
 	button.add_theme_stylebox_override("pressed", PixelUIStyle.style_box(fill.darkened(0.10), border, 3, 10, 4))
@@ -952,23 +734,32 @@ func rebuild_picker_list():
 	if picker_list == null:
 		return
 
+	# PickerItemTemplate lives under picker_list too (it's the node generated
+	# item buttons are duplicated from), so it must survive this clear.
 	for child in picker_list.get_children():
+		if child == picker_item_template:
+			continue
 		child.queue_free()
 
 	var items = collect_tradable_items()
 	if items.is_empty():
 		var empty_label = Label.new()
 		empty_label.text = "No tradable items in your server inventory."
-		PixelUIStyle.apply_small_label(empty_label, 16)
+		if use_pixel_ui_style:
+			PixelUIStyle.apply_small_label(empty_label, 16)
 		picker_list.add_child(empty_label)
 		return
 
 	for item in items:
-		var button = Button.new()
+		var button: Button = (picker_item_template.duplicate() as Button) if picker_item_template != null else Button.new()
+		button.visible = true
 		button.text = get_item_display_name(str(item.get("item_id", "")), str(item.get("item_category", ""))) + "  x" + str(item.get("count", 0))
-		button.custom_minimum_size = Vector2(552, 38)
-		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		PixelUIStyle.apply_blue_button(button, 15)
+		if picker_item_template == null:
+			button.custom_minimum_size = Vector2(552, 38)
+			button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+			button.focus_mode = Control.FOCUS_NONE
+			if use_pixel_ui_style:
+				PixelUIStyle.apply_blue_button(button, 15)
 		button.pressed.connect(_on_picker_item_pressed.bind(item))
 		picker_list.add_child(button)
 

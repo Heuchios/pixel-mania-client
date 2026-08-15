@@ -1,0 +1,55 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://Scripts/lava_block_glow_fx.gd" id="1_lava_fx"]
+[ext_resource type="Texture2D" path="res://Assets/effects/lava_glow.svg" id="2_glow"]
+[ext_resource type="Texture2D" path="res://Assets/effects/lava_ember.svg" id="3_ember"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_lava_additive"]
+blend_mode = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lava_embers"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(11, 6, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, -1, 0)
+spread = 24.0
+initial_velocity_min = 6.0
+initial_velocity_max = 16.0
+angular_velocity_min = -60.0
+angular_velocity_max = 60.0
+gravity = Vector3(0, -14, 0)
+damping_min = 0.4
+damping_max = 1.2
+scale_min = 0.26
+scale_max = 0.58
+color = Color(1, 0.45, 0.12, 0.85)
+hue_variation_min = -0.02
+hue_variation_max = 0.05
+
+[node name="LavaBlockGlowParticlesFX" type="Node2D"]
+z_index = 4070
+z_as_relative = false
+script = ExtResource("1_lava_fx")
+light_energy = 1.15
+flicker_strength = 0.16
+
+[node name="LavaGlowLight" type="PointLight2D" parent="."]
+color = Color(1, 0.4, 0.08, 1)
+energy = 1.15
+texture = ExtResource("2_glow")
+texture_scale = 1.0
+shadow_enabled = false
+
+[node name="EmberMotes" type="GPUParticles2D" parent="."]
+z_index = 1
+material = SubResource("CanvasItemMaterial_lava_additive")
+emitting = false
+amount = 4
+texture = ExtResource("3_ember")
+lifetime = 1.6
+preprocess = 1.6
+randomness = 0.6
+visibility_rect = Rect2(-20, -30, 40, 40)
+process_material = SubResource("ParticleProcessMaterial_lava_embers")

@@ -38,6 +38,23 @@ func handle_command(raw_command: String, server_verified: bool = false, server_r
 		show_player_help()
 		return
 
+	# /worldjoinprofile -- reprint the most recent world-join stage timeline (the same report
+	# that is printed automatically at the end of every join). Purely local and read-only; no
+	# server round trip, no state change. Kept available to every account because it only
+	# reveals this client's own join timing, which is already printed to its own console.
+	if command == "worldjoinprofile" or command == "joinprofile" or command == "wjp":
+		var network_node = get_node_or_null("/root/NetworkManager")
+		if network_node == null:
+			respond("Network manager is not ready.")
+			return
+		var report := str(network_node.get("last_world_join_profile_text"))
+		if report.strip_edges() == "":
+			respond("No world join has been profiled yet in this session. Join a world and run this again.")
+			return
+		print(report)
+		respond("World join profile printed to the console (latest join).")
+		return
+
 	if command == "mhelp":
 		if not is_moderator_account_active():
 			respond("Moderator commands require moderator access.")
@@ -1344,12 +1361,6 @@ func add_item_to_correct_inventory(item_id: String, amount: int) -> bool:
 		world.add_item_to_inventory_stack(world.beard_inventory, item_id, category, amount)
 		return true
 
-	if category == "body_accessory":
-		if not world.body_accessory_inventory.has(item_id):
-			world.body_accessory_inventory[item_id] = 0
-		world.add_item_to_inventory_stack(world.body_accessory_inventory, item_id, category, amount)
-		return true
-
 	if category == "shirt":
 		if not world.shirt_inventory.has(item_id):
 			world.shirt_inventory[item_id] = 0
@@ -1416,8 +1427,6 @@ func remove_item_from_correct_inventory(item_id: String, amount: int) -> bool:
 		target_inventory = world.eyewear_inventory
 	elif category == "beard":
 		target_inventory = world.beard_inventory
-	elif category == "body_accessory":
-		target_inventory = world.body_accessory_inventory
 	elif category == "shirt":
 		target_inventory = world.shirt_inventory
 	elif category == "pants":

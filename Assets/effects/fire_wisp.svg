@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="22" viewBox="0 0 16 22">
+  <defs>
+    <linearGradient id="flameOuter" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#d81f0a" stop-opacity="0"/>
+      <stop offset="0.28" stop-color="#ff5a12" stop-opacity="0.9"/>
+      <stop offset="0.7" stop-color="#ff9a2e" stop-opacity="0.98"/>
+      <stop offset="1" stop-color="#ffe27a" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="flameInner" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ff7a1a" stop-opacity="0"/>
+      <stop offset="0.45" stop-color="#ffcf5e" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#fff6d6" stop-opacity="1"/>
+    </linearGradient>
+  </defs>
+  <path d="M7.5 21.5
+           C4.2 20.3 2.1 17.6 2.4 14.2
+           C2.6 11.4 4.6 9.6 4.1 7.0
+           C3.8 5.3 4.3 2.9 6.2 0.6
+           C6.0 3.2 8.1 4.6 9.6 6.6
+           C11.3 8.9 12.2 10.8 11.9 13.8
+           C11.6 17.2 10.1 20.2 7.5 21.5 Z"
+        fill="url(#flameOuter)"/>
+  <path d="M7.6 20.5
+           C5.4 19.5 4.0 17.4 4.2 15.0
+           C4.4 12.9 5.8 11.6 5.5 9.6
+           C5.3 8.3 5.7 6.6 7.0 5.1
+           C6.9 6.8 8.3 7.7 9.3 9.1
+           C10.4 10.7 10.9 12.0 10.7 14.0
+           C10.5 16.6 9.5 19.0 7.6 20.5 Z"
+        fill="url(#flameInner)"/>
+</svg>

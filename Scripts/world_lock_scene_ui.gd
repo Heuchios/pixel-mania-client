@@ -18,6 +18,13 @@ const BUTTON_BLUE_PRESSED = preload("res://Assets/ui/inventory/button_blue_press
 const BUTTON_BLUE_HOVER = preload("res://Assets/ui/inventory/button_blue_hover.png")
 const TAB_NORMAL_TEXTURE = preload("res://Assets/ui/inventory/tab_normal.png")
 const TAB_SELECTED_TEXTURE = preload("res://Assets/ui/inventory/tab_selected.png")
+# Same green button kit WorldLockGUI.tscn itself uses for GetKeyButton / PublicBuildButton /
+# SetLimitButton / AddAccessButton, so runtime-styled buttons (dynamically-created member row
+# buttons, the confirm popup) match the scene's authored look instead of the old yellow/blue/red
+# "arcade" palette.
+const BUTTON_GREEN_NORMAL = preload("res://Assets/ui/green_button_normal_90x24.png")
+const BUTTON_GREEN_PRESSED = preload("res://Assets/ui/green_button_pressed_90x24.png")
+const BUTTON_GREEN_HOVER = preload("res://Assets/ui/green_button_hover_90x24.png")
 
 var world = null
 var ui_layer_ref = null
@@ -120,7 +127,8 @@ func _configure_static_ui() -> void:
 	PixelUIStyle.apply_small_label(hint_label, 12)
 	PixelUIStyle.apply_small_label(empty_access_label, 15)
 
-	apply_close_texture_button_style(close_button)
+	# CloseButton already has its own normal/pressed/hover textures authored directly in
+	# WorldLockGUI.tscn -- don't override them with a different close-button asset here.
 	apply_world_lock_tab_style(world_info_tab, true, 13)
 	apply_world_lock_tab_style(access_list_tab, false, 13)
 	apply_world_lock_tab_style(owner_actions_tab, false, 13)
@@ -1136,24 +1144,15 @@ func apply_world_lock_arcade_button_style(button: Button, selected: bool = false
 	if button == null:
 		return
 	PixelUIStyle.apply_button_text(button, font_size)
-	if danger:
-		button.add_theme_stylebox_override("normal", PixelUIStyle.style_box(Color(0.66, 0.10, 0.16, 0.92), Color(1.0, 0.34, 0.38, 0.54), 3, 12, 6))
-		button.add_theme_stylebox_override("hover", PixelUIStyle.style_box(Color(0.86, 0.16, 0.24, 0.98), Color(1.0, 0.52, 0.54, 0.82), 3, 12, 7))
-		button.add_theme_stylebox_override("pressed", PixelUIStyle.style_box(Color(0.42, 0.04, 0.10, 0.96), Color(0.48, 0.06, 0.10, 0.90), 3, 12, 4))
-		button.add_theme_stylebox_override("disabled", PixelUIStyle.style_box(Color(0.30, 0.04, 0.08, 0.56), Color(0.10, 0.0, 0.02, 0.62), 3, 12, 3))
-		return
-
-	if selected:
-		button.add_theme_stylebox_override("normal", _make_texture_style(BUTTON_YELLOW_NORMAL))
-		button.add_theme_stylebox_override("pressed", _make_texture_style(BUTTON_YELLOW_PRESSED))
-		button.add_theme_stylebox_override("hover", _make_texture_style(BUTTON_YELLOW_HOVER))
-		button.add_theme_stylebox_override("disabled", PixelUIStyle.style_box(Color(0.23, 0.20, 0.14, 0.88), Color(0.11, 0.08, 0.03, 1.0), 4, 12, 4))
-		return
-
-	button.add_theme_stylebox_override("normal", _make_texture_style(BUTTON_BLUE_NORMAL))
-	button.add_theme_stylebox_override("pressed", _make_texture_style(BUTTON_BLUE_PRESSED))
-	button.add_theme_stylebox_override("hover", _make_texture_style(BUTTON_BLUE_HOVER))
-	button.add_theme_stylebox_override("disabled", PixelUIStyle.style_box(Color(0.08, 0.12, 0.17, 0.42), Color(0.18, 0.28, 0.40, 0.26), 3, 12, 3))
+	# Always use the same green button kit WorldLockGUI.tscn authors for its own buttons
+	# (GetKeyButton, PublicBuildButton, SetLimitButton, AddAccessButton), so every button in
+	# this menu -- scene-authored or dynamically created (member rows, confirm popup) --
+	# matches the scene's actual look. `selected` and `danger` are kept as parameters so
+	# existing call sites don't need to change, but no longer switch to a different palette.
+	button.add_theme_stylebox_override("normal", _make_texture_style(BUTTON_GREEN_NORMAL))
+	button.add_theme_stylebox_override("pressed", _make_texture_style(BUTTON_GREEN_PRESSED))
+	button.add_theme_stylebox_override("hover", _make_texture_style(BUTTON_GREEN_HOVER))
+	button.add_theme_stylebox_override("disabled", PixelUIStyle.style_box(Color(0.10, 0.14, 0.10, 0.50), Color(0.24, 0.34, 0.22, 0.42), 3, 12, 3))
 
 
 func apply_world_lock_input_style(line_edit: LineEdit, font_size: int = 18) -> void:

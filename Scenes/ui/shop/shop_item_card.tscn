@@ -1,0 +1,228 @@
+[gd_scene load_steps=19 format=3]
+
+[ext_resource type="Script" path="res://Scripts/ui/shop_item_card.gd" id="1_card_script"]
+[ext_resource type="Texture2D" uid="uid://bdqewvpbuib1a" path="res://Assets/ui/panel_outer_403x130.png" id="2_panel_outer"]
+[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="3_inner_panel"]
+[ext_resource type="Texture2D" uid="uid://c0s1vj8wepsbi" path="res://Assets/ui/green_button_normal_90x24.png" id="4_buy_normal"]
+[ext_resource type="Texture2D" uid="uid://pyw7s5lcdhmt" path="res://Assets/ui/green_button_pressed_90x24.png" id="5_buy_pressed"]
+[ext_resource type="Texture2D" uid="uid://opqgsn2jk7ie" path="res://Assets/ui/green_button_hover_90x24.png" id="6_buy_hover"]
+[ext_resource type="Texture2D" uid="uid://m3d85gxykr8n" path="res://Assets/ui/inv_slot_96x96.png" id="7_icon_hint"]
+[ext_resource type="Texture2D" uid="uid://d1n2gwvwc6eay" path="res://Assets/ui/red_button_normal_90x24.png" id="8_buy_disabled"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_card_panel"]
+texture = ExtResource("2_panel_outer")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_art_back"]
+texture = ExtResource("3_inner_panel")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_icon_slot"]
+bg_color = Color(0.11, 0.225, 0.33, 0.62)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.45, 0.82, 0.96, 0.82)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 4
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_badge"]
+bg_color = Color(0.76, 0.93, 1, 0.28)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.76, 0.93, 1, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_buy_normal"]
+texture = ExtResource("4_buy_normal")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_buy_pressed"]
+texture = ExtResource("5_buy_pressed")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_buy_hover"]
+texture = ExtResource("6_buy_hover")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_buy_disabled"]
+texture = ExtResource("8_buy_disabled")
+modulate_color = Color(1, 1, 1, 0.82)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_icon_hint_focus"]
+texture = ExtResource("7_icon_hint")
+
+[node name="ShopItemCard" type="Panel"]
+custom_minimum_size = Vector2(262, 152)
+clip_contents = true
+layout_mode = 2
+tooltip_text = "Item Name"
+theme_override_styles/panel = SubResource("StyleBoxTexture_card_panel")
+script = ExtResource("1_card_script")
+
+[node name="ArtBack" type="Panel" parent="."]
+clip_contents = true
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_art_back")
+
+[node name="AccentWash" type="ColorRect" parent="ArtBack"]
+layout_mode = 0
+offset_left = 137.5
+offset_right = 250.0
+offset_bottom = 88.0
+mouse_filter = 2
+color = Color(0.76, 0.93, 1, 0.2)
+
+[node name="IconSlot" type="Panel" parent="ArtBack"]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 8.0
+offset_right = 161.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_icon_slot")
+
+[node name="Icon" type="TextureRect" parent="ArtBack/IconSlot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="ArtBack/IconSlot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxTexture_icon_hint_focus")
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Badge" type="Panel" parent="ArtBack"]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 8.0
+offset_right = 246.0
+offset_bottom = 28.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge")
+
+[node name="BadgeLabel" type="Label" parent="ArtBack/Badge"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBoxTexture_card_panel")
+text = "FEATURED"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="NameBack" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 68.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.48)
+
+[node name="NameLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 69.0
+offset_right = 252.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "Item Name"
+vertical_alignment = 1
+clip_text = true
+
+[node name="BuyButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 98.0
+offset_right = 256.0
+offset_bottom = 146.0
+tooltip_text = "Buy Item Name"
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_buy_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_buy_pressed")
+theme_override_styles/hover = SubResource("StyleBoxTexture_buy_hover")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_buy_disabled")
+
+[node name="PriceIcon" type="TextureRect" parent="BuyButton"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 36.0
+offset_bottom = 32.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="BuyButton"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.0
+offset_right = 194.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "0"
+vertical_alignment = 1
+
+[node name="BuyLabel" type="Label" parent="BuyButton"]
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 248.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.9, 1, 0.78, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+text = "BUY"
+horizontal_alignment = 2
+vertical_alignment = 1

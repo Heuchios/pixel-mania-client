@@ -138,6 +138,50 @@ cd backend
 npm run load:staged -- --url ws://127.0.0.1:8080 --dev-login --clients 100 --step 25 --step-ms 30s --hold-ms 2m --world LOAD_TEST
 ```
 
+### Capturing server-side metrics
+
+Client-side counters alone cannot tell a server code defect apart from a
+saturated box. Every stage now polls `/health` and writes one JSON line per
+endpoint per sample to `tmp_load_metrics_<timestamp>.jsonl`, carrying the server
+metric and the client liveness numbers at the same instant.
+
+`/health` is served at the host root, so per-path routes such as `/ws-a` and
+`/ws-b` collapse to a single derived URL and only one process gets measured. The
+run warns when that happens. To observe each game process, pass its own endpoint
+(run from the droplet, or over an SSH tunnel):
+
+```bash
+cd backend
+npm run load:staged -- \
+  --urls wss://api.pixelmaniagame.com/ws-a,wss://api.pixelmaniagame.com/ws-b \
+  --worlds LOAD_A1,LOAD_B1,LOAD_A2,LOAD_B2,LOAD_A3,LOAD_B3 \
+  --token-file ./load_tokens.json --clients 250 --step 25 --step-ms 30s --hold-ms 5m \
+  --health-urls a=http://127.0.0.1:18091/health,b=http://127.0.0.1:18092/health \
+  --metrics-out ./tmp_load250_metrics.jsonl
+```
+
+Use `--no-health` to disable polling and `--metrics-out off` to skip the file.
+
+The file is written for failed stages too, including a final `phase: "abort"`
+sample taken before sockets are torn down, because an aborted stage is the one
+whose telemetry matters most. The end-of-run summary reports min/avg/max plus a
+first-quarter versus last-quarter trend for each metric; read the trend, not the
+max, since `max_event_loop_lag_ms` is monotonic by construction.
+
+The fields that decide code defect versus capacity:
+
+| field | reading |
+|---|---|
+| `event_loop_lag_ms` | growing under a steady client count means the process is falling behind |
+| `inbound_message_queue_wait_max_ms` | inbound work is queueing before it is handled |
+| `player_position_queue_wait_max_ms` | movement specifically is queueing |
+| `active_interest_links`, `pending_position_updates` | growth with flat player count points at a leak or O(n^2) fan-out, not capacity |
+| `rss_mb`, `heap_used_mb` | distance to PM2's `max_memory_restart` (512M production, 256M route staging); a trip restarts the process and drops every player on it |
+| `indexed_player_count`, `instance_id` | confirms which process, and how many players, the numbers describe |
+
+`rss_mb` needs a server that publishes `persistence.process_runtime`. Against an older build
+the run warns and the memory series stays zero — that means **unmeasured**, not healthy.
+
 Before running multiple backend instances, prove Redis is enforcing one shared
 world cap across processes:
 

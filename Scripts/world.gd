@@ -112,8 +112,6 @@ const ROTATING_SWORD_SLASH_FX_SCENE_PATH = "res://Scenes/particles/RotatingSword
 const ANT_SWORD_SLASH_REMOTE_DEDUPE_MSEC := 140
 const SWORD_FIRE_HIT_FX_SCENE_PATH = "res://Scenes/particles/SwordFireHitFX.tscn"
 const PHOENIX_SWORD_FIRE_HIT_REMOTE_DEDUPE_MSEC := 140
-const FIRE_PROJECTILE_FX_SCENE_PATH = "res://Scenes/particles/FireProjectileFX.tscn"
-const FIRE_STAFF_PROJECTILE_REMOTE_DEDUPE_MSEC := 140
 const PLAYER_MANAGER_SCRIPT_PATH = "res://Scripts/player_manager.gd"
 const OPTIONAL_WORLD_UI_SETUP_METHODS := [
 	&"setup_player_menu_ui",
@@ -145,7 +143,6 @@ const OPTIONAL_WORLD_UI_SETUP_METHODS := [
 var block_scene = preload("res://Scenes/block.tscn")
 var rotating_sword_slash_scene: PackedScene = null
 var sword_fire_hit_fx_scene: PackedScene = null
-var fire_projectile_fx_scene: PackedScene = null
 var blocks = {}
 var vending_states = {}
 var safe_states = {}
@@ -1802,6 +1799,18 @@ func _ready():
 	else:
 		exit_to_main_menu(false)
 	update_all_ui()
+	# End of the synchronous World._ready() block (scene instantiate + ~45 setup_* calls).
+	# Everything from client_scene_change_requested to here is one uninterruptible main-thread
+	# stretch that the old profile could not see at all.
+	_record_join_stage("client_world_node_ready")
+
+
+# Small helper so world-side code can contribute stages to the join timeline without every
+# call site having to null-check the NetworkManager autoload.
+func _record_join_stage(stage: String) -> void:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network != null and network.has_method("record_world_entry_stage"):
+		network.record_world_entry_stage(stage)
 
 
 func start_optional_world_ui_warmup() -> void:
@@ -4270,10 +4279,6 @@ func spawn_neptune_trident_block_hit_particles(grid_pos: Vector2i, _block_type: 
 		spawn_phoenix_sword_fire_hit_particles(get_block_center_world_position(grid_pos))
 		return
 
-	if is_fire_staff_source_tool(source_tool):
-		spawn_fire_staff_projectile_particles(get_block_center_world_position(grid_pos))
-		return
-
 	if not is_neptune_trident_source_tool(source_tool):
 		return
 
@@ -4287,9 +4292,6 @@ func spawn_hand_item_swing_particles(target_world_position: Vector2 = Vector2(IN
 
 	if is_phoenix_sword_source_tool(source_tool):
 		return spawn_phoenix_sword_fire_hit_particles(target_world_position)
-
-	if is_fire_staff_source_tool(source_tool):
-		return spawn_fire_staff_projectile_particles(target_world_position)
 
 	if is_neptune_trident_source_tool(source_tool):
 		return spawn_neptune_trident_swing_particles(target_world_position)
@@ -4382,25 +4384,6 @@ func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type
 			phoenix_actor.set_meta("last_phoenix_sword_fire_hit_fx_msec", phoenix_now_msec)
 		return
 
-	if is_fire_staff_source_tool(source_tool, false):
-		var fire_staff_target_position := get_block_center_world_position(grid_pos)
-		var fire_staff_actor_facing := get_network_actor_facing(source_data)
-		var fire_staff_actor = get_network_actor_node(source_data)
-		var fire_staff_now_msec := Time.get_ticks_msec()
-		if fire_staff_actor != null and is_instance_valid(fire_staff_actor):
-			var fire_staff_recent_msec := fire_staff_now_msec - int(fire_staff_actor.get_meta("last_fire_staff_projectile_fx_msec", 0))
-			if fire_staff_recent_msec >= 0 and fire_staff_recent_msec < FIRE_STAFF_PROJECTILE_REMOTE_DEDUPE_MSEC:
-				return
-
-		var fire_staff_spawned := spawn_fire_staff_projectile_at(
-			get_network_actor_weapon_edge_world_position(source_data, fire_staff_target_position),
-			fire_staff_target_position,
-			fire_staff_actor_facing
-		)
-		if fire_staff_spawned and fire_staff_actor != null and is_instance_valid(fire_staff_actor):
-			fire_staff_actor.set_meta("last_fire_staff_projectile_fx_msec", fire_staff_now_msec)
-		return
-
 	if not is_neptune_trident_source_tool(source_tool, false):
 		return
 
@@ -4458,75 +4441,6 @@ func spawn_phoenix_sword_fire_hit_particles(target_world_position: Vector2 = Vec
 		target_position = get_local_hand_item_swing_target_position()
 
 	return spawn_sword_fire_hit_fx_at(target_position, player_facing_direction)
-
-
-func get_fire_projectile_fx_scene() -> PackedScene:
-	if fire_projectile_fx_scene != null:
-		if fire_projectile_fx_scene.resource_path == FIRE_PROJECTILE_FX_SCENE_PATH:
-			return fire_projectile_fx_scene
-		fire_projectile_fx_scene = null
-	if not ResourceLoader.exists(FIRE_PROJECTILE_FX_SCENE_PATH):
-		return null
-
-	var loaded_projectile_scene = load(FIRE_PROJECTILE_FX_SCENE_PATH)
-	if loaded_projectile_scene is PackedScene:
-		fire_projectile_fx_scene = loaded_projectile_scene
-	return fire_projectile_fx_scene
-
-
-func spawn_fire_staff_projectile_particles(target_world_position: Vector2 = Vector2(INF, INF)) -> bool:
-	if player == null:
-		return false
-
-	var target_position: Vector2 = target_world_position
-	if not is_finite(target_position.x) or not is_finite(target_position.y):
-		target_position = get_local_hand_item_swing_target_position()
-
-	var start_position := get_local_weapon_edge_world_position(target_position)
-	if start_position.distance_squared_to(target_position) < 16.0:
-		var direction: Vector2 = (target_position - player.global_position).normalized()
-		if direction.length_squared() < 0.01:
-			direction = Vector2.RIGHT * (1.0 if player_facing_direction >= 0 else -1.0)
-		target_position = start_position + direction * HAND_ITEM_SWING_RANGE_PIXELS
-
-	return spawn_fire_staff_projectile_at(start_position, target_position, player_facing_direction)
-
-
-func spawn_fire_staff_projectile_at(start_world_position: Vector2, target_world_position: Vector2, facing_direction: int = 1) -> bool:
-	if not is_finite(start_world_position.x) or not is_finite(start_world_position.y):
-		return false
-	if not is_finite(target_world_position.x) or not is_finite(target_world_position.y):
-		return false
-
-	var projectile_scene := get_fire_projectile_fx_scene()
-	if projectile_scene == null:
-		return false
-
-	var effect = projectile_scene.instantiate()
-	if not (effect is Node2D):
-		if effect != null:
-			effect.queue_free()
-		return false
-
-	var projectile_node := effect as Node2D
-	projectile_node.set("preview_emitting", false)
-	projectile_node.set("auto_preview_motion", false)
-	projectile_node.set("auto_preview_impact", false)
-	projectile_node.set("show_preview_path", false)
-	projectile_node.set("loop_in_game", false)
-	add_child(projectile_node)
-	projectile_node.global_position = start_world_position
-
-	var projectile_direction := target_world_position - start_world_position
-	if projectile_direction.length_squared() < 0.01:
-		projectile_direction = Vector2.RIGHT * (1.0 if facing_direction >= 0 else -1.0)
-
-	if projectile_node.has_method("launch_to"):
-		projectile_node.launch_to(start_world_position, target_world_position)
-	elif projectile_node.has_method("play_once"):
-		projectile_node.play_once(projectile_direction.normalized())
-
-	return true
 
 
 func get_rotating_sword_slash_scene() -> PackedScene:
@@ -4803,22 +4717,6 @@ func is_phoenix_sword_source_tool(source_tool: String = "", allow_equipped_fallb
 		clean_tool = str(selected_item_type).strip_edges().to_lower()
 
 	return clean_tool == "phoenix_sword"
-
-
-func is_fire_staff_source_tool(source_tool: String = "", allow_equipped_fallback: bool = true) -> bool:
-	var clean_tool := str(source_tool).strip_edges().to_lower()
-	if clean_tool == "fire_staff":
-		return true
-
-	if allow_equipped_fallback:
-		var clean_equipped := str(equipped_tool).strip_edges().to_lower()
-		if clean_equipped == "fire_staff":
-			return true
-
-	if clean_tool == "" and selected_item_category == "tool":
-		clean_tool = str(selected_item_type).strip_edges().to_lower()
-
-	return clean_tool == "fire_staff"
 
 
 func spawn_block_break_particles(grid_pos: Vector2i, block_type: String = "", layer: String = "foreground"):

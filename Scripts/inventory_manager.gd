@@ -2545,7 +2545,6 @@ func _get_hotbar_slot_icon_layout(item_type: String, _category: String, icon: Te
 		fallback_position.x + 3.0,
 		fallback_position.y + 4.0
 	)
-	var fallback_shadow_size := fallback_size
 	var fallback_shadow_scale := icon_shadow.scale if icon_shadow != null else fallback_scale
 
 	var resolved_position: Vector2 = layout.get("icon_position", fallback_position)

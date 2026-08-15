@@ -1,0 +1,3666 @@
+[gd_scene format=3 uid="uid://ckki27ejqki4v"]
+
+[ext_resource type="Texture2D" uid="uid://bdqewvpbuib1a" path="res://Assets/ui/panel_outer_403x130.png" id="1_2qpwh"]
+[ext_resource type="Texture2D" uid="uid://dgcks3ril3f2v" path="res://Assets/ui/icons/shop.png" id="1_shop_icon"]
+[ext_resource type="Texture2D" uid="uid://ch2qryxhnpu18" path="res://Assets/ui/close_button.png" id="3_tv5fw"]
+[ext_resource type="Texture2D" uid="uid://cdd8rhkxp0cky" path="res://Assets/ui/close_button_pressed.png" id="4_mpl80"]
+[ext_resource type="Texture2D" uid="uid://tbchr2qk0dib" path="res://Assets/ui/close_button_hover.png" id="5_ylh5h"]
+[ext_resource type="Texture2D" uid="uid://bg5sabtp5jnsv" path="res://Assets/ui/input_744x72.png" id="6_p2vwp"]
+[ext_resource type="Texture2D" uid="uid://c0s1vj8wepsbi" path="res://Assets/ui/green_button_normal_90x24.png" id="7_kxi86"]
+[ext_resource type="Texture2D" uid="uid://pyw7s5lcdhmt" path="res://Assets/ui/green_button_pressed_90x24.png" id="8_43sgp"]
+[ext_resource type="Texture2D" uid="uid://opqgsn2jk7ie" path="res://Assets/ui/green_button_hover_90x24.png" id="9_ysj1n"]
+[ext_resource type="Texture2D" uid="uid://i3nk3d4nfgx5" path="res://Assets/ui/pink_button_90x24.png" id="10_3hnu1"]
+[ext_resource type="Texture2D" uid="uid://bqm24ecryw223" path="res://Assets/ui/pink_button_pressed_90x24.png" id="11_iaelw"]
+[ext_resource type="Texture2D" uid="uid://dp3cg88aiem4v" path="res://Assets/ui/pink_button_hover_90x24.png" id="12_pwrhb"]
+[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="13_ylh5h"]
+[ext_resource type="Texture2D" uid="uid://m3d85gxykr8n" path="res://Assets/ui/inv_slot_96x96.png" id="14_p2vwp"]
+[ext_resource type="Texture2D" uid="uid://dx37mxwmbyavw" path="res://Assets/effects/lava_glow.svg" id="15_kxi86"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mpslp"]
+texture = ExtResource("13_ylh5h")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h4f7a"]
+texture = ExtResource("1_2qpwh")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bqmv4"]
+texture = ExtResource("3_tv5fw")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pyei0"]
+texture = ExtResource("4_mpl80")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gbjtu"]
+texture = ExtResource("5_ylh5h")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ns3f3"]
+texture = ExtResource("6_p2vwp")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_u6itf"]
+texture = ExtResource("7_kxi86")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a8om8"]
+texture = ExtResource("8_43sgp")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1e6oo"]
+texture = ExtResource("9_ysj1n")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_drm40"]
+texture = ExtResource("1_2qpwh")
+
+[sub_resource type="Animation" id="Anim_FeaturedGlow"]
+resource_name = "pulse"
+length = 1.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Glow:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.9, 1.8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.2, 0.55, 0.2]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimLib_FeaturedGlow"]
+_data = {
+&"pulse": SubResource("Anim_FeaturedGlow")
+}
+
+[sub_resource type="StyleBoxFlat" id="SB_Badge_special"]
+bg_color = Color(1, 0.38, 0.58, 0.28)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.38, 0.58, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yannu"]
+texture = ExtResource("14_p2vwp")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3hnu1"]
+texture = ExtResource("14_p2vwp")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iaelw"]
+texture = ExtResource("14_p2vwp")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nsypl"]
+texture = ExtResource("15_kxi86")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wut2r"]
+texture = ExtResource("1_2qpwh")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ysj1n"]
+texture = ExtResource("1_2qpwh")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sy16e"]
+texture = ExtResource("13_ylh5h")
+
+[sub_resource type="StyleBoxFlat" id="SB_IconSlot"]
+bg_color = Color(0.11, 0.225, 0.33, 0.62)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.45, 0.82, 0.96, 0.82)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 4
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pwrhb"]
+texture = ExtResource("14_p2vwp")
+
+[sub_resource type="StyleBoxFlat" id="SB_Badge_locks"]
+bg_color = Color(1, 0.78, 0.12, 0.28)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.78, 0.12, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yn74s"]
+texture = ExtResource("1_2qpwh")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_43sgp"]
+texture = ExtResource("1_2qpwh")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_55mj2"]
+texture = ExtResource("13_ylh5h")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uym7p"]
+texture = ExtResource("14_p2vwp")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_re1du"]
+texture = ExtResource("1_2qpwh")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kxi86"]
+texture = ExtResource("1_2qpwh")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_p1h0i"]
+texture = ExtResource("13_ylh5h")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qqshk"]
+texture = ExtResource("14_p2vwp")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5ujeb"]
+texture = ExtResource("1_2qpwh")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_p2vwp"]
+texture = ExtResource("1_2qpwh")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2ms4m"]
+texture = ExtResource("13_ylh5h")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_02ab5"]
+texture = ExtResource("14_p2vwp")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6utsw"]
+texture = ExtResource("1_2qpwh")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_02uc5"]
+texture = ExtResource("1_2qpwh")
+
+[sub_resource type="StyleBoxFlat" id="SB_Badge_stations"]
+bg_color = Color(0.3, 0.86, 1, 0.28)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.86, 1, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="SB_Badge_clothes"]
+bg_color = Color(0.78, 0.4, 1, 0.28)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.78, 0.4, 1, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="SB_Badge_tools"]
+bg_color = Color(0.34, 1, 0.5, 0.28)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.34, 1, 0.5, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="SB_Badge_fishing"]
+bg_color = Color(0.28, 0.72, 1, 0.28)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.28, 0.72, 1, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="SB_Badge_featured"]
+bg_color = Color(0.76, 0.93, 1, 0.28)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.76, 0.93, 1, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xkxiq"]
+texture = ExtResource("10_3hnu1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rc2nt"]
+texture = ExtResource("11_iaelw")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vysdx"]
+texture = ExtResource("12_pwrhb")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_g4i1h"]
+texture = ExtResource("12_pwrhb")
+
+[sub_resource type="ButtonGroup" id="BG_Category"]
+resource_name = "CategoryTabGroup"
+
+[sub_resource type="StyleBoxFlat" id="SB_Banner"]
+bg_color = Color(0.3, 0.1, 0.42, 0.62)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 0.55, 0.95, 0.78)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 12
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="Animation" id="Anim_BannerGlow"]
+resource_name = "pulse"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Glow:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.18, 0.5, 0.18]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimLib_BannerGlow"]
+_data = {
+&"pulse": SubResource("Anim_BannerGlow")
+}
+
+[sub_resource type="StyleBoxFlat" id="SB_PremiumNormal"]
+bg_color = Color(0.62, 0.4, 0.04, 0.95)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.82, 0.3, 0.9)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 6
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="SB_PremiumPressed"]
+bg_color = Color(0.4, 0.24, 0.02, 0.98)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.7, 0.55, 0.1, 0.9)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 3
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="SB_PremiumHover"]
+bg_color = Color(0.78, 0.52, 0.06, 0.98)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.92, 0.55, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="SB_FeaturedFrame"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 0.92)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(1, 1, 1, 0.25)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="SB_Card"]
+bg_color = Color(0.18, 0.32, 0.43, 0.42)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.72, 0.92, 1, 0.46)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yg7m3"]
+texture = ExtResource("13_ylh5h")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7v44k"]
+texture = ExtResource("14_p2vwp")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_v1e53"]
+texture = ExtResource("7_kxi86")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_s8451"]
+texture = ExtResource("8_43sgp")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5xvbv"]
+texture = ExtResource("9_ysj1n")
+
+[node name="ShopScene" type="Control" unique_id=231987086]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Backdrop" type="ColorRect" parent="." unique_id=1350107153]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.03, 0.05, 0.62)
+
+[node name="Window" type="Control" parent="." unique_id=1480800001]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -740.0
+offset_top = -400.0
+offset_right = 740.0
+offset_bottom = 400.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WindowPanel" type="Panel" parent="Window" unique_id=1480800002]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_mpslp")
+
+[node name="TopBar" type="Panel" parent="Window" unique_id=990897707]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 84.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_h4f7a")
+
+[node name="AccentLine" type="ColorRect" parent="Window/TopBar" unique_id=1506114630]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.42, 0.78, 1, 0.55)
+
+[node name="ShopIcon" type="TextureRect" parent="Window/TopBar" unique_id=832182822]
+visible = false
+layout_mode = 0
+offset_left = 36.0
+offset_top = 16.0
+offset_right = 88.0
+offset_bottom = 68.0
+mouse_filter = 2
+texture = ExtResource("1_shop_icon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="Window/TopBar" unique_id=1779695376]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 8.0
+offset_right = 480.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 48
+text = "SHOP"
+vertical_alignment = 1
+
+[node name="TitleSub" type="Label" parent="Window/TopBar" unique_id=1422369329]
+visible = false
+layout_mode = 0
+offset_left = 100.0
+offset_top = 56.0
+offset_right = 360.0
+offset_bottom = 78.0
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "SPEND YOUR GEMS"
+
+[node name="CloseButton" type="Button" parent="Window/TopBar" unique_id=1836286539]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -66.0
+offset_top = 14.0
+offset_right = -14.0
+offset_bottom = 62.0
+grow_horizontal = 0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxTexture_bqmv4")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_pyei0")
+theme_override_styles/hover = SubResource("StyleBoxTexture_gbjtu")
+text = "X"
+
+[node name="GemChip" type="Panel" parent="Window/TopBar" unique_id=1010467774]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -250.0
+offset_top = 16.0
+offset_right = -72.0
+offset_bottom = 60.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_ns3f3")
+
+[node name="GemIcon" type="TextureRect" parent="Window/TopBar/GemChip" unique_id=1152104277]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 46.0
+offset_bottom = 42.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GemLabel" type="Label" parent="Window/TopBar/GemChip" unique_id=245384064]
+layout_mode = 0
+offset_left = 52.0
+offset_top = 9.0
+offset_right = 204.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 24
+text = "12,450"
+vertical_alignment = 1
+
+[node name="GetGemsButton" type="Button" parent="Window/TopBar" unique_id=1235011197]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -408.0
+offset_top = 18.0
+offset_right = -298.0
+offset_bottom = 66.0
+grow_horizontal = 0
+tooltip_text = "Jump to the Gem Store tab"
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+text = "+ GET GEMS"
+
+[node name="ShopPageRoot" type="Control" parent="Window" unique_id=1291950479]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 44.0
+offset_top = 180.0
+offset_right = -44.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ItemsScroll" type="ScrollContainer" parent="Window/ShopPageRoot" unique_id=1925146041]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="ItemsList" type="VBoxContainer" parent="Window/ShopPageRoot/ItemsScroll" unique_id=1592348078]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 28
+
+[node name="FeaturedSpotlight" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList" unique_id=395458654]
+custom_minimum_size = Vector2(0, 168)
+clip_contents = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_drm40")
+
+[node name="Glow" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/FeaturedSpotlight" unique_id=1271245861]
+modulate = Color(1, 1, 1, 0.40257204)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.958793, 0.79366434, 1, 0.3019608)
+
+[node name="GlowAnim" type="AnimationPlayer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/FeaturedSpotlight" unique_id=503264238]
+libraries/ = SubResource("AnimLib_FeaturedGlow")
+autoplay = &"pulse"
+
+[node name="RibbonBack" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/FeaturedSpotlight" unique_id=636057213]
+z_index = 1
+layout_mode = 0
+offset_left = -40.0
+offset_top = 18.0
+offset_right = 150.0
+offset_bottom = 48.0
+rotation = -0.55850536
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_special")
+
+[node name="RibbonLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/FeaturedSpotlight/RibbonBack" unique_id=420246302]
+z_index = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 14
+text = "HOT DEAL"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="IconSlot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/FeaturedSpotlight" unique_id=967401657]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 26.0
+offset_right = 146.0
+offset_bottom = 146.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_yannu")
+
+[node name="Icon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/FeaturedSpotlight/IconSlot" unique_id=1911194142]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 14.0
+offset_top = 14.0
+offset_right = -14.0
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/FeaturedSpotlight/IconSlot" unique_id=881427772]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxTexture_3hnu1")
+theme_override_styles/focus = SubResource("StyleBoxTexture_iaelw")
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Title" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/FeaturedSpotlight" unique_id=1758786794]
+layout_mode = 0
+offset_left = 166.0
+offset_top = 22.0
+offset_right = 620.0
+offset_bottom = 60.0
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 30
+text = "Vending Machine"
+
+[node name="Description" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/FeaturedSpotlight" unique_id=279282276]
+layout_mode = 0
+offset_left = 166.0
+offset_top = 62.0
+offset_right = 640.0
+offset_bottom = 100.0
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 16
+text = "Sell items to other players for World Locks."
+autowrap_mode = 2
+
+[node name="BuyButton" type="Button" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/FeaturedSpotlight" unique_id=1005333979]
+layout_mode = 0
+offset_left = 166.0
+offset_top = 108.0
+offset_right = 406.0
+offset_bottom = 150.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+
+[node name="PriceIcon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/FeaturedSpotlight/BuyButton" unique_id=79455021]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 7.0
+offset_right = 42.0
+offset_bottom = 37.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/FeaturedSpotlight/BuyButton" unique_id=653476307]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 3.0
+offset_right = 170.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 22
+text = "7,500"
+vertical_alignment = 1
+
+[node name="BuyLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/FeaturedSpotlight/BuyButton" unique_id=233019117]
+visible = false
+layout_mode = 0
+offset_left = 176.0
+offset_top = 7.0
+offset_right = 228.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0.9, 1, 0.78, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 17
+text = "BUY"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="SectionLocks" type="VBoxContainer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList" unique_id=880935974]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Heading" type="HBoxContainer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks" unique_id=2053936901]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Dot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/Heading" unique_id=790237198]
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxTexture_nsypl")
+
+[node name="Heading" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/Heading" unique_id=1635769737]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 24
+text = "LOCKS"
+
+[node name="Line" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/Heading" unique_id=1224828253]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+color = Color(1, 0.78, 0.12, 0.55)
+
+[node name="GridPanel" type="PanelContainer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks" unique_id=1480900001]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_wut2r")
+
+[node name="Grid" type="GridContainer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel" unique_id=2004028906]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 14
+columns = 4
+
+[node name="Card_small_lock" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid" unique_id=1770037550]
+custom_minimum_size = Vector2(262, 152)
+clip_contents = true
+layout_mode = 2
+tooltip_text = "Small Lock"
+theme_override_styles/panel = SubResource("StyleBoxTexture_ysj1n")
+
+[node name="ArtBack" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_small_lock" unique_id=2050541642]
+clip_contents = true
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_sy16e")
+
+[node name="AccentWash" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_small_lock/ArtBack" unique_id=1840025583]
+layout_mode = 0
+offset_left = 137.5
+offset_right = 250.0
+offset_bottom = 88.0
+mouse_filter = 2
+color = Color(1, 0.78, 0.12, 0.2)
+
+[node name="IconSlot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_small_lock/ArtBack" unique_id=1607791869]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 8.0
+offset_right = 161.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_small_lock/ArtBack/IconSlot" unique_id=2129820914]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_small_lock/ArtBack/IconSlot" unique_id=770001762]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxTexture_pwrhb")
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Badge" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_small_lock/ArtBack" unique_id=77201744]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 8.0
+offset_right = 246.0
+offset_bottom = 28.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_locks")
+
+[node name="BadgeLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_small_lock/ArtBack/Badge" unique_id=1772576472]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBoxTexture_yn74s")
+text = "LOCKS"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="NameBack" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_small_lock" unique_id=1367812056]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 68.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.48)
+
+[node name="NameLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_small_lock" unique_id=2125258519]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 69.0
+offset_right = 252.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "Small Lock"
+vertical_alignment = 1
+clip_text = true
+
+[node name="BuyButton" type="Button" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_small_lock" unique_id=1787720858]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 98.0
+offset_right = 256.0
+offset_bottom = 146.0
+tooltip_text = "Buy Small Lock"
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+
+[node name="PriceIcon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_small_lock/BuyButton" unique_id=1576204257]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 36.0
+offset_bottom = 32.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_small_lock/BuyButton" unique_id=1824276809]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.0
+offset_right = 194.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "500"
+vertical_alignment = 1
+
+[node name="BuyLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_small_lock/BuyButton" unique_id=197408646]
+visible = false
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 248.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.9, 1, 0.78, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+text = "BUY"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Card_medium_lock" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid" unique_id=427068632]
+custom_minimum_size = Vector2(262, 152)
+clip_contents = true
+layout_mode = 2
+tooltip_text = "Medium Lock"
+theme_override_styles/panel = SubResource("StyleBoxTexture_43sgp")
+
+[node name="ArtBack" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_medium_lock" unique_id=1866572677]
+clip_contents = true
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_55mj2")
+
+[node name="AccentWash" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_medium_lock/ArtBack" unique_id=1666694095]
+layout_mode = 0
+offset_left = 137.5
+offset_right = 250.0
+offset_bottom = 88.0
+mouse_filter = 2
+color = Color(1, 0.78, 0.12, 0.2)
+
+[node name="IconSlot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_medium_lock/ArtBack" unique_id=1649003600]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 8.0
+offset_right = 161.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_medium_lock/ArtBack/IconSlot" unique_id=111463423]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_medium_lock/ArtBack/IconSlot" unique_id=320644099]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxTexture_uym7p")
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Badge" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_medium_lock/ArtBack" unique_id=1315038658]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 8.0
+offset_right = 246.0
+offset_bottom = 28.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_locks")
+
+[node name="BadgeLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_medium_lock/ArtBack/Badge" unique_id=483440036]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBoxTexture_re1du")
+text = "LOCKS"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="NameBack" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_medium_lock" unique_id=329240990]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 68.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.48)
+
+[node name="NameLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_medium_lock" unique_id=2010159004]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 69.0
+offset_right = 252.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "Medium Lock"
+vertical_alignment = 1
+clip_text = true
+
+[node name="BuyButton" type="Button" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_medium_lock" unique_id=249990730]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 98.0
+offset_right = 256.0
+offset_bottom = 146.0
+tooltip_text = "Buy Medium Lock"
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+
+[node name="PriceIcon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_medium_lock/BuyButton" unique_id=602523965]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 36.0
+offset_bottom = 32.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_medium_lock/BuyButton" unique_id=184830710]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.0
+offset_right = 194.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "1,000"
+vertical_alignment = 1
+
+[node name="BuyLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_medium_lock/BuyButton" unique_id=245821729]
+visible = false
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 248.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.9, 1, 0.78, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+text = "BUY"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Card_big_lock" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid" unique_id=239900721]
+custom_minimum_size = Vector2(262, 152)
+clip_contents = true
+layout_mode = 2
+tooltip_text = "Big Lock"
+theme_override_styles/panel = SubResource("StyleBoxTexture_kxi86")
+
+[node name="ArtBack" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_big_lock" unique_id=1800549156]
+clip_contents = true
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_p1h0i")
+
+[node name="AccentWash" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_big_lock/ArtBack" unique_id=1545313451]
+layout_mode = 0
+offset_left = 137.5
+offset_right = 250.0
+offset_bottom = 88.0
+mouse_filter = 2
+color = Color(1, 0.78, 0.12, 0.2)
+
+[node name="IconSlot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_big_lock/ArtBack" unique_id=1352504420]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 8.0
+offset_right = 161.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_big_lock/ArtBack/IconSlot" unique_id=672978609]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_big_lock/ArtBack/IconSlot" unique_id=1075979929]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxTexture_qqshk")
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Badge" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_big_lock/ArtBack" unique_id=330308773]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 8.0
+offset_right = 246.0
+offset_bottom = 28.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_locks")
+
+[node name="BadgeLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_big_lock/ArtBack/Badge" unique_id=1406564103]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBoxTexture_5ujeb")
+text = "LOCKS"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="NameBack" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_big_lock" unique_id=1449491846]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 68.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.48)
+
+[node name="NameLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_big_lock" unique_id=125932920]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 69.0
+offset_right = 252.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "Big Lock"
+vertical_alignment = 1
+clip_text = true
+
+[node name="BuyButton" type="Button" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_big_lock" unique_id=701535112]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 98.0
+offset_right = 256.0
+offset_bottom = 146.0
+tooltip_text = "Buy Big Lock"
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+
+[node name="PriceIcon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_big_lock/BuyButton" unique_id=552092109]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 36.0
+offset_bottom = 32.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_big_lock/BuyButton" unique_id=1623568166]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.0
+offset_right = 194.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "1,500"
+vertical_alignment = 1
+
+[node name="BuyLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_big_lock/BuyButton" unique_id=2141478139]
+visible = false
+layout_mode = 0
+offset_left = 177.0
+offset_top = 11.0
+offset_right = 237.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(0.9, 1, 0.78, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+text = "BUY"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Card_world_lock" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid" unique_id=2114395271]
+custom_minimum_size = Vector2(262, 152)
+clip_contents = true
+layout_mode = 2
+tooltip_text = "World Lock"
+theme_override_styles/panel = SubResource("StyleBoxTexture_p2vwp")
+
+[node name="ArtBack" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_world_lock" unique_id=513188948]
+clip_contents = true
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_2ms4m")
+
+[node name="AccentWash" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_world_lock/ArtBack" unique_id=1410083986]
+layout_mode = 0
+offset_left = 137.5
+offset_right = 250.0
+offset_bottom = 88.0
+mouse_filter = 2
+color = Color(1, 0.78, 0.12, 0.2)
+
+[node name="IconSlot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_world_lock/ArtBack" unique_id=1354329502]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 8.0
+offset_right = 161.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_world_lock/ArtBack/IconSlot" unique_id=1813842108]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_world_lock/ArtBack/IconSlot" unique_id=1673719136]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxTexture_02ab5")
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Badge" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_world_lock/ArtBack" unique_id=923498936]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 8.0
+offset_right = 246.0
+offset_bottom = 28.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_locks")
+
+[node name="BadgeLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_world_lock/ArtBack/Badge" unique_id=863715307]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBoxTexture_6utsw")
+text = "LOCKS"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="NameBack" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_world_lock" unique_id=1770080225]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 68.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.48)
+
+[node name="NameLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_world_lock" unique_id=904796657]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 69.0
+offset_right = 252.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "World Lock"
+vertical_alignment = 1
+clip_text = true
+
+[node name="BuyButton" type="Button" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_world_lock" unique_id=182653122]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 98.0
+offset_right = 256.0
+offset_bottom = 146.0
+tooltip_text = "Buy World Lock"
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+
+[node name="PriceIcon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_world_lock/BuyButton" unique_id=1513922531]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 36.0
+offset_bottom = 32.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_world_lock/BuyButton" unique_id=474107751]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.0
+offset_right = 194.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "3,500"
+vertical_alignment = 1
+
+[node name="BuyLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionLocks/GridPanel/Grid/Card_world_lock/BuyButton" unique_id=1977241134]
+visible = false
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 248.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.9, 1, 0.78, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+text = "BUY"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="SectionSpecial" type="VBoxContainer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList" unique_id=1052196427]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Heading" type="HBoxContainer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial" unique_id=124782043]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Dot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/Heading" unique_id=1843480608]
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("SB_Badge_special")
+
+[node name="Heading" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/Heading" unique_id=178008918]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 24
+text = "STATIONS & SPECIAL"
+
+[node name="Line" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/Heading" unique_id=78791230]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+color = Color(1, 0.38, 0.58, 0.55)
+
+[node name="GridPanel" type="PanelContainer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial" unique_id=1480900002]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_02uc5")
+
+[node name="Grid" type="GridContainer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel" unique_id=767718489]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 14
+columns = 4
+
+[node name="Card_crafting_station" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid" unique_id=1685910772]
+custom_minimum_size = Vector2(262, 152)
+clip_contents = true
+layout_mode = 2
+tooltip_text = "Crafting Station"
+theme_override_styles/panel = SubResource("StyleBoxTexture_43sgp")
+
+[node name="ArtBack" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_crafting_station" unique_id=1086888726]
+clip_contents = true
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_55mj2")
+
+[node name="AccentWash" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_crafting_station/ArtBack" unique_id=1646226719]
+layout_mode = 0
+offset_left = 137.5
+offset_right = 250.0
+offset_bottom = 88.0
+mouse_filter = 2
+color = Color(0.3, 0.86, 1, 0.2)
+
+[node name="IconSlot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_crafting_station/ArtBack" unique_id=1798612613]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 8.0
+offset_right = 161.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_crafting_station/ArtBack/IconSlot" unique_id=1176010920]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_crafting_station/ArtBack/IconSlot" unique_id=1226667942]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxTexture_uym7p")
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Badge" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_crafting_station/ArtBack" unique_id=588192654]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 8.0
+offset_right = 246.0
+offset_bottom = 28.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_stations")
+
+[node name="BadgeLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_crafting_station/ArtBack/Badge" unique_id=1536564755]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBoxTexture_re1du")
+text = "STATIONS"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="NameBack" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_crafting_station" unique_id=714519196]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 68.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.48)
+
+[node name="NameLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_crafting_station" unique_id=1905120116]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 69.0
+offset_right = 252.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "Crafting Station"
+vertical_alignment = 1
+clip_text = true
+
+[node name="BuyButton" type="Button" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_crafting_station" unique_id=236665328]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 98.0
+offset_right = 256.0
+offset_bottom = 146.0
+tooltip_text = "Buy Crafting Station"
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+
+[node name="PriceIcon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_crafting_station/BuyButton" unique_id=133094001]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 36.0
+offset_bottom = 32.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_crafting_station/BuyButton" unique_id=1334750927]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.0
+offset_right = 194.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "80"
+vertical_alignment = 1
+
+[node name="BuyLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_crafting_station/BuyButton" unique_id=750819996]
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 248.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.9, 1, 0.78, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+text = "BUY"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Card_safe" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid" unique_id=1932328402]
+custom_minimum_size = Vector2(262, 152)
+clip_contents = true
+layout_mode = 2
+tooltip_text = "Safe"
+theme_override_styles/panel = SubResource("StyleBoxTexture_43sgp")
+
+[node name="ArtBack" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_safe" unique_id=1975965585]
+clip_contents = true
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_55mj2")
+
+[node name="AccentWash" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_safe/ArtBack" unique_id=693834571]
+layout_mode = 0
+offset_left = 137.5
+offset_right = 250.0
+offset_bottom = 88.0
+mouse_filter = 2
+color = Color(1, 0.38, 0.58, 0.2)
+
+[node name="IconSlot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_safe/ArtBack" unique_id=146640922]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 8.0
+offset_right = 161.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_safe/ArtBack/IconSlot" unique_id=1835118706]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_safe/ArtBack/IconSlot" unique_id=1291125722]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxTexture_uym7p")
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Badge" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_safe/ArtBack" unique_id=1959485894]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 8.0
+offset_right = 246.0
+offset_bottom = 28.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_special")
+
+[node name="BadgeLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_safe/ArtBack/Badge" unique_id=813842555]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBoxTexture_re1du")
+text = "SPECIAL"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="NameBack" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_safe" unique_id=1710927161]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 68.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.48)
+
+[node name="NameLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_safe" unique_id=1728229651]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 69.0
+offset_right = 252.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "Safe"
+vertical_alignment = 1
+clip_text = true
+
+[node name="BuyButton" type="Button" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_safe" unique_id=1345764692]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 98.0
+offset_right = 256.0
+offset_bottom = 146.0
+tooltip_text = "Buy Safe"
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+
+[node name="PriceIcon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_safe/BuyButton" unique_id=934123963]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 36.0
+offset_bottom = 32.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_safe/BuyButton" unique_id=678010144]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.0
+offset_right = 194.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "7,500"
+vertical_alignment = 1
+
+[node name="BuyLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_safe/BuyButton" unique_id=544991091]
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 248.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.9, 1, 0.78, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+text = "BUY"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Card_fish_monger" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid" unique_id=496252019]
+custom_minimum_size = Vector2(262, 152)
+clip_contents = true
+layout_mode = 2
+tooltip_text = "Fish Monger"
+theme_override_styles/panel = SubResource("StyleBoxTexture_43sgp")
+
+[node name="ArtBack" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_fish_monger" unique_id=313962424]
+clip_contents = true
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_55mj2")
+
+[node name="AccentWash" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_fish_monger/ArtBack" unique_id=1492118374]
+layout_mode = 0
+offset_left = 137.5
+offset_right = 250.0
+offset_bottom = 88.0
+mouse_filter = 2
+color = Color(1, 0.38, 0.58, 0.2)
+
+[node name="IconSlot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_fish_monger/ArtBack" unique_id=1983083688]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 8.0
+offset_right = 161.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_fish_monger/ArtBack/IconSlot" unique_id=1086836802]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_fish_monger/ArtBack/IconSlot" unique_id=1908689329]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxTexture_uym7p")
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Badge" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_fish_monger/ArtBack" unique_id=1347287783]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 8.0
+offset_right = 246.0
+offset_bottom = 28.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_special")
+
+[node name="BadgeLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_fish_monger/ArtBack/Badge" unique_id=1556734314]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBoxTexture_re1du")
+text = "SPECIAL"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="NameBack" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_fish_monger" unique_id=326507645]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 68.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.48)
+
+[node name="NameLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_fish_monger" unique_id=296391877]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 69.0
+offset_right = 252.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "Fish Monger"
+vertical_alignment = 1
+clip_text = true
+
+[node name="BuyButton" type="Button" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_fish_monger" unique_id=585725053]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 98.0
+offset_right = 256.0
+offset_bottom = 146.0
+tooltip_text = "Buy Fish Monger"
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+
+[node name="PriceIcon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_fish_monger/BuyButton" unique_id=897116871]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 36.0
+offset_bottom = 32.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_fish_monger/BuyButton" unique_id=6325105]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.0
+offset_right = 194.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "15,000"
+vertical_alignment = 1
+
+[node name="BuyLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionSpecial/GridPanel/Grid/Card_fish_monger/BuyButton" unique_id=1996562444]
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 248.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.9, 1, 0.78, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+text = "BUY"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="SectionMore" type="VBoxContainer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList" unique_id=1161309867]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Heading" type="HBoxContainer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore" unique_id=1169423098]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Dot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/Heading" unique_id=624766478]
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("SB_Badge_clothes")
+
+[node name="Heading" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/Heading" unique_id=640258294]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 24
+text = "CLOTHES, TOOLS & FISHING"
+
+[node name="Line" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/Heading" unique_id=2095123663]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+color = Color(0.78, 0.4, 1, 0.55)
+
+[node name="GridPanel" type="PanelContainer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore" unique_id=1480900003]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_wut2r")
+
+[node name="Grid" type="GridContainer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel" unique_id=599926296]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 14
+columns = 4
+
+[node name="Card_basic_items_pack" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid" unique_id=696466390]
+custom_minimum_size = Vector2(262, 152)
+clip_contents = true
+layout_mode = 2
+tooltip_text = "Basic Items Pack"
+theme_override_styles/panel = SubResource("StyleBoxTexture_43sgp")
+
+[node name="ArtBack" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_basic_items_pack" unique_id=1855918287]
+clip_contents = true
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_55mj2")
+
+[node name="AccentWash" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_basic_items_pack/ArtBack" unique_id=771635614]
+layout_mode = 0
+offset_left = 137.5
+offset_right = 250.0
+offset_bottom = 88.0
+mouse_filter = 2
+color = Color(0.78, 0.4, 1, 0.2)
+
+[node name="IconSlot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_basic_items_pack/ArtBack" unique_id=1738181488]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 8.0
+offset_right = 161.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_basic_items_pack/ArtBack/IconSlot" unique_id=1179955700]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_basic_items_pack/ArtBack/IconSlot" unique_id=433920867]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxTexture_uym7p")
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Badge" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_basic_items_pack/ArtBack" unique_id=1249341991]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 8.0
+offset_right = 246.0
+offset_bottom = 28.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_clothes")
+
+[node name="BadgeLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_basic_items_pack/ArtBack/Badge" unique_id=100732486]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBoxTexture_re1du")
+text = "CLOTHES"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="NameBack" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_basic_items_pack" unique_id=426416923]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 68.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.48)
+
+[node name="NameLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_basic_items_pack" unique_id=561016688]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 69.0
+offset_right = 252.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "Basic Items Pack"
+vertical_alignment = 1
+clip_text = true
+
+[node name="BuyButton" type="Button" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_basic_items_pack" unique_id=343107359]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 98.0
+offset_right = 256.0
+offset_bottom = 146.0
+tooltip_text = "Buy Basic Items Pack"
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+
+[node name="PriceIcon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_basic_items_pack/BuyButton" unique_id=1529239484]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 36.0
+offset_bottom = 32.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_basic_items_pack/BuyButton" unique_id=1297463819]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.0
+offset_right = 194.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "500"
+vertical_alignment = 1
+
+[node name="BuyLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_basic_items_pack/BuyButton" unique_id=904632075]
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 248.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.9, 1, 0.78, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+text = "BUY"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Card_hairpack" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid" unique_id=585620950]
+custom_minimum_size = Vector2(262, 152)
+clip_contents = true
+layout_mode = 2
+tooltip_text = "Hair Pack"
+theme_override_styles/panel = SubResource("StyleBoxTexture_43sgp")
+
+[node name="ArtBack" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_hairpack" unique_id=571813749]
+clip_contents = true
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_55mj2")
+
+[node name="AccentWash" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_hairpack/ArtBack" unique_id=1831669232]
+layout_mode = 0
+offset_left = 137.5
+offset_right = 250.0
+offset_bottom = 88.0
+mouse_filter = 2
+color = Color(0.78, 0.4, 1, 0.2)
+
+[node name="IconSlot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_hairpack/ArtBack" unique_id=974191375]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 8.0
+offset_right = 161.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_hairpack/ArtBack/IconSlot" unique_id=953466074]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_hairpack/ArtBack/IconSlot" unique_id=920267664]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxTexture_uym7p")
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Badge" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_hairpack/ArtBack" unique_id=2108471365]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 8.0
+offset_right = 246.0
+offset_bottom = 28.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_clothes")
+
+[node name="BadgeLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_hairpack/ArtBack/Badge" unique_id=1902825821]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBoxTexture_re1du")
+text = "CLOTHES"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="NameBack" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_hairpack" unique_id=1638676533]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 68.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.48)
+
+[node name="NameLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_hairpack" unique_id=1512477435]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 69.0
+offset_right = 252.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "Hair Pack"
+vertical_alignment = 1
+clip_text = true
+
+[node name="BuyButton" type="Button" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_hairpack" unique_id=2078656492]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 98.0
+offset_right = 256.0
+offset_bottom = 146.0
+tooltip_text = "Buy Hair Pack"
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+
+[node name="PriceIcon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_hairpack/BuyButton" unique_id=1632831629]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 36.0
+offset_bottom = 32.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_hairpack/BuyButton" unique_id=861749946]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.0
+offset_right = 194.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "1,500"
+vertical_alignment = 1
+
+[node name="BuyLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_hairpack/BuyButton" unique_id=504315051]
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 248.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.9, 1, 0.78, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+text = "BUY"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Card_entrance_mover" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid" unique_id=1838383323]
+custom_minimum_size = Vector2(262, 152)
+clip_contents = true
+layout_mode = 2
+tooltip_text = "Entrance Mover"
+theme_override_styles/panel = SubResource("StyleBoxTexture_43sgp")
+
+[node name="ArtBack" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_entrance_mover" unique_id=1250910783]
+clip_contents = true
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_55mj2")
+
+[node name="AccentWash" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_entrance_mover/ArtBack" unique_id=928386460]
+layout_mode = 0
+offset_left = 137.5
+offset_right = 250.0
+offset_bottom = 88.0
+mouse_filter = 2
+color = Color(0.34, 1, 0.5, 0.2)
+
+[node name="IconSlot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_entrance_mover/ArtBack" unique_id=1270173250]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 8.0
+offset_right = 161.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_entrance_mover/ArtBack/IconSlot" unique_id=171932197]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_entrance_mover/ArtBack/IconSlot" unique_id=140183255]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxTexture_uym7p")
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Badge" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_entrance_mover/ArtBack" unique_id=1468559797]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 8.0
+offset_right = 246.0
+offset_bottom = 28.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_tools")
+
+[node name="BadgeLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_entrance_mover/ArtBack/Badge" unique_id=190956861]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBoxTexture_re1du")
+text = "TOOLS"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="NameBack" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_entrance_mover" unique_id=1553794652]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 68.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.48)
+
+[node name="NameLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_entrance_mover" unique_id=1887963944]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 69.0
+offset_right = 252.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "Entrance Mover"
+vertical_alignment = 1
+clip_text = true
+
+[node name="BuyButton" type="Button" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_entrance_mover" unique_id=2034622142]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 98.0
+offset_right = 256.0
+offset_bottom = 146.0
+tooltip_text = "Buy Entrance Mover"
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+
+[node name="PriceIcon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_entrance_mover/BuyButton" unique_id=1000365331]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 36.0
+offset_bottom = 32.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_entrance_mover/BuyButton" unique_id=1459737626]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.0
+offset_right = 194.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "200"
+vertical_alignment = 1
+
+[node name="BuyLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_entrance_mover/BuyButton" unique_id=626986926]
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 248.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.9, 1, 0.78, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+text = "BUY"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Card_bamboo_rod" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid" unique_id=1199047591]
+custom_minimum_size = Vector2(262, 152)
+clip_contents = true
+layout_mode = 2
+tooltip_text = "Bamboo Rod"
+theme_override_styles/panel = SubResource("StyleBoxTexture_43sgp")
+
+[node name="ArtBack" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_bamboo_rod" unique_id=1620054624]
+clip_contents = true
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_55mj2")
+
+[node name="AccentWash" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_bamboo_rod/ArtBack" unique_id=136523553]
+layout_mode = 0
+offset_left = 137.5
+offset_right = 250.0
+offset_bottom = 88.0
+mouse_filter = 2
+color = Color(0.28, 0.72, 1, 0.2)
+
+[node name="IconSlot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_bamboo_rod/ArtBack" unique_id=1132257459]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 8.0
+offset_right = 161.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_bamboo_rod/ArtBack/IconSlot" unique_id=9291650]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_bamboo_rod/ArtBack/IconSlot" unique_id=2141168899]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxTexture_uym7p")
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Badge" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_bamboo_rod/ArtBack" unique_id=1384868209]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 8.0
+offset_right = 246.0
+offset_bottom = 28.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_fishing")
+
+[node name="BadgeLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_bamboo_rod/ArtBack/Badge" unique_id=828975836]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBoxTexture_re1du")
+text = "FISHING"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="NameBack" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_bamboo_rod" unique_id=565687103]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 68.0
+offset_right = 256.0
+offset_bottom = 94.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.48)
+
+[node name="NameLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_bamboo_rod" unique_id=296529192]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 69.0
+offset_right = 252.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "Bamboo Rod"
+vertical_alignment = 1
+clip_text = true
+
+[node name="BuyButton" type="Button" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_bamboo_rod" unique_id=1326834359]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 98.0
+offset_right = 256.0
+offset_bottom = 146.0
+tooltip_text = "Buy Bamboo Rod"
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+
+[node name="PriceIcon" type="TextureRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_bamboo_rod/BuyButton" unique_id=1744849986]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 36.0
+offset_bottom = 32.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_bamboo_rod/BuyButton" unique_id=393090962]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 2.0
+offset_right = 194.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "5,000"
+vertical_alignment = 1
+
+[node name="BuyLabel" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/SectionMore/GridPanel/Grid/Card_bamboo_rod/BuyButton" unique_id=1886405562]
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 248.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.9, 1, 0.78, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+text = "BUY"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Templates" type="Control" parent="Window/ShopPageRoot/ItemsScroll/ItemsList" unique_id=1429821926]
+visible = false
+layout_mode = 2
+
+[node name="SectionTemplate" type="VBoxContainer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/Templates" unique_id=1701048660]
+visible = false
+layout_mode = 0
+theme_override_constants/separation = 10
+
+[node name="Heading" type="HBoxContainer" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/Templates/SectionTemplate" unique_id=769694822]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Dot" type="Panel" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/Templates/SectionTemplate/Heading" unique_id=629714122]
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("SB_Badge_featured")
+
+[node name="Heading" type="Label" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/Templates/SectionTemplate/Heading" unique_id=642570858]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 24
+text = "SECTION"
+
+[node name="Line" type="ColorRect" parent="Window/ShopPageRoot/ItemsScroll/ItemsList/Templates/SectionTemplate/Heading" unique_id=1094470797]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+color = Color(0.76, 0.93, 1, 0.55)
+
+[node name="CategoryNavScroll" type="ScrollContainer" parent="Window" unique_id=831720898]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 44.0
+offset_top = 96.0
+offset_right = -44.0
+offset_bottom = 166.0
+grow_horizontal = 2
+vertical_scroll_mode = 0
+
+[node name="CategoryNav" type="HBoxContainer" parent="Window/CategoryNavScroll" unique_id=584564328]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="CategoryButtonTemplate" type="Button" parent="Window/CategoryNavScroll/CategoryNav" unique_id=660843474]
+visible = false
+custom_minimum_size = Vector2(152, 58)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/h_separation = 8
+theme_override_constants/icon_max_width = 30
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxTexture_xkxiq")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_rc2nt")
+theme_override_styles/hover = SubResource("StyleBoxTexture_vysdx")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_g4i1h")
+toggle_mode = true
+button_group = SubResource("BG_Category")
+text = "CATEGORY"
+
+[node name="GemStorePageRoot" type="Control" parent="Window" unique_id=1236964967]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 44.0
+offset_top = 180.0
+offset_right = -44.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GemStoreScroll" type="ScrollContainer" parent="Window/GemStorePageRoot" unique_id=595759331]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="GemStoreList" type="VBoxContainer" parent="Window/GemStorePageRoot/GemStoreScroll" unique_id=1869072273]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="IntroTitle" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList" unique_id=1385216857]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 30
+text = "GET MORE GEMS"
+
+[node name="IntroSubtitle" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList" unique_id=19540020]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 16
+text = "Fuel your builds instantly. Gems never expire."
+
+[node name="GridPanel" type="PanelContainer" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList" unique_id=1480900004]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_wut2r")
+
+[node name="GemGrid" type="GridContainer" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel" unique_id=744569229]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 18
+theme_override_constants/v_separation = 18
+columns = 3
+
+[node name="StarterBanner" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid" unique_id=2036621890]
+custom_minimum_size = Vector2(440, 260)
+clip_contents = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("SB_Banner")
+
+[node name="Glow" type="ColorRect" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/StarterBanner" unique_id=364085683]
+modulate = Color(1, 1, 1, 0.3)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 0.55, 0.95, 0.3)
+
+[node name="GlowAnim" type="AnimationPlayer" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/StarterBanner" unique_id=1363672191]
+libraries/ = SubResource("AnimLib_BannerGlow")
+autoplay = &"pulse"
+
+[node name="RibbonBack" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/StarterBanner" unique_id=1334359953]
+layout_mode = 0
+offset_left = -24.0
+offset_top = 6.0
+offset_right = 120.0
+offset_bottom = 26.0
+rotation = -0.4886922
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_locks")
+
+[node name="RibbonLabel" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/StarterBanner/RibbonBack" unique_id=1719380597]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.15, 0.08, 0, 1)
+theme_override_font_sizes/font_size = 11
+text = "LIMITED TIME"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Title" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/StarterBanner" unique_id=877444089]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 56.0
+offset_right = 424.0
+offset_bottom = 86.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "STARTER PACK"
+
+[node name="Description" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/StarterBanner" unique_id=1996884630]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 90.0
+offset_right = 424.0
+offset_bottom = 122.0
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+text = "Double gems on your first purchase, one time only."
+
+[node name="BuyButton" type="Button" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/StarterBanner" unique_id=1305191246]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 214.0
+offset_right = 432.0
+offset_bottom = 252.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.18, 0.1, 0, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("SB_PremiumNormal")
+theme_override_styles/pressed = SubResource("SB_PremiumPressed")
+theme_override_styles/hover = SubResource("SB_PremiumHover")
+text = "$4.99"
+
+[node name="Card_pouch" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid" unique_id=1017600032]
+custom_minimum_size = Vector2(440, 260)
+clip_contents = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_43sgp")
+
+[node name="IconSlot" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_pouch" unique_id=1542976126]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 54.0
+offset_right = 400.0
+offset_bottom = 214.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_pouch/IconSlot" unique_id=51144551]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_pouch/IconSlot" unique_id=689534949]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GemAmount" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_pouch" unique_id=1047577031]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 428.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 28
+text = "100 Gems"
+horizontal_alignment = 1
+
+[node name="BonusLabel" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_pouch" unique_id=1888319252]
+visible = false
+layout_mode = 0
+offset_left = 10.0
+offset_top = 56.0
+offset_right = 160.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.4, 1, 0.55, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+
+[node name="BuyButton" type="Button" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_pouch" unique_id=705933552]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 214.0
+offset_right = 432.0
+offset_bottom = 252.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+text = "$0.99"
+
+[node name="Card_sack" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid" unique_id=1157727094]
+custom_minimum_size = Vector2(440, 260)
+clip_contents = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_43sgp")
+
+[node name="IconSlot" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_sack" unique_id=1647898100]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 54.0
+offset_right = 400.0
+offset_bottom = 214.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_sack/IconSlot" unique_id=1960952123]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_sack/IconSlot" unique_id=1852998368]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Ribbon" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_sack" unique_id=204103353]
+layout_mode = 0
+offset_left = -20.0
+offset_top = 8.0
+offset_right = 90.0
+offset_bottom = 26.0
+rotation = -0.3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_special")
+
+[node name="RibbonLabel" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_sack/Ribbon" unique_id=1455056740]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+text = "POPULAR"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GemAmount" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_sack" unique_id=768968944]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 428.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 28
+text = "550 Gems"
+horizontal_alignment = 1
+
+[node name="BonusLabel" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_sack" unique_id=1479205127]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 56.0
+offset_right = 160.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.4, 1, 0.55, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+text = "+10% BONUS"
+horizontal_alignment = 1
+
+[node name="BuyButton" type="Button" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_sack" unique_id=2030179886]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 214.0
+offset_right = 432.0
+offset_bottom = 252.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+text = "$4.99"
+
+[node name="Card_chest" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid" unique_id=1086789281]
+custom_minimum_size = Vector2(440, 260)
+clip_contents = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_43sgp")
+
+[node name="IconSlot" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_chest" unique_id=1042218062]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 54.0
+offset_right = 400.0
+offset_bottom = 214.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_chest/IconSlot" unique_id=51869680]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_chest/IconSlot" unique_id=701840943]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Ribbon" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_chest" unique_id=917031709]
+layout_mode = 0
+offset_left = -20.0
+offset_top = 8.0
+offset_right = 90.0
+offset_bottom = 26.0
+rotation = -0.3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Badge_special")
+
+[node name="RibbonLabel" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_chest/Ribbon" unique_id=786567076]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+text = "BEST VALUE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GemAmount" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_chest" unique_id=1055686977]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 428.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 28
+text = "1,200 Gems"
+horizontal_alignment = 1
+
+[node name="BonusLabel" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_chest" unique_id=309521115]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 56.0
+offset_right = 160.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.4, 1, 0.55, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+text = "+20% BONUS"
+horizontal_alignment = 1
+
+[node name="BuyButton" type="Button" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_chest" unique_id=872907169]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 214.0
+offset_right = 432.0
+offset_bottom = 252.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+text = "$9.99"
+
+[node name="Card_vault" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid" unique_id=2109209789]
+custom_minimum_size = Vector2(440, 260)
+clip_contents = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_43sgp")
+
+[node name="IconSlot" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_vault" unique_id=1095380457]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 54.0
+offset_right = 400.0
+offset_bottom = 214.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_vault/IconSlot" unique_id=1195599196]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_vault/IconSlot" unique_id=1809641918]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GemAmount" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_vault" unique_id=1772017801]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 428.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 28
+text = "3,000 Gems"
+horizontal_alignment = 1
+
+[node name="BonusLabel" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_vault" unique_id=696603693]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 56.0
+offset_right = 160.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.4, 1, 0.55, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+text = "+30% BONUS"
+horizontal_alignment = 1
+
+[node name="BuyButton" type="Button" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_vault" unique_id=78927915]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 214.0
+offset_right = 432.0
+offset_bottom = 252.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+text = "$19.99"
+
+[node name="Card_mountain" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid" unique_id=1815861662]
+custom_minimum_size = Vector2(440, 260)
+clip_contents = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_43sgp")
+
+[node name="FeaturedFrame" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_mountain" unique_id=1635707906]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 6.0
+offset_bottom = 6.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_FeaturedFrame")
+
+[node name="IconSlot" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_mountain" unique_id=922704779]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 54.0
+offset_right = 400.0
+offset_bottom = 214.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_mountain/IconSlot" unique_id=190054888]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_mountain/IconSlot" unique_id=631173799]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GemAmount" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_mountain" unique_id=1132263566]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 428.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 28
+text = "8,000 Gems"
+horizontal_alignment = 1
+
+[node name="BonusLabel" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_mountain" unique_id=1397103229]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 56.0
+offset_right = 160.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.4, 1, 0.55, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+text = "+45% BONUS"
+horizontal_alignment = 1
+
+[node name="BuyButton" type="Button" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/Card_mountain" unique_id=122381719]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 214.0
+offset_right = 432.0
+offset_bottom = 252.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxTexture_u6itf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a8om8")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1e6oo")
+text = "$49.99"
+
+[node name="PromoOnline" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid" unique_id=331739035]
+custom_minimum_size = Vector2(440, 260)
+clip_contents = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_43sgp")
+
+[node name="Title" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/PromoOnline" unique_id=975026270]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 432.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "BUY GEM PACKS ONLINE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/PromoOnline" unique_id=1916692332]
+modulate = Color(1, 1, 1, 0.55)
+layout_mode = 0
+offset_left = 145.0
+offset_top = 48.0
+offset_right = 295.0
+offset_bottom = 198.0
+texture = ExtResource("1_shop_icon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SubLabel" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/PromoOnline" unique_id=1944083700]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 200.0
+offset_right = 432.0
+offset_bottom = 214.0
+theme_override_colors/font_color = Color(0.75, 0.9, 1, 0.85)
+theme_override_font_sizes/font_size = 11
+text = "More packs coming soon"
+horizontal_alignment = 1
+
+[node name="FooterBack" type="ColorRect" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/PromoOnline" unique_id=54189671]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 214.0
+offset_right = 432.0
+offset_bottom = 252.0
+color = Color(0.06, 0.32, 0.16, 0.88)
+
+[node name="FooterLabel" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/GridPanel/GemGrid/PromoOnline/FooterBack" unique_id=89777152]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 18
+text = "OPEN SHOP"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Disclaimer" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList" unique_id=554540924]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.8, 0.88, 0.75)
+theme_override_font_sizes/font_size = 12
+text = "Prices shown in USD and may vary by platform or region. All Purchases are final."
+autowrap_mode = 2
+
+[node name="Templates" type="Control" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList" unique_id=1991071858]
+visible = false
+layout_mode = 2
+
+[node name="GemPackCardTemplate" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/Templates" unique_id=181212888]
+visible = false
+custom_minimum_size = Vector2(250, 210)
+clip_contents = true
+layout_mode = 0
+theme_override_styles/panel = SubResource("SB_Card")
+
+[node name="IconSlot" type="Panel" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/Templates/GemPackCardTemplate" unique_id=1768335452]
+layout_mode = 0
+offset_left = 75.0
+offset_top = 16.0
+offset_right = 175.0
+offset_bottom = 116.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_IconSlot")
+
+[node name="Icon" type="TextureRect" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/Templates/GemPackCardTemplate/IconSlot" unique_id=1560542129]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/Templates/GemPackCardTemplate/IconSlot" unique_id=963842760]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GemAmount" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/Templates/GemPackCardTemplate" unique_id=159676827]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 120.0
+offset_right = 242.0
+offset_bottom = 150.0
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 24
+text = "0 Gems"
+horizontal_alignment = 1
+
+[node name="BonusLabel" type="Label" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/Templates/GemPackCardTemplate" unique_id=180606353]
+visible = false
+layout_mode = 0
+offset_left = 8.0
+offset_top = 148.0
+offset_right = 242.0
+offset_bottom = 166.0
+theme_override_colors/font_color = Color(0.4, 1, 0.55, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
+
+[node name="BuyButton" type="Button" parent="Window/GemStorePageRoot/GemStoreScroll/GemStoreList/Templates/GemPackCardTemplate" unique_id=892945248]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 170.0
+offset_right = 242.0
+offset_bottom = 202.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.18, 0.1, 0, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("SB_PremiumNormal")
+theme_override_styles/pressed = SubResource("SB_PremiumPressed")
+theme_override_styles/hover = SubResource("SB_PremiumHover")
+text = "$0.00"
+
+[node name="BottomAccent" type="ColorRect" parent="Window" unique_id=830419503]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 90.0
+offset_top = -18.0
+offset_right = -90.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.86, 0.24, 0.72, 0.85)
+
+[node name="PurchaseRewardPopup" type="Control" parent="." unique_id=1381037952]
+visible = false
+z_index = 50
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="PurchaseRewardPopup" unique_id=170917126]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.55)
+
+[node name="RewardCard" type="Panel" parent="PurchaseRewardPopup" unique_id=1080369046]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -120.0
+offset_right = 170.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_yg7m3")
+
+[node name="IconSlot" type="Panel" parent="PurchaseRewardPopup/RewardCard" unique_id=1769124073]
+layout_mode = 0
+offset_left = 125.0
+offset_top = 20.0
+offset_right = 215.0
+offset_bottom = 110.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_7v44k")
+
+[node name="Icon" type="TextureRect" parent="PurchaseRewardPopup/RewardCard/IconSlot" unique_id=475340098]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RewardLabel" type="Label" parent="PurchaseRewardPopup/RewardCard" unique_id=511128538]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 120.0
+offset_right = 320.0
+offset_bottom = 156.0
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 24
+text = "You got Vending Machine!"
+horizontal_alignment = 1
+
+[node name="OkButton" type="Button" parent="PurchaseRewardPopup/RewardCard" unique_id=530503363]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 168.0
+offset_right = 250.0
+offset_bottom = 216.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_v1e53")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_s8451")
+theme_override_styles/hover = SubResource("StyleBoxTexture_5xvbv")
+text = "NICE!"

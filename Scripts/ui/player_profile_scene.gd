@@ -32,6 +32,7 @@ var showcase_item_label: Label = null
 var showcase_world_label: Label = null
 var edit_bio_button_skin: NinePatchRect = null
 var edit_bio_button: Button = null
+var recipe_book_button: Button = null
 var bio_editor_skin: NinePatchRect = null
 var bio_text_edit: TextEdit = null
 var bio_save_button: Button = null
@@ -59,6 +60,7 @@ func build_menu():
 	status_badge_label = get_node_or_null("%OnlineStatusLabel")
 	action_panel = get_node_or_null("CenterContainer/ProfileWindow/FooterPanel")
 	worlds_button = get_node_or_null("%VisitWorldButton")
+	recipe_book_button = get_node_or_null("%RecipeBookButton") as Button
 	titles_button = null
 	trade_button = get_node_or_null("%MessageButton")
 	friend_button = get_node_or_null("%PrimaryActionButton")
@@ -122,6 +124,10 @@ func _connect_profile_buttons() -> void:
 		var friend_callback := Callable(self, "_on_friend_pressed")
 		if not friend_button.pressed.is_connected(friend_callback):
 			friend_button.pressed.connect(friend_callback)
+	if recipe_book_button != null:
+		var recipe_book_callback := Callable(self, "_on_recipe_book_pressed")
+		if not recipe_book_button.pressed.is_connected(recipe_book_callback):
+			recipe_book_button.pressed.connect(recipe_book_callback)
 	if edit_bio_button != null:
 		var edit_bio_callback := Callable(self, "_on_edit_bio_pressed")
 		if not edit_bio_button.pressed.is_connected(edit_bio_callback):
@@ -893,7 +899,10 @@ func update_action_buttons():
 	if profile_mode != "remote":
 		_set_action_button(trade_button, false, false, "TRADE")
 		_set_action_button(friend_button, false, false, "ADD FRIEND")
+		_set_action_button(recipe_book_button, true, false, "RECIPE BOOK")
 		_set_action_button(worlds_button, true, false, "MY WORLDS")
+		if recipe_book_button != null:
+			visible_buttons.append(recipe_book_button)
 		visible_buttons.append(worlds_button)
 		_layout_action_buttons(visible_buttons)
 		return
@@ -910,6 +919,9 @@ func update_action_buttons():
 	_set_action_button(trade_button, remote_online, false, "ACCEPT TRADE" if has_pending_trade else "TRADE")
 	_set_action_button(worlds_button, remote_online and target_world != "", already_here, "CURRENT WORLD" if already_here else "VISIT WORLD")
 	_set_action_button(friend_button, profile_exists and remote_username != "" and friend_status != "self", friend_status == "outgoing" or friend_status == "friends", _friend_button_text(friend_status))
+	# The recipe book is a personal reference view, so it stays off other
+	# players' profiles.
+	_set_action_button(recipe_book_button, false, false, "RECIPE BOOK")
 
 	for button in [trade_button, worlds_button, friend_button]:
 		if button != null and button.get_parent() != null and button.get_parent().visible:
@@ -960,6 +972,15 @@ func _layout_action_buttons(buttons: Array[Button]) -> void:
 		skin.position = Vector2(x, 6.0)
 		skin.size = Vector2(widths[index], 38.0)
 		x += widths[index] + gap
+
+
+func _on_recipe_book_pressed() -> void:
+	if profile_mode == "remote":
+		return
+	if world != null and world.has_method("open_recipe_book"):
+		world.open_recipe_book()
+		return
+	notify("The recipe book is not available right now.")
 
 
 func _on_profile_trade_pressed() -> void:

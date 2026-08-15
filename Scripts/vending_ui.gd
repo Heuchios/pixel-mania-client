@@ -839,6 +839,8 @@ func sync_world_vending_preview() -> void:
 
 	if world.has_method("update_vending_machine_preview"):
 		world.update_vending_machine_preview(current_grid)
+	if world.has_method("update_vending_machine_visual"):
+		world.update_vending_machine_visual(current_grid)
 
 
 func get_listing() -> Dictionary:

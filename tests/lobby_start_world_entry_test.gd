@@ -1,6 +1,7 @@
 extends SceneTree
 
-const LOBBY_SCENE := preload("res://Scenes/ui/lobby/LobbyScene.tscn")
+const FAVORITE_ICON := preload("res://Assets/ui/fav.png")
+const UNFAVORITE_ICON := preload("res://Assets/ui/unfav.png")
 const START_WORLD := "START"
 
 
@@ -9,7 +10,10 @@ func _init() -> void:
 
 
 func _run() -> void:
-	var lobby = LOBBY_SCENE.instantiate()
+	await process_frame
+	var lobby_scene := load("res://Scenes/ui/lobby/LobbyScene.tscn") as PackedScene
+	assert(lobby_scene != null)
+	var lobby: Node = lobby_scene.instantiate()
 	lobby._setup_active_world_list()
 
 	_assert_visible_worlds(lobby, [START_WORLD])
@@ -43,3 +47,14 @@ func _assert_start_hub_style(lobby) -> void:
 	assert(start_row.get_node("StartName").text == START_WORLD)
 	assert(start_row.get_node("StartMeta").text == "OFFICIAL | OPEN | 0 players")
 	assert(start_row.get_node("OfficialBadge").text == "OFFICIAL HUB")
+	var favorite_toggle := start_row.get_node("FavoriteToggle") as Button
+	assert(favorite_toggle != null)
+	assert(favorite_toggle.toggle_mode)
+	lobby._apply_favorite_toggle_visual_state(favorite_toggle, false)
+	assert(favorite_toggle.icon == UNFAVORITE_ICON)
+	assert(favorite_toggle.modulate.a < 0.6)
+	lobby._apply_favorite_toggle_visual_state(favorite_toggle, false, true)
+	assert(favorite_toggle.modulate.a > 0.6 and favorite_toggle.modulate.a < 0.8)
+	lobby._apply_favorite_toggle_visual_state(favorite_toggle, true)
+	assert(favorite_toggle.icon == FAVORITE_ICON)
+	assert(is_equal_approx(favorite_toggle.modulate.a, 1.0))

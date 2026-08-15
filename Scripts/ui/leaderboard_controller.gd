@@ -115,12 +115,16 @@ func _fit_to_viewport() -> void:
 
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	position = Vector2.ZERO
-	size = viewport_size
+	# Direct size assignment on a full-rect-anchored Control fights the anchor system (the
+	# engine warns "size will be overridden after _ready()" and suggests set_deferred()).
+	# Deferred is safe here: this already runs both immediately and via call_deferred from
+	# open_leaderboard(), so the final size still lands before the panel is visibly seen.
+	set_deferred("size", viewport_size)
 
 	if scene_instance != null and is_instance_valid(scene_instance):
 		scene_instance.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		scene_instance.position = Vector2.ZERO
-		scene_instance.size = viewport_size
+		scene_instance.set_deferred("size", viewport_size)
 
 
 func _build_scene() -> void:
@@ -488,8 +492,11 @@ func _season_end_unix_seconds(key: String) -> int:
 
 
 func _format_duration(total_seconds: int) -> String:
+	@warning_ignore("integer_division")
 	var days := total_seconds / 86400
+	@warning_ignore("integer_division")
 	var hours := (total_seconds % 86400) / 3600
+	@warning_ignore("integer_division")
 	var minutes := (total_seconds % 3600) / 60
 	var seconds := total_seconds % 60
 

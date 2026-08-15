@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://qif2xvwq5ogd"]
 
 [ext_resource type="FontFile" uid="uid://e0ivgh0c6uck" path="res://Assets/font/font.ttf" id="1_font"]
-[ext_resource type="Texture2D" uid="uid://bgt0geyx2l4kd" path="res://Assets/ui/login/outer_panel.png" id="1_kd858"]
+[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="2_3ir0m"]
 [ext_resource type="Texture2D" uid="uid://cwt3wjfewbxrf" path="res://Assets/ui/lobby/inner_panel.png" id="2_dxium"]
+[ext_resource type="Texture2D" uid="uid://bdqewvpbuib1a" path="res://Assets/ui/panel_outer_403x130.png" id="3_ea8mm"]
 [ext_resource type="Texture2D" uid="uid://ch2qryxhnpu18" path="res://Assets/ui/close_button.png" id="5_5rsf5"]
 [ext_resource type="Texture2D" uid="uid://s2qd6aym6sau" path="res://Assets/ui/fill_bar_full.png" id="5_dxium"]
 [ext_resource type="Texture2D" uid="uid://b26xvfc2ty1no" path="res://Assets/ui/login/sign_on_normal.png" id="5_k7k66"]
@@ -10,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://burjdcdg4op0f" path="res://Assets/ui/close_button_pressed_69x69.png" id="6_lvkcs"]
 [ext_resource type="Texture2D" uid="uid://cho1iwl84l4pf" path="res://Assets/ui/close_button_hover_69x69.png" id="7_3ir0m"]
 [ext_resource type="Script" uid="uid://bqqp7buhb2yw7" path="res://Scripts/ui/player_profile_scene.gd" id="7_profile_script"]
+[ext_resource type="Texture2D" uid="uid://bwpihua7lc7dd" path="res://Assets/ui/fill_bar_empty.png" id="9_rbb1l"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_81mko"]
 texture = ExtResource("5_5rsf5")
@@ -39,7 +41,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -12.0
 offset_top = -15.0
-offset_right = 111.0
+offset_right = 8.0
 offset_bottom = 15.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -64,7 +66,7 @@ editor_description = "Main window skin. Replace this texture with your own stret
 texture_filter = 1
 custom_minimum_size = Vector2(1060, 620)
 layout_mode = 2
-texture = ExtResource("1_kd858")
+texture = ExtResource("2_3ir0m")
 patch_margin_left = 32
 patch_margin_top = 32
 patch_margin_right = 32
@@ -79,7 +81,7 @@ offset_top = 18.0
 offset_right = 1042.0
 offset_bottom = 92.0
 mouse_filter = 1
-texture = ExtResource("2_dxium")
+texture = ExtResource("3_ea8mm")
 patch_margin_left = 24
 patch_margin_top = 24
 patch_margin_right = 24
@@ -164,10 +166,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -2.0
-offset_top = -6.0
-offset_right = 5.0
-offset_bottom = 5.0
+offset_left = -54.0
+offset_top = 46.0
+offset_right = -47.0
+offset_bottom = 57.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_mode = 0
@@ -190,7 +192,7 @@ offset_top = 108.0
 offset_right = 322.0
 offset_bottom = 419.0
 mouse_filter = 1
-texture = ExtResource("2_dxium")
+texture = ExtResource("3_ea8mm")
 patch_margin_left = 24
 patch_margin_top = 24
 patch_margin_right = 24
@@ -290,7 +292,7 @@ offset_top = 426.0
 offset_right = 322.0
 offset_bottom = 536.0
 mouse_filter = 1
-texture = ExtResource("2_dxium")
+texture = ExtResource("3_ea8mm")
 patch_margin_left = 22
 patch_margin_top = 22
 patch_margin_right = 22
@@ -378,7 +380,7 @@ offset_top = 108.0
 offset_right = 1042.0
 offset_bottom = 258.0
 mouse_filter = 1
-texture = ExtResource("2_dxium")
+texture = ExtResource("3_ea8mm")
 patch_margin_left = 24
 patch_margin_top = 24
 patch_margin_right = 24
@@ -574,9 +576,9 @@ layout_mode = 0
 offset_left = 164.0
 offset_top = 112.0
 offset_right = 686.0
-offset_bottom = 134.0
+offset_bottom = 132.0
 mouse_filter = 1
-texture = ExtResource("2_dxium")
+texture = ExtResource("9_rbb1l")
 patch_margin_left = 10
 patch_margin_top = 10
 patch_margin_right = 10
@@ -593,7 +595,7 @@ anchor_right = 0.35
 anchor_bottom = 1.0
 offset_left = 1.0
 offset_top = -20.0
-offset_right = 76.000015
+offset_right = 76.3
 offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -630,7 +632,7 @@ offset_top = 274.0
 offset_right = 1042.0
 offset_bottom = 404.0
 mouse_filter = 1
-texture = ExtResource("2_dxium")
+texture = ExtResource("3_ea8mm")
 patch_margin_left = 24
 patch_margin_top = 24
 patch_margin_right = 24
@@ -818,7 +820,7 @@ offset_top = 420.0
 offset_right = 1042.0
 offset_bottom = 536.0
 mouse_filter = 1
-texture = ExtResource("2_dxium")
+texture = ExtResource("3_ea8mm")
 patch_margin_left = 24
 patch_margin_top = 24
 patch_margin_right = 24
@@ -961,7 +963,7 @@ offset_top = 552.0
 offset_right = 1042.0
 offset_bottom = 602.0
 mouse_filter = 1
-texture = ExtResource("2_dxium")
+texture = ExtResource("3_ea8mm")
 patch_margin_left = 18
 patch_margin_top = 18
 patch_margin_right = 18
@@ -1074,3 +1076,39 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
 text = "ADD FRIEND"
+
+[node name="RecipeBookButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/FooterPanel" unique_id=391058999]
+editor_description = "NinePatchRect skin for RecipeBookButton. Replace its texture to customize the button background."
+texture_filter = 1
+layout_mode = 0
+offset_left = 182.0
+offset_top = 6.0
+offset_right = 378.0
+offset_bottom = 44.0
+mouse_filter = 1
+texture = ExtResource("5_k7k66")
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 14
+
+[node name="RecipeBookButton" type="Button" parent="CenterContainer/ProfileWindow/FooterPanel/RecipeBookButtonSkin" unique_id=1037537431]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.87, 0.93, 0.98, 1)
+theme_override_colors/font_pressed_color = Color(0.64, 0.76, 0.88, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxEmpty_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
+text = "RECIPE BOOK"

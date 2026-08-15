@@ -15,17 +15,22 @@
 [ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="13_o6w7i"]
 [ext_resource type="Texture2D" uid="uid://bg5sabtp5jnsv" path="res://Assets/ui/input_744x72.png" id="14_ncyao"]
 [ext_resource type="Texture2D" uid="uid://dv3n0c8gekb8k" path="res://Assets/ui/lobby/slot_legendary.png" id="14_slot_legendary"]
+[ext_resource type="Texture2D" uid="uid://i3nk3d4nfgx5" path="res://Assets/ui/pink_button_90x24.png" id="15_1dker"]
 [ext_resource type="Script" uid="uid://b8vyed8xbki4t" path="res://Scripts/ui/lobby_scene.gd" id="15_layout_controls"]
 [ext_resource type="Texture2D" uid="uid://d1swv78ujslt6" path="res://Assets/ui/right_arrow.png" id="15_ncyao"]
+[ext_resource type="Texture2D" uid="uid://bdqewvpbuib1a" path="res://Assets/ui/panel_outer_403x130.png" id="16_i3ycd"]
 [ext_resource type="Texture2D" uid="uid://djpgneln57xal" path="res://Assets/ui/right_arrow_pressed.png" id="16_ncyao"]
+[ext_resource type="Texture2D" uid="uid://bqm24ecryw223" path="res://Assets/ui/pink_button_pressed_90x24.png" id="16_vwihr"]
 [ext_resource type="Texture2D" uid="uid://bvk6n5xc53nr5" path="res://Assets/ui/lobby/home_button.png" id="16_wc2hy"]
 [ext_resource type="Texture2D" uid="uid://ni7luwsx1nns" path="res://Assets/ui/home.png" id="17_adnwb"]
+[ext_resource type="Texture2D" uid="uid://dp3cg88aiem4v" path="res://Assets/ui/pink_button_hover_90x24.png" id="17_d2k66"]
 [ext_resource type="Texture2D" uid="uid://gijbperhgf7x" path="res://Assets/ui/lobby/home_button_pressed.png" id="17_fcc0e"]
 [ext_resource type="Texture2D" uid="uid://bmk27qdrjub1b" path="res://Assets/ui/right_arrow_hover.png" id="17_o6w7i"]
 [ext_resource type="Texture2D" uid="uid://c0s1vj8wepsbi" path="res://Assets/ui/green_button_normal_90x24.png" id="21_ncyao"]
 [ext_resource type="Texture2D" uid="uid://pyw7s5lcdhmt" path="res://Assets/ui/green_button_pressed_90x24.png" id="22_o6w7i"]
 [ext_resource type="Texture2D" uid="uid://chi56jflgj38e" path="res://Assets/ui/inner_panel_604x150.png" id="22_py5ev"]
 [ext_resource type="Texture2D" uid="uid://opqgsn2jk7ie" path="res://Assets/ui/green_button_hover_90x24.png" id="23_py5ev"]
+[ext_resource type="Texture2D" uid="uid://cydy6p7ge7fpc" path="res://Assets/ui/unfav.png" id="25_6jbpl"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ox2yu"]
 texture = ExtResource("4_nkht7")
@@ -57,14 +62,44 @@ texture = ExtResource("9_wc2hy")
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_falkf"]
 texture = ExtResource("8_k5jpr")
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ceovm"]
+texture = ExtResource("15_1dker")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_co2tl"]
+texture = ExtResource("16_vwihr")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8foql"]
+texture = ExtResource("17_d2k66")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e18rx"]
+texture = ExtResource("15_1dker")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a2vh5"]
+texture = ExtResource("16_vwihr")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xeshw"]
+texture = ExtResource("17_d2k66")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4b60h"]
+texture = ExtResource("15_1dker")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kxsfy"]
+texture = ExtResource("16_vwihr")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xwdoc"]
+texture = ExtResource("17_d2k66")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ryrd5"]
+texture = ExtResource("15_1dker")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_s8ouv"]
+texture = ExtResource("16_vwihr")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2dl4o"]
+texture = ExtResource("17_d2k66")
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_d2k66"]
-texture = ExtResource("14_ncyao")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_drop_pressed"]
-texture = ExtResource("14_ncyao")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_drop_hover"]
-texture = ExtResource("14_ncyao")
+texture = ExtResource("16_i3ycd")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mqkg4"]
 texture = ExtResource("17_adnwb")
@@ -168,10 +203,10 @@ color = Color(1, 0.760784, 0.117647, 0.62)
 
 [node name="Logo" type="Label" parent="." unique_id=1745514632]
 layout_mode = 0
-offset_left = 680.0
-offset_top = -101.0
-offset_right = 1339.0
-offset_bottom = 426.0
+offset_left = 787.0
+offset_top = 60.0
+offset_right = 1172.0
+offset_bottom = 380.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 4
@@ -209,8 +244,8 @@ custom_minimum_size = Vector2(86, 86)
 layout_mode = 0
 offset_left = -603.0
 offset_top = 898.0
-offset_right = -517.0
-offset_bottom = 984.0
+offset_right = -492.0
+offset_bottom = 1004.0
 focus_mode = 0
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 32
@@ -482,6 +517,84 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
 theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
 text = "+"
 
+[node name="LeftButtons" type="Control" parent="." unique_id=1846220317]
+anchors_preset = 0
+offset_left = 320.0
+offset_top = 472.0
+offset_right = 600.0
+offset_bottom = 864.0
+
+[node name="FavoritesButton" type="Button" parent="LeftButtons" unique_id=419470658]
+custom_minimum_size = Vector2(280, 84)
+layout_mode = 0
+offset_right = 280.0
+offset_bottom = 84.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.2, 0.09803922, 0.22745098, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_ceovm")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_co2tl")
+theme_override_styles/hover = SubResource("StyleBoxTexture_8foql")
+toggle_mode = true
+text = "FAVORITE
+WORLDS"
+expand_icon = true
+
+[node name="RecentButton" type="Button" parent="LeftButtons" unique_id=379730288]
+custom_minimum_size = Vector2(280, 84)
+layout_mode = 0
+offset_top = 98.0
+offset_right = 280.0
+offset_bottom = 182.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.2, 0.09803922, 0.22745098, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_e18rx")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a2vh5")
+theme_override_styles/hover = SubResource("StyleBoxTexture_xeshw")
+toggle_mode = true
+text = "RECENTLY
+JOINED"
+expand_icon = true
+
+[node name="WorldOfMonthButton" type="Button" parent="LeftButtons" unique_id=1711208579]
+custom_minimum_size = Vector2(280, 84)
+layout_mode = 0
+offset_top = 196.0
+offset_right = 280.0
+offset_bottom = 280.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.2, 0.09803922, 0.22745098, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_4b60h")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_kxsfy")
+theme_override_styles/hover = SubResource("StyleBoxTexture_xwdoc")
+toggle_mode = true
+text = "WORLD OF
+THE MONTH"
+expand_icon = true
+
+[node name="MyWorldsButton" type="Button" parent="LeftButtons" unique_id=839657400]
+custom_minimum_size = Vector2(280, 84)
+layout_mode = 0
+offset_top = 294.0
+offset_right = 280.0
+offset_bottom = 378.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.2, 0.09803922, 0.22745098, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_ryrd5")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_s8ouv")
+theme_override_styles/hover = SubResource("StyleBoxTexture_2dl4o")
+toggle_mode = true
+text = "MY
+WORLDS"
+expand_icon = true
+
 [node name="WorldsPanel" type="NinePatchRect" parent="." unique_id=1702774396]
 layout_mode = 0
 offset_left = 616.0
@@ -547,8 +660,6 @@ offset_bottom = 180.0
 focus_mode = 0
 mouse_filter = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_d2k66")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_drop_pressed")
-theme_override_styles/hover = SubResource("StyleBoxTexture_drop_hover")
 
 [node name="HubIcon" type="Label" parent="WorldsPanel/WorldStart" unique_id=257309808]
 layout_mode = 0
@@ -630,10 +741,9 @@ vertical_alignment = 1
 
 [node name="StartJoin" type="Button" parent="WorldsPanel/WorldStart" unique_id=1578419956]
 layout_mode = 0
-offset_left = 670.0
-offset_top = 9.0
-offset_right = 725.0
-offset_bottom = 60.0
+offset_left = 672.0
+offset_right = 744.0
+offset_bottom = 72.0
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 0.956863, 0.25098, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.88, 0.16, 1)
@@ -645,6 +755,33 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_6jbpl")
 theme_override_styles/hover = SubResource("StyleBoxTexture_mg45h")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_join")
 icon_alignment = 1
+expand_icon = true
+
+[node name="FavoriteToggle" type="Button" parent="WorldsPanel/WorldStart" unique_id=1532306287]
+modulate = Color(1, 1, 1, 0.42)
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 0
+offset_left = 604.0
+offset_top = 12.0
+offset_right = 652.0
+offset_bottom = 60.0
+tooltip_text = "Favorite"
+focus_mode = 0
+theme_override_colors/font_color = Color(0.870588, 0.960784, 1, 0.35)
+theme_override_colors/font_pressed_color = Color(1, 0.890196, 0.188235, 1)
+theme_override_colors/font_hover_color = Color(1, 0.956863, 0.6, 0.85)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxEmpty_join")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_join")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_join")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_join")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_join")
+toggle_mode = true
+icon = ExtResource("25_6jbpl")
+flat = true
+icon_alignment = 1
+expand_icon = true
 
 [node name="WorldRows" type="Control" parent="WorldsPanel" unique_id=524144701]
 anchors_preset = 0

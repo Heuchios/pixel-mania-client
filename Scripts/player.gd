@@ -42,6 +42,10 @@ const WATER_BUBBLE_INITIAL_DELAY_MAX = 1.4
 const WATER_BUBBLE_MOUTH_OFFSET_X = 6.0
 const WATER_BUBBLE_MOUTH_OFFSET_Y = -12.0
 const WATER_SURFACE_PARTICLE_INTERVAL = 0.095
+## Splash impulse fed to the rippling water surface, in px/s per unit of the
+## existing particle intensity. Entry bursts arrive at 0.85-1.6 and swim wakes
+## at 0.46, so this puts a hard landing near 450 px/s and a swim wake near 130.
+const WATER_SURFACE_RIPPLE_IMPULSE = 280.0
 const WATER_CONTACT_EDGE_INSET = 0.75
 const WATER_FEET_CONTACT_HEIGHT = 2.0
 const WATER_CONTACT_MIN_OVERLAP = 0.1
@@ -1086,6 +1090,29 @@ func spawn_water_splash_particles(intensity: float = 1.0):
 		return
 
 	world.spawn_water_splash_particles(get_water_splash_position(), intensity)
+	ripple_water_surface(intensity)
+
+
+## Kick the rippling water surface wherever a splash particle burst happens, so
+## the two always agree. Purely visual: the surface manager owns no state the
+## server cares about, so this is safe to skip entirely when it is absent.
+func ripple_water_surface(intensity: float) -> void:
+	var world = get_world_controller()
+	if world == null or not is_instance_valid(world):
+		return
+	var manager = world.get("water_surface_manager")
+	if manager == null or not is_instance_valid(manager):
+		return
+	if not manager.has_method("disturb_span"):
+		return
+
+	var collision_rect := get_player_collision_rect_at(global_position)
+	manager.disturb_span(
+		collision_rect.position.x,
+		collision_rect.end.x,
+		-absf(intensity) * WATER_SURFACE_RIPPLE_IMPULSE,
+		collision_rect.end.y
+	)
 
 
 func update_water_surface_contact_particles():

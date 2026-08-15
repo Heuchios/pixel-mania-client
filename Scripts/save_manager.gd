@@ -602,6 +602,13 @@ func set_gameplay_world_active(active: bool, sync_world_nodes: bool = true):
 
 
 func is_popup_ui_node_name(node_name: String) -> bool:
+	# The leaderboard is opened by interacting with a leaderboard block, never by entering a
+	# world. It has to be listed here because set_gameplay_ui_visible(true) force-shows every
+	# ui_layer child that is NOT a popup -- so without this entry the panel opened by itself
+	# on every world join.
+	if node_name == "LeaderboardController":
+		return true
+
 	if node_name == "PlayerMenuUI":
 		return true
 
@@ -723,6 +730,8 @@ func set_gameplay_ui_visible(active: bool):
 
 
 func close_all_gameplay_popups():
+	if world.has_method("close_leaderboard_ui"):
+		world.close_leaderboard_ui()
 	world.close_chat_panel()
 	world.close_shop()
 	if world.has_method("close_vending_ui"):

@@ -15,6 +15,7 @@ const LOBBY_ICON_PATH := "res://Assets/ui/icons/lobby.png"
 const PLAYER_INFO_ICON_PATH := "res://Assets/ui/icons/player_info.png"
 const FRIENDS_ICON_PATH := "res://Assets/ui/icons/friends.png"
 const SETTINGS_ICON_PATH := "res://Assets/ui/icons/settings.png"
+const GAME_MENU_SCENE_PATH := "res://Scenes/ui/menu/MenuScene.tscn"
 
 var world = null
 var ui_layer_ref = null
@@ -39,6 +40,7 @@ var lobby_button = null
 var lobby_button_icon = null
 var overlay = null
 var panel = null
+var menu_scene_instance: Control = null
 var is_open_flag := false
 
 
@@ -47,6 +49,7 @@ func setup(parent_world, ui_node):
 	ui_layer_ref = ui_node
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_preset(Control.PRESET_FULL_RECT)
+	_fit_to_viewport()
 	z_index = 190
 
 	setup_menu_button()
@@ -220,6 +223,12 @@ func animate_menu_button_icon(pressed: bool):
 func build_overlay():
 	for child in get_children():
 		child.queue_free()
+	menu_scene_instance = null
+	overlay = null
+	panel = null
+
+	if build_scene_overlay():
+		return
 
 	overlay = ColorRect.new()
 	overlay.name = "GameMenuOverlay"
@@ -433,6 +442,80 @@ func build_overlay():
 	panel.add_child(back_button)
 
 	update_overlay_position()
+
+
+func build_scene_overlay() -> bool:
+	if not ResourceLoader.exists(GAME_MENU_SCENE_PATH):
+		return false
+
+	var loaded_scene := load(GAME_MENU_SCENE_PATH)
+	if not (loaded_scene is PackedScene):
+		return false
+
+	var scene_instance = (loaded_scene as PackedScene).instantiate()
+	if not (scene_instance is Control):
+		if scene_instance != null:
+			scene_instance.queue_free()
+		return false
+
+	menu_scene_instance = scene_instance as Control
+	menu_scene_instance.name = "GameMenuOverlay"
+	menu_scene_instance.mouse_filter = Control.MOUSE_FILTER_STOP
+	menu_scene_instance.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	menu_scene_instance.offset_left = 0.0
+	menu_scene_instance.offset_top = 0.0
+	menu_scene_instance.offset_right = maxf(0.0, get_viewport_rect().size.x)
+	menu_scene_instance.offset_bottom = maxf(0.0, get_viewport_rect().size.y)
+	menu_scene_instance.position = Vector2.ZERO
+	menu_scene_instance.size = get_viewport_rect().size
+	menu_scene_instance.z_index = 0
+
+	menu_scene_instance.set("close_button_hides_scene", false)
+	menu_scene_instance.set("back_button_hides_scene", false)
+	menu_scene_instance.set("auto_close_on_action_pressed", false)
+	menu_scene_instance.set("start_hidden", false)
+
+	add_child(menu_scene_instance)
+	overlay = menu_scene_instance
+	panel = menu_scene_instance.get_node_or_null("CenterContainer/MenuWindow")
+	_bind_scene_menu_nodes()
+	_connect_scene_menu_signals()
+	update_overlay_position()
+	return true
+
+
+func _bind_scene_menu_nodes() -> void:
+	if menu_scene_instance == null:
+		return
+
+	player_info_button = menu_scene_instance.get_node_or_null("CenterContainer/MenuWindow/BodyPanel/ActionsRoot/ActionButtonPlayerInfo")
+	friends_button = menu_scene_instance.get_node_or_null("CenterContainer/MenuWindow/BodyPanel/ActionsRoot/ActionButtonFriends")
+	respawn_button = menu_scene_instance.get_node_or_null("CenterContainer/MenuWindow/BodyPanel/ActionsRoot/ActionButtonRespawn")
+	settings_button = menu_scene_instance.get_node_or_null("CenterContainer/MenuWindow/BodyPanel/ActionsRoot/ActionButtonSettings")
+	lobby_button = menu_scene_instance.get_node_or_null("CenterContainer/MenuWindow/BodyPanel/ActionsRoot/ActionButtonLobby")
+	player_info_button_icon = menu_scene_instance.get_node_or_null("CenterContainer/MenuWindow/BodyPanel/ActionsRoot/ActionButtonPlayerInfo/Icon")
+	friends_button_icon = menu_scene_instance.get_node_or_null("CenterContainer/MenuWindow/BodyPanel/ActionsRoot/ActionButtonFriends/Icon")
+	respawn_button_icon = menu_scene_instance.get_node_or_null("CenterContainer/MenuWindow/BodyPanel/ActionsRoot/ActionButtonRespawn/Icon")
+	settings_button_icon = menu_scene_instance.get_node_or_null("CenterContainer/MenuWindow/BodyPanel/ActionsRoot/ActionButtonSettings/Icon")
+	lobby_button_icon = menu_scene_instance.get_node_or_null("CenterContainer/MenuWindow/BodyPanel/ActionsRoot/ActionButtonLobby/Icon")
+
+
+func _connect_scene_menu_signals() -> void:
+	if menu_scene_instance == null:
+		return
+
+	_connect_scene_signal("close_pressed", Callable(self, "close_menu"))
+	_connect_scene_signal("back_pressed", Callable(self, "close_menu"))
+	_connect_scene_signal("action_pressed", Callable(self, "_on_menu_scene_action_pressed"))
+
+
+func _connect_scene_signal(signal_name: String, callback: Callable) -> void:
+	if menu_scene_instance == null:
+		return
+	if not menu_scene_instance.has_signal(signal_name):
+		return
+	if not menu_scene_instance.is_connected(signal_name, callback):
+		menu_scene_instance.connect(signal_name, callback)
 
 
 func decorate_game_menu_button(button: Button, selected: bool = false) -> void:
@@ -738,7 +821,16 @@ func update_overlay_position():
 	if overlay == null:
 		return
 
-	var screen_size = get_viewport_rect().size
+	var screen_size = _fit_to_viewport()
+	_fit_control_to_rect(overlay, screen_size)
+
+	if menu_scene_instance != null:
+		if menu_scene_instance.has_method("fit_overlay_to_viewport"):
+			menu_scene_instance.call("fit_overlay_to_viewport", screen_size)
+		else:
+			_fit_control_to_rect(menu_scene_instance, screen_size)
+		return
+
 	overlay.offset_left = 0.0
 	overlay.offset_top = 0.0
 	overlay.offset_right = 0.0
@@ -760,17 +852,22 @@ func open_menu():
 	is_open_flag = true
 	visible = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	if overlay != null:
+	update_overlay_position()
+	if menu_scene_instance != null and menu_scene_instance.has_method("open_menu"):
+		menu_scene_instance.call("open_menu")
+	elif overlay != null:
 		overlay.visible = true
+		PixelUIStyle.play_panel_open(panel)
 	update_menu_button_visibility()
-	PixelUIStyle.play_panel_open(panel)
 
 
 func close_menu():
 	is_open_flag = false
 	visible = false
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if overlay != null:
+	if menu_scene_instance != null and menu_scene_instance.has_method("close_menu"):
+		menu_scene_instance.call("close_menu")
+	elif overlay != null:
 		overlay.visible = false
 	update_menu_button_visibility()
 
@@ -786,7 +883,42 @@ func toggle_menu():
 
 
 func is_open() -> bool:
+	if menu_scene_instance != null and menu_scene_instance.has_method("is_open"):
+		return is_open_flag and bool(menu_scene_instance.call("is_open"))
 	return is_open_flag and overlay != null and overlay.visible
+
+
+func _fit_to_viewport() -> Vector2:
+	var screen_size := get_viewport_rect().size
+	_fit_control_to_rect(self, screen_size)
+	return screen_size
+
+
+func _fit_control_to_rect(control: Control, screen_size: Vector2) -> void:
+	if control == null:
+		return
+	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	control.offset_left = 0.0
+	control.offset_top = 0.0
+	control.offset_right = maxf(0.0, screen_size.x)
+	control.offset_bottom = maxf(0.0, screen_size.y)
+	control.position = Vector2.ZERO
+	if screen_size.x > 0.0 and screen_size.y > 0.0:
+		control.size = screen_size
+
+
+func _on_menu_scene_action_pressed(action_id: String, _index: int, _action_data: Resource) -> void:
+	match action_id.strip_edges().to_lower():
+		"player_info", "player", "profile":
+			_on_player_info_pressed()
+		"friends", "friend":
+			_on_friends_pressed()
+		"respawn", "spawn":
+			_on_respawn_pressed()
+		"settings", "options":
+			_on_settings_pressed()
+		"lobby", "main_menu", "worlds", "world_menu":
+			_on_main_menu_pressed()
 
 
 func _on_player_info_pressed():

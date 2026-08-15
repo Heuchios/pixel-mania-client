@@ -13,6 +13,17 @@ const WORLD_JOIN_SCENE_CHANGE_DRAW_FRAMES := 1
 const LOBBY_HUB_WORLD := "START"
 const PLAYER_MAX_LEVEL := 100
 const WORLD_POPULATION_REFRESH_SECONDS := 5.0
+const WORLD_LIST_MODE_ACTIVE := "active"
+const WORLD_LIST_MODE_FAVORITES := "favorites"
+const WORLD_LIST_MODE_RECENT := "recent"
+const WORLD_LIST_MODE_MOTM := "motm"
+const WORLD_LIST_MODE_MINE := "mine"
+const MAX_FAVORITE_WORLDS := 24
+const FAVORITE_TOGGLE_ON_ICON := preload("res://Assets/ui/fav.png")
+const FAVORITE_TOGGLE_OFF_ICON := preload("res://Assets/ui/unfav.png")
+const FAVORITE_TOGGLE_ON_MODULATE := Color(1.0, 1.0, 1.0, 1.0)
+const FAVORITE_TOGGLE_OFF_MODULATE := Color(1.0, 1.0, 1.0, 0.42)
+const FAVORITE_TOGGLE_OFF_HOVER_MODULATE := Color(1.0, 1.0, 1.0, 0.68)
 const ACTIVE_WORLD_LIST_SIDE_MARGIN := 20.0
 const ACTIVE_WORLD_LIST_TOP := 108.0
 const ACTIVE_WORLD_LIST_BOTTOM_MARGIN := 24.0
@@ -67,6 +78,16 @@ var join_scene_change_in_progress := false
 var lobby_parallax_layers: Array = []
 var lobby_parallax_time := 0.0
 
+var favorites_button: Button
+var recent_button: Button
+var world_of_month_button: Button
+var my_worlds_button: Button
+var current_world_list_mode := WORLD_LIST_MODE_ACTIVE
+var owned_locked_world_entries: Array = []
+var owned_locked_worlds_loading := false
+var owned_locked_worlds_request_id := ""
+var owned_locked_worlds_error := ""
+
 var landfill_status_timer: Timer
 var landfill_event_active := false
 var landfill_season_key := ""
@@ -94,8 +115,10 @@ func _ready() -> void:
 	_bind_scene_nodes()
 	_setup_active_world_list()
 	_connect_scene_buttons()
+	_update_world_list_mode_buttons()
 	_load_profile()
 	_connect_world_population_feed()
+	_connect_owned_locked_worlds_feed()
 	_start_world_population_timer()
 	_request_world_population_refresh()
 	call_deferred("_prime_join_world_loading_overlay")
@@ -229,6 +252,10 @@ func _bind_scene_nodes() -> void:
 	profile_xp_fill = get_node_or_null("ProfilePanel/XpFill") as ColorRect
 	profile_gems_label = get_node_or_null("ProfilePanel/GemsRow/GemLabel") as Label
 	profile_total_xp_label = get_node_or_null("ProfilePanel/XpRow/TotalXpLabel") as Label
+	favorites_button = get_node_or_null("LeftButtons/FavoritesButton") as Button
+	recent_button = get_node_or_null("LeftButtons/RecentButton") as Button
+	world_of_month_button = get_node_or_null("LeftButtons/WorldOfMonthButton") as Button
+	my_worlds_button = get_node_or_null("LeftButtons/MyWorldsButton") as Button
 
 
 func _setup_active_world_list() -> void:
@@ -303,6 +330,10 @@ func _connect_scene_buttons() -> void:
 
 	_connect_button_by_path("TopButtons/ProfileButton", Callable(self, "_on_profile_switch_pressed"))
 	_connect_button_by_path("RightButtons/OrbitButton", Callable(self, "_on_start_world_pressed"))
+	_connect_button_by_path("LeftButtons/FavoritesButton", Callable(self, "_on_world_list_mode_button_pressed").bind(WORLD_LIST_MODE_FAVORITES))
+	_connect_button_by_path("LeftButtons/RecentButton", Callable(self, "_on_world_list_mode_button_pressed").bind(WORLD_LIST_MODE_RECENT))
+	_connect_button_by_path("LeftButtons/WorldOfMonthButton", Callable(self, "_on_world_list_mode_button_pressed").bind(WORLD_LIST_MODE_MOTM))
+	_connect_button_by_path("LeftButtons/MyWorldsButton", Callable(self, "_on_world_list_mode_button_pressed").bind(WORLD_LIST_MODE_MINE))
 
 
 func _connect_button_by_path(path: String, callback: Callable) -> void:
@@ -375,7 +406,7 @@ func _request_world_population_refresh() -> void:
 	if network.has_method("get_world_population_counts"):
 		_apply_world_population_counts(network.get_world_population_counts(), true)
 	if network.has_method("request_world_population"):
-		network.request_world_population()
+		network.request_world_population(_get_known_world_names_for_population_request())
 
 
 func _on_world_population_changed(world_counts: Dictionary) -> void:
@@ -402,17 +433,10 @@ func _refresh_world_rows() -> void:
 	if active_world_rows == null or active_world_row_template == null:
 		return
 
-	var start_player_count := maxi(0, int(world_population_cache.get(LOBBY_HUB_WORLD, 0)))
-	var entries: Array[Dictionary] = [{"world": LOBBY_HUB_WORLD, "count": start_player_count}]
-	for raw_world in world_population_cache.keys():
-		var world_name := _normalize_world_name(str(raw_world))
-		var count := maxi(0, int(world_population_cache.get(raw_world, 0)))
-		if world_name == "" or world_name == LOBBY_HUB_WORLD or count <= 0:
-			continue
-		entries.append({"world": world_name, "count": count})
-	entries.sort_custom(_sort_active_world_entries)
+	var entries: Array[Dictionary] = _get_visible_world_entries()
 
-	var next_signature := JSON.stringify(entries)
+	var state_token := str(owned_locked_worlds_loading) + "|" + owned_locked_worlds_error
+	var next_signature := current_world_list_mode + "|" + state_token + "|" + JSON.stringify(entries)
 	if next_signature == active_world_list_signature:
 		return
 	active_world_list_signature = next_signature
@@ -424,8 +448,114 @@ func _refresh_world_rows() -> void:
 		child.queue_free()
 
 	active_world_empty_label.visible = entries.is_empty()
+	active_world_empty_label.text = _get_empty_state_text(current_world_list_mode)
 	for entry in entries:
-		_add_active_world_row(str(entry.get("world", "")), int(entry.get("count", 0)))
+		_add_active_world_row(entry)
+
+
+# Returns the world entries for whichever left-side filter is currently selected. "active" (the
+# default, no button selected) mirrors the previous behavior exactly; the other four modes back
+# the FAVORITE WORLDS / RECENTLY JOINED / WORLD OF THE MONTH / MY WORLDS buttons added 2026-08-15.
+func _get_visible_world_entries() -> Array[Dictionary]:
+	match current_world_list_mode:
+		WORLD_LIST_MODE_FAVORITES:
+			return _get_favorite_world_entries()
+		WORLD_LIST_MODE_RECENT:
+			return _get_recent_world_entries()
+		WORLD_LIST_MODE_MOTM:
+			# No featured-world designation exists yet anywhere in the game (no admin tool, DB
+			# flag, or config). Rather than fabricate a fake "world of the month", this tab is
+			# honestly empty until that mechanism is built -- see _get_empty_state_text().
+			var empty: Array[Dictionary] = []
+			return empty
+		WORLD_LIST_MODE_MINE:
+			return _get_owned_locked_world_entries()
+		_:
+			return _get_active_world_entries()
+
+
+func _get_active_world_entries() -> Array[Dictionary]:
+	var start_player_count := maxi(0, int(world_population_cache.get(LOBBY_HUB_WORLD, 0)))
+	var entries: Array[Dictionary] = [{"world": LOBBY_HUB_WORLD, "count": start_player_count, "source_label": "OFFICIAL"}]
+	for raw_world in world_population_cache.keys():
+		var world_name := _normalize_world_name(str(raw_world))
+		var count := maxi(0, int(world_population_cache.get(raw_world, 0)))
+		if world_name == "" or world_name == LOBBY_HUB_WORLD or count <= 0:
+			continue
+		entries.append({"world": world_name, "count": count, "source_label": "LIVE"})
+	entries.sort_custom(_sort_active_world_entries)
+	return entries
+
+
+func _get_favorite_world_entries() -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	for world_name in _get_favorite_world_names():
+		entries.append({
+			"world": world_name,
+			"count": maxi(0, int(world_population_cache.get(world_name, 0))),
+			"source_label": "FAVORITE",
+		})
+	entries.sort_custom(_sort_active_world_entries)
+	return entries
+
+
+func _get_recent_world_entries() -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	var recent_names := _get_recent_world_names()
+	for i in range(recent_names.size()):
+		var world_name := _normalize_world_name(str(recent_names[i]))
+		if world_name == "":
+			continue
+		entries.append({
+			"world": world_name,
+			"count": maxi(0, int(world_population_cache.get(world_name, 0))),
+			"source_label": "LAST" if i == 0 else "RECENT",
+		})
+	return entries
+
+
+# "My Worlds" == worlds the signed-in account has claimed with a World Lock (world_lock_manager.gd's
+# owner concept), per Hassan's answer that "My Worlds" means worlds this account created. This reuses
+# NetworkManager's request_owned_locked_worlds()/owned_locked_worlds_received, which is already fully
+# implemented server-side (server_phase9_remaining_routes.js -> listOwnedWorldLocksForAccount, backed
+# by the world_locks Postgres table) -- no server changes were needed. The request/response wiring
+# here mirrors the same feature as it existed in the orphaned Scripts/lobby_menu.gd, ported the same
+# way the Landfill event card above was.
+func _get_owned_locked_world_entries() -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	for raw_entry in owned_locked_world_entries:
+		if not (raw_entry is Dictionary):
+			continue
+		var world_name := _normalize_world_name(str(raw_entry.get("world_name", "")))
+		if world_name == "":
+			continue
+		entries.append({
+			"world": world_name,
+			"count": maxi(0, int(world_population_cache.get(world_name, 0))),
+			"source_label": "LOCKED",
+			"owner_name": str(raw_entry.get("owner_name", "")),
+			"access_count": int(raw_entry.get("access_count", 0)),
+		})
+	entries.sort_custom(_sort_active_world_entries)
+	return entries
+
+
+func _get_empty_state_text(mode: String) -> String:
+	match mode:
+		WORLD_LIST_MODE_FAVORITES:
+			return "NO FAVORITE WORLDS YET\nTAP THE HEART ON A WORLD ROW TO FAVORITE IT"
+		WORLD_LIST_MODE_RECENT:
+			return "YOU HAVEN'T JOINED A WORLD YET"
+		WORLD_LIST_MODE_MOTM:
+			return "WORLD OF THE MONTH HASN'T BEEN SET YET"
+		WORLD_LIST_MODE_MINE:
+			if owned_locked_worlds_loading:
+				return "LOADING YOUR WORLDS..."
+			if owned_locked_worlds_error != "":
+				return owned_locked_worlds_error.to_upper()
+			return "YOU HAVEN'T LOCKED A WORLD YET"
+		_:
+			return "NO ACTIVE WORLDS RIGHT NOW"
 
 
 func _sort_active_world_entries(left: Dictionary, right: Dictionary) -> bool:
@@ -443,9 +573,13 @@ func _sort_active_world_entries(left: Dictionary, right: Dictionary) -> bool:
 	return left_world < right_world
 
 
-func _add_active_world_row(world_name: String, player_count: int) -> void:
+func _add_active_world_row(entry: Dictionary) -> void:
 	if active_world_rows == null or active_world_row_template == null:
 		return
+
+	var world_name := str(entry.get("world", ""))
+	var player_count := int(entry.get("count", 0))
+	var source_label := str(entry.get("source_label", "LIVE"))
 
 	var row := active_world_row_template.duplicate() as Button
 	if row == null:
@@ -456,7 +590,7 @@ func _add_active_world_row(world_name: String, player_count: int) -> void:
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.set_meta("world_name", world_name)
-	var is_start_hub := world_name == LOBBY_HUB_WORLD
+	var is_start_hub := world_name == LOBBY_HUB_WORLD and current_world_list_mode == WORLD_LIST_MODE_ACTIVE
 
 	var hub_icon := row.get_node_or_null("HubIcon") as Label
 	if hub_icon != null:
@@ -467,11 +601,10 @@ func _add_active_world_row(world_name: String, player_count: int) -> void:
 		name_label.text = world_name
 	var meta_label := _get_world_row_label(row, ["StartMeta", "Meta"])
 	if meta_label != null:
-		var source_label := "OFFICIAL" if is_start_hub else "LIVE"
-		meta_label.text = source_label + " | OPEN | " + _get_player_count_text(player_count)
+		meta_label.text = _build_world_row_meta_text(is_start_hub, source_label, entry, player_count)
 	var badge_label := _get_world_row_label(row, ["OfficialBadge"])
 	if badge_label != null:
-		badge_label.text = "OFFICIAL HUB" if is_start_hub else "ACTIVE WORLD"
+		badge_label.text = "OFFICIAL HUB" if is_start_hub else source_label
 		badge_label.visible = true
 	var player_label := _get_world_row_label(row, ["StartPlayers"])
 	if player_label != null:
@@ -480,8 +613,61 @@ func _add_active_world_row(world_name: String, player_count: int) -> void:
 	if row_join_button != null:
 		row_join_button.mouse_filter = Control.MOUSE_FILTER_STOP
 		_connect_button_once(row_join_button, Callable(self, "_on_active_world_join_pressed").bind(world_name))
+	_setup_favorite_toggle_for_row(row, world_name)
 
 	active_world_rows.add_child(row)
+
+
+func _build_world_row_meta_text(is_start_hub: bool, source_label: String, entry: Dictionary, player_count: int) -> String:
+	if current_world_list_mode == WORLD_LIST_MODE_MINE:
+		var access_count := int(entry.get("access_count", 0))
+		return "LOCKED | access " + str(access_count) + " | " + _get_player_count_text(player_count)
+	var label := "OFFICIAL" if is_start_hub else source_label
+	return label + " | OPEN | " + _get_player_count_text(player_count)
+
+
+func _setup_favorite_toggle_for_row(row: Button, world_name: String) -> void:
+	var toggle := row.get_node_or_null("FavoriteToggle") as Button
+	if toggle == null:
+		return
+	toggle.mouse_filter = Control.MOUSE_FILTER_STOP
+	var is_favorited := _is_world_favorited(world_name)
+	toggle.set_pressed_no_signal(is_favorited)
+	_apply_favorite_toggle_visual_state(toggle, is_favorited)
+	var toggled_callback := Callable(self, "_on_favorite_toggle_toggled").bind(toggle, world_name)
+	if not toggle.toggled.is_connected(toggled_callback):
+		toggle.toggled.connect(toggled_callback)
+	var mouse_entered_callback := Callable(self, "_on_favorite_toggle_mouse_entered").bind(toggle)
+	if not toggle.mouse_entered.is_connected(mouse_entered_callback):
+		toggle.mouse_entered.connect(mouse_entered_callback)
+	var mouse_exited_callback := Callable(self, "_on_favorite_toggle_mouse_exited").bind(toggle)
+	if not toggle.mouse_exited.is_connected(mouse_exited_callback):
+		toggle.mouse_exited.connect(mouse_exited_callback)
+
+
+func _apply_favorite_toggle_visual_state(toggle: Button, is_favorited: bool, is_hovered: bool = false) -> void:
+	if toggle == null:
+		return
+	toggle.icon = FAVORITE_TOGGLE_ON_ICON if is_favorited else FAVORITE_TOGGLE_OFF_ICON
+	toggle.modulate = FAVORITE_TOGGLE_ON_MODULATE if is_favorited else (FAVORITE_TOGGLE_OFF_HOVER_MODULATE if is_hovered else FAVORITE_TOGGLE_OFF_MODULATE)
+	toggle.tooltip_text = "Unfavorite" if is_favorited else "Favorite"
+
+
+func _on_favorite_toggle_mouse_entered(toggle: Button) -> void:
+	if toggle != null:
+		_apply_favorite_toggle_visual_state(toggle, toggle.button_pressed, true)
+
+
+func _on_favorite_toggle_mouse_exited(toggle: Button) -> void:
+	if toggle != null:
+		_apply_favorite_toggle_visual_state(toggle, toggle.button_pressed, false)
+
+
+func _on_favorite_toggle_toggled(is_favorited: bool, toggle: Button, world_name: String) -> void:
+	_apply_favorite_toggle_visual_state(toggle, is_favorited)
+	_set_world_favorited(world_name, is_favorited)
+	if current_world_list_mode == WORLD_LIST_MODE_FAVORITES:
+		_refresh_world_rows()
 
 
 func _get_world_row_label(row: Node, label_names: Array[String]) -> Label:
@@ -518,6 +704,196 @@ func _get_player_count_text(count: int) -> String:
 	if count == 1:
 		return "1 player"
 	return str(count) + " players"
+
+
+# ---------------------------------------------------------------------------
+# LeftButtons: FAVORITE WORLDS / RECENTLY JOINED / WORLD OF THE MONTH / MY WORLDS.
+# Clicking the already-active filter button returns to the default ACTIVE WORLDS view, same
+# toggle-off behavior as a single-select tab strip.
+# ---------------------------------------------------------------------------
+
+func _on_world_list_mode_button_pressed(mode: String) -> void:
+	var next_mode := WORLD_LIST_MODE_ACTIVE if current_world_list_mode == mode else mode
+	_set_world_list_mode(next_mode)
+
+
+func _set_world_list_mode(mode: String) -> void:
+	current_world_list_mode = mode
+	_update_world_list_mode_buttons()
+	_refresh_world_rows()
+	if mode == WORLD_LIST_MODE_MINE:
+		_request_owned_locked_worlds_refresh()
+	_request_world_population_refresh()
+
+
+func _update_world_list_mode_buttons() -> void:
+	if favorites_button != null:
+		favorites_button.button_pressed = current_world_list_mode == WORLD_LIST_MODE_FAVORITES
+	if recent_button != null:
+		recent_button.button_pressed = current_world_list_mode == WORLD_LIST_MODE_RECENT
+	if world_of_month_button != null:
+		world_of_month_button.button_pressed = current_world_list_mode == WORLD_LIST_MODE_MOTM
+	if my_worlds_button != null:
+		my_worlds_button.button_pressed = current_world_list_mode == WORLD_LIST_MODE_MINE
+
+	var title_label := get_node_or_null("WorldsPanel/WorldsHeader/WorldsTitle") as Label
+	if title_label != null:
+		title_label.text = _get_world_list_title(current_world_list_mode)
+
+
+func _get_world_list_title(mode: String) -> String:
+	match mode:
+		WORLD_LIST_MODE_FAVORITES:
+			return "FAVORITE WORLDS"
+		WORLD_LIST_MODE_RECENT:
+			return "RECENTLY JOINED"
+		WORLD_LIST_MODE_MOTM:
+			return "WORLD OF THE MONTH"
+		WORLD_LIST_MODE_MINE:
+			return "MY WORLDS"
+		_:
+			return "ACTIVE WORLDS"
+
+
+func _get_favorite_world_names() -> Array:
+	var cfg := ConfigFile.new()
+	if cfg.load(PROFILE_PATH) != OK:
+		return []
+
+	var raw = cfg.get_value("profile", "favorite_worlds", [])
+	var result: Array = []
+	if raw is Array:
+		for value in raw:
+			var clean_name := _normalize_world_name(str(value))
+			if clean_name != "" and not result.has(clean_name):
+				result.append(clean_name)
+	return result
+
+
+func _is_world_favorited(world_name: String) -> bool:
+	var clean_name := _normalize_world_name(world_name)
+	if clean_name == "":
+		return false
+	return _get_favorite_world_names().has(clean_name)
+
+
+func _set_world_favorited(world_name: String, is_favorited: bool) -> void:
+	var clean_name := _normalize_world_name(world_name)
+	if clean_name == "":
+		return
+
+	var cfg := ConfigFile.new()
+	cfg.load(PROFILE_PATH)
+	var favorites := _get_favorite_world_names()
+
+	if is_favorited:
+		if not favorites.has(clean_name):
+			favorites.append(clean_name)
+			if favorites.size() > MAX_FAVORITE_WORLDS:
+				favorites = favorites.slice(favorites.size() - MAX_FAVORITE_WORLDS, favorites.size())
+	else:
+		favorites.erase(clean_name)
+
+	cfg.set_value("profile", "favorite_worlds", favorites)
+	cfg.save(PROFILE_PATH)
+
+
+func _get_recent_world_names() -> Array:
+	var cfg := ConfigFile.new()
+	if cfg.load(PROFILE_PATH) != OK:
+		return []
+
+	var raw = cfg.get_value("profile", "recent_worlds", [])
+	var result: Array = []
+	if raw is Array:
+		for value in raw:
+			var clean_name := _normalize_world_name(str(value))
+			if clean_name != "" and not result.has(clean_name):
+				result.append(clean_name)
+	return result
+
+
+func _connect_owned_locked_worlds_feed() -> void:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null:
+		return
+
+	var owned_callback := Callable(self, "_on_owned_locked_worlds_received")
+	if network.has_signal("owned_locked_worlds_received") and not network.is_connected("owned_locked_worlds_received", owned_callback):
+		network.connect("owned_locked_worlds_received", owned_callback)
+
+
+func _request_owned_locked_worlds_refresh() -> void:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null or not network.has_method("request_owned_locked_worlds"):
+		owned_locked_worlds_loading = false
+		owned_locked_worlds_error = "Owned locked worlds are unavailable."
+		if current_world_list_mode == WORLD_LIST_MODE_MINE:
+			_refresh_world_rows()
+		return
+
+	owned_locked_worlds_request_id = "lobby_owned_" + str(Time.get_ticks_msec())
+	owned_locked_worlds_loading = true
+	owned_locked_worlds_error = ""
+	if current_world_list_mode == WORLD_LIST_MODE_MINE:
+		_refresh_world_rows()
+
+	if not bool(network.request_owned_locked_worlds(owned_locked_worlds_request_id)):
+		owned_locked_worlds_loading = false
+		owned_locked_worlds_error = "Sign in to load your worlds."
+		if current_world_list_mode == WORLD_LIST_MODE_MINE:
+			_refresh_world_rows()
+
+
+func _on_owned_locked_worlds_received(data: Dictionary) -> void:
+	if owned_locked_worlds_request_id != "":
+		var response_request_id := str(data.get("request_id", "")).strip_edges()
+		if response_request_id != "" and response_request_id != owned_locked_worlds_request_id:
+			return
+
+	owned_locked_worlds_loading = false
+	owned_locked_worlds_error = ""
+
+	if not bool(data.get("ok", true)):
+		owned_locked_world_entries.clear()
+		owned_locked_worlds_error = str(data.get("message", "")).strip_edges()
+		if owned_locked_worlds_error == "":
+			owned_locked_worlds_error = "Could not load your worlds."
+		if current_world_list_mode == WORLD_LIST_MODE_MINE:
+			_refresh_world_rows()
+		return
+
+	var incoming = data.get("worlds", [])
+	owned_locked_world_entries.clear()
+	if incoming is Array:
+		for raw_entry in incoming:
+			if raw_entry is Dictionary:
+				owned_locked_world_entries.append(raw_entry.duplicate(true))
+
+	if current_world_list_mode == WORLD_LIST_MODE_MINE:
+		_refresh_world_rows()
+
+
+# Population counts only arrive automatically for worlds the server is already broadcasting as
+# live/active. Favorites, recently-joined and owned-locked worlds can be offline, so ask the server
+# by name too (mirrors the same helper in the orphaned Scripts/lobby_menu.gd) -- otherwise those rows
+# would show a stale or blank player count until someone else happened to be in that world already.
+func _get_known_world_names_for_population_request() -> Array:
+	var names: Array = [LOBBY_HUB_WORLD]
+
+	for world_name in _get_favorite_world_names():
+		if not names.has(world_name):
+			names.append(world_name)
+	for world_name in _get_recent_world_names():
+		if not names.has(world_name):
+			names.append(world_name)
+	for raw_entry in owned_locked_world_entries:
+		if raw_entry is Dictionary:
+			var world_name := _normalize_world_name(str(raw_entry.get("world_name", "")))
+			if world_name != "" and not names.has(world_name):
+				names.append(world_name)
+
+	return names
 
 
 func _on_world_text_submitted(_text: String) -> void:
@@ -568,6 +944,9 @@ func _join_world_name(raw_world_name: String) -> void:
 	_set_input_status("JOINING " + world_name)
 	if world_input != null:
 		world_input.text = world_name
+	# Previously computed but never called -- Recently Joined (LeftButtons/RecentButton) reads
+	# this same profile/recent_worlds list back via _get_recent_world_names().
+	_save_recent_world_name(world_name)
 
 	var profile_name := _get_network_session_username()
 	if profile_name == "" and username_label != null:
@@ -583,8 +962,16 @@ func _join_world_name(raw_world_name: String) -> void:
 
 	_show_join_world_loading_overlay(world_name)
 	await _wait_for_join_world_loading_overlay_to_draw()
+	if network != null and network.has_method("record_world_entry_stage"):
+		network.record_world_entry_stage("client_lobby_overlay_drawn")
 
+	# This wait is invisible in the old profile but can be unbounded: it blocks until
+	# WorldScenePreloader has threaded-loaded main.tscn, the item DB and all 31 critical
+	# scripts. On a first join of a session that is real, measurable time; on later joins
+	# it should be ~0. Instrumented so the timeline shows which case we are in.
 	var world_scene := await _wait_for_world_scene_ready()
+	if network != null and network.has_method("record_world_entry_stage"):
+		network.record_world_entry_stage("client_world_scene_preloaded")
 	if world_scene == null:
 		if network != null and network.has_method("cancel_active_join_request"):
 			network.cancel_active_join_request()
@@ -599,6 +986,8 @@ func _join_world_name(raw_world_name: String) -> void:
 	# Stop the menu loop here -- gameplay shouldn't have the login/lobby music under it.
 	if MusicManager != null and MusicManager.has_method("stop_login_loop"):
 		MusicManager.stop_login_loop()
+	if network != null and network.has_method("record_world_entry_stage"):
+		network.record_world_entry_stage("client_scene_change_requested")
 	var change_error := get_tree().change_scene_to_packed(world_scene)
 	if change_error != OK:
 		if network != null and network.has_method("cancel_active_join_request"):

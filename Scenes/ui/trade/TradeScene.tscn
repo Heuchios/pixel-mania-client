@@ -1,0 +1,834 @@
+[gd_scene format=3 uid="uid://qga2xg0uwusq"]
+
+[ext_resource type="Script" uid="uid://c6dble506iouy" path="res://Scripts/trade_ui.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="2_nryhv"]
+[ext_resource type="Texture2D" uid="uid://bdqewvpbuib1a" path="res://Assets/ui/panel_outer_403x130.png" id="3_agix8"]
+[ext_resource type="Texture2D" uid="uid://tbchr2qk0dib" path="res://Assets/ui/close_button_hover.png" id="4_j1587"]
+[ext_resource type="Texture2D" uid="uid://cdd8rhkxp0cky" path="res://Assets/ui/close_button_pressed.png" id="5_8xim2"]
+[ext_resource type="Texture2D" uid="uid://m3d85gxykr8n" path="res://Assets/ui/inv_slot_96x96.png" id="6_yi6jg"]
+[ext_resource type="Texture2D" uid="uid://c0s1vj8wepsbi" path="res://Assets/ui/green_button_normal_90x24.png" id="7_5bh6o"]
+[ext_resource type="Texture2D" uid="uid://pyw7s5lcdhmt" path="res://Assets/ui/green_button_pressed_90x24.png" id="8_sa3ut"]
+[ext_resource type="Texture2D" uid="uid://opqgsn2jk7ie" path="res://Assets/ui/green_button_hover_90x24.png" id="9_2fcnd"]
+[ext_resource type="Texture2D" uid="uid://d1n2gwvwc6eay" path="res://Assets/ui/red_button_normal_90x24.png" id="10_8qseo"]
+[ext_resource type="Texture2D" uid="uid://b7ngun3bstbwq" path="res://Assets/ui/red_button_pressed_90x24.png" id="11_wp54m"]
+[ext_resource type="Texture2D" uid="uid://u2iiji1cp4cs" path="res://Assets/ui/red_button_hover_90x24.png" id="12_ogu7p"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6vcvc"]
+texture = ExtResource("2_nryhv")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7k868"]
+texture = ExtResource("3_agix8")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hpc6h"]
+texture = ExtResource("4_j1587")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kltya"]
+texture = ExtResource("5_8xim2")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e08e2"]
+texture = ExtResource("4_j1587")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_r33sp"]
+texture = ExtResource("3_agix8")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_o1aky"]
+texture = ExtResource("6_yi6jg")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kwxat"]
+texture = ExtResource("6_yi6jg")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aa8k8"]
+texture = ExtResource("6_yi6jg")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kqrg6"]
+texture = ExtResource("6_yi6jg")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nwwfm"]
+texture = ExtResource("6_yi6jg")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_s8vy0"]
+texture = ExtResource("6_yi6jg")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_neg2b"]
+texture = ExtResource("3_agix8")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hdf80"]
+texture = ExtResource("7_5bh6o")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jwpg7"]
+texture = ExtResource("8_sa3ut")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_k2e45"]
+texture = ExtResource("9_2fcnd")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_536cc"]
+texture = ExtResource("10_8qseo")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aqgau"]
+texture = ExtResource("11_wp54m")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8cuat"]
+texture = ExtResource("12_ogu7p")
+
+[sub_resource type="StyleBoxFlat" id="SB_PanelBack"]
+bg_color = Color(0.06, 0.135, 0.2, 0.62)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.42, 0.78, 1, 0.66)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="SB_Column"]
+bg_color = Color(0.82, 0.94, 1, 0.105)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.18, 0.46, 0.76, 0.72)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 4
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="SB_FinalPanel"]
+bg_color = Color(0.18, 0.32, 0.43, 0.56)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 0.84, 0.05, 0.82)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[node name="TradeUI" type="Control" unique_id=603366236]
+z_index = 150
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="TradeOverlay" type="ColorRect" parent="." unique_id=819550128]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.18)
+
+[node name="TradePanel" type="Control" parent="." unique_id=279979634]
+anchors_preset = 0
+offset_right = 920.0
+offset_bottom = 560.0
+
+[node name="PanelBack" type="Panel" parent="TradePanel" unique_id=620329535]
+layout_mode = 0
+offset_right = 920.0
+offset_bottom = 560.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_6vcvc")
+
+[node name="TopBar" type="Panel" parent="TradePanel" unique_id=1857777419]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 16.0
+offset_right = 887.0
+offset_bottom = 74.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_7k868")
+
+[node name="Title" type="Label" parent="TradePanel" unique_id=1118346310]
+layout_mode = 0
+offset_left = 38.0
+offset_top = 28.0
+offset_right = 398.0
+offset_bottom = 62.0
+text = "PLAYER TRADE"
+vertical_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="TradePanel" unique_id=565000591]
+layout_mode = 0
+offset_left = 360.0
+offset_top = 30.0
+offset_right = 790.0
+offset_bottom = 58.0
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="TradePanel" unique_id=1523133307]
+layout_mode = 0
+offset_left = 834.0
+offset_top = 22.0
+offset_right = 878.0
+offset_bottom = 65.0
+theme_override_styles/normal = SubResource("StyleBoxTexture_hpc6h")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_kltya")
+theme_override_styles/hover = SubResource("StyleBoxTexture_e08e2")
+text = "X"
+
+[node name="LocalColumn" type="Panel" parent="TradePanel" unique_id=1720451380]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 98.0
+offset_right = 432.0
+offset_bottom = 458.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_r33sp")
+
+[node name="NameLabel" type="Label" parent="TradePanel/LocalColumn" unique_id=1685267533]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 316.0
+offset_bottom = 40.0
+text = "YOU"
+vertical_alignment = 1
+
+[node name="AcceptCheck" type="Label" parent="TradePanel/LocalColumn" unique_id=1391412258]
+visible = false
+layout_mode = 0
+offset_left = 342.0
+offset_top = 12.0
+offset_right = 378.0
+offset_bottom = 40.0
+text = "✓"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlotGrid" type="GridContainer" parent="TradePanel/LocalColumn" unique_id=1325176749]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 58.0
+offset_right = 380.0
+offset_bottom = 336.0
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+columns = 3
+
+[node name="LocalSlot0" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=2033100807]
+custom_minimum_size = Vector2(112, 84)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_o1aky")
+clip_text = true
+
+[node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot0" unique_id=989296262]
+visible = false
+layout_mode = 0
+offset_left = 22.0
+offset_top = 8.0
+offset_right = 90.0
+offset_bottom = 76.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemLabel" type="Label" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot0" unique_id=763996222]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 40.0
+offset_right = 107.0
+offset_bottom = 78.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+
+[node name="ClearButton" type="Button" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot0" unique_id=1499422449]
+visible = false
+layout_mode = 0
+offset_left = 84.0
+offset_top = 5.0
+offset_right = 106.0
+offset_bottom = 27.0
+text = "X"
+
+[node name="LocalSlot1" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=618994782]
+custom_minimum_size = Vector2(112, 84)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_kwxat")
+clip_text = true
+
+[node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot1" unique_id=1202020303]
+visible = false
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 75.0
+offset_bottom = 41.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemLabel" type="Label" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot1" unique_id=1523770803]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 40.0
+offset_right = 107.0
+offset_bottom = 78.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+
+[node name="ClearButton" type="Button" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot1" unique_id=1749953293]
+visible = false
+layout_mode = 0
+offset_left = 84.0
+offset_top = 5.0
+offset_right = 106.0
+offset_bottom = 27.0
+text = "X"
+
+[node name="LocalSlot2" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=994786805]
+custom_minimum_size = Vector2(112, 84)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_aa8k8")
+clip_text = true
+
+[node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot2" unique_id=1719651470]
+visible = false
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 75.0
+offset_bottom = 41.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemLabel" type="Label" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot2" unique_id=1223876436]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 40.0
+offset_right = 107.0
+offset_bottom = 78.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+
+[node name="ClearButton" type="Button" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot2" unique_id=961326454]
+visible = false
+layout_mode = 0
+offset_left = 84.0
+offset_top = 5.0
+offset_right = 106.0
+offset_bottom = 27.0
+text = "X"
+
+[node name="LocalSlot3" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=310058068]
+custom_minimum_size = Vector2(112, 84)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_kqrg6")
+clip_text = true
+
+[node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot3" unique_id=1564669938]
+visible = false
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 75.0
+offset_bottom = 41.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemLabel" type="Label" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot3" unique_id=1053417891]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 40.0
+offset_right = 107.0
+offset_bottom = 78.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+
+[node name="ClearButton" type="Button" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot3" unique_id=1238395571]
+visible = false
+layout_mode = 0
+offset_left = 84.0
+offset_top = 5.0
+offset_right = 106.0
+offset_bottom = 27.0
+text = "X"
+
+[node name="LocalSlot4" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=1723621507]
+custom_minimum_size = Vector2(112, 84)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_nwwfm")
+clip_text = true
+
+[node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot4" unique_id=1546450820]
+visible = false
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 75.0
+offset_bottom = 41.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemLabel" type="Label" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot4" unique_id=21854223]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 40.0
+offset_right = 107.0
+offset_bottom = 78.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+
+[node name="ClearButton" type="Button" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot4" unique_id=680695613]
+visible = false
+layout_mode = 0
+offset_left = 84.0
+offset_top = 5.0
+offset_right = 106.0
+offset_bottom = 27.0
+text = "X"
+
+[node name="LocalSlot5" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=616722240]
+custom_minimum_size = Vector2(112, 84)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_s8vy0")
+clip_text = true
+
+[node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot5" unique_id=841800072]
+visible = false
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 75.0
+offset_bottom = 41.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemLabel" type="Label" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot5" unique_id=1039209550]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 40.0
+offset_right = 107.0
+offset_bottom = 78.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+
+[node name="ClearButton" type="Button" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot5" unique_id=926172487]
+visible = false
+layout_mode = 0
+offset_left = 84.0
+offset_top = 5.0
+offset_right = 106.0
+offset_bottom = 27.0
+text = "X"
+
+[node name="RemoteColumn" type="Panel" parent="TradePanel" unique_id=247457701]
+layout_mode = 0
+offset_left = 488.0
+offset_top = 98.0
+offset_right = 888.0
+offset_bottom = 458.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_neg2b")
+
+[node name="NameLabel" type="Label" parent="TradePanel/RemoteColumn" unique_id=2090499338]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 316.0
+offset_bottom = 40.0
+text = "OTHER PLAYER"
+vertical_alignment = 1
+
+[node name="AcceptCheck" type="Label" parent="TradePanel/RemoteColumn" unique_id=1023284550]
+visible = false
+layout_mode = 0
+offset_left = 342.0
+offset_top = 12.0
+offset_right = 378.0
+offset_bottom = 40.0
+text = "✓"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlotGrid" type="GridContainer" parent="TradePanel/RemoteColumn" unique_id=1552638732]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 58.0
+offset_right = 380.0
+offset_bottom = 336.0
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+columns = 3
+
+[node name="RemoteSlot0" type="Button" parent="TradePanel/RemoteColumn/SlotGrid" unique_id=483987365]
+custom_minimum_size = Vector2(112, 84)
+layout_mode = 2
+mouse_filter = 2
+clip_text = true
+
+[node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot0" unique_id=1607252548]
+visible = false
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 75.0
+offset_bottom = 41.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemLabel" type="Label" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot0" unique_id=340122919]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 40.0
+offset_right = 107.0
+offset_bottom = 78.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+
+[node name="RemoteSlot1" type="Button" parent="TradePanel/RemoteColumn/SlotGrid" unique_id=1217531989]
+custom_minimum_size = Vector2(112, 84)
+layout_mode = 2
+mouse_filter = 2
+clip_text = true
+
+[node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot1" unique_id=776364436]
+visible = false
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 75.0
+offset_bottom = 41.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemLabel" type="Label" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot1" unique_id=154804975]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 40.0
+offset_right = 107.0
+offset_bottom = 78.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+
+[node name="RemoteSlot2" type="Button" parent="TradePanel/RemoteColumn/SlotGrid" unique_id=1758411135]
+custom_minimum_size = Vector2(112, 84)
+layout_mode = 2
+mouse_filter = 2
+clip_text = true
+
+[node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot2" unique_id=2090944386]
+visible = false
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 75.0
+offset_bottom = 41.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemLabel" type="Label" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot2" unique_id=17792078]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 40.0
+offset_right = 107.0
+offset_bottom = 78.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+
+[node name="RemoteSlot3" type="Button" parent="TradePanel/RemoteColumn/SlotGrid" unique_id=1833809957]
+custom_minimum_size = Vector2(112, 84)
+layout_mode = 2
+mouse_filter = 2
+clip_text = true
+
+[node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot3" unique_id=1024587645]
+visible = false
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 75.0
+offset_bottom = 41.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemLabel" type="Label" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot3" unique_id=558614013]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 40.0
+offset_right = 107.0
+offset_bottom = 78.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+
+[node name="RemoteSlot4" type="Button" parent="TradePanel/RemoteColumn/SlotGrid" unique_id=663173028]
+custom_minimum_size = Vector2(112, 84)
+layout_mode = 2
+mouse_filter = 2
+clip_text = true
+
+[node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot4" unique_id=2065963766]
+visible = false
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 75.0
+offset_bottom = 41.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemLabel" type="Label" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot4" unique_id=532611366]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 40.0
+offset_right = 107.0
+offset_bottom = 78.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+
+[node name="RemoteSlot5" type="Button" parent="TradePanel/RemoteColumn/SlotGrid" unique_id=242484017]
+custom_minimum_size = Vector2(112, 84)
+layout_mode = 2
+mouse_filter = 2
+clip_text = true
+
+[node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot5" unique_id=417885449]
+visible = false
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 75.0
+offset_bottom = 41.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemLabel" type="Label" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot5" unique_id=338128246]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 40.0
+offset_right = 107.0
+offset_bottom = 78.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+
+[node name="AcceptButton" type="Button" parent="TradePanel" unique_id=753143866]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 488.0
+offset_right = 700.0
+offset_bottom = 534.0
+theme_override_styles/normal = SubResource("StyleBoxTexture_hdf80")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_jwpg7")
+theme_override_styles/hover = SubResource("StyleBoxTexture_k2e45")
+text = "Accept"
+
+[node name="CancelButton" type="Button" parent="TradePanel" unique_id=577891716]
+layout_mode = 0
+offset_left = 718.0
+offset_top = 488.0
+offset_right = 888.0
+offset_bottom = 534.0
+theme_override_styles/normal = SubResource("StyleBoxTexture_536cc")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_aqgau")
+theme_override_styles/hover = SubResource("StyleBoxTexture_8cuat")
+text = "Cancel"
+
+[node name="InventoryPicker" type="Control" parent="." unique_id=794275939]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Shade" type="ColorRect" parent="InventoryPicker" unique_id=162780328]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.24)
+
+[node name="PickerPanel" type="Panel" parent="InventoryPicker" unique_id=739066460]
+layout_mode = 0
+offset_right = 620.0
+offset_bottom = 470.0
+theme_override_styles/panel = SubResource("SB_PanelBack")
+
+[node name="Title" type="Label" parent="InventoryPicker/PickerPanel" unique_id=1218949492]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 18.0
+offset_right = 322.0
+offset_bottom = 48.0
+text = "SELECT ITEM"
+
+[node name="CloseButton" type="Button" parent="InventoryPicker/PickerPanel" unique_id=138214124]
+layout_mode = 0
+offset_left = 558.0
+offset_top = 16.0
+offset_right = 598.0
+offset_bottom = 50.0
+text = "X"
+
+[node name="Scroll" type="ScrollContainer" parent="InventoryPicker/PickerPanel" unique_id=1123629376]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 62.0
+offset_right = 600.0
+offset_bottom = 354.0
+
+[node name="PickerList" type="VBoxContainer" parent="InventoryPicker/PickerPanel/Scroll" unique_id=596361981]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="PickerItemTemplate" type="Button" parent="InventoryPicker/PickerPanel/Scroll/PickerList" unique_id=1802908378]
+visible = false
+custom_minimum_size = Vector2(552, 38)
+layout_mode = 2
+focus_mode = 0
+text = "Item Name  x0"
+alignment = 0
+
+[node name="AmountPanel" type="Panel" parent="InventoryPicker/PickerPanel" unique_id=1681281507]
+visible = false
+layout_mode = 0
+offset_left = 20.0
+offset_top = 372.0
+offset_right = 600.0
+offset_bottom = 450.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_Column")
+
+[node name="AmountLabel" type="Label" parent="InventoryPicker/PickerPanel/AmountPanel" unique_id=425095929]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 10.0
+offset_right = 304.0
+offset_bottom = 36.0
+
+[node name="AmountSpin" type="SpinBox" parent="InventoryPicker/PickerPanel/AmountPanel" unique_id=509771193]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 40.0
+offset_right = 166.0
+offset_bottom = 70.0
+min_value = 1.0
+max_value = 1.0
+value = 1.0
+
+[node name="AddButton" type="Button" parent="InventoryPicker/PickerPanel/AmountPanel" unique_id=1433555202]
+layout_mode = 0
+offset_left = 390.0
+offset_top = 36.0
+offset_right = 476.0
+offset_bottom = 70.0
+text = "Add"
+
+[node name="ClearSelectedButton" type="Button" parent="InventoryPicker/PickerPanel/AmountPanel" unique_id=385673091]
+layout_mode = 0
+offset_left = 484.0
+offset_top = 36.0
+offset_right = 566.0
+offset_bottom = 70.0
+text = "Clear"
+
+[node name="FinalConfirmOverlay" type="Control" parent="." unique_id=152234122]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Shade" type="ColorRect" parent="FinalConfirmOverlay" unique_id=508171935]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.32)
+
+[node name="FinalPanel" type="Panel" parent="FinalConfirmOverlay" unique_id=661647753]
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 430.0
+theme_override_styles/panel = SubResource("SB_FinalPanel")
+
+[node name="Title" type="Label" parent="FinalConfirmOverlay/FinalPanel" unique_id=2081089363]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 524.0
+offset_bottom = 52.0
+text = "FINAL CONFIRMATION"
+
+[node name="FinalSummaryLabel" type="Label" parent="FinalConfirmOverlay/FinalPanel" unique_id=1139247278]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 70.0
+offset_right = 612.0
+offset_bottom = 330.0
+autowrap_mode = 3
+
+[node name="FinalConfirmButton" type="Button" parent="FinalConfirmOverlay/FinalPanel" unique_id=610815498]
+layout_mode = 0
+offset_left = 326.0
+offset_top = 356.0
+offset_right = 476.0
+offset_bottom = 400.0
+text = "Final Accept"
+
+[node name="BackButton" type="Button" parent="FinalConfirmOverlay/FinalPanel" unique_id=1758934933]
+layout_mode = 0
+offset_left = 492.0
+offset_top = 356.0
+offset_right = 612.0
+offset_bottom = 400.0
+text = "Cancel"
