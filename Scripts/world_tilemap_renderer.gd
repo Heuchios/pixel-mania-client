@@ -117,6 +117,10 @@ func setup(world_ref) -> void:
 	max_dirty_chunk_rebuilds_per_frame = _resolve_int_env("PIXELMANIA_TILEMAP_DIRTY_CHUNKS_PER_FRAME", DEFAULT_DIRTY_CHUNK_REBUILDS_PER_FRAME, 1, 64)
 	_reset_streaming_state()
 	texture_source_ids.clear()
+	# The TileSets are rebuilt below, so any memoized cell-validity answers keyed off the old
+	# ones are stale. This is the only place a cached answer can change -- see
+	# _is_cell_data_valid_for_layer.
+	_cell_validity_cache_by_layer.clear()
 
 	if not enabled:
 		_clear_layers()
@@ -820,7 +824,52 @@ func _is_bulk_cell_load_active() -> bool:
 	return bool(world.get_meta("world_bulk_load_in_progress", false))
 
 
+# Memoized results for _is_cell_data_valid_for_layer, keyed layer_key -> Vector4i(source_id,
+# atlas_x, atlas_y, alternative_tile). Cleared in setup() whenever the TileSets are rebuilt.
+var _cell_validity_cache_by_layer: Dictionary = {}
+
+
 func _is_cell_data_valid_for_layer(layer_key: String, cell_data: Variant) -> bool:
+	# This is one of the hottest functions in a world build.
+	#
+	# It has four call sites (reconcile_active_cells, _store_cell, _apply_cell, _rebuild_chunk),
+	# and during a build a single cell passes through several of them -- _store_cell on the way
+	# in, then _rebuild_chunk when its chunk flushes, then reconcile_active_cells at the end. On
+	# a 100x70 world that is 20,000+ invocations, each doing a string-matched layer lookup plus
+	# TileSet has_source / get_source / has_tile (and sometimes has_alternative_tile) calls.
+	# Measured, client_foreground_built was 444.6ms -- a third of the entire join.
+	#
+	# The answer depends only on the layer's TileSet and the cell's (source_id, atlas_coords,
+	# alternative_tile). It does NOT depend on grid position, which is why the same handful of
+	# answers gets recomputed thousands of times: a world contains on the order of a hundred
+	# distinct cell types, not thousands. Memoizing collapses ~20,000 TileSet interrogations into
+	# roughly one per distinct cell type.
+	#
+	# Invalidation: the only thing that can change an answer is the layer's TileSet itself, which
+	# is built once in setup() and not mutated afterwards, so setup() clears this cache.
+	var atlas_coords := _get_cell_atlas_coords(cell_data)
+	var cache_key := Vector4i(
+		_get_cell_source_id(cell_data),
+		atlas_coords.x,
+		atlas_coords.y,
+		_get_cell_alternative_tile(cell_data)
+	)
+	var layer_cache_value: Variant = _cell_validity_cache_by_layer.get(layer_key)
+	if layer_cache_value is Dictionary:
+		var layer_cache := layer_cache_value as Dictionary
+		var cached: Variant = layer_cache.get(cache_key)
+		if cached is bool:
+			return cached as bool
+		var hit_result := _compute_cell_data_valid_for_layer(layer_key, cell_data)
+		layer_cache[cache_key] = hit_result
+		return hit_result
+
+	var result := _compute_cell_data_valid_for_layer(layer_key, cell_data)
+	_cell_validity_cache_by_layer[layer_key] = {cache_key: result}
+	return result
+
+
+func _compute_cell_data_valid_for_layer(layer_key: String, cell_data: Variant) -> bool:
 	var layer := _get_layer_for_key(layer_key)
 	if layer == null or layer.tile_set == null:
 		return false
