@@ -376,11 +376,16 @@ func _sample_world_entry_memory_bytes() -> int:
 
 
 func begin_world_entry_profile(world_name: String, request_id: String) -> void:
-	if not is_world_entry_profile_enabled():
-		world_entry_profile.clear()
-		return
+	# The profile is now ALWAYS collected, not just in verbose/debug builds. Collecting a
+	# stage is one Time.get_ticks_usec() read plus one small array append -- far too cheap
+	# to matter next to the work it measures -- and without it there is no way to tell
+	# where a slow join actually went in a release build, which is the only build players
+	# ever run. is_world_entry_profile_enabled() now only controls the VERBOSE per-stage
+	# [world-entry] JSON spam and the per-stage memory sampling (which is genuinely not
+	# free, so it stays gated). The final [WORLD_JOIN_PROFILE] timeline always prints.
+	var verbose := is_world_entry_profile_enabled()
 	var now_usec := Time.get_ticks_usec()
-	var memory_bytes := _sample_world_entry_memory_bytes()
+	var memory_bytes := _sample_world_entry_memory_bytes() if verbose else 0
 	world_entry_profile = {
 		"active": true,
 		"world": _safe_world_name(world_name),
@@ -388,6 +393,8 @@ func begin_world_entry_profile(world_name: String, request_id: String) -> void:
 		"started_usec": now_usec,
 		"last_stage_usec": now_usec,
 		"first_response_usec": 0,
+		"first_packet_available_usec": 0,
+		"frames_since_join": 0,
 		"first_world_byte_usec": 0,
 		"wire_bytes": 0,
 		"packet_count": 0,
@@ -398,6 +405,7 @@ func begin_world_entry_profile(world_name: String, request_id: String) -> void:
 		"last_loading_percent": -1,
 		"activated_at_msec": 0,
 		"pending_controls_extra": {},
+		"verbose": verbose,
 		"stage_history": []
 	}
 	record_world_entry_stage("client_join_request")
@@ -409,17 +417,35 @@ func record_world_entry_stage(stage: String, extra: Dictionary = {}) -> void:
 	var now_usec := Time.get_ticks_usec()
 	var started_usec := int(world_entry_profile.get("started_usec", now_usec))
 	var last_stage_usec := int(world_entry_profile.get("last_stage_usec", started_usec))
+	world_entry_profile["last_stage_usec"] = now_usec
+
+	# Always-on path: record the stage boundary into stage_history. This is the data the
+	# final [WORLD_JOIN_PROFILE] timeline is built from, and it is deliberately cheap --
+	# no memory sampling, no JSON, no string building.
+	var stage_total_ms := snappedf(float(now_usec - started_usec) / 1000.0, 0.001)
+	var stage_delta_ms := snappedf(float(now_usec - last_stage_usec) / 1000.0, 0.001)
+	var stage_history: Variant = world_entry_profile.get("stage_history", [])
+	if stage_history is Array:
+		(stage_history as Array).append({
+			"stage": stage,
+			"stage_ms": stage_delta_ms,
+			"total_ms": stage_total_ms
+		})
+
+	# Everything below is the VERBOSE path only.
+	if not bool(world_entry_profile.get("verbose", false)):
+		return
+
 	var memory_bytes := _sample_world_entry_memory_bytes()
 	var peak_memory_bytes := maxi(memory_bytes, int(world_entry_profile.get("peak_memory_bytes", memory_bytes)))
-	world_entry_profile["last_stage_usec"] = now_usec
 	world_entry_profile["peak_memory_bytes"] = peak_memory_bytes
 	var event := {
 		"event": "world_entry_stage",
 		"stage": stage,
 		"world": str(world_entry_profile.get("world", "")),
 		"request_id": str(world_entry_profile.get("request_id", "")),
-		"total_ms": snappedf(float(now_usec - started_usec) / 1000.0, 0.001),
-		"stage_ms": snappedf(float(now_usec - last_stage_usec) / 1000.0, 0.001),
+		"total_ms": stage_total_ms,
+		"stage_ms": stage_delta_ms,
 		"wire_bytes": int(world_entry_profile.get("wire_bytes", 0)),
 		"packet_count": int(world_entry_profile.get("packet_count", 0)),
 		"parse_ms": snappedf(float(world_entry_profile.get("parse_usec", 0)) / 1000.0, 0.001),
@@ -431,9 +457,6 @@ func record_world_entry_stage(stage: String, extra: Dictionary = {}) -> void:
 	for key in extra.keys():
 		event[key] = extra[key]
 	print("[world-entry] " + JSON.stringify(event))
-	var stage_history: Variant = world_entry_profile.get("stage_history", [])
-	if stage_history is Array:
-		(stage_history as Array).append({"stage": stage, "stage_ms": event["stage_ms"]})
 
 
 func _record_world_entry_packet(message_type: String, wire_bytes: int, parse_usec: int) -> void:
@@ -521,39 +544,110 @@ func complete_world_entry_profile(extra: Dictionary = {}) -> void:
 	world_entry_profile["active"] = false
 
 
-# Permanent, lightweight join-latency telemetry (dev/debug builds only, same gating as the
-# rest of world_entry_profile -- see is_world_entry_profile_enabled()). The per-stage
-# "[world-entry]" lines above are precise but require manually scanning/correlating many
-# lines to find what was actually slow; this prints ONE consolidated line per completed
-# join plus an explicit warning naming the slowest stage whenever the total exceeds 1s, so
-# a regression is visible without reconstructing the timeline by hand. See world-join
-# latency investigation, section 21 ("permanent world-join telemetry").
+# Permanent, ALWAYS-ON join-latency telemetry. Prints one full ordered stage timeline per
+# completed join -- the cumulative "at" time and the per-stage delta for every recorded
+# boundary from join click to controls enabled -- with severity markers so the slow stage is
+# visible at a glance instead of having to correlate many [world-entry] lines by hand:
+#
+#     (blank)  < 50ms    fine
+#     "!"      >= 50ms   noticeable
+#     "!!"     >= 100ms  significant bottleneck
+#     "!!!"    >= 500ms  needs investigation
+#
+# Stored in last_world_join_profile_text so the /worldjoinprofile dev command can reprint the
+# most recent one on demand. See world-join latency investigation.
+const WORLD_JOIN_STAGE_WARN_MS := 50.0
+const WORLD_JOIN_STAGE_SIGNIFICANT_MS := 100.0
+const WORLD_JOIN_STAGE_INVESTIGATE_MS := 500.0
+const WORLD_JOIN_TOTAL_TARGET_MS := 1000.0
+const WORLD_JOIN_TOTAL_WARN_MS := 750.0
+
+var last_world_join_profile_text: String = ""
+
+
+func _world_join_stage_marker(stage_ms: float) -> String:
+	if stage_ms >= WORLD_JOIN_STAGE_INVESTIGATE_MS:
+		return "!!!"
+	if stage_ms >= WORLD_JOIN_STAGE_SIGNIFICANT_MS:
+		return "!!"
+	if stage_ms >= WORLD_JOIN_STAGE_WARN_MS:
+		return "!"
+	return ""
+
+
 func _log_world_join_profile_summary() -> void:
 	if world_entry_profile.is_empty():
 		return
+	var started_usec := int(world_entry_profile.get("started_usec", 0))
 	var total_ms := snappedf(
-		float(int(world_entry_profile.get("last_stage_usec", 0)) - int(world_entry_profile.get("started_usec", 0))) / 1000.0,
+		float(int(world_entry_profile.get("last_stage_usec", 0)) - started_usec) / 1000.0,
 		0.001
 	)
-	var stage_history: Variant = world_entry_profile.get("stage_history", [])
+
 	var slowest_stage := ""
 	var slowest_stage_ms := 0.0
+	var lines: PackedStringArray = []
+	lines.append("========== WORLD JOIN PROFILE ==========")
+	lines.append("World:   %s" % str(world_entry_profile.get("world", "")))
+	lines.append("Request: %s" % str(world_entry_profile.get("request_id", "")))
+	lines.append("")
+	lines.append("%-38s %10s %10s" % ["STAGE", "AT(ms)", "DELTA(ms)"])
+	lines.append("----------------------------------------------------------------")
+
+	var stage_history: Variant = world_entry_profile.get("stage_history", [])
 	if stage_history is Array:
 		for entry in (stage_history as Array):
 			if not (entry is Dictionary):
 				continue
-			var stage_ms := float((entry as Dictionary).get("stage_ms", 0.0))
+			var row := entry as Dictionary
+			var stage_name := str(row.get("stage", ""))
+			var stage_ms := float(row.get("stage_ms", 0.0))
+			var at_ms := float(row.get("total_ms", 0.0))
 			if stage_ms > slowest_stage_ms:
 				slowest_stage_ms = stage_ms
-				slowest_stage = str((entry as Dictionary).get("stage", ""))
+				slowest_stage = stage_name
+			lines.append("%-38s %10.1f %10.1f %s" % [stage_name, at_ms, stage_ms, _world_join_stage_marker(stage_ms)])
+
 	var first_world_byte_usec := int(world_entry_profile.get("first_world_byte_usec", 0))
-	var started_usec := int(world_entry_profile.get("started_usec", 0))
+	var first_response_usec := int(world_entry_profile.get("first_response_usec", 0))
 	var transfer_ms := 0.0
 	if first_world_byte_usec > 0:
 		transfer_ms = snappedf(float(first_world_byte_usec - started_usec) / 1000.0, 0.001)
+	var server_roundtrip_ms := 0.0
+	if first_response_usec > 0:
+		server_roundtrip_ms = snappedf(float(first_response_usec - started_usec) / 1000.0, 0.001)
+
+	var first_packet_available_usec := int(world_entry_profile.get("first_packet_available_usec", 0))
+	var bytes_available_ms := 0.0
+	if first_packet_available_usec > 0:
+		bytes_available_ms = snappedf(float(first_packet_available_usec - started_usec) / 1000.0, 0.001)
+
+	lines.append("----------------------------------------------------------------")
+	lines.append("Frames rendered during join:    %8d" % int(world_entry_profile.get("frames_since_join", 0)))
+	lines.append("Time to first bytes AVAILABLE:  %8.1f ms   <- server+network" % bytes_available_ms)
+	lines.append("Time to first server response:  %8.1f ms   <- + client dispatch delay" % server_roundtrip_ms)
+	lines.append("  (gap between those two = client not reading the socket)")
+	lines.append("Time to first world byte:       %8.1f ms" % transfer_ms)
+	lines.append("Snapshot wire bytes:            %8d" % int(world_entry_profile.get("wire_bytes", 0)))
+	lines.append("Snapshot packets:               %8d" % int(world_entry_profile.get("packet_count", 0)))
+	lines.append("Client JSON parse:              %8.1f ms" % (float(world_entry_profile.get("parse_usec", 0)) / 1000.0))
+	lines.append("Frame stalls during join:       %8d" % int(world_entry_profile.get("frame_stall_count", 0)))
+	lines.append("Worst frame delta:              %8.1f ms" % float(world_entry_profile.get("max_frame_delta_ms", 0.0)))
+	lines.append("Slowest stage:  %s (%.1f ms)" % [slowest_stage, slowest_stage_ms])
+	lines.append("TOTAL JOIN (click -> playable): %8.1f ms" % total_ms)
+	lines.append("========================================")
+
+	var report := "\n".join(lines)
+	last_world_join_profile_text = report
+	print(report)
+
+	# Machine-readable one-liner, kept for log grepping / regression tooling.
 	print("[WORLD_JOIN_PROFILE] " + JSON.stringify({
 		"world": str(world_entry_profile.get("world", "")),
 		"request_id": str(world_entry_profile.get("request_id", "")),
+		"bytes_available_ms": bytes_available_ms,
+		"frames_since_join": int(world_entry_profile.get("frames_since_join", 0)),
+		"server_roundtrip_ms": server_roundtrip_ms,
 		"transfer_ms": transfer_ms,
 		"wire_bytes": int(world_entry_profile.get("wire_bytes", 0)),
 		"packet_count": int(world_entry_profile.get("packet_count", 0)),
@@ -563,10 +657,16 @@ func _log_world_join_profile_summary() -> void:
 		"slowest_stage_ms": slowest_stage_ms,
 		"TOTAL_JOIN_ms": total_ms
 	}))
-	if total_ms > 1000.0:
+
+	if total_ms > WORLD_JOIN_TOTAL_TARGET_MS:
 		push_warning(
-			"[WORLD_JOIN_PROFILE] world join exceeded 1000ms (TOTAL_JOIN=%.1fms) -- slowest stage: %s (%.1fms)"
-			% [total_ms, slowest_stage, slowest_stage_ms]
+			"[WORLD_JOIN_PROFILE] REGRESSION: world join exceeded %.0fms target (TOTAL_JOIN=%.1fms) -- slowest stage: %s (%.1fms)"
+			% [WORLD_JOIN_TOTAL_TARGET_MS, total_ms, slowest_stage, slowest_stage_ms]
+		)
+	elif total_ms > WORLD_JOIN_TOTAL_WARN_MS:
+		push_warning(
+			"[WORLD_JOIN_PROFILE] world join above %.0fms soft budget (TOTAL_JOIN=%.1fms) -- slowest stage: %s (%.1fms)"
+			% [WORLD_JOIN_TOTAL_WARN_MS, total_ms, slowest_stage, slowest_stage_ms]
 		)
 
 
@@ -603,6 +703,7 @@ func _process(delta: float) -> void:
 	var frame_socket: WebSocketPeer = socket
 	var frame_socket_generation: int = socket_generation
 	frame_socket.poll()
+	_sample_world_entry_socket_arrival(frame_socket)
 
 	var state: int = frame_socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN and not connected:
@@ -694,6 +795,36 @@ func _process_network_followup() -> void:
 	process_pending_world_entry_ready_retry()
 	apply_pending_server_player_state_if_ready()
 	_process_local_position_queue()
+
+
+# Splits "the server was slow" from "the client wasn't reading the socket".
+#
+# client_first_response is recorded when the client PROCESSES the first packet after a join
+# request, which conflates two very different failures: the server genuinely taking that long
+# to answer, versus the reply sitting unread in the socket buffer while the client's main
+# thread was busy (scene instantiate, World._ready, a blocking build loop) or while packet
+# dispatch was suppressed (process_server_packets_with_budget early-returns during a world
+# state apply, and caps at MAX_SERVER_PACKETS_PER_FRAME / MAX_SERVER_PACKET_PROCESS_USEC).
+#
+# This runs immediately after poll(), before any dispatch or budget check, and stamps the
+# moment bytes are actually AVAILABLE. It also counts frames since the join request:
+#
+#   client_first_packet_available ~= client_first_response  -> genuinely waiting on the server
+#   client_first_packet_available <<  client_first_response -> client-side stall, look at
+#                                                              frames_since_join to see whether
+#                                                              the main thread was even running
+func _sample_world_entry_socket_arrival(peer: WebSocketPeer) -> void:
+	if world_entry_profile.is_empty() or not bool(world_entry_profile.get("active", false)):
+		return
+	world_entry_profile["frames_since_join"] = int(world_entry_profile.get("frames_since_join", 0)) + 1
+	if int(world_entry_profile.get("first_packet_available_usec", 0)) > 0:
+		return
+	if peer == null or peer.get_available_packet_count() <= 0:
+		return
+	world_entry_profile["first_packet_available_usec"] = Time.get_ticks_usec()
+	record_world_entry_stage("client_first_packet_available", {
+		"frames_since_join": int(world_entry_profile.get("frames_since_join", 0))
+	})
 
 
 func process_server_packets_with_budget(peer: WebSocketPeer, generation: int) -> void:
