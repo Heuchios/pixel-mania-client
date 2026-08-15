@@ -5930,6 +5930,32 @@ func process_pending_world_entry_ready_retry() -> void:
 	if pending_world_entry_ready.is_empty() or world_entry_active:
 		return
 	process_pending_world_entry_block_updates()
+
+	# Do NOT re-send world_entry_ready while a world-state apply is still in flight.
+	#
+	# The server treats every world_entry_ready whose block_revision has not advanced since the
+	# last one as a failed "catchup" attempt, and after
+	# WORLD_ENTRY_CATCHUP_MAX_NO_PROGRESS_ATTEMPTS of them it gives up and restarts the entire
+	# snapshot (see the catchupStalled branch in handleWorldEntryReady).
+	#
+	# But while a world-state apply is running, this client CANNOT advance its block revision:
+	# process_pending_world_entry_block_updates() above returns 0 on exactly these conditions,
+	# and process_server_packets_with_budget() stops dispatching packets for the duration too.
+	# So every retry sent during the build carries an identical, unchanged block_revision and is
+	# guaranteed to be counted as no-progress.
+	#
+	# On a large or actively-changing world the build takes seconds, which is long enough to burn
+	# the server's entire catchup allowance BEFORE the build has even finished -- the snapshot is
+	# then thrown away and rebuilt from scratch, which takes longer still, which makes the next
+	# restart more likely. A measured LANDFILL join hit 23.2s this way, versus ~1.5s for a world
+	# that never tripped it.
+	#
+	# Staying quiet until the apply completes costs nothing: the retry below is only useful once
+	# there is new information to report, and _send_pending_world_entry_ready() is still called
+	# the moment the apply finishes and the queued block updates have been drained.
+	if is_world_state_apply_in_progress() or not pending_server_world_state.is_empty() or not pending_world_state_stream.is_empty():
+		return
+
 	if Time.get_ticks_msec() < world_entry_ready_retry_at_msec:
 		return
 	_send_pending_world_entry_ready()
