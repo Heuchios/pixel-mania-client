@@ -7,8 +7,23 @@ const ITEM_DATABASE_PATH := "res://Scripts/item_database.gd"
 const THREAD_LOAD_NOT_STARTED := -1
 const MAX_CRITICAL_LOAD_STARTS_PER_PUMP := 16
 const MAX_CONCURRENT_CRITICAL_LOADS := 16
-const MAX_VISUAL_LOAD_STARTS_PER_PUMP := 2
-const MAX_CONCURRENT_VISUAL_LOADS := 4
+# Was 2 starts/pump and 4 concurrent -- 8x more conservative than the critical loader directly
+# above (16/16), for no reason that survives measurement.
+#
+# _prepare_visual_requests() below walks EVERY item in the item database across all 7
+# STARTUP_TEXTURE_KEYS, so this queue is several hundred paths long. At 2 starts per pump, and
+# pump() running once per frame, draining it takes hundreds of frames -- multiple seconds. Any
+# path still queued when the player clicks Join is then loaded COLD and SYNCHRONOUSLY inside the
+# world-build loop, which is the measured ~2000ms penalty on the first join of every session
+# (first join ~3500ms, every later join ~1400-1500ms).
+#
+# Nothing is competing for frame time here: this only pumps on the login and lobby screens,
+# where the player is reading text or typing a world name. And the work is genuinely off-thread
+# -- ResourceLoader.load_threaded_request() does the decode on a background thread, so raising
+# these mainly raises how many requests are in flight, not how much main-thread work happens per
+# frame. Matching the critical loader's numbers drains the queue roughly 8x faster.
+const MAX_VISUAL_LOAD_STARTS_PER_PUMP := 16
+const MAX_CONCURRENT_VISUAL_LOADS := 16
 const CRITICAL_WORLD_SCRIPT_PATHS := [
 	"res://Scripts/gameplay_ui_manager.gd",
 	"res://Scripts/block_manager.gd",
@@ -131,6 +146,25 @@ static func start_optional_warmup() -> void:
 
 static func pause_optional_warmup() -> void:
 	_optional_warmup_enabled = false
+
+
+# Diagnostic for the world-join profile: how much of the visual texture warmup was actually
+# finished at the moment the player pressed Join. If `remaining` is non-zero on a slow first
+# join, those textures are being loaded cold and synchronously inside the world build, and the
+# warmup needs to start earlier or drain faster -- see MAX_VISUAL_LOAD_STARTS_PER_PUMP.
+static func get_visual_warmup_progress() -> Dictionary:
+	var total := _visual_paths.size()
+	var launched := mini(_visual_launch_index, total)
+	return {
+		"warmup_enabled": _optional_warmup_enabled,
+		"prepared": _visual_requests_prepared,
+		"total": total,
+		"launched": launched,
+		"in_flight": _visual_in_flight.size(),
+		"loaded": _preloaded_visual_resources.size(),
+		"failed": _visual_failed_paths.size(),
+		"remaining": maxi(0, total - launched)
+	}
 
 
 static func is_optional_warmup_started() -> bool:
