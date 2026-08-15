@@ -1337,6 +1337,18 @@ func apply_network_world_state(data: Dictionary):
 		if has_explicit_background and world.block_manager != null and world.block_manager.has_method("clear_background_blocks"):
 			world.block_manager.clear_background_blocks()
 
+	# Sub-stage accounting for client_foreground_built.
+	#
+	# That stage measured 424.8ms -- a third of the whole join -- and three separate attempts to
+	# guess what inside it was expensive were all wrong. These accumulators split it into the two
+	# things the loop actually does per block: building the ~20-field update payload (which runs
+	# 13 _safe_int/_safe_string/_safe_bool calls and allocates a Dictionary per block), and
+	# apply_network_block_update() itself. Two hrtime reads per block is noise next to what is
+	# being measured, and the totals print once at the end of the stage.
+	var fg_payload_usec: int = 0
+	var fg_apply_usec: int = 0
+	var fg_entry_count: int = 0
+
 	if foreground is Array:
 		var processed = 0
 		for entry in foreground:
@@ -1346,6 +1358,7 @@ func apply_network_world_state(data: Dictionary):
 			if processed >= MAX_WORLD_NETWORK_ENTRIES_PER_SECTION:
 				break
 			if entry is Dictionary:
+				var fg_payload_started_usec: int = Time.get_ticks_usec()
 				var foreground_block_type := _resolve_block_type_from_entry(entry)
 				var foreground_block_update := {
 					"world": world.current_world_name,
@@ -1368,7 +1381,11 @@ func apply_network_world_state(data: Dictionary):
 				}
 				if entry.has("door_name") or entry.has("name"):
 					foreground_block_update["door_name"] = _safe_string(entry.get("door_name", entry.get("name", "")), "", MAX_DOOR_NAME_LENGTH)
+				var fg_apply_started_usec: int = Time.get_ticks_usec()
+				fg_payload_usec += fg_apply_started_usec - fg_payload_started_usec
 				apply_network_block_update(foreground_block_update)
+				fg_apply_usec += Time.get_ticks_usec() - fg_apply_started_usec
+				fg_entry_count += 1
 				processed += 1
 				build_entry_applied += 1
 				entries_since_yield += 1
@@ -1403,9 +1420,23 @@ func apply_network_world_state(data: Dictionary):
 			"elapsed_ms": snappedf(float(Time.get_ticks_usec() - apply_started_usec) / 1000.0, 0.001)
 		})
 
+	# Unconditional breakdown of where client_foreground_built's time actually went. Printed
+	# rather than passed as profile `extra`, which only surfaces in verbose builds.
+	#   payload_ms  = building the per-block update Dictionary (13 _safe_* calls each)
+	#   apply_ms    = apply_network_block_update() -> block_manager -> tilemap writes
+	#   unaccounted = frame waits from _should_yield_world_state_apply, plus loop overhead
+	var fg_total_ms := snappedf(float(Time.get_ticks_usec() - apply_started_usec) / 1000.0, 0.001)
+	print("[WORLD_JOIN_PROFILE] foreground_breakdown " + JSON.stringify({
+		"entries": fg_entry_count,
+		"payload_ms": snappedf(float(fg_payload_usec) / 1000.0, 0.001),
+		"apply_ms": snappedf(float(fg_apply_usec) / 1000.0, 0.001),
+		"payload_us_per_entry": snappedf(float(fg_payload_usec) / maxf(1.0, float(fg_entry_count)), 0.01),
+		"apply_us_per_entry": snappedf(float(fg_apply_usec) / maxf(1.0, float(fg_entry_count)), 0.01),
+		"stage_total_ms": fg_total_ms
+	}))
 	_profile_world_entry_stage("client_foreground_built", {
 		"count": foreground.size(),
-		"elapsed_ms": snappedf(float(Time.get_ticks_usec() - apply_started_usec) / 1000.0, 0.001)
+		"elapsed_ms": fg_total_ms
 	})
 
 	if background is Array:
