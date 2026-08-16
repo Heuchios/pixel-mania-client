@@ -104,6 +104,26 @@ func handle_command(raw_command: String, server_verified: bool = false, server_r
 			command_text = build_remove_command_text(remove_data)
 			parts = command_text.split(" ", false)
 
+		if command == "takeworld" or command == "giveworld":
+			if not is_local_username(DEVELOPER_USERNAME):
+				respond("Only " + DEVELOPER_USERNAME + " can use this command.")
+				return
+
+			if command == "takeworld":
+				var take_world_data = parse_take_world_arguments(parts)
+				if not bool(take_world_data.get("ok", false)):
+					respond(str(take_world_data.get("message", "Use: /takeworld world_name")))
+					return
+				command_text = build_take_world_command_text(take_world_data)
+			else:
+				var give_world_data = parse_give_world_arguments(parts)
+				if not bool(give_world_data.get("ok", false)):
+					respond(str(give_world_data.get("message", "Use: /giveworld world_name username")))
+					return
+				command_text = build_give_world_command_text(give_world_data)
+
+			parts = command_text.split(" ", false)
+
 		if requires_server_delivery(command_text) and not is_server_session_ready_for_commands():
 			respond("Wait a moment before using commands.")
 			return
@@ -466,6 +486,7 @@ func requires_server_delivery(command_text: String) -> bool:
 		"save", "load", "reload",
 		"noc", "noclip",
 		"equip", "unequip",
+		"takeworld", "giveworld",
 		"ban", "mute", "tradeban", "worldban",
 		"unban", "unmute", "untradeban", "unworldban",
 		"trade_ban", "world_ban", "untrade_ban", "unworld_ban",
@@ -547,6 +568,29 @@ func build_developer_command_metadata(command_text: String) -> Dictionary:
 			"item_id": str(remove_data.get("item_id", "")),
 			"item_category": str(remove_data.get("item_category", "")),
 			"amount": int(remove_data.get("amount", 1))
+		}
+
+	if command_name == "takeworld":
+		var take_world_data = parse_take_world_arguments(parts)
+		if not bool(take_world_data.get("ok", false)):
+			return {}
+
+		return {
+			"command_type": "take_world",
+			"target_world": str(take_world_data.get("target_world", "")),
+			"world_name": str(take_world_data.get("target_world", ""))
+		}
+
+	if command_name == "giveworld":
+		var give_world_data = parse_give_world_arguments(parts)
+		if not bool(give_world_data.get("ok", false)):
+			return {}
+
+		return {
+			"command_type": "give_world",
+			"target_world": str(give_world_data.get("target_world", "")),
+			"world_name": str(give_world_data.get("target_world", "")),
+			"target_username": str(give_world_data.get("target_username", ""))
 		}
 
 	if command_name == "heal":
@@ -864,6 +908,38 @@ func build_remove_command_text(remove_data: Dictionary) -> String:
 	return "remove " + str(remove_data.get("target_username", "")) + " " + str(remove_data.get("item_id", "")) + " " + str(int(remove_data.get("amount", 1)))
 
 
+func parse_take_world_arguments(parts: Array) -> Dictionary:
+	if parts.size() < 2:
+		return {"ok": false, "message": "Use: /takeworld world_name"}
+
+	var target_world = sanitize_server_world_name(get_command_tail(parts))
+	if target_world == "":
+		return {"ok": false, "message": "Use: /takeworld world_name"}
+
+	return {"ok": true, "target_world": target_world}
+
+
+func build_take_world_command_text(take_world_data: Dictionary) -> String:
+	return "takeworld " + str(take_world_data.get("target_world", ""))
+
+
+func parse_give_world_arguments(parts: Array) -> Dictionary:
+	if parts.size() < 3:
+		return {"ok": false, "message": "Use: /giveworld world_name username"}
+
+	var target_world = sanitize_server_world_name(strip_wrapping_quotes(str(parts[1])))
+	var target_username = strip_wrapping_quotes(get_command_tail(parts, 2))
+
+	if target_world == "" or target_username == "":
+		return {"ok": false, "message": "Use: /giveworld world_name username"}
+
+	return {"ok": true, "target_world": target_world, "target_username": target_username}
+
+
+func build_give_world_command_text(give_world_data: Dictionary) -> String:
+	return "giveworld " + str(give_world_data.get("target_world", "")) + " " + str(give_world_data.get("target_username", ""))
+
+
 func show_player_help():
 	respond("Player commands: /help, /where, /warp world_name, /player username, /trade player_name, /pull username, /bc message")
 
@@ -875,7 +951,8 @@ func show_moderator_help():
 func show_admin_help():
 	var shared_commands = "/give item amount, /give username item amount, /remove username item amount, /ban user [time] reason, /mute user [time] reason, /tradeban user [time] reason, /worldban user world [time] reason, /unban user, /unmute user, /untradeban user, /unworldban user world, /punishments user, /itemaudit, /itemcopies id_or_item, /itemfreeze id reason, /itemunfreeze id reason, /itemretire id reason, /itemtransfer id user reason, /itemflag id reason, /heal, /health amount, /tp x y, /spawn block x y, /clear_drops, /speedproduce [ready|seconds] [world], /forceevent snow_storm, /event snow_storm start|end, /save, /load, /noc, /snapshot [world], /clear [world], /resetworld [world]"
 	if is_developer_account_active():
-		respond("Admin commands: /dev, " + shared_commands)
+		var developer_only_commands = ", /takeworld world_name, /giveworld world_name username" if is_local_username(DEVELOPER_USERNAME) else ""
+		respond("Admin commands: /dev, " + shared_commands + developer_only_commands)
 	else:
 		respond("Designer commands: " + shared_commands)
 
