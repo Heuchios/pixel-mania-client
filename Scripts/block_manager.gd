@@ -9072,6 +9072,16 @@ func create_background_block(grid_pos: Vector2i, block_type: String = "cave_back
 	if background_blocks.has(grid_pos):
 		return
 
+	# Mirrors create_block()'s foreground normalization. Without this, world data still
+	# holding a pre-rename background type (e.g. "red_bg"/"white_bg" from before the
+	# wallpaper rename) resolves to nothing in item_database/block_textures: set_block_texture()
+	# silently leaves the sprite blank, and configure_block_collision() has no classifier that
+	# recognizes the type, so it falls through to solid -- a background tile that is invisible
+	# but fully collidable.
+	block_type = normalize_legacy_block_id(block_type)
+	if block_type == "":
+		return
+
 	if create_tilemap_only_background_block(grid_pos, block_type):
 		return
 
