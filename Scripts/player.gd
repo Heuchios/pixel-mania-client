@@ -385,14 +385,21 @@ func release_airborne_block_corner_contact(horizontal_velocity_before_move: floa
 		return false
 
 	var was_moving_up: bool = vertical_velocity_before_move < -0.01
-	var has_any_slide_collision: bool = get_slide_collision_count() > 0
 	var has_overhead_contact: bool = is_on_ceiling()
+	# Tracks any collision this frame that pushes back with SOME downward-facing component,
+	# however slight -- as opposed to has_overhead_contact below, which only counts a normal
+	# once it clears the strict ceiling thresholds. This exists solely for the near-zero-
+	# velocity fallback beneath the loop; a pure side-wall normal (normal.y ~= 0) must never
+	# set this, or that fallback fires the ceiling-release response on an ordinary wall touch.
+	var has_any_downward_facing_normal: bool = false
 	var corner_nudge_x: float = 0.0
 	for collision_index in range(get_slide_collision_count()):
 		var collision: KinematicCollision2D = get_slide_collision(collision_index)
 		if collision == null:
 			continue
 		var normal: Vector2 = collision.get_normal()
+		if normal.y > 0.01:
+			has_any_downward_facing_normal = true
 		if normal.y <= CEILING_CONTACT_NORMAL_Y_THRESHOLD:
 			continue
 		# A block-corner normal can clear the threshold above while still being MORE horizontal
@@ -407,7 +414,18 @@ func release_airborne_block_corner_contact(horizontal_velocity_before_move: floa
 			corner_nudge_x += 1.0 if normal.x > 0.0 else -1.0
 
 	var should_release_overhead_contact: bool = was_moving_up and has_overhead_contact
-	if not should_release_overhead_contact and not (was_moving_up and has_any_slide_collision and absf(velocity.y) <= 0.01):
+	# This fallback used to key off has_any_slide_collision (get_slide_collision_count() > 0),
+	# i.e. ANY contact at all -- including a pure side-wall normal like (1, 0), whose normal.y is
+	# 0 and therefore never comes close to a ceiling. Jumping alongside a wall naturally carries
+	# vertical velocity through ~0 at the jump's apex; with the old check, being wall-adjacent at
+	# that exact moment was enough to fire the full ceiling-release response (forced minimum fall
+	# velocity, 1px downward position snap, jump-state cancellation) on a contact that was never a
+	# ceiling hit. That is the bounce/jerk felt when jumping beside a wall or holding into one
+	# in the air, and it fired independently of the ceiling-vs-corner normal fix above because it
+	# does not go through the per-normal classification at all. Requiring an actual downward-
+	# facing normal component here restricts the fallback to contacts that could plausibly be a
+	# missed ceiling case, and makes it impossible for a horizontal wall touch to trigger it.
+	if not should_release_overhead_contact and not (was_moving_up and has_any_downward_facing_normal and absf(velocity.y) <= 0.01):
 		return false
 
 	variable_jump_active = false
