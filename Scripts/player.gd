@@ -87,12 +87,8 @@ const SURFACE_SAMPLE_FACTORS = [-0.45, 0.0, 0.45]
 const PLAYER_FLOOR_MAX_ANGLE := 0.6108652381980153 # 35 degrees
 const PLAYER_FLOOR_SNAP_LENGTH := 0.0
 const PLAYER_SLIDE_ON_CEILING := true
-const CEILING_RELEASE_MIN_FALL_VELOCITY := 24.0
-const CEILING_RELEASE_IMPACT_FALL_RATIO := 0.08
-const CEILING_RELEASE_MAX_FALL_VELOCITY := 36.0
 const CEILING_CONTACT_NORMAL_Y_THRESHOLD := 0.35
 const CEILING_CORNER_NORMAL_X_THRESHOLD := 0.15
-const CEILING_UNSTICK_NUDGE := 1.0
 const CEILING_CORNER_UNSTICK_NUDGE := 0.35
 ## Debounce for release_airborne_block_corner_contact(), NOT a game-feel tuning knob for any
 ## single bonk. Flying/jumping continuously into a multi-tile ceiling can lose and re-gain
@@ -450,12 +446,21 @@ func release_airborne_block_corner_contact(horizontal_velocity_before_move: floa
 
 	variable_jump_active = false
 	coyote_timer = 0.0
-	var release_fall_velocity: float = maxf(
-		CEILING_RELEASE_MIN_FALL_VELOCITY,
-		minf(absf(vertical_velocity_before_move) * CEILING_RELEASE_IMPACT_FALL_RATIO, CEILING_RELEASE_MAX_FALL_VELOCITY)
-	)
-	velocity.y = maxf(velocity.y, release_fall_velocity)
-	global_position.y += CEILING_UNSTICK_NUDGE
+	# Every traced released=true event so far (rounds 2 and 4) shows move_and_slide() had already
+	# zeroed vertical_velocity_before_move's upward component to exactly 0.00 on its own by the
+	# time this runs -- and the followup trace lines confirm the player separates from the ceiling
+	# within 1-3 frames on plain gravity afterward, with no case of remaining stuck. There was
+	# never any evidence this needed help; forcing a *minimum* downward velocity here
+	# (previously maxf(velocity.y, a value scaled off impact speed, floor 24 / cap 36)) was adding
+	# velocity move_and_slide() never produced, on top of an instant 1px downward position
+	# teleport (the removed CEILING_UNSTICK_NUDGE const) -- exactly the "collision resolution
+	# adding velocity instead of only removing it" pattern. Repeated jumps/flight-holds into the
+	# same ceiling kept re-triggering that injected push, which is what read as still bouncing
+	# even after round 4's
+	# refire cooldown reduced how *often* it could fire. Clearing any leftover upward velocity is
+	# a no-op safety net (move_and_slide already left it at 0), not a push -- gravity alone now
+	# carries the fall away from the ceiling, same as a normal jump apex.
+	velocity.y = maxf(velocity.y, 0.0)
 	if absf(horizontal_velocity_before_move) > absf(velocity.x) and absf(horizontal_velocity_before_move) > 0.01:
 		velocity.x = horizontal_velocity_before_move
 	if absf(corner_nudge_x) > 0.01:
@@ -488,7 +493,9 @@ func recover_airborne_block_corner_overlap(previous_global_position: Vector2, sl
 		if absf(correction.x) > 0.0:
 			velocity.x = 0.0
 		if correction.y > 0.0:
-			velocity.y = maxf(velocity.y, CEILING_RELEASE_MIN_FALL_VELOCITY)
+			# Same fix as release_airborne_block_corner_contact(): only clear velocity that's
+			# still driving further into the surface, never inject a minimum push beyond that.
+			velocity.y = maxf(velocity.y, 0.0)
 		elif correction.y < 0.0 and velocity.y > 0.0:
 			velocity.y = 0.0
 
