@@ -899,18 +899,20 @@ func get_recovery_push_for_block(current_rect: Rect2, previous_rect: Rect2, bloc
 	if previous_left >= block_right:
 		return add_recovery_epsilon(Vector2(overlap.size.x, 0.0))
 
-	var current_center := current_rect.get_center()
-	var block_center := block_rect.get_center()
-	var push_x := -overlap.size.x if current_center.x <= block_center.x else overlap.size.x
-	var push_y := -overlap.size.y if current_center.y <= block_center.y else overlap.size.y
-
-	if overlap.size.x < overlap.size.y:
-		return add_recovery_epsilon(Vector2(push_x, 0.0))
-	if overlap.size.y < overlap.size.x:
-		return add_recovery_epsilon(Vector2(0.0, push_y))
-	if absf(velocity.y) >= absf(velocity.x):
-		return add_recovery_epsilon(Vector2(0.0, push_y))
-	return add_recovery_epsilon(Vector2(push_x, 0.0))
+	# None of the four checks above matched, which means the player's rect was not cleanly
+	# outside the block on any single side even in the PREVIOUS frame -- i.e. this is sustained,
+	# ambiguous multi-frame contact (e.g. climbing alongside a wall while holding into a
+	# protruding block corner), not a "just became embedded from one clear direction" event.
+	# This used to guess a push axis by comparing overlap.size.x vs overlap.size.y and eject the
+	# player that way every frame the ambiguous overlap persisted. move_and_slide() already
+	# resolves this kind of continuous corner contact correctly on its own each frame; guessing
+	# an axis and teleporting the player out of it here fights the player's own held input
+	# (pressing back into the same corner immediately re-creates the same overlap next frame),
+	# producing a repeating push-resist-push cycle -- the "bounced back from the corner" feel
+	# reported when holding movement into a wall/corner while airborne. Leaving this case alone
+	# and trusting move_and_slide()'s own resolution is the fix; only the four unambiguous
+	# "definitely embedded from one clear side" cases above still get an active recovery push.
+	return Vector2.ZERO
 
 
 func get_swept_recovery_push_for_block(current_rect: Rect2, previous_rect: Rect2, block_rect: Rect2) -> Vector2:

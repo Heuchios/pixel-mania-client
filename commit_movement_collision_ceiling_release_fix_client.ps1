@@ -1,49 +1,55 @@
-# Follow-up fix to the airborne wall/corner "bounce" bug -- the first fix (dual collision
-# recovery passes fighting move_and_slide()) was correct but NOT the whole story. Your
-# --pm-collision-trace / --movement-sync-debug logs from testing that fix pointed at a second,
-# separate bug in the SAME area of player.gd.
+# Two more fixes to the airborne wall/corner "bounce" bug, on top of the SOLID_COLLISION_RECOVERY_MIN_CORRECTION /
+# ceiling-normal-dominance fix from before. Both were found from your diagnostic logs and your
+# in-game screenshot report ("jumping along this wall, I get bounced back from the corner of that
+# bedrock block 50,46"). Neither touches movement speed, jump height, or gravity.
 #
-# WHAT THE LOGS SHOWED
-#   A [PM_COLLISION_TRACE] line with released=true, a pure ceiling normal (0.00, 1.00), and
-#   vel_before_slide=(-110.00, -145.03) -> vel_after_release=(-110.00, 24.00). That specific
-#   event was a genuine ceiling hit and was classified correctly even with the first fix.
-#   But it exposed the real remaining cause: release_airborne_block_corner_contact() had a
-#   SECOND, much broader trigger condition sitting right below the (correctly tightened)
-#   per-normal ceiling classification:
+# FIX A -- ceiling-release fallback firing on plain wall touches at the jump's apex
+#   Your --pm-collision-trace log showed a released=true event with a pure ceiling normal
+#   (0.00, 1.00) -- correctly classified even under the earlier fix. Reading the function in full
+#   exposed a SECOND, much broader trigger sitting right below the per-normal classification:
 #
 #       if not should_release_overhead_contact and not (was_moving_up and has_any_slide_collision and absf(velocity.y) <= 0.01):
 #           return false
 #
-#   has_any_slide_collision was TRUE for ANY collision at all that frame -- including a pure
-#   side-wall touch with normal (1, 0), whose normal.y is 0 and is nowhere near a ceiling.
-#   Jumping alongside a wall naturally carries vertical velocity through ~0 at the jump's
-#   apex. Being wall-adjacent at that exact moment was enough to satisfy this fallback and
-#   fire the FULL ceiling-release response on a contact that was never a ceiling hit:
-#     - velocity.y forced up to a synthetic minimum (24-36 px/s) instead of the near-zero
-#       value move_and_slide() had already produced -- an instantaneous velocity injection,
-#       not a result of gravity or collision resolution.
-#     - the player's position snapped down 1px instantly (CEILING_UNSTICK_NUDGE).
-#     - variable_jump_active and coyote_timer were cleared, cancelling jump state.
-#     - horizontal velocity could be restored to its pre-collision value even though the
-#       wall had legitimately slowed it.
-#   This is exactly the bounce/jerk reported when jumping beside a wall, holding into a wall
-#   while airborne, or grazing a corner -- and it fired independently of the first fix,
-#   because it doesn't go through the per-normal ceiling-vs-corner classification at all.
+#   has_any_slide_collision was TRUE for ANY collision that frame -- including a pure side-wall
+#   touch with normal (1, 0), whose normal.y is 0 and is nowhere near a ceiling. Jumping alongside
+#   a wall naturally carries vertical velocity through ~0 at the jump's apex; being wall-adjacent
+#   at that exact moment was enough to satisfy this fallback and fire the FULL ceiling-release
+#   response (forced minimum fall velocity, 1px downward position snap, jump-state cancellation)
+#   on a contact that was never a ceiling hit. This fired independently of the earlier fix because
+#   it bypasses the per-normal ceiling-vs-corner classification loop entirely.
 #
-# THE FIX (player.gd, release_airborne_block_corner_contact)
-#   The loop now also tracks has_any_downward_facing_normal -- true only when a collision's
-#   normal.y is actually positive (however slightly), never for a purely horizontal wall
-#   normal. The fallback condition now requires this instead of "any collision at all," so a
-#   side-wall touch can never trigger the ceiling-release response, while a genuinely
-#   ambiguous near-ceiling contact still can. Nothing about movement speed, jump height,
-#   gravity, or genuine ceiling-bonk behavior changed.
+#   Fix: the loop now also tracks has_any_downward_facing_normal -- true only when a collision's
+#   normal.y is actually positive, never for a purely horizontal wall normal. The fallback now
+#   requires that instead of "any collision at all."
+#
+# FIX B -- the corner AABB-recovery pass bouncing you off a corner while holding into it
+#   Your screenshot: jumping up alongside a single-block-wide wall, holding into it, you get
+#   bounced back at the corner of a protruding block (bedrock at grid 50,46 in your example --
+#   confirmed bedrock has no special collision shape, it's an ordinary full-tile block, so this
+#   is a general corner bug, not something specific to that block type).
+#
+#   get_recovery_push_for_block() (called every frame from the manual AABB recovery pass) had an
+#   ambiguous fallback: when the player's rect wasn't cleanly outside the block on any single side
+#   even in the PREVIOUS frame -- i.e. sustained, multi-frame contact, exactly what climbing
+#   alongside a wall past a protruding corner looks like -- it guessed a push axis by comparing
+#   overlap.size.x vs overlap.size.y and teleported the player out that way. move_and_slide()
+#   already resolves this kind of continuous corner contact correctly on its own every frame; the
+#   guess-and-eject fallback fought the player's own held input, since pressing back into the same
+#   corner immediately re-created the same overlap next frame -- a repeating push/press-back-in
+#   cycle, which is exactly "bounced back from the corner."
+#
+#   Fix: that ambiguous fallback now returns no correction at all and leaves it to
+#   move_and_slide(). The four UNAMBIGUOUS cases (player was cleanly above/below/left/right of the
+#   block in the previous frame and is now embedded from that one clear direction -- a genuine
+#   "just got wedged into solid geometry" event) still get an active recovery push, unchanged.
 #
 # Parse-checked with a real Godot headless binary (4.4-stable, --check-only) before delivery --
 # clean after filtering the standard sandbox-only "preload not found" / "MovementMode not
 # declared" noise documented in the gdscript_parse_checking project note.
 #
 # Files touched:
-#   Scripts/player.gd   (the fix)
+#   Scripts/player.gd   (both fixes)
 
 $ErrorActionPreference = "Stop"
 Set-Location "G:\PixelMania\pixel-mania"
@@ -75,27 +81,40 @@ Write-Host "=== git status (staged) ===" -ForegroundColor Cyan
 git status
 
 $commitMessage = @"
-fix(movement): stop wall touches at jump apex from firing the ceiling-release hack
+fix(movement): stop wall-apex ceiling-release misfires and corner-recovery bounce-back
+
+Two more airborne collision bugs found from diagnostic logging and an
+in-game repro (bounced back off the corner of a bedrock block while
+holding into a wall).
 
 release_airborne_block_corner_contact() had a fallback trigger that
 fired the full ceiling-release response (forced minimum fall velocity,
 1px downward position snap, jump-state cancellation) whenever the
 player was moving up, had ANY slide collision that frame, and current
 velocity.y was near zero -- regardless of whether that collision's
-normal had any vertical component at all.
+normal had any vertical component. Jumping alongside a wall naturally
+carries vertical velocity through ~0 at the jump's apex, so being
+wall-adjacent at that moment satisfied the fallback on a pure
+side-wall normal and injected a synthetic downward velocity/position
+snap into an ordinary wall slide. The loop now also tracks whether any
+collision normal has a positive (downward-facing) y component, and the
+fallback requires that instead of "any collision at all."
 
-Jumping alongside a wall naturally carries vertical velocity through
-~0 at the jump's apex. Being wall-adjacent at that moment satisfied
-the fallback on a pure side-wall normal (normal.y ~= 0), injecting a
-synthetic downward velocity and position snap into what should have
-been an ordinary wall slide -- independent of, and not fixed by, the
-earlier tightened per-normal ceiling classification.
+get_recovery_push_for_block()'s ambiguous branch -- used when the
+player's rect wasn't cleanly outside a block on any side even in the
+previous frame, i.e. sustained multi-frame contact such as climbing
+alongside a wall past a protruding corner -- guessed a push axis by
+comparing overlap size and teleported the player out that way every
+frame the ambiguous overlap persisted. move_and_slide() already
+resolves this kind of contact correctly on its own; the guess-and-
+eject fallback fought held input into the corner, recreating the same
+overlap and pushing again next frame, which read as being bounced back
+off the corner. That branch now returns no correction and leaves it to
+move_and_slide(); the four unambiguous "just got embedded from one
+clear direction" cases are unchanged.
 
-The loop now also tracks whether any collision normal actually has a
-positive (downward-facing) y component, and the fallback requires
-that instead of "any collision at all." A horizontal wall normal can
-no longer satisfy it. Movement speed, jump height, gravity, and
-genuine ceiling-bonk behavior are unchanged.
+Movement speed, jump height, gravity, and genuine ceiling-bonk
+behavior are unchanged.
 "@
 
 git commit -m $commitMessage
@@ -112,8 +131,10 @@ Write-Host ""
 Write-Host "Done. Client repo pushed." -ForegroundColor Green
 Write-Host ""
 Write-Host "TEST with --pm-collision-trace --movement-sync-debug again, focusing on:" -ForegroundColor Yellow
-Write-Host "  1. Jump beside a wall and hold into it through the whole arc, including the apex." -ForegroundColor Yellow
-Write-Host "  2. Repeated jump against the same wall -- should feel identical every time." -ForegroundColor Yellow
-Write-Host "  3. Jump toward a block corner -- still no snag, no bounce-back." -ForegroundColor Yellow
-Write-Host "  4. Watch for released=true lines in the log -- they should now only show a" -ForegroundColor Yellow
-Write-Host "     genuinely vertical normal (normal_y clearly dominant), never a side-wall normal." -ForegroundColor Yellow
+Write-Host "  1. Jump up alongside that same wall by the world_lock door, holding into it," -ForegroundColor Yellow
+Write-Host "     past the bedrock block corner at 50,46 -- should slide cleanly, no bounce-back." -ForegroundColor Yellow
+Write-Host "  2. Jump beside a wall and hold into it through the whole arc, including the apex." -ForegroundColor Yellow
+Write-Host "  3. Repeated jump against the same wall -- should feel identical every time." -ForegroundColor Yellow
+Write-Host "  4. Watch for released=true lines -- normal_y should always dominate normal_x." -ForegroundColor Yellow
+Write-Host "  5. Watch for [PM_COLLISION_RECOVERY] lines during a held-into-corner climb -- should" -ForegroundColor Yellow
+Write-Host "     no longer fire repeatedly while you hold movement into the same corner." -ForegroundColor Yellow
