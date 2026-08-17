@@ -7582,10 +7582,19 @@ func apply_server_player_position_correction(data: Dictionary):
 	if should_snap:
 		set_meta("server_position_correction_snap_count", int(get_meta("server_position_correction_snap_count", 0)) + 1)
 	if MovementMode.has_method("has_launch_arg") and bool(MovementMode.has_launch_arg("--movement-sync-debug")):
-		print("[MovementSync][Local] correction=%d distance_px=%.2f snap=%s accepted_sequence=%d rejected_sequence=%d" % [
+		var pre_correction_velocity: Vector2 = player.velocity if player is CharacterBody2D else Vector2.ZERO
+		var pre_correction_on_floor: bool = bool(player.is_on_floor()) if player is CharacterBody2D else false
+		print("[MovementSync][Local] correction=%d distance_px=%.2f snap=%s predicted=(%.2f, %.2f) authoritative=(%.2f, %.2f) velocity=(%.2f, %.2f) on_floor=%s accepted_sequence=%d rejected_sequence=%d" % [
 			correction_count,
 			correction_distance,
 			str(should_snap),
+			previous_root_position.x,
+			previous_root_position.y,
+			target_position.x,
+			target_position.y,
+			pre_correction_velocity.x,
+			pre_correction_velocity.y,
+			str(pre_correction_on_floor),
 			int(data.get("accepted_sequence", 0)),
 			int(data.get("rejected_sequence", 0))
 		])

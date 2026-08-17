@@ -76,6 +76,13 @@ const INVALID_LAVA_GRID_POS = Vector2i(-999999, -999999)
 const SOLID_COLLISION_QUERY_MARGIN := 1.0
 const SOLID_COLLISION_RECOVERY_EPSILON := 0.05
 const MAX_SOLID_COLLISION_RECOVERY_ITERATIONS := 4
+## move_and_slide() resolves collisions on its own and, by design, can leave up to its own
+## safe margin (~0.08px) of residual penetration afterward -- that is normal, already-correct
+## physics state, not a stuck player. recover_airborne_block_corner_overlap() must only step in
+## for a genuinely larger overlap (actually wedged into a corner/overhang); anything smaller than
+## this is Godot's own resolution and re-correcting it here just fights move_and_slide's output,
+## which produced the rubbery/jittery feel when brushing walls and corners while airborne.
+const SOLID_COLLISION_RECOVERY_MIN_CORRECTION := 0.6
 const SURFACE_SAMPLE_FACTORS = [-0.45, 0.0, 0.45]
 const PLAYER_FLOOR_MAX_ANGLE := 0.6108652381980153 # 35 degrees
 const PLAYER_FLOOR_SNAP_LENGTH := 0.0
@@ -388,6 +395,12 @@ func release_airborne_block_corner_contact(horizontal_velocity_before_move: floa
 		var normal: Vector2 = collision.get_normal()
 		if normal.y <= CEILING_CONTACT_NORMAL_Y_THRESHOLD:
 			continue
+		# A block-corner normal can clear the threshold above while still being MORE horizontal
+		# than vertical (e.g. (0.6, 0.4)) -- that is a wall/corner brush, not a ceiling hit, and
+		# must not force the synthetic downward velocity/nudge below. Only treat contact as
+		# "overhead" once it is actually more ceiling-like than wall-like.
+		if normal.y <= absf(normal.x):
+			continue
 
 		has_overhead_contact = true
 		if absf(normal.x) > CEILING_CORNER_NORMAL_X_THRESHOLD:
@@ -425,7 +438,10 @@ func recover_airborne_block_corner_overlap(previous_global_position: Vector2, sl
 	for _iteration in range(MAX_SOLID_COLLISION_RECOVERY_ITERATIONS):
 		var current_rect := get_player_collision_rect_at(global_position)
 		var correction := get_solid_block_recovery_push(current_rect, reference_rect)
-		if correction == Vector2.ZERO:
+		# See SOLID_COLLISION_RECOVERY_MIN_CORRECTION: ignore sub-margin overlap that
+		# move_and_slide() already considers resolved, instead of re-correcting it (and zeroing
+		# velocity below) every single frame the player brushes a wall or corner.
+		if correction == Vector2.ZERO or correction.length() < SOLID_COLLISION_RECOVERY_MIN_CORRECTION:
 			break
 
 		global_position += correction
