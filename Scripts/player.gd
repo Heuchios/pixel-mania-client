@@ -94,6 +94,15 @@ const CEILING_CONTACT_NORMAL_Y_THRESHOLD := 0.35
 const CEILING_CORNER_NORMAL_X_THRESHOLD := 0.15
 const CEILING_UNSTICK_NUDGE := 1.0
 const CEILING_CORNER_UNSTICK_NUDGE := 0.35
+## Debounce for release_airborne_block_corner_contact(), NOT a game-feel tuning knob for any
+## single bonk. Flying/jumping continuously into a multi-tile ceiling can lose and re-gain
+## overhead contact tile-by-tile every few frames (each tile boundary is its own legitimate,
+## correctly-classified ceiling hit) while the player keeps holding upward thrust into it. Without
+## a cooldown, EVERY one of those re-contacts reran the full response -- forced velocity, a 1px
+## position snap, and a jump-state cancel -- once per tile, which is what reads as "bouncing off
+## the corner of blocks" when sliding/flying along an uneven or multi-tile ceiling. This does not
+## change how any individual release behaves, only how often a fresh one is allowed to fire.
+const CEILING_RELEASE_REFIRE_COOLDOWN := 0.12
 const COLLISION_TRACE_ARG := "--pm-collision-trace"
 const COLLISION_TRACE_ENV := "PIXELMANIA_COLLISION_TRACE"
 const COLLISION_TRACE_MAX_LINES_ENV := "PIXELMANIA_COLLISION_TRACE_MAX_LINES"
@@ -155,6 +164,7 @@ var was_underwater_for_bubbles := false
 var lava_fire_particle_cooldown := 0.0
 var lava_fire_sound_cooldown := 0.0
 var lava_rebound_contact_cooldown := 0.0
+var ceiling_release_refire_cooldown := 0.0
 var last_lava_rebound_grid := INVALID_LAVA_GRID_POS
 var instant_hazard_death_cooldown := 0.0
 var instant_hazard_requires_clear := false
@@ -355,6 +365,7 @@ func run_player_movement_step(delta: float) -> void:
 	lava_fire_particle_cooldown = max(0.0, lava_fire_particle_cooldown - delta)
 	lava_fire_sound_cooldown = max(0.0, lava_fire_sound_cooldown - delta)
 	lava_rebound_contact_cooldown = max(0.0, lava_rebound_contact_cooldown - delta)
+	ceiling_release_refire_cooldown = max(0.0, ceiling_release_refire_cooldown - delta)
 	if lava_rebound_contact_cooldown <= 0.0:
 		last_lava_rebound_grid = INVALID_LAVA_GRID_POS
 	water_surface_particle_cooldown = max(0.0, water_surface_particle_cooldown - delta)
@@ -427,6 +438,15 @@ func release_airborne_block_corner_contact(horizontal_velocity_before_move: floa
 	# missed ceiling case, and makes it impossible for a horizontal wall touch to trigger it.
 	if not should_release_overhead_contact and not (was_moving_up and has_any_downward_facing_normal and absf(velocity.y) <= 0.01):
 		return false
+
+	# See CEILING_RELEASE_REFIRE_COOLDOWN: this is a genuinely new, correctly-classified overhead
+	# contact, but if one already fired within the cooldown window, skip re-applying the forced
+	# velocity/position-snap/jump-cancel again. move_and_slide() itself still blocks upward motion
+	# into the ceiling every frame regardless of this cooldown, so the player can never move
+	# through it; this only limits how often the EXTRA "unstick" response re-fires.
+	if ceiling_release_refire_cooldown > 0.0:
+		return false
+	ceiling_release_refire_cooldown = CEILING_RELEASE_REFIRE_COOLDOWN
 
 	variable_jump_active = false
 	coyote_timer = 0.0
