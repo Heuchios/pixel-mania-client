@@ -115,6 +115,10 @@ var pending_foreground_texture_refresh: Array = []
 var pending_anti_control_visual_refresh := false
 var water_overlay_draw_order_refresh_pending := true
 var block_light_fx_scene_cache: Dictionary = {}
+# Grid positions of blocks whose type declares a light_fx_scene, whether or not the effect is
+# currently shown. Lets refresh_adjacent_block_light_fx() cost four dictionary lookups instead
+# of a scan, and makes the whole exposure system free in worlds that contain no lava.
+var block_light_fx_positions: Dictionary = {}
 var colour_cycle_block_update_elapsed: float = 0.0
 const AUTHORITATIVE_REQUEST_REPEAT_MS := 120
 const AUTHORITATIVE_PLACE_GLOBAL_REPEAT_MS := 150
@@ -10165,6 +10169,9 @@ func remove_block_without_drop(grid_pos: Vector2i):
 	authoritative_break_request_keys.erase(get_authoritative_break_key("foreground", grid_pos))
 	world.block_hit_progress.erase(grid_pos)
 	world.block_hit_timers.erase(grid_pos)
+	block_light_fx_positions.erase(grid_pos)
+	# Breaking this block may have just exposed a neighbouring lava tile.
+	refresh_adjacent_block_light_fx(grid_pos)
 	if not is_bulk_world_load_active():
 		update_vertical_block_variants_around(grid_pos)
 
@@ -10244,6 +10251,7 @@ func replace_event_block_without_drop(grid_pos: Vector2i, block_type: String):
 		world.update_entrance_gate_visual(grid_pos)
 
 	update_block_light_fx(grid_pos)
+	refresh_adjacent_block_light_fx(grid_pos)
 
 
 func apply_background_block_style(block):
@@ -10310,6 +10318,7 @@ func create_block(grid_pos: Vector2i, block_type: String = "dirt"):
 		world.update_entrance_gate_visual(grid_pos)
 
 	update_block_light_fx(grid_pos)
+	refresh_adjacent_block_light_fx(grid_pos)
 
 	world.block_hit_progress.erase(grid_pos)
 	if not is_bulk_world_load_active():
@@ -11544,8 +11553,48 @@ func update_toggle_block_visual(grid_pos: Vector2i):
 	update_block_light_fx(grid_pos)
 
 
+const BLOCK_LIGHT_FX_NEIGHBOR_OFFSETS := [
+	Vector2i(1, 0),
+	Vector2i(-1, 0),
+	Vector2i(0, 1),
+	Vector2i(0, -1),
+]
+
+
+func is_block_light_fx_face_exposed(grid_pos: Vector2i) -> bool:
+	# A lava tile walled in on all four sides is drawn behind its neighbours, so its light
+	# contributes nothing a player can see -- but the renderer still pays for it, and pays
+	# again for every other light overlapping the same tiles. Interior tiles therefore get no
+	# effect at all, which turns a pool from an area cost into a perimeter cost.
+	if world == null:
+		return false
+	for offset in BLOCK_LIGHT_FX_NEIGHBOR_OFFSETS:
+		var neighbor: Vector2i = grid_pos + offset
+		if world.has_method("is_grid_inside_world") and not world.is_grid_inside_world(neighbor):
+			# The world edge is sealed, not open sky.
+			continue
+		if not world.blocks.has(neighbor):
+			return true
+	return false
+
+
+func refresh_adjacent_block_light_fx(grid_pos: Vector2i) -> void:
+	# Placing or breaking a block can seal or open a neighbouring lava tile's only exposed
+	# face, so its effect has to be re-evaluated. Only positions known to own a light FX are
+	# touched, so this is free for the overwhelming majority of block edits.
+	if block_light_fx_positions.is_empty():
+		return
+	for offset in BLOCK_LIGHT_FX_NEIGHBOR_OFFSETS:
+		var neighbor: Vector2i = grid_pos + offset
+		if block_light_fx_positions.has(neighbor):
+			update_block_light_fx(neighbor)
+
+
 func update_block_light_fx(grid_pos: Vector2i):
-	if world == null or not world.blocks.has(grid_pos):
+	if world == null:
+		return
+	if not world.blocks.has(grid_pos):
+		block_light_fx_positions.erase(grid_pos)
 		return
 
 	var block_data = world.blocks[grid_pos]
@@ -11561,9 +11610,17 @@ func update_block_light_fx(grid_pos: Vector2i):
 	var scene_path := str(item_data.get("light_fx_scene", "")).strip_edges()
 	var should_show := scene_path != ""
 
+	if should_show:
+		block_light_fx_positions[grid_pos] = true
+	else:
+		block_light_fx_positions.erase(grid_pos)
+
 	if should_show and bool(item_data.get("light_fx_when_on", false)):
 		var state_key := str(item_data.get("toggle_state_key", "toggle_on"))
 		should_show = bool(block_data.get(state_key, false))
+
+	if should_show and bool(item_data.get("light_fx_requires_exposed_face", false)):
+		should_show = is_block_light_fx_face_exposed(grid_pos)
 
 	var existing = block_node.get_node_or_null(BLOCK_LIGHT_FX_NODE_NAME)
 	if not should_show:
