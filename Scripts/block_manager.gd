@@ -104,6 +104,9 @@ var authoritative_place_last_request_ms := 0
 var last_block_break_input_at_msec := 0
 var predicted_authoritative_place_requests: Dictionary = {}
 var predicted_authoritative_place_sequence := 0
+# Set by confirm_predicted_authoritative_place(): true when the request that was just
+# acknowledged had already drawn its block locally, false for tracked-but-unpredicted ones.
+var last_confirmed_place_visual_applied: bool = false
 var place_trace_enabled := false
 var place_trace_world_state_enabled := false
 var place_trace_lines_left := 0
@@ -1213,48 +1216,10 @@ func has_predicted_authoritative_place_visual_marker(layer: String, grid_pos: Ve
 	return bool(block_data.get("_predicted_authoritative_place", false)) and str(block_data.get("_predicted_request_id", "")) == request_id
 
 
-func refresh_place_item_ui(item_type: String, category: String) -> void:
-	if world == null:
-		return
-	if world.has_method("refresh_ui_after_item_change"):
-		world.refresh_ui_after_item_change(item_type, category)
-	else:
-		world.update_all_ui()
-
-
-func set_place_item_count(item_type: String, category: String, count: int) -> void:
-	if world == null:
-		return
-	var clean_item := item_type.strip_edges()
-	var clean_category := category.strip_edges().to_lower()
-	var safe_count := maxi(0, int(count))
-	if world.has_method("clamp_item_stack_count"):
-		safe_count = int(world.clamp_item_stack_count(clean_item, clean_category, safe_count))
-	match clean_category:
-		"block":
-			world.inventory[clean_item] = safe_count
-		"seed":
-			world.seed_inventory[clean_item] = safe_count
-		"lure":
-			world.lure_inventory[clean_item] = safe_count
-		"material":
-			world.material_inventory[clean_item] = safe_count
-
-
-func spend_predicted_place_inventory(item_type: String, category: String, amount: int = 1) -> bool:
-	var current_count := get_place_item_count(item_type, category)
-	if current_count < amount:
-		return false
-	set_place_item_count(item_type, category, current_count - amount)
-	refresh_place_item_ui(item_type, category)
-	return true
-
-
-func restore_predicted_place_inventory(item_type: String, category: String, amount: int = 1) -> void:
-	var current_count := get_place_item_count(item_type, category)
-	set_place_item_count(item_type, category, current_count + amount)
-	refresh_place_item_ui(item_type, category)
-	restore_selected_place_item_if_auto_switched(item_type, category)
+# Predicted placement never touches the local inventory: the server owns item counts and
+# pushes the deduction as an inventory delta once it commits. Predictions only *reserve*
+# against the displayed count (get_pending_authoritative_place_reserved_count) so a burst of
+# clicks cannot outrun the stack, which is why rollback has no inventory work to undo.
 
 
 func get_pending_authoritative_place_reserved_count(item_type: String, category: String) -> int:
@@ -1273,7 +1238,7 @@ func get_pending_authoritative_place_reserved_count(item_type: String, category:
 			continue
 		if str(pending.get("category", "")).strip_edges().to_lower() != clean_category:
 			continue
-		reserved += maxi(0, int(pending.get("reserved_amount", pending.get("spent_amount", 0))))
+		reserved += maxi(0, int(pending.get("reserved_amount", 0)))
 	return reserved
 
 
@@ -1376,7 +1341,7 @@ func apply_predicted_authoritative_place(request_id: String, layer: String, grid
 		"block_type": clean_block,
 		"category": clean_category,
 		"reserved_amount": 1,
-		"spent_amount": 0,
+		"visual_applied": true,
 		"created_at_ms": Time.get_ticks_msec(),
 		"last_reconcile_request_ms": 0,
 		"reconcile_attempts": 0
@@ -1427,7 +1392,50 @@ func apply_predicted_authoritative_place(request_id: String, layer: String, grid
 	return true
 
 
+func track_unpredicted_authoritative_place(request_id: String, layer: String, grid_pos: Vector2i, block_type: String, category: String) -> bool:
+	# Placements the client cannot safely predict (locks, water, items that opt out) still
+	# need a pending entry. Without one, a server echo that never arrives is never noticed:
+	# the server has already committed the block and spent the item while this client shows
+	# nothing at all. This registers the request for
+	# cleanup_expired_authoritative_place_predictions() to reconcile -- no local visual and
+	# no inventory reservation, since neither was applied.
+	if world == null:
+		return false
+	var clean_request := request_id.strip_edges()
+	if clean_request == "" or predicted_authoritative_place_requests.has(clean_request):
+		return false
+	var clean_layer := layer.strip_edges().to_lower()
+	if clean_layer != "background":
+		clean_layer = "foreground"
+	var clean_block := block_type.strip_edges().to_lower()
+	if clean_block == "":
+		return false
+
+	predicted_authoritative_place_requests[clean_request] = {
+		"request_id": clean_request,
+		"world": str(world.current_world_name).strip_edges().to_upper(),
+		"layer": clean_layer,
+		"grid_pos": grid_pos,
+		"block_type": clean_block,
+		"category": category.strip_edges().to_lower(),
+		"reserved_amount": 0,
+		"visual_applied": false,
+		"created_at_ms": Time.get_ticks_msec(),
+		"last_reconcile_request_ms": 0,
+		"reconcile_attempts": 0
+	}
+	trace_authoritative_place_event("unpredicted_place_tracked", {
+		"request_id": clean_request,
+		"layer": clean_layer,
+		"grid_pos": grid_pos,
+		"block_type": clean_block,
+		"category": category
+	})
+	return true
+
+
 func confirm_predicted_authoritative_place(data: Dictionary) -> bool:
+	last_confirmed_place_visual_applied = false
 	var action := str(data.get("action", "")).strip_edges().to_lower()
 	if action != "place":
 		return false
@@ -1448,6 +1456,7 @@ func confirm_predicted_authoritative_place(data: Dictionary) -> bool:
 	predicted_authoritative_place_requests.erase(request_key)
 	if pending_value is Dictionary:
 		var pending: Dictionary = pending_value
+		last_confirmed_place_visual_applied = bool(pending.get("visual_applied", true))
 		var layer := str(pending.get("layer", "foreground"))
 		var grid_pos: Vector2i = pending.get("grid_pos", Vector2i.ZERO)
 		var block_type := str(pending.get("block_type", ""))
@@ -1493,7 +1502,6 @@ func rollback_predicted_authoritative_place(data: Dictionary, allow_cell_fallbac
 	var grid_pos: Vector2i = pending.get("grid_pos", Vector2i.ZERO)
 	var block_type := str(pending.get("block_type", ""))
 	var category := str(pending.get("category", "block"))
-	var spent_amount := maxi(0, int(pending.get("spent_amount", 0)))
 	var age_ms := Time.get_ticks_msec() - int(pending.get("created_at_ms", Time.get_ticks_msec()))
 	var had_predicted_visual := has_predicted_authoritative_place_visual_marker(layer, grid_pos, request_key)
 	var cell_before := get_place_trace_cell_state(layer, grid_pos)
@@ -1506,8 +1514,6 @@ func rollback_predicted_authoritative_place(data: Dictionary, allow_cell_fallbac
 	else:
 		clear_predicted_authoritative_place_visual_marker(layer, grid_pos, request_key)
 
-	if spent_amount > 0:
-		restore_predicted_place_inventory(block_type, category, spent_amount)
 	authoritative_place_request_times.erase(get_authoritative_place_key(layer, grid_pos, block_type))
 	if world != null and world.has_method("refresh_area_lock_highlight_overlay"):
 		world.refresh_area_lock_highlight_overlay()
@@ -1518,7 +1524,6 @@ func rollback_predicted_authoritative_place(data: Dictionary, allow_cell_fallbac
 		"grid_pos": grid_pos,
 		"block_type": block_type,
 		"category": category,
-		"spent_amount": spent_amount,
 		"had_predicted_visual": had_predicted_visual,
 		"cell_before": cell_before,
 		"server_reason": str(data.get("reason", "")),
@@ -1644,6 +1649,7 @@ func handle_authoritative_place_reconcile(data: Dictionary) -> String:
 	var authoritative_present := bool(data.get("authoritative_present", false))
 	var authoritative_matches_request := bool(data.get("authoritative_matches_request", false))
 	var authoritative_block := str(data.get("authoritative_block_type", "")).strip_edges().to_lower()
+	var pending_visual_applied := bool(pending.get("visual_applied", true))
 	if authoritative_present and authoritative_matches_request and authoritative_block == pending_block:
 		confirm_predicted_authoritative_place({
 			"action": "place",
@@ -1653,7 +1659,9 @@ func handle_authoritative_place_reconcile(data: Dictionary) -> String:
 			"y": pending_grid.y,
 			"block_type": authoritative_block
 		})
-		return "confirmed"
+		# A tracked-but-unpredicted request drew nothing locally, so the caller still has to
+		# apply the authoritative cell instead of treating the ack as already-rendered.
+		return "confirmed" if pending_visual_applied else "confirmed_missing_visual"
 
 	rollback_predicted_authoritative_place({
 		"action": "place",
@@ -1724,7 +1732,10 @@ func reconcile_authoritative_place_predictions_after_snapshot(foreground_entries
 					"block_type": snapshot_block
 				})
 				continue
-		else:
+		elif bool(pending.get("visual_applied", true)):
+			# Re-apply only visuals this client had already predicted. Requests that were
+			# merely tracked (locks and friends) must stay invisible until the server
+			# confirms them.
 			if layer == "background":
 				create_background_block(grid_pos, block_type)
 			else:
@@ -13737,6 +13748,9 @@ func place_block_at_mouse():
 			var background_prediction_applied := false
 			if should_predict_authoritative_place(selected_block_type, "background"):
 				background_prediction_applied = apply_predicted_authoritative_place(background_request_id, "background", grid_pos, selected_block_type, selected_block_category)
+			var background_place_tracked := background_prediction_applied
+			if not background_prediction_applied:
+				background_place_tracked = track_unpredicted_authoritative_place(background_request_id, "background", grid_pos, selected_block_type, selected_block_category)
 			if send_network_block_update("place", "background", grid_pos, selected_block_type, {"request_id": background_request_id}):
 				trace_authoritative_place_event("authoritative_place_sent", {
 					"request_id": background_request_id,
@@ -13750,7 +13764,7 @@ func place_block_at_mouse():
 				if should_predict_authoritative_place(selected_block_type, "background") and not background_prediction_applied:
 					world.show_notification("Placing " + world.get_item_display_name(selected_block_type, selected_block_category) + "...")
 			else:
-				if background_prediction_applied:
+				if background_place_tracked:
 					rollback_predicted_authoritative_place({
 						"request_id": background_request_id,
 						"reason": "client_send_failed",
@@ -13814,6 +13828,9 @@ func place_block_at_mouse():
 		var foreground_prediction_applied := false
 		if should_predict_authoritative_place(selected_block_type, "foreground"):
 			foreground_prediction_applied = apply_predicted_authoritative_place(foreground_request_id, "foreground", grid_pos, selected_block_type, selected_block_category)
+		var foreground_place_tracked := foreground_prediction_applied
+		if not foreground_prediction_applied:
+			foreground_place_tracked = track_unpredicted_authoritative_place(foreground_request_id, "foreground", grid_pos, selected_block_type, selected_block_category)
 		if send_network_block_update("place", "foreground", grid_pos, selected_block_type, {"request_id": foreground_request_id}):
 			trace_authoritative_place_event("authoritative_place_sent", {
 				"request_id": foreground_request_id,
@@ -13827,7 +13844,7 @@ func place_block_at_mouse():
 			if should_predict_authoritative_place(selected_block_type, "foreground") and not foreground_prediction_applied:
 				world.show_notification("Placing " + world.get_item_display_name(selected_block_type, selected_block_category) + "...")
 		else:
-			if foreground_prediction_applied:
+			if foreground_place_tracked:
 				rollback_predicted_authoritative_place({
 					"request_id": foreground_request_id,
 					"reason": "client_send_failed",

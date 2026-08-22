@@ -91,6 +91,14 @@ const RESPAWN_POSITION = Vector2(300, (SURFACE_Y - 2) * BLOCK_SIZE)
 const SEED_DROP_CHANCE = 0.25
 const SEED_GROW_TIME = 8.0
 const MATURE_SEED_EXTRA_DROP_CHANCE = 0.65
+# Seed planting is server-authoritative and unpredicted, so a lost server echo would
+# otherwise leave the player charged for a seed that never appears. These drive the same
+# reconcile retry the block placement path uses.
+const AUTHORITATIVE_SEED_PLACE_TIMEOUT_MS := 10000
+const AUTHORITATIVE_SEED_PLACE_RECONCILE_REPEAT_MS := 2500
+# Hard stop so a stranded request can never retry for the rest of the session. Anything
+# still unresolved by then is corrected by the world state the next time this world loads.
+const AUTHORITATIVE_SEED_PLACE_GIVE_UP_MS := 40000
 const RED_TRACTOR_ITEM_ID = "red_tractor"
 const RED_TRACTOR_AUTO_HARVEST_PENDING_MS = 250
 const BLOCK_MAX_HITS = 3
@@ -378,6 +386,8 @@ var dropped_items = []
 var block_hit_progress = {}
 var block_hit_timers = {}
 var seed_system = null
+var pending_authoritative_seed_places: Dictionary = {}
+var pending_authoritative_seed_place_sequence: int = 0
 
 var hotbar_root = null
 var hotbar_slots = {}
@@ -6278,6 +6288,7 @@ func request_server_seed_place(grid_pos: Vector2i) -> bool:
 		"max_grow_time": seed_grow_time
 	}))
 	if sent:
+		track_pending_authoritative_seed_place(grid_pos, selected_item_type)
 		play_player_place_animation()
 	return sent
 
@@ -6336,6 +6347,7 @@ func create_planted_seed(grid_pos: Vector2i, seed_type: String, grow_time: float
 
 
 func update_planted_seeds(delta):
+	update_pending_authoritative_seed_places()
 	if seed_system != null and seed_system.has_method("update_seed_system"):
 		seed_system.update_seed_system(delta)
 
@@ -6600,8 +6612,156 @@ func request_server_seed_harvest(grid_pos: Vector2i) -> bool:
 	return sent
 
 
+func get_pending_authoritative_seed_place_key(grid_pos: Vector2i) -> String:
+	return str(grid_pos.x) + ":" + str(grid_pos.y)
+
+
+func make_authoritative_seed_place_request_id(grid_pos: Vector2i) -> String:
+	pending_authoritative_seed_place_sequence += 1
+	# Kept short on purpose: send_world_block_reconcile_request() clamps the id to
+	# MAX_REQUEST_ID_LENGTH, and a truncated id would never match this pending entry again.
+	return "sp_%d_%d_%d_%d" % [
+		grid_pos.x,
+		grid_pos.y,
+		Time.get_ticks_msec(),
+		pending_authoritative_seed_place_sequence
+	]
+
+
+func track_pending_authoritative_seed_place(grid_pos: Vector2i, seed_type: String) -> void:
+	var clean_seed := str(seed_type).strip_edges().to_lower()
+	if clean_seed == "":
+		return
+	pending_authoritative_seed_places[get_pending_authoritative_seed_place_key(grid_pos)] = {
+		"request_id": make_authoritative_seed_place_request_id(grid_pos),
+		"world": str(current_world_name).strip_edges().to_upper(),
+		"grid_pos": grid_pos,
+		"seed_type": clean_seed,
+		"created_at_ms": Time.get_ticks_msec(),
+		"last_reconcile_request_ms": 0,
+		"reconcile_attempts": 0
+	}
+
+
+func clear_pending_authoritative_seed_place(grid_pos: Vector2i) -> void:
+	pending_authoritative_seed_places.erase(get_pending_authoritative_seed_place_key(grid_pos))
+
+
+func note_pending_authoritative_seed_place_removed(grid_pos: Vector2i) -> void:
+	var key := get_pending_authoritative_seed_place_key(grid_pos)
+	var pending_value: Variant = pending_authoritative_seed_places.get(key, {})
+	if not (pending_value is Dictionary):
+		return
+	var pending: Dictionary = pending_value
+	if pending.is_empty():
+		return
+	pending["expects_empty_cell"] = true
+	pending_authoritative_seed_places[key] = pending
+
+
+func update_pending_authoritative_seed_places() -> void:
+	if pending_authoritative_seed_places.is_empty():
+		return
+
+	var now_ms := Time.get_ticks_msec()
+	var current_world := str(current_world_name).strip_edges().to_upper()
+	var network = get_node_or_null("/root/NetworkManager")
+
+	for key in pending_authoritative_seed_places.keys():
+		var pending_value: Variant = pending_authoritative_seed_places.get(key, {})
+		if not (pending_value is Dictionary):
+			pending_authoritative_seed_places.erase(key)
+			continue
+		var pending: Dictionary = pending_value
+		var age_ms := now_ms - int(pending.get("created_at_ms", now_ms))
+		# A request for a world this client has left can never be answered here, and one
+		# that has aged out has to stop asking.
+		if str(pending.get("world", "")).strip_edges().to_upper() != current_world or age_ms > AUTHORITATIVE_SEED_PLACE_GIVE_UP_MS:
+			pending_authoritative_seed_places.erase(key)
+			continue
+		if age_ms <= AUTHORITATIVE_SEED_PLACE_TIMEOUT_MS:
+			continue
+		if network == null or not network.has_method("send_world_block_reconcile_request"):
+			continue
+		var last_request_ms := int(pending.get("last_reconcile_request_ms", 0))
+		if last_request_ms > 0 and now_ms - last_request_ms < AUTHORITATIVE_SEED_PLACE_RECONCILE_REPEAT_MS:
+			continue
+		var grid_pos: Vector2i = pending.get("grid_pos", INVALID_GRID_POS)
+		if grid_pos == INVALID_GRID_POS:
+			pending_authoritative_seed_places.erase(key)
+			continue
+
+		pending["last_reconcile_request_ms"] = now_ms
+		var pending_world := str(pending.get("world", current_world_name))
+		if bool(network.send_world_block_reconcile_request(
+			str(pending.get("request_id", "")),
+			"place",
+			"foreground",
+			grid_pos,
+			str(pending.get("seed_type", "")),
+			pending_world
+		)):
+			pending["reconcile_attempts"] = int(pending.get("reconcile_attempts", 0)) + 1
+		pending_authoritative_seed_places[key] = pending
+
+
+func handle_authoritative_seed_place_reconcile(data: Dictionary) -> String:
+	if pending_authoritative_seed_places.is_empty():
+		return "unmatched"
+
+	var request_id := str(data.get("request_id", data.get("action_id", ""))).strip_edges()
+	if request_id == "":
+		return "unmatched"
+
+	var matched_key := ""
+	for key in pending_authoritative_seed_places.keys():
+		var entry_value: Variant = pending_authoritative_seed_places.get(key, {})
+		if entry_value is Dictionary and str(entry_value.get("request_id", "")) == request_id:
+			matched_key = str(key)
+			break
+	if matched_key == "":
+		return "unmatched"
+
+	var pending: Dictionary = pending_authoritative_seed_places.get(matched_key, {})
+	var pending_grid: Vector2i = pending.get("grid_pos", INVALID_GRID_POS)
+	var response_grid := Vector2i(int(data.get("x", 0)), int(data.get("y", 0)))
+	var pending_world := str(pending.get("world", "")).strip_edges().to_upper()
+	var response_world := str(data.get("world", data.get("current_world", ""))).strip_edges().to_upper()
+	if pending_grid != response_grid or (pending_world != "" and response_world != "" and pending_world != response_world):
+		return "mismatched"
+
+	var reconcile_reason := str(data.get("reason", "")).strip_edges().to_lower()
+	if reconcile_reason == "wrong_world" or reconcile_reason == "invalid_grid":
+		# The server never looked at the seed map for this cell, so there is nothing to
+		# confirm or undo. Stop tracking rather than reporting a failed plant.
+		pending_authoritative_seed_places.erase(matched_key)
+		return "dropped"
+
+	# Either the server is still working on it, or it predates seed reconciliation. Keep the
+	# request pending instead of guessing that the seed was never planted.
+	if bool(data.get("authoritative_pending", false)) or not data.has("authoritative_seed_present"):
+		pending["last_reconcile_request_ms"] = Time.get_ticks_msec()
+		pending_authoritative_seed_places[matched_key] = pending
+		return "pending"
+
+	pending_authoritative_seed_places.erase(matched_key)
+
+	if bool(data.get("authoritative_seed_present", false)):
+		var seed_payload: Variant = data.get("authoritative_seed", {})
+		if seed_payload is Dictionary:
+			var seed_data: Dictionary = seed_payload
+			if str(seed_data.get("seed_type", "")).strip_edges() != "":
+				apply_network_seed_update(seed_data)
+		return "confirmed"
+
+	if not bool(pending.get("expects_empty_cell", false)):
+		show_notification("That seed was not planted. Try again.")
+	return "rolled_back"
+
+
 func clear_planted_seeds():
 	_clear_seed_harvest_rollbacks()
+	pending_authoritative_seed_places.clear()
 	if seed_system != null and seed_system.has_method("clear"):
 		seed_system.clear()
 
@@ -7739,6 +7899,13 @@ func handle_inventory_transaction_result(data: Dictionary):
 			_clear_seed_harvest_rollback_request(request_id)
 		else:
 			_restore_seed_harvest_request(request_id)
+	if action == "seed_place" and not transaction_ok and transaction_data.has("x") and transaction_data.has("y"):
+		# The server has answered for this tile, so stop tracking it: the pending place only
+		# exists to catch a reply that never arrives.
+		clear_pending_authoritative_seed_place(Vector2i(
+			int(transaction_data.get("x", 0)),
+			int(transaction_data.get("y", 0))
+		))
 
 	var handled := false
 

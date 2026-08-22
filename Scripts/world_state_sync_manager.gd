@@ -1779,6 +1779,14 @@ func apply_network_block_reconcile(data: Dictionary) -> void:
 	if not _is_current_world_message(data):
 		return
 
+	# Seeds live on their own layer but reconcile through this same cell channel, so a
+	# pending seed place must be resolved here before the block path turns an "absent"
+	# answer into a break for that cell.
+	if world != null and world.has_method("handle_authoritative_seed_place_reconcile"):
+		var seed_outcome := str(world.handle_authoritative_seed_place_reconcile(data))
+		if seed_outcome != "" and seed_outcome != "unmatched":
+			return
+
 	var outcome := "unmatched"
 	if world != null and world.block_manager != null and world.block_manager.has_method("handle_authoritative_place_reconcile"):
 		outcome = str(world.block_manager.handle_authoritative_place_reconcile(data))
@@ -1808,6 +1816,14 @@ func apply_network_block_reconcile(data: Dictionary) -> void:
 	if authoritative_block_type == "":
 		authoritative_block_type = ITEM_ATLAS_DB.resolve_item_key(data.get("authoritative_item_id", ""))
 	var authoritative_present := _safe_bool(data.get("authoritative_present", false), false)
+	if layer == "foreground" and not authoritative_present and _safe_bool(data.get("authoritative_seed_present", false), false):
+		# The foreground cell holds a seed, not a block (the server refuses foreground places
+		# on seed cells), so an empty block layer is the expected state and turning it into a
+		# break would clear the tile the seed sits on. Background blocks and seeds do coexist,
+		# so background reconciliation must still be able to correct a stale block.
+		_record_block_revision(layer, grid_pos, cell_revision)
+		return
+
 	var update := {
 		"world": incoming_world,
 		"_from_reconcile": true,
@@ -1889,7 +1905,12 @@ func apply_network_block_update(data: Dictionary):
 			is_local_confirmed_update = true
 	if confirmation_was_predicted:
 		confirmed_place_already_applied = action == "place" and block_type != "" and get_existing_network_block_type(layer, grid_pos).strip_edges().to_lower() == block_type.strip_edges().to_lower()
-		should_emit_confirmed_particles = false
+		# The prediction already played the particles and the place sound, so the ack stays
+		# silent -- but a request that was only *tracked* drew nothing locally and still
+		# needs that feedback. Keyed off the pending entry rather than a block-type match,
+		# because a snow storm rewrites the placed type and would look like a mismatch.
+		var predicted_visual_applied := bool(world.block_manager.last_confirmed_place_visual_applied)
+		should_emit_confirmed_particles = not predicted_visual_applied and not is_bulk_network_update
 	elif is_local_confirmed_update and world != null and world.has_method("should_use_server_authoritative_world_actions"):
 		should_emit_confirmed_particles = bool(world.should_use_server_authoritative_world_actions())
 	if trace_enabled:
@@ -2589,6 +2610,15 @@ func apply_network_seed_update(data: Dictionary):
 	var grid_pos = _safe_grid_position(data.get("x", 0), data.get("y", 0))
 	var seed_type = _safe_string(data.get("seed_type", ""), "", 64)
 	var is_local_confirmed_update := _is_local_player_confirmed_update(data)
+	# A confirmed seed on this cell ends the pending place. A removal does not: this map is
+	# keyed by cell, so a late removal broadcast for an earlier seed would otherwise cancel a
+	# newer plant that is still waiting. It only records that an empty cell here is expected,
+	# so the reconcile can finish quietly instead of reporting a failed plant.
+	if action == "remove":
+		if world.has_method("note_pending_authoritative_seed_place_removed"):
+			world.note_pending_authoritative_seed_place_removed(grid_pos)
+	elif world.has_method("clear_pending_authoritative_seed_place"):
+		world.clear_pending_authoritative_seed_place(grid_pos)
 
 	if (action == "place" or action == "splice") and seed_type != "":
 		if world.seed_system != null and world.seed_system.has_method("remove_seed_at") and world.has_planted_seed(grid_pos):
