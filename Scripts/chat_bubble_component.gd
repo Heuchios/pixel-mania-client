@@ -21,6 +21,21 @@ const BUBBLE_MODE_NONE := ""
 const BUBBLE_MODE_CHAT := "chat"
 const BUBBLE_MODE_NOTIFICATION := "notification"
 
+# Width wrapping measures text with CHAT_FONT_PATH at CHAT_BUBBLE_FONT_SIZE and
+# then sizes the panel/label to match. That measurement only stays correct if
+# nothing else changes this label's font/size after the fact. GlobalFontManager
+# (Scripts/ui/global_font_manager.gd) restyles every Control that enters the
+# tree via a deferred call, which races the very first show_chat_message() on a
+# freshly created bubble (every new remote player's bubble, and the local
+# bubble after a world rejoin). Tagging the label with the same
+# "pixelmania_font_size" meta that username_label_manager.gd uses tells
+# PixelUIStyle to leave this label's font size alone entirely, closing that
+# race instead of hoping the numbers happen to line up.
+const GLOBAL_FONT_SIZE_META := &"pixelmania_font_size"
+# Small cushion subtracted from the wrap width so a minor measure-vs-render
+# rounding difference clips cleanly instead of spilling text past the panel.
+const CHAT_BUBBLE_WRAP_SAFETY_MARGIN_PX := 6.0
+
 static func world_to_screen_position(viewport, world_position: Vector2) -> Vector2:
 	if viewport == null or not is_instance_valid(viewport):
 		return Vector2.ZERO
@@ -243,19 +258,20 @@ func _build_bubble_ui():
 		label.self_modulate = Color.WHITE
 		label.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 		add_child(label)
-		label.clip_text = false
+		label.clip_text = true
 		label.visible = true
 	else:
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
-	label.clip_text = false
+	label.clip_text = true
 	label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.z_as_relative = true
 	label.z_index = 1
 	label.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 	label.add_theme_font_size_override("font_size", CHAT_BUBBLE_FONT_SIZE)
+	label.set_meta(GLOBAL_FONT_SIZE_META, CHAT_BUBBLE_FONT_SIZE)
 	label.add_theme_constant_override("line_spacing", CHAT_BUBBLE_LINE_SPACING)
 	apply_chat_font_to_label()
 	label.add_theme_color_override("font_color", current_text_color)
@@ -436,11 +452,12 @@ func create_notification_label(text_color: Color) -> Label:
 	entry_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	entry_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	entry_label.autowrap_mode = TextServer.AUTOWRAP_OFF
-	entry_label.clip_text = false
+	entry_label.clip_text = true
 	entry_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	entry_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	entry_label.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 	entry_label.add_theme_font_size_override("font_size", CHAT_BUBBLE_FONT_SIZE)
+	entry_label.set_meta(GLOBAL_FONT_SIZE_META, CHAT_BUBBLE_FONT_SIZE)
 	entry_label.add_theme_constant_override("line_spacing", CHAT_BUBBLE_LINE_SPACING)
 	var font := get_chat_font()
 	if font != null:
@@ -460,7 +477,7 @@ func layout_notification_stack() -> void:
 	if notification_stack == null or notification_entries.is_empty():
 		return
 
-	var label_width_limit := maxf(1.0, CHAT_BUBBLE_MAX_WIDTH - CHAT_BUBBLE_PAD_X * 2.0)
+	var label_width_limit := maxf(1.0, CHAT_BUBBLE_MAX_WIDTH - CHAT_BUBBLE_PAD_X * 2.0 - CHAT_BUBBLE_WRAP_SAFETY_MARGIN_PX)
 	var font := get_chat_font()
 	if font == null and label != null:
 		font = label.get_theme_font("font")
@@ -483,12 +500,14 @@ func layout_notification_stack() -> void:
 	var clamped_height := maxf(1.0, stack_height + CHAT_BUBBLE_PAD_Y * 2.0)
 	var content_width := maxf(1.0, clamped_width - CHAT_BUBBLE_PAD_X * 2.0)
 
-	size = Vector2(clamped_width, clamped_height)
-	background.position = Vector2.ZERO
-	background.size = size
-	notification_stack.position = Vector2(CHAT_BUBBLE_PAD_X, CHAT_BUBBLE_PAD_Y)
-	notification_stack.size = Vector2(content_width, stack_height)
+	_prune_orphan_notification_labels()
 
+	# ORDER MATTERS. Control.size is clamped up to get_combined_minimum_size(), and a
+	# VBoxContainer's minimum comes from its children. Sizing the container before shrinking
+	# the labels leaves it clamped to the PREVIOUS (longer) message's width, and nothing
+	# shrinks size afterwards -- so the stack stays too wide, the label fills it, and the text
+	# centres in a box wider than the panel and spills past the border. clip_text cannot save
+	# this: the label is wider than its own text, so there is nothing to clip.
 	for entry in notification_entries:
 		var entry_label_value: Variant = entry.get("label", null)
 		if not (entry_label_value is Label) or not is_instance_valid(entry_label_value):
@@ -500,6 +519,12 @@ func layout_notification_stack() -> void:
 		entry_label.size = Vector2(content_width, entry_height)
 		entry_label.visible = true
 
+	size = Vector2(clamped_width, clamped_height)
+	background.position = Vector2.ZERO
+	background.size = size
+	notification_stack.position = Vector2(CHAT_BUBBLE_PAD_X, CHAT_BUBBLE_PAD_Y)
+	notification_stack.size = Vector2(content_width, stack_height)
+
 	notification_stack.queue_sort()
 
 
@@ -510,21 +535,45 @@ func prune_expired_notification_entries(now_msec: int) -> void:
 			remove_notification_entry_at(entry_index)
 
 
+func _discard_notification_label(entry_label_value: Variant) -> void:
+	# remove_child BEFORE queue_free. queue_free() only deletes at the end of the frame, and
+	# until then the label is still a visible child of the VBoxContainer, still contributing
+	# its custom_minimum_size to the container minimum. A just-expired longer notification
+	# would therefore keep the stack wide for the shorter one replacing it.
+	if not (entry_label_value is Label) or not is_instance_valid(entry_label_value):
+		return
+	var entry_label := entry_label_value as Label
+	if entry_label.get_parent() != null:
+		entry_label.get_parent().remove_child(entry_label)
+	entry_label.queue_free()
+
+
+func _prune_orphan_notification_labels() -> void:
+	# Anything left in the stack that no live entry owns would still pad the container out.
+	if notification_stack == null:
+		return
+	var live_labels := {}
+	for entry in notification_entries:
+		var entry_label_value: Variant = entry.get("label", null)
+		if entry_label_value is Label and is_instance_valid(entry_label_value):
+			live_labels[(entry_label_value as Label).get_instance_id()] = true
+	for child in notification_stack.get_children():
+		if not live_labels.has(child.get_instance_id()):
+			notification_stack.remove_child(child)
+			child.queue_free()
+
+
 func remove_notification_entry_at(entry_index: int) -> void:
 	if entry_index < 0 or entry_index >= notification_entries.size():
 		return
 	var entry: Dictionary = notification_entries[entry_index]
-	var entry_label_value: Variant = entry.get("label", null)
-	if entry_label_value is Label and is_instance_valid(entry_label_value):
-		(entry_label_value as Label).queue_free()
+	_discard_notification_label(entry.get("label", null))
 	notification_entries.remove_at(entry_index)
 
 
 func clear_notification_entries() -> void:
 	for entry in notification_entries:
-		var entry_label_value: Variant = entry.get("label", null)
-		if entry_label_value is Label and is_instance_valid(entry_label_value):
-			(entry_label_value as Label).queue_free()
+		_discard_notification_label(entry.get("label", null))
 	notification_entries.clear()
 	if notification_stack != null:
 		notification_stack.visible = false
@@ -550,7 +599,7 @@ func schedule_notification_expiry(now_msec: int = -1) -> void:
 
 
 func _layout_for_message(clean_message: String) -> String:
-	var label_width_limit := maxf(1.0, CHAT_BUBBLE_MAX_WIDTH - CHAT_BUBBLE_PAD_X * 2.0)
+	var label_width_limit := maxf(1.0, CHAT_BUBBLE_MAX_WIDTH - CHAT_BUBBLE_PAD_X * 2.0 - CHAT_BUBBLE_WRAP_SAFETY_MARGIN_PX)
 	var font := get_chat_font()
 	if font == null and label != null:
 		font = label.get_theme_font("font")
