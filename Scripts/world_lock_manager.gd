@@ -320,6 +320,18 @@ func normalize_name(raw_name: String) -> String:
 	return raw_name.strip_edges().to_upper()
 
 
+func get_world_locked_message() -> String:
+	# Single source of truth for the "you cannot build here" notice, so every denial names the
+	# owner instead of the anonymous "This world is locked." Phrasing matches what lock_world()
+	# already announces when the lock is first placed. owner_name is synced to every client by
+	# load_save_data(), so visitors know it too -- but fall back to the plain wording whenever
+	# it is missing rather than printing "World locked by ."
+	var clean_owner: String = normalize_name(owner_name)
+	if not is_locked or clean_owner == "":
+		return "This world is locked."
+	return "World locked by " + clean_owner + "."
+
+
 func _get_active_session_username() -> String:
 	if world == null:
 		return ""

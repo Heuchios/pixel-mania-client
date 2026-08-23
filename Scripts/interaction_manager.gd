@@ -306,7 +306,7 @@ func interact_with_grid(grid_pos: Vector2i):
 		elif is_battery_charger_block(block_type):
 			world.show_notification("Only the world owner or world admins can use the battery charger.")
 		else:
-			world.show_notification("This world is locked.")
+			world.show_notification(world.get_world_locked_message())
 		return
 
 	if world.has_method("is_world_lock_block_type") and world.is_world_lock_block_type(block_type):
@@ -2324,7 +2324,7 @@ func place_crafting_station_at_mouse():
 		return
 
 	if world.has_method("can_current_player_build") and not world.can_current_player_build():
-		world.show_notification("This world is locked.")
+		world.show_notification(world.get_world_locked_message())
 		return
 
 	if not world.can_place_block_here(grid_pos):
@@ -2351,7 +2351,7 @@ func place_crafting_station_at_mouse():
 
 func break_crafting_station(grid_pos: Vector2i):
 	if world.has_method("can_current_player_break_block") and not world.can_current_player_break_block("crafting_station"):
-		world.show_notification("This world is locked.")
+		world.show_notification(world.get_world_locked_message())
 		return
 
 	var station_pos = get_crafting_station_left_pos(grid_pos)

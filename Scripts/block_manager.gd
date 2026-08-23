@@ -9354,7 +9354,7 @@ func hit_background_block_grid(grid_pos: Vector2i):
 	var block_type = str(background_blocks[grid_pos]["type"])
 
 	if world.has_method("can_current_player_break_block_at") and not world.can_current_player_break_block_at(block_type, grid_pos):
-		world.show_notification("This world is locked.")
+		world.show_notification(world.get_world_locked_message())
 		return
 
 	if world.item_database.has(block_type) and bool(world.item_database[block_type].get("unbreakable", false)):
@@ -12310,7 +12310,7 @@ func try_use_water_bucket_at_grid(grid_pos: Vector2i) -> bool:
 			var block_type: String = str(block_data.get("type", ""))
 			if block_type == WATER_BLOCK_TYPE:
 				if world.has_method("can_current_player_break_block_at") and not world.can_current_player_break_block_at(WATER_BLOCK_TYPE, anchor_grid_pos):
-					world.show_notification("This world is locked.")
+					world.show_notification(world.get_world_locked_message())
 					return true
 
 				face_grid_for_block_punch(anchor_grid_pos)
@@ -12347,11 +12347,11 @@ func try_use_water_bucket_at_grid(grid_pos: Vector2i) -> bool:
 		return true
 
 	if world.has_method("can_current_player_place_block_at") and not world.can_current_player_place_block_at(WATER_BLOCK_TYPE, grid_pos):
-		world.show_notification("This world is locked.")
+		world.show_notification(world.get_world_locked_message())
 		return true
 
 	if world.has_method("can_current_player_build_at") and not world.can_current_player_build_at(grid_pos):
-		world.show_notification("This world is locked.")
+		world.show_notification(world.get_world_locked_message())
 		return true
 
 	if not can_place_water_from_bucket_here(grid_pos):
@@ -12597,7 +12597,7 @@ func hit_block_grid(grid_pos: Vector2i, force_punch_action: bool = false):
 			else:
 				world.show_notification("Lock this world before breaking displays.")
 		else:
-			world.show_notification("This world is locked.")
+			world.show_notification(world.get_world_locked_message())
 		return
 
 	if block_type == "bedrock":
@@ -13758,12 +13758,12 @@ func place_block_at_mouse():
 		elif world.has_method("is_area_lock_block_type") and world.is_area_lock_block_type(selected_block_type):
 			world.show_notification("That area is already protected by another lock.")
 		else:
-			world.show_notification("This world is locked.")
+			world.show_notification(world.get_world_locked_message())
 		return
 
 	if world.has_method("can_current_player_build_at") and not world.can_current_player_build_at(grid_pos):
 		trace_place_attempt_blocked("build_permission_denied", "auto", grid_pos, selected_block_type, selected_block_category)
-		world.show_notification("This world is locked.")
+		world.show_notification(world.get_world_locked_message())
 		return
 
 	if world.has_method("is_electrical_item") and bool(world.is_electrical_item(selected_block_type)):

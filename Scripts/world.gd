@@ -6135,7 +6135,7 @@ func plant_seed_at_mouse():
 			return
 
 		if has_method("can_current_player_build") and not can_current_player_build():
-			show_notification("This world is locked.")
+			show_notification(get_world_locked_message())
 			return
 
 		try_splice_seed_tree(clicked_seed_grid)
@@ -6147,7 +6147,7 @@ func plant_seed_at_mouse():
 		return
 
 	if has_method("can_current_player_build") and not can_current_player_build():
-		show_notification("This world is locked.")
+		show_notification(get_world_locked_message())
 		return
 
 	if not can_plant_seed_here(grid_pos):
@@ -8303,6 +8303,12 @@ func setup_notification_ui():
 		return gameplay_ui_manager.setup_notification_ui()
 
 	return
+
+func get_world_locked_message() -> String:
+	if world_lock_manager != null and world_lock_manager.has_method("get_world_locked_message"):
+		return str(world_lock_manager.get_world_locked_message())
+	return "This world is locked."
+
 
 func show_notification(message: String):
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("show_notification"):
