@@ -18,6 +18,38 @@ const ACTIVE_WORLD_LIST_TOP := 108.0
 const ACTIVE_WORLD_LIST_BOTTOM_MARGIN := 24.0
 const ACTIVE_WORLD_ROW_HEIGHT := 72.0
 const ACTIVE_WORLD_ROW_SEPARATION := 10
+
+# The four buttons down the left of the lobby filter the world list. They shipped in
+# LobbyScene.tscn with no [connection] entries and no references in this script, so they
+# latched (toggle_mode is on) and did nothing. WORLD OF THE MONTH is deliberately still not
+# wired -- nothing decides what that world would be yet.
+const WORLD_FILTER_ACTIVE := "active"
+const WORLD_FILTER_FAVORITES := "favorites"
+const WORLD_FILTER_RECENT := "recent"
+const WORLD_FILTER_MINE := "mine"
+const WORLD_FILTER_BUTTON_PATHS := {
+	WORLD_FILTER_FAVORITES: "LeftButtons/FavoritesButton",
+	WORLD_FILTER_RECENT: "LeftButtons/RecentButton",
+	WORLD_FILTER_MINE: "LeftButtons/MyWorldsButton",
+}
+const WORLD_FILTER_TITLES := {
+	WORLD_FILTER_ACTIVE: "ACTIVE WORLDS",
+	WORLD_FILTER_FAVORITES: "FAVORITE WORLDS",
+	WORLD_FILTER_RECENT: "RECENTLY JOINED",
+	WORLD_FILTER_MINE: "MY WORLDS",
+}
+const WORLD_FILTER_EMPTY_TEXT := {
+	WORLD_FILTER_ACTIVE: "NO ACTIVE WORLDS RIGHT NOW",
+	WORLD_FILTER_FAVORITES: "NO FAVORITES YET - TAP THE HEART ON A WORLD",
+	WORLD_FILTER_RECENT: "NO WORLDS JOINED YET",
+	WORLD_FILTER_MINE: "YOU DO NOT OWN A LOCKED WORLD YET",
+}
+const WORLD_FILTER_ROW_BADGES := {
+	WORLD_FILTER_FAVORITES: "FAVORITE",
+	WORLD_FILTER_RECENT: "RECENTLY JOINED",
+	WORLD_FILTER_MINE: "YOUR WORLD",
+}
+const MAX_FAVORITE_WORLDS := 32
 const LOBBY_PARALLAX_LAYERS := [
 	{"name": "Layer8", "texture": preload("res://Assets/background/space_theme/star_1.png"), "drift": 0.0, "speed": 0.0, "phase": 0.0, "overscan": 0.0},
 	{"name": "Layer7", "texture": preload("res://Assets/background/space_theme/star_2.png"), "drift": 18.0, "speed": 0.32, "phase": 0.0, "overscan": 24.0},
@@ -63,6 +95,9 @@ var active_world_rows: VBoxContainer
 var active_world_row_template: Button
 var active_world_empty_label: Label
 var active_world_list_signature := ""
+var active_world_filter := WORLD_FILTER_ACTIVE
+var favorite_world_names: Array[String] = []
+var owned_world_names: Array[String] = []
 var join_scene_change_in_progress := false
 var lobby_parallax_layers: Array = []
 var lobby_parallax_time := 0.0
@@ -92,10 +127,12 @@ func _ready() -> void:
 	if MusicManager != null and MusicManager.has_method("start_login_loop"):
 		MusicManager.start_login_loop()
 	_bind_scene_nodes()
+	_load_favorite_world_names()
 	_setup_active_world_list()
 	_connect_scene_buttons()
 	_load_profile()
 	_connect_world_population_feed()
+	_connect_owned_worlds_feed()
 	_start_world_population_timer()
 	_request_world_population_refresh()
 	call_deferred("_prime_join_world_loading_overlay")
@@ -304,6 +341,14 @@ func _connect_scene_buttons() -> void:
 	_connect_button_by_path("TopButtons/ProfileButton", Callable(self, "_on_profile_switch_pressed"))
 	_connect_button_by_path("RightButtons/OrbitButton", Callable(self, "_on_start_world_pressed"))
 
+	for filter_key in WORLD_FILTER_BUTTON_PATHS.keys():
+		var filter_button := get_node_or_null(str(WORLD_FILTER_BUTTON_PATHS[filter_key])) as Button
+		if filter_button == null:
+			continue
+		_connect_button_once(filter_button, Callable(self, "_on_world_filter_pressed").bind(str(filter_key)))
+	_sync_world_filter_buttons()
+	_update_worlds_title()
+
 
 func _connect_button_by_path(path: String, callback: Callable) -> void:
 	var button := get_node_or_null(path) as Button
@@ -402,17 +447,15 @@ func _refresh_world_rows() -> void:
 	if active_world_rows == null or active_world_row_template == null:
 		return
 
-	var start_player_count := maxi(0, int(world_population_cache.get(LOBBY_HUB_WORLD, 0)))
-	var entries: Array[Dictionary] = [{"world": LOBBY_HUB_WORLD, "count": start_player_count}]
-	for raw_world in world_population_cache.keys():
-		var world_name := _normalize_world_name(str(raw_world))
-		var count := maxi(0, int(world_population_cache.get(raw_world, 0)))
-		if world_name == "" or world_name == LOBBY_HUB_WORLD or count <= 0:
-			continue
-		entries.append({"world": world_name, "count": count})
-	entries.sort_custom(_sort_active_world_entries)
+	var entries := _build_world_entries()
 
-	var next_signature := JSON.stringify(entries)
+	# Favourites are part of the signature because toggling a heart changes how a row draws
+	# without changing which rows exist.
+	var next_signature := JSON.stringify({
+		"filter": active_world_filter,
+		"entries": entries,
+		"favorites": favorite_world_names,
+	})
 	if next_signature == active_world_list_signature:
 		return
 	active_world_list_signature = next_signature
@@ -423,9 +466,47 @@ func _refresh_world_rows() -> void:
 		active_world_rows.remove_child(child)
 		child.queue_free()
 
+	active_world_empty_label.text = str(WORLD_FILTER_EMPTY_TEXT.get(active_world_filter, WORLD_FILTER_EMPTY_TEXT[WORLD_FILTER_ACTIVE]))
 	active_world_empty_label.visible = entries.is_empty()
 	for entry in entries:
 		_add_active_world_row(str(entry.get("world", "")), int(entry.get("count", 0)))
+
+
+func _build_world_entries() -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+
+	if active_world_filter == WORLD_FILTER_ACTIVE:
+		var start_player_count := maxi(0, int(world_population_cache.get(LOBBY_HUB_WORLD, 0)))
+		entries.append({"world": LOBBY_HUB_WORLD, "count": start_player_count})
+		for raw_world in world_population_cache.keys():
+			var world_name := _normalize_world_name(str(raw_world))
+			var count := maxi(0, int(world_population_cache.get(raw_world, 0)))
+			if world_name == "" or world_name == LOBBY_HUB_WORLD or count <= 0:
+				continue
+			entries.append({"world": world_name, "count": count})
+		entries.sort_custom(_sort_active_world_entries)
+		return entries
+
+	# The other tabs are ordered lists, not popularity rankings: recents are newest-first and
+	# favourites keep the order they were starred in, so they are deliberately not sorted.
+	for world_name in _get_world_names_for_filter(active_world_filter):
+		entries.append({
+			"world": world_name,
+			"count": maxi(0, int(world_population_cache.get(world_name, 0))),
+		})
+	return entries
+
+
+func _get_world_names_for_filter(filter_key: String) -> Array[String]:
+	var names: Array[String] = []
+	match filter_key:
+		WORLD_FILTER_FAVORITES:
+			names.assign(favorite_world_names)
+		WORLD_FILTER_RECENT:
+			names.assign(_load_recent_world_names())
+		WORLD_FILTER_MINE:
+			names.assign(owned_world_names)
+	return names
 
 
 func _sort_active_world_entries(left: Dictionary, right: Dictionary) -> bool:
@@ -467,12 +548,31 @@ func _add_active_world_row(world_name: String, player_count: int) -> void:
 		name_label.text = world_name
 	var meta_label := _get_world_row_label(row, ["StartMeta", "Meta"])
 	if meta_label != null:
-		var source_label := "OFFICIAL" if is_start_hub else "LIVE"
+		var source_label := "OFFICIAL"
+		if not is_start_hub:
+			# Outside the live list a world can legitimately have nobody in it, and calling
+			# that "LIVE | 0 players" reads as a bug.
+			source_label = "LIVE" if player_count > 0 else "OFFLINE"
 		meta_label.text = source_label + " | OPEN | " + _get_player_count_text(player_count)
 	var badge_label := _get_world_row_label(row, ["OfficialBadge"])
 	if badge_label != null:
-		badge_label.text = "OFFICIAL HUB" if is_start_hub else "ACTIVE WORLD"
+		if is_start_hub:
+			badge_label.text = "OFFICIAL HUB"
+		else:
+			badge_label.text = str(WORLD_FILTER_ROW_BADGES.get(active_world_filter, "ACTIVE WORLD"))
 		badge_label.visible = true
+
+	var favorite_toggle := row.get_node_or_null("FavoriteToggle") as Button
+	if favorite_toggle != null:
+		# The row itself ignores the mouse so the join button can own its clicks; the heart
+		# has to opt back in or presses fall straight through it.
+		favorite_toggle.mouse_filter = Control.MOUSE_FILTER_STOP
+		favorite_toggle.disabled = false
+		favorite_toggle.set_pressed_no_signal(_is_favorite_world(world_name))
+		_apply_favorite_toggle_visual(favorite_toggle)
+		var favorite_callback := Callable(self, "_on_favorite_toggled").bind(world_name)
+		if not favorite_toggle.toggled.is_connected(favorite_callback):
+			favorite_toggle.toggled.connect(favorite_callback)
 	var player_label := _get_world_row_label(row, ["StartPlayers"])
 	if player_label != null:
 		player_label.text = _get_player_count_text(player_count).to_upper()
@@ -518,6 +618,176 @@ func _get_player_count_text(count: int) -> String:
 	if count == 1:
 		return "1 player"
 	return str(count) + " players"
+
+
+func _on_world_filter_pressed(filter_key: String) -> void:
+	# Pressing the tab you are already on drops back to the default live list, so the left
+	# column never becomes a trap you cannot leave.
+	var next_filter := WORLD_FILTER_ACTIVE if active_world_filter == filter_key else filter_key
+	_set_world_filter(next_filter)
+
+
+func _set_world_filter(filter_key: String) -> void:
+	active_world_filter = filter_key
+	_sync_world_filter_buttons()
+	_update_worlds_title()
+	if filter_key == WORLD_FILTER_MINE:
+		_request_owned_worlds_refresh()
+	# The entry list for a different tab can happen to serialise identically (two empty tabs,
+	# say), so clear the signature or the rebuild would be skipped and the old rows would stay.
+	active_world_list_signature = ""
+	_refresh_world_rows()
+
+
+func _sync_world_filter_buttons() -> void:
+	for filter_key in WORLD_FILTER_BUTTON_PATHS.keys():
+		var filter_button := get_node_or_null(str(WORLD_FILTER_BUTTON_PATHS[filter_key])) as Button
+		if filter_button == null:
+			continue
+		# These are toggle buttons, so they latch on click. Driving the group by hand keeps
+		# exactly one lit and stops a stale one staying pressed after switching tabs.
+		filter_button.set_pressed_no_signal(str(filter_key) == active_world_filter)
+
+
+func _update_worlds_title() -> void:
+	var title := get_node_or_null("WorldsPanel/WorldsHeader/WorldsTitle") as Label
+	if title == null:
+		return
+	title.text = str(WORLD_FILTER_TITLES.get(active_world_filter, WORLD_FILTER_TITLES[WORLD_FILTER_ACTIVE]))
+
+
+func _load_recent_world_names() -> Array[String]:
+	# Written by _save_recent_world_name() on every successful join, newest first.
+	var names: Array[String] = []
+	var cfg := ConfigFile.new()
+	if cfg.load(PROFILE_PATH) != OK:
+		return names
+	var raw = cfg.get_value("profile", "recent_worlds", [])
+	if not (raw is Array):
+		return names
+	for value in raw:
+		var world_name := _normalize_world_name(str(value))
+		if world_name != "" and not names.has(world_name):
+			names.append(world_name)
+	return names
+
+
+func _load_favorite_world_names() -> void:
+	favorite_world_names.clear()
+	var cfg := ConfigFile.new()
+	if cfg.load(PROFILE_PATH) != OK:
+		return
+	var raw = cfg.get_value("profile", "favorite_worlds", [])
+	if not (raw is Array):
+		return
+	for value in raw:
+		var world_name := _normalize_world_name(str(value))
+		if world_name != "" and not favorite_world_names.has(world_name):
+			favorite_world_names.append(world_name)
+
+
+func _save_favorite_world_names() -> void:
+	var cfg := ConfigFile.new()
+	# Load first: this file also holds the profile, recents and the pending join-failure
+	# message, and saving a fresh ConfigFile would wipe all of it.
+	cfg.load(PROFILE_PATH)
+	cfg.set_value("profile", "favorite_worlds", favorite_world_names.duplicate())
+	cfg.save(PROFILE_PATH)
+
+
+func _is_favorite_world(world_name: String) -> bool:
+	return favorite_world_names.has(_normalize_world_name(world_name))
+
+
+func _on_favorite_toggled(is_favorite: bool, world_name: String) -> void:
+	var clean_world := _normalize_world_name(world_name)
+	if clean_world == "":
+		return
+
+	if is_favorite:
+		if not favorite_world_names.has(clean_world):
+			favorite_world_names.append(clean_world)
+			# Oldest out, not the one just starred.
+			while favorite_world_names.size() > MAX_FAVORITE_WORLDS:
+				favorite_world_names.remove_at(0)
+	else:
+		favorite_world_names.erase(clean_world)
+
+	_save_favorite_world_names()
+
+	if active_world_filter == WORLD_FILTER_FAVORITES:
+		# Un-starring from inside the favourites tab has to drop the row it was on.
+		active_world_list_signature = ""
+		_refresh_world_rows()
+		return
+
+	# Otherwise just repaint the heart that was clicked; rebuilding would fight the press.
+	if active_world_rows == null:
+		return
+	for row in active_world_rows.get_children():
+		if not (row is Button):
+			continue
+		if str((row as Button).get_meta("world_name", "")) != clean_world:
+			continue
+		var toggle := row.get_node_or_null("FavoriteToggle") as Button
+		if toggle != null:
+			toggle.set_pressed_no_signal(is_favorite)
+			_apply_favorite_toggle_visual(toggle)
+
+
+func _apply_favorite_toggle_visual(toggle: Button) -> void:
+	if toggle == null:
+		return
+	# Matches the dimmed alpha LobbyScene.tscn authors on the unfavourited heart.
+	toggle.modulate = Color(1.0, 1.0, 1.0, 1.0 if toggle.button_pressed else 0.42)
+
+
+func _connect_owned_worlds_feed() -> void:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null:
+		return
+
+	if network.has_method("get_owned_locked_worlds_cache"):
+		_apply_owned_world_entries(network.get_owned_locked_worlds_cache())
+
+	var callback := Callable(self, "_on_owned_locked_worlds_received")
+	if network.has_signal("owned_locked_worlds_received") and not network.is_connected("owned_locked_worlds_received", callback):
+		network.connect("owned_locked_worlds_received", callback)
+
+
+func _request_owned_worlds_refresh() -> void:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null:
+		return
+	if network.has_method("request_owned_locked_worlds"):
+		network.request_owned_locked_worlds()
+
+
+func _on_owned_locked_worlds_received(data) -> void:
+	if data is Dictionary:
+		_apply_owned_world_entries((data as Dictionary).get("worlds", []))
+	elif data is Array:
+		_apply_owned_world_entries(data)
+
+
+func _apply_owned_world_entries(raw_worlds) -> void:
+	var names: Array[String] = []
+	if raw_worlds is Array:
+		for raw_entry in raw_worlds:
+			var world_name := ""
+			if raw_entry is Dictionary:
+				world_name = _normalize_world_name(str((raw_entry as Dictionary).get("world_name", "")))
+			else:
+				world_name = _normalize_world_name(str(raw_entry))
+			if world_name != "" and not names.has(world_name):
+				names.append(world_name)
+
+	if names == owned_world_names:
+		return
+	owned_world_names = names
+	if active_world_filter == WORLD_FILTER_MINE:
+		active_world_list_signature = ""
+		_refresh_world_rows()
 
 
 func _on_world_text_submitted(_text: String) -> void:
