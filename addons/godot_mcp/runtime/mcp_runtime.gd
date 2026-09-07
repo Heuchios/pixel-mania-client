@@ -29,6 +29,20 @@ var _started_at_msec := 0
 
 
 func _ready() -> void:
+	# Shipped builds must not carry this control channel. The runtime connects to
+	# ws://127.0.0.1:6505 and answers tool_invoke with send_input and
+	# query_runtime_node, which together are a scripted automation harness for
+	# anyone able to bind that port on the player's own machine -- on Android that
+	# is any other installed app. It does not defeat the server's authority checks,
+	# but it is a ready-made botting API and it has no place in a release build.
+	#
+	# OS.is_debug_build() is true in the editor and in debug exports and false in
+	# an exported release build, so development tooling is unaffected.
+	if not OS.is_debug_build():
+		set_process(false)
+		queue_free()
+		return
+
 	_project_path = ProjectSettings.globalize_path("res://")
 	_started_at_msec = Time.get_ticks_msec()
 	process_mode = Node.PROCESS_MODE_ALWAYS
