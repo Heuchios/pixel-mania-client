@@ -119,6 +119,10 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
 
+	# The scene is authored at absolute 1920x1080 coordinates; this keeps it
+	# centred on canvases that are wider or taller than the design size.
+	DesignBox.attach(self)
+
 	_setup_lobby_parallax_background()
 	WorldScenePreloader.start()
 	# Same MusicManager autoload login_screen.gd uses -- if we arrived here straight from
