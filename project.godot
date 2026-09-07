@@ -44,10 +44,11 @@ window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/mode=3
 window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
 
 [editor]
 
-run/main_run_args="-- --pixelmania-api-base https://staging-api.pixelmaniagame.com --pixelmania-ws-url wss://staging-api.pixelmaniagame.com/ws"
+run/main_run_args="--pm-collision-trace --movement-sync-debug"
 
 [editor_plugins]
 
@@ -57,9 +58,6 @@ enabled=PackedStringArray("res://addons/netfox.extras/plugin.cfg", "res://addons
 
 theme/default_font="res://Assets/font/font.ttf"
 theme/default_font_size=24
-theme/default_theme_scale.mobile=1.12
-theme/default_theme_scale.web_android=1.12
-theme/default_theme_scale.web_ios=1.12
 
 [input]
 
