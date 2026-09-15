@@ -2,6 +2,9 @@ extends Node
 
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 
+var _applying := false
+var _pending: Dictionary = {}
+
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -29,11 +32,22 @@ func apply_to_node_tree(root: Node) -> void:
 
 
 func apply_to_node_by_id(node_id: int) -> void:
+	_pending.erase(node_id)
 	var node := instance_from_id(node_id) as Node
 	if node == null or not is_instance_valid(node):
 		return
 
+	_applying = true
 	PixelUIStyle.apply_global_typography_to_node(node)
+	PixelUIStyle.apply_ui_chrome_to_node(node)
+	_applying = false
+
+
+func _queue_typography(node_id: int) -> void:
+	if _applying or _pending.has(node_id):
+		return
+	_pending[node_id] = true
+	call_deferred("apply_to_node_by_id", node_id)
 
 
 func _on_node_added(node: Node) -> void:
@@ -42,4 +56,12 @@ func _on_node_added(node: Node) -> void:
 
 	# SceneTree emits node_added for every child, so styling only this node avoids
 	# repeatedly walking the same newly-instanced subtree.
-	call_deferred("apply_to_node_by_id", node.get_instance_id())
+	if node is Control and PixelUIStyle._is_text_control(node):
+		var callback := _queue_typography.bind(node.get_instance_id())
+		if not node.theme_changed.is_connected(callback):
+			node.theme_changed.connect(callback)
+	if node is Control:
+		var resize_callback := _queue_typography.bind(node.get_instance_id())
+		if not node.resized.is_connected(resize_callback):
+			node.resized.connect(resize_callback)
+	_queue_typography(node.get_instance_id())

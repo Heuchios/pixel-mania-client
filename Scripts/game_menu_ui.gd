@@ -9,12 +9,12 @@ const GAME_MENU_ROW_H := 54.0
 const GAME_MENU_ROW_GAP := 14.0
 const MENU_ICON_PATH := "res://Assets/ui/icons/menu.png"
 const MENU_BUTTON_SIZE := Vector2(64, 64)
-const RESPAWN_ICON_PATH := "res://Assets/ui/icons/respawn.png"
+const RESPAWN_ICON_PATH := "res://Assets/ui/atlas/textures/skull_icon.tres"
 const RESPAWN_BUTTON_SIZE := Vector2(64, 64)
 const LOBBY_ICON_PATH := "res://Assets/ui/icons/lobby.png"
 const PLAYER_INFO_ICON_PATH := "res://Assets/ui/icons/player_info.png"
 const FRIENDS_ICON_PATH := "res://Assets/ui/icons/friends.png"
-const SETTINGS_ICON_PATH := "res://Assets/ui/icons/settings.png"
+const SETTINGS_ICON_PATH := "res://Assets/ui/atlas/textures/settings_button.tres"
 const GAME_MENU_SCENE_PATH := "res://Scenes/ui/menu/MenuScene.tscn"
 
 var world = null

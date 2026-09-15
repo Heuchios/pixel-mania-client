@@ -51,11 +51,11 @@ const EMPTY_SLOT_TEXTURE := "empty_slot.png"
 const SLOT_TEMPLATE_LAYOUT_NODES := ["Frame", "SelectedFrame", "IconShadow", "Icon", "Count", "Equipped"]
 const COLOUR_CYCLE_ICON_UPDATE_SECONDS := 0.10
 const SELECTED_SLOT_FRAME_SECONDS := 0.30
-const SELECTED_SLOT_FRAMES := [
-	preload("res://Assets/ui/selected_1.png"),
-	preload("res://Assets/ui/selected_2.png"),
-	preload("res://Assets/ui/selected_3.png"),
-]
+# Inventory and hotbar use the same atlas animation and wall-clock timing.
+const SELECTED_SLOT_FRAMES := UIAtlasDB.INV_SLOT_SELECTED_ANIMATION
+
+# Shared semantic slot mapping, including rarity and upgrade frames.
+const ATLAS_SLOT_FRAME_REGIONS := UIAtlasDB.SLOT_REGIONS
 
 const TABS := [
 	{"id": "all", "label": "ALL"},
@@ -77,6 +77,9 @@ const TAB_CATEGORIES := {
 @export var use_preview_items: bool = false
 @export var default_tab: String = "all"
 @export var slot_columns: int = 10
+var _compact_layout_saved: Dictionary = {}
+var _compact_inventory := false
+var _desktop_tab_separation := 0
 
 var inventory_items: Array[Dictionary] = []
 var current_tab: String = "all"
@@ -123,8 +126,8 @@ var drawer_transform_managed := false
 @onready var gem_counter_label: Label = get_node_or_null("Window/HeaderSkin/GemCounterLabel") as Label
 @onready var inventory_scroll: ScrollContainer = $Window/InventoryScroll
 @onready var inventory_scroll_slider: Control = get_node_or_null("Window/InventoryScrollSlider") as Control
-@onready var inventory_scroll_track: TextureRect = get_node_or_null("Window/InventoryScrollSlider/Track") as TextureRect
-@onready var inventory_scroll_handle: TextureRect = get_node_or_null("Window/InventoryScrollSlider/Handle") as TextureRect
+@onready var inventory_scroll_track: NinePatchRect = get_node_or_null("Window/InventoryScrollSlider/Track") as NinePatchRect
+@onready var inventory_scroll_handle: NinePatchRect = get_node_or_null("Window/InventoryScrollSlider/Handle") as NinePatchRect
 @onready var inventory_grid: GridContainer = $Window/InventoryScroll/InventoryGrid
 @onready var empty_state: Label = $Window/EmptyState
 @onready var detail_title: Label = $Window/DetailTitle
@@ -366,6 +369,10 @@ func set_current_tab(tab_id: String) -> void:
 
 
 func set_drawer_window_transform(top_left: Vector2, scale_amount: float) -> void:
+	if _fit_compact_inventory(get_viewport_rect().size):
+		drawer_transform_managed = true
+		window.position.y = clampf(top_left.y, 0, maxf(0, get_viewport_rect().size.y - window.size.y))
+		return
 	var window_node: Control = window
 	if window_node == null:
 		window_node = get_node_or_null("Window") as Control
@@ -969,7 +976,7 @@ func _build_tabs() -> void:
 
 
 func _refresh_grid(filtered_items: Array) -> void:
-	inventory_grid.columns = max(1, slot_columns)
+	inventory_grid.columns = maxi(1, int(inventory_scroll.size.x / 108.0)) if _compact_inventory else max(1, slot_columns)
 	empty_state.visible = filtered_items.is_empty()
 
 	var desired_visible_keys: Dictionary = {}
@@ -1035,6 +1042,12 @@ func _apply_slot_display_layout(slot: Button, _display_index: int) -> void:
 		target_control.size = template_control.size
 		target_control.pivot_offset = template_control.pivot_offset
 	slot.set_meta("slot_template_index", TEMPLATE_INDEX)
+	var count: Label = slot.get_node_or_null("Count") as Label
+	if count != null:
+		count.position = Vector2(4, 66)
+		count.size = Vector2(88, 26)
+		count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		count.clip_text = true
 
 
 func _sync_filtered_slot_order_and_layout(filtered_items: Array) -> void:
@@ -1152,6 +1165,9 @@ func _create_slot(item: Dictionary, _item_index: int = 0) -> Button:
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon.texture = _item_icon_texture(item)
 	icon.visible = icon.texture != null and not _is_inventory_upgrade_slot(item)
+	if _is_inventory_upgrade_slot(item):
+		icon.texture = UIAtlasDB.get_texture("inv_slot_purchase_overlay")
+		icon.visible = true
 	_update_seed_box_icon_overlay(icon, item)
 	track_colour_cycle_slot(slot_key, item)
 	_apply_colour_cycle_icon_modulation(icon, item, float(slot_key.hash() % 1000) / 1000.0)
@@ -1171,6 +1187,11 @@ func _create_slot(item: Dictionary, _item_index: int = 0) -> Button:
 	if label != null:
 		label.visible = count_text != ""
 		label.text = count_text
+		label.position = Vector2(4, 66)
+		label.size = Vector2(88, 26)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		label.clip_text = true
+		label.tooltip_text = str(_count_from_value(item.get("count", 0)))
 
 	var equipped_label: Label = slot.get_node_or_null("Equipped") as Label
 	var generated_equipped_label: bool = false
@@ -1212,6 +1233,7 @@ func _update_detail() -> void:
 
 	var icon_texture: Texture2D = _item_icon_texture(selected_item) if has_selection else null
 	detail_frame.texture = _slot_frame_texture(_slot_frame_file_for_item(selected_item))
+	detail_frame.self_modulate = UIAtlasDB.slot_tint(_slot_frame_file_for_item(selected_item))
 	detail_selected_frame.texture = _current_selected_slot_texture()
 	detail_selected_frame.visible = has_selection
 	detail_icon_shadow.texture = icon_texture
@@ -1929,6 +1951,10 @@ func _load_hotbar_slot_texture(file_name: String) -> Texture2D:
 
 
 func _slot_frame_texture(file_name: String) -> Texture2D:
+	if ATLAS_SLOT_FRAME_REGIONS.has(file_name):
+		var atlas_texture: Texture2D = UIAtlasDB.get_texture(str(ATLAS_SLOT_FRAME_REGIONS[file_name]))
+		if atlas_texture != null:
+			return atlas_texture
 	var texture: Texture2D = _load_hotbar_slot_texture(file_name)
 	if texture != null:
 		return texture
@@ -1942,7 +1968,7 @@ func _current_selected_slot_texture() -> Texture2D:
 		SELECTED_SLOT_FRAMES.size(),
 		SELECTED_SLOT_FRAME_SECONDS
 	)
-	return SELECTED_SLOT_FRAMES[selected_slot_frame_index] as Texture2D
+	return UIAtlasDB.get_texture(str(SELECTED_SLOT_FRAMES[selected_slot_frame_index]))
 
 
 func update_selected_slot_frame_animation(_delta: float) -> void:
@@ -1955,7 +1981,7 @@ func update_selected_slot_frame_animation(_delta: float) -> void:
 	if next_frame_index == selected_slot_frame_index:
 		return
 	selected_slot_frame_index = next_frame_index
-	var selected_texture: Texture2D = SELECTED_SLOT_FRAMES[selected_slot_frame_index] as Texture2D
+	var selected_texture: Texture2D = UIAtlasDB.get_texture(str(SELECTED_SLOT_FRAMES[selected_slot_frame_index]))
 	if selected_key != "":
 		var selected_slot: Button = slot_nodes.get(selected_key, null) as Button
 		if selected_slot != null and is_instance_valid(selected_slot):
@@ -2210,6 +2236,7 @@ func _apply_slot_rarity_visuals(slot: Button, item: Dictionary) -> void:
 		var frame_texture: Texture2D = _slot_frame_texture(frame_file_name)
 		if frame_texture != null:
 			frame.texture = frame_texture
+		frame.self_modulate = UIAtlasDB.slot_tint(frame_file_name)
 	var selected_frame: TextureRect = slot.get_node_or_null("SelectedFrame") as TextureRect
 	if selected_frame != null:
 		var selected_texture: Texture2D = _current_selected_slot_texture()
@@ -2375,7 +2402,7 @@ func _detail_count_text(item: Dictionary) -> String:
 	if _is_capacity_slot(item):
 		return ""
 	var count: int = _count_from_value(item.get("count", 0))
-	return "x" + _compact_count(count)
+	return "x" + str(count)
 
 
 func _count_from_value(value) -> int:
@@ -2396,6 +2423,8 @@ func _count_from_value(value) -> int:
 
 
 func _compact_count(count: int) -> String:
+	if count >= 1000000000:
+		return str(int(floor(float(count) / 1000000000.0))) + "b"
 	if count >= 1000000:
 		return str(int(floor(float(count) / 1000000.0))) + "m"
 	if count >= 10000:
@@ -2463,10 +2492,60 @@ func _equipped_property_for_category(category: String) -> String:
 			return ""
 
 
+func _compact_rect(control: Control, rect: Rect2) -> void:
+	if not _compact_layout_saved.has(control):
+		_compact_layout_saved[control] = [control.position, control.size, control.custom_minimum_size, control.custom_maximum_size]
+	control.position = rect.position
+	control.size = rect.size
+
+
+func _fit_compact_inventory(viewport_size: Vector2) -> bool:
+	if window == null:
+		return false
+	if viewport_size.x >= 1100 and viewport_size.y >= 600:
+		if _compact_inventory:
+			for control in _compact_layout_saved:
+				var saved: Array = _compact_layout_saved[control]
+				control.custom_minimum_size = saved[2]
+				control.custom_maximum_size = saved[3]
+				control.position = saved[0]
+				control.size = saved[1]
+			_compact_layout_saved.clear()
+			tabs.add_theme_constant_override("separation", _desktop_tab_separation)
+			inventory_grid.columns = slot_columns
+		_compact_inventory = false
+		return false
+	if not _compact_inventory:
+		_desktop_tab_separation = tabs.get_theme_constant("separation")
+	_compact_inventory = true
+	tabs.add_theme_constant_override("separation", 0)
+	var extent := Vector2(maxf(360, viewport_size.x - 24), maxf(312, viewport_size.y - 24))
+	_compact_rect(window, Rect2((viewport_size - extent) * 0.5, extent))
+	window.scale = Vector2.ONE
+	_compact_rect(window.get_node("WindowSkin"), Rect2(Vector2.ZERO, extent))
+	_compact_rect(search_input, Rect2(12, 12, extent.x - 84, 44))
+	_compact_rect(selected_label, Rect2(80, 62, (extent.x - 104) * 0.6, 32))
+	selected_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_compact_rect(count_label, Rect2(80 + (extent.x - 104) * 0.6, 62, (extent.x - 104) * 0.4, 32))
+	_compact_rect(tabs, Rect2(8, 64, 64, extent.y - 72))
+	for button in tabs.get_children():
+		if button is Button:
+			_compact_rect(button, Rect2(button.position, Vector2(64, 44)))
+			button.custom_minimum_size = Vector2(64, 44)
+			button.custom_maximum_size = Vector2(64, 44)
+	_compact_rect(inventory_scroll, Rect2(80, 100, extent.x - 112, extent.y - 112))
+	_compact_rect(inventory_scroll_slider, Rect2(extent.x - 24, 100, 16, extent.y - 112))
+	inventory_scroll_track.size.y = extent.y - 112
+	inventory_grid.columns = maxi(1, int(inventory_scroll.size.x / 108.0))
+	return true
+
+
 func _fit_window_to_viewport() -> void:
 	if not is_inside_tree() or window == null or drawer_transform_managed:
 		return
 	var viewport_size: Vector2 = get_viewport_rect().size
+	if _fit_compact_inventory(viewport_size):
+		return
 	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
 		window.scale = Vector2.ONE
 		return

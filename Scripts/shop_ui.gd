@@ -6,20 +6,40 @@ const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 const SHOP_ICON_PATH := "res://Assets/ui/icons/shop.png"
 const SHOP_BUTTON_SIZE := Vector2(64, 64)
 const SHOP_BUTTON_Y := 160.0
-const SHOP_SCENE_PATH := "res://Scenes/ui/shop/ShopScene.tscn"
+const SHOP_SCENE_PATH := "res://Scenes/ui/shop/ShopSceneRedesign.tscn"
 
-# Same texture the hand-styled Locks/Special/Gem Store grid panels use in the
-# .tscn (StyleBoxTexture_wut2r / StyleBoxTexture_02uc5) - keeping the runtime-
-# built Item Shop grid panels on this exact texture is what makes the live
-# game match the editor mockup instead of falling back to a flat glass panel.
-const SHOP_GRID_PANEL_TEXTURE_PATH := "res://Assets/ui/panel_outer_403x130.png"
+# Display data for the Gem Store's real-money packs, bound onto
+# Grid_gem_store's cards by populate_gem_store_grid(). "id" must match a key
+# in the server's GEM_PACKS table (PixelManiaServer/src/server_iap_routes.ts)
+# - price and gem amount always come from that server-side table, never from
+# the client; the fields below are curated display text/flags only. Add,
+# remove, reorder, or reword a pack by editing this array - Grid_gem_store
+# gains/loses cards to match automatically (see
+# ShopSceneRedesign.gd's ensure_grid_card_count()).
+const GEM_PACK_CARDS := [
+	{"id": "pouch", "gems": 100, "price": "$0.99", "edition": "Pocket Edition"},
+	{"id": "sack", "gems": 550, "price": "$4.99", "edition": "Starter Edition", "bonus": "+10% BONUS", "ribbon": "POPULAR"},
+	{"id": "chest", "gems": 1200, "price": "$9.99", "edition": "Standard Edition", "bonus": "+20% BONUS", "ribbon": "BEST VALUE"},
+	{"id": "vault", "gems": 3000, "price": "$19.99", "edition": "Deluxe Edition", "bonus": "+30% BONUS"},
+	{"id": "mountain", "gems": 8000, "price": "$49.99", "edition": "Ultimate Edition", "bonus": "+45% BONUS", "featured": true},
+]
 
-# Reusable per-product card scene (Scenes/ui/shop/shop_item_card.tscn +
-# Scripts/ui/shop_item_card.gd) - instanced once per visible Item Shop
-# product instead of duplicating an in-scene template node. Adding a new
-# entry to shop_items below is all it takes for a matching card to appear;
-# nothing about the scene or this preload needs to change.
-const ShopItemCardScene = preload("res://Scenes/ui/shop/shop_item_card.tscn")
+# Editorial pick for the "Featured" tab (Grid_all, 6 cards) - there's no
+# dedicated "featured" list in shop_items, and Grid_all has a fixed 6 slots
+# rather than room for every item, so this is a curated highlight instead of
+# an exhaustive listing (every item is still reachable from its own category
+# tab). Card_all_0 is the user's own hand-designed "gem pack" card template,
+# so it's bound to the Gem Store's top pack (its baked $49.99 price already
+# matches "mountain" below) rather than a regular item. Edit this array to
+# change what's featured - no scene editing needed.
+const FEATURED_PICKS := [
+	{"type": "gem_pack", "id": "mountain"},
+	{"type": "item", "id": "world_lock"},
+	{"type": "item", "id": "fish_monger"},
+	{"type": "item", "id": "red_tractor"},
+	{"type": "item", "id": "electric_tool"},
+	{"type": "item", "id": "tungsten_rod"},
+]
 
 # How long (ms) a purchase entry point stays refused after a press, so a
 # rapid double-click/double-tap can't fire two purchase requests back to
@@ -27,29 +47,21 @@ const ShopItemCardScene = preload("res://Scenes/ui/shop/shop_item_card.tscn")
 # Stripe/Google Play) remain the actual source of truth either way.
 const SHOP_PURCHASE_DEBOUNCE_MS := 700
 
-# In the "all" / Featured view only, fold these sections into one combined
-# heading so the live game matches the "STATIONS & SPECIAL" grouping shown in
-# the ShopScene.tscn mockup. Category pill filtering (clicking the STATIONS or
-# SPECIAL pill directly) is untouched - each still shows only its own items.
+# get_shop_items_for_category("stations_special") folds both these
+# shop_items sections into that one combined sidebar tab, since
+# ShopSceneRedesign.tscn has a single merged "Stations & Special" grid
+# rather than two separate ones.
 const SHOP_SECTION_DISPLAY_MERGE := {
 	"stations": "stations_special",
 	"special": "stations_special",
 }
 
-# Icon shown on each CategoryNav pill (see rebuild_shop_category_buttons()). Reuses the
-# existing shop_cat_*.png icon set already in Assets/ui/icons/ where a matching one exists;
-# falls back to the generic shop icon for categories that don't have a dedicated icon yet
-# (e.g. "blocks") -- swap in a dedicated icon there whenever art is ready, no code change needed.
-const SHOP_CATEGORY_ICON_PATHS := {
-	"all": "res://Assets/ui/icons/shop_cat_featured.png",
-	"gem_store": "res://Assets/ui/icons/shop.png",
-	"locks": "res://Assets/ui/icons/shop_cat_locks.png",
-	"stations": "res://Assets/ui/icons/shop_cat_stations.png",
-	"special": "res://Assets/ui/icons/shop_cat_special.png",
-	"stations_special": "res://Assets/ui/icons/shop_cat_stations.png",
-	"clothes": "res://Assets/ui/icons/shop_cat_clothes.png",
-	"tools": "res://Assets/ui/icons/wrench.png",
-	"fishing": "res://Assets/ui/icons/shop_cat_fishing.png",
+# shop_items sections with no dedicated sidebar tab of their own fold into
+# the closest existing one instead of getting dropped - see
+# get_shop_items_for_category(). Today that's just "blocks" (a single item,
+# prestige_coloured_block_pack) folding into the Clothes tab.
+const SHOP_SECTION_FALLBACK_CATEGORY := {
+	"blocks": "clothes",
 }
 
 var world = null
@@ -62,28 +74,19 @@ var shop_button_tween = null
 var shop_button_hovered := false
 var shop_panel = null
 var shop_scene_wired := false
-var shop_main_tab := "shop"
-var shop_page_shop = null
-var shop_page_gem_store = null
-var shop_category_root = null
-var shop_category_button_template = null
-var shop_category_buttons = {}
-var shop_scroll_container = null
-var shop_category_scroll_container = null
-var shop_items_root = null
-var shop_featured_spotlight = null
-var shop_templates_root = null
-var shop_section_template = null
-var shop_active_cards = []
-var shop_gem_label = null
+var shop_balance_label = null
+
+# item_id (or, for Gem Store packs, "gem_pack:" + pack id) -> the live card
+# Button bound to it - filled in by populate_all_shop_grids(), used by
+# show_shop_card_purchase_feedback() to find a card without walking the
+# whole scene tree.
+var shop_card_by_key := {}
+
 var shop_last_known_gems := -1
 var shop_purchase_debounce_until := 0
-var shop_confirm_popup = null
-var purchase_reward_popup = null
 var gem_hud = null
 var gem_hud_icon = null
 var gem_hud_label = null
-var selected_shop_category = "all"
 var shop_last_purchase_context = {}
 
 
@@ -530,10 +533,7 @@ func setup_shop_panel():
 		wire_shop_scene_signals()
 		shop_scene_wired = true
 
-	populate_shop_featured_spotlight()
-	selected_shop_category = "all"
-	create_shop_item_cards()
-	set_shop_main_tab("shop")
+	populate_all_shop_grids()
 	update_shop_panel_position()
 	update_shop_info()
 
@@ -542,121 +542,35 @@ func cache_shop_scene_references():
 	if shop_panel == null:
 		return
 
-	shop_page_shop = shop_panel.get_node_or_null("Window/ShopPageRoot")
-	shop_page_gem_store = shop_panel.get_node_or_null("Window/GemStorePageRoot")
-
-	# CategoryNav now lives directly under Window (one row shared by both the
-	# Item Shop and Gem Store pages) instead of being nested inside
-	# ShopPageRoot - see rebuild_shop_category_buttons().
-	shop_category_scroll_container = shop_panel.get_node_or_null("Window/CategoryNavScroll")
-	shop_category_root = shop_panel.get_node_or_null("Window/CategoryNavScroll/CategoryNav")
-	shop_category_button_template = null
-	if shop_category_root != null:
-		shop_category_button_template = shop_category_root.get_node_or_null("CategoryButtonTemplate")
-
-	shop_scroll_container = shop_panel.get_node_or_null("Window/ShopPageRoot/ItemsScroll")
-	shop_items_root = shop_panel.get_node_or_null("Window/ShopPageRoot/ItemsScroll/ItemsList")
-
-	shop_featured_spotlight = null
-	shop_templates_root = null
-	shop_section_template = null
-
-	if shop_items_root != null:
-		shop_featured_spotlight = shop_items_root.get_node_or_null("FeaturedSpotlight")
-		shop_templates_root = shop_items_root.get_node_or_null("Templates")
-		if shop_templates_root != null:
-			shop_section_template = shop_templates_root.get_node_or_null("SectionTemplate")
-
-	shop_gem_label = shop_panel.get_node_or_null("Window/TopBar/GemChip/GemLabel")
-	var gem_icon = shop_panel.get_node_or_null("Window/TopBar/GemChip/GemIcon")
-	if gem_icon != null and world != null and world.currency_textures.has("gem"):
-		gem_icon.texture = world.currency_textures["gem"]
+	shop_balance_label = shop_panel.get_node_or_null("ShopWindow/Margin/Layout/Header/BalanceChip/BalanceLabel")
 
 
 func wire_shop_scene_signals():
 	if shop_panel == null:
 		return
 
-	var close_button = shop_panel.get_node_or_null("Window/TopBar/CloseButton")
-	if close_button != null and not close_button.pressed.is_connected(close_shop):
-		close_button.pressed.connect(close_shop)
+	# ShopSceneRedesign.gd owns opening/closing its own detail popup and
+	# switching sidebar categories entirely on its own - the two things it
+	# can't do by itself are actually closing the whole shop panel (its own
+	# close button used to queue_free() the scene outright, which would
+	# have destroyed this persistent, reused instance the first time a
+	# player closed the shop - see close_requested below) and knowing what
+	# a purchase actually costs or does (see buy_requested below).
+	if shop_panel.has_signal("close_requested") and not shop_panel.close_requested.is_connected(close_shop):
+		shop_panel.close_requested.connect(close_shop)
 
-	var get_gems_button = shop_panel.get_node_or_null("Window/TopBar/GetGemsButton")
-	if get_gems_button != null and not get_gems_button.pressed.is_connected(_on_get_gems_pressed):
-		get_gems_button.pressed.connect(_on_get_gems_pressed)
+	if shop_panel.has_signal("buy_requested") and not shop_panel.buy_requested.is_connected(_on_redesign_buy_requested):
+		shop_panel.buy_requested.connect(_on_redesign_buy_requested)
 
-	if shop_scroll_container != null and not shop_scroll_container.resized.is_connected(_on_shop_items_area_resized):
-		shop_scroll_container.resized.connect(_on_shop_items_area_resized)
+	# The purchase-reward popup is a permanent node in ShopSceneRedesign.tscn
+	# too (PurchaseRewardOverlay) - see show_purchase_reward_popup() below.
+	if shop_panel.has_signal("reward_buy_again_requested") and not shop_panel.reward_buy_again_requested.is_connected(_on_shop_buy_again_pressed):
+		shop_panel.reward_buy_again_requested.connect(_on_shop_buy_again_pressed)
 
-	rebuild_shop_category_buttons()
-	wire_gem_store_buy_buttons()
-
-
-# Category pills are built at runtime from get_shop_categories() (derived
-# from shop_items' own "section" values) plus a synthetic "gem_store" entry,
-# instead of being hand-placed one-per-category in the .tscn. This is what
-# lets a brand new shop_items section (e.g. a category nobody has added yet)
-# show up with a working pill automatically, with no scene edits required.
-func rebuild_shop_category_buttons():
-	shop_category_buttons.clear()
-	if shop_category_root == null or shop_category_button_template == null:
-		return
-
-	for child in shop_category_root.get_children():
-		if child == shop_category_button_template:
-			continue
-		child.queue_free()
-
-	var group: ButtonGroup = shop_category_button_template.button_group
-
-	for key in get_shop_category_bar_keys():
-		var button = shop_category_button_template.duplicate()
-		button.name = "Category_" + key
-		button.visible = true
-		button.text = get_shop_category_display_name(key).to_upper()
-		var icon_path = str(SHOP_CATEGORY_ICON_PATHS.get(key, SHOP_CATEGORY_ICON_PATHS["all"]))
-		button.icon = load(icon_path) if ResourceLoader.exists(icon_path) else null
-		button.button_group = group
-		button.button_pressed = (key == "gem_store" and shop_main_tab == "gem_store") or (key != "gem_store" and shop_main_tab == "shop" and key == selected_shop_category)
-		shop_category_root.add_child(button)
-		shop_category_buttons[key] = button
-		if not button.pressed.is_connected(_on_shop_category_pressed):
-			button.pressed.connect(_on_shop_category_pressed.bind(key))
+	wire_gem_store_iap_signals()
 
 
-# Order: "all" (Featured) first, "Gem Store" right after it (mirrors where
-# the old dedicated Gem Store tab used to sit), then every other shop_items
-# category in the order shop_items itself introduces them.
-func get_shop_category_bar_keys() -> Array:
-	var keys = []
-	for key in get_shop_categories():
-		keys.append(key)
-		if key == "all":
-			keys.append("gem_store")
-	return keys
-
-
-func wire_gem_store_buy_buttons():
-	if shop_panel == null:
-		return
-
-	var gem_store_list_path = "Window/GemStorePageRoot/GemStoreScroll/GemStoreList"
-	# "id" must match a key in the server's GEM_PACKS table (PixelManiaServer/src/server_iap_routes.ts) --
-	# price and gem amount always come from that server-side table, never from the client.
-	var pack_buttons = [
-		{"path": gem_store_list_path + "/GridPanel/GemGrid/Card_pouch/BuyButton", "id": "pouch", "label": "Pouch of Gems (100 Gems, $0.99)"},
-		{"path": gem_store_list_path + "/GridPanel/GemGrid/Card_sack/BuyButton", "id": "sack", "label": "Sack of Gems (550 Gems, $4.99)"},
-		{"path": gem_store_list_path + "/GridPanel/GemGrid/Card_chest/BuyButton", "id": "chest", "label": "Chest of Gems (1,200 Gems, $9.99)"},
-		{"path": gem_store_list_path + "/GridPanel/GemGrid/Card_vault/BuyButton", "id": "vault", "label": "Vault of Gems (3,000 Gems, $19.99)"},
-		{"path": gem_store_list_path + "/GridPanel/GemGrid/Card_mountain/BuyButton", "id": "mountain", "label": "Mountain of Gems (8,000 Gems, $49.99)"},
-		{"path": gem_store_list_path + "/GridPanel/GemGrid/StarterBanner/BuyButton", "id": "", "label": "Starter Pack ($4.99)"},
-	]
-
-	for pack in pack_buttons:
-		var button = shop_panel.get_node_or_null(str(pack["path"]))
-		if button != null and not button.pressed.is_connected(_on_gem_pack_card_buy_pressed):
-			button.pressed.connect(_on_gem_pack_card_buy_pressed.bind(str(pack["id"]), str(pack["label"])))
-
+func wire_gem_store_iap_signals():
 	var network = get_node_or_null("/root/NetworkManager")
 	if network != null:
 		if network.has_signal("iap_checkout_session_result") and not network.iap_checkout_session_result.is_connected(_on_iap_checkout_session_result):
@@ -665,17 +579,231 @@ func wire_gem_store_buy_buttons():
 			network.iap_purchase_result.connect(_on_iap_purchase_result)
 
 
-# Shown before every Gem Store pack purchase - the actual checkout/purchase
-# flow in _on_gem_pack_buy_pressed() below is completely untouched, this just
-# gates the button press behind a "Buy X? [Cancel] [Buy]" confirmation and a
-# rapid-click debounce first.
+# ---------------------------------------------------------------------------
+# Populating ShopSceneRedesign.tscn's static cards with real data
+#
+# Every card in ShopSceneRedesign.tscn is a real, permanently authored node
+# (see ShopSceneRedesign.gd's class doc) instead of something built fresh
+# each time the shop opens. This runs once, the first time the shop panel is
+# created, and writes real item_id/amount/price plus icon/name/price display
+# text onto whichever cards ShopSceneRedesign.gd's ensure_grid_card_count()
+# hands back for each category - duplicating more cards from a grid's own
+# last authored one if that category has more real items than hand-placed
+# cards (Stations & Special today), and hiding any hand-placed extras a
+# category doesn't need (Locks and Clothes today).
+# ---------------------------------------------------------------------------
+func populate_all_shop_grids():
+	if shop_panel == null:
+		return
+
+	shop_card_by_key.clear()
+
+	populate_item_grid("all", get_featured_shop_entries())
+	populate_item_grid("locks", get_shop_items_for_category("locks"))
+	populate_item_grid("stations_special", get_shop_items_for_category("stations_special"))
+	populate_item_grid("clothes", get_shop_items_for_category("clothes"))
+	populate_item_grid("tools", get_shop_items_for_category("tools"))
+	populate_item_grid("fishing", get_shop_items_for_category("fishing"))
+	populate_gem_store_grid()
+
+
+# Resolves FEATURED_PICKS (see its own comment) into full item/pack
+# dictionaries, silently skipping any pick whose id no longer exists so a
+# renamed/removed item or pack can't crash the Featured tab.
+func get_featured_shop_entries() -> Array:
+	var entries = []
+	for pick in FEATURED_PICKS:
+		var pick_type = str(pick.get("type", "item"))
+		var pick_id = str(pick.get("id", ""))
+		if pick_type == "gem_pack":
+			for pack_data in GEM_PACK_CARDS:
+				if str(pack_data.get("id", "")) == pick_id:
+					entries.append(pack_data)
+					break
+		else:
+			var entry = get_shop_item_entry(pick_id)
+			if not entry.is_empty() and is_shop_item_valid(entry):
+				entries.append(entry)
+	return entries
+
+
+# Real shop_items entries for one sidebar category, in shop_items' own
+# order - "stations_special" pulls from both the "stations" and "special"
+# sections (SHOP_SECTION_DISPLAY_MERGE), and a section with no sidebar tab
+# of its own (SHOP_SECTION_FALLBACK_CATEGORY) folds into whichever tab that
+# maps to instead of being dropped.
+func get_shop_items_for_category(category_key: String) -> Array:
+	var items = []
+	for item in shop_items:
+		if not (item is Dictionary) or not is_shop_item_valid(item):
+			continue
+		var section = get_shop_item_section(item).strip_edges().to_lower()
+		if section == "":
+			section = "featured"
+		section = str(SHOP_SECTION_DISPLAY_MERGE.get(section, section))
+		section = str(SHOP_SECTION_FALLBACK_CATEGORY.get(section, section))
+		if section == category_key:
+			items.append(item)
+	return items
+
+
+# Binds `items` (shop_items entries, or - for the Featured tab only - a mix
+# of shop_items entries and GEM_PACK_CARDS entries) onto category_key's
+# grid, growing/shrinking its visible card count to match via
+# ShopSceneRedesign.gd's ensure_grid_card_count().
+func populate_item_grid(category_key: String, items: Array) -> void:
+	if shop_panel == null or not shop_panel.has_method("ensure_grid_card_count"):
+		return
+
+	var cards = shop_panel.ensure_grid_card_count(category_key, items.size())
+	for i in range(items.size()):
+		if i >= cards.size():
+			break
+		var entry = items[i]
+		if entry.has("gems"):
+			bind_gem_pack_card(cards[i], entry)
+		else:
+			bind_item_card(cards[i], entry, category_key)
+
+
+func populate_gem_store_grid() -> void:
+	if shop_panel == null or not shop_panel.has_method("ensure_grid_card_count"):
+		return
+
+	var cards = shop_panel.ensure_grid_card_count("gem_store", GEM_PACK_CARDS.size())
+	for i in range(GEM_PACK_CARDS.size()):
+		if i >= cards.size():
+			break
+		bind_gem_pack_card(cards[i], GEM_PACK_CARDS[i])
+
+
+# Writes one real shop_items entry onto a card: real icon/name/price text,
+# plus set_meta("item_id"/"amount"/"price"/"is_gem_pack") so
+# ShopSceneRedesign.gd's detail popup can report it back via buy_requested.
+# On the Featured tab only, NameLabel2 (empty on every other card - see
+# ShopSceneRedesign.tscn) shows the item's own category as a small tag,
+# since Featured mixes categories together.
+# Item/pack names vary a lot in length ("CCTV" vs "Night Theme Machine"), but
+# NameLabel/NameLabel2's width is fixed by the shared card template (same
+# rect on every card, see the project notes on the Card_all_0 template
+# rollout) and clip_text was silently clipping long names from BOTH sides
+# instead of wrapping - "Night Theme Machine" rendered as "ight Theme Machin".
+# The shared card layout reserves two lines per label. Keep normal text
+# readable and wrap long pack names instead of shrinking or clipping them.
+
+
+func _set_shop_name_label_text(name_label: Label, text: String) -> void:
+	if name_label == null:
+		return
+	name_label.text = text
+	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	name_label.clip_text = false
+	name_label.set_meta("pixelmania_font_role", "body")
+	name_label.add_theme_font_size_override("font_size", 24)
+
+
+func bind_item_card(card: Button, item: Dictionary, category_key: String) -> void:
+	var item_id = str(item.get("item_id", ""))
+	var amount = int(item.get("amount", 1))
+	var price = int(item.get("price", 0))
+	var display_name = get_item_display_name(item_id)
+	if amount > 1:
+		display_name += " x" + str(amount)
+
+	card.set_meta("item_id", item_id)
+	card.set_meta("amount", amount)
+	card.set_meta("price", price)
+	card.set_meta("is_gem_pack", false)
+	card.tooltip_text = get_shop_item_description(item)
+	card.visible = true
+
+	var icon_slot = card.get_node_or_null("IconSlot")
+	var icon = icon_slot.get_node_or_null("Icon") if icon_slot != null else null
+	if icon != null:
+		icon.texture = get_item_texture(item_id)
+
+	var name_label = card.get_node_or_null("NameLabel")
+	_set_shop_name_label_text(name_label, display_name)
+
+	var name_label2 = card.get_node_or_null("NameLabel2")
+	if category_key == "all":
+		var item_section = get_shop_item_section(item).strip_edges().to_lower()
+		_set_shop_name_label_text(name_label2, get_shop_category_display_name(item_section).to_upper())
+	else:
+		_set_shop_name_label_text(name_label2, "")
+
+	var price_label = card.get_node_or_null("PriceLabel")
+	if price_label != null:
+		price_label.text = format_shop_price(price) + " GEMS"
+
+	shop_card_by_key[item_id] = card
+
+
+# Writes one Gem Store pack onto a card: display text plus
+# set_meta("item_id"/"is_gem_pack") so the detail popup's Buy button routes
+# to the real-money purchase flow (Stripe/Google Play) instead of the
+# in-game-gems one. price/amount meta stay at their bind_item_card defaults
+# (0/1) since Gem Store purchases are priced and fulfilled server-side, not
+# by anything the client sends - see _on_gem_pack_buy_pressed().
+func bind_gem_pack_card(card: Button, pack_data: Dictionary) -> void:
+	var pack_id = str(pack_data.get("id", ""))
+	var gems = int(pack_data.get("gems", 0))
+	var edition = str(pack_data.get("edition", ""))
+	var price_text = str(pack_data.get("price", "$0.00"))
+
+	card.set_meta("item_id", pack_id)
+	card.set_meta("amount", 1)
+	card.set_meta("price", 0)
+	card.set_meta("is_gem_pack", true)
+	card.tooltip_text = edition
+	card.visible = true
+
+	var icon_slot = card.get_node_or_null("IconSlot")
+	var icon = icon_slot.get_node_or_null("Icon") if icon_slot != null else null
+	if icon != null and world != null and world.currency_textures.has("gem"):
+		icon.texture = world.currency_textures["gem"]
+
+	var name_label = card.get_node_or_null("NameLabel")
+	_set_shop_name_label_text(name_label, format_shop_price(gems) + " GEMS")
+
+	var name_label2 = card.get_node_or_null("NameLabel2")
+	_set_shop_name_label_text(name_label2, edition.to_upper())
+
+	var price_label = card.get_node_or_null("PriceLabel")
+	if price_label != null:
+		price_label.text = price_text
+
+	shop_card_by_key["gem_pack:" + pack_id] = card
+
+
+# Routes ShopSceneRedesign.gd's detail-popup Buy press into whichever real
+# purchase flow the card's own metadata (see bind_item_card()/
+# bind_gem_pack_card() above) says it needs - both flows already existed
+# for the old scene and are untouched here.
+func _on_redesign_buy_requested(item_id: String, amount: int, price: int, is_gem_pack: bool) -> void:
+	if is_gem_pack:
+		_on_gem_pack_card_buy_pressed(item_id, _gem_pack_label(item_id))
+	else:
+		_on_shop_item_card_buy_pressed(item_id, amount, price)
+
+
+func _gem_pack_label(pack_id: String) -> String:
+	for pack_data in GEM_PACK_CARDS:
+		if str(pack_data.get("id", "")) == pack_id:
+			return format_shop_price(int(pack_data.get("gems", 0))) + " Gems"
+	return "Gems"
+
+
+# Gates every Gem Store pack purchase button press behind a rapid-click
+# debounce, then goes straight into the actual checkout/purchase flow in
+# _on_gem_pack_buy_pressed() below (no confirmation step - the debounce is
+# the only guard against accidental double-taps).
 func _on_gem_pack_card_buy_pressed(pack_id: String, pack_label: String):
 	if Time.get_ticks_msec() < shop_purchase_debounce_until:
 		return
+	shop_purchase_debounce_until = Time.get_ticks_msec() + SHOP_PURCHASE_DEBOUNCE_MS
 
-	show_shop_purchase_confirm(pack_label, func():
-		_on_gem_pack_buy_pressed(pack_id, pack_label)
-	)
+	_on_gem_pack_buy_pressed(pack_id, pack_label)
 
 
 func _on_gem_pack_buy_pressed(pack_id: String, pack_label: String):
@@ -786,179 +914,10 @@ func _on_iap_purchase_result(data: Dictionary) -> void:
 		notify("You received " + str(gems_granted) + " gems!")
 
 
-func set_shop_main_tab(tab_key: String):
-	shop_main_tab = tab_key
-
-	if shop_page_shop != null:
-		shop_page_shop.visible = tab_key == "shop"
-	if shop_page_gem_store != null:
-		shop_page_gem_store.visible = tab_key == "gem_store"
-
-	# "Gem Store" is just another pill in the unified CategoryNav row now, so
-	# keep it visually pressed/unpressed in sync when this is reached from
-	# somewhere other than clicking that pill directly (e.g. GetGemsButton).
-	var gem_store_button = shop_category_buttons.get("gem_store")
-	if gem_store_button != null and gem_store_button.button_pressed != (tab_key == "gem_store"):
-		gem_store_button.set_pressed_no_signal(tab_key == "gem_store")
-
-
-func _on_get_gems_pressed():
-	set_shop_main_tab("gem_store")
-
-
-# ---------------------------------------------------------------------------
-# Purchase confirmation
-#
-# Every purchase entry point (Item Shop cards and Gem Store packs alike)
-# routes through this before touching buy_item()/_on_gem_pack_buy_pressed(),
-# which are otherwise completely unchanged. This only adds a confirmation
-# step and a rapid-click debounce in front of the existing purchase flow -
-# it never decides whether a purchase succeeds, and it never talks to the
-# server itself.
-# ---------------------------------------------------------------------------
-func show_shop_purchase_confirm(message: String, on_confirm: Callable) -> void:
-	if shop_panel == null or Time.get_ticks_msec() < shop_purchase_debounce_until:
-		return
-
-	close_shop_purchase_confirm()
-
-	# Explicit position/size (not anchors_preset(FULL_RECT)) for the same reason
-	# as the panel below - a brand new Control has no size yet when the anchor
-	# preset is applied, so it doesn't actually fill shop_panel. shop_panel's
-	# own size is already resolved by update_shop_panel_position() by the time
-	# any purchase button can be pressed, so it's safe to read directly here.
-	var blocker = ColorRect.new()
-	blocker.name = "ShopConfirmBlocker"
-	blocker.color = Color(0.0, 0.0, 0.0, 0.55)
-	blocker.position = Vector2.ZERO
-	blocker.size = shop_panel.size
-	blocker.mouse_filter = Control.MOUSE_FILTER_STOP
-	shop_panel.add_child(blocker)
-	blocker.z_index = 500
-
-	# Fixed size + explicit position (rather than an anchors_preset(CENTER)) --
-	# a freshly-created Control has no size yet, so anchoring it to "center"
-	# before it's been through a layout pass just pins it near (0, 0) instead
-	# of the middle of the screen. This mirrors the already-working pattern in
-	# world_lock_ui.gd's _show_confirm_panel(), which sizes and positions its
-	# popup explicitly for the same reason.
-	var panel = PanelContainer.new()
-	panel.name = "Panel"
-	panel.custom_minimum_size = Vector2(460, 200)
-	panel.size = panel.custom_minimum_size
-	panel.position = (shop_panel.size - panel.size) * 0.5
-	panel.add_theme_stylebox_override("panel", PixelUIStyle.premium_panel_style())
-	blocker.add_child(panel)
-
-	var margin = MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 28)
-	margin.add_theme_constant_override("margin_right", 28)
-	margin.add_theme_constant_override("margin_top", 24)
-	margin.add_theme_constant_override("margin_bottom", 24)
-	panel.add_child(margin)
-
-	var column = VBoxContainer.new()
-	column.add_theme_constant_override("separation", 18)
-	margin.add_child(column)
-
-	var message_label = Label.new()
-	message_label.text = message
-	message_label.autowrap_mode = 2  # TextServer.AUTOWRAP_WORD_SMART - matches the .tscn's own Description labels
-	message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	PixelUIStyle.apply_label_shadow(message_label, 20, PixelUIStyle.TEXT_LIGHT)
-	column.add_child(message_label)
-
-	var button_row = HBoxContainer.new()
-	button_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	button_row.add_theme_constant_override("separation", 16)
-	column.add_child(button_row)
-
-	var cancel_button = Button.new()
-	cancel_button.text = "CANCEL"
-	cancel_button.custom_minimum_size = Vector2(140, 48)
-	PixelUIStyle.apply_blue_button(cancel_button, 16)
-	button_row.add_child(cancel_button)
-
-	var buy_button = Button.new()
-	buy_button.text = "BUY"
-	buy_button.custom_minimum_size = Vector2(140, 48)
-	PixelUIStyle.apply_green_button(buy_button, 16)
-	button_row.add_child(buy_button)
-
-	cancel_button.pressed.connect(close_shop_purchase_confirm)
-	buy_button.pressed.connect(func():
-		shop_purchase_debounce_until = Time.get_ticks_msec() + SHOP_PURCHASE_DEBOUNCE_MS
-		cancel_button.disabled = true
-		buy_button.disabled = true
-		close_shop_purchase_confirm()
-		on_confirm.call()
-	)
-
-	shop_confirm_popup = blocker
-
-
-func close_shop_purchase_confirm() -> void:
-	if shop_confirm_popup != null and is_instance_valid(shop_confirm_popup):
-		shop_confirm_popup.queue_free()
-	shop_confirm_popup = null
-
-
-func get_shop_featured_item() -> Dictionary:
-	var entry = get_shop_item_entry("vending_machine")
-	if not entry.is_empty() and is_shop_item_valid(entry):
-		return entry
-
-	for item in shop_items:
-		if is_shop_item_valid(item):
-			return item
-
-	return {}
-
-
-func populate_shop_featured_spotlight():
-	if shop_featured_spotlight == null:
-		return
-
-	var item = get_shop_featured_item()
-	if item.is_empty():
-		shop_featured_spotlight.visible = false
-		return
-
-	var item_id = str(item.get("item_id", ""))
-	var amount = int(item.get("amount", 1))
-	var price = int(item.get("price", 1))
-
-	var title = shop_featured_spotlight.get_node_or_null("Title")
-	if title != null:
-		title.text = get_item_display_name(item_id)
-
-	var description = shop_featured_spotlight.get_node_or_null("Description")
-	if description != null:
-		description.text = get_shop_item_description(item)
-
-	var icon = shop_featured_spotlight.get_node_or_null("IconSlot/Icon")
-	var icon_hint = shop_featured_spotlight.get_node_or_null("IconSlot/IconHint")
-	var texture = get_item_texture(item_id)
-	if icon != null:
-		icon.texture = texture
-	if icon_hint != null:
-		icon_hint.visible = texture == null
-
-	var buy_button = shop_featured_spotlight.get_node_or_null("BuyButton")
-	if buy_button != null:
-		buy_button.tooltip_text = "Buy " + get_item_display_name(item_id)
-		if not buy_button.pressed.is_connected(_on_shop_buy_button_pressed):
-			buy_button.pressed.connect(_on_shop_buy_button_pressed.bind(buy_button, item_id, amount, price))
-
-		var price_label = buy_button.get_node_or_null("PriceLabel")
-		if price_label != null:
-			price_label.text = format_shop_price(price)
-
-		var price_icon = buy_button.get_node_or_null("PriceIcon")
-		if price_icon != null and world != null and world.currency_textures.has("gem"):
-			price_icon.texture = world.currency_textures["gem"]
-
-	refresh_shop_affordability()
+# Category-tab switching (including "GetGemsButton jumps to the Gem Store
+# tab") is now handled entirely inside ShopSceneRedesign.gd itself - see its
+# _on_sidebar_button_toggled()/_on_get_gems_pressed(). Nothing here needs to
+# drive it.
 
 
 func get_shop_item_section(item: Dictionary) -> String:
@@ -1004,19 +963,6 @@ func validate_shop_items() -> Array:
 			issues.append("Shop item has invalid price: " + item_id)
 
 	return issues
-
-
-func get_shop_categories() -> Array:
-	var categories = ["all"]
-	for item in shop_items:
-		if not (item is Dictionary) or not is_shop_item_valid(item):
-			continue
-		var category = get_shop_item_section(item).strip_edges().to_lower()
-		if category == "":
-			category = "featured"
-		if not categories.has(category):
-			categories.append(category)
-	return categories
 
 
 func get_shop_category_display_name(category: String) -> String:
@@ -1067,16 +1013,10 @@ func get_shop_item_entry(item_id: String) -> Dictionary:
 	return {}
 
 
-func _on_shop_category_pressed(category: String):
-	if category == "gem_store":
-		set_shop_main_tab("gem_store")
-		return
-
-	set_shop_main_tab("shop")
-	selected_shop_category = category
-	if shop_scroll_container != null:
-		shop_scroll_container.scroll_vertical = 0
-	create_shop_item_cards()
+# Category-tab switching used to be routed through here from the dynamic
+# CategoryNav pills; ShopSceneRedesign.gd's static sidebar buttons now
+# switch tabs (and reveal the right Grid_*) entirely on their own - see its
+# _on_sidebar_button_toggled().
 
 
 func format_shop_price(value: int) -> String:
@@ -1094,242 +1034,28 @@ func format_shop_price(value: int) -> String:
 	return result
 
 
-func get_shop_section_accent(section: String) -> Color:
-	match section:
-		"locks":
-			return Color(1.0, 0.78, 0.12, 1.0)
-		"stations":
-			return Color(0.30, 0.86, 1.0, 1.0)
-		"tools":
-			return Color(0.34, 1.0, 0.50, 1.0)
-		"fishing":
-			return Color(0.28, 0.72, 1.0, 1.0)
-		"clothes":
-			return Color(0.78, 0.40, 1.0, 1.0)
-		"special":
-			return Color(1.0, 0.38, 0.58, 1.0)
-		"stations_special":
-			return Color(1.0, 0.38, 0.58, 1.0)
-		_:
-			return Color(0.76, 0.93, 1.0, 1.0)
+# Section-grouped headings, dynamic column counts, and building a fresh set
+# of ShopItemCardScene instances per category switch were all specific to
+# ShopScene.tscn's runtime-built layout. ShopSceneRedesign.tscn's cards are
+# permanent authored nodes populated once by populate_all_shop_grids() (see
+# above) instead, and its GridContainers keep whatever fixed column count is
+# authored in the .tscn.
 
 
-func get_shop_section_title(section: String) -> String:
-	return "* " + get_shop_category_display_name(section).to_upper()
-
-
-func get_filtered_shop_groups() -> Array:
-	var groups = []
-	var group_indexes = {}
-
-	for item in shop_items:
-		if not is_shop_item_valid(item):
-			continue
-
-		var section = get_shop_item_section(item).strip_edges().to_lower()
-		if section == "":
-			section = "featured"
-
-		if selected_shop_category != "all" and section != selected_shop_category:
-			continue
-
-		var group_key = section if selected_shop_category == "all" else selected_shop_category
-		if selected_shop_category == "all" and SHOP_SECTION_DISPLAY_MERGE.has(group_key):
-			group_key = str(SHOP_SECTION_DISPLAY_MERGE[group_key])
-		if not group_indexes.has(group_key):
-			group_indexes[group_key] = groups.size()
-			groups.append({
-				"section": group_key,
-				"items": []
-			})
-
-		var group_index = int(group_indexes[group_key])
-		var group = groups[group_index]
-		var group_items = group["items"]
-		group_items.append(item)
-		group["items"] = group_items
-		groups[group_index] = group
-
-	return groups
-
-
-func clear_dynamic_shop_items():
-	if shop_items_root == null:
-		return
-
-	for child in shop_items_root.get_children():
-		if child == shop_templates_root or child == shop_featured_spotlight:
-			continue
-		child.queue_free()
-
-	shop_active_cards.clear()
-
-
-# Minimum comfortable card width (matches the card's own custom_minimum_size)
-# plus the grid's own separation - used to work out how many columns fit the
-# available width instead of a hardcoded columns count, so the grid goes from
-# a wide desktop row down to a single mobile column on its own.
-const SHOP_CARD_MIN_WIDTH := 262.0
-const SHOP_GRID_SEPARATION := 16.0
-const SHOP_GRID_PANEL_MARGIN := 36.0  # left + right content_margin on GridPanel
-
-
-func compute_shop_grid_columns(available_width: float) -> int:
-	if available_width <= 0.0:
-		return 1
-	var columns = int(floor((available_width + SHOP_GRID_SEPARATION) / (SHOP_CARD_MIN_WIDTH + SHOP_GRID_SEPARATION)))
-	return maxi(1, columns)
-
-
-func create_shop_item_cards():
-	if shop_items_root == null or shop_section_template == null:
-		return
-
-	clear_dynamic_shop_items()
-
-	var showing_all = selected_shop_category == "all"
-	if shop_featured_spotlight != null:
-		shop_featured_spotlight.visible = showing_all
-
-	var groups = get_filtered_shop_groups()
-	var visible_index = 0
-	var gem_texture = null
-	if world != null and world.currency_textures.has("gem"):
-		gem_texture = world.currency_textures["gem"]
-
-	var available_width = 0.0
-	if shop_scroll_container != null:
-		available_width = shop_scroll_container.size.x - SHOP_GRID_PANEL_MARGIN
-	var columns = compute_shop_grid_columns(available_width)
-
-	for group in groups:
-		var section = str(group.get("section", "featured"))
-		var items = group.get("items", [])
-		if items.is_empty():
-			continue
-
-		var accent = get_shop_section_accent(section)
-
-		var section_node = shop_section_template.duplicate()
-		section_node.name = "Section_" + section
-		section_node.visible = true
-		shop_items_root.add_child(section_node)
-
-		var heading_label = section_node.get_node_or_null("Heading/Heading")
-		if heading_label != null:
-			heading_label.text = get_shop_section_title(section)
-
-		var dot = section_node.get_node_or_null("Heading/Dot")
-		if dot != null:
-			dot.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-				Color(accent.r, accent.g, accent.b, 0.28), Color(accent.r, accent.g, accent.b, 0.9), 2, 8, 0
-			))
-
-		var line = section_node.get_node_or_null("Heading/Line")
-		if line != null:
-			line.color = Color(accent.r, accent.g, accent.b, 0.55)
-
-		var grid_panel = PanelContainer.new()
-		grid_panel.name = "GridPanel"
-		grid_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var grid_style = StyleBoxTexture.new()
-		grid_style.texture = load(SHOP_GRID_PANEL_TEXTURE_PATH)
-		grid_style.content_margin_left = 18
-		grid_style.content_margin_top = 16
-		grid_style.content_margin_right = 18
-		grid_style.content_margin_bottom = 18
-		grid_panel.add_theme_stylebox_override("panel", grid_style)
-		section_node.add_child(grid_panel)
-
-		var grid = GridContainer.new()
-		grid.name = "Grid"
-		grid.columns = columns
-		grid.add_theme_constant_override("h_separation", int(SHOP_GRID_SEPARATION))
-		grid.add_theme_constant_override("v_separation", 14)
-		grid_panel.add_child(grid)
-
-		for item in items:
-			var card = ShopItemCardScene.instantiate()
-			grid.add_child(card)
-			# Use the item's own real section for its badge (not the merged
-			# group heading) so a combined "STATIONS & SPECIAL" section still
-			# shows each card tagged STATIONS or SPECIAL individually, matching
-			# the ShopScene.tscn mockup.
-			var item_section = get_shop_item_section(item).strip_edges().to_lower()
-			if item_section == "":
-				item_section = "featured"
-			var item_accent = get_shop_section_accent(item_section)
-			var card_data = {
-				"item_id": str(item.get("item_id", "")),
-				"amount": int(item.get("amount", 1)),
-				"price": int(item.get("price", 1)),
-				"display_name": get_item_display_name(str(item.get("item_id", ""))),
-				"description": get_shop_item_description(item),
-				"icon": get_item_texture(str(item.get("item_id", ""))),
-				"category": item_section,
-			}
-			card.configure(card_data, item_accent, gem_texture)
-			if not card.buy_pressed.is_connected(_on_shop_item_card_buy_pressed):
-				card.buy_pressed.connect(_on_shop_item_card_buy_pressed)
-			shop_active_cards.append(card)
-			visible_index += 1
-
-	if visible_index == 0:
-		var empty_label = Label.new()
-		empty_label.name = "Empty"
-		empty_label.text = "No items in this category yet."
-		PixelUIStyle.apply_small_label(empty_label, 18)
-		shop_items_root.add_child(empty_label)
-
-	refresh_shop_affordability()
-
-
-# Recomputes grid columns in place (without rebuilding cards) whenever the
-# shop window is resized - lets the same category go from a 3-4 column
-# desktop layout down to a single mobile column without a full rebuild.
-func _on_shop_items_area_resized() -> void:
-	if shop_scroll_container == null or shop_items_root == null:
-		return
-	var available_width = shop_scroll_container.size.x - SHOP_GRID_PANEL_MARGIN
-	var columns = compute_shop_grid_columns(available_width)
-	for grid in shop_items_root.find_children("Grid", "GridContainer", true, false):
-		if grid.columns != columns:
-			grid.columns = columns
-
-
+# No confirmation step - a rapid-click debounce is the only guard against
+# accidental double-taps here, same as the Gem Store pack flow above.
 func _on_shop_item_card_buy_pressed(item_id: String, amount: int, price: int) -> void:
-	show_shop_purchase_confirm(_build_shop_purchase_confirm_message(item_id, amount, price), func():
-		buy_item(item_id, amount, price)
-	)
-
-
-func _build_shop_purchase_confirm_message(item_id: String, amount: int, price: int) -> String:
-	var display_name = get_item_display_name(item_id)
-	if amount > 1:
-		display_name += " x" + str(amount)
-	return "Buy " + display_name + " for " + format_shop_price(price) + " gems?"
-
-
-func _on_shop_buy_button_pressed(button: Button, item_id: String, amount: int, price: int):
-	play_shop_buy_button_feedback(button)
-	show_shop_purchase_confirm(_build_shop_purchase_confirm_message(item_id, amount, price), func():
-		buy_item(item_id, amount, price)
-	)
+	if Time.get_ticks_msec() < shop_purchase_debounce_until:
+		return
+	shop_purchase_debounce_until = Time.get_ticks_msec() + SHOP_PURCHASE_DEBOUNCE_MS
+	buy_item(item_id, amount, price)
 
 
 func _on_shop_buy_again_pressed(item_id: String, amount: int, price: int):
-	show_shop_purchase_confirm(_build_shop_purchase_confirm_message(item_id, amount, price), func():
-		buy_item(item_id, amount, price)
-	)
-
-
-func play_shop_buy_button_feedback(button: Button):
-	if button == null or not is_instance_valid(button):
+	if Time.get_ticks_msec() < shop_purchase_debounce_until:
 		return
-
-	var tween = create_tween()
-	tween.tween_property(button, "scale", Vector2(0.94, 0.94), 0.05).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	tween.tween_property(button, "scale", Vector2.ONE, 0.1).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+	shop_purchase_debounce_until = Time.get_ticks_msec() + SHOP_PURCHASE_DEBOUNCE_MS
+	buy_item(item_id, amount, price)
 
 
 func buy_item(item_id: String, amount: int, price: int):
@@ -1398,6 +1124,9 @@ func has_inventory_delta_payload(data: Dictionary) -> bool:
 func finalize_shop_purchase(item_id: String, amount: int, price: int, rewards: Array, refresh_inventory: bool = true):
 	show_shop_card_purchase_feedback(item_id)
 
+	if shop_panel != null and shop_panel.has_method("show_purchase_success_feedback"):
+		shop_panel.show_purchase_success_feedback()
+
 	if refresh_inventory and world.has_method("update_all_ui"):
 		world.update_all_ui()
 
@@ -1411,10 +1140,7 @@ func finalize_shop_purchase(item_id: String, amount: int, price: int, rewards: A
 
 
 func show_shop_card_purchase_feedback(item_id: String):
-	if shop_items_root == null:
-		return
-
-	var card = shop_items_root.find_child("ShopCard_" + item_id, true, false)
+	var card = shop_card_by_key.get(item_id)
 	if card == null or not is_instance_valid(card):
 		return
 
@@ -1655,14 +1381,22 @@ func get_reward_summary_text(rewards: Array) -> String:
 
 
 func close_purchase_reward_popup():
-	if purchase_reward_popup != null:
-		purchase_reward_popup.queue_free()
-		purchase_reward_popup = null
+	if shop_panel != null and shop_panel.has_method("hide_reward_popup"):
+		shop_panel.hide_reward_popup()
 
 
+# The "YOU GOT!" popup is a permanent node in ShopSceneRedesign.tscn now
+# (PurchaseRewardOverlay), styled with the Shop's own panel/button textures
+# directly in the editor - this fills in the one-off text/target data and
+# writes the actual reward-item tiles into shop_panel.reward_items_container
+# (see populate_purchase_reward_slots()/create_purchase_reward_slot() below,
+# unchanged - they still read real icon/rarity data from item_database, which
+# ShopSceneRedesign.gd deliberately has no access to).
 func show_purchase_reward_popup(purchased_item_id: String, rewards: Array, purchased_amount: int = 1, purchased_price: int = 0):
 	if shop_panel == null:
 		notify("Received: " + get_reward_summary_text(rewards))
+		return
+	if not shop_panel.has_method("show_reward_popup"):
 		return
 
 	var reward_entries = normalize_reward_entries(rewards)
@@ -1676,237 +1410,34 @@ func show_purchase_reward_popup(purchased_item_id: String, rewards: Array, purch
 			"amount": amount
 		})
 
-	close_purchase_reward_popup()
-
-	purchase_reward_popup = Control.new()
-	purchase_reward_popup.name = "PurchaseRewardPopup"
-	purchase_reward_popup.position = Vector2.ZERO
-	purchase_reward_popup.size = shop_panel.size
-	purchase_reward_popup.z_index = 260
-	purchase_reward_popup.mouse_filter = Control.MOUSE_FILTER_STOP
-	shop_panel.add_child(purchase_reward_popup)
-
-	var dim = ColorRect.new()
-	dim.name = "Dim"
-	dim.position = Vector2.ZERO
-	dim.size = shop_panel.size
-	dim.color = Color(0.0, 0.0, 0.0, 0.72)
-	dim.mouse_filter = Control.MOUSE_FILTER_STOP
-	purchase_reward_popup.add_child(dim)
-
-	var card_width = 560.0
-	if reward_entries.size() >= 4:
-		card_width = 690.0
-	var card_height = 398.0
-	var card_position = Vector2((shop_panel.size.x - card_width) / 2.0, (shop_panel.size.y - card_height) / 2.0 + 10.0)
-
-	for i in range(18):
-		var sparkle = ColorRect.new()
-		sparkle.name = "PrizeSparkle_" + str(i)
-		var sparkle_size = 5.0 + float(i % 4) * 2.0
-		sparkle.size = Vector2(sparkle_size, sparkle_size * 2.2)
-		var side = -1.0 if i % 2 == 0 else 1.0
-		var x_offset = side * (card_width * 0.46 + float(i % 5) * 14.0)
-		var y_offset = -card_height * 0.36 + float((i * 31) % 270)
-		sparkle.position = card_position + Vector2(card_width * 0.5 + x_offset, card_height * 0.5 + y_offset)
-		sparkle.rotation_degrees = float((i * 29) % 180)
-		sparkle.color = [
-			Color(1.0, 0.82, 0.18, 0.74),
-			Color(0.25, 0.95, 1.0, 0.62),
-			Color(0.52, 1.0, 0.28, 0.58)
-		][i % 3]
-		sparkle.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		purchase_reward_popup.add_child(sparkle)
-
-	var glow_back = Panel.new()
-	glow_back.name = "GlowBack"
-	glow_back.size = Vector2(card_width + 28.0, card_height + 28.0)
-	glow_back.position = card_position - Vector2(14, 14)
-	glow_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	glow_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(1.0, 0.67, 0.08, 0.15),
-		Color(0.25, 0.90, 1.0, 0.36),
-		3, 24, 18
-	))
-	purchase_reward_popup.add_child(glow_back)
-
-	var card = Panel.new()
-	card.name = "RewardCard"
-	card.size = Vector2(card_width, card_height)
-	card.position = card_position
-	card.pivot_offset = card.size * 0.5
-	card.scale = Vector2(0.84, 0.84)
-	card.modulate = Color(1.0, 1.0, 1.0, 0.0)
-	card.mouse_filter = Control.MOUSE_FILTER_STOP
-	card.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.025, 0.09, 0.15, 0.99),
-		Color(1.0, 0.66, 0.10, 0.94),
-		5, 20, 12
-	))
-	purchase_reward_popup.add_child(card)
-
-	var top_glow = ColorRect.new()
-	top_glow.name = "TopGlow"
-	top_glow.position = Vector2(18, 16)
-	top_glow.size = Vector2(card_width - 36.0, 58)
-	top_glow.color = Color(1.0, 0.74, 0.16, 0.14)
-	top_glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	card.add_child(top_glow)
-
-	for i in range(9):
-		var beam = ColorRect.new()
-		beam.name = "PrizeBeam_" + str(i)
-		beam.size = Vector2(16, 166)
-		beam.position = Vector2(card_width * 0.5 - 8.0, 122)
-		beam.pivot_offset = Vector2(8, 83)
-		beam.rotation_degrees = -70.0 + float(i) * 17.5
-		beam.color = Color(0.38, 0.92, 1.0, 0.045) if i % 2 == 0 else Color(1.0, 0.76, 0.18, 0.055)
-		beam.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		card.add_child(beam)
-
-	var shine = ColorRect.new()
-	shine.name = "DiagonalShine"
-	shine.position = Vector2(-70, 36)
-	shine.size = Vector2(card_width + 140.0, 24)
-	shine.rotation_degrees = -12
-	shine.color = Color(1.0, 1.0, 1.0, 0.055)
-	shine.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	card.add_child(shine)
-
-	var header = Panel.new()
-	header.name = "Header"
-	header.position = Vector2(14, 14)
-	header.size = Vector2(card_width - 28.0, 62)
-	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	header.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.09, 0.08, 0.15, 0.98),
-		Color(1.0, 0.72, 0.18, 0.78),
-		3, 16, 5
-	))
-	card.add_child(header)
-
-	var title = Label.new()
-	title.name = "Title"
-	title.text = "YOU GOT!"
-	title.position = Vector2(30, 21)
-	title.size = Vector2(card_width - 60.0, 42)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(title, 36, Color(1.0, 0.92, 0.30, 1.0))
-	card.add_child(title)
-
-	var subtitle = Label.new()
-	subtitle.name = "Subtitle"
 	var item_name = purchased_item_id if purchased_item_id != "" else "item"
 	if world != null and world.item_database.has(purchased_item_id):
 		item_name = get_item_display_name(purchased_item_id)
 	var price_text = ""
 	if price > 0:
 		price_text = "  - " + format_shop_price(price) + " gems"
-	subtitle.text = "PURCHASE COMPLETE - " + str(amount) + "x " + item_name + price_text
+	var subtitle_text = "PURCHASE COMPLETE - " + str(amount) + "x " + item_name + price_text
 	if purchased_item_id == "lure_pack":
-		subtitle.text = "Lure Pack opened"
+		subtitle_text = "Lure Pack opened"
 	elif purchased_item_id == "basic_items_pack":
-		subtitle.text = "Basic Items Pack opened"
+		subtitle_text = "Basic Items Pack opened"
 	elif purchased_item_id == "hairpack":
-		subtitle.text = "Hair Pack opened"
+		subtitle_text = "Hair Pack opened"
 	elif purchased_item_id == "prestige_coloured_block_pack":
-		subtitle.text = "Prestige Coloured Block Pack opened"
-	subtitle.position = Vector2(32, 84)
-	subtitle.size = Vector2(card_width - 64.0, 24)
-	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	subtitle.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(subtitle, 18)
-	card.add_child(subtitle)
-
-	var rewards_back = Panel.new()
-	rewards_back.name = "RewardsBack"
-	rewards_back.position = Vector2(26, 116)
-	rewards_back.size = Vector2(card_width - 52.0, 150)
-	rewards_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	rewards_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.02, 0.08, 0.12, 0.82),
-		Color(0.22, 0.82, 1.0, 0.62),
-		3, 18, 6
-	))
-	card.add_child(rewards_back)
-
-	var rewards_highlight = ColorRect.new()
-	rewards_highlight.name = "RewardsHighlight"
-	rewards_highlight.position = Vector2(42, 126)
-	rewards_highlight.size = Vector2(card_width - 84.0, 5)
-	rewards_highlight.color = Color(1.0, 0.86, 0.24, 0.28)
-	rewards_highlight.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	card.add_child(rewards_highlight)
-
-	var reward_scroll = ScrollContainer.new()
-	reward_scroll.name = "RewardScroll"
-	reward_scroll.position = Vector2(36, 128)
-	reward_scroll.size = Vector2(card_width - 72.0, 126)
-	reward_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-	reward_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	reward_scroll.mouse_filter = Control.MOUSE_FILTER_STOP
-	card.add_child(reward_scroll)
-
-	var reward_root = Control.new()
-	reward_root.name = "RewardItems"
-	reward_root.position = Vector2.ZERO
-	reward_root.size = Vector2(reward_scroll.size.x, reward_scroll.size.y)
-	reward_root.custom_minimum_size = reward_root.size
-	reward_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	reward_scroll.add_child(reward_root)
-
-	populate_purchase_reward_slots(reward_root, reward_entries, reward_scroll.size)
+		subtitle_text = "Prestige Coloured Block Pack opened"
 
 	var can_buy_again = (purchased_item_id != "" and not get_shop_item_entry(purchased_item_id).is_empty())
-	var button_width = 182.0
-	var button_height = 42.0
-	var button_gap = 16.0
-	var button_y = 286.0
-	var button_half = button_width * 2.0 + button_gap
-	var left_x = (card_width - button_half) * 0.5
-
-	var buy_again_button = Button.new()
-	buy_again_button.name = "BuyAgainButton"
-	buy_again_button.text = "BUY AGAIN"
-	buy_again_button.position = Vector2(left_x, button_y)
-	buy_again_button.size = Vector2(button_width, button_height)
-	buy_again_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	apply_shop_arcade_button_style(buy_again_button, true, false, 18)
-	buy_again_button.pressed.connect(_on_shop_buy_again_pressed.bind(purchased_item_id, amount, price))
-	buy_again_button.visible = can_buy_again
+	var buy_again_disabled = false
 	if can_buy_again and world != null:
-		buy_again_button.disabled = int(world.currency_inventory.get("gem", 0)) < price
-	card.add_child(buy_again_button)
+		buy_again_disabled = int(world.currency_inventory.get("gem", 0)) < price
 
-	var close_x = button_width + button_gap
-	var close_button = Button.new()
-	close_button.name = "CloseButton"
-	close_button.text = "CLOSE"
-	close_button.position = Vector2(
-		left_x + close_x if can_buy_again else (card_width - 252.0) / 2.0,
-		button_y
-	)
-	close_button.size = Vector2(button_width, button_height) if can_buy_again else Vector2(252.0, button_height)
-	close_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	apply_shop_arcade_button_style(close_button, false, false, 18)
-	close_button.pressed.connect(close_purchase_reward_popup)
-	card.add_child(close_button)
+	var reward_root: Control = shop_panel.reward_items_container
+	for child in reward_root.get_children():
+		child.queue_free()
 
-	var tween = create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(card, "scale", Vector2.ONE, 0.26).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.tween_property(card, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.16).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	tween.tween_property(glow_back, "modulate", Color(1.0, 1.0, 1.0, 0.72), 0.24).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	shop_panel.show_reward_popup(subtitle_text, can_buy_again, buy_again_disabled, purchased_item_id, amount, price)
 
-	var sparkle_tween = create_tween()
-	sparkle_tween.set_parallel(true)
-	for sparkle in purchase_reward_popup.get_children():
-		if str(sparkle.name).begins_with("PrizeSparkle_"):
-			sparkle_tween.tween_property(sparkle, "position:y", sparkle.position.y + 12.0, 0.46).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-			sparkle_tween.tween_property(sparkle, "modulate", Color(1.0, 1.0, 1.0, 0.38), 0.46).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	populate_purchase_reward_slots(reward_root, reward_entries, shop_panel.reward_scroll.size)
 
 
 func normalize_reward_entries(rewards: Array) -> Array:
@@ -2317,8 +1848,8 @@ func update_shop_info():
 	var gems = int(world.currency_inventory.get("gem", 0))
 	var gem_count_text = world.get_currency_display_text("gem")
 
-	if shop_gem_label != null:
-		shop_gem_label.text = gem_count_text
+	if shop_balance_label != null:
+		shop_balance_label.text = gem_count_text
 
 	if gem_hud_label != null:
 		gem_hud_label.text = "x" + gem_count_text
@@ -2331,25 +1862,13 @@ func update_shop_info():
 		refresh_shop_affordability(gems)
 
 
-# The only "can't buy this" state the current shop data actually supports is
-# insufficient gems (there's no sold-out/already-owned concept in shop_items
-# or item_database today - see the pre-implementation report). This dims and
-# disables each visible card's Buy button without touching anything server-
-# side; the server (or Stripe/Google Play for Gem Store) still independently
-# re-validates every purchase regardless of what the client shows here.
+# Keep the open detail popup in sync without disabling item browsing.
 func refresh_shop_affordability(gems: int = -1) -> void:
+	if shop_panel == null or not shop_panel.has_method("set_available_gems"):
+		return
 	if gems < 0:
 		gems = int(world.currency_inventory.get("gem", 0)) if world != null else 0
-
-	for card in shop_active_cards:
-		if is_instance_valid(card) and card.has_method("set_affordable"):
-			card.set_affordable(gems >= card.item_price)
-
-	if shop_featured_spotlight != null:
-		var buy_button = shop_featured_spotlight.get_node_or_null("BuyButton")
-		if buy_button != null:
-			var item = get_shop_featured_item()
-			buy_button.disabled = gems < int(item.get("price", 0))
+	shop_panel.set_available_gems(gems)
 
 
 func open_shop():
@@ -2362,21 +1881,17 @@ func open_shop():
 
 	shop_panel.visible = true
 
-	# Every time the shop opens: default category, cards rebuilt for it, and
-	# both the category row and the product list scrolled back to the top -
-	# a reopened shop should never surface mid-scroll from last time.
-	selected_shop_category = "all"
-	set_shop_main_tab("shop")
-	var featured_button = shop_category_buttons.get("all")
-	if featured_button != null:
-		featured_button.set_pressed_no_signal(true)
-	create_shop_item_cards()
-	if shop_scroll_container != null:
-		shop_scroll_container.scroll_vertical = 0
-	if shop_category_scroll_container != null:
-		shop_category_scroll_container.scroll_horizontal = 0
+	# Every time the shop opens: back to the Featured tab, detail popup
+	# closed, product list scrolled to the top - a reopened shop should never
+	# surface mid-scroll or mid-detail-popup from last time. The redesigned
+	# scene's cards are permanent authored nodes populated once by
+	# populate_all_shop_grids() (called from setup_shop_panel()), not rebuilt
+	# per open, so there's no rebuild step here anymore.
+	if shop_panel.has_method("reset_to_default_view"):
+		shop_panel.reset_to_default_view()
 
 	update_shop_info()
+	refresh_shop_affordability()
 	PixelUIStyle.play_panel_open(shop_panel)
 
 
@@ -2385,7 +1900,6 @@ func close_shop():
 		return
 
 	close_purchase_reward_popup()
-	close_shop_purchase_confirm()
 	shop_panel.visible = false
 
 

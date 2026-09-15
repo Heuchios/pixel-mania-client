@@ -1,0 +1,10 @@
+[gd_resource type="AtlasTexture" format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/ui/UI_3.0.png" id="1_atlas"]
+
+[resource]
+atlas = ExtResource("1_atlas")
+region = Rect2(224, 32, 32, 32)
+filter_clip = true
+metadata/atlas_region = "item_equipped_overlay"
+metadata/atlas_properties = "{}"

@@ -1,27 +1,26 @@
 [gd_scene format=3 uid="uid://qif2xvwq5ogd"]
 
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/outer_panel.tres" id="panel_role_0"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inner_panel.tres" id="panel_role_1"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inner_panel.tres" id="panel_role_2"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inner_panel.tres" id="panel_role_3"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inner_panel.tres" id="panel_role_4"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inner_panel.tres" id="panel_role_5"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inner_panel.tres" id="panel_role_6"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inner_panel.tres" id="panel_role_7"]
+
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_f72e84db31.tres" id="atlas_StyleBoxTexture_81mko"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_1b992e4807.tres" id="atlas_StyleBoxTexture_uo7ej"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_c4d4758782.tres" id="atlas_StyleBoxTexture_10n2d"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/close_button.tres" id="atlas_close_glyph"]
+
 [ext_resource type="FontFile" uid="uid://e0ivgh0c6uck" path="res://Assets/font/font.ttf" id="1_font"]
-[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="2_3ir0m"]
-[ext_resource type="Texture2D" uid="uid://cwt3wjfewbxrf" path="res://Assets/ui/lobby/inner_panel.png" id="2_dxium"]
-[ext_resource type="Texture2D" uid="uid://bdqewvpbuib1a" path="res://Assets/ui/panel_outer_403x130.png" id="3_ea8mm"]
-[ext_resource type="Texture2D" uid="uid://ch2qryxhnpu18" path="res://Assets/ui/close_button.png" id="5_5rsf5"]
-[ext_resource type="Texture2D" uid="uid://s2qd6aym6sau" path="res://Assets/ui/fill_bar_full.png" id="5_dxium"]
-[ext_resource type="Texture2D" uid="uid://b26xvfc2ty1no" path="res://Assets/ui/login/sign_on_normal.png" id="5_k7k66"]
-[ext_resource type="Texture2D" uid="uid://chootb3uj6qh6" path="res://Assets/ui/login/register_normal.png" id="6_5rsf5"]
-[ext_resource type="Texture2D" uid="uid://burjdcdg4op0f" path="res://Assets/ui/close_button_pressed_69x69.png" id="6_lvkcs"]
-[ext_resource type="Texture2D" uid="uid://cho1iwl84l4pf" path="res://Assets/ui/close_button_hover_69x69.png" id="7_3ir0m"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inner_panel.tres" id="2_dxium"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/fill_bar_progress.tres" id="5_dxium"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/pink_button.tres" id="5_k7k66"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/pink_button.tres" id="6_5rsf5"]
 [ext_resource type="Script" uid="uid://bqqp7buhb2yw7" path="res://Scripts/ui/player_profile_scene.gd" id="7_profile_script"]
-[ext_resource type="Texture2D" uid="uid://bwpihua7lc7dd" path="res://Assets/ui/fill_bar_empty.png" id="9_rbb1l"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_81mko"]
-texture = ExtResource("5_5rsf5")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uo7ej"]
-texture = ExtResource("6_lvkcs")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_10n2d"]
-texture = ExtResource("7_3ir0m")
-
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/fill_bar_background.tres" id="9_rbb1l"]
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_button"]
 
 [node name="PlayerProfileScene" type="Control" unique_id=1595202202]
@@ -33,6 +32,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("7_profile_script")
+texture_filter = 1
 
 [node name="Dimmer" type="ColorRect" parent="." unique_id=647110101]
 layout_mode = 1
@@ -66,11 +66,11 @@ editor_description = "Main window skin. Replace this texture with your own stret
 texture_filter = 1
 custom_minimum_size = Vector2(1060, 620)
 layout_mode = 2
-texture = ExtResource("2_3ir0m")
-patch_margin_left = 32
-patch_margin_top = 32
-patch_margin_right = 32
-patch_margin_bottom = 32
+texture = ExtResource("panel_role_0")
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="HeaderPanel" type="NinePatchRect" parent="CenterContainer/ProfileWindow" unique_id=914151316]
 editor_description = "Header panel NinePatchRect. ProfileBannerTexture is an empty image placeholder."
@@ -81,11 +81,11 @@ offset_top = 18.0
 offset_right = 1042.0
 offset_bottom = 92.0
 mouse_filter = 1
-texture = ExtResource("3_ea8mm")
-patch_margin_left = 24
-patch_margin_top = 24
-patch_margin_right = 24
-patch_margin_bottom = 24
+texture = ExtResource("panel_role_1")
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="ProfileBannerTexture" type="TextureRect" parent="CenterContainer/ProfileWindow/HeaderPanel" unique_id=7458144]
 unique_name_in_owner = true
@@ -118,6 +118,7 @@ theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 25
 text = "PLAYER PROFILE"
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="ProfileHandleLabel" type="Label" parent="CenterContainer/ProfileWindow/HeaderPanel" unique_id=2117259004]
 unique_name_in_owner = true
@@ -131,6 +132,7 @@ theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 13
 text = "@PLAYER_HANDLE"
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="OnlineStatusLabel" type="Label" parent="CenterContainer/ProfileWindow/HeaderPanel" unique_id=120573761]
 unique_name_in_owner = true
@@ -145,6 +147,7 @@ theme_override_font_sizes/font_size = 15
 text = "STATUS"
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="CloseButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/HeaderPanel" unique_id=1702160657]
 editor_description = "NinePatchRect skin for the close button. The Button child has no signal connection."
@@ -178,10 +181,13 @@ theme_override_colors/font_pressed_color = Color(0.64, 0.76, 0.88, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 22
-theme_override_styles/normal = SubResource("StyleBoxTexture_81mko")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_uo7ej")
-theme_override_styles/hover = SubResource("StyleBoxTexture_10n2d")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_81mko")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_uo7ej")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_10n2d")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
+metadata/pixelmania_font_role = "preserve"
+icon = ExtResource("atlas_close_glyph")
+expand_icon = true
 
 [node name="PortraitPanel" type="NinePatchRect" parent="CenterContainer/ProfileWindow" unique_id=1307962214]
 editor_description = "Portrait panel NinePatchRect. Assign player art to PortraitTexture."
@@ -192,11 +198,11 @@ offset_top = 108.0
 offset_right = 322.0
 offset_bottom = 419.0
 mouse_filter = 1
-texture = ExtResource("3_ea8mm")
-patch_margin_left = 24
-patch_margin_top = 24
-patch_margin_right = 24
-patch_margin_bottom = 24
+texture = ExtResource("panel_role_2")
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="PortraitFrame" type="NinePatchRect" parent="CenterContainer/ProfileWindow/PortraitPanel" unique_id=1296162088]
 texture_filter = 1
@@ -207,10 +213,10 @@ offset_right = 286.0
 offset_bottom = 250.0
 mouse_filter = 1
 texture = ExtResource("2_dxium")
-patch_margin_left = 18
-patch_margin_top = 18
-patch_margin_right = 18
-patch_margin_bottom = 18
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="PortraitViewport" type="SubViewport" parent="CenterContainer/ProfileWindow/PortraitPanel/PortraitFrame" unique_id=2029685073]
 unique_name_in_owner = true
@@ -252,6 +258,7 @@ theme_override_font_sizes/font_size = 16
 text = "PORTRAIT"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="DisplayNameLabel" type="Label" parent="CenterContainer/ProfileWindow/PortraitPanel" unique_id=250720838]
 unique_name_in_owner = true
@@ -269,6 +276,7 @@ theme_override_font_sizes/font_size = 22
 text = "PLAYER NAME"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="TitleValueLabel" type="Label" parent="CenterContainer/ProfileWindow/PortraitPanel" unique_id=1515838720]
 unique_name_in_owner = true
@@ -283,6 +291,7 @@ theme_override_font_sizes/font_size = 14
 text = "PLAYER TITLE"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="IdentityPanel" type="NinePatchRect" parent="CenterContainer/ProfileWindow" unique_id=909067203]
 texture_filter = 1
@@ -292,11 +301,11 @@ offset_top = 426.0
 offset_right = 322.0
 offset_bottom = 536.0
 mouse_filter = 1
-texture = ExtResource("3_ea8mm")
-patch_margin_left = 22
-patch_margin_top = 22
-patch_margin_right = 22
-patch_margin_bottom = 22
+texture = ExtResource("panel_role_3")
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="AccountIdCaption" type="Label" parent="CenterContainer/ProfileWindow/IdentityPanel" unique_id=954911989]
 visible = false
@@ -309,6 +318,7 @@ theme_override_colors/font_color = Color(0.49, 0.61, 0.72, 1)
 theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 12
 text = "PLAYER ID"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="AccountIdValueLabel" type="Label" parent="CenterContainer/ProfileWindow/IdentityPanel" unique_id=183087611]
 unique_name_in_owner = true
@@ -323,6 +333,7 @@ theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 12
 text = "--"
 horizontal_alignment = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerAgeCaption" type="Label" parent="CenterContainer/ProfileWindow/IdentityPanel" unique_id=72518778]
 layout_mode = 0
@@ -334,6 +345,7 @@ theme_override_colors/font_color = Color(0.49, 0.61, 0.72, 1)
 theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 12
 text = "PLAYER AGE"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerAgeValueLabel" type="Label" parent="CenterContainer/ProfileWindow/IdentityPanel" unique_id=1209955657]
 unique_name_in_owner = true
@@ -347,6 +359,7 @@ theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 12
 text = "--"
 horizontal_alignment = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LastSeenCaption" type="Label" parent="CenterContainer/ProfileWindow/IdentityPanel" unique_id=2077102427]
 layout_mode = 0
@@ -358,6 +371,7 @@ theme_override_colors/font_color = Color(0.49, 0.61, 0.72, 1)
 theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 12
 text = "LAST SEEN"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LastSeenValueLabel" type="Label" parent="CenterContainer/ProfileWindow/IdentityPanel" unique_id=184495100]
 unique_name_in_owner = true
@@ -371,6 +385,7 @@ theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 12
 text = "--"
 horizontal_alignment = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="StatsPanel" type="NinePatchRect" parent="CenterContainer/ProfileWindow" unique_id=430594069]
 texture_filter = 1
@@ -380,11 +395,11 @@ offset_top = 108.0
 offset_right = 1042.0
 offset_bottom = 258.0
 mouse_filter = 1
-texture = ExtResource("3_ea8mm")
-patch_margin_left = 24
-patch_margin_top = 24
-patch_margin_right = 24
-patch_margin_bottom = 24
+texture = ExtResource("panel_role_4")
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="StatsTitleLabel" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel" unique_id=331655496]
 layout_mode = 0
@@ -396,6 +411,7 @@ theme_override_colors/font_color = Color(0.71, 0.83, 0.93, 1)
 theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 15
 text = "PLAYER STATS"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LevelCell" type="NinePatchRect" parent="CenterContainer/ProfileWindow/StatsPanel" unique_id=669502596]
 texture_filter = 1
@@ -406,10 +422,10 @@ offset_right = 180.0
 offset_bottom = 100.0
 mouse_filter = 1
 texture = ExtResource("2_dxium")
-patch_margin_left = 14
-patch_margin_top = 14
-patch_margin_right = 14
-patch_margin_bottom = 14
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="Caption" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/LevelCell" unique_id=1594407220]
 layout_mode = 0
@@ -422,6 +438,7 @@ theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 11
 text = "LEVEL"
 horizontal_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LevelValueLabel" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/LevelCell" unique_id=1483798792]
 unique_name_in_owner = true
@@ -436,6 +453,7 @@ theme_override_font_sizes/font_size = 20
 text = "--"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="WorldsCell" type="NinePatchRect" parent="CenterContainer/ProfileWindow/StatsPanel" unique_id=192474257]
 texture_filter = 1
@@ -446,10 +464,10 @@ offset_right = 348.0
 offset_bottom = 100.0
 mouse_filter = 1
 texture = ExtResource("2_dxium")
-patch_margin_left = 14
-patch_margin_top = 14
-patch_margin_right = 14
-patch_margin_bottom = 14
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="Caption" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/WorldsCell" unique_id=8346493]
 layout_mode = 0
@@ -462,6 +480,7 @@ theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 11
 text = "WORLDS"
 horizontal_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="WorldsValueLabel" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/WorldsCell" unique_id=944264614]
 unique_name_in_owner = true
@@ -476,6 +495,7 @@ theme_override_font_sizes/font_size = 20
 text = "--"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="FriendsCell" type="NinePatchRect" parent="CenterContainer/ProfileWindow/StatsPanel" unique_id=1682037219]
 texture_filter = 1
@@ -486,10 +506,10 @@ offset_right = 516.0
 offset_bottom = 100.0
 mouse_filter = 1
 texture = ExtResource("2_dxium")
-patch_margin_left = 14
-patch_margin_top = 14
-patch_margin_right = 14
-patch_margin_bottom = 14
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="Caption" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/FriendsCell" unique_id=270148575]
 layout_mode = 0
@@ -502,6 +522,7 @@ theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 11
 text = "FRIENDS"
 horizontal_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="FriendsValueLabel" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/FriendsCell" unique_id=1137473997]
 unique_name_in_owner = true
@@ -516,6 +537,7 @@ theme_override_font_sizes/font_size = 20
 text = "--"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="AchievementsCell" type="NinePatchRect" parent="CenterContainer/ProfileWindow/StatsPanel" unique_id=120837031]
 texture_filter = 1
@@ -526,10 +548,10 @@ offset_right = 686.0
 offset_bottom = 100.0
 mouse_filter = 1
 texture = ExtResource("2_dxium")
-patch_margin_left = 14
-patch_margin_top = 14
-patch_margin_right = 14
-patch_margin_bottom = 14
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="Caption" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/AchievementsCell" unique_id=1515202805]
 layout_mode = 0
@@ -542,6 +564,7 @@ theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 11
 text = "ACHIEVEMENTS"
 horizontal_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="AchievementsValueLabel" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/AchievementsCell" unique_id=1862545780]
 unique_name_in_owner = true
@@ -556,6 +579,7 @@ theme_override_font_sizes/font_size = 20
 text = "--"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="XpCaption" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel" unique_id=975011453]
 layout_mode = 0
@@ -568,6 +592,7 @@ theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 11
 text = "EXPERIENCE"
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="XpTrack" type="NinePatchRect" parent="CenterContainer/ProfileWindow/StatsPanel" unique_id=2092749664]
 texture_filter = 1
@@ -579,10 +604,6 @@ offset_right = 686.0
 offset_bottom = 132.0
 mouse_filter = 1
 texture = ExtResource("9_rbb1l")
-patch_margin_left = 10
-patch_margin_top = 10
-patch_margin_right = 10
-patch_margin_bottom = 10
 
 [node name="XpFill" type="NinePatchRect" parent="CenterContainer/ProfileWindow/StatsPanel/XpTrack" unique_id=1894602595]
 unique_name_in_owner = true
@@ -600,10 +621,6 @@ offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("5_dxium")
-patch_margin_left = 9
-patch_margin_top = 9
-patch_margin_right = 9
-patch_margin_bottom = 9
 
 [node name="XpValueLabel" type="Label" parent="CenterContainer/ProfileWindow/StatsPanel/XpTrack" unique_id=1029366838]
 unique_name_in_owner = true
@@ -623,6 +640,7 @@ theme_override_font_sizes/font_size = 11
 text = "-- / --"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="AboutPanel" type="NinePatchRect" parent="CenterContainer/ProfileWindow" unique_id=185282013]
 texture_filter = 1
@@ -632,11 +650,11 @@ offset_top = 274.0
 offset_right = 1042.0
 offset_bottom = 404.0
 mouse_filter = 1
-texture = ExtResource("3_ea8mm")
-patch_margin_left = 24
-patch_margin_top = 24
-patch_margin_right = 24
-patch_margin_bottom = 24
+texture = ExtResource("panel_role_5")
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="AboutTitleLabel" type="Label" parent="CenterContainer/ProfileWindow/AboutPanel" unique_id=1958369906]
 layout_mode = 0
@@ -648,6 +666,7 @@ theme_override_colors/font_color = Color(0.71, 0.83, 0.93, 1)
 theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 15
 text = "ABOUT"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="BioLabel" type="Label" parent="CenterContainer/ProfileWindow/AboutPanel" unique_id=440250727]
 unique_name_in_owner = true
@@ -661,6 +680,7 @@ theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 13
 text = "Player bio"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="EditBioButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/AboutPanel" unique_id=1765885200]
 unique_name_in_owner = true
@@ -673,10 +693,10 @@ offset_right = 686.0
 offset_bottom = 37.0
 mouse_filter = 1
 texture = ExtResource("5_k7k66")
-patch_margin_left = 12
-patch_margin_top = 12
-patch_margin_right = 12
-patch_margin_bottom = 12
+patch_margin_left = 2
+patch_margin_top = 1
+patch_margin_right = 2
+patch_margin_bottom = 5
 
 [node name="EditBioButton" type="Button" parent="CenterContainer/ProfileWindow/AboutPanel/EditBioButtonSkin" unique_id=511039285]
 unique_name_in_owner = true
@@ -696,6 +716,7 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
 text = "EDIT"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="BioEditorSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/AboutPanel" unique_id=341082762]
 unique_name_in_owner = true
@@ -709,10 +730,10 @@ offset_right = 690.0
 offset_bottom = 116.0
 mouse_filter = 1
 texture = ExtResource("2_dxium")
-patch_margin_left = 14
-patch_margin_top = 14
-patch_margin_right = 14
-patch_margin_bottom = 14
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="BioTextEdit" type="TextEdit" parent="CenterContainer/ProfileWindow/AboutPanel/BioEditorSkin" unique_id=1040161778]
 unique_name_in_owner = true
@@ -730,6 +751,7 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_button")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
 placeholder_text = "Write a short bio..."
 wrap_mode = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="BioSaveButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/AboutPanel/BioEditorSkin" unique_id=1856681870]
 unique_name_in_owner = true
@@ -742,10 +764,10 @@ offset_right = 590.0
 offset_bottom = 35.0
 mouse_filter = 1
 texture = ExtResource("6_5rsf5")
-patch_margin_left = 10
-patch_margin_top = 10
-patch_margin_right = 10
-patch_margin_bottom = 10
+patch_margin_left = 2
+patch_margin_top = 1
+patch_margin_right = 2
+patch_margin_bottom = 5
 
 [node name="BioSaveButton" type="Button" parent="CenterContainer/ProfileWindow/AboutPanel/BioEditorSkin/BioSaveButtonSkin" unique_id=1280301876]
 unique_name_in_owner = true
@@ -764,6 +786,7 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
 text = "SAVE"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="BioCancelButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/AboutPanel/BioEditorSkin" unique_id=2017811525]
 unique_name_in_owner = true
@@ -776,10 +799,10 @@ offset_right = 666.0
 offset_bottom = 35.0
 mouse_filter = 1
 texture = ExtResource("5_k7k66")
-patch_margin_left = 10
-patch_margin_top = 10
-patch_margin_right = 10
-patch_margin_bottom = 10
+patch_margin_left = 2
+patch_margin_top = 1
+patch_margin_right = 2
+patch_margin_bottom = 5
 
 [node name="BioCancelButton" type="Button" parent="CenterContainer/ProfileWindow/AboutPanel/BioEditorSkin/BioCancelButtonSkin" unique_id=1579223150]
 unique_name_in_owner = true
@@ -798,6 +821,7 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
 text = "CANCEL"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="BioCharacterCountLabel" type="Label" parent="CenterContainer/ProfileWindow/AboutPanel/BioEditorSkin" unique_id=653815551]
 unique_name_in_owner = true
@@ -811,6 +835,7 @@ theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 10
 text = "0 / 160"
 horizontal_alignment = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="ShowcasePanel" type="NinePatchRect" parent="CenterContainer/ProfileWindow" unique_id=973228508]
 texture_filter = 1
@@ -820,11 +845,11 @@ offset_top = 420.0
 offset_right = 1042.0
 offset_bottom = 536.0
 mouse_filter = 1
-texture = ExtResource("3_ea8mm")
-patch_margin_left = 24
-patch_margin_top = 24
-patch_margin_right = 24
-patch_margin_bottom = 24
+texture = ExtResource("panel_role_6")
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="ShowcaseTitleLabel" type="Label" parent="CenterContainer/ProfileWindow/ShowcasePanel" unique_id=429078343]
 layout_mode = 0
@@ -836,6 +861,7 @@ theme_override_colors/font_color = Color(0.71, 0.83, 0.93, 1)
 theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 15
 text = "SHOWCASE"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="BadgeSlot" type="NinePatchRect" parent="CenterContainer/ProfileWindow/ShowcasePanel" unique_id=490852295]
 texture_filter = 1
@@ -846,10 +872,10 @@ offset_right = 333.0
 offset_bottom = 102.0
 mouse_filter = 1
 texture = ExtResource("2_dxium")
-patch_margin_left = 14
-patch_margin_top = 14
-patch_margin_right = 14
-patch_margin_bottom = 14
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="BadgeTexture" type="TextureRect" parent="CenterContainer/ProfileWindow/ShowcasePanel/BadgeSlot" unique_id=1583968128]
 unique_name_in_owner = true
@@ -875,6 +901,7 @@ theme_override_font_sizes/font_size = 11
 text = "BADGE"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="FavoriteItemSlot" type="NinePatchRect" parent="CenterContainer/ProfileWindow/ShowcasePanel" unique_id=1112143362]
 texture_filter = 1
@@ -885,10 +912,10 @@ offset_right = 508.0
 offset_bottom = 102.0
 mouse_filter = 1
 texture = ExtResource("2_dxium")
-patch_margin_left = 14
-patch_margin_top = 14
-patch_margin_right = 14
-patch_margin_bottom = 14
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="FavoriteItemTexture" type="TextureRect" parent="CenterContainer/ProfileWindow/ShowcasePanel/FavoriteItemSlot" unique_id=1690388174]
 unique_name_in_owner = true
@@ -914,6 +941,7 @@ theme_override_font_sizes/font_size = 11
 text = "ITEM"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="FavoriteWorldSlot" type="NinePatchRect" parent="CenterContainer/ProfileWindow/ShowcasePanel" unique_id=1464043641]
 texture_filter = 1
@@ -924,10 +952,10 @@ offset_right = 686.0
 offset_bottom = 102.0
 mouse_filter = 1
 texture = ExtResource("2_dxium")
-patch_margin_left = 14
-patch_margin_top = 14
-patch_margin_right = 14
-patch_margin_bottom = 14
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="FavoriteWorldTexture" type="TextureRect" parent="CenterContainer/ProfileWindow/ShowcasePanel/FavoriteWorldSlot" unique_id=1902865144]
 unique_name_in_owner = true
@@ -954,6 +982,7 @@ theme_override_font_sizes/font_size = 11
 text = "WORLD"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="FooterPanel" type="NinePatchRect" parent="CenterContainer/ProfileWindow" unique_id=616499403]
 texture_filter = 1
@@ -963,11 +992,11 @@ offset_top = 552.0
 offset_right = 1042.0
 offset_bottom = 602.0
 mouse_filter = 1
-texture = ExtResource("3_ea8mm")
-patch_margin_left = 18
-patch_margin_top = 18
-patch_margin_right = 18
-patch_margin_bottom = 18
+texture = ExtResource("panel_role_7")
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="MessageButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/FooterPanel" unique_id=745069565]
 editor_description = "NinePatchRect skin for MessageButton. Replace its texture to customize the button background."
@@ -979,10 +1008,10 @@ offset_right = 584.0
 offset_bottom = 44.0
 mouse_filter = 1
 texture = ExtResource("5_k7k66")
-patch_margin_left = 14
-patch_margin_top = 14
-patch_margin_right = 14
-patch_margin_bottom = 14
+patch_margin_left = 2
+patch_margin_top = 1
+patch_margin_right = 2
+patch_margin_bottom = 5
 
 [node name="MessageButton" type="Button" parent="CenterContainer/ProfileWindow/FooterPanel/MessageButtonSkin" unique_id=1478023771]
 unique_name_in_owner = true
@@ -1004,6 +1033,7 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
 text = "MESSAGE"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="VisitWorldButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/FooterPanel" unique_id=801462392]
 editor_description = "NinePatchRect skin for VisitWorldButton. Replace its texture to customize the button background."
@@ -1015,10 +1045,10 @@ offset_right = 790.0
 offset_bottom = 44.0
 mouse_filter = 1
 texture = ExtResource("5_k7k66")
-patch_margin_left = 14
-patch_margin_top = 14
-patch_margin_right = 14
-patch_margin_bottom = 14
+patch_margin_left = 2
+patch_margin_top = 1
+patch_margin_right = 2
+patch_margin_bottom = 5
 
 [node name="VisitWorldButton" type="Button" parent="CenterContainer/ProfileWindow/FooterPanel/VisitWorldButtonSkin" unique_id=776326308]
 unique_name_in_owner = true
@@ -1040,6 +1070,7 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
 text = "VISIT WORLD"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PrimaryActionButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/FooterPanel" unique_id=1999918361]
 editor_description = "NinePatchRect skin for PrimaryActionButton. Replace its texture to customize the button background."
@@ -1051,10 +1082,10 @@ offset_right = 1008.0
 offset_bottom = 44.0
 mouse_filter = 1
 texture = ExtResource("6_5rsf5")
-patch_margin_left = 14
-patch_margin_top = 14
-patch_margin_right = 14
-patch_margin_bottom = 14
+patch_margin_left = 2
+patch_margin_top = 1
+patch_margin_right = 2
+patch_margin_bottom = 5
 
 [node name="PrimaryActionButton" type="Button" parent="CenterContainer/ProfileWindow/FooterPanel/PrimaryActionButtonSkin" unique_id=1731526311]
 unique_name_in_owner = true
@@ -1076,6 +1107,7 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
 text = "ADD FRIEND"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RecipeBookButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/FooterPanel" unique_id=391058999]
 editor_description = "NinePatchRect skin for RecipeBookButton. Replace its texture to customize the button background."
@@ -1087,10 +1119,10 @@ offset_right = 378.0
 offset_bottom = 44.0
 mouse_filter = 1
 texture = ExtResource("5_k7k66")
-patch_margin_left = 14
-patch_margin_top = 14
-patch_margin_right = 14
-patch_margin_bottom = 14
+patch_margin_left = 2
+patch_margin_top = 1
+patch_margin_right = 2
+patch_margin_bottom = 5
 
 [node name="RecipeBookButton" type="Button" parent="CenterContainer/ProfileWindow/FooterPanel/RecipeBookButtonSkin" unique_id=1037537431]
 unique_name_in_owner = true
@@ -1112,3 +1144,4 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
 text = "RECIPE BOOK"
+metadata/pixelmania_font_role = "preserve"

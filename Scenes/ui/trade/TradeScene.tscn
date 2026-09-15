@@ -1,120 +1,36 @@
 [gd_scene format=3 uid="uid://qga2xg0uwusq"]
 
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/outer_panel_26aea83603.tres" id="panel_role_0"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_1"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_2"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_3"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/outer_panel_6d61345d3b.tres" id="panel_role_4"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/outer_panel_10bada3b58.tres" id="panel_role_5"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/outer_panel_6d61345d3b.tres" id="panel_role_6"]
+
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_c4d4758782.tres" id="atlas_StyleBoxTexture_hpc6h"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_1b992e4807.tres" id="atlas_StyleBoxTexture_kltya"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_c4d4758782.tres" id="atlas_StyleBoxTexture_e08e2"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_o1aky"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_kwxat"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_aa8k8"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_kqrg6"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_nwwfm"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_s8vy0"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_jut3y"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_v2nl5"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_dmskm"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_xdkp6"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_54nrm"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_55jeb"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_f72e84db31.tres" id="atlas_StyleBoxTexture_hdf80"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_1b992e4807.tres" id="atlas_StyleBoxTexture_jwpg7"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_c4d4758782.tres" id="atlas_StyleBoxTexture_k2e45"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_f72e84db31.tres" id="atlas_StyleBoxTexture_536cc"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_1b992e4807.tres" id="atlas_StyleBoxTexture_aqgau"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_c4d4758782.tres" id="atlas_StyleBoxTexture_8cuat"]
+
 [ext_resource type="Script" uid="uid://c6dble506iouy" path="res://Scripts/trade_ui.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="2_nryhv"]
-[ext_resource type="Texture2D" uid="uid://bdqewvpbuib1a" path="res://Assets/ui/panel_outer_403x130.png" id="3_agix8"]
-[ext_resource type="Texture2D" uid="uid://tbchr2qk0dib" path="res://Assets/ui/close_button_hover.png" id="4_j1587"]
-[ext_resource type="Texture2D" uid="uid://cdd8rhkxp0cky" path="res://Assets/ui/close_button_pressed.png" id="5_8xim2"]
-[ext_resource type="Texture2D" uid="uid://m3d85gxykr8n" path="res://Assets/ui/inv_slot_96x96.png" id="6_yi6jg"]
-[ext_resource type="Texture2D" uid="uid://c0s1vj8wepsbi" path="res://Assets/ui/green_button_normal_90x24.png" id="7_5bh6o"]
-[ext_resource type="Texture2D" uid="uid://pyw7s5lcdhmt" path="res://Assets/ui/green_button_pressed_90x24.png" id="8_sa3ut"]
-[ext_resource type="Texture2D" uid="uid://opqgsn2jk7ie" path="res://Assets/ui/green_button_hover_90x24.png" id="9_2fcnd"]
-[ext_resource type="Texture2D" uid="uid://d1n2gwvwc6eay" path="res://Assets/ui/red_button_normal_90x24.png" id="10_8qseo"]
-[ext_resource type="Texture2D" uid="uid://b7ngun3bstbwq" path="res://Assets/ui/red_button_pressed_90x24.png" id="11_wp54m"]
-[ext_resource type="Texture2D" uid="uid://u2iiji1cp4cs" path="res://Assets/ui/red_button_hover_90x24.png" id="12_ogu7p"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6vcvc"]
-texture = ExtResource("2_nryhv")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7k868"]
-texture = ExtResource("3_agix8")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hpc6h"]
-texture = ExtResource("4_j1587")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kltya"]
-texture = ExtResource("5_8xim2")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e08e2"]
-texture = ExtResource("4_j1587")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_r33sp"]
-texture = ExtResource("3_agix8")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_o1aky"]
-texture = ExtResource("6_yi6jg")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kwxat"]
-texture = ExtResource("6_yi6jg")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aa8k8"]
-texture = ExtResource("6_yi6jg")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kqrg6"]
-texture = ExtResource("6_yi6jg")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nwwfm"]
-texture = ExtResource("6_yi6jg")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_s8vy0"]
-texture = ExtResource("6_yi6jg")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_neg2b"]
-texture = ExtResource("3_agix8")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hdf80"]
-texture = ExtResource("7_5bh6o")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jwpg7"]
-texture = ExtResource("8_sa3ut")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_k2e45"]
-texture = ExtResource("9_2fcnd")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_536cc"]
-texture = ExtResource("10_8qseo")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aqgau"]
-texture = ExtResource("11_wp54m")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8cuat"]
-texture = ExtResource("12_ogu7p")
-
-[sub_resource type="StyleBoxFlat" id="SB_PanelBack"]
-bg_color = Color(0.06, 0.135, 0.2, 0.62)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.42, 0.78, 1, 0.66)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
-shadow_color = Color(0, 0, 0, 0.35)
-shadow_size = 7
-shadow_offset = Vector2(0, 5)
-
-[sub_resource type="StyleBoxFlat" id="SB_Column"]
-bg_color = Color(0.82, 0.94, 1, 0.105)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.18, 0.46, 0.76, 0.72)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-shadow_color = Color(0, 0, 0, 0.35)
-shadow_size = 4
-shadow_offset = Vector2(0, 5)
-
-[sub_resource type="StyleBoxFlat" id="SB_FinalPanel"]
-bg_color = Color(0.18, 0.32, 0.43, 0.56)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(1, 0.84, 0.05, 0.82)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
-shadow_color = Color(0, 0, 0, 0.35)
-shadow_size = 7
-shadow_offset = Vector2(0, 5)
-
 [node name="TradeUI" type="Control" unique_id=603366236]
 z_index = 150
 layout_mode = 3
@@ -125,6 +41,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_script")
+texture_filter = 1
 
 [node name="TradeOverlay" type="ColorRect" parent="." unique_id=819550128]
 layout_mode = 1
@@ -145,7 +62,7 @@ layout_mode = 0
 offset_right = 920.0
 offset_bottom = 560.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_6vcvc")
+theme_override_styles/panel = ExtResource("panel_role_0")
 
 [node name="TopBar" type="Panel" parent="TradePanel" unique_id=1857777419]
 layout_mode = 0
@@ -154,7 +71,7 @@ offset_top = 16.0
 offset_right = 887.0
 offset_bottom = 74.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_7k868")
+theme_override_styles/panel = ExtResource("panel_role_1")
 
 [node name="Title" type="Label" parent="TradePanel" unique_id=1118346310]
 layout_mode = 0
@@ -180,9 +97,9 @@ offset_left = 834.0
 offset_top = 22.0
 offset_right = 878.0
 offset_bottom = 65.0
-theme_override_styles/normal = SubResource("StyleBoxTexture_hpc6h")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_kltya")
-theme_override_styles/hover = SubResource("StyleBoxTexture_e08e2")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_hpc6h")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_kltya")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_e08e2")
 text = "X"
 
 [node name="LocalColumn" type="Panel" parent="TradePanel" unique_id=1720451380]
@@ -192,7 +109,7 @@ offset_top = 98.0
 offset_right = 432.0
 offset_bottom = 458.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_r33sp")
+theme_override_styles/panel = ExtResource("panel_role_2")
 
 [node name="NameLabel" type="Label" parent="TradePanel/LocalColumn" unique_id=1685267533]
 layout_mode = 0
@@ -210,7 +127,7 @@ offset_left = 342.0
 offset_top = 12.0
 offset_right = 378.0
 offset_bottom = 40.0
-text = "✓"
+text = "âœ“"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -227,7 +144,7 @@ columns = 3
 [node name="LocalSlot0" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=2033100807]
 custom_minimum_size = Vector2(112, 84)
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxTexture_o1aky")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_o1aky")
 clip_text = true
 
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot0" unique_id=989296262]
@@ -264,7 +181,7 @@ text = "X"
 [node name="LocalSlot1" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=618994782]
 custom_minimum_size = Vector2(112, 84)
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxTexture_kwxat")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_kwxat")
 clip_text = true
 
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot1" unique_id=1202020303]
@@ -301,7 +218,7 @@ text = "X"
 [node name="LocalSlot2" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=994786805]
 custom_minimum_size = Vector2(112, 84)
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxTexture_aa8k8")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_aa8k8")
 clip_text = true
 
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot2" unique_id=1719651470]
@@ -338,7 +255,7 @@ text = "X"
 [node name="LocalSlot3" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=310058068]
 custom_minimum_size = Vector2(112, 84)
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxTexture_kqrg6")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_kqrg6")
 clip_text = true
 
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot3" unique_id=1564669938]
@@ -375,7 +292,7 @@ text = "X"
 [node name="LocalSlot4" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=1723621507]
 custom_minimum_size = Vector2(112, 84)
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxTexture_nwwfm")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_nwwfm")
 clip_text = true
 
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot4" unique_id=1546450820]
@@ -412,7 +329,7 @@ text = "X"
 [node name="LocalSlot5" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=616722240]
 custom_minimum_size = Vector2(112, 84)
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxTexture_s8vy0")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_s8vy0")
 clip_text = true
 
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot5" unique_id=841800072]
@@ -453,7 +370,7 @@ offset_top = 98.0
 offset_right = 888.0
 offset_bottom = 458.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_neg2b")
+theme_override_styles/panel = ExtResource("panel_role_3")
 
 [node name="NameLabel" type="Label" parent="TradePanel/RemoteColumn" unique_id=2090499338]
 layout_mode = 0
@@ -471,7 +388,7 @@ offset_left = 342.0
 offset_top = 12.0
 offset_right = 378.0
 offset_bottom = 40.0
-text = "✓"
+text = "âœ“"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -489,6 +406,7 @@ columns = 3
 custom_minimum_size = Vector2(112, 84)
 layout_mode = 2
 mouse_filter = 2
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_jut3y")
 clip_text = true
 
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot0" unique_id=1607252548]
@@ -517,6 +435,7 @@ clip_text = true
 custom_minimum_size = Vector2(112, 84)
 layout_mode = 2
 mouse_filter = 2
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_v2nl5")
 clip_text = true
 
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot1" unique_id=776364436]
@@ -545,6 +464,7 @@ clip_text = true
 custom_minimum_size = Vector2(112, 84)
 layout_mode = 2
 mouse_filter = 2
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_dmskm")
 clip_text = true
 
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot2" unique_id=2090944386]
@@ -573,6 +493,7 @@ clip_text = true
 custom_minimum_size = Vector2(112, 84)
 layout_mode = 2
 mouse_filter = 2
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_xdkp6")
 clip_text = true
 
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot3" unique_id=1024587645]
@@ -601,6 +522,7 @@ clip_text = true
 custom_minimum_size = Vector2(112, 84)
 layout_mode = 2
 mouse_filter = 2
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_54nrm")
 clip_text = true
 
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot4" unique_id=2065963766]
@@ -629,6 +551,7 @@ clip_text = true
 custom_minimum_size = Vector2(112, 84)
 layout_mode = 2
 mouse_filter = 2
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_55jeb")
 clip_text = true
 
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot5" unique_id=417885449]
@@ -659,9 +582,9 @@ offset_left = 520.0
 offset_top = 488.0
 offset_right = 700.0
 offset_bottom = 534.0
-theme_override_styles/normal = SubResource("StyleBoxTexture_hdf80")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_jwpg7")
-theme_override_styles/hover = SubResource("StyleBoxTexture_k2e45")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_hdf80")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_jwpg7")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_k2e45")
 text = "Accept"
 
 [node name="CancelButton" type="Button" parent="TradePanel" unique_id=577891716]
@@ -670,9 +593,9 @@ offset_left = 718.0
 offset_top = 488.0
 offset_right = 888.0
 offset_bottom = 534.0
-theme_override_styles/normal = SubResource("StyleBoxTexture_536cc")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_aqgau")
-theme_override_styles/hover = SubResource("StyleBoxTexture_8cuat")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_536cc")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_aqgau")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_8cuat")
 text = "Cancel"
 
 [node name="InventoryPicker" type="Control" parent="." unique_id=794275939]
@@ -697,7 +620,7 @@ color = Color(0, 0, 0, 0.24)
 layout_mode = 0
 offset_right = 620.0
 offset_bottom = 470.0
-theme_override_styles/panel = SubResource("SB_PanelBack")
+theme_override_styles/panel = ExtResource("panel_role_4")
 
 [node name="Title" type="Label" parent="InventoryPicker/PickerPanel" unique_id=1218949492]
 layout_mode = 0
@@ -742,7 +665,7 @@ offset_top = 372.0
 offset_right = 600.0
 offset_bottom = 450.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("SB_Column")
+theme_override_styles/panel = ExtResource("panel_role_5")
 
 [node name="AmountLabel" type="Label" parent="InventoryPicker/PickerPanel/AmountPanel" unique_id=425095929]
 layout_mode = 0
@@ -799,7 +722,7 @@ color = Color(0, 0, 0, 0.32)
 layout_mode = 0
 offset_right = 640.0
 offset_bottom = 430.0
-theme_override_styles/panel = SubResource("SB_FinalPanel")
+theme_override_styles/panel = ExtResource("panel_role_6")
 
 [node name="Title" type="Label" parent="FinalConfirmOverlay/FinalPanel" unique_id=2081089363]
 layout_mode = 0

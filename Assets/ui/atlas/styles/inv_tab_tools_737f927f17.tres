@@ -1,0 +1,10 @@
+[gd_resource type="StyleBoxTexture" format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/ui/UI_3.0.png" id="1_atlas"]
+
+[resource]
+texture = ExtResource("1_atlas")
+region_rect = Rect2(416, 32, 32, 32)
+modulate_color = Color(0.702, 0.561, 0.761, 1)
+metadata/atlas_region = "inv_tab_tools"
+metadata/atlas_properties = "{\"modulate_color\": \"Color(0.702, 0.561, 0.761, 1)\"}"

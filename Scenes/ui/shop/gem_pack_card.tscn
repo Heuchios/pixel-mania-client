@@ -1,0 +1,189 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_6d61345d3b.tres" id="atlas_SB_GemPackCard"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_8b93467522.tres" id="atlas_SB_GemPackIconSlot"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_f72e84db31.tres" id="atlas_SBT_BuyNormal"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_1b992e4807.tres" id="atlas_SBT_BuyPressed"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_c4d4758782.tres" id="atlas_SBT_BuyHover"]
+
+[ext_resource type="Script" path="res://Scripts/ui/gem_pack_card.gd" id="1_script"]
+[sub_resource type="StyleBoxFlat" id="SB_GemPackFeaturedGlow"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 0.86, 0.35, 0.9)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(1, 0.86, 0.35, 0.3)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="SB_GemPackRibbon"]
+bg_color = Color(1, 0.38, 0.58, 0.92)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_offset = Vector2(0, 3)
+
+[node name="GemPackCard" type="Panel"]
+custom_minimum_size = Vector2(440, 260)
+clip_contents = true
+mouse_filter = 1
+theme_override_styles/panel = ExtResource("atlas_SB_GemPackCard")
+script = ExtResource("1_script")
+texture_filter = 1
+
+[node name="FeaturedFrame" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 6.0
+offset_bottom = 6.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_GemPackFeaturedGlow")
+
+[node name="Ribbon" type="Panel" parent="."]
+visible = false
+layout_mode = 0
+offset_left = -20.0
+offset_top = 8.0
+offset_right = 90.0
+offset_bottom = 26.0
+rotation = -0.3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("SB_GemPackRibbon")
+
+[node name="RibbonLabel" type="Label" parent="Ribbon"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+text = "POPULAR"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
+
+[node name="IconSlot" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 54.0
+offset_right = 400.0
+offset_bottom = 214.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("atlas_SB_GemPackIconSlot")
+
+[node name="Icon" type="TextureRect" parent="IconSlot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconHint" type="Label" parent="IconSlot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.28)
+theme_override_font_sizes/font_size = 11
+text = "ICON"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
+
+[node name="GemAmount" type="Label" parent="."]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 6.0
+offset_right = 428.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 26
+text = "0 GEMS"
+horizontal_alignment = 1
+metadata/pixelmania_font_role = "preserve"
+
+[node name="EditionLabel" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 12.0
+offset_top = 34.0
+offset_right = 428.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(0.86, 0.78, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 13
+text = "EDITION"
+horizontal_alignment = 1
+metadata/pixelmania_font_role = "preserve"
+
+[node name="BonusLabel" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 10.0
+offset_top = 56.0
+offset_right = 160.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.4, 1, 0.55, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+metadata/pixelmania_font_role = "preserve"
+
+[node name="BuyButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 214.0
+offset_right = 432.0
+offset_bottom = 252.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = ExtResource("atlas_SBT_BuyNormal")
+theme_override_styles/pressed = ExtResource("atlas_SBT_BuyPressed")
+theme_override_styles/hover = ExtResource("atlas_SBT_BuyHover")
+text = "$0.00"
+metadata/pixelmania_font_role = "preserve"

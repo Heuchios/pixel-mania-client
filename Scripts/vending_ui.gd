@@ -1,7 +1,7 @@
 extends Control
 
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
-const VENDING_INPUT_BOX = preload("res://Assets/ui/vending/input_box.png")
+const VENDING_INPUT_BOX = preload("res://Assets/ui/atlas/textures/input_field.tres")
 const VENDING_SCROLL_TRACK = preload("res://Assets/ui/vending/inventory_scroll_track.png")
 const VENDING_SCROLL_THUMB = preload("res://Assets/ui/vending/inventory_scroll_thumb.png")
 const VENDING_SCROLL_THUMB_HOVER = preload("res://Assets/ui/vending/inventory_scroll_thumb_hover.png")
@@ -672,6 +672,8 @@ func apply_vending_scrollbar_style(scroll):
 
 
 func vending_texture_style(texture: Texture2D) -> StyleBoxTexture:
+	if texture != null and texture.has_meta("atlas_region"):
+		return UIAtlasDB.get_stylebox(str(texture.get_meta("atlas_region"))).duplicate() as StyleBoxTexture
 	var style = StyleBoxTexture.new()
 	style.texture = texture
 	return style

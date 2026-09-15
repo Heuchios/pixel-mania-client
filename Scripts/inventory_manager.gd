@@ -21,8 +21,6 @@ const HOTBAR_HANDLE_HEIGHT = 24
 const HOTBAR_HANDLE_TOUCH_PAD_TOP = 18.0
 const HOTBAR_HANDLE_TOUCH_SIDE_PAD = 20.0
 const HOTBAR_INVENTORY_GAP = 0.0
-const MOBILE_HUD_MIN_SCALE := 1.08
-const MOBILE_HUD_MAX_SCALE := 1.18
 const HOTBAR_Z_INDEX = 176
 const INVENTORY_BUTTON_Z_INDEX = 178
 const INVENTORY_WINDOW_Z_INDEX = 175
@@ -69,10 +67,10 @@ const INVENTORY_GRID_BOTTOM_PAD = 12.0
 const INVENTORY_HEADER_HEIGHT = 92.0
 const INVENTORY_TOOL_ROW_HEIGHT = 42.0
 const INVENTORY_NAV_HEIGHT = 44.0
-const BAG_ICON_PATH = "res://Assets/ui/icons/bag.png"
+const BAG_ICON_PATH = "res://Assets/ui/atlas/textures/inventory_button.tres"
 const BAG_BUTTON_SIZE = Vector2(64, 64)
-const HOTBAR_PUNCH_ICON_PATH = "res://Assets/ui/icons/punch.png"
-const HOTBAR_WRENCH_ICON_PATH = "res://Assets/ui/icons/wrench.png"
+const HOTBAR_PUNCH_ICON_PATH = "res://Assets/ui/atlas/textures/punch_icon_button.tres"
+const HOTBAR_WRENCH_ICON_PATH = "res://Assets/ui/atlas/textures/wrench_icon_button.tres"
 const WORLD_LOCK_ITEM_ID = "world_lock"
 const SUPER_WORLD_LOCK_ITEM_ID = "super_world_lock"
 const SUPER_WORLD_LOCK_EXCHANGE_RATE = 100
@@ -108,11 +106,7 @@ const INVENTORY_UPDATE_SOURCE_SERVER := "server"
 const INVENTORY_UPDATE_SOURCE_REMOTE := "remote"
 const COLOUR_CYCLE_HOTBAR_UPDATE_SECONDS := 0.066
 const HOTBAR_SELECTED_FRAME_SECONDS := 0.30
-const HOTBAR_SELECTED_FRAMES := [
-	preload("res://Assets/ui/selected_1.png"),
-	preload("res://Assets/ui/selected_2.png"),
-	preload("res://Assets/ui/selected_3.png"),
-]
+const HOTBAR_SELECTED_FRAMES := UIAtlasDB.INV_SLOT_SELECTED_ANIMATION
 
 var world = null
 var ui_layer_ref = null
@@ -227,6 +221,8 @@ func get_hotbar_ui_texture(file_name: String):
 
 
 func get_hotbar_slot_frame_texture(file_name: String) -> Texture2D:
+	if UIAtlasDB.SLOT_REGIONS.has(file_name):
+		return UIAtlasDB.get_texture(UIAtlasDB.SLOT_REGIONS[file_name])
 	var hotbar_texture: Texture2D = get_hotbar_ui_texture(file_name) as Texture2D
 	if hotbar_texture != null:
 		return hotbar_texture
@@ -597,13 +593,12 @@ func should_ignore_mobile_mouse_event(event: InputEvent) -> bool:
 	return is_mobile_touch_platform() and event is InputEventMouseButton
 
 
-func get_mobile_hud_scale(screen_size: Vector2 = Vector2.ZERO) -> float:
-	if not is_mobile_touch_platform():
-		return 1.0
-	if screen_size.x <= 1.0 or screen_size.y <= 1.0:
-		screen_size = get_inventory_viewport_size()
-	var raw_scale: float = minf(screen_size.x / 1280.0, screen_size.y / 720.0)
-	return clampf(raw_scale, MOBILE_HUD_MIN_SCALE, MOBILE_HUD_MAX_SCALE)
+func get_mobile_hud_scale(_screen_size: Vector2 = Vector2.ZERO) -> float:
+	# These are logical canvas units. Godot already scales the 1920x1080
+	# canvas to the device; an extra mobile multiplier enlarged only the
+	# hotbar and changed the inventory drawer's position relative to PC.
+	# Touch action buttons retain their separate accessibility sizing.
+	return 1.0
 
 
 func get_hotbar_base_visual_height() -> float:
@@ -2131,7 +2126,7 @@ func update_hotbar_selected_frame_animation(_delta: float) -> void:
 	if next_frame_index == hotbar_selected_frame_index:
 		return
 	hotbar_selected_frame_index = next_frame_index
-	var selected_texture: Texture2D = HOTBAR_SELECTED_FRAMES[hotbar_selected_frame_index] as Texture2D
+	var selected_texture: Texture2D = UIAtlasDB.get_texture(HOTBAR_SELECTED_FRAMES[hotbar_selected_frame_index])
 	for slot in hotbar_slots.values():
 		if slot == null or not is_instance_valid(slot):
 			continue
@@ -2470,6 +2465,7 @@ func update_scene_hotbar_slot_frame(slot: Control, rarity: String, selected: boo
 		var frame_texture = get_hotbar_slot_frame_texture(get_slot_texture_name(rarity, false, item_type, category))
 		if frame_texture != null:
 			frame.texture = frame_texture
+		frame.self_modulate = UIAtlasDB.slot_tint(get_slot_texture_name(rarity, false, item_type, category))
 		frame.visible = true
 	if selected_frame != null:
 		selected_frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -2478,7 +2474,7 @@ func update_scene_hotbar_slot_frame(slot: Control, rarity: String, selected: boo
 			HOTBAR_SELECTED_FRAMES.size(),
 			HOTBAR_SELECTED_FRAME_SECONDS
 		)
-		var selected_texture: Texture2D = HOTBAR_SELECTED_FRAMES[hotbar_selected_frame_index] as Texture2D
+		var selected_texture: Texture2D = UIAtlasDB.get_texture(HOTBAR_SELECTED_FRAMES[hotbar_selected_frame_index])
 		if selected_texture != null:
 			selected_frame.texture = selected_texture
 		selected_frame.visible = selected

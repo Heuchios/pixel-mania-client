@@ -40,18 +40,18 @@ const ACTION_GROUP_RIGHT_SHIFT := 34.0
 const ZOOM_LEFT_MARGIN := 18.0
 const ZOOM_VERTICAL_GAP := 16.0
 const ICON_PATHS := {
-	"move_left": "res://Assets/ui/mobile_buttons/left.png",
-	"move_right": "res://Assets/ui/mobile_buttons/right.png",
-	"jump": "res://Assets/ui/mobile_buttons/jump.png",
-	"punch": "res://Assets/ui/mobile_buttons/punch.png",
+	"move_left": "res://Assets/ui/atlas/textures/move_left_button.tres",
+	"move_right": "res://Assets/ui/atlas/textures/move_right_button.tres",
+	"jump": "res://Assets/ui/atlas/textures/jump_button.tres",
+	"punch": "res://Assets/ui/atlas/textures/punch_button.tres",
 	"zoom_in": "res://Assets/ui/mobile_buttons/zoom_in.png",
 	"zoom_out": "res://Assets/ui/mobile_buttons/zoom_out.png"
 }
 const PRESSED_ICON_PATHS := {
-	"move_left": "res://Assets/ui/mobile_buttons/left_pressed.png",
-	"move_right": "res://Assets/ui/mobile_buttons/right_pressed.png",
-	"jump": "res://Assets/ui/mobile_buttons/jump_pressed.png",
-	"punch": "res://Assets/ui/mobile_buttons/punch_pressed.png"
+	"move_left": "res://Assets/ui/atlas/textures/move_left_button.tres",
+	"move_right": "res://Assets/ui/atlas/textures/move_right_button.tres",
+	"jump": "res://Assets/ui/atlas/textures/jump_button.tres",
+	"punch": "res://Assets/ui/atlas/textures/punch_button.tres"
 }
 
 var world = null
@@ -279,8 +279,9 @@ func _apply_layout_rect(
 				button_position = _clamp_button_position(button_center - button_size * 0.5, button_size, safe_rect)
 
 	button_position += dynamic_offset
-	if not dynamic_offset.is_zero_approx():
-		button_position = _clamp_button_position(button_position, button_size, safe_rect)
+	# Default controls need the same notch/gesture-area protection as saved
+	# layouts, including when the inventory drawer is closed.
+	button_position = _clamp_button_position(button_position, button_size, safe_rect)
 
 	_set_action_rect(action, button_position, button_size, icon_padding)
 
@@ -288,15 +289,15 @@ func _apply_layout_rect(
 func _get_safe_layout_rect(screen_size: Vector2) -> Rect2:
 	var safe_rect := Rect2(Vector2.ZERO, screen_size)
 	if _is_mobile_platform():
-		var screen_index := DisplayServer.window_get_current_screen()
-		var display_size_i := DisplayServer.screen_get_size(screen_index)
 		var display_safe_i := DisplayServer.get_display_safe_area()
-		if display_size_i.x > 0 and display_size_i.y > 0 and display_safe_i.size.x > 0 and display_safe_i.size.y > 0:
-			var display_origin_i := DisplayServer.screen_get_position(screen_index)
-			var relative_safe_position := Vector2(display_safe_i.position - display_origin_i)
-			var display_size := Vector2(display_size_i)
-			safe_rect.position = relative_safe_position / display_size * screen_size
-			safe_rect.size = Vector2(display_safe_i.size) / display_size * screen_size
+		if display_safe_i.size.x > 0 and display_safe_i.size.y > 0:
+			# The OS returns physical screen pixels, not logical viewport units.
+			# Include the actual window origin and canvas transform so an inset
+			# Android window (edge_to_edge=false) does not apply insets twice.
+			var local_safe := get_screen_transform().affine_inverse() * Rect2(display_safe_i)
+			var intersection := safe_rect.intersection(local_safe)
+			if intersection.has_area():
+				safe_rect = intersection
 
 	var edge_margin := CONTROL_EDGE_MARGIN
 	safe_rect.position += Vector2.ONE * edge_margin
@@ -1167,22 +1168,11 @@ func _flash_button(action: String):
 
 
 func _apply_button_style(button: Panel, pressed: bool):
-	var style = StyleBoxFlat.new()
 	var action := str(button.get_meta("mobile_control_action", ""))
 	var is_selected := layout_customization_active and action == selected_layout_action
-	if is_selected:
-		style.bg_color = Color(0.16, 0.42, 0.52, 0.92)
-		style.border_color = Color(1.0, 0.84, 0.24, 1.0)
-		style.set_border_width_all(5)
-	elif layout_customization_active:
-		style.bg_color = Color(0.04, 0.16, 0.20, 0.86)
-		style.border_color = Color(0.68, 0.92, 1.0, 0.80)
-		style.set_border_width_all(3)
-	else:
-		style.bg_color = Color(0.05, 0.10, 0.13, 0.68) if not pressed else Color(0.16, 0.50, 0.70, 0.84)
-		style.border_color = Color(0.85, 0.95, 1.0, 0.48) if not pressed else Color(1.0, 1.0, 1.0, 0.86)
-		style.set_border_width_all(3)
-	style.set_corner_radius_all(8)
+	var style := UIAtlasDB.get_stylebox("pink_button" if is_selected else "inner_panel").duplicate() as StyleBoxTexture
+	style.modulate_color = Color(0.72, 0.72, 0.72) if pressed else Color.WHITE
+	button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	button.add_theme_stylebox_override("panel", style)
 	_apply_button_icon(button, action, pressed)
 

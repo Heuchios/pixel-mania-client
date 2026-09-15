@@ -84,6 +84,8 @@ func normalize_role(raw_role: String) -> String:
 			return ROLE_BUILDER
 		ROLE_VISITOR:
 			return ROLE_VISITOR
+		"member":
+			return ROLE_VISITOR
 		ROLE_OWNER:
 			return ROLE_OWNER
 		ROLE_NONE:

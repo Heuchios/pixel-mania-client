@@ -1,59 +1,22 @@
 [gd_scene format=3 uid="uid://c5awf35vqxnse"]
 
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/outer_panel.tres" id="panel_role_0"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_1"]
+
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_f72e84db31.tres" id="atlas_StyleBoxTexture_close_normal"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_1b992e4807.tres" id="atlas_StyleBoxTexture_close_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_c4d4758782.tres" id="atlas_StyleBoxTexture_close_hover"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/scroll_bar_44136fa355.tres" id="atlas_StyleBoxTexture_7eeqc"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/scroll_handle_44136fa355.tres" id="atlas_StyleBoxTexture_emsb5"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_c3af88810e.tres" id="atlas_StyleBoxFlat_sfx_slider_fill"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_f72e84db31.tres" id="atlas_StyleBoxTexture_patnw"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_1b992e4807.tres" id="atlas_StyleBoxTexture_xe208"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_c4d4758782.tres" id="atlas_StyleBoxTexture_35eps"]
+
 [ext_resource type="Script" uid="uid://ckmamhrykm3xs" path="res://Scripts/ui/settings_panel.gd" id="1_settings_panel"]
-[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="2_rv0yh"]
-[ext_resource type="Texture2D" uid="uid://bdqewvpbuib1a" path="res://Assets/ui/panel_outer_403x130.png" id="3_gxwny"]
-[ext_resource type="Texture2D" uid="uid://ch2qryxhnpu18" path="res://Assets/ui/close_button.png" id="4_1o247"]
-[ext_resource type="Texture2D" uid="uid://cdd8rhkxp0cky" path="res://Assets/ui/close_button_pressed.png" id="5_t6frm"]
-[ext_resource type="Texture2D" uid="uid://no714kin0ckc" path="res://Assets/ui/login/un_checked.png" id="6_2a3si"]
-[ext_resource type="Texture2D" uid="uid://tbchr2qk0dib" path="res://Assets/ui/close_button_hover.png" id="6_hd1ur"]
-[ext_resource type="Texture2D" uid="uid://r8o1suc6ig5c" path="res://Assets/ui/inventory/scroll_bar_21x519.png" id="7_bys47"]
-[ext_resource type="Texture2D" uid="uid://buhs7xmnksv4a" path="res://Assets/ui/login/checked.png" id="7_verfj"]
-[ext_resource type="Texture2D" uid="uid://b7acywh8cmls8" path="res://Assets/ui/scroll_handle.png" id="8_th2p1"]
-[ext_resource type="Texture2D" uid="uid://mb6ouxcf6ipt" path="res://Assets/ui/blue_button_normal_90x24.png" id="11_qohaf"]
-[ext_resource type="Texture2D" uid="uid://c0fhbukoi2ev0" path="res://Assets/ui/blue_button_pressed_90x24.png" id="12_t606o"]
-[ext_resource type="Texture2D" uid="uid://butpdc43dm4b8" path="res://Assets/ui/blue_button_hover_90x24.png" id="13_s0bg5"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ui2s7"]
-texture = ExtResource("3_gxwny")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_normal"]
-texture = ExtResource("4_1o247")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_pressed"]
-texture = ExtResource("5_t6frm")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_close_hover"]
-texture = ExtResource("6_hd1ur")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7eeqc"]
-texture = ExtResource("7_bys47")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_emsb5"]
-texture = ExtResource("8_th2p1")
-
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/toggle_off.tres" id="6_2a3si"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/toggle_on.tres" id="7_verfj"]
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_eimbx"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sfx_slider_fill"]
-bg_color = Color(0.211765, 0.678431, 0.858824, 0.82)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.658824, 0.933333, 1, 0.86)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_patnw"]
-texture = ExtResource("11_qohaf")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xe208"]
-texture = ExtResource("12_t606o")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_35eps"]
-texture = ExtResource("13_s0bg5")
 
 [node name="SettingsPanel" type="Control" unique_id=1439493869]
 layout_mode = 3
@@ -64,6 +27,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_settings_panel")
+texture_filter = 1
 
 [node name="Dimmer" type="ColorRect" parent="." unique_id=1961590631]
 visible = false
@@ -83,65 +47,84 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -280.0
-offset_top = -180.0
+offset_top = -150.0
 offset_right = 280.0
-offset_bottom = 180.0
+offset_bottom = 150.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="WindowSkin" type="NinePatchRect" parent="Window" unique_id=122084328]
 layout_mode = 0
-offset_top = -144.0
+offset_top = 0.0
 offset_right = 560.0
-offset_bottom = 517.0
-texture = ExtResource("2_rv0yh")
-patch_margin_left = 36
-patch_margin_top = 36
-patch_margin_right = 36
-patch_margin_bottom = 36
+offset_bottom = 300.0
+texture = ExtResource("panel_role_0")
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 0.0
 
 [node name="HeaderSkin" type="NinePatchRect" parent="Window" unique_id=1166752146]
 layout_mode = 0
-offset_left = 18.0
-offset_top = 16.0
-offset_right = 542.0
-offset_bottom = 84.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 548.0
+offset_bottom = 64.0
 patch_margin_left = 26
 patch_margin_top = 24
 patch_margin_right = 26
 patch_margin_bottom = 24
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
 
 [node name="TitleLabel" type="Label" parent="Window/HeaderSkin" unique_id=725674851]
 layout_mode = 0
-offset_left = -6.0
-offset_top = -150.0
-offset_right = 528.0
-offset_bottom = -100.0
+offset_left = 12.0
+offset_top = 0.0
+offset_right = 460.0
+offset_bottom = 52.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 29
-theme_override_styles/normal = SubResource("StyleBoxTexture_ui2s7")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = ExtResource("panel_role_1")
 text = " SETTINGS"
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
 
 [node name="CloseButton" type="Button" parent="Window" unique_id=1432242637]
 custom_minimum_size = Vector2(52, 44)
 layout_mode = 0
-offset_left = 495.0
-offset_top = -138.0
-offset_right = 552.0
-offset_bottom = -79.0
+offset_left = 500.0
+offset_top = 16.0
+offset_right = 544.0
+offset_bottom = 60.0
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("StyleBoxTexture_close_normal")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_close_pressed")
-theme_override_styles/hover = SubResource("StyleBoxTexture_close_hover")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_close_normal")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_close_pressed")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_close_hover")
 text = "X"
+metadata/pixelmania_font_role = "preserve"
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
 
 [node name="SettingsScrollSlider" type="VScrollBar" parent="Window" unique_id=1839073500]
 layout_mode = 0
@@ -150,18 +133,23 @@ offset_top = -70.0
 offset_right = 542.0
 offset_bottom = 489.0
 focus_mode = 0
-theme_override_styles/scroll = SubResource("StyleBoxTexture_7eeqc")
-theme_override_styles/grabber = SubResource("StyleBoxTexture_emsb5")
+theme_override_styles/scroll = ExtResource("atlas_StyleBoxTexture_7eeqc")
+theme_override_styles/grabber = ExtResource("atlas_StyleBoxTexture_emsb5")
 step = 1.0
 page = 32.0
+visible = false
 
 [node name="FullScreenRow" type="Control" parent="Window" unique_id=1599017340]
 anchors_preset = 0
-offset_left = 36.0
-offset_top = -72.0
-offset_right = 500.0
-offset_bottom = -30.0
+offset_left = 24.0
+offset_top = 78.0
+offset_right = 536.0
+offset_bottom = 122.0
 mouse_default_cursor_shape = 2
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
 
 [node name="FullScreenCheckmark" type="TextureButton" parent="Window/FullScreenRow" unique_id=958428378]
 layout_mode = 0
@@ -187,17 +175,22 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 text = "Enable Full Screen"
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SfxRow" type="Control" parent="Window" unique_id=838488696]
 anchors_preset = 0
-offset_left = 36.0
-offset_top = -22.0
-offset_right = 500.0
-offset_bottom = 20.0
+offset_left = 24.0
+offset_top = 128.0
+offset_right = 536.0
+offset_bottom = 172.0
 mouse_default_cursor_shape = 2
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
 
 [node name="SfxLabel" type="Label" parent="Window/SfxRow" unique_id=1102247915]
 layout_mode = 0
@@ -209,9 +202,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 text = "Enable SFX"
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SfxSlider" type="HSlider" parent="Window/SfxRow" unique_id=774057074]
 layout_mode = 0
@@ -222,7 +216,7 @@ offset_bottom = 34.0
 focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_override_styles/grabber_area = SubResource("StyleBoxTexture_eimbx")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_sfx_slider_fill")
+theme_override_styles/grabber_area_highlight = ExtResource("atlas_StyleBoxFlat_sfx_slider_fill")
 value = 100.0
 rounded = true
 
@@ -236,19 +230,24 @@ theme_override_colors/font_color = Color(0.78, 0.95, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 24
 text = "100%"
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="ChatFilterRow" type="Control" parent="Window" unique_id=664121915]
 visible = false
 anchors_preset = 0
-offset_left = 36.0
-offset_top = 28.0
-offset_right = 500.0
-offset_bottom = 70.0
+offset_left = 24.0
+offset_top = 178.0
+offset_right = 536.0
+offset_bottom = 222.0
 mouse_default_cursor_shape = 2
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
 
 [node name="ChatFilterCheckmark" type="TextureButton" parent="Window/ChatFilterRow" unique_id=1190540773]
 layout_mode = 0
@@ -274,16 +273,21 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 text = "Filter Inappropriate Words"
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="MobileControlsRow" type="Control" parent="Window" unique_id=844847142]
 anchors_preset = 0
-offset_left = 36.0
-offset_top = 78.0
-offset_right = 500.0
-offset_bottom = 128.0
+offset_left = 24.0
+offset_top = 228.0
+offset_right = 536.0
+offset_bottom = 272.0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
 
 [node name="MobileControlsLabel" type="Label" parent="Window/MobileControlsRow" unique_id=773127600]
 layout_mode = 0
@@ -295,9 +299,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 text = "Mobile Controls"
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="CustomizeButton" type="Button" parent="Window/MobileControlsRow" unique_id=682562624]
 layout_mode = 0
@@ -311,7 +316,8 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
-theme_override_styles/normal = SubResource("StyleBoxTexture_patnw")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_xe208")
-theme_override_styles/hover = SubResource("StyleBoxTexture_35eps")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_patnw")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_xe208")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_35eps")
 text = "CUSTOMIZE"
+metadata/pixelmania_font_role = "preserve"

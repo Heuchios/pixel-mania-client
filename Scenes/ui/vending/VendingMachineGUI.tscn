@@ -1,11 +1,14 @@
 [gd_scene format=3 uid="uid://cycpv2orex2a7"]
 
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/outer_panel.tres" id="panel_role_0"]
+
+
 [ext_resource type="Script" uid="uid://btdcblbklgem7" path="res://Scripts/vending_ui.gd" id="1_vending_ui"]
-[ext_resource type="Texture2D" uid="uid://bgt0geyx2l4kd" path="res://Assets/ui/login/outer_panel.png" id="3_81mko"]
-[ext_resource type="Texture2D" uid="uid://bqai7lpbggfpi" path="res://Assets/ui/vending/panel_inner.png" id="3_panel_inner"]
-[ext_resource type="Texture2D" uid="uid://dsnqbrsuybswl" path="res://Assets/ui/vending/panel_card_dark.png" id="4_panel_card"]
-[ext_resource type="Texture2D" uid="uid://hx1s0b2xwx84" path="res://Assets/ui/inventory/search_input.png" id="5_0ig1y"]
-[ext_resource type="Texture2D" uid="uid://duiytjm5wvjc5" path="res://Assets/ui/vending/panel_tooltip.png" id="5_panel_tooltip"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/outer_panel.tres" id="3_81mko"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inner_panel.tres" id="3_panel_inner"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inner_panel.tres" id="4_panel_card"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/input_field.tres" id="5_0ig1y"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inner_panel.tres" id="5_panel_tooltip"]
 [ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/status_normal.tres" id="6_status_style"]
 [ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/close_normal.tres" id="7_close_normal"]
 [ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/close_pressed.tres" id="8_close_pressed"]
@@ -32,6 +35,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_vending_ui")
+texture_filter = 1
 
 [node name="VendingOverlay" type="ColorRect" parent="." unique_id=166591377]
 visible = false
@@ -57,20 +61,20 @@ offset_top = 9.0
 offset_right = 869.0
 offset_bottom = 569.0
 texture = ExtResource("5_panel_tooltip")
-patch_margin_left = 34
-patch_margin_top = 34
-patch_margin_right = 34
-patch_margin_bottom = 34
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="PanelBack" type="NinePatchRect" parent="VendingPanel" unique_id=825121441]
 layout_mode = 0
 offset_right = 860.0
 offset_bottom = 560.0
 texture = ExtResource("3_81mko")
-patch_margin_left = 36
-patch_margin_top = 36
-patch_margin_right = 36
-patch_margin_bottom = 36
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="TopBar" type="NinePatchRect" parent="VendingPanel" unique_id=1530077589]
 visible = false
@@ -80,10 +84,10 @@ offset_top = 12.0
 offset_right = 844.0
 offset_bottom = 88.0
 texture = ExtResource("3_panel_inner")
-patch_margin_left = 28
-patch_margin_top = 28
-patch_margin_right = 28
-patch_margin_bottom = 28
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="Title" type="Label" parent="VendingPanel" unique_id=1348267238]
 layout_mode = 0
@@ -98,6 +102,7 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 44
 text = "VENDING MACHINE"
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="StatusBack" type="NinePatchRect" parent="VendingPanel" unique_id=966520367]
 layout_mode = 0
@@ -106,10 +111,10 @@ offset_top = 18.0
 offset_right = 764.0
 offset_bottom = 62.0
 texture = ExtResource("5_0ig1y")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
+patch_margin_left = 3
+patch_margin_top = 3
+patch_margin_right = 3
+patch_margin_bottom = 3
 
 [node name="Status" type="Label" parent="VendingPanel/StatusBack" unique_id=678808480]
 layout_mode = 0
@@ -123,6 +128,7 @@ theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = ExtResource("6_status_style")
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="CloseButton" type="Button" parent="VendingPanel" unique_id=2017596064]
 custom_minimum_size = Vector2(48, 44)
@@ -141,6 +147,7 @@ theme_override_styles/pressed = ExtResource("8_close_pressed")
 theme_override_styles/hover = ExtResource("9_close_hover")
 theme_override_styles/focus = ExtResource("10_focus_empty")
 text = "X"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="ItemCard" type="Control" parent="VendingPanel" unique_id=652172147]
 anchors_preset = 0
@@ -172,6 +179,7 @@ theme_override_font_sizes/font_size = 22
 text = "ITEM LISTING"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="ItemSlot" type="Button" parent="VendingPanel/ItemCard" unique_id=1880161368]
 custom_minimum_size = Vector2(146, 122)
@@ -212,6 +220,7 @@ theme_override_font_sizes/font_size = 13
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Hint" type="Label" parent="VendingPanel/ItemCard" unique_id=672875610]
 layout_mode = 0
@@ -226,6 +235,7 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 14
 text = "Click the slot to choose item from your inventory."
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceCard" type="Control" parent="VendingPanel" unique_id=1714098435]
 anchors_preset = 0
@@ -257,6 +267,7 @@ theme_override_font_sizes/font_size = 22
 text = "SALE DETAILS"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="StockLabel" type="Label" parent="VendingPanel/PriceCard" unique_id=1825131492]
 layout_mode = 0
@@ -271,6 +282,7 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 15
 text = "AMOUNT"
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="StockSpin" type="SpinBox" parent="VendingPanel/PriceCard" unique_id=1125168074]
 layout_mode = 0
@@ -295,6 +307,7 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 15
 text = "ITEMS PER SALE"
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PerSaleSpin" type="SpinBox" parent="VendingPanel/PriceCard" unique_id=1798037706]
 layout_mode = 0
@@ -319,6 +332,7 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 15
 text = "PRICE"
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceSpin" type="SpinBox" parent="VendingPanel/PriceCard" unique_id=1717215570]
 layout_mode = 0
@@ -343,6 +357,7 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 14
 text = "Example: 10 Dirt for 1 World Lock."
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="ActionBack" type="NinePatchRect" parent="VendingPanel" unique_id=936782811]
 visible = false
@@ -352,10 +367,10 @@ offset_top = 452.0
 offset_right = 830.0
 offset_bottom = 528.0
 texture = ExtResource("3_panel_inner")
-patch_margin_left = 24
-patch_margin_top = 24
-patch_margin_right = 24
-patch_margin_bottom = 24
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="ListButton" type="Button" parent="VendingPanel" unique_id=64417382]
 custom_minimum_size = Vector2(150, 46)
@@ -374,6 +389,7 @@ theme_override_styles/hover = ExtResource("15_blue_hover")
 theme_override_styles/disabled = ExtResource("16_button_normal")
 theme_override_styles/focus = ExtResource("10_focus_empty")
 text = "LIST ITEM"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="BuyButton" type="Button" parent="VendingPanel" unique_id=1132375868]
 custom_minimum_size = Vector2(150, 46)
@@ -392,6 +408,7 @@ theme_override_styles/hover = ExtResource("15_blue_hover")
 theme_override_styles/disabled = ExtResource("16_button_normal")
 theme_override_styles/focus = ExtResource("10_focus_empty")
 text = "BUY"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="CollectButton" type="Button" parent="VendingPanel" unique_id=1300413087]
 custom_minimum_size = Vector2(122, 46)
@@ -410,6 +427,7 @@ theme_override_styles/hover = ExtResource("15_blue_hover")
 theme_override_styles/disabled = ExtResource("16_button_normal")
 theme_override_styles/focus = ExtResource("10_focus_empty")
 text = "COLLECT"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LogButton" type="Button" parent="VendingPanel" unique_id=267774638]
 custom_minimum_size = Vector2(92, 46)
@@ -426,6 +444,7 @@ theme_override_styles/pressed = ExtResource("17_button_pressed")
 theme_override_styles/hover = ExtResource("18_button_hover")
 theme_override_styles/focus = ExtResource("10_focus_empty")
 text = "LOG"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="CancelListingButton" type="Button" parent="VendingPanel" unique_id=827162718]
 custom_minimum_size = Vector2(116, 46)
@@ -444,6 +463,7 @@ theme_override_styles/hover = ExtResource("21_drop_hover")
 theme_override_styles/disabled = ExtResource("16_button_normal")
 theme_override_styles/focus = ExtResource("10_focus_empty")
 text = "CANCEL"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="VendingLogOverlay" type="Control" parent="VendingPanel" unique_id=777142770]
 visible = false
@@ -462,20 +482,20 @@ offset_top = 7.0
 offset_right = 567.0
 offset_bottom = 389.0
 texture = ExtResource("5_panel_tooltip")
-patch_margin_left = 34
-patch_margin_top = 34
-patch_margin_right = 34
-patch_margin_bottom = 34
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="Back" type="NinePatchRect" parent="VendingPanel/VendingLogOverlay" unique_id=739911832]
 layout_mode = 0
 offset_right = 560.0
 offset_bottom = 382.0
-texture = ExtResource("5_panel_tooltip")
-patch_margin_left = 34
-patch_margin_top = 34
-patch_margin_right = 34
-patch_margin_bottom = 34
+texture = ExtResource("panel_role_0")
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="Header" type="NinePatchRect" parent="VendingPanel/VendingLogOverlay" unique_id=1945777227]
 layout_mode = 0
@@ -484,10 +504,10 @@ offset_top = 10.0
 offset_right = 548.0
 offset_bottom = 72.0
 texture = ExtResource("3_panel_inner")
-patch_margin_left = 24
-patch_margin_top = 24
-patch_margin_right = 24
-patch_margin_bottom = 24
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="Title" type="Label" parent="VendingPanel/VendingLogOverlay" unique_id=2020000065]
 layout_mode = 0
@@ -502,6 +522,7 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 32
 text = "SALE LOG"
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="CloseButton" type="Button" parent="VendingPanel/VendingLogOverlay" unique_id=344306255]
 custom_minimum_size = Vector2(40, 38)
@@ -518,6 +539,7 @@ theme_override_styles/pressed = ExtResource("20_drop_pressed")
 theme_override_styles/hover = ExtResource("21_drop_hover")
 theme_override_styles/focus = ExtResource("10_focus_empty")
 text = "X"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="ScrollBack" type="NinePatchRect" parent="VendingPanel/VendingLogOverlay" unique_id=895528046]
 layout_mode = 0
@@ -526,10 +548,10 @@ offset_top = 88.0
 offset_right = 536.0
 offset_bottom = 352.0
 texture = ExtResource("4_panel_card")
-patch_margin_left = 28
-patch_margin_top = 28
-patch_margin_right = 28
-patch_margin_bottom = 28
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="LogScroll" type="ScrollContainer" parent="VendingPanel/VendingLogOverlay" unique_id=1340175884]
 layout_mode = 0
@@ -548,3 +570,4 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 14
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"

@@ -1,0 +1,9 @@
+[gd_resource type="StyleBoxTexture" format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/ui/UI_3.0.png" id="1_atlas"]
+
+[resource]
+texture = ExtResource("1_atlas")
+region_rect = Rect2(320, 0, 32, 32)
+metadata/atlas_region = "place_highlight"
+metadata/atlas_properties = "{}"

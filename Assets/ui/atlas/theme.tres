@@ -1,0 +1,28 @@
+[gd_resource type="Theme" format=3]
+
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/blue_button_normal.tres" id="1_normal"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/blue_button_hover.tres" id="2_hover"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/blue_button_pressed.tres" id="3_pressed"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/blue_button_disabled.tres" id="4_disabled"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/focus.tres" id="5_focus"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/inner_panel.tres" id="6_panel"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/input_field.tres" id="7_input"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/toggle_on.tres" id="8_checked"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/toggle_off.tres" id="9_unchecked"]
+
+[resource]
+Button/styles/normal = ExtResource("1_normal")
+Button/styles/hover = ExtResource("2_hover")
+Button/styles/pressed = ExtResource("3_pressed")
+Button/styles/hover_pressed = ExtResource("3_pressed")
+Button/styles/disabled = ExtResource("4_disabled")
+Button/styles/focus = ExtResource("5_focus")
+Panel/styles/panel = ExtResource("6_panel")
+PanelContainer/styles/panel = ExtResource("6_panel")
+LineEdit/styles/normal = ExtResource("7_input")
+LineEdit/styles/read_only = ExtResource("7_input")
+LineEdit/styles/focus = ExtResource("5_focus")
+TextEdit/styles/normal = ExtResource("7_input")
+TextEdit/styles/focus = ExtResource("5_focus")
+CheckBox/icons/checked = ExtResource("8_checked")
+CheckBox/icons/unchecked = ExtResource("9_unchecked")

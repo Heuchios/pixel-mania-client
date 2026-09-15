@@ -1,6 +1,6 @@
 extends Control
 
-const CHAT_BUBBLE_PANEL_TEXTURE: Texture2D = preload("res://Assets/ui/lobby/inner_panel.png")
+const CHAT_BUBBLE_PANEL_TEXTURE: Texture2D = preload("res://Assets/ui/atlas/textures/inner_panel.tres")
 
 const CHAT_BUBBLE_TIME := 4.0
 const CHAT_BUBBLE_ANCHOR_OFFSET_WORLD_PX := 96.0
@@ -310,12 +310,9 @@ func _build_bubble_ui():
 
 
 func _create_background_style() -> StyleBoxTexture:
-	var panel_style := StyleBoxTexture.new()
-	panel_style.texture = CHAT_BUBBLE_PANEL_TEXTURE
-	panel_style.texture_margin_left = CHAT_BUBBLE_PANEL_PATCH_MARGIN
-	panel_style.texture_margin_top = CHAT_BUBBLE_PANEL_PATCH_MARGIN
-	panel_style.texture_margin_right = CHAT_BUBBLE_PANEL_PATCH_MARGIN
-	panel_style.texture_margin_bottom = CHAT_BUBBLE_PANEL_PATCH_MARGIN
+	var panel_style := UIAtlasDB.get_stylebox("inner_panel").duplicate() as StyleBoxTexture
+	for side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+		panel_style.set_content_margin(side, CHAT_BUBBLE_PANEL_PATCH_MARGIN)
 	return panel_style
 
 

@@ -15,8 +15,8 @@ const MenuButtonDataScript = preload("res://Scripts/ui/menu_button_data.gd")
 
 const PLAYER_INFO_ICON_PATH := "res://Assets/ui/icons/player_info.png"
 const FRIENDS_ICON_PATH := "res://Assets/ui/icons/friends.png"
-const RESPAWN_ICON_PATH := "res://Assets/ui/icons/respawn.png"
-const SETTINGS_ICON_PATH := "res://Assets/ui/icons/settings.png"
+const RESPAWN_ICON_PATH := "res://Assets/ui/atlas/textures/skull_icon.tres"
+const SETTINGS_ICON_PATH := "res://Assets/ui/atlas/textures/settings_button.tres"
 const LOBBY_ICON_PATH := "res://Assets/ui/icons/lobby.png"
 
 @export_category("How To Customize")
@@ -174,11 +174,11 @@ const LOBBY_ICON_PATH := "res://Assets/ui/icons/lobby.png"
 	set(value):
 		friends_icon_texture = value
 		_queue_refresh()
-@export var respawn_icon_texture: Texture2D = preload("res://Assets/ui/icons/respawn.png"):
+@export var respawn_icon_texture: Texture2D = preload("res://Assets/ui/atlas/textures/skull_icon.tres"):
 	set(value):
 		respawn_icon_texture = value
 		_queue_refresh()
-@export var settings_icon_texture: Texture2D = preload("res://Assets/ui/icons/settings.png"):
+@export var settings_icon_texture: Texture2D = preload("res://Assets/ui/atlas/textures/settings_button.tres"):
 	set(value):
 		settings_icon_texture = value
 		_queue_refresh()

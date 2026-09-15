@@ -13,8 +13,7 @@ extends Control
 # furnace, a future server-side discovery table) can feed it too.
 #
 # Skinning:
-#   Every panel/button uses placeholder StyleBoxFlat resources. Swap each to a
-#   StyleBoxTexture, or drop textures on the TextureRect nodes. Generated nodes
+#   Panels/buttons use shared atlas StyleBoxTexture resources. Generated nodes
 #   are duplicated from the hidden template nodes, so skinning a template skins
 #   every generated child:
 #     TierTabs/TierTabTemplate          -> every tier tab
@@ -48,7 +47,6 @@ const CATEGORY_META := &"category"
 
 const WINDOW_BASE_SIZE := Vector2(1024.0, 660.0)
 const WINDOW_SCREEN_MARGIN := Vector2(32.0, 32.0)
-const MIN_WINDOW_SCALE := 0.42
 
 @export_group("Tiers")
 @export var first_tier: int = 1
@@ -624,6 +622,13 @@ func _on_backdrop_gui_input(event: InputEvent) -> void:
 func _fit_window_to_screen() -> void:
 	if window == null:
 		return
+	# Containers can grow after fonts, themes, and recipe content resolve.
+	# Refit that actual size rather than assuming the authored 1024x660.
+	if not window.resized.is_connected(_fit_window_to_screen):
+		window.resized.connect(_fit_window_to_screen, CONNECT_DEFERRED)
+	# Release transient growth from initial wrapped-text measurement. The
+	# container still enforces its current combined minimum size.
+	window.size = WINDOW_BASE_SIZE.max(window.get_combined_minimum_size())
 	var screen_size: Vector2 = get_viewport_rect().size
 	if screen_size.x <= 0.0 or screen_size.y <= 0.0:
 		return
@@ -631,11 +636,8 @@ func _fit_window_to_screen() -> void:
 		maxf(1.0, screen_size.x - WINDOW_SCREEN_MARGIN.x),
 		maxf(1.0, screen_size.y - WINDOW_SCREEN_MARGIN.y)
 	)
-	_window_fit_scale = clampf(
-		minf(available.x / WINDOW_BASE_SIZE.x, available.y / WINDOW_BASE_SIZE.y),
-		MIN_WINDOW_SCALE,
-		1.0
-	)
+	var layout_size := window.size.max(WINDOW_BASE_SIZE)
+	_window_fit_scale = minf(1.0, minf(available.x / layout_size.x, available.y / layout_size.y))
 	window.pivot_offset = window.size * 0.5
 	window.scale = Vector2.ONE * _window_fit_scale
 

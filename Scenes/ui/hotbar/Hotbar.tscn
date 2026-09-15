@@ -1,14 +1,12 @@
 [gd_scene format=3 uid="uid://dcs71n4cmbhj1"]
 
-[ext_resource type="Texture2D" uid="uid://cglfeus31blx3" path="res://Assets/ui/handle_up.png" id="1_it62r"]
-[ext_resource type="Texture2D" uid="uid://ds2t3w3jd7118" path="res://Assets/ui/inner_panel_598x115.png" id="2_01elf"]
-[ext_resource type="Texture2D" uid="uid://du1y8gkuq72nr" path="res://Assets/ui/selected_1.png" id="3_1jooq"]
-[ext_resource type="Texture2D" uid="uid://m3d85gxykr8n" path="res://Assets/ui/inv_slot_96x96.png" id="3_it62r"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/outer_panel.tres" id="panel_role_0"]
 
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inventory_drag_handle.tres" id="atlas_StyleBoxTexture_it62r"]
+
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inv_slot_selected_1.tres" id="3_1jooq"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inv_slot_normal.tres" id="3_it62r"]
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8adxn"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_it62r"]
-texture = ExtResource("1_it62r")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_slot_touch"]
 
@@ -32,6 +30,7 @@ anchors_preset = 0
 offset_right = 682.0
 offset_bottom = 162.0
 mouse_filter = 2
+texture_filter = 1
 
 [node name="InventorySlideHandle" type="Panel" parent="." unique_id=1414700635]
 layout_mode = 0
@@ -41,14 +40,16 @@ offset_right = 447.0
 offset_bottom = 35.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_8adxn")
 
-[node name="HandleVisual" type="Panel" parent="InventorySlideHandle" unique_id=827262142]
+[node name="HandleVisual" type="TextureRect" parent="InventorySlideHandle" unique_id=827262142]
 layout_mode = 0
 offset_left = 19.0
 offset_top = 19.0
 offset_right = 171.0
 offset_bottom = 61.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_it62r")
+texture = ExtResource("atlas_StyleBoxTexture_it62r")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="HandleLabel" type="Label" parent="InventorySlideHandle" unique_id=1245783017]
 visible = false
@@ -64,15 +65,20 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 11
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
-[node name="BarPanel" type="TextureRect" parent="." unique_id=995019697]
+[node name="BarPanel" type="NinePatchRect" parent="." unique_id=995019697]
 layout_mode = 0
 offset_left = 22.0
 offset_top = 35.0
 offset_right = 680.0
 offset_bottom = 150.0
 mouse_filter = 2
-texture = ExtResource("2_01elf")
+texture = ExtResource("panel_role_0")
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="Slot_0" type="Panel" parent="." unique_id=33353628]
 layout_mode = 0
@@ -125,6 +131,7 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 34
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SlotNumber" type="Label" parent="Slot_0" unique_id=1216670898]
 visible = false
@@ -137,6 +144,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 0.8)
 theme_override_font_sizes/font_size = 15
 text = "1"
 horizontal_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RarityPip" type="Panel" parent="Slot_0" unique_id=727507604]
 visible = false
@@ -160,6 +168,7 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 14
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Slot_1" type="Panel" parent="." unique_id=709586547]
 layout_mode = 0
@@ -210,6 +219,7 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 34
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SlotNumber" type="Label" parent="Slot_1" unique_id=1232807883]
 visible = false
@@ -222,6 +232,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 0.8)
 theme_override_font_sizes/font_size = 15
 text = "2"
 horizontal_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RarityPip" type="Panel" parent="Slot_1" unique_id=1968641402]
 visible = false
@@ -247,6 +258,7 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 14
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Slot_2" type="Panel" parent="." unique_id=24851849]
 layout_mode = 0
@@ -298,6 +310,7 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 34
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SlotNumber" type="Label" parent="Slot_2" unique_id=126232920]
 visible = false
@@ -310,6 +323,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 0.8)
 theme_override_font_sizes/font_size = 15
 text = "3"
 horizontal_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RarityPip" type="Panel" parent="Slot_2" unique_id=1708984245]
 visible = false
@@ -335,6 +349,7 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 14
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Slot_3" type="Panel" parent="." unique_id=2049639057]
 layout_mode = 0
@@ -386,6 +401,7 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 34
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SlotNumber" type="Label" parent="Slot_3" unique_id=1400093684]
 visible = false
@@ -398,6 +414,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 0.8)
 theme_override_font_sizes/font_size = 15
 text = "4"
 horizontal_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RarityPip" type="Panel" parent="Slot_3" unique_id=17480792]
 visible = false
@@ -423,6 +440,7 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 14
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Slot_4" type="Panel" parent="." unique_id=786483854]
 layout_mode = 0
@@ -474,6 +492,7 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 34
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SlotNumber" type="Label" parent="Slot_4" unique_id=1101010890]
 visible = false
@@ -486,6 +505,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 0.8)
 theme_override_font_sizes/font_size = 15
 text = "5"
 horizontal_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RarityPip" type="Panel" parent="Slot_4" unique_id=558970137]
 visible = false
@@ -511,6 +531,7 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 14
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Slot_5" type="Panel" parent="." unique_id=822946075]
 layout_mode = 0
@@ -562,6 +583,7 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 34
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SlotNumber" type="Label" parent="Slot_5" unique_id=553198672]
 visible = false
@@ -574,6 +596,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 0.8)
 theme_override_font_sizes/font_size = 15
 text = "6"
 horizontal_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RarityPip" type="Panel" parent="Slot_5" unique_id=101268132]
 visible = false
@@ -599,3 +622,4 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 14
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"

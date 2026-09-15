@@ -1,0 +1,13 @@
+[gd_resource type="StyleBoxTexture" format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/ui/UI_3.0.png" id="1_atlas"]
+
+[resource]
+texture = ExtResource("1_atlas")
+region_rect = Rect2(206, 2, 4, 28)
+texture_margin_bottom = 2.0
+texture_margin_left = 1.0
+texture_margin_right = 1.0
+texture_margin_top = 2.0
+metadata/atlas_region = "scroll_handle"
+metadata/atlas_properties = "{\"texture_margin_bottom\": \"2.0\", \"texture_margin_left\": \"1.0\", \"texture_margin_right\": \"1.0\", \"texture_margin_top\": \"2.0\"}"

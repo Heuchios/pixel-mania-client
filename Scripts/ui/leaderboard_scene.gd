@@ -17,77 +17,407 @@ const DEFAULT_HEADER_TEXTURE_PATH := "res://Assets/background/landfill/bg_4.png"
 @export_multiline var editor_note: String = "This scene is intentionally made from real child nodes. Edit labels, panels, rows, buttons, textures, positions, and sizes directly in the Scene tree. Keep Apply Exported Content/Styles enabled for data-driven previews, or turn them off when you want direct node edits to stay untouched."
 
 @export_category("Content")
-@export var title_text: String = "LANDFILL"
-@export var badge_text: String = "EVENT LEADERBOARD"
-@export var subtitle_text: String = "Compete in the Landfill Race and earn points!"
-@export var rank_header_text: String = "RANK"
-@export var player_header_text: String = "PLAYER"
-@export var points_header_text: String = "TOTAL POINTS"
-@export var points_suffix: String = ""
-@export var tabs: Array[Resource] = []
-@export var leaderboard_entries: Array[Resource] = []
-@export var show_sample_data_when_empty: bool = true
-@export var apply_exported_content_on_ready: bool = true
-@export var apply_exported_styles_on_ready: bool = true
+@export var title_text: String = "LANDFILL":
+	set(value):
+		if title_text == value:
+			return
+		title_text = value
+		_queue_refresh()
+@export var badge_text: String = "EVENT LEADERBOARD":
+	set(value):
+		if badge_text == value:
+			return
+		badge_text = value
+		_queue_refresh()
+@export var subtitle_text: String = "Compete in the Landfill Race and earn points!":
+	set(value):
+		if subtitle_text == value:
+			return
+		subtitle_text = value
+		_queue_refresh()
+@export var rank_header_text: String = "RANK":
+	set(value):
+		if rank_header_text == value:
+			return
+		rank_header_text = value
+		_queue_refresh()
+@export var player_header_text: String = "PLAYER":
+	set(value):
+		if player_header_text == value:
+			return
+		player_header_text = value
+		_queue_refresh()
+@export var points_header_text: String = "TOTAL POINTS":
+	set(value):
+		if points_header_text == value:
+			return
+		points_header_text = value
+		_queue_refresh()
+@export var points_suffix: String = "":
+	set(value):
+		if points_suffix == value:
+			return
+		points_suffix = value
+		_queue_refresh()
+@export var tabs: Array[Resource] = []:
+	set(value):
+		if tabs == value:
+			return
+		tabs = value
+		_queue_refresh()
+@export var leaderboard_entries: Array[Resource] = []:
+	set(value):
+		if leaderboard_entries == value:
+			return
+		leaderboard_entries = value
+		_queue_refresh()
+@export var show_sample_data_when_empty: bool = true:
+	set(value):
+		if show_sample_data_when_empty == value:
+			return
+		show_sample_data_when_empty = value
+		_queue_refresh()
+@export var apply_exported_content_on_ready: bool = true:
+	set(value):
+		if apply_exported_content_on_ready == value:
+			return
+		apply_exported_content_on_ready = value
+		_queue_refresh()
+@export var apply_exported_styles_on_ready: bool = true:
+	set(value):
+		if apply_exported_styles_on_ready == value:
+			return
+		apply_exported_styles_on_ready = value
+		_queue_refresh()
 
 @export_category("Personal Summary")
-@export var summary_rank_label: String = "YOUR RANK"
-@export var summary_points_label: String = "YOUR POINTS"
-@export var summary_timer_label: String = "EVENT ENDS IN:"
-@export var summary_rank_value: String = "15"
-@export var summary_points_value: int = 1240
-@export var summary_timer_value: String = "4D 12H 36M"
-@export var rewards_button_text: String = "REWARDS"
+@export var summary_rank_label: String = "YOUR RANK":
+	set(value):
+		if summary_rank_label == value:
+			return
+		summary_rank_label = value
+		_queue_refresh()
+@export var summary_points_label: String = "YOUR POINTS":
+	set(value):
+		if summary_points_label == value:
+			return
+		summary_points_label = value
+		_queue_refresh()
+@export var summary_timer_label: String = "EVENT ENDS IN:":
+	set(value):
+		if summary_timer_label == value:
+			return
+		summary_timer_label = value
+		_queue_refresh()
+@export var summary_rank_value: String = "15":
+	set(value):
+		if summary_rank_value == value:
+			return
+		summary_rank_value = value
+		_queue_refresh()
+@export var summary_points_value: int = 1240:
+	set(value):
+		if summary_points_value == value:
+			return
+		summary_points_value = value
+		_queue_refresh()
+@export var summary_timer_value: String = "4D 12H 36M":
+	set(value):
+		if summary_timer_value == value:
+			return
+		summary_timer_value = value
+		_queue_refresh()
+@export var rewards_button_text: String = "REWARDS":
+	set(value):
+		if rewards_button_text == value:
+			return
+		rewards_button_text = value
+		_queue_refresh()
 
 @export_category("Behavior")
-@export var selected_tab_index: int = 0
+@export var selected_tab_index: int = 0:
+	set(value):
+		if selected_tab_index == value:
+			return
+		selected_tab_index = value
+		_queue_refresh()
 @export var close_button_hides_scene: bool = true
-@export var show_close_button: bool = true
-@export var show_rewards_button: bool = true
-@export var show_dimmer: bool = true
-@export var show_side_art_panel: bool = true
-@export var auto_use_landfill_art: bool = true
-@export var auto_fit_to_viewport: bool = true
+@export var show_close_button: bool = true:
+	set(value):
+		if show_close_button == value:
+			return
+		show_close_button = value
+		_queue_refresh()
+@export var show_rewards_button: bool = true:
+	set(value):
+		if show_rewards_button == value:
+			return
+		show_rewards_button = value
+		_queue_refresh()
+@export var show_dimmer: bool = true:
+	set(value):
+		if show_dimmer == value:
+			return
+		show_dimmer = value
+		_queue_refresh()
+@export var show_side_art_panel: bool = true:
+	set(value):
+		if show_side_art_panel == value:
+			return
+		show_side_art_panel = value
+		_queue_refresh()
+@export var auto_use_landfill_art: bool = true:
+	set(value):
+		if auto_use_landfill_art == value:
+			return
+		auto_use_landfill_art = value
+		_queue_refresh()
+@export var auto_fit_to_viewport: bool = true:
+	set(value):
+		if auto_fit_to_viewport == value:
+			return
+		auto_fit_to_viewport = value
+		_queue_refresh()
 
 @export_category("Layout")
-@export var window_size: Vector2 = Vector2(1032.0, 688.0)
-@export var viewport_margin: Vector2 = Vector2(42.0, 32.0)
+@export var window_size: Vector2 = Vector2(1032.0, 688.0):
+	set(value):
+		if window_size == value:
+			return
+		window_size = value
+		_queue_refresh()
+@export var viewport_margin: Vector2 = Vector2(42.0, 32.0):
+	set(value):
+		if viewport_margin == value:
+			return
+		viewport_margin = value
+		_queue_refresh()
 
 @export_category("Textures")
-@export var header_background_texture: Texture2D = null
-@export var event_icon_texture: Texture2D = null
-@export var currency_icon_texture: Texture2D = preload("res://Assets/currency/gem.png")
-@export var reward_icon_texture: Texture2D = preload("res://Assets/currency/gem.png")
-@export var default_avatar_texture: Texture2D = null
+@export var header_background_texture: Texture2D = null:
+	set(value):
+		if header_background_texture == value:
+			return
+		header_background_texture = value
+		_queue_refresh()
+@export var event_icon_texture: Texture2D = null:
+	set(value):
+		if event_icon_texture == value:
+			return
+		event_icon_texture = value
+		_queue_refresh()
+@export var currency_icon_texture: Texture2D = preload("res://Assets/currency/gem.png"):
+	set(value):
+		if currency_icon_texture == value:
+			return
+		currency_icon_texture = value
+		_queue_refresh()
+@export var reward_icon_texture: Texture2D = preload("res://Assets/currency/gem.png"):
+	set(value):
+		if reward_icon_texture == value:
+			return
+		reward_icon_texture = value
+		_queue_refresh()
+@export var default_avatar_texture: Texture2D = null:
+	set(value):
+		if default_avatar_texture == value:
+			return
+		default_avatar_texture = value
+		_queue_refresh()
 
 @export_category("Colors")
-@export var dimmer_color: Color = Color(0.0, 0.0, 0.0, 0.48)
-@export var panel_fill_color: Color = Color(0.055, 0.065, 0.064, 0.96)
-@export var panel_border_color: Color = Color(0.58, 0.57, 0.54, 0.95)
-@export var inner_fill_color: Color = Color(0.045, 0.074, 0.074, 0.86)
-@export var inner_border_color: Color = Color(0.23, 0.30, 0.31, 0.92)
-@export var title_color: Color = Color(0.42, 0.86, 0.22, 1.0)
-@export var badge_color: Color = Color(1.0, 0.86, 0.10, 1.0)
-@export var header_text_color: Color = Color(0.55, 0.88, 0.25, 1.0)
-@export var body_text_color: Color = Color(0.94, 0.96, 0.94, 1.0)
-@export var muted_text_color: Color = Color(0.74, 0.78, 0.76, 1.0)
-@export var row_fill_color: Color = Color(0.035, 0.070, 0.070, 0.92)
-@export var row_alt_fill_color: Color = Color(0.050, 0.085, 0.083, 0.92)
-@export var row_border_color: Color = Color(0.17, 0.23, 0.24, 0.95)
-@export var top_rank_fill_color: Color = Color(0.48, 0.34, 0.06, 0.90)
-@export var top_rank_border_color: Color = Color(0.95, 0.64, 0.09, 0.95)
-@export var button_green_color: Color = Color(0.30, 0.70, 0.18, 1.0)
-@export var button_blue_color: Color = Color(0.13, 0.24, 0.30, 1.0)
-@export var close_button_color: Color = Color(0.82, 0.16, 0.10, 1.0)
+@export var dimmer_color: Color = Color(0.0, 0.0, 0.0, 0.48):
+	set(value):
+		if dimmer_color == value:
+			return
+		dimmer_color = value
+		_queue_refresh()
+@export var panel_fill_color: Color = Color(0.055, 0.065, 0.064, 0.96):
+	set(value):
+		if panel_fill_color == value:
+			return
+		panel_fill_color = value
+		_queue_refresh()
+@export var panel_border_color: Color = Color(0.58, 0.57, 0.54, 0.95):
+	set(value):
+		if panel_border_color == value:
+			return
+		panel_border_color = value
+		_queue_refresh()
+@export var inner_fill_color: Color = Color(0.045, 0.074, 0.074, 0.86):
+	set(value):
+		if inner_fill_color == value:
+			return
+		inner_fill_color = value
+		_queue_refresh()
+@export var inner_border_color: Color = Color(0.23, 0.30, 0.31, 0.92):
+	set(value):
+		if inner_border_color == value:
+			return
+		inner_border_color = value
+		_queue_refresh()
+@export var title_color: Color = Color(0.42, 0.86, 0.22, 1.0):
+	set(value):
+		if title_color == value:
+			return
+		title_color = value
+		_queue_refresh()
+@export var badge_color: Color = Color(1.0, 0.86, 0.10, 1.0):
+	set(value):
+		if badge_color == value:
+			return
+		badge_color = value
+		_queue_refresh()
+@export var header_text_color: Color = Color(0.55, 0.88, 0.25, 1.0):
+	set(value):
+		if header_text_color == value:
+			return
+		header_text_color = value
+		_queue_refresh()
+@export var body_text_color: Color = Color(0.94, 0.96, 0.94, 1.0):
+	set(value):
+		if body_text_color == value:
+			return
+		body_text_color = value
+		_queue_refresh()
+@export var muted_text_color: Color = Color(0.74, 0.78, 0.76, 1.0):
+	set(value):
+		if muted_text_color == value:
+			return
+		muted_text_color = value
+		_queue_refresh()
+@export var row_fill_color: Color = Color(0.035, 0.070, 0.070, 0.92):
+	set(value):
+		if row_fill_color == value:
+			return
+		row_fill_color = value
+		_queue_refresh()
+@export var row_alt_fill_color: Color = Color(0.050, 0.085, 0.083, 0.92):
+	set(value):
+		if row_alt_fill_color == value:
+			return
+		row_alt_fill_color = value
+		_queue_refresh()
+@export var row_border_color: Color = Color(0.17, 0.23, 0.24, 0.95):
+	set(value):
+		if row_border_color == value:
+			return
+		row_border_color = value
+		_queue_refresh()
+@export var top_rank_fill_color: Color = Color(0.48, 0.34, 0.06, 0.90):
+	set(value):
+		if top_rank_fill_color == value:
+			return
+		top_rank_fill_color = value
+		_queue_refresh()
+@export var top_rank_border_color: Color = Color(0.95, 0.64, 0.09, 0.95):
+	set(value):
+		if top_rank_border_color == value:
+			return
+		top_rank_border_color = value
+		_queue_refresh()
+@export var button_green_color: Color = Color(0.30, 0.70, 0.18, 1.0):
+	set(value):
+		if button_green_color == value:
+			return
+		button_green_color = value
+		_queue_refresh()
+@export var button_blue_color: Color = Color(0.13, 0.24, 0.30, 1.0):
+	set(value):
+		if button_blue_color == value:
+			return
+		button_blue_color = value
+		_queue_refresh()
+@export var close_button_color: Color = Color(0.82, 0.16, 0.10, 1.0):
+	set(value):
+		if close_button_color == value:
+			return
+		close_button_color = value
+		_queue_refresh()
+
+@export_category("Scrollbar")
+# The row list's vertical scrollbar (RowsClip) has no hand-editable node of its own in this
+# scene -- Godot generates it internally on the ScrollContainer -- so unlike the panels/buttons
+# above, there is nothing here for a hand styling pass to protect. Styled unconditionally in
+# _ready()/refresh_preview() (not gated behind apply_exported_styles_on_ready) so it actually
+# shows up in the running game and not just the editor preview. The setters below are what make
+# these (and every other color/text/font field above) actually update live as you drag/pick in
+# the Inspector -- see _queue_refresh()/refresh_preview() further down. Without a setter here, a
+# changed export value just sits there until something else happens to redraw the scene.
+@export var scrollbar_track_color: Color = Color(0.035, 0.055, 0.055, 0.85):
+	set(value):
+		if scrollbar_track_color == value:
+			return
+		scrollbar_track_color = value
+		_queue_refresh()
+@export var scrollbar_grabber_color: Color = Color(0.36, 0.78, 0.23, 0.90):
+	set(value):
+		if scrollbar_grabber_color == value:
+			return
+		scrollbar_grabber_color = value
+		_queue_refresh()
+@export var scrollbar_grabber_hover_color: Color = Color(0.52, 0.92, 0.34, 0.95):
+	set(value):
+		if scrollbar_grabber_hover_color == value:
+			return
+		scrollbar_grabber_hover_color = value
+		_queue_refresh()
+@export var scrollbar_grabber_pressed_color: Color = Color(0.24, 0.58, 0.14, 1.0):
+	set(value):
+		if scrollbar_grabber_pressed_color == value:
+			return
+		scrollbar_grabber_pressed_color = value
+		_queue_refresh()
+@export_range(4, 20, 1) var scrollbar_thickness: int = 10:
+	set(value):
+		if scrollbar_thickness == value:
+			return
+		scrollbar_thickness = value
+		_queue_refresh()
 
 @export_category("Typography")
-@export_range(18, 72, 1) var title_font_size: int = 52
-@export_range(12, 40, 1) var badge_font_size: int = 23
-@export_range(10, 32, 1) var subtitle_font_size: int = 19
-@export_range(10, 30, 1) var header_font_size: int = 15
-@export_range(10, 34, 1) var row_font_size: int = 21
-@export_range(10, 36, 1) var points_font_size: int = 22
-@export_range(10, 34, 1) var summary_font_size: int = 22
+@export_range(18, 72, 1) var title_font_size: int = 52:
+	set(value):
+		if title_font_size == value:
+			return
+		title_font_size = value
+		_queue_refresh()
+@export_range(12, 40, 1) var badge_font_size: int = 23:
+	set(value):
+		if badge_font_size == value:
+			return
+		badge_font_size = value
+		_queue_refresh()
+@export_range(10, 32, 1) var subtitle_font_size: int = 19:
+	set(value):
+		if subtitle_font_size == value:
+			return
+		subtitle_font_size = value
+		_queue_refresh()
+@export_range(10, 30, 1) var header_font_size: int = 15:
+	set(value):
+		if header_font_size == value:
+			return
+		header_font_size = value
+		_queue_refresh()
+@export_range(10, 34, 1) var row_font_size: int = 21:
+	set(value):
+		if row_font_size == value:
+			return
+		row_font_size = value
+		_queue_refresh()
+@export_range(10, 36, 1) var points_font_size: int = 22:
+	set(value):
+		if points_font_size == value:
+			return
+		points_font_size = value
+		_queue_refresh()
+@export_range(10, 34, 1) var summary_font_size: int = 22:
+	set(value):
+		if summary_font_size == value:
+			return
+		summary_font_size = value
+		_queue_refresh()
 
 @onready var dimmer: ColorRect = get_node_or_null("Dimmer") as ColorRect
 @onready var center_container: CenterContainer = get_node_or_null("CenterContainer") as CenterContainer
@@ -96,7 +426,24 @@ const DEFAULT_HEADER_TEXTURE_PATH := "res://Assets/background/landfill/bg_4.png"
 @onready var header_background: TextureRect = get_node_or_null("CenterContainer/LeaderboardWindow/HeaderPanel/HeaderBackground") as TextureRect
 @onready var side_texture: TextureRect = get_node_or_null("CenterContainer/LeaderboardWindow/SideColumn/SideArtPanel/SideTexture") as TextureRect
 @onready var tabs_root: Control = get_node_or_null("CenterContainer/LeaderboardWindow/SideColumn/Tabs") as Control
+@onready var rows_clip: ScrollContainer = get_node_or_null("CenterContainer/LeaderboardWindow/TablePanel/RowsClip") as ScrollContainer
 @onready var rows_root: Control = get_node_or_null("CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot") as Control
+
+var _refresh_queued := false
+
+
+func _queue_refresh() -> void:
+	if not is_inside_tree():
+		return
+	if _refresh_queued:
+		return
+	_refresh_queued = true
+	call_deferred("_run_queued_refresh")
+
+
+func _run_queued_refresh() -> void:
+	_refresh_queued = false
+	refresh_preview()
 
 
 func _ready() -> void:
@@ -107,6 +454,7 @@ func _ready() -> void:
 		apply_exported_styles()
 	if apply_exported_content_on_ready:
 		apply_exported_content()
+	_style_scrollbar()
 	_update_visibility_flags()
 	_update_window_scale()
 
@@ -122,6 +470,7 @@ func refresh_preview() -> void:
 		apply_exported_styles()
 	if apply_exported_content_on_ready:
 		apply_exported_content()
+	_style_scrollbar()
 	_update_visibility_flags()
 	_update_window_scale()
 
@@ -194,6 +543,41 @@ func apply_exported_styles() -> void:
 	_apply_rows_style()
 
 
+# Skins RowsClip's vertical scrollbar to match the panel instead of the engine default gray one.
+# ScrollContainer doesn't expose its scrollbar as theme_override_styles on itself -- Godot builds
+# an actual VScrollBar/HScrollBar child at runtime, reachable only via get_v_scroll_bar()/
+# get_h_scroll_bar(), so this has to run in script rather than being paintable directly on a node
+# in the Scene tree the way CloseButton/RewardsButton's textures are. Unconditional (see the
+# Scrollbar export category above for why) -- called from _ready() and refresh_preview(), not
+# from apply_exported_styles().
+func _style_scrollbar() -> void:
+	if rows_clip == null:
+		return
+
+	var track_style := PixelUIStyle.atlas_style("scroll_bar", Color.WHITE, 0)
+	var grabber_style := PixelUIStyle.atlas_style("scroll_handle", Color.WHITE, 0)
+	var grabber_hover_style := PixelUIStyle.atlas_style("scroll_handle", Color(1.15, 1.15, 1.15), 0)
+	var grabber_pressed_style := PixelUIStyle.atlas_style("scroll_handle", Color(0.72, 0.72, 0.72), 0)
+
+	var v_bar := rows_clip.get_v_scroll_bar()
+	if v_bar != null:
+		v_bar.custom_minimum_size.x = scrollbar_thickness
+		v_bar.add_theme_stylebox_override("scroll", track_style)
+		v_bar.add_theme_stylebox_override("scroll_focus", track_style)
+		v_bar.add_theme_stylebox_override("grabber", grabber_style)
+		v_bar.add_theme_stylebox_override("grabber_highlight", grabber_hover_style)
+		v_bar.add_theme_stylebox_override("grabber_pressed", grabber_pressed_style)
+
+	var h_bar := rows_clip.get_h_scroll_bar()
+	if h_bar != null:
+		h_bar.custom_minimum_size.y = scrollbar_thickness
+		h_bar.add_theme_stylebox_override("scroll", track_style)
+		h_bar.add_theme_stylebox_override("scroll_focus", track_style)
+		h_bar.add_theme_stylebox_override("grabber", grabber_style)
+		h_bar.add_theme_stylebox_override("grabber_highlight", grabber_hover_style)
+		h_bar.add_theme_stylebox_override("grabber_pressed", grabber_pressed_style)
+
+
 func set_entries_from_dictionaries(entry_dicts: Array) -> void:
 	var parsed_entries: Array[Resource] = []
 	for raw_entry in entry_dicts:
@@ -234,7 +618,16 @@ func select_tab(index: int) -> void:
 	else:
 		selected_tab_index = clampi(index, 0, effective_tabs.size() - 1)
 	_apply_tabs_content()
-	_apply_tabs_style()
+	# _apply_tabs_content() above still syncs .text/.icon/.button_pressed -- needed so the
+	# selected tab and real data stay correct. The STYLE repaint is different: it always
+	# overwrote hand-styled tab buttons with a flat programmatic color, even when
+	# apply_exported_styles_on_ready is off (the "leave my node edits alone" switch every other
+	# repaint call site in this file already honors). That meant a custom StyleBoxTexture on
+	# TabLandfill/TabWeekly/TabGlobal got clobbered the instant a player opened the panel or
+	# clicked a tab, in-editor styling be damned. Gate it the same way _ready()/refresh_preview()
+	# already do.
+	if apply_exported_styles_on_ready:
+		_apply_tabs_style()
 
 
 func _apply_window_size() -> void:
@@ -659,28 +1052,22 @@ func _style_child_label(parent: Node, path: NodePath, font_size: int, color: Col
 func _style_panel(path: NodePath, fill: Color, border: Color, border_width: int = 3, radius: int = 6, shadow_size: int = 4) -> void:
 	var panel := get_node_or_null(path) as Panel
 	if panel != null:
-		panel.add_theme_stylebox_override("panel", _style(fill, border, border_width, radius, shadow_size))
+		if str(path).ends_with("/WindowBack"):
+			panel.add_theme_stylebox_override("panel", PixelUIStyle.atlas_style("outer_panel", Color.WHITE, float(border_width)))
+		else:
+			panel.add_theme_stylebox_override("panel", _style(fill, border, border_width, radius, shadow_size))
 
 
-func _style(fill: Color, border: Color, border_width: int = 3, radius: int = 6, shadow_size: int = 4) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = fill
-	style.border_color = border
-	style.set_border_width_all(border_width)
-	style.set_corner_radius_all(radius)
-	style.shadow_color = Color(0.0, 0.0, 0.0, 0.38)
-	style.shadow_size = shadow_size
-	style.shadow_offset = Vector2(0.0, max(0.0, float(shadow_size) * 0.5))
-	return style
+func _style(fill: Color, _border: Color, border_width: int = 3, _radius: int = 6, _shadow_size: int = 4) -> StyleBoxTexture:
+	return PixelUIStyle.atlas_style("inner_panel", Color(1, 1, 1, fill.a), float(border_width))
 
 
-func _apply_flat_button_style(button: Button, fill: Color, border: Color, font_size: int) -> void:
+func _apply_flat_button_style(button: Button, fill: Color, _border: Color, font_size: int) -> void:
 	PixelUIStyle.apply_button_text(button, font_size, body_text_color)
-	button.add_theme_stylebox_override("normal", _style(fill, border, 3, 6, 4))
-	button.add_theme_stylebox_override("hover", _style(_brighten(fill, 0.12), _brighten(border, 0.12), 3, 6, 5))
-	button.add_theme_stylebox_override("pressed", _style(_darken(fill, 0.16), _darken(border, 0.08), 3, 6, 2))
-	button.add_theme_stylebox_override("disabled", _style(_with_alpha(fill, 0.34), _with_alpha(border, 0.36), 3, 6, 1))
-	button.focus_mode = Control.FOCUS_NONE
+	var region := "blue_button"
+	if fill.r > fill.g * 1.5: region = "red_button"
+	elif fill.g > fill.b * 1.5: region = "green_button"
+	PixelUIStyle.apply_atlas_button(button, region)
 	button.expand_icon = true
 
 
@@ -756,7 +1143,10 @@ func _on_tab_button_pressed(index: int) -> void:
 	selected_tab_index = index
 	tab_selected.emit(index, effective_tabs[index])
 	_apply_tabs_content()
-	_apply_tabs_style()
+	# Same reasoning as select_tab() above -- don't repaint hand-styled tab buttons on click when
+	# the scene was told to leave styling alone.
+	if apply_exported_styles_on_ready:
+		_apply_tabs_style()
 
 
 func _on_rewards_pressed() -> void:

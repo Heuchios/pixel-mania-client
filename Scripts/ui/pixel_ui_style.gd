@@ -36,6 +36,8 @@ const GLOBAL_LABEL_SETTINGS_OWNED_META := &"_pixelmania_global_label_settings_ow
 
 const HEADER_NAME_MARKERS := [
 	"title",
+	"title_label",
+	"header",
 	"header_label",
 	"heading",
 	"headline",
@@ -115,12 +117,9 @@ static func _is_text_control(node: Node) -> bool:
 
 
 static func _resolve_global_font_size(node: Node) -> int:
-	if node.has_meta(GLOBAL_FONT_SIZE_META):
-		return maxi(0, int(node.get_meta(GLOBAL_FONT_SIZE_META, DEFAULT_TEXT_FONT_SIZE)))
-
 	var role := str(node.get_meta(GLOBAL_FONT_ROLE_META, "")).strip_edges().to_lower()
 	match role:
-		"preserve", "custom", "none":
+		"icon":
 			return 0
 		"header", "heading", "headline", "title":
 			return HEADER_FONT_SIZE
@@ -136,9 +135,6 @@ static func _resolve_global_font_size(node: Node) -> int:
 			or normalized_name.ends_with("_" + marker_text)
 		):
 			return HEADER_FONT_SIZE
-
-	if _get_authored_font_size(node) >= 30:
-		return HEADER_FONT_SIZE
 
 	return DEFAULT_TEXT_FONT_SIZE
 
@@ -217,7 +213,16 @@ static func _add_font_override(node: Node, theme_item: String, font: Font) -> vo
 	node.call("add_theme_font_override", theme_item, font)
 
 
-static func style_box(fill: Color, border: Color, border_width: int = 4, radius: int = 14, shadow_size: int = 7) -> StyleBoxFlat:
+static func style_box(fill: Color, border: Color, border_width: int = 4, radius: int = 14, shadow_size: int = 7) -> StyleBox:
+	# Compatibility for runtime-built dialogs: visible chrome uses the atlas.
+	# Transparent shadows/outlines remain flat effects.
+	if fill.a > 0.0:
+		var region := "inner_panel"
+		if fill.r > fill.g * 1.8 and fill.r > fill.b * 1.8:
+			region = "red_button"
+		elif fill.g > fill.r * 1.8 and fill.g > fill.b * 1.8:
+			region = "green_button"
+		return atlas_style(region, Color(1, 1, 1, fill.a), float(border_width))
 	var style = StyleBoxFlat.new()
 	style.bg_color = fill
 	style.border_color = border
@@ -229,82 +234,46 @@ static func style_box(fill: Color, border: Color, border_width: int = 4, radius:
 	return style
 
 
-static func panel_style() -> StyleBoxFlat:
-	return style_box(GLASS_PANEL, GLASS_BORDER, 4, 20, 13)
+static func panel_style() -> StyleBoxTexture:
+	return atlas_style("outer_panel", Color.WHITE, 4)
 
+static func premium_panel_style() -> StyleBoxTexture:
+	return atlas_style("outer_panel", Color.WHITE, 4)
 
-static func premium_panel_style() -> StyleBoxFlat:
-	return style_box(GLASS_PANEL_STRONG, GLASS_BORDER_BRIGHT, 4, 22, 14)
+static func header_style() -> StyleBoxTexture:
+	return atlas_style("inner_panel", Color.WHITE, 3)
 
+static func card_style() -> StyleBoxTexture:
+	return atlas_style("inner_panel", Color.WHITE, 3)
 
-static func header_style() -> StyleBoxFlat:
-	return style_box(GLASS_HEADER, GLASS_BORDER, 3, 15, 7)
+static func card_style_featured() -> StyleBoxTexture:
+	return atlas_style("inner_panel", Color.WHITE, 3)
 
+static func section_style() -> StyleBoxTexture:
+	return atlas_style("inner_panel", Color.WHITE, 3)
 
-static func card_style() -> StyleBoxFlat:
-	return style_box(CARD_BLUE, GLASS_BORDER, 3, 15, 8)
+static func slot_style(rarity: String = "common") -> StyleBoxTexture:
+	return atlas_style("inv_slot_normal", UIAtlasDB.slot_tint("slot_%s.png" % rarity), 3)
 
-
-static func card_style_featured() -> StyleBoxFlat:
-	return style_box(CARD_BLUE_BRIGHT, GLASS_BORDER_BRIGHT, 3, 15, 8)
-
-
-static func section_style() -> StyleBoxFlat:
-	return style_box(GLASS_SECTION, GLASS_BORDER, 3, 16, 6)
-
-
-static func slot_style(rarity: String = "common") -> StyleBoxFlat:
-	var color = Color(0.110, 0.225, 0.330, 0.62)
-	var border = Color(0.45, 0.82, 0.96, 0.82)
-
-	match rarity:
-		"uncommon":
-			color = Color(0.060, 0.300, 0.180, 0.62)
-			border = Color(0.28, 0.95, 0.45, 0.90)
-		"rare":
-			color = Color(0.050, 0.185, 0.430, 0.64)
-			border = Color(0.22, 0.58, 1.0, 0.92)
-		"epic":
-			color = Color(0.235, 0.085, 0.405, 0.66)
-			border = Color(0.72, 0.35, 1.0, 0.94)
-		"legendary":
-			color = Color(0.455, 0.270, 0.040, 0.72)
-			border = Color(1.0, 0.70, 0.10, 1.0)
-		"currency":
-			color = Color(0.035, 0.380, 0.450, 0.66)
-			border = Color(0.14, 0.95, 1.0, 0.92)
-		_:
-			color = Color(0.110, 0.225, 0.330, 0.62)
-			border = Color(0.45, 0.82, 0.96, 0.82)
-
-	return style_box(color, border, 3, 13, 5)
-
-
-static func status_badge_style(status: String) -> StyleBoxFlat:
+static func status_badge_style(status: String) -> StyleBoxTexture:
+	var region := "blue_button"
 	match status:
-		"good":
-			return style_box(Color(0.08, 0.42, 0.20, 0.72), Color(0.26, 0.95, 0.42, 0.88), 3, 14, 5)
-		"warning":
-			return style_box(Color(0.48, 0.28, 0.02, 0.74), Color(1.0, 0.76, 0.12, 0.90), 3, 14, 5)
-		"danger":
-			return style_box(Color(0.45, 0.07, 0.06, 0.76), Color(1.0, 0.28, 0.22, 0.92), 3, 14, 5)
-		_:
-			return style_box(Color(0.12, 0.26, 0.36, 0.62), Color(0.42, 0.78, 1.0, 0.82), 3, 14, 5)
+		"good": region = "green_button"
+		"warning": region = "pink_button"
+		"danger": region = "red_button"
+	return atlas_style(region, Color.WHITE, 3)
 
+static func input_style() -> StyleBoxTexture:
+	return atlas_style("input_field", Color.WHITE, 3)
 
-static func input_style() -> StyleBoxFlat:
-	return style_box(GLASS_INPUT, GLASS_BORDER, 3, 10, 4)
-
-
-static func input_focus_style() -> StyleBoxFlat:
-	return style_box(GLASS_INPUT_FOCUS, Color(0.85, 0.96, 1.0, 0.94), 3, 10, 6)
-
+static func input_focus_style() -> StyleBoxTexture:
+	return atlas_style("input_field", Color(1.3, 1.3, 1.3), 3)
 
 static func apply_label_shadow(label: Label, font_size: int = DEFAULT_TEXT_FONT_SIZE, color: Color = TEXT_LIGHT) -> void:
 	if label == null:
 		return
 
-	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_font_size_override("font_size", _resolve_global_font_size(label))
 	apply_game_font_to_node(label)
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_shadow_color", Color.BLACK)
@@ -317,6 +286,8 @@ static func apply_small_label(label: Label, font_size: int = 13) -> void:
 
 
 static func apply_section_title(label: Label, font_size: int = HEADER_FONT_SIZE) -> void:
+	if label != null:
+		label.set_meta(GLOBAL_FONT_ROLE_META, "header")
 	apply_label_shadow(label, font_size, GOLD_SOFT)
 
 
@@ -324,7 +295,7 @@ static func apply_button_text(button: Button, font_size: int = DEFAULT_TEXT_FONT
 	if button == null:
 		return
 
-	button.add_theme_font_size_override("font_size", font_size)
+	button.add_theme_font_size_override("font_size", DEFAULT_TEXT_FONT_SIZE)
 	apply_game_font_to_node(button)
 	button.add_theme_color_override("font_color", color)
 	button.add_theme_color_override("font_shadow_color", Color.BLACK)
@@ -337,35 +308,20 @@ static func apply_button_text(button: Button, font_size: int = DEFAULT_TEXT_FONT
 static func apply_blue_button(button: Button, font_size: int = DEFAULT_TEXT_FONT_SIZE) -> void:
 	if button == null:
 		return
-
 	apply_button_text(button, font_size, TEXT_LIGHT)
-	button.add_theme_stylebox_override("normal", style_box(Color(0.10, 0.24, 0.34, 0.58), Color(0.42, 0.78, 1.0, 0.42), 3, 12, 5))
-	button.add_theme_stylebox_override("hover", style_box(Color(0.16, 0.34, 0.46, 0.74), Color(0.62, 0.92, 1.0, 0.76), 3, 12, 6))
-	button.add_theme_stylebox_override("pressed", style_box(Color(0.07, 0.18, 0.27, 0.78), Color(0.20, 0.52, 0.86, 0.84), 3, 12, 4))
-	button.add_theme_stylebox_override("disabled", style_box(Color(0.08, 0.12, 0.17, 0.42), Color(0.18, 0.28, 0.40, 0.26), 3, 12, 3))
-
+	apply_atlas_button(button, "blue_button")
 
 static func apply_yellow_button(button: Button, font_size: int = DEFAULT_TEXT_FONT_SIZE) -> void:
 	if button == null:
 		return
-
 	apply_button_text(button, font_size, TEXT_LIGHT)
-	button.add_theme_stylebox_override("normal", style_box(ACTION_YELLOW, ACTION_YELLOW_BORDER, 5, 12, 6))
-	button.add_theme_stylebox_override("hover", style_box(Color(1.0, 0.94, 0.20, 1.0), ACTION_YELLOW_BORDER, 5, 12, 6))
-	button.add_theme_stylebox_override("pressed", style_box(Color(0.90, 0.58, 0.02, 1.0), Color(0.60, 0.28, 0.01, 1.0), 5, 12, 6))
-	button.add_theme_stylebox_override("disabled", style_box(Color(0.23, 0.20, 0.14, 0.88), Color(0.11, 0.08, 0.03, 1.0), 4, 12, 4))
-
+	apply_atlas_button(button, "pink_button")
 
 static func apply_green_button(button: Button, font_size: int = DEFAULT_TEXT_FONT_SIZE) -> void:
 	if button == null:
 		return
-
 	apply_button_text(button, font_size, TEXT_LIGHT)
-	button.add_theme_stylebox_override("normal", style_box(Color(0.18, 0.70, 0.24, 0.98), Color(0.05, 0.30, 0.06, 1.0), 4, 12, 5))
-	button.add_theme_stylebox_override("hover", style_box(Color(0.28, 0.88, 0.34, 0.98), Color(0.05, 0.30, 0.06, 1.0), 4, 12, 5))
-	button.add_theme_stylebox_override("pressed", style_box(Color(0.10, 0.48, 0.16, 0.98), Color(0.02, 0.16, 0.04, 1.0), 4, 12, 5))
-	button.add_theme_stylebox_override("disabled", style_box(Color(0.10, 0.15, 0.12, 0.86), Color(0.03, 0.06, 0.03, 1.0), 4, 12, 4))
-
+	apply_atlas_button(button, "green_button")
 
 static func apply_tab_button(button: Button, selected: bool, font_size: int = 15) -> void:
 	if selected:
@@ -377,13 +333,48 @@ static func apply_tab_button(button: Button, selected: bool, font_size: int = 15
 static func apply_close_button(button: Button) -> void:
 	if button == null:
 		return
-
 	apply_button_text(button, 20, TEXT_LIGHT)
-	button.text = "X"
-	button.add_theme_stylebox_override("normal", style_box(Color(0.64, 0.08, 0.08, 0.98), Color(0.20, 0.01, 0.01, 1.0), 4, 10, 5))
-	button.add_theme_stylebox_override("hover", style_box(Color(0.82, 0.12, 0.12, 0.98), Color(0.20, 0.01, 0.01, 1.0), 4, 10, 5))
-	button.add_theme_stylebox_override("pressed", style_box(Color(0.45, 0.04, 0.04, 0.98), Color(0.12, 0.0, 0.0, 1.0), 4, 10, 5))
+	button.text = ""
+	button.icon = UIAtlasDB.get_texture("close_button")
+	button.expand_icon = true
+	apply_atlas_button(button, "red_button")
+	button.add_theme_constant_override("icon_max_width", 32)
+	button.custom_minimum_size = Vector2(48, 48)
+	button.custom_maximum_size = Vector2(48, 48)
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button.tooltip_text = "Close"
 
+
+static func apply_ui_chrome_to_node(node: Node) -> void:
+	if node is Button and "close" in String(node.name).to_lower():
+		apply_close_button(node)
+		var parent := node.get_parent() as Control
+		if parent != null and not parent is Container:
+			var bounds := Rect2(Vector2.ZERO, parent.size)
+			for child in parent.get_children():
+				if child is NinePatchRect and child.texture != null and child.texture.get_meta("atlas_region", "") == "outer_panel":
+					bounds = child.get_rect()
+					break
+			node.set_anchors_preset(Control.PRESET_TOP_LEFT)
+			node.size = Vector2(48, 48)
+			node.position = Vector2(bounds.end.x - 64, bounds.position.y + 16)
+	elif node is VScrollBar:
+		node.custom_minimum_size.x = 12
+		if not node.get_parent() is Container:
+			node.anchor_right = node.anchor_left
+			node.offset_right = node.offset_left + 12
+		node.add_theme_stylebox_override("scroll", atlas_style("scroll_bar", Color.WHITE, 0))
+		for state in ["grabber", "grabber_highlight", "grabber_pressed"]:
+			var thumb := atlas_style("scroll_handle", Color.WHITE, 0)
+			thumb.expand_margin_left = -2
+			thumb.expand_margin_right = -2
+			node.add_theme_stylebox_override(state, thumb)
+	elif node is NinePatchRect and node.texture != null:
+		var region: String = node.texture.get_meta("atlas_region", "")
+		if region in ["scroll_bar", "scroll_handle"]:
+			node.anchor_right = node.anchor_left
+			node.offset_left = 0 if region == "scroll_bar" else 2
+			node.offset_right = 12 if region == "scroll_bar" else 10
 
 static func play_panel_open(panel: Control, start_scale: Vector2 = Vector2(0.96, 0.96), duration: float = 0.16) -> void:
 	if panel == null:
@@ -410,3 +401,26 @@ static func apply_input(line_edit: LineEdit, font_size: int = DEFAULT_TEXT_FONT_
 	line_edit.add_theme_color_override("font_placeholder_color", Color(0.76, 0.90, 1.0, 0.74))
 	line_edit.add_theme_color_override("caret_color", GOLD_SOFT)
 	line_edit.add_theme_color_override("selection_color", Color(0.20, 0.48, 0.82, 0.58))
+
+
+## Duplicate shared styles before changing state or content padding.
+static func atlas_style(region: String, tint: Color = Color.WHITE, padding: float = 3.0) -> StyleBoxTexture:
+	var style := UIAtlasDB.get_stylebox(region).duplicate() as StyleBoxTexture
+	style.modulate_color = tint
+	for side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+		style.set_content_margin(side, padding)
+	return style
+
+
+static func apply_atlas_button(button: Button, region: String = "blue_button") -> void:
+	button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	var text_color := Color(0.16, 0.06, 0.2) if region == "pink_button" else TEXT_LIGHT
+	for state in ["font_color", "font_hover_color", "font_pressed_color"]:
+		button.add_theme_color_override(state, text_color)
+	button.add_theme_stylebox_override("normal", atlas_style(region))
+	button.add_theme_stylebox_override("hover", atlas_style(region, Color(1.15, 1.15, 1.15)))
+	button.add_theme_stylebox_override("pressed", atlas_style(region, Color(0.72, 0.72, 0.72)))
+	button.add_theme_stylebox_override("disabled", atlas_style(region, Color(0.55, 0.55, 0.55, 0.7)))
+	var focus := atlas_style("inner_panel", Color(1.6, 1.6, 1.6))
+	focus.draw_center = false
+	button.add_theme_stylebox_override("focus", focus)

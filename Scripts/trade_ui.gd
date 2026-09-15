@@ -173,7 +173,7 @@ func _apply_styles() -> void:
 		_style_slot(slot, false)
 
 	PixelUIStyle.apply_yellow_button(accept_button, 18)
-	PixelUIStyle.apply_close_button(cancel_button)
+	PixelUIStyle.apply_atlas_button(cancel_button, "red_button")
 	cancel_button.text = "Cancel"
 
 	PixelUIStyle.apply_label_shadow(picker_title_label, 24)
@@ -185,7 +185,7 @@ func _apply_styles() -> void:
 	PixelUIStyle.apply_label_shadow(final_title_label, 26)
 	PixelUIStyle.apply_small_label(final_summary_label, 17)
 	PixelUIStyle.apply_yellow_button(final_confirm_button, 16)
-	PixelUIStyle.apply_close_button(final_back_button)
+	PixelUIStyle.apply_atlas_button(final_back_button, "red_button")
 	final_back_button.text = "Cancel"
 
 	if picker_item_template != null:

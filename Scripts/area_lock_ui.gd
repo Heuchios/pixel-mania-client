@@ -52,9 +52,9 @@ func apply_pixel_style() -> void:
 	PixelUIStyle.apply_small_label(info_label)
 	PixelUIStyle.apply_small_label(status_label)
 	PixelUIStyle.apply_blue_button(add_button)
-	PixelUIStyle.apply_yellow_button(close_button)
+	PixelUIStyle.apply_close_button(close_button)
 	PixelUIStyle.apply_input(player_input)
-	panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(Color(0.07, 0.09, 0.13, 0.96), Color(0.93, 0.74, 0.26), 3, 14))
+	# Keep the authored atlas panel; legacy styling replaced it at runtime.
 
 
 func setup(world, manager) -> void:

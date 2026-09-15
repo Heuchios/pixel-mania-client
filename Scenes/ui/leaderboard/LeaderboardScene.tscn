@@ -1,19 +1,62 @@
 [gd_scene format=3 uid="uid://ccgfwxd0ehwas"]
 
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/outer_panel_26aea83603.tres" id="panel_role_0"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_1"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_2"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_3"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_4"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_5"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_6"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_7"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_8"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_9"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_10"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_11"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_12"]
+
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_a04751f65f.tres" id="atlas_StyleBoxFlat_0sbhp"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_10bada3b58.tres" id="atlas_StyleBoxFlat_3cei8"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_f72e84db31.tres" id="atlas_StyleBoxTexture_ryy5j"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_1b992e4807.tres" id="atlas_StyleBoxTexture_g2tg2"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_c4d4758782.tres" id="atlas_StyleBoxTexture_gr77c"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_gr77c"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_10bada3b58.tres" id="atlas_StyleBoxFlat_jl7a3"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_f72e84db31.tres" id="atlas_StyleBoxTexture_jl7a3"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_1b992e4807.tres" id="atlas_StyleBoxTexture_wdx7o"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_c4d4758782.tres" id="atlas_StyleBoxTexture_cypi0"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_f72e84db31.tres" id="atlas_StyleBoxTexture_ah8f3"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_1b992e4807.tres" id="atlas_StyleBoxTexture_vxc2b"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_c4d4758782.tres" id="atlas_StyleBoxTexture_yg645"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_f72e84db31.tres" id="atlas_StyleBoxTexture_2rxx3"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_1b992e4807.tres" id="atlas_StyleBoxTexture_6ru4n"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_c4d4758782.tres" id="atlas_StyleBoxTexture_qtcxv"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_10bada3b58.tres" id="atlas_StyleBoxFlat_wvkrj"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_4jh6o"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_1f5qx"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_oudbn"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_n2uwf"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_08tx6"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_0jo5d"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_smv6g"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_xnou3"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_o0g3p"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_ebken"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_6vey2"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_d67hh"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_gdm3d"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_bvsm7"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_e674c"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_ebwp0"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_b0da72a21a.tres" id="atlas_StyleBoxFlat_yx4mb"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_f72e84db31.tres" id="atlas_StyleBoxTexture_dbk1g"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_1b992e4807.tres" id="atlas_StyleBoxTexture_cvnxh"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_c4d4758782.tres" id="atlas_StyleBoxTexture_36mnd"]
+
 [ext_resource type="Script" uid="uid://dagkx1aypx0rb" path="res://Scripts/ui/leaderboard_scene.gd" id="1_scene"]
 [ext_resource type="Script" uid="uid://baxj6k1s5002b" path="res://Scripts/ui/leaderboard_tab_data.gd" id="2_tab"]
 [ext_resource type="Script" uid="uid://ve7ir6yhvues" path="res://Scripts/ui/leaderboard_entry_data.gd" id="3_entry"]
-[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="4_wdx7o"]
-[ext_resource type="Texture2D" uid="uid://bdqewvpbuib1a" path="res://Assets/ui/panel_outer_403x130.png" id="5_cypi0"]
 [ext_resource type="Texture2D" uid="uid://mu4w00klhw6i" path="res://Assets/background/landfill/bg_4.png" id="6_ah8f3"]
 [ext_resource type="FontFile" uid="uid://e0ivgh0c6uck" path="res://Assets/font/font.ttf" id="7_vxc2b"]
-[ext_resource type="Texture2D" uid="uid://bg5sabtp5jnsv" path="res://Assets/ui/input_744x72.png" id="8_yg645"]
-[ext_resource type="Texture2D" uid="uid://tbchr2qk0dib" path="res://Assets/ui/close_button_hover.png" id="9_2rxx3"]
-[ext_resource type="Texture2D" uid="uid://cdd8rhkxp0cky" path="res://Assets/ui/close_button_pressed.png" id="10_w4kwa"]
-[ext_resource type="Texture2D" uid="uid://ch2qryxhnpu18" path="res://Assets/ui/close_button.png" id="11_6ru4n"]
-[ext_resource type="Texture2D" uid="uid://opqgsn2jk7ie" path="res://Assets/ui/green_button_hover_90x24.png" id="13_04y2n"]
-[ext_resource type="Texture2D" uid="uid://pyw7s5lcdhmt" path="res://Assets/ui/green_button_pressed_90x24.png" id="14_rvnjr"]
-[ext_resource type="Texture2D" uid="uid://c0s1vj8wepsbi" path="res://Assets/ui/green_button_normal_90x24.png" id="15_q08a3"]
 [ext_resource type="Texture2D" uid="uid://7gy5p347bc2e" path="res://Assets/events/landfill/icon.png" id="16_wvkrj"]
 [ext_resource type="Texture2D" uid="uid://b7b05hpgn3dhg" path="res://Assets/currency/gem.png" id="17_4jh6o"]
 
@@ -88,370 +131,7 @@ player_name = "DustBuster"
 points = 3150
 avatar_color = Color(0.2, 0.76, 0.34, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6pm6e"]
-bg_color = Color(0, 0, 0, 0.32)
-border_color = Color(0, 0, 0, 0)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wvr6k"]
-texture = ExtResource("4_wdx7o")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_po4xb"]
-texture = ExtResource("5_cypi0")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3rdtl"]
-bg_color = Color(0.04, 0.046, 0.042, 0.92)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.86, 0.76, 0.18, 0.88)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.38)
-shadow_size = 2
-shadow_offset = Vector2(0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tqrhy"]
-texture = ExtResource("11_6ru4n")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8181i"]
-texture = ExtResource("10_w4kwa")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7sgs0"]
-texture = ExtResource("9_2rxx3")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vqp6v"]
-texture = ExtResource("5_cypi0")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kxnky"]
-texture = ExtResource("4_wdx7o")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cypi0"]
-bg_color = Color(1, 0.71, 0.05, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.45, 0.26, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_76cin"]
-texture = ExtResource("13_04y2n")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_q10vx"]
-texture = ExtResource("14_rvnjr")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_v2tu5"]
-texture = ExtResource("15_q08a3")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ufytt"]
-texture = ExtResource("14_rvnjr")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3o4en"]
-texture = ExtResource("13_04y2n")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5dgyr"]
-texture = ExtResource("14_rvnjr")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_f42aj"]
-texture = ExtResource("15_q08a3")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_awpcs"]
-texture = ExtResource("14_rvnjr")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qhaf3"]
-texture = ExtResource("13_04y2n")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pof55"]
-texture = ExtResource("14_rvnjr")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sdy17"]
-texture = ExtResource("15_q08a3")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1fkrm"]
-texture = ExtResource("14_rvnjr")
-
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w76dv"]
-texture = ExtResource("5_cypi0")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n2ugw"]
-texture = ExtResource("5_cypi0")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_x1x41"]
-texture = ExtResource("8_yg645")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_q08a3"]
-texture = ExtResource("5_cypi0")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uys7f"]
-texture = ExtResource("8_yg645")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0jo5d"]
-bg_color = Color(0.96, 0.54, 0.18, 0.86)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.04, 0.05, 0.05, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_smv6g"]
-bg_color = Color(0.07, 0.08, 0.08, 0.78)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.17, 0.23, 0.24, 0.95)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_imrgy"]
-texture = ExtResource("8_yg645")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o0g3p"]
-bg_color = Color(0.24, 0.68, 0.18, 0.86)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.04, 0.05, 0.05, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ebken"]
-bg_color = Color(0.07, 0.08, 0.08, 0.78)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.17, 0.23, 0.24, 0.95)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ettey"]
-texture = ExtResource("8_yg645")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d67hh"]
-bg_color = Color(0.18, 0.5, 0.86, 0.86)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.04, 0.05, 0.05, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gdm3d"]
-bg_color = Color(0.07, 0.08, 0.08, 0.78)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.17, 0.23, 0.24, 0.95)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pkyew"]
-texture = ExtResource("8_yg645")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e674c"]
-bg_color = Color(0.9, 0.58, 0.3, 0.86)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.04, 0.05, 0.05, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ebwp0"]
-bg_color = Color(0.07, 0.08, 0.08, 0.78)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.17, 0.23, 0.24, 0.95)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1y3pt"]
-texture = ExtResource("8_yg645")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xm37t"]
-bg_color = Color(0.78, 0.82, 0.84, 0.86)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.04, 0.05, 0.05, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cxore"]
-bg_color = Color(0.07, 0.08, 0.08, 0.78)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.17, 0.23, 0.24, 0.95)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_chuli"]
-texture = ExtResource("8_yg645")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ckkgi"]
-bg_color = Color(0.54, 0.25, 0.84, 0.86)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.04, 0.05, 0.05, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dbk1g"]
-bg_color = Color(0.07, 0.08, 0.08, 0.78)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.17, 0.23, 0.24, 0.95)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dbhvm"]
-texture = ExtResource("8_yg645")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_36mnd"]
-bg_color = Color(0.74, 0.34, 0.18, 0.86)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.04, 0.05, 0.05, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pwjra"]
-bg_color = Color(0.07, 0.08, 0.08, 0.78)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.17, 0.23, 0.24, 0.95)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tqabb"]
-bg_color = Color(0.05, 0.085, 0.083, 0.92)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.17, 0.23, 0.24, 0.95)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-shadow_color = Color(0, 0, 0, 0.38)
-shadow_size = 1
-shadow_offset = Vector2(0, 0.5)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nhkl7"]
-bg_color = Color(0.2, 0.76, 0.34, 0.86)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.04, 0.05, 0.05, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s8oux"]
-bg_color = Color(0.07, 0.08, 0.08, 0.78)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.17, 0.23, 0.24, 0.95)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-shadow_color = Color(0, 0, 0, 0.38)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4dih8"]
-texture = ExtResource("5_cypi0")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cypi0"]
-texture = ExtResource("13_04y2n")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ah8f3"]
-texture = ExtResource("14_rvnjr")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vxc2b"]
-texture = ExtResource("15_q08a3")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yg645"]
-texture = ExtResource("14_rvnjr")
 
 [node name="LeaderboardScene" type="Control" unique_id=1113369246]
 editor_description = "Standalone editable leaderboard scene. All visible UI parts are real child nodes so you can edit them directly."
@@ -464,6 +144,12 @@ grow_vertical = 2
 script = ExtResource("1_scene")
 tabs = Array[Resource]([SubResource("TabData_landfill"), SubResource("TabData_weekly"), SubResource("TabData_global")])
 leaderboard_entries = Array[Resource]([SubResource("EntryData_01"), SubResource("EntryData_02"), SubResource("EntryData_03"), SubResource("EntryData_04"), SubResource("EntryData_05"), SubResource("EntryData_06"), SubResource("EntryData_07"), SubResource("EntryData_08")])
+scrollbar_track_color = null
+scrollbar_grabber_color = null
+scrollbar_grabber_hover_color = null
+scrollbar_grabber_pressed_color = null
+scrollbar_thickness = null
+texture_filter = 1
 
 [node name="Dimmer" type="ColorRect" parent="." unique_id=615303462]
 layout_mode = 1
@@ -499,14 +185,14 @@ offset_top = 12.0
 offset_right = 1042.0
 offset_bottom = 700.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_6pm6e")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_0sbhp")
 
 [node name="WindowBack" type="Panel" parent="CenterContainer/LeaderboardWindow" unique_id=1134599235]
 layout_mode = 0
 offset_right = 1032.0
 offset_bottom = 688.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_wvr6k")
+theme_override_styles/panel = ExtResource("panel_role_0")
 
 [node name="HeaderPanel" type="Panel" parent="CenterContainer/LeaderboardWindow" unique_id=737226377]
 layout_mode = 0
@@ -515,10 +201,9 @@ offset_top = 28.0
 offset_right = 988.0
 offset_bottom = 154.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_po4xb")
+theme_override_styles/panel = ExtResource("panel_role_1")
 
 [node name="HeaderBackground" type="TextureRect" parent="CenterContainer/LeaderboardWindow/HeaderPanel" unique_id=340727283]
-visible = false
 texture_filter = 1
 layout_mode = 0
 offset_left = 41.0
@@ -555,6 +240,7 @@ text = "LANDFILL"
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="BadgeBack" type="Panel" parent="CenterContainer/LeaderboardWindow/HeaderPanel" unique_id=1662832151]
 layout_mode = 0
@@ -563,7 +249,7 @@ offset_top = 67.0
 offset_right = 593.0
 offset_bottom = 101.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3rdtl")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_3cei8")
 
 [node name="BadgeLabel" type="Label" parent="CenterContainer/LeaderboardWindow/HeaderPanel/BadgeBack" unique_id=300797747]
 layout_mode = 1
@@ -582,6 +268,7 @@ text = "EVENT LEADERBOARD"
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SubtitleLabel" type="Label" parent="CenterContainer/LeaderboardWindow/HeaderPanel" unique_id=185028086]
 layout_mode = 0
@@ -599,6 +286,7 @@ text = "Compete in the Landfill Race and earn points!"
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="CloseButton" type="Button" parent="CenterContainer/LeaderboardWindow" unique_id=606305024]
 layout_mode = 0
@@ -611,11 +299,12 @@ theme_override_colors/font_color = Color(0.94, 0.96, 0.94, 1)
 theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
 theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 23
-theme_override_styles/normal = SubResource("StyleBoxTexture_tqrhy")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_8181i")
-theme_override_styles/hover = SubResource("StyleBoxTexture_7sgs0")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_ryy5j")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_g2tg2")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_gr77c")
 text = "X"
 expand_icon = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SideColumn" type="Control" parent="CenterContainer/LeaderboardWindow" unique_id=632287203]
 anchors_preset = 0
@@ -630,7 +319,7 @@ layout_mode = 0
 offset_right = 158.0
 offset_bottom = 82.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_vqp6v")
+theme_override_styles/panel = ExtResource("panel_role_2")
 
 [node name="TrophyBack" type="Panel" parent="CenterContainer/LeaderboardWindow/SideColumn/ChampionBadge" unique_id=896817125]
 layout_mode = 0
@@ -639,7 +328,7 @@ offset_top = 13.0
 offset_right = 142.0
 offset_bottom = 69.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_kxnky")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_gr77c")
 
 [node name="Cup" type="Panel" parent="CenterContainer/LeaderboardWindow/SideColumn/ChampionBadge/TrophyBack" unique_id=315189331]
 layout_mode = 0
@@ -648,7 +337,7 @@ offset_top = 7.0
 offset_right = 84.0
 offset_bottom = 39.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_cypi0")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_jl7a3")
 
 [node name="LeftLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/SideColumn/ChampionBadge/TrophyBack" unique_id=918658891]
 layout_mode = 0
@@ -687,16 +376,16 @@ theme_override_colors/font_color = Color(0.94, 0.96, 0.94, 1)
 theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
 theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = SubResource("StyleBoxTexture_76cin")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_q10vx")
-theme_override_styles/hover = SubResource("StyleBoxTexture_v2tu5")
-theme_override_styles/disabled = SubResource("StyleBoxTexture_ufytt")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_jl7a3")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_wdx7o")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_cypi0")
 toggle_mode = true
 button_pressed = true
 text = "LANDFILL"
 icon = ExtResource("16_wvkrj")
 expand_icon = true
 metadata/_pixelmania_leaderboard_tab_connected = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="TabWeekly" type="Button" parent="CenterContainer/LeaderboardWindow/SideColumn/Tabs" unique_id=1360477789]
 custom_minimum_size = Vector2(158, 48)
@@ -707,14 +396,14 @@ theme_override_colors/font_color = Color(0.94, 0.96, 0.94, 1)
 theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
 theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = SubResource("StyleBoxTexture_3o4en")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_5dgyr")
-theme_override_styles/hover = SubResource("StyleBoxTexture_f42aj")
-theme_override_styles/disabled = SubResource("StyleBoxTexture_awpcs")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_ah8f3")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_vxc2b")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_yg645")
 toggle_mode = true
 text = "WEEKLY"
 expand_icon = true
 metadata/_pixelmania_leaderboard_tab_connected = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="TabGlobal" type="Button" parent="CenterContainer/LeaderboardWindow/SideColumn/Tabs" unique_id=1129960264]
 custom_minimum_size = Vector2(158, 48)
@@ -725,14 +414,14 @@ theme_override_colors/font_color = Color(0.94, 0.96, 0.94, 1)
 theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
 theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = SubResource("StyleBoxTexture_qhaf3")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_pof55")
-theme_override_styles/hover = SubResource("StyleBoxTexture_sdy17")
-theme_override_styles/disabled = SubResource("StyleBoxTexture_1fkrm")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_2rxx3")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_6ru4n")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_qtcxv")
 toggle_mode = true
 text = "GLOBAL"
 expand_icon = true
 metadata/_pixelmania_leaderboard_tab_connected = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SideArtPanel" type="Panel" parent="CenterContainer/LeaderboardWindow/SideColumn" unique_id=719025053]
 layout_mode = 0
@@ -740,7 +429,7 @@ offset_top = 300.0
 offset_right = 158.0
 offset_bottom = 604.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_w76dv")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_wvkrj")
 
 [node name="SideTexture" type="TextureRect" parent="CenterContainer/LeaderboardWindow/SideColumn/SideArtPanel" unique_id=1256135584]
 modulate = Color(0.62, 0.62, 0.62, 0.55)
@@ -771,7 +460,7 @@ offset_top = 168.0
 offset_right = 988.0
 offset_bottom = 582.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_n2ugw")
+theme_override_styles/panel = SubResource("StyleBoxTexture_w76dv")
 
 [node name="HeaderRow" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel" unique_id=2094612365]
 layout_mode = 0
@@ -780,7 +469,7 @@ offset_top = 8.0
 offset_right = 758.0
 offset_bottom = 40.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_x1x41")
+theme_override_styles/panel = ExtResource("panel_role_3")
 
 [node name="RankHeader" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/HeaderRow" unique_id=316741667]
 layout_mode = 0
@@ -795,6 +484,7 @@ theme_override_font_sizes/font_size = 15
 text = "RANK"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerHeader" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/HeaderRow" unique_id=1301625634]
 layout_mode = 0
@@ -810,6 +500,7 @@ theme_override_font_sizes/font_size = 15
 text = "PLAYER"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PointsHeader" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/HeaderRow" unique_id=1773473952]
 layout_mode = 0
@@ -825,6 +516,7 @@ theme_override_font_sizes/font_size = 15
 text = "TOTAL POINTS"
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RowsClip" type="ScrollContainer" parent="CenterContainer/LeaderboardWindow/TablePanel" unique_id=617676988]
 layout_mode = 0
@@ -832,7 +524,7 @@ offset_left = 8.0
 offset_top = 44.0
 offset_right = 758.0
 offset_bottom = 400.0
-theme_override_styles/panel = SubResource("StyleBoxTexture_q08a3")
+theme_override_styles/panel = ExtResource("panel_role_4")
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 
@@ -846,7 +538,7 @@ theme_override_constants/separation = 4
 custom_minimum_size = Vector2(750, 46)
 layout_mode = 2
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_uys7f")
+theme_override_styles/panel = ExtResource("panel_role_5")
 
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow1" unique_id=1798358734]
 layout_mode = 0
@@ -861,6 +553,7 @@ theme_override_font_sizes/font_size = 25
 text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeftLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow1" unique_id=470285038]
 layout_mode = 0
@@ -876,6 +569,7 @@ theme_override_font_sizes/font_size = 25
 text = "<"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RightLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow1" unique_id=607589655]
 layout_mode = 0
@@ -891,6 +585,7 @@ theme_override_font_sizes/font_size = 25
 text = ">"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow1" unique_id=410254521]
 layout_mode = 0
@@ -899,9 +594,10 @@ offset_top = 5.0
 offset_right = 156.0
 offset_bottom = 41.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0jo5d")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_4jh6o")
 
 [node name="Avatar" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow1/AvatarBack" unique_id=1098835799]
+visible = false
 texture_filter = 1
 layout_mode = 0
 offset_left = 3.0
@@ -929,14 +625,15 @@ theme_override_font_sizes/font_size = 16
 text = "PI"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow1" unique_id=1887200964]
 layout_mode = 0
 offset_left = 164.0
 offset_right = 584.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_colors/font_shadow_color = Color(1, 0.85882354, 0.101960786, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
@@ -944,13 +641,14 @@ theme_override_font_sizes/font_size = 21
 text = "PixelHero"
 vertical_alignment = 1
 clip_text = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Points" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow1" unique_id=1805123795]
 layout_mode = 0
 offset_left = 570.0
 offset_right = 700.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(1, 0.85882354, 0.101960786, 1)
+theme_override_colors/font_color = Color(1, 0.86, 0.1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
@@ -959,6 +657,7 @@ theme_override_font_sizes/font_size = 22
 text = "12,450"
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RewardBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow1" unique_id=2001885137]
 layout_mode = 0
@@ -967,7 +666,7 @@ offset_top = 6.0
 offset_right = 741.0
 offset_bottom = 40.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_smv6g")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_1f5qx")
 
 [node name="RewardIcon" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow1/RewardBack" unique_id=652713889]
 texture_filter = 1
@@ -997,12 +696,13 @@ theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 15
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeaderboardRow2" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot" unique_id=806423540]
 custom_minimum_size = Vector2(750, 46)
 layout_mode = 2
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_imrgy")
+theme_override_styles/panel = ExtResource("panel_role_6")
 
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow2" unique_id=1771337489]
 layout_mode = 0
@@ -1017,6 +717,7 @@ theme_override_font_sizes/font_size = 25
 text = "2"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeftLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow2" unique_id=746115233]
 layout_mode = 0
@@ -1032,6 +733,7 @@ theme_override_font_sizes/font_size = 25
 text = "<"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RightLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow2" unique_id=734710210]
 layout_mode = 0
@@ -1047,6 +749,7 @@ theme_override_font_sizes/font_size = 25
 text = ">"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow2" unique_id=1246445338]
 layout_mode = 0
@@ -1055,7 +758,7 @@ offset_top = 5.0
 offset_right = 156.0
 offset_bottom = 41.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_o0g3p")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_oudbn")
 
 [node name="Avatar" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow2/AvatarBack" unique_id=366369922]
 visible = false
@@ -1086,14 +789,15 @@ theme_override_font_sizes/font_size = 16
 text = "TR"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow2" unique_id=2048599956]
 layout_mode = 0
 offset_left = 164.0
 offset_right = 584.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_colors/font_shadow_color = Color(0.9565603, 0.8635621, 0.49460626, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
@@ -1101,14 +805,15 @@ theme_override_font_sizes/font_size = 21
 text = "TrashMaster"
 vertical_alignment = 1
 clip_text = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Points" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow2" unique_id=148324986]
 layout_mode = 0
 offset_left = 570.0
 offset_right = 700.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_colors/font_shadow_color = Color(1, 0.85882354, 0.101960786, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
@@ -1116,6 +821,7 @@ theme_override_font_sizes/font_size = 22
 text = "9,820"
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RewardBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow2" unique_id=872989195]
 layout_mode = 0
@@ -1124,7 +830,7 @@ offset_top = 6.0
 offset_right = 741.0
 offset_bottom = 40.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ebken")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_n2uwf")
 
 [node name="RewardIcon" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow2/RewardBack" unique_id=1379475162]
 texture_filter = 1
@@ -1154,12 +860,13 @@ theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 15
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeaderboardRow3" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot" unique_id=1305082603]
 custom_minimum_size = Vector2(750, 46)
 layout_mode = 2
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_ettey")
+theme_override_styles/panel = ExtResource("panel_role_7")
 
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow3" unique_id=2117267223]
 layout_mode = 0
@@ -1174,6 +881,7 @@ theme_override_font_sizes/font_size = 25
 text = "3"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeftLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow3" unique_id=154466129]
 layout_mode = 0
@@ -1189,6 +897,7 @@ theme_override_font_sizes/font_size = 25
 text = "<"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RightLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow3" unique_id=1574932403]
 layout_mode = 0
@@ -1204,6 +913,7 @@ theme_override_font_sizes/font_size = 25
 text = ">"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow3" unique_id=466690009]
 layout_mode = 0
@@ -1212,7 +922,7 @@ offset_top = 5.0
 offset_right = 156.0
 offset_bottom = 41.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_d67hh")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_08tx6")
 
 [node name="Avatar" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow3/AvatarBack" unique_id=673242565]
 visible = false
@@ -1243,14 +953,15 @@ theme_override_font_sizes/font_size = 16
 text = "JU"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow3" unique_id=702861866]
 layout_mode = 0
 offset_left = 164.0
 offset_right = 584.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_colors/font_shadow_color = Color(0.95686275, 0.8627451, 0.49411765, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
@@ -1258,14 +969,15 @@ theme_override_font_sizes/font_size = 21
 text = "JunkCollector"
 vertical_alignment = 1
 clip_text = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Points" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow3" unique_id=1985833246]
 layout_mode = 0
 offset_left = 570.0
 offset_right = 700.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_colors/font_shadow_color = Color(1, 0.85882354, 0.101960786, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
@@ -1273,6 +985,7 @@ theme_override_font_sizes/font_size = 22
 text = "7,630"
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RewardBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow3" unique_id=1218115902]
 layout_mode = 0
@@ -1281,7 +994,7 @@ offset_top = 6.0
 offset_right = 741.0
 offset_bottom = 40.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_gdm3d")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_0jo5d")
 
 [node name="RewardIcon" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow3/RewardBack" unique_id=1029805014]
 texture_filter = 1
@@ -1311,12 +1024,13 @@ theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 15
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeaderboardRow4" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot" unique_id=1849944790]
 custom_minimum_size = Vector2(750, 46)
 layout_mode = 2
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_pkyew")
+theme_override_styles/panel = ExtResource("panel_role_8")
 
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow4" unique_id=49473991]
 layout_mode = 0
@@ -1331,6 +1045,7 @@ theme_override_font_sizes/font_size = 22
 text = "4"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeftLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow4" unique_id=1300192204]
 visible = false
@@ -1347,6 +1062,7 @@ theme_override_font_sizes/font_size = 25
 text = "<"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RightLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow4" unique_id=2142621174]
 visible = false
@@ -1363,6 +1079,7 @@ theme_override_font_sizes/font_size = 25
 text = ">"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow4" unique_id=1647286715]
 layout_mode = 0
@@ -1371,7 +1088,7 @@ offset_top = 5.0
 offset_right = 156.0
 offset_bottom = 41.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_e674c")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_smv6g")
 
 [node name="Avatar" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow4/AvatarBack" unique_id=2145570373]
 visible = false
@@ -1402,14 +1119,15 @@ theme_override_font_sizes/font_size = 16
 text = "LA"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow4" unique_id=1248343721]
 layout_mode = 0
 offset_left = 164.0
 offset_right = 584.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
@@ -1417,14 +1135,15 @@ theme_override_font_sizes/font_size = 21
 text = "LandfillLegend"
 vertical_alignment = 1
 clip_text = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Points" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow4" unique_id=1886641061]
 layout_mode = 0
 offset_left = 570.0
 offset_right = 700.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_colors/font_shadow_color = Color(1, 0.85882354, 0.101960786, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
@@ -1432,6 +1151,7 @@ theme_override_font_sizes/font_size = 22
 text = "6,410"
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RewardBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow4" unique_id=253233790]
 layout_mode = 0
@@ -1440,7 +1160,7 @@ offset_top = 6.0
 offset_right = 741.0
 offset_bottom = 40.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ebwp0")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_xnou3")
 
 [node name="RewardIcon" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow4/RewardBack" unique_id=2076033937]
 texture_filter = 1
@@ -1470,12 +1190,13 @@ theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 15
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeaderboardRow5" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot" unique_id=1688329763]
 custom_minimum_size = Vector2(750, 46)
 layout_mode = 2
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_1y3pt")
+theme_override_styles/panel = ExtResource("panel_role_9")
 
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow5" unique_id=1892169341]
 layout_mode = 0
@@ -1490,6 +1211,7 @@ theme_override_font_sizes/font_size = 22
 text = "5"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeftLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow5" unique_id=397105356]
 visible = false
@@ -1506,6 +1228,7 @@ theme_override_font_sizes/font_size = 25
 text = "<"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RightLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow5" unique_id=986517190]
 visible = false
@@ -1522,6 +1245,7 @@ theme_override_font_sizes/font_size = 25
 text = ">"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow5" unique_id=1984153228]
 layout_mode = 0
@@ -1530,7 +1254,7 @@ offset_top = 5.0
 offset_right = 156.0
 offset_bottom = 41.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xm37t")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_o0g3p")
 
 [node name="Avatar" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow5/AvatarBack" unique_id=1075622588]
 visible = false
@@ -1561,14 +1285,15 @@ theme_override_font_sizes/font_size = 16
 text = "RU"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow5" unique_id=1591193108]
 layout_mode = 0
 offset_left = 164.0
 offset_right = 584.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
@@ -1576,14 +1301,15 @@ theme_override_font_sizes/font_size = 21
 text = "RubbishKing"
 vertical_alignment = 1
 clip_text = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Points" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow5" unique_id=1177177262]
 layout_mode = 0
 offset_left = 570.0
 offset_right = 700.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_colors/font_shadow_color = Color(1, 0.85882354, 0.101960786, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
@@ -1591,6 +1317,7 @@ theme_override_font_sizes/font_size = 22
 text = "5,210"
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RewardBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow5" unique_id=326671863]
 layout_mode = 0
@@ -1599,7 +1326,7 @@ offset_top = 6.0
 offset_right = 741.0
 offset_bottom = 40.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_cxore")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_ebken")
 
 [node name="RewardIcon" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow5/RewardBack" unique_id=1465184248]
 texture_filter = 1
@@ -1629,12 +1356,13 @@ theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 15
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeaderboardRow6" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot" unique_id=925716494]
 custom_minimum_size = Vector2(750, 46)
 layout_mode = 2
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_chuli")
+theme_override_styles/panel = ExtResource("panel_role_10")
 
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow6" unique_id=1410910298]
 layout_mode = 0
@@ -1649,6 +1377,7 @@ theme_override_font_sizes/font_size = 22
 text = "6"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeftLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow6" unique_id=2032089147]
 visible = false
@@ -1665,6 +1394,7 @@ theme_override_font_sizes/font_size = 25
 text = "<"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RightLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow6" unique_id=669133376]
 visible = false
@@ -1681,6 +1411,7 @@ theme_override_font_sizes/font_size = 25
 text = ">"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow6" unique_id=1189794930]
 layout_mode = 0
@@ -1689,7 +1420,7 @@ offset_top = 5.0
 offset_right = 156.0
 offset_bottom = 41.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ckkgi")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_6vey2")
 
 [node name="Avatar" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow6/AvatarBack" unique_id=1504182835]
 visible = false
@@ -1720,14 +1451,15 @@ theme_override_font_sizes/font_size = 16
 text = "EC"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow6" unique_id=186735503]
 layout_mode = 0
 offset_left = 164.0
 offset_right = 584.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
@@ -1735,14 +1467,15 @@ theme_override_font_sizes/font_size = 21
 text = "EcoWarrior"
 vertical_alignment = 1
 clip_text = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Points" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow6" unique_id=2071499058]
 layout_mode = 0
 offset_left = 570.0
 offset_right = 700.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_colors/font_shadow_color = Color(1, 0.85882354, 0.101960786, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
@@ -1750,6 +1483,7 @@ theme_override_font_sizes/font_size = 22
 text = "4,380"
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RewardBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow6" unique_id=146894798]
 layout_mode = 0
@@ -1758,7 +1492,7 @@ offset_top = 6.0
 offset_right = 741.0
 offset_bottom = 40.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dbk1g")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_d67hh")
 
 [node name="RewardIcon" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow6/RewardBack" unique_id=1448341977]
 texture_filter = 1
@@ -1788,12 +1522,13 @@ theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 15
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeaderboardRow7" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot" unique_id=1991162139]
 custom_minimum_size = Vector2(750, 46)
 layout_mode = 2
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_dbhvm")
+theme_override_styles/panel = ExtResource("panel_role_11")
 
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow7" unique_id=260337161]
 layout_mode = 0
@@ -1808,6 +1543,7 @@ theme_override_font_sizes/font_size = 22
 text = "7"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeftLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow7" unique_id=544929621]
 visible = false
@@ -1824,6 +1560,7 @@ theme_override_font_sizes/font_size = 25
 text = "<"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RightLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow7" unique_id=515750215]
 visible = false
@@ -1840,6 +1577,7 @@ theme_override_font_sizes/font_size = 25
 text = ">"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow7" unique_id=1779344859]
 layout_mode = 0
@@ -1848,7 +1586,7 @@ offset_top = 5.0
 offset_right = 156.0
 offset_bottom = 41.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_36mnd")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_gdm3d")
 
 [node name="Avatar" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow7/AvatarBack" unique_id=1644881065]
 visible = false
@@ -1879,14 +1617,15 @@ theme_override_font_sizes/font_size = 16
 text = "RE"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow7" unique_id=1694823200]
 layout_mode = 0
 offset_left = 164.0
 offset_right = 584.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
@@ -1894,14 +1633,15 @@ theme_override_font_sizes/font_size = 21
 text = "RecyclePro"
 vertical_alignment = 1
 clip_text = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Points" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow7" unique_id=493112176]
 layout_mode = 0
 offset_left = 570.0
 offset_right = 700.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_colors/font_shadow_color = Color(1, 0.85882354, 0.101960786, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
@@ -1909,6 +1649,7 @@ theme_override_font_sizes/font_size = 22
 text = "3,920"
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RewardBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow7" unique_id=1734401429]
 layout_mode = 0
@@ -1917,7 +1658,7 @@ offset_top = 6.0
 offset_right = 741.0
 offset_bottom = 40.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_pwjra")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_bvsm7")
 
 [node name="RewardIcon" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow7/RewardBack" unique_id=373068817]
 texture_filter = 1
@@ -1947,12 +1688,13 @@ theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 15
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeaderboardRow8" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot" unique_id=1954696613]
 custom_minimum_size = Vector2(750, 46)
 layout_mode = 2
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tqabb")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_e674c")
 
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow8" unique_id=918876690]
 layout_mode = 0
@@ -1967,6 +1709,7 @@ theme_override_font_sizes/font_size = 22
 text = "8"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LeftLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow8" unique_id=74463867]
 visible = false
@@ -1983,6 +1726,7 @@ theme_override_font_sizes/font_size = 25
 text = "<"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RightLaurel" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow8" unique_id=974261031]
 visible = false
@@ -1999,6 +1743,7 @@ theme_override_font_sizes/font_size = 25
 text = ">"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow8" unique_id=2044957063]
 layout_mode = 0
@@ -2007,7 +1752,7 @@ offset_top = 5.0
 offset_right = 156.0
 offset_bottom = 41.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nhkl7")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_ebwp0")
 
 [node name="Avatar" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow8/AvatarBack" unique_id=421897174]
 visible = false
@@ -2037,13 +1782,14 @@ theme_override_font_sizes/font_size = 16
 text = "DU"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow8" unique_id=1206758574]
 layout_mode = 0
 offset_left = 164.0
 offset_right = 584.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
@@ -2052,13 +1798,14 @@ theme_override_font_sizes/font_size = 21
 text = "DustBuster"
 vertical_alignment = 1
 clip_text = true
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Points" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow8" unique_id=2093063063]
 layout_mode = 0
 offset_left = 584.0
 offset_right = 714.0
 offset_bottom = 46.0
-theme_override_colors/font_color = Color(0, 0, 0, 0)
+theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
@@ -2067,6 +1814,7 @@ theme_override_font_sizes/font_size = 22
 text = "3,150"
 horizontal_alignment = 2
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RewardBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow8" unique_id=258699650]
 layout_mode = 0
@@ -2075,7 +1823,7 @@ offset_top = 6.0
 offset_right = 741.0
 offset_bottom = 40.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_s8oux")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_yx4mb")
 
 [node name="RewardIcon" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow8/RewardBack" unique_id=1032644620]
 texture_filter = 1
@@ -2105,6 +1853,7 @@ theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 15
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SummaryPanel" type="Panel" parent="CenterContainer/LeaderboardWindow" unique_id=1876890488]
 layout_mode = 0
@@ -2113,7 +1862,7 @@ offset_top = 596.0
 offset_right = 988.0
 offset_bottom = 672.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_4dih8")
+theme_override_styles/panel = ExtResource("panel_role_12")
 
 [node name="YourRankStat" type="Control" parent="CenterContainer/LeaderboardWindow/SummaryPanel" unique_id=824283013]
 anchors_preset = 0
@@ -2136,6 +1885,7 @@ theme_override_font_sizes/font_size = 15
 text = "YOUR RANK"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Value" type="Label" parent="CenterContainer/LeaderboardWindow/SummaryPanel/YourRankStat" unique_id=813797094]
 layout_mode = 0
@@ -2151,6 +1901,7 @@ theme_override_font_sizes/font_size = 22
 text = "15"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Divider" type="ColorRect" parent="CenterContainer/LeaderboardWindow/SummaryPanel/YourRankStat" unique_id=158852109]
 layout_mode = 0
@@ -2182,6 +1933,7 @@ theme_override_font_sizes/font_size = 15
 text = "YOUR POINTS"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Value" type="Label" parent="CenterContainer/LeaderboardWindow/SummaryPanel/YourPointsStat" unique_id=745135304]
 layout_mode = 0
@@ -2198,6 +1950,7 @@ theme_override_font_sizes/font_size = 22
 text = "1,240"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Icon" type="TextureRect" parent="CenterContainer/LeaderboardWindow/SummaryPanel/YourPointsStat" unique_id=748660268]
 texture_filter = 1
@@ -2240,6 +1993,7 @@ theme_override_font_sizes/font_size = 15
 text = "EVENT ENDS IN:"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="Value" type="Label" parent="CenterContainer/LeaderboardWindow/SummaryPanel/EventEndsStat" unique_id=867948418]
 layout_mode = 0
@@ -2255,6 +2009,7 @@ theme_override_font_sizes/font_size = 22
 text = "4D 12H 36M"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="RewardsButton" type="Button" parent="CenterContainer/LeaderboardWindow/SummaryPanel" unique_id=1050216962]
 layout_mode = 0
@@ -2267,10 +2022,10 @@ theme_override_colors/font_color = Color(0.94, 0.96, 0.94, 1)
 theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
 theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxTexture_cypi0")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_ah8f3")
-theme_override_styles/hover = SubResource("StyleBoxTexture_vxc2b")
-theme_override_styles/disabled = SubResource("StyleBoxTexture_yg645")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_dbk1g")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_cvnxh")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_36mnd")
 text = "REWARDS"
 icon = ExtResource("17_4jh6o")
 expand_icon = true
+metadata/pixelmania_font_role = "preserve"

@@ -1,149 +1,35 @@
 [gd_scene format=3 uid="uid://c1qj8q3m3ttos"]
 
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/outer_panel_26aea83603.tres" id="panel_role_0"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_1"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_2"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_3"]
+
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_44768a3827.tres" id="atlas_SB_close_normal"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_cbabf460a7.tres" id="atlas_SB_close_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_ead3738897.tres" id="atlas_SB_close_hover"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_7cde107094.tres" id="atlas_SB_tab_normal"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_cbabf460a7.tres" id="atlas_SB_tab_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_968bc376ab.tres" id="atlas_SB_tab_hover"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_dmqsj"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_drddx"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_8b93467522.tres" id="atlas_SB_slot_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_35250bd837.tres" id="atlas_SB_slot_disabled"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_te0f0"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_35250bd837.tres" id="atlas_SB_slot_normal"]
+
 [ext_resource type="Script" uid="uid://hd1o67tcx80c" path="res://Scripts/ui/recipe_book_scene.gd" id="1_recipe_book"]
 [ext_resource type="Script" uid="uid://ca4fq8loi3owy" path="res://Scripts/ui/custom_icon_check_box.gd" id="2_filter_check"]
-[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="2_t7k6e"]
-[ext_resource type="Texture2D" uid="uid://bdqewvpbuib1a" path="res://Assets/ui/panel_outer_403x130.png" id="3_g6skp"]
-[ext_resource type="Texture2D" uid="uid://m3d85gxykr8n" path="res://Assets/ui/inv_slot_96x96.png" id="4_gb6mf"]
-[ext_resource type="Texture2D" uid="uid://ck3yirmh0sjij" path="res://Assets/ui/selected_2.png" id="5_d62x8"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_12cob"]
-texture = ExtResource("2_t7k6e")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lbrtg"]
-texture = ExtResource("3_g6skp")
-
-[sub_resource type="StyleBoxFlat" id="SB_close_normal"]
-bg_color = Color(0.64, 0.08, 0.08, 0.98)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.2, 0.01, 0.01, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="SB_close_pressed"]
-bg_color = Color(0.45, 0.04, 0.04, 0.98)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.12, 0, 0, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="SB_close_hover"]
-bg_color = Color(0.82, 0.12, 0.12, 0.98)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.2, 0.01, 0.01, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="SB_tab_normal"]
-bg_color = Color(0.1, 0.24, 0.34, 0.58)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.42, 0.78, 1, 0.42)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-
-[sub_resource type="StyleBoxFlat" id="SB_tab_pressed"]
-bg_color = Color(1, 0.84, 0.05, 1)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.96, 0.5, 0.02, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-
-[sub_resource type="StyleBoxFlat" id="SB_tab_hover"]
-bg_color = Color(0.16, 0.34, 0.46, 0.74)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.62, 0.92, 1, 0.76)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inv_slot_normal.tres" id="4_gb6mf"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inv_slot_selected_2.tres" id="5_d62x8"]
 [sub_resource type="ButtonGroup" id="ButtonGroup_tiers"]
 resource_name = "TierTabGroup"
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5k0el"]
-texture = ExtResource("3_g6skp")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dmqsj"]
-texture = ExtResource("4_gb6mf")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_drddx"]
-texture = ExtResource("4_gb6mf")
-
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cs8s0"]
-
-[sub_resource type="StyleBoxFlat" id="SB_slot_pressed"]
-bg_color = Color(0.17, 0.365, 0.54, 0.85)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(1, 0.88, 0.25, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="SB_slot_disabled"]
-bg_color = Color(0.08, 0.12, 0.17, 0.42)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.18, 0.28, 0.4, 0.32)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_slots"]
 resource_name = "RecipeSlotGroup"
 allow_unpress = true
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yfvuj"]
-texture = ExtResource("3_g6skp")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_te0f0"]
-texture = ExtResource("4_gb6mf")
-
-[sub_resource type="StyleBoxFlat" id="SB_slot_normal"]
-bg_color = Color(0.11, 0.225, 0.33, 0.62)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.45, 0.82, 0.96, 0.82)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
 
 [node name="RecipeBook" type="Control" unique_id=1149156065]
 layout_mode = 3
@@ -154,6 +40,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_recipe_book")
+texture_filter = 1
 
 [node name="Backdrop" type="ColorRect" parent="." unique_id=36849650]
 visible = false
@@ -178,7 +65,7 @@ offset_right = 512.0
 offset_bottom = 330.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_12cob")
+theme_override_styles/panel = ExtResource("panel_role_0")
 
 [node name="Margin" type="MarginContainer" parent="Window" unique_id=1773586715]
 layout_mode = 2
@@ -199,7 +86,7 @@ theme_override_constants/separation = 8
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-theme_override_styles/normal = SubResource("StyleBoxTexture_lbrtg")
+theme_override_styles/normal = ExtResource("panel_role_1")
 text = "Recipe Book"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -209,9 +96,9 @@ custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 size_flags_vertical = 4
 focus_mode = 0
-theme_override_styles/normal = SubResource("SB_close_normal")
-theme_override_styles/pressed = SubResource("SB_close_pressed")
-theme_override_styles/hover = SubResource("SB_close_hover")
+theme_override_styles/normal = ExtResource("atlas_SB_close_normal")
+theme_override_styles/pressed = ExtResource("atlas_SB_close_pressed")
+theme_override_styles/hover = ExtResource("atlas_SB_close_hover")
 text = "X"
 
 [node name="TierTabsScroll" type="ScrollContainer" parent="Window/Margin/Layout" unique_id=624891504]
@@ -229,10 +116,10 @@ visible = false
 custom_minimum_size = Vector2(118, 44)
 layout_mode = 2
 focus_mode = 0
-theme_override_styles/normal = SubResource("SB_tab_normal")
-theme_override_styles/pressed = SubResource("SB_tab_pressed")
-theme_override_styles/hover = SubResource("SB_tab_hover")
-theme_override_styles/hover_pressed = SubResource("SB_tab_pressed")
+theme_override_styles/normal = ExtResource("atlas_SB_tab_normal")
+theme_override_styles/pressed = ExtResource("atlas_SB_tab_pressed")
+theme_override_styles/hover = ExtResource("atlas_SB_tab_hover")
+theme_override_styles/hover_pressed = ExtResource("atlas_SB_tab_pressed")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_tiers")
 text = "TIER 1"
@@ -246,7 +133,7 @@ theme_override_constants/separation = 12
 [node name="GridPanel" type="PanelContainer" parent="Window/Margin/Layout/Body" unique_id=1376436524]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxTexture_5k0el")
+theme_override_styles/panel = ExtResource("panel_role_2")
 
 [node name="GridMargin" type="MarginContainer" parent="Window/Margin/Layout/Body/GridPanel" unique_id=54428789]
 layout_mode = 2
@@ -271,11 +158,11 @@ visible = false
 custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxTexture_dmqsj")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_drddx")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_dmqsj")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_drddx")
 theme_override_styles/hover = SubResource("StyleBoxTexture_cs8s0")
-theme_override_styles/hover_pressed = SubResource("SB_slot_pressed")
-theme_override_styles/disabled = SubResource("SB_slot_disabled")
+theme_override_styles/hover_pressed = ExtResource("atlas_SB_slot_pressed")
+theme_override_styles/disabled = ExtResource("atlas_SB_slot_disabled")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_slots")
 
@@ -331,7 +218,7 @@ expand_mode = 1
 [node name="DetailPanel" type="PanelContainer" parent="Window/Margin/Layout/Body" unique_id=1511980531]
 custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_yfvuj")
+theme_override_styles/panel = ExtResource("panel_role_3")
 
 [node name="DetailMargin" type="MarginContainer" parent="Window/Margin/Layout/Body/DetailPanel" unique_id=1763748989]
 layout_mode = 2
@@ -362,9 +249,9 @@ custom_minimum_size = Vector2(38, 38)
 layout_mode = 2
 size_flags_vertical = 4
 focus_mode = 0
-theme_override_styles/normal = SubResource("SB_close_normal")
-theme_override_styles/pressed = SubResource("SB_close_pressed")
-theme_override_styles/hover = SubResource("SB_close_hover")
+theme_override_styles/normal = ExtResource("atlas_SB_close_normal")
+theme_override_styles/pressed = ExtResource("atlas_SB_close_pressed")
+theme_override_styles/hover = ExtResource("atlas_SB_close_hover")
 text = "X"
 metadata/pixelmania_font_size = 18
 
@@ -374,7 +261,7 @@ layout_mode = 2
 [node name="PreviewSlot" type="Panel" parent="Window/Margin/Layout/Body/DetailPanel/DetailMargin/DetailLayout/PreviewRow" unique_id=313594895]
 custom_minimum_size = Vector2(96, 96)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_te0f0")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxTexture_te0f0")
 
 [node name="Icon" type="TextureRect" parent="Window/Margin/Layout/Body/DetailPanel/DetailMargin/DetailLayout/PreviewRow/PreviewSlot" unique_id=519861345]
 layout_mode = 1
@@ -417,10 +304,10 @@ visible = false
 custom_minimum_size = Vector2(52, 52)
 layout_mode = 2
 focus_mode = 0
-theme_override_styles/normal = SubResource("SB_slot_normal")
-theme_override_styles/pressed = SubResource("SB_slot_normal")
-theme_override_styles/hover = SubResource("SB_slot_normal")
-theme_override_styles/disabled = SubResource("SB_slot_normal")
+theme_override_styles/normal = ExtResource("atlas_SB_slot_normal")
+theme_override_styles/pressed = ExtResource("atlas_SB_slot_normal")
+theme_override_styles/hover = ExtResource("atlas_SB_slot_normal")
+theme_override_styles/disabled = ExtResource("atlas_SB_slot_normal")
 
 [node name="Icon" type="TextureRect" parent="Window/Margin/Layout/Body/DetailPanel/DetailMargin/DetailLayout/IngredientsGrid/MiniSlotTemplate" unique_id=180451336]
 layout_mode = 1
@@ -470,10 +357,10 @@ visible = false
 custom_minimum_size = Vector2(52, 52)
 layout_mode = 2
 focus_mode = 0
-theme_override_styles/normal = SubResource("SB_slot_normal")
-theme_override_styles/pressed = SubResource("SB_slot_normal")
-theme_override_styles/hover = SubResource("SB_slot_normal")
-theme_override_styles/disabled = SubResource("SB_slot_normal")
+theme_override_styles/normal = ExtResource("atlas_SB_slot_normal")
+theme_override_styles/pressed = ExtResource("atlas_SB_slot_normal")
+theme_override_styles/hover = ExtResource("atlas_SB_slot_normal")
+theme_override_styles/disabled = ExtResource("atlas_SB_slot_normal")
 
 [node name="Icon" type="TextureRect" parent="Window/Margin/Layout/Body/DetailPanel/DetailMargin/DetailLayout/UsedForGrid/MiniSlotTemplate" unique_id=1285214922]
 layout_mode = 1

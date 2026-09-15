@@ -1,41 +1,30 @@
 [gd_scene format=3 uid="uid://b82q7cwexlq4t"]
 
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/outer_panel.tres" id="panel_role_0"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_1"]
+
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/pink_button_c4d4758782.tres" id="atlas_StyleBoxTexture_tab_selected"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/pink_button_f72e84db31.tres" id="atlas_StyleBoxTexture_tab_normal"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_c4d4758782.tres" id="atlas_StyleBoxTexture_5ntfa"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_1b992e4807.tres" id="atlas_StyleBoxTexture_c8pld"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_c4d4758782.tres" id="atlas_StyleBoxTexture_16opg"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_f72e84db31.tres" id="atlas_StyleBoxTexture_3v37g"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/scroll_bar_44136fa355.tres" id="atlas_StyleBoxTexture_w71hu"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/scroll_handle_44136fa355.tres" id="atlas_StyleBoxTexture_utcy3"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_send_button_44136fa355.tres" id="atlas_StyleBoxTexture_blue_normal"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_send_button_44136fa355.tres" id="atlas_StyleBoxTexture_blue_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_send_button_44136fa355.tres" id="atlas_StyleBoxTexture_blue_hover"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/chat_drag_handle.tres" id="chat_handle_texture"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_drag_handle_44136fa355.tres" id="atlas_StyleBoxTexture_button_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_drag_handle_44136fa355.tres" id="atlas_StyleBoxTexture_button_hover"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/input_field_c8326ad95d.tres" id="atlas_StyleBoxTexture_8jaiq"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_send_button_44136fa355.tres" id="atlas_StyleBoxTexture_qon6k"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_send_button_44136fa355.tres" id="atlas_StyleBoxTexture_003sp"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_send_button_44136fa355.tres" id="atlas_StyleBoxTexture_n532j"]
+
 [ext_resource type="Script" uid="uid://bl2p5yoxk8bto" path="res://Scripts/chat_ui.gd" id="0_chat_ui"]
-[ext_resource type="Texture2D" uid="uid://b4qfagqap6kta" path="res://Assets/ui/inner_panel_786x531.png" id="2_p00yb"]
-[ext_resource type="Texture2D" uid="uid://dp3cg88aiem4v" path="res://Assets/ui/pink_button_hover_90x24.png" id="3_yg7m8"]
-[ext_resource type="Texture2D" uid="uid://i3nk3d4nfgx5" path="res://Assets/ui/pink_button_90x24.png" id="4_5g5r1"]
-[ext_resource type="Texture2D" uid="uid://tbchr2qk0dib" path="res://Assets/ui/close_button_hover.png" id="5_5g5r1"]
-[ext_resource type="Texture2D" uid="uid://bc4yqbdvnpqiy" path="res://Assets/ui/pixelmania/close_button.png" id="6_fm6fj"]
-[ext_resource type="Texture2D" uid="uid://cdd8rhkxp0cky" path="res://Assets/ui/close_button_pressed.png" id="6_tyt54"]
-[ext_resource type="Texture2D" uid="uid://bdqewvpbuib1a" path="res://Assets/ui/panel_outer_403x130.png" id="8_003sp"]
-[ext_resource type="Texture2D" uid="uid://r8o1suc6ig5c" path="res://Assets/ui/inventory/scroll_bar_21x519.png" id="9_003sp"]
-[ext_resource type="Texture2D" uid="uid://d4dgvkwluc6qy" path="res://Assets/ui/chat/send.png" id="9_5g5r1"]
-[ext_resource type="Texture2D" uid="uid://bg5sabtp5jnsv" path="res://Assets/ui/input_744x72.png" id="9_tyt54"]
-[ext_resource type="Texture2D" uid="uid://b7acywh8cmls8" path="res://Assets/ui/scroll_handle.png" id="10_fm6fj"]
-[ext_resource type="Texture2D" uid="uid://b8v0mkqsrenjy" path="res://Assets/ui/handle_down.png" id="13_5g5r1"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tab_selected"]
-texture = ExtResource("3_yg7m8")
-
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/input_field.tres" id="9_tyt54"]
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tab_normal"]
-texture = ExtResource("4_5g5r1")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5ntfa"]
-texture = ExtResource("5_5g5r1")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_c8pld"]
-texture = ExtResource("6_tyt54")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_16opg"]
-texture = ExtResource("5_5g5r1")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3v37g"]
-texture = ExtResource("6_fm6fj")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_falkf"]
-texture = ExtResource("8_003sp")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c8pld"]
 
@@ -45,43 +34,7 @@ texture = ExtResource("8_003sp")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_16opg"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w71hu"]
-texture = ExtResource("9_003sp")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_utcy3"]
-texture = ExtResource("10_fm6fj")
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tyt54"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_normal"]
-texture = ExtResource("9_5g5r1")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_pressed"]
-texture = ExtResource("9_5g5r1")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_blue_hover"]
-texture = ExtResource("9_5g5r1")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_normal"]
-texture = ExtResource("13_5g5r1")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_pressed"]
-texture = ExtResource("13_5g5r1")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_hover"]
-texture = ExtResource("13_5g5r1")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8jaiq"]
-texture = ExtResource("9_tyt54")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qon6k"]
-texture = ExtResource("9_5g5r1")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_003sp"]
-texture = ExtResource("9_5g5r1")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n532j"]
-texture = ExtResource("9_5g5r1")
 
 [node name="ChatScene" type="Control" unique_id=1213254687]
 layout_mode = 3
@@ -93,6 +46,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("0_chat_ui")
+texture_filter = 1
 
 [node name="ChatPanel" type="Control" parent="." unique_id=1762208411]
 layout_mode = 1
@@ -114,11 +68,11 @@ offset_left = -152.5
 offset_top = -182.0
 offset_right = 1194.5
 offset_bottom = 436.0
-texture = ExtResource("2_p00yb")
-patch_margin_left = 36
-patch_margin_top = 36
-patch_margin_right = 36
-patch_margin_bottom = 36
+texture = ExtResource("panel_role_0")
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
 
 [node name="ChannelTabs" type="HBoxContainer" parent="ChatPanel" unique_id=1853564538]
 layout_mode = 0
@@ -137,11 +91,12 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("StyleBoxTexture_tab_selected")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_tab_selected")
-theme_override_styles/hover = SubResource("StyleBoxTexture_tab_selected")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_tab_selected")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_tab_selected")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_tab_selected")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 text = "WORLD"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="LocalTab" type="Button" parent="ChatPanel/ChannelTabs" unique_id=1711968605]
 custom_minimum_size = Vector2(124, 42)
@@ -151,11 +106,12 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("StyleBoxTexture_tab_normal")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_tab_selected")
-theme_override_styles/hover = SubResource("StyleBoxTexture_tab_selected")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_tab_normal")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_tab_selected")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_tab_selected")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 text = "LOCAL"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SystemTab" type="Button" parent="ChatPanel/ChannelTabs" unique_id=896765129]
 custom_minimum_size = Vector2(124, 42)
@@ -165,11 +121,12 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("StyleBoxTexture_tab_normal")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_tab_selected")
-theme_override_styles/hover = SubResource("StyleBoxTexture_tab_selected")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_tab_normal")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_tab_selected")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_tab_selected")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 text = "SYSTEM"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="CloseButton" type="Button" parent="ChatPanel" unique_id=947578256]
 custom_minimum_size = Vector2(54, 46)
@@ -183,11 +140,12 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("StyleBoxTexture_5ntfa")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_c8pld")
-theme_override_styles/hover = SubResource("StyleBoxTexture_16opg")
-theme_override_styles/focus = SubResource("StyleBoxTexture_3v37g")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_5ntfa")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_c8pld")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_16opg")
+theme_override_styles/focus = ExtResource("atlas_StyleBoxTexture_3v37g")
 text = "X"
+metadata/pixelmania_font_role = "preserve"
 
 [node name="MessagesPanel" type="Control" parent="ChatPanel" unique_id=1160573752]
 anchors_preset = 0
@@ -202,7 +160,7 @@ offset_left = -156.0
 offset_top = -207.0
 offset_right = 1100.0
 offset_bottom = 239.0
-theme_override_styles/panel = SubResource("StyleBoxTexture_falkf")
+theme_override_styles/panel = ExtResource("panel_role_1")
 horizontal_scroll_mode = 0
 
 [node name="MessagesRoot" type="VBoxContainer" parent="ChatPanel/MessagesPanel/MessagesScroll" unique_id=671447279]
@@ -222,6 +180,7 @@ theme_override_font_sizes/font_size = 15
 theme_override_styles/focus = SubResource("StyleBoxEmpty_c8pld")
 text = " [System] Welcome to PixelMania."
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="MessageRow_World" type="Label" parent="ChatPanel/MessagesPanel/MessagesScroll/MessagesRoot" unique_id=943565014]
 custom_minimum_size = Vector2(980, 28)
@@ -235,6 +194,7 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_fm6fj")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_5ntfa")
 text = " [World] Builder: Anyone selling seeds?"
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="MessageRow_Me" type="Label" parent="ChatPanel/MessagesPanel/MessagesScroll/MessagesRoot" unique_id=741094146]
 custom_minimum_size = Vector2(980, 28)
@@ -247,6 +207,7 @@ theme_override_font_sizes/font_size = 15
 theme_override_styles/focus = SubResource("StyleBoxEmpty_16opg")
 text = " [Me] I have some in storage."
 vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="MessagesScrollSlider" type="VScrollBar" parent="ChatPanel" unique_id=1889023157]
 layout_mode = 0
@@ -255,8 +216,8 @@ offset_top = -93.0
 offset_right = 1170.5
 offset_bottom = 371.0
 focus_mode = 0
-theme_override_styles/scroll = SubResource("StyleBoxTexture_w71hu")
-theme_override_styles/grabber = SubResource("StyleBoxTexture_utcy3")
+theme_override_styles/scroll = ExtResource("atlas_StyleBoxTexture_w71hu")
+theme_override_styles/grabber = ExtResource("atlas_StyleBoxTexture_utcy3")
 step = 1.0
 page = 32.0
 
@@ -267,10 +228,10 @@ offset_top = 361.0
 offset_right = 1018.5
 offset_bottom = 409.0
 texture = ExtResource("9_tyt54")
-patch_margin_left = 24
-patch_margin_top = 16
-patch_margin_right = 24
-patch_margin_bottom = 16
+patch_margin_left = 3
+patch_margin_top = 3
+patch_margin_right = 3
+patch_margin_bottom = 3
 
 [node name="ChatInput" type="LineEdit" parent="ChatPanel" unique_id=1369791791]
 layout_mode = 0
@@ -285,6 +246,7 @@ theme_override_colors/selection_color = Color(0.2, 0.48, 0.82, 0.58)
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxEmpty_tyt54")
 placeholder_text = "Type a message..."
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SendButton" type="Button" parent="ChatPanel" unique_id=1679907268]
 layout_mode = 0
@@ -297,10 +259,11 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
-theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_blue_hover")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+metadata/pixelmania_font_role = "preserve"
 
 [node name="ChatHandle" type="Button" parent="ChatPanel" unique_id=641912217]
 layout_mode = 0
@@ -313,10 +276,23 @@ theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 13
-theme_override_styles/normal = SubResource("StyleBoxTexture_button_normal")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_button_pressed")
-theme_override_styles/hover = SubResource("StyleBoxTexture_button_hover")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_focus")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_focus")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_focus")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+metadata/pixelmania_font_role = "preserve"
+
+[node name="HandleVisual" type="TextureRect" parent="ChatPanel/ChatHandle"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("chat_handle_texture")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="QuickChatBar" type="Control" parent="." unique_id=528386480]
 layout_mode = 1
@@ -343,8 +319,9 @@ theme_override_colors/font_placeholder_color = Color(0.76, 0.9, 1, 0.74)
 theme_override_colors/caret_color = Color(1, 0.88, 0.25, 1)
 theme_override_colors/selection_color = Color(0.2, 0.48, 0.82, 0.58)
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxTexture_8jaiq")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_8jaiq")
 placeholder_text = "   Type a message..."
+metadata/pixelmania_font_role = "preserve"
 
 [node name="QuickChatSendButton" type="Button" parent="QuickChatBar" unique_id=1256060282]
 layout_mode = 0
@@ -357,10 +334,11 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
-theme_override_styles/normal = SubResource("StyleBoxTexture_blue_normal")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_blue_pressed")
-theme_override_styles/hover = SubResource("StyleBoxTexture_blue_hover")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_blue_normal")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_blue_pressed")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_blue_hover")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+metadata/pixelmania_font_role = "preserve"
 
 [node name="ChatButton" type="Button" parent="." unique_id=1566833776]
 custom_minimum_size = Vector2(76, 76)
@@ -377,9 +355,9 @@ offset_bottom = -42.0
 grow_horizontal = 0
 grow_vertical = 0
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxTexture_qon6k")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_003sp")
-theme_override_styles/hover = SubResource("StyleBoxTexture_n532j")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_qon6k")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_003sp")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_n532j")
 
 [node name="ChatButtonIconShadow" type="TextureRect" parent="ChatButton" unique_id=2029239807]
 modulate = Color(0, 0, 0, 0.35)

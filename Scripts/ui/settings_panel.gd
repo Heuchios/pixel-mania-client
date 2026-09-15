@@ -4,7 +4,7 @@ class_name SettingsPanel
 signal close_requested
 
 const WINDOW_SIZE := Vector2(560, 360)
-const WINDOW_VISUAL_SIZE := Vector2(564, 674)
+const WINDOW_VISUAL_SIZE := Vector2(560, 300)
 const SETTINGS_SAVE_PATH := "user://pixelmania_settings.cfg"
 const SETTINGS_SECTION := "audio"
 const CHAT_SETTINGS_SECTION := "chat"
@@ -362,6 +362,28 @@ func _is_mobile_platform() -> bool:
 func _fit_window_to_viewport() -> void:
 	if window == null:
 		return
+	# The authored skin extended far beyond the actual settings rows, forcing
+	# phone layouts to shrink text to half size just to fit empty space.
+	window.size = WINDOW_VISUAL_SIZE
+	window.get_node("SettingsScrollSlider").hide()
+	window.position = (get_viewport_rect().size - WINDOW_VISUAL_SIZE) * 0.5
+	var skin := window.get_node("WindowSkin") as Control
+	skin.position = Vector2.ZERO
+	skin.size = WINDOW_VISUAL_SIZE
+	var header := window.get_node("HeaderSkin") as Control
+	header.position = Vector2(12, 12)
+	header.size = Vector2(536, 52)
+	var title := header.get_node("TitleLabel") as Control
+	title.position = Vector2(12, 0)
+	title.size = Vector2(448, 52)
+	close_button.position = Vector2(500, 16)
+	close_button.size = Vector2(44, 44)
+	var row_y := 78.0
+	for row in [full_screen_row, window.get_node("SfxRow"), chat_filter_row, mobile_controls_row]:
+		if row != null:
+			row.position = Vector2(24, row_y)
+			row.size = Vector2(512, 44)
+			row_y += 50.0
 
 	var viewport_size := get_viewport_rect().size
 	var available_size := Vector2(
@@ -372,4 +394,4 @@ func _fit_window_to_viewport() -> void:
 	var height_scale: float = available_size.y / WINDOW_VISUAL_SIZE.y
 	var scale_amount: float = minf(1.0, minf(width_scale, height_scale))
 	window.scale = Vector2.ONE * scale_amount
-	window.pivot_offset = WINDOW_SIZE * 0.5
+	window.pivot_offset = WINDOW_VISUAL_SIZE * 0.5

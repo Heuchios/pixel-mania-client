@@ -21,3 +21,14 @@
 
 _scratch/
 check.log
+
+# Android signing — never commit (repo is public)
+export_credentials.cfg
+*.keystore
+*.jks
+
+# Generated test client exports (keep source tests tracked)
+/tests/*.exe
+/tests/*.pck
+/tests/*.apk
+/tests/*.aab

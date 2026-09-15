@@ -1589,16 +1589,8 @@ func _make_round_button(text: String) -> Button:
 	return b
 
 
-func _style_box(fill: Color, border: Color, border_width: int, radius: int) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = fill
-	style.border_color = border
-	style.set_border_width_all(border_width)
-	style.set_corner_radius_all(radius)
-	style.shadow_color = Color(0, 0, 0, 0.35)
-	style.shadow_size = 7
-	style.shadow_offset = Vector2(0, 5)
-	return style
+func _style_box(fill: Color, border: Color, border_width: int, radius: int) -> StyleBox:
+	return PixelUIStyle.style_box(fill, border, border_width, radius, 7)
 
 
 func _load_profile() -> void:

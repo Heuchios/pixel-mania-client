@@ -2,29 +2,29 @@ extends Control
 
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 
-const WINDOW_SIZE := Vector2(1120.0, 680.0)
+const WINDOW_SIZE := Vector2(1000.0, 660.0)
 const ACCESS_LOOKUP_TIMEOUT_MS := 15000
 const WORLD_LOCK_ROLE_OPTIONS := ["ADMIN", "BUILDER", "VISITOR"]
 const DEFAULT_WORLD_LOCK_ROLE := "BUILDER"
 const WORLD_LOCK_KEY_ITEM_ID := "world_lock_key"
 const WORLD_LOCK_KEY_CATEGORY := "material"
 
-const CLOSE_BUTTON_TEXTURE = preload("res://Assets/ui/pixelmania/close_button.png")
-const BUTTON_YELLOW_NORMAL = preload("res://Assets/ui/pixelmania/button_normal.png")
-const BUTTON_YELLOW_PRESSED = preload("res://Assets/ui/pixelmania/button_pressed.png")
-const BUTTON_YELLOW_HOVER = preload("res://Assets/ui/pixelmania/button_hover.png")
-const BUTTON_BLUE_NORMAL = preload("res://Assets/ui/inventory/button_blue_normal.png")
-const BUTTON_BLUE_PRESSED = preload("res://Assets/ui/inventory/button_blue_pressed.png")
-const BUTTON_BLUE_HOVER = preload("res://Assets/ui/inventory/button_blue_hover.png")
+const CLOSE_BUTTON_TEXTURE = preload("res://Assets/ui/atlas/textures/close_button.tres")
+const BUTTON_YELLOW_NORMAL = preload("res://Assets/ui/atlas/textures/pink_button.tres")
+const BUTTON_YELLOW_PRESSED = preload("res://Assets/ui/atlas/textures/pink_button.tres")
+const BUTTON_YELLOW_HOVER = preload("res://Assets/ui/atlas/textures/pink_button.tres")
+const BUTTON_BLUE_NORMAL = preload("res://Assets/ui/atlas/textures/blue_button.tres")
+const BUTTON_BLUE_PRESSED = preload("res://Assets/ui/atlas/textures/blue_button.tres")
+const BUTTON_BLUE_HOVER = preload("res://Assets/ui/atlas/textures/blue_button.tres")
 const TAB_NORMAL_TEXTURE = preload("res://Assets/ui/inventory/tab_normal.png")
 const TAB_SELECTED_TEXTURE = preload("res://Assets/ui/inventory/tab_selected.png")
 # Same green button kit WorldLockGUI.tscn itself uses for GetKeyButton / PublicBuildButton /
 # SetLimitButton / AddAccessButton, so runtime-styled buttons (dynamically-created member row
 # buttons, the confirm popup) match the scene's authored look instead of the old yellow/blue/red
 # "arcade" palette.
-const BUTTON_GREEN_NORMAL = preload("res://Assets/ui/green_button_normal_90x24.png")
-const BUTTON_GREEN_PRESSED = preload("res://Assets/ui/green_button_pressed_90x24.png")
-const BUTTON_GREEN_HOVER = preload("res://Assets/ui/green_button_hover_90x24.png")
+const BUTTON_GREEN_NORMAL = preload("res://Assets/ui/atlas/textures/green_button.tres")
+const BUTTON_GREEN_PRESSED = preload("res://Assets/ui/atlas/textures/green_button.tres")
+const BUTTON_GREEN_HOVER = preload("res://Assets/ui/atlas/textures/green_button.tres")
 
 var world = null
 var ui_layer_ref = null
@@ -36,6 +36,9 @@ var _pending_access_check_request_id := ""
 var _pending_access_check_name := ""
 var _pending_access_check_role := ""
 var _access_check_timeout_deadline_ms := 0
+var _compact_scroll: ScrollContainer
+var _compact_body: Control
+var _desktop_positions: Dictionary = {}
 
 @onready var backdrop: ColorRect = $Backdrop
 @onready var dimmer: ColorRect = $Dimmer
@@ -80,6 +83,7 @@ func _ready() -> void:
 	window.pivot_offset = WINDOW_SIZE * 0.5
 	_apply_texture_filter(self)
 	_configure_static_ui()
+	_layout_simple_panel()
 	_fit_window_to_viewport()
 	close_world_lock()
 
@@ -171,10 +175,77 @@ func _configure_static_ui() -> void:
 	_sync_lock_icon_textures()
 
 
+func _place(path: String, rect: Rect2) -> void:
+	var control := window.get_node(path) as Control
+	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	control.position = rect.position
+	control.size = rect.size
+
+
+func _layout_simple_panel() -> void:
+	for panel_name in ["InfoCard", "AccessCard", "ActionsCard"]:
+		var panel := window.get_node(panel_name) as NinePatchRect
+		panel.modulate = Color.WHITE
+		panel.self_modulate = Color.WHITE
+		panel.texture = UIAtlasDB.get_texture("inner_panel")
+	window.size = WINDOW_SIZE
+	window.position = (get_viewport_rect().size - WINDOW_SIZE) * 0.5
+	_place("WindowSkin", Rect2(0, 0, 1000, 660))
+	_place("HeaderSkin", Rect2(16, 16, 968, 64))
+	window.get_node("HeaderSkin").show()
+	_place("TitleLabel", Rect2(32, 22, 450, 48))
+	_place("GetKeyButton", Rect2(624, 24, 150, 48))
+	_place("LockBadge", Rect2(786, 24, 132, 48))
+	lock_badge.icon = null
+	_place("InfoCard", Rect2(16, 92, 968, 64))
+	_place("WorldLabel", Rect2(32, 100, 450, 44))
+	_place("OwnerLabel", Rect2(500, 100, 450, 44))
+	for path in ["LockSlot", "LockIcon", "LockIconShadow", "LockedLabel", "StatusLabel", "PositionLabel"]:
+		window.get_node(path).hide()
+	_place("AccessTitle", Rect2(24, 170, 570, 40))
+	access_title.text = "PLAYER ACCESS"
+	_place("ActionsTitle", Rect2(634, 170, 342, 40))
+	actions_title.text = "PERMISSIONS"
+	_place("AccessCard", Rect2(16, 216, 590, 428))
+	_place("AccessCard/AccessScroll", Rect2(12, 12, 566, 404))
+	_place("AccessCard/EmptyAccessLabel", Rect2(24, 28, 542, 100))
+	empty_access_label.text = "No players have access yet.\nAdd someone using their username."
+	empty_access_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_place("ActionsCard", Rect2(622, 216, 362, 428))
+	_place("ActionsCard/AddPlayerLabel", Rect2(16, 12, 330, 30))
+	add_label.text = "ADD A PLAYER"
+	_place("ActionsCard/UsernameField", Rect2(16, 48, 330, 44))
+	_place("ActionsCard/UsernameField/UsernameSkin", Rect2(0, 0, 330, 44))
+	_place("ActionsCard/UsernameField/UsernameInput", Rect2(8, 2, 314, 40))
+	_place("ActionsCard/RolePicker", Rect2(16, 104, 160, 44))
+	_place("ActionsCard/AddAccessButton", Rect2(188, 104, 158, 44))
+	add_button.text = "ADD"
+	_place("ActionsCard/PublicBuildButton", Rect2(16, 184, 330, 48))
+	public_button.tooltip_text = "Allow everyone to build. Turning this off limits building to players with permission."
+	_place("ActionsCard/LimitLabel", Rect2(16, 258, 330, 32))
+	slot_limit_label.text = "BUILDER SLOTS"
+	slot_limit_input.text = "0"
+	PixelUIStyle.apply_input(slot_limit_input)
+	_place("ActionsCard/LimitField", Rect2(16, 300, 160, 44))
+	_place("ActionsCard/LimitField/LimitSkin", Rect2(0, 0, 160, 44))
+	_place("ActionsCard/LimitField/LimitInput", Rect2(8, 2, 144, 40))
+	_place("ActionsCard/SetLimitButton", Rect2(188, 300, 158, 44))
+	set_slot_limit_button.text = "SAVE LIMIT"
+	for path in ["ActionsCard/LimitLabel", "ActionsCard/LimitField", "ActionsCard/LimitField/LimitSkin", "ActionsCard/LimitField/LimitInput", "ActionsCard/SetLimitButton"]:
+		window.get_node(path).show()
+	_place("ActionsCard/HintLabel", Rect2(16, 360, 330, 56))
+	hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint_label.text = "Only the owner can edit access."
+	add_role_picker.tooltip_text = "Choose the access role for this player."
+
+
 func _fit_window_to_viewport() -> void:
 	if not is_inside_tree():
 		return
 	var viewport_size: Vector2 = get_viewport_rect().size
+	if _fit_compact_lock(viewport_size):
+		return
+	window.position = (viewport_size - WINDOW_SIZE) * 0.5
 	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
 		window.scale = Vector2.ONE
 	else:
@@ -185,6 +256,70 @@ func _fit_window_to_viewport() -> void:
 		window.scale = Vector2.ONE * clampf(scale_amount, 0.28, 1.0)
 	if confirm_panel != null and is_instance_valid(confirm_panel):
 		confirm_panel.position = (viewport_size - confirm_panel.size) * 0.5
+
+
+func _fit_compact_lock(viewport_size: Vector2) -> bool:
+	if window == null:
+		return false
+	if viewport_size.x >= 1024 and viewport_size.y >= 684:
+		if _compact_scroll != null and _compact_scroll.visible:
+			for control in _desktop_positions:
+				var saved: Rect2 = _desktop_positions[control]
+				if control.get_parent() == _compact_body:
+					control.reparent(window)
+				control.position = saved.position
+				control.size = saved.size
+			_compact_scroll.hide()
+			lock_badge.show()
+		return false
+	if _compact_scroll == null:
+		_compact_scroll = ScrollContainer.new()
+		_compact_scroll.name = "CompactContent"
+		_compact_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		window.add_child(_compact_scroll)
+		_compact_body = Control.new()
+		_compact_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		_compact_body.custom_minimum_size.y = 892
+		_compact_scroll.add_child(_compact_body)
+		for control in [window, window.get_node("WindowSkin"), window.get_node("HeaderSkin"), title_label, get_key_button, world_label, owner_label, access_title, actions_title, window.get_node("InfoCard"), access_scroll.get_parent(), public_button.get_parent(), access_scroll]:
+			_desktop_positions[control] = control.get_rect()
+	var extent := Vector2(maxf(380, viewport_size.x - 24), maxf(280, viewport_size.y - 24))
+	window.size = extent
+	window.position = (viewport_size - extent) * 0.5
+	window.scale = Vector2.ONE
+	window.get_node("WindowSkin").size = extent
+	window.get_node("HeaderSkin").size = Vector2(extent.x - 32, 64)
+	title_label.size.x = maxf(200, extent.x - 248)
+	get_key_button.position = Vector2(extent.x - 230, 24)
+	lock_badge.hide()
+	_compact_scroll.show()
+	_compact_scroll.position = Vector2(16, 88)
+	_compact_scroll.size = extent - Vector2(32, 104)
+	var width := extent.x - 48
+	var cards := [world_label, owner_label, access_title, actions_title, window.get_node("InfoCard") if window.has_node("InfoCard") else _compact_body.get_node("InfoCard"), access_scroll.get_parent(), public_button.get_parent()]
+	for control in cards:
+		if control.get_parent() != _compact_body:
+			control.reparent(_compact_body)
+	var info := _compact_body.get_node("InfoCard") as Control
+	info.position = Vector2.ZERO
+	info.size = Vector2(width, 72)
+	_compact_body.move_child(info, 0)
+	world_label.position = Vector2(12, 4)
+	world_label.size = Vector2(width - 24, 30)
+	owner_label.position = Vector2(12, 36)
+	owner_label.size = Vector2(width - 24, 30)
+	access_title.position = Vector2(0, 84)
+	access_title.size.x = width
+	var access_card := access_scroll.get_parent() as Control
+	access_card.position = Vector2(0, 128)
+	access_card.size = Vector2(width, 248)
+	access_scroll.size = Vector2(width - 24, 224)
+	actions_title.position = Vector2(0, 388)
+	actions_title.size.x = width
+	var actions_card := public_button.get_parent() as Control
+	actions_card.position = Vector2(0, 432)
+	actions_card.size = Vector2(width, 428)
+	return true
 
 
 func _process_access_lookup_timeout() -> void:
@@ -210,7 +345,7 @@ func _sync_lock_icon_textures() -> void:
 	var icon_texture = get_world_lock_icon_texture()
 	lock_icon.texture = icon_texture
 	lock_icon_shadow.texture = icon_texture
-	lock_badge.icon = icon_texture
+	lock_badge.icon = null
 
 
 func open_world_lock(grid_pos: Vector2i) -> void:
@@ -274,6 +409,7 @@ func refresh() -> void:
 	locked_label.text = "Locked: " + locked_text
 	owner_label.text = "Owner: " + owner_text
 	status_label.text = "Status: " + status_text
+	lock_badge.tooltip_text = status_text
 	position_label.text = "Lock position: " + manager.get_lock_position_text()
 
 	var is_owner := bool(manager.is_current_player_owner())
@@ -304,11 +440,11 @@ func refresh() -> void:
 		apply_world_lock_arcade_button_style(add_role_picker, false, false, 13)
 		apply_world_lock_arcade_button_style(set_slot_limit_button, false, false, 13)
 
-	slot_limit_label.text = "TRUSTED BUILDER LIMIT (Trusted Slots: " + manager.get_trusted_builder_slot_summary() + ")"
+	slot_limit_label.text = "BUILDER SLOTS: " + manager.get_trusted_builder_slot_summary()
 	if is_owner:
-		hint_label.text = "Adjust trusted builder cap (0-50). Existing trusted slots cannot exceed the limit."
+		hint_label.text = "Builder limit: 0–50 slots."
 	else:
-		hint_label.text = "Only the owner can edit access and trusted slot settings."
+		hint_label.text = "Only the owner can edit access."
 
 	refresh_member_list()
 
@@ -456,11 +592,14 @@ func create_member_row(player_name: String) -> void:
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.clip_text = true
+	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	name_label.tooltip_text = player_name
 	PixelUIStyle.apply_label_shadow(name_label, 16)
 	row.add_child(name_label)
 
 	var role_label := Label.new()
 	role_label.text = "ROLE"
+	role_label.visible = false
 	role_label.custom_minimum_size = Vector2(40, 28)
 	role_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	role_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -470,7 +609,7 @@ func create_member_row(player_name: String) -> void:
 	var player_role: String = manager.normalize_role(manager.get_player_access_role(player_name))
 	var selected_role: String = manager.get_role_title(player_role).to_upper()
 	var role_selector := OptionButton.new()
-	role_selector.custom_minimum_size = Vector2(118, 32)
+	role_selector.custom_minimum_size = Vector2(132, 44)
 	role_selector.focus_mode = Control.FOCUS_NONE
 	role_selector.mouse_filter = Control.MOUSE_FILTER_STOP
 	for role_index in range(WORLD_LOCK_ROLE_OPTIONS.size()):
@@ -488,7 +627,7 @@ func create_member_row(player_name: String) -> void:
 
 	var remove_button := Button.new()
 	remove_button.text = "REMOVE"
-	remove_button.custom_minimum_size = Vector2(106, 32)
+	remove_button.custom_minimum_size = Vector2(112, 44)
 	remove_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	remove_button.disabled = not manager.is_current_player_owner()
 	apply_world_lock_arcade_button_style(remove_button, false, true, 13)
@@ -1116,13 +1255,7 @@ func get_world_lock_icon_texture():
 func apply_close_texture_button_style(button: Button) -> void:
 	if button == null:
 		return
-	button.focus_mode = Control.FOCUS_NONE
-	button.text = ""
-	button.icon = null
-	button.add_theme_stylebox_override("normal", _make_texture_style(CLOSE_BUTTON_TEXTURE))
-	button.add_theme_stylebox_override("pressed", _make_texture_style(CLOSE_BUTTON_TEXTURE))
-	button.add_theme_stylebox_override("hover", _make_texture_style(CLOSE_BUTTON_TEXTURE))
-	button.add_theme_stylebox_override("disabled", _make_texture_style(CLOSE_BUTTON_TEXTURE))
+	PixelUIStyle.apply_close_button(button)
 
 
 func apply_world_lock_tab_style(button: Button, selected: bool, font_size: int = 14) -> void:
@@ -1130,11 +1263,7 @@ func apply_world_lock_tab_style(button: Button, selected: bool, font_size: int =
 		return
 	PixelUIStyle.apply_button_text(button, font_size)
 	button.focus_mode = Control.FOCUS_NONE
-	var normal_texture = TAB_SELECTED_TEXTURE if selected else TAB_NORMAL_TEXTURE
-	button.add_theme_stylebox_override("normal", _make_texture_style(normal_texture))
-	button.add_theme_stylebox_override("pressed", _make_texture_style(TAB_SELECTED_TEXTURE))
-	button.add_theme_stylebox_override("hover", _make_texture_style(TAB_SELECTED_TEXTURE))
-	button.add_theme_stylebox_override("disabled", _make_texture_style(normal_texture))
+	PixelUIStyle.apply_atlas_button(button, "pink_button" if selected else "blue_button")
 	button.add_theme_color_override("font_color", Color.WHITE if selected else Color(0.82, 0.95, 1.0, 0.92))
 	button.add_theme_color_override("font_pressed_color", Color.WHITE)
 	button.add_theme_color_override("font_hover_color", Color.WHITE)
@@ -1149,10 +1278,15 @@ func apply_world_lock_arcade_button_style(button: Button, selected: bool = false
 	# this menu -- scene-authored or dynamically created (member rows, confirm popup) --
 	# matches the scene's actual look. `selected` and `danger` are kept as parameters so
 	# existing call sites don't need to change, but no longer switch to a different palette.
-	button.add_theme_stylebox_override("normal", _make_texture_style(BUTTON_GREEN_NORMAL))
-	button.add_theme_stylebox_override("pressed", _make_texture_style(BUTTON_GREEN_PRESSED))
-	button.add_theme_stylebox_override("hover", _make_texture_style(BUTTON_GREEN_HOVER))
-	button.add_theme_stylebox_override("disabled", PixelUIStyle.style_box(Color(0.10, 0.14, 0.10, 0.50), Color(0.24, 0.34, 0.22, 0.42), 3, 12, 3))
+	PixelUIStyle.apply_atlas_button(button, "red_button" if danger else ("green_button" if selected else "blue_button"))
+	if button is OptionButton:
+		var popup: PopupMenu = (button as OptionButton).get_popup()
+		popup.add_theme_stylebox_override("panel", PixelUIStyle.atlas_style("inner_panel", Color.WHITE, 8))
+		popup.add_theme_stylebox_override("hover", PixelUIStyle.atlas_style("blue_button", Color.WHITE, 4))
+		popup.add_theme_font_size_override("font_size", 24)
+		popup.add_theme_constant_override("v_separation", 12)
+		popup.add_theme_color_override("font_color", Color.WHITE)
+		button.tooltip_text = "Admin: build, toggle entrances and pull players.\nBuilder: build and configure doors.\nVisitor: pass entrances; no building unless public build is on.\nOnly the owner can change access."
 
 
 func apply_world_lock_input_style(line_edit: LineEdit, font_size: int = 18) -> void:
@@ -1183,6 +1317,8 @@ func apply_world_lock_scrollbar_style(scroll: ScrollContainer) -> void:
 
 
 func _make_texture_style(texture: Texture2D) -> StyleBoxTexture:
+	if texture != null and texture.has_meta("atlas_region"):
+		return UIAtlasDB.get_stylebox(str(texture.get_meta("atlas_region"))).duplicate() as StyleBoxTexture
 	var style := StyleBoxTexture.new()
 	style.texture = texture
 	return style
