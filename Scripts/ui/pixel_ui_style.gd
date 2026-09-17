@@ -100,6 +100,7 @@ static func apply_global_typography_to_node(node: Node) -> void:
 		_apply_global_font_size(node, font_size)
 
 	_apply_global_text_shadow(node)
+	_apply_pink_button_text(node)
 
 
 static func _is_text_control(node: Node) -> bool:
@@ -117,6 +118,8 @@ static func _is_text_control(node: Node) -> bool:
 
 
 static func _resolve_global_font_size(node: Node) -> int:
+	if node.has_meta("pixelmania_font_size"):
+		return int(node.get_meta("pixelmania_font_size"))
 	var role := str(node.get_meta(GLOBAL_FONT_ROLE_META, "")).strip_edges().to_lower()
 	match role:
 		"icon":
@@ -324,10 +327,12 @@ static func apply_green_button(button: Button, font_size: int = DEFAULT_TEXT_FON
 	apply_atlas_button(button, "green_button")
 
 static func apply_tab_button(button: Button, selected: bool, font_size: int = 15) -> void:
-	if selected:
-		apply_yellow_button(button, font_size)
-	else:
-		apply_blue_button(button, font_size)
+	if button == null:
+		return
+	apply_yellow_button(button, font_size)
+	button.toggle_mode = true
+	button.set_pressed_no_signal(selected)
+	_apply_category_selection_style(button)
 
 
 static func apply_close_button(button: Button) -> void:
@@ -336,20 +341,31 @@ static func apply_close_button(button: Button) -> void:
 	apply_button_text(button, 20, TEXT_LIGHT)
 	button.text = ""
 	button.icon = UIAtlasDB.get_texture("close_button")
+	button.set_meta("standard_close_button", true)
+	button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	button.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	for state in ["icon_normal_color", "icon_hover_color", "icon_pressed_color", "icon_focus_color"]:
+		button.add_theme_color_override(state, Color.WHITE)
 	button.expand_icon = true
 	apply_atlas_button(button, "red_button")
 	button.add_theme_constant_override("icon_max_width", 32)
 	button.custom_minimum_size = Vector2(48, 48)
 	button.custom_maximum_size = Vector2(48, 48)
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	if button.get_meta("close_button_align_top", false):
+		button.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	button.tooltip_text = "Close"
 
 
 static func apply_ui_chrome_to_node(node: Node) -> void:
-	if node is Button and "close" in String(node.name).to_lower():
+	_apply_window_shadow(node)
+	_apply_pink_button_text(node)
+	_apply_category_selection_style(node)
+	if node is Button and ("close" in String(node.name).to_lower() or node.get_meta("standard_close_button", false) or node.text.strip_edges() in ["X", "×", "✕", "Close", "CLOSE"]):
 		apply_close_button(node)
 		var parent := node.get_parent() as Control
-		if parent != null and not parent is Container:
+		if parent != null and not parent is Container and not "close" in String(parent.name).to_lower():
 			var bounds := Rect2(Vector2.ZERO, parent.size)
 			for child in parent.get_children():
 				if child is NinePatchRect and child.texture != null and child.texture.get_meta("atlas_region", "") == "outer_panel":
@@ -375,6 +391,72 @@ static func apply_ui_chrome_to_node(node: Node) -> void:
 			node.anchor_right = node.anchor_left
 			node.offset_left = 0 if region == "scroll_bar" else 2
 			node.offset_right = 12 if region == "scroll_bar" else 10
+
+static func _apply_category_selection_style(node: Node) -> void:
+	if not node is Button or not node.toggle_mode or node is CheckBox or node is CheckButton:
+		return
+	var normal := node.get_theme_stylebox("normal") as StyleBoxTexture
+	if normal == null or normal.get_meta("atlas_region", "") not in ["pink_button", "blue_button", "green_button", "red_button"]:
+		return
+	# Derive from the unselected skin, never from a previously darkened state.
+	var selected := normal.duplicate() as StyleBoxTexture
+	selected.modulate_color = normal.modulate_color * Color(0.84, 0.84, 0.84, 1)
+	var selected_hover := normal.duplicate() as StyleBoxTexture
+	selected_hover.modulate_color = normal.modulate_color * Color(0.88, 0.88, 0.88, 1)
+	node.add_theme_stylebox_override("pressed", selected)
+	node.add_theme_stylebox_override("hover_pressed", selected_hover)
+
+
+static func _apply_pink_button_text(node: Node) -> void:
+	var button := node as Button
+	if node is Label:
+		var ancestor := node.get_parent()
+		while ancestor != null and not ancestor is Button:
+			ancestor = ancestor.get_parent()
+		button = ancestor as Button
+	if button == null:
+		return
+	var style := button.get_theme_stylebox("normal")
+	if style.get_meta("atlas_region", "") != "pink_button":
+		return
+	var ink := Color(0.16, 0.06, 0.2)
+	node.add_theme_color_override("font_shadow_color", Color.TRANSPARENT)
+	node.add_theme_constant_override("shadow_offset_x", 0)
+	node.add_theme_constant_override("shadow_offset_y", 0)
+	if node is Button:
+		for state in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
+			node.add_theme_color_override(state, ink)
+	elif node is Label:
+		node.add_theme_color_override("font_color", ink)
+		if node.label_settings != null:
+			var settings := _ensure_owned_label_settings(node as Label)
+			settings.font_color = ink
+			settings.shadow_color = Color.TRANSPARENT
+			settings.shadow_offset = Vector2.ZERO
+
+
+static func _apply_window_shadow(node: Node) -> void:
+	if not node is Control:
+		return
+	var region := ""
+	if node is Panel or node is PanelContainer:
+		region = node.get_theme_stylebox("panel").get_meta("atlas_region", "")
+	elif node is NinePatchRect or node is TextureRect:
+		if node.texture != null:
+			region = node.texture.get_meta("atlas_region", "")
+	if region != "outer_panel":
+		return
+	# Authored windows may already have a sibling shadow behind their background.
+	var existing := node.get_parent().get_node_or_null("DropShadow")
+	if existing is CanvasItem:
+		existing.self_modulate = Color(1, 1, 1, 0.4)
+		return
+	if node.has_node("WindowDropShadow"):
+		return
+	var shadow = preload("res://Scripts/ui/panel_drop_shadow.gd").new()
+	shadow.name = "WindowDropShadow"
+	node.add_child(shadow)
+
 
 static func play_panel_open(panel: Control, start_scale: Vector2 = Vector2(0.96, 0.96), duration: float = 0.16) -> void:
 	if panel == null:

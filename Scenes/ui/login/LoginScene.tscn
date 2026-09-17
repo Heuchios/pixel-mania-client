@@ -1,27 +1,10 @@
 [gd_scene format=3 uid="uid://dcj67i7so4mjm"]
 
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_0"]
-[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/outer_panel.tres" id="panel_role_1"]
-
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/pink_button_f72e84db31.tres" id="atlas_StyleBoxTexture_yellow_normal"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/pink_button_1b992e4807.tres" id="atlas_StyleBoxTexture_yellow_pressed"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/pink_button_c4d4758782.tres" id="atlas_StyleBoxTexture_yellow_hover"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_f72e84db31.tres" id="atlas_StyleBoxTexture_0axv6"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_1b992e4807.tres" id="atlas_StyleBoxTexture_blue_pressed"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_c4d4758782.tres" id="atlas_StyleBoxTexture_blue_hover"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_f72e84db31.tres" id="atlas_StyleBoxTexture_green_normal"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_1b992e4807.tres" id="atlas_StyleBoxTexture_green_pressed"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_c4d4758782.tres" id="atlas_StyleBoxTexture_u1e5q"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_f72e84db31.tres" id="atlas_StyleBoxTexture_drop_normal"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_1b992e4807.tres" id="atlas_StyleBoxTexture_drop_pressed"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_c4d4758782.tres" id="atlas_StyleBoxTexture_drop_hover"]
-
 [ext_resource type="Script" uid="uid://dk87xwb626w6e" path="res://Scripts/login_screen.gd" id="1_login_script"]
 [ext_resource type="Texture2D" uid="uid://c4k867krp3wli" path="res://Assets/background/space_theme/star_1.png" id="2_0axv6"]
 [ext_resource type="Texture2D" uid="uid://cvjfqv4kccwo0" path="res://Assets/background/space_theme/star_2.png" id="3_ox2yu"]
 [ext_resource type="Texture2D" uid="uid://dsnopy0fnnne2" path="res://Assets/background/space_theme/star_3.png" id="4_ui2s7"]
 [ext_resource type="Texture2D" uid="uid://bd6iwmw6k8s4x" path="res://Assets/background/space_theme/star_4.png" id="5_fk7no"]
-[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inner_panel.tres" id="6_ui2s7"]
 [ext_resource type="Texture2D" uid="uid://dnuvhhyohskng" path="res://Assets/ui/logo/Logo_6.png" id="9_logo"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/input_field.tres" id="9_ox2yu"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inner_panel.tres" id="10_panel_grid"]
@@ -29,6 +12,20 @@
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/toggle_off.tres" id="12_ui2s7"]
 [ext_resource type="AudioStream" uid="uid://b2081fvdx1xwo" path="res://Assets/sounds/login.wav" id="23_login_sound"]
 [ext_resource type="Script" uid="uid://ca4fq8loi3owy" path="res://Scripts/ui/custom_icon_check_box.gd" id="27_custom_checkbox"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/blue_button_f72e84db31.tres" id="atlas_StyleBoxTexture_0axv6"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/blue_button_c4d4758782.tres" id="atlas_StyleBoxTexture_blue_hover"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/blue_button_1b992e4807.tres" id="atlas_StyleBoxTexture_blue_pressed"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/red_button_c4d4758782.tres" id="atlas_StyleBoxTexture_drop_hover"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/red_button_f72e84db31.tres" id="atlas_StyleBoxTexture_drop_normal"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/red_button_1b992e4807.tres" id="atlas_StyleBoxTexture_drop_pressed"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/green_button_f72e84db31.tres" id="atlas_StyleBoxTexture_green_normal"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/green_button_1b992e4807.tres" id="atlas_StyleBoxTexture_green_pressed"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/green_button_c4d4758782.tres" id="atlas_StyleBoxTexture_u1e5q"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/pink_button_c4d4758782.tres" id="atlas_StyleBoxTexture_yellow_hover"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/pink_button_f72e84db31.tres" id="atlas_StyleBoxTexture_yellow_normal"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/pink_button_1b992e4807.tres" id="atlas_StyleBoxTexture_yellow_pressed"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_0"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/outer_panel.tres" id="panel_role_1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_logo"]
 atlas = ExtResource("9_logo")
@@ -39,6 +36,7 @@ region = Rect2(54, 144, 406, 222)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
 
 [node name="LoginScene" type="Control" unique_id=219844431]
+texture_filter = 1
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -46,7 +44,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_login_script")
-texture_filter = 1
 
 [node name="StarryNightBackground" type="Control" parent="." unique_id=653466359]
 clip_contents = true
@@ -204,7 +201,7 @@ offset_right = -3.0
 offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("6_ui2s7")
+texture = ExtResource("10_panel_grid")
 patch_margin_left = 1
 patch_margin_top = 1
 patch_margin_right = 1
@@ -436,6 +433,12 @@ secret = true
 metadata/pixelmania_font_role = "preserve"
 
 [node name="RememberPasswordCheck" type="CheckBox" parent="LoginPanel/Form" unique_id=1460154231]
+theme_override_styles/normal = SubResource("StyleBoxEmpty_focus")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_focus")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_focus")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_focus")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_focus")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 layout_mode = 0
 offset_left = 199.0
 offset_top = 260.0
@@ -454,18 +457,18 @@ script = ExtResource("27_custom_checkbox")
 metadata/pixelmania_font_role = "preserve"
 
 [node name="ResetEmailButton" type="Button" parent="LoginPanel/Form" unique_id=415525335]
-custom_minimum_size = Vector2(90, 24)
+custom_minimum_size = Vector2(228, 58)
 layout_mode = 0
-offset_left = 193.0
+offset_left = 194.0
 offset_top = 325.0
-offset_right = 438.0
-offset_bottom = 379.0
+offset_right = 422.0
+offset_bottom = 383.0
 focus_mode = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_yellow_normal")
 theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_yellow_pressed")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_yellow_hover")
@@ -474,17 +477,17 @@ text = "Change Email"
 metadata/pixelmania_font_role = "preserve"
 
 [node name="ResetPasswordButton" type="Button" parent="LoginPanel/Form" unique_id=172932406]
-custom_minimum_size = Vector2(112, 24)
+custom_minimum_size = Vector2(228, 58)
 layout_mode = 0
 offset_left = 194.0
 offset_top = 400.0
-offset_right = 438.0
-offset_bottom = 455.0
+offset_right = 422.0
+offset_bottom = 458.0
 focus_mode = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_yellow_normal")
 theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_yellow_pressed")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_yellow_hover")
@@ -493,9 +496,9 @@ text = "Reset Password"
 metadata/pixelmania_font_role = "preserve"
 
 [node name="RegisterButton" type="Button" parent="LoginPanel/Form" unique_id=1603973115]
-custom_minimum_size = Vector2(214, 58)
+custom_minimum_size = Vector2(228, 58)
 layout_mode = 0
-offset_left = 450.0
+offset_left = 438.0
 offset_top = 400.0
 offset_right = 666.0
 offset_bottom = 458.0
@@ -512,9 +515,9 @@ text = "Register"
 metadata/pixelmania_font_role = "preserve"
 
 [node name="SignOnButton" type="Button" parent="LoginPanel/Form" unique_id=238767931]
-custom_minimum_size = Vector2(214, 58)
+custom_minimum_size = Vector2(228, 58)
 layout_mode = 0
-offset_left = 450.0
+offset_left = 438.0
 offset_top = 325.0
 offset_right = 666.0
 offset_bottom = 383.0

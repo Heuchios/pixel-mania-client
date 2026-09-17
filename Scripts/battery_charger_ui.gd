@@ -7,7 +7,7 @@ const BATTERY_TEXTURE_PATH := "res://Assets/blocks/electric/battery.png"
 const DEFAULT_OUTPUT_CAPACITY := 200
 const DEFAULT_MAX_HOURS := 24.0
 const PRODUCTION_RATE_TEXT := "3 batteries / h"
-const CONSUMPTION_RATE_TEXT := "80 W / h"
+const CONSUMPTION_RATE_TEXT := "80 energy/hour"
 
 signal start_requested(grid_pos: Vector2i)
 signal eject_requested(grid_pos: Vector2i)
@@ -284,7 +284,7 @@ func refresh() -> void:
 	var produced_count := clampi(int(state.get("output_count", state.get("produced_count", 0))), 0, output_capacity)
 	var enabled := bool(state.get("enabled", state.get("machine_enabled", state.get("running", false))))
 	var running := bool(state.get("running", state.get("is_running", state.get("charging", false))))
-	var linked_pole := bool(state.get("linked_pole", false)) or state.has("linked_pole_x") or state.has("pole_x")
+	var linked_pole := bool(state.get("linked_pole", state.has("linked_pole_x") or state.has("pole_x")))
 	var direct_power := bool(state.get("direct_power", state.get("powered", false)))
 	var transformer_watts := maxi(0, int(state.get("transformer_watts", state.get("available_watts", state.get("input_watts", state.get("watts", 0))))))
 	var output_full := produced_count >= output_capacity
@@ -314,7 +314,7 @@ func refresh() -> void:
 	if charge_value_label != null:
 		charge_value_label.text = str(int(round(production_progress * 100.0))) + "%"
 	if power_label != null:
-		power_label.text = "Transformer: " + str(transformer_watts) + " W" if linked_pole else "Pole: none"
+		power_label.text = "Transformer: " + str(transformer_watts) + " energy" if linked_pole else "Pole: none"
 	if stored_label != null:
 		stored_label.text = "Output: " + str(produced_count) + " / " + str(output_capacity)
 	if input_label != null:

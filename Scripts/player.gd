@@ -14,9 +14,6 @@ const SLIDE_ANIMATION_MIN_SPEED = 6.0
 const PUNCH_KNOCKBACK_SLIDE_DURATION = 0.38
 const PUNCH_KNOCKBACK_SLIDE_ACCELERATION = 520.0
 const PUNCH_KNOCKBACK_SLIDE_FRICTION = 820.0
-const LEDGE_MIN_SUPPORT_WIDTH = 8.0
-const LEDGE_AUTO_FALL_NUDGE = 4.0
-const LEDGE_FALL_START_VELOCITY = 36.0
 const JUMP_BUFFER_TIME = 0.10
 const COYOTE_TIME = 0.10
 const JUMP_RELEASE_VELOCITY_FACTOR = 0.55
@@ -374,7 +371,7 @@ func run_player_movement_step(delta: float) -> void:
 	update_lava_rebound()
 	update_lava_fire_contact_particles()
 	update_springboard_bounce()
-	update_ledge_auto_fall(vertical_velocity_before_move)
+	# Preserve valid edge landings; gravity takes over once real floor contact ends.
 	update_player_water_depth()
 	update_water_splash_particles(delta, in_water_before_move, vertical_velocity_before_move)
 	update_water_surface_contact_particles()
@@ -2078,86 +2075,6 @@ func is_standing_on_water() -> bool:
 		water_cache_result = result
 
 	return result
-
-
-func update_ledge_auto_fall(fall_speed_before_move: float = 0.0):
-	if not is_on_floor() or velocity.y < 0.0:
-		return
-
-	var support_data = get_floor_support_data()
-	if support_data.is_empty():
-		return
-
-	var support_width = float(support_data.get("support_width", 0.0))
-	if support_width <= 0.0 or support_width >= LEDGE_MIN_SUPPORT_WIDTH:
-		return
-
-	var fall_direction = float(support_data.get("fall_direction", 0.0))
-	if abs(fall_direction) <= 0.01:
-		return
-
-	global_position.x += fall_direction * LEDGE_AUTO_FALL_NUDGE
-	invalidate_movement_surface_cache()
-	var restored_fall_velocity: float = maxf(LEDGE_FALL_START_VELOCITY, fall_speed_before_move)
-	velocity.y = maxf(velocity.y, restored_fall_velocity)
-	coyote_timer = 0.0
-
-
-func get_floor_support_data() -> Dictionary:
-	var world = get_world_controller()
-	if world == null or not is_instance_valid(world):
-		return {}
-
-	var blocks = world.get("blocks")
-	if not blocks is Dictionary:
-		return {}
-
-	var block_size = get_world_block_size(world)
-	var half_block = block_size * 0.5
-	var half_extents = _get_collision_half_extents()
-	var foot_left = global_position.x - half_extents.x
-	var foot_right = global_position.x + half_extents.x
-	var foot_y = global_position.y + half_extents.y + 2.0
-	var grid_y = int(floor((foot_y + half_block) / block_size))
-	var min_grid_x = int(floor((foot_left + half_block + 0.01) / block_size))
-	var max_grid_x = int(floor((foot_right + half_block - 0.01) / block_size))
-	var support_width = 0.0
-	var support_center_sum = 0.0
-
-	for grid_x in range(min_grid_x, max_grid_x + 1):
-		var grid_pos = Vector2i(grid_x, grid_y)
-		if not blocks.has(grid_pos):
-			continue
-
-		var block_type = str(blocks[grid_pos].get("type", ""))
-		if not is_floor_support_block_type(world, block_type):
-			continue
-
-		var block_left = float(grid_x) * block_size - half_block
-		var block_right = float(grid_x) * block_size + half_block
-		var overlap_left = max(foot_left, block_left)
-		var overlap_right = min(foot_right, block_right)
-		var overlap_width = max(0.0, overlap_right - overlap_left)
-		if overlap_width <= 0.0:
-			continue
-
-		support_width += overlap_width
-		support_center_sum += ((overlap_left + overlap_right) * 0.5) * overlap_width
-
-	if support_width <= 0.0:
-		return {}
-
-	var support_center = support_center_sum / support_width
-	var fall_direction = 1.0 if global_position.x >= support_center else -1.0
-	if abs(global_position.x - support_center) <= 0.01:
-		fall_direction = sign(velocity.x)
-	if abs(fall_direction) <= 0.01:
-		fall_direction = get_horizontal_input_direction()
-
-	return {
-		"support_width": support_width,
-		"fall_direction": fall_direction
-	}
 
 
 func is_floor_support_block_type(world, block_type: String) -> bool:

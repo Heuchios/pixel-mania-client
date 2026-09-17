@@ -222,6 +222,7 @@ func _on_sidebar_button_toggled(toggled_on: bool, index: int) -> void:
 	category_title_label.text = _sidebar_buttons[index].tooltip_text.to_upper()
 	for i in range(_category_grids.size()):
 		_category_grids[i].visible = (i == index)
+	call_deferred("_align_category_header")
 
 	# A newly-selected tab almost certainly has a different scrollable range
 	# than the one just left (more/fewer rows), so start it scrolled to the
@@ -582,6 +583,30 @@ func _reflow_product_grid() -> void:
 			if card is Control:
 				card.custom_minimum_size.x = card_width
 		grid.columns = columns
+	call_deferred("_align_category_header")
+
+
+func _align_category_header() -> void:
+	for grid in _category_grids:
+		if not grid.visible:
+			continue
+		var row_end := 0.0
+		var count := 0
+		for card in grid.get_children():
+			if card is Control and card.visible:
+				row_end = maxf(row_end, card.position.x + card.size.x)
+				count += 1
+				if count >= grid.columns:
+					break
+		if row_end > 0.0:
+			category_title_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+			category_title_label.custom_minimum_size.x = row_end
+			category_title_label.custom_maximum_size.x = row_end
+			var header_style := category_title_label.get_theme_stylebox("normal").duplicate() as StyleBox
+			header_style.content_margin_left = 12.0
+			header_style.content_margin_right = 12.0
+			category_title_label.add_theme_stylebox_override("normal", header_style)
+		return
 
 
 func _unhandled_key_input(event: InputEvent) -> void:

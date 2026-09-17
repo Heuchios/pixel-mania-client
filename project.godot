@@ -18,6 +18,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+
+
 MovementMode="*res://Scripts/networking/movement_mode.gd"
 GlobalFontManager="*res://Scripts/ui/global_font_manager.gd"
 NetworkManager="*uid://b235pvewnt643"
@@ -37,6 +39,7 @@ NetworkSimulator="*res://addons/netfox.extras/network-simulator.gd"
 MCPRuntime="*uid://cstodc22p4p7g"
 ClientUpdateGate="*res://Scripts/ui/client_update_required_overlay.gd"
 MusicManager="*res://Scripts/music_manager.gd"
+BillingClient="*res://Scripts/billing_client.gd"
 
 [display]
 
@@ -52,10 +55,11 @@ run/main_run_args="--pm-collision-trace --movement-sync-debug"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/netfox.extras/plugin.cfg", "res://addons/netfox/plugin.cfg")
+enabled=PackedStringArray("res://addons/netfox.extras/plugin.cfg", "res://addons/netfox/plugin.cfg", "res://addons/GodotGooglePlayBilling/plugin.cfg")
 
 [gui]
 
+theme/custom="res://Assets/ui/atlas/theme.tres"
 theme/default_font="res://Assets/font/font.ttf"
 theme/default_font_size=24
 

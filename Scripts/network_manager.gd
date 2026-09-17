@@ -2934,7 +2934,7 @@ func send_request_open_generator(grid_pos: Vector2i, world_name: String) -> bool
 	return send_message(attach_session_auth(payload))
 
 
-func send_request_link_generator_pad(generator_grid: Vector2i, pad_grid: Vector2i, world_name: String) -> bool:
+func send_request_link_generator_pad(generator_grid: Vector2i, pad_grid: Vector2i, world_name: String, disconnect: bool = false) -> bool:
 	if not is_server_session_authenticated():
 		return false
 	if not _can_send_rate_limited("request_link_generator_pad", MAX_WORLD_INTERACTION_RATE_PER_SECOND):
@@ -2950,13 +2950,14 @@ func send_request_link_generator_pad(generator_grid: Vector2i, pad_grid: Vector2
 		"generator_y": clamp(generator_grid.y, -MAX_COORDINATE, MAX_COORDINATE),
 		"pad_x": clamp(pad_grid.x, -MAX_COORDINATE, MAX_COORDINATE),
 		"pad_y": clamp(pad_grid.y, -MAX_COORDINATE, MAX_COORDINATE),
+		"disconnect": disconnect,
 		"world": clean_world
 	}
 	flush_world_position_for_payload(payload)
 	return send_message(attach_session_auth(payload))
 
 
-func send_request_link_generator_pole(generator_grid: Vector2i, pole_grid: Vector2i, world_name: String) -> bool:
+func send_request_link_generator_pole(generator_grid: Vector2i, pole_grid: Vector2i, world_name: String, disconnect: bool = false) -> bool:
 	if not is_server_session_authenticated():
 		return false
 	if not _can_send_rate_limited("request_link_generator_pole", MAX_WORLD_INTERACTION_RATE_PER_SECOND):
@@ -2972,13 +2973,14 @@ func send_request_link_generator_pole(generator_grid: Vector2i, pole_grid: Vecto
 		"generator_y": clamp(generator_grid.y, -MAX_COORDINATE, MAX_COORDINATE),
 		"pole_x": clamp(pole_grid.x, -MAX_COORDINATE, MAX_COORDINATE),
 		"pole_y": clamp(pole_grid.y, -MAX_COORDINATE, MAX_COORDINATE),
+		"disconnect": disconnect,
 		"world": clean_world
 	}
 	flush_world_position_for_payload(payload)
 	return send_message(attach_session_auth(payload))
 
 
-func send_request_link_electric_poles(pole_a_grid: Vector2i, pole_b_grid: Vector2i, world_name: String) -> bool:
+func send_request_link_electric_poles(pole_a_grid: Vector2i, pole_b_grid: Vector2i, world_name: String, disconnect: bool = false) -> bool:
 	if not is_server_session_authenticated():
 		return false
 	if not _can_send_rate_limited("request_link_electric_poles", MAX_WORLD_INTERACTION_RATE_PER_SECOND):
@@ -2994,6 +2996,7 @@ func send_request_link_electric_poles(pole_a_grid: Vector2i, pole_b_grid: Vector
 		"pole_a_y": clamp(pole_a_grid.y, -MAX_COORDINATE, MAX_COORDINATE),
 		"pole_b_x": clamp(pole_b_grid.x, -MAX_COORDINATE, MAX_COORDINATE),
 		"pole_b_y": clamp(pole_b_grid.y, -MAX_COORDINATE, MAX_COORDINATE),
+		"disconnect": disconnect,
 		"world": clean_world
 	}
 	flush_world_position_for_payload(payload)
@@ -3051,6 +3054,8 @@ func send_oil_refinery_request(refinery_grid: Vector2i, operation: String, extra
 	if extra_data.has("pole_x") or extra_data.has("pole_y"):
 		payload["pole_x"] = _safe_int(extra_data.get("pole_x", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)
 		payload["pole_y"] = _safe_int(extra_data.get("pole_y", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)
+	if extra_data.has("disconnect"):
+		payload["disconnect"] = bool(extra_data.disconnect)
 	flush_world_position_for_payload(payload)
 	return send_message(attach_session_auth(payload))
 
@@ -3082,6 +3087,8 @@ func send_battery_charger_request(charger_grid: Vector2i, operation: String, ext
 	if extra_data.has("pole_x") or extra_data.has("pole_y"):
 		payload["pole_x"] = _safe_int(extra_data.get("pole_x", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)
 		payload["pole_y"] = _safe_int(extra_data.get("pole_y", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)
+	if extra_data.has("disconnect"):
+		payload["disconnect"] = bool(extra_data.disconnect)
 	flush_world_position_for_payload(payload)
 	return send_message(attach_session_auth(payload))
 
@@ -4913,6 +4920,8 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 			if not MovementMode.is_websocket():
 				return
 			if _safe_string(data.get("player_id", ""), "", MAX_REQUEST_ID_LENGTH) != player_id:
+				if str(data.get("type", "")) == "player_joined":
+					show_world_presence_notice(data, true)
 				remember_world_player(str(data.get("world", current_world_name)), str(data.get("player_id", "")))
 				world_node = get_world_node()
 				if world_node != null and is_world_node_active() and world_node.has_method("handle_network_player_position"):
@@ -4926,6 +4935,7 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 		"player_left":
 			var interest_cull := bool(data.get("interest_cull", false)) or str(data.get("reason", "")).strip_edges().to_lower() == "out_of_interest"
 			if not interest_cull:
+				show_world_presence_notice(data, false)
 				forget_world_player(str(data.get("world", current_world_name)), str(data.get("player_id", "")))
 			world_node = get_world_node()
 			if world_node != null and is_world_node_active() and world_node.has_method("handle_network_player_left"):
@@ -6128,7 +6138,10 @@ func _handle_world_entry_active(data: Dictionary) -> void:
 	))
 	active_world_entry_revision = incoming_revision
 	active_world_entry_block_revision = incoming_block_revision
+	var announce_local_entry := not world_entry_active
 	world_entry_active = true
+	if announce_local_entry:
+		call_deferred("show_local_world_entry_notice", incoming_world)
 	mark_active_join_request_complete()
 	persist_completed_world_join(incoming_world, session_username)
 	pending_world_entry_ready.clear()
@@ -6731,6 +6744,8 @@ func handle_chat_message(data: Dictionary) -> void:
 			"type": message_type,
 			"world": source_world,
 			"player_id": sender_id,
+			"server_announcement": bool(data.get("server_announcement", false)),
+			"account_role": str(data.get("role", "")),
 			"filtered_message": server_filtered_message
 		})
 
@@ -7514,12 +7529,19 @@ func handle_landfill_race_results(data: Dictionary) -> void:
 
 
 func handle_landfill_status_result(data: Dictionary) -> void:
+	# starts_at_ms/ends_at_ms are epoch milliseconds -- same "_at_ms" convention as
+	# ticket_expires_at_ms/route_expires_at_ms elsewhere in this file, so clamp to a matching wide
+	# range rather than _safe_int's default 32-bit bounds (those would truncate any real epoch-ms
+	# value). 0 means "server didn't send a scheduled time" -- exactly one of the two is ever set,
+	# per getEventTiming() in server_calendar_events.ts.
 	var payload := {
 		"request_id": _safe_string(data.get("request_id", ""), "", MAX_REQUEST_ID_LENGTH),
 		"event_active": _safe_bool(data.get("event_active", false), false),
 		"season_key": _safe_string(data.get("season_key", ""), "", 32),
 		"min_players_to_start": _safe_int(data.get("min_players_to_start", 0), 0, 0, 50),
 		"max_players_per_instance": _safe_int(data.get("max_players_per_instance", 0), 0, 0, 50),
+		"starts_at_ms": _safe_int(data.get("starts_at_ms", 0), 0, 0, 4102444800000),
+		"ends_at_ms": _safe_int(data.get("ends_at_ms", 0), 0, 0, 4102444800000),
 	}
 	landfill_status_received.emit(payload)
 
@@ -7696,3 +7718,33 @@ func _can_send_rate_limited(counter_key: String, max_per_second: int) -> bool:
 	bucket["count"] = count
 	_send_rate_counters[counter_key] = bucket
 	return true
+
+
+func show_local_world_entry_notice(joined_world: String) -> void:
+	if not world_entry_active or _safe_world_name(joined_world) != _safe_world_name(current_world_name):
+		return
+	var chat = get_chat_ui_node()
+	if chat == null:
+		return
+	var username := player_name if player_name != "" else session_username
+	chat.add_chat_message(username, "", {
+		"type": "system", "presence": "entered",
+		"others": get_world_other_player_count(joined_world)
+	})
+
+
+func show_world_presence_notice(data: Dictionary, entered: bool) -> void:
+	var notice_world := _safe_world_name(data.get("world", current_world_name))
+	var id := str(data.get("player_id", ""))
+	if notice_world != _safe_world_name(current_world_name) or id == "" or id == player_id or not is_world_node_active():
+		return
+	var known: Dictionary = world_population_players.get(notice_world, {})
+	if entered == known.has(id):
+		return
+	var username := str(data.get("username", data.get("name", ""))).strip_edges()
+	if username == "":
+		return
+	var chat = get_chat_ui_node()
+	if chat != null:
+		var count := maxi(0, known.size() + (1 if entered else -1))
+		chat.add_chat_message(username, "", {"type": "system", "presence": "entered" if entered else "left", "others": count})

@@ -17,7 +17,7 @@ const LEVEL_UP_HEIGHT := 236.0
 const LEVEL_UP_LIFETIME := 3.2
 const LEVEL_UP_SPARK_COUNT := 22
 const PANEL_HEADER_HEIGHT := 78.0
-const PANEL_BUTTON_Y := 304.0
+const PANEL_BUTTON_Y := 268.0
 const NOTIFICATION_ICON_PATH := "res://Assets/ui/icons/notification.png"
 const NOTIFICATION_BUTTON_SIZE := Vector2(64, 64)
 

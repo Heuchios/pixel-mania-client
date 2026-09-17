@@ -42,14 +42,14 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_8adxn")
 
 [node name="HandleVisual" type="TextureRect" parent="InventorySlideHandle" unique_id=827262142]
 layout_mode = 0
-offset_left = 19.0
+offset_left = 45.5
 offset_top = 19.0
-offset_right = 171.0
+offset_right = 145.5
 offset_bottom = 61.0
 mouse_filter = 2
 texture = ExtResource("atlas_StyleBoxTexture_it62r")
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 0
 
 [node name="HandleLabel" type="Label" parent="InventorySlideHandle" unique_id=1245783017]
 visible = false

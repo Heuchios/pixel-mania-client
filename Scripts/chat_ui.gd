@@ -14,17 +14,17 @@ const CHAT_MIN_WIDTH = 1000.0
 const CHAT_SIDE_MARGIN = 10.0
 const CHAT_HEADER_HEIGHT = 60.0
 const CHAT_HANDLE_HEIGHT = 26.0
-const CHAT_BUTTON_Y = 232.0
+const CHAT_BUTTON_Y = 184.0
 const CHAT_BUTTON_SIZE = Vector2(64, 64)
-const MESSAGE_ICON_PATH = "res://Assets/ui/icons/message.png"
+const UIAtlas = preload("res://Scripts/UIAtlasDB.gd")
 const BROADCAST_HOLD_SECONDS = 0.55
 const BROADCAST_HOLD_MOVE_CANCEL = 18.0
 const CHAT_FONT_PATH = "res://Assets/font/font.ttf"
-const CHAT_MESSAGE_FONT_SIZE := 24
-const CHAT_MESSAGE_LINE_HEIGHT := 31.0
+const CHAT_MESSAGE_FONT_SIZE := 20
+const CHAT_MESSAGE_LINE_HEIGHT := 20.0
 const CHAT_MESSAGE_PAD_X = 12.0
-const CHAT_MESSAGE_PAD_Y = 6.0
-const CHAT_MESSAGE_MIN_ROW_HEIGHT = 42.0
+const CHAT_MESSAGE_PAD_Y = 2.0
+const CHAT_MESSAGE_MIN_ROW_HEIGHT = 20.0
 const CHAT_FILTER_WORLD = "world"
 const CHAT_FILTER_LOCAL = "local"
 const CHAT_FILTER_SYSTEM = "system"
@@ -654,6 +654,7 @@ func bind_authored_chat_scene() -> bool:
 		chat_input.gui_input.connect(_on_chat_wheel_gui_input)
 
 	chat_send_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	style_send_arrow(chat_send_button)
 	if not chat_send_button.pressed.is_connected(send_chat_message):
 		chat_send_button.pressed.connect(send_chat_message)
 	if not chat_send_button.gui_input.is_connected(_on_chat_wheel_gui_input):
@@ -702,6 +703,9 @@ func bind_authored_chat_scene() -> bool:
 		chat_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		chat_button.custom_minimum_size = CHAT_BUTTON_SIZE
 		chat_button.size = CHAT_BUTTON_SIZE
+		# Use the animated icon layers for the authored HUD button too.
+		apply_chat_icon_button_style(chat_button)
+		setup_chat_button_icon()
 		if chat_button.pressed.is_connected(toggle_chat_panel):
 			chat_button.pressed.disconnect(toggle_chat_panel)
 		if not chat_button.pressed.is_connected(_on_chat_button_pressed):
@@ -756,6 +760,28 @@ func capture_authored_chat_scene_layout() -> void:
 		authored_quick_chat_size = Vector2.ZERO
 
 
+func style_send_arrow(button: Button) -> void:
+	for state in ["normal", "hover", "pressed", "hover_pressed"]:
+		var arrow := UIAtlas.get_stylebox("chat_send_button").duplicate() as StyleBoxTexture
+		arrow.modulate_color = Color(0.32, 0.12, 0.4)
+		if state == "hover":
+			arrow.modulate_color = Color(0.48, 0.22, 0.58)
+		elif state in ["pressed", "hover_pressed"]:
+			arrow.modulate_color = Color(0.24, 0.08, 0.32)
+		button.add_theme_stylebox_override(state, arrow)
+	if not button.has_node("SendArrowShadow"):
+		var shadow := TextureRect.new()
+		shadow.name = "SendArrowShadow"
+		shadow.texture = UIAtlas.get_texture("chat_send_button")
+		shadow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		shadow.show_behind_parent = true
+		shadow.modulate = Color(0, 0, 0, 0.3)
+		button.add_child(shadow)
+		shadow.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		shadow.position += Vector2(3, 4)
+
+
 func setup_chat_button_icon():
 	if chat_button == null:
 		return
@@ -766,13 +792,7 @@ func setup_chat_button_icon():
 	chat_button_icon = null
 	chat_button_icon_shadow = null
 
-	if not ResourceLoader.exists(MESSAGE_ICON_PATH):
-		chat_button.text = "CHAT"
-		chat_button.size = Vector2(108, 42)
-		apply_chat_arcade_button_style(chat_button, false, false, 15)
-		return
-
-	var icon_texture: Texture2D = load(MESSAGE_ICON_PATH) as Texture2D
+	var icon_texture: Texture2D = UIAtlas.get_texture("chat_bubble_3")
 	if icon_texture == null:
 		chat_button.text = "CHAT"
 		chat_button.size = Vector2(108, 42)
@@ -1219,30 +1239,9 @@ func apply_chat_channel_tab_visuals() -> void:
 
 
 func apply_chat_channel_tab_visual(tab_button, selected: bool) -> void:
-	if tab_button == null or not (tab_button is Button):
-		return
-
-	var button := tab_button as Button
-	apply_chat_font_to_control(button)
-	button.button_pressed = selected
-	if selected:
-		button.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 1.0))
-		button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0, 1.0))
-		button.add_theme_color_override("font_pressed_color", Color(1.0, 1.0, 1.0, 1.0))
-		if chat_tab_selected_style != null:
-			button.add_theme_stylebox_override("normal", chat_tab_selected_style)
-			button.add_theme_stylebox_override("hover", chat_tab_selected_style)
-			button.add_theme_stylebox_override("pressed", chat_tab_selected_style)
-		return
-
-	button.add_theme_color_override("font_color", Color(0.75, 0.92, 1.0, 0.95))
-	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0, 1.0))
-	button.add_theme_color_override("font_pressed_color", Color(1.0, 1.0, 1.0, 1.0))
-	if chat_tab_normal_style != null:
-		button.add_theme_stylebox_override("normal", chat_tab_normal_style)
-	if chat_tab_selected_style != null:
-		button.add_theme_stylebox_override("hover", chat_tab_selected_style)
-		button.add_theme_stylebox_override("pressed", chat_tab_selected_style)
+	if tab_button is Button:
+		apply_chat_font_to_control(tab_button)
+		PixelUIStyle.apply_tab_button(tab_button, selected)
 
 
 func layout_quick_chat_bar(screen_size: Vector2):
@@ -1795,7 +1794,11 @@ func send_chat_message():
 
 	source_input.text = ""
 
-	if message.begins_with("/"):
+	if message.to_lower() == "/server" or message.to_lower().begins_with("/server "):
+		var network = get_node_or_null("/root/NetworkManager")
+		if network == null or not network.send_chat_message(message):
+			add_chat_message("System", "Could not send server announcement.")
+	elif message.begins_with("/"):
 		if world != null and world.has_method("handle_chat_command"):
 			world.handle_chat_command(message)
 		elif world != null and world.command_manager != null and world.command_manager.has_method("handle_command"):
@@ -1831,6 +1834,10 @@ func get_active_chat_input() -> LineEdit:
 
 
 func add_chat_message(sender: String, message: String, metadata: Dictionary = {}):
+	metadata = metadata.duplicate(true)
+	metadata["display_time"] = Time.get_time_string_from_system()
+	metadata["username_color"] = get_chat_username_color(sender)
+	metadata["staff_tag"] = get_chat_staff_tag(sender, metadata)
 	chat_messages.append({
 		"sender": sender,
 		"message": message,
@@ -1930,14 +1937,11 @@ func format_chat_message_line(sender: String, message: String, metadata: Diction
 
 
 func format_authored_chat_message_line(sender: String, message: String, metadata: Dictionary) -> String:
-	var display_message := get_display_chat_text(message, metadata)
-	if is_broadcast_chat_message(metadata):
-		return format_chat_message_line(sender, message, metadata)
-	if is_system_chat_message(sender, metadata):
-		return "[System] " + display_message
-	if sender == "Me":
-		return "[Me] " + display_message
-	return sender + ": " + display_message
+	var timestamp := str(metadata.get("display_time", ""))
+	var prefix := "[" + timestamp + "] " if timestamp != "" else ""
+	if is_broadcast_chat_message(metadata) or is_system_chat_message(sender, metadata):
+		return prefix + format_chat_message_line(sender, message, metadata)
+	return prefix + "<" + sender + "> " + get_display_chat_text(message, metadata)
 
 
 func get_authored_sender_color(sender: String) -> Color:
@@ -2046,30 +2050,37 @@ func refresh_authored_chat_messages(
 		var metadata: Dictionary = get_chat_message_metadata(data)
 		var source_world: String = str(metadata.get("world", "")).strip_edges()
 		var is_broadcast: bool = is_broadcast_chat_message(metadata)
-		var full_text: String = format_authored_chat_message_line(sender, message, metadata)
-		var label = Label.new()
-		label.add_theme_font_size_override("font_size", CHAT_MESSAGE_FONT_SIZE)
-		apply_chat_font_to_control(label)
-		var wrapped_text: String = CHAT_BUBBLE_COMPONENT.wrap_text_to_width(
-			full_text,
-			usable_width,
-			label.get_theme_font("font"),
-			CHAT_MESSAGE_FONT_SIZE
-		)
-		var line_count: int = CHAT_BUBBLE_COMPONENT.count_wrapped_lines(wrapped_text)
-		var row_height: float = max(CHAT_MESSAGE_MIN_ROW_HEIGHT, float(line_count) * CHAT_MESSAGE_LINE_HEIGHT + 4.0)
-
+		var label := RichTextLabel.new()
 		label.name = "MessageRow"
-		label.text = wrapped_text
-		label.custom_minimum_size = Vector2(usable_width, row_height)
+		label.set_meta("pixelmania_font_size", CHAT_MESSAGE_FONT_SIZE)
+		apply_chat_font_to_control(label)
+		label.add_theme_font_size_override("normal_font_size", CHAT_MESSAGE_FONT_SIZE)
+		label.add_theme_constant_override("line_separation", 0)
+		label.fit_content = true
+		label.scroll_active = false
+		label.bbcode_enabled = false
+		label.custom_minimum_size = Vector2(usable_width, 0)
+		label.size = Vector2(usable_width, 0)
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		label.autowrap_mode = TextServer.AUTOWRAP_OFF
-		label.clip_text = false
-		label.add_theme_color_override("font_color", get_authored_sender_color(get_chat_message_color_key(sender, metadata)))
-		label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 1.0))
-		label.add_theme_constant_override("shadow_offset_x", 1)
-		label.add_theme_constant_override("shadow_offset_y", 1)
+		append_chat_run(label, "[" + str(metadata.get("display_time", "")) + "] ", Color(0.8, 0.8, 0.8))
+		if bool(metadata.get("server_announcement", false)):
+			append_chat_run(label, "SERVER: ", Color(1.0, 0.2, 0.2))
+		elif metadata.has("presence"):
+			append_chat_run(label, "<", Color(0.85, 0.65, 1.0))
+			append_chat_run(label, sender + str(metadata.get("staff_tag", "")), metadata.get("username_color", Color.WHITE))
+			append_chat_run(label, " " + str(metadata.presence) + ", " + str(metadata.others) + " others here>", Color(0.85, 0.65, 1.0))
+		elif is_broadcast:
+			append_chat_run(label, "** from (", Color(0.85, 0.65, 1.0))
+			append_chat_run(label, sender + str(metadata.get("staff_tag", "")), Color(0.35, 1.0, 0.15))
+			append_chat_run(label, ") in [", Color(0.85, 0.65, 1.0))
+			append_chat_run(label, source_world, Color.WHITE)
+			append_chat_run(label, "] **: ", Color(0.85, 0.65, 1.0))
+		elif is_system_chat_message(sender, metadata):
+			append_chat_run(label, "System: ", CHAT_SYSTEM_COLOR)
+		else:
+			append_chat_run(label, "<" + sender + ">" + str(metadata.get("staff_tag", "")) + " ", metadata.get("username_color", Color.WHITE))
+		append_chat_run(label, get_display_chat_text(message, metadata), CHAT_SYSTEM_COLOR if is_system_chat_message(sender, metadata) and not is_broadcast else Color.WHITE)
+		var row_height: float = label.get_content_height()
 		label.mouse_filter = Control.MOUSE_FILTER_STOP if is_broadcast and source_world != "" else Control.MOUSE_FILTER_IGNORE
 
 		if is_broadcast and source_world != "":
@@ -2320,3 +2331,39 @@ func update_chat_bubble(_delta):
 		return
 	var anchor_screen_pos = _get_local_chat_anchor_screen_position()
 	_position_bubble_on_screen(anchor_screen_pos)
+
+
+func append_chat_run(label: RichTextLabel, value: String, color: Color) -> void:
+	label.push_color(color)
+	label.add_text(value)
+	label.pop()
+
+
+func get_chat_username_color(sender: String) -> Color:
+	if world == null or not world.has_method("get_world_lock_access_role_for_player"):
+		return Color.WHITE
+	var role := str(world.get_world_lock_access_role_for_player(sender)).to_lower()
+	if role == "owner":
+		if world.has_method("is_super_world_lock_active") and world.is_super_world_lock_active():
+			return Color(1.0, 0.08, 0.82)
+		return Color(1.0, 0.623529, 0.109804)
+	if role in ["admin", "builder", "visitor"]:
+		return Color(1.0, 0.768627, 0.419608)
+	return Color.WHITE
+
+
+func get_chat_staff_tag(sender: String, metadata: Dictionary) -> String:
+	var role := str(metadata.get("account_role", "")).to_lower()
+	var network = get_node_or_null("/root/NetworkManager")
+	if network != null and (str(metadata.get("player_id", "")) == network.player_id or sender.to_lower() == str(network.player_name).to_lower()):
+		role = network.get_active_session_role()
+	elif role == "" and world != null and world.get("player_manager") != null:
+		var manager = world.get("player_manager")
+		var remote = manager.remote_players.get(str(metadata.get("player_id", "")))
+		if is_instance_valid(remote):
+			role = str(remote.get_meta("remote_role", "player"))
+	if role in ["developer", "admin"]:
+		return "<dev>"
+	if role in ["moderator", "mod"]:
+		return "<mod>"
+	return ""

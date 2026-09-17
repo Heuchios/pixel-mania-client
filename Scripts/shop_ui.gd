@@ -5,7 +5,7 @@ const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 
 const SHOP_ICON_PATH := "res://Assets/ui/icons/shop.png"
 const SHOP_BUTTON_SIZE := Vector2(64, 64)
-const SHOP_BUTTON_Y := 160.0
+const SHOP_BUTTON_Y := 100.0
 const SHOP_SCENE_PATH := "res://Scenes/ui/shop/ShopSceneRedesign.tscn"
 
 # Display data for the Gem Store's real-money packs, bound onto
@@ -852,57 +852,21 @@ func _on_iap_checkout_session_result(data: Dictionary) -> void:
 	notify("Complete your purchase in the browser that just opened.")
 
 
-# Google Play Billing purchases require the native Android plugin
-# (https://github.com/godot-sdk-integrations/godot-google-play-billing) to be installed in
-# addons/ and enabled as an autoload named "BillingClient" in the Godot editor + Android export
-# before this can run for real -- see PixelMania_IAP_Plan.md. This wrapper is written against
-# that plugin's documented API (purchase(), set_obfuscated_account_id(), on_purchase_updated)
-# so wiring it up is a matter of installing the plugin, not rewriting this function.
-# IMPORTANT: set_obfuscated_account_id must be called with the player's own username before
-# purchase(), so the server can verify the purchase belongs to this account (see
-# server_iap_routes.ts's obfuscatedExternalAccountId check).
-func _start_google_play_purchase(pack_id: String, pack_label: String) -> void:
+# The BillingClient autoload owns Play lifecycle and forwards receipts to the server.
+# Preview is explicit and stops before native checkout or receipt submission.
+func _start_google_play_purchase(pack_id: String, pack_label: String, preview_only: bool = false) -> Dictionary:
 	var billing = get_node_or_null("/root/BillingClient")
-	if billing == null or not billing.has_method("purchase"):
+	if billing == null:
 		notify("Purchases are not available yet.")
-		return
-
+		return {}
+	if not billing.billing_message.is_connected(notify):
+		billing.billing_message.connect(notify)
 	var network = get_node_or_null("/root/NetworkManager")
-	var username = ""
-	if network != null and "session_username" in network:
-		username = str(network.session_username)
-
-	if username != "" and billing.has_method("set_obfuscated_account_id"):
-		billing.set_obfuscated_account_id(username)
-
-	var product_id = "gems_" + pack_id
-	if billing.has_signal("on_purchase_updated") and not billing.on_purchase_updated.is_connected(_on_google_play_purchase_updated):
-		billing.on_purchase_updated.connect(_on_google_play_purchase_updated)
-
-	notify("Opening Google Play checkout for " + pack_label + "...")
-	billing.purchase(product_id)
-
-
-func _on_google_play_purchase_updated(result: Dictionary) -> void:
-	var network = get_node_or_null("/root/NetworkManager")
-	if network == null or not network.has_method("send_iap_submit_google_play_purchase_request"):
-		return
-
-	var purchases = result.get("purchases", []) if result is Dictionary else []
-	for purchase in purchases:
-		if not (purchase is Dictionary):
-			continue
-		var product_ids = purchase.get("product_ids", [])
-		var purchase_token = str(purchase.get("purchase_token", ""))
-		if product_ids.is_empty() or purchase_token == "":
-			continue
-		# The client only forwards the token -- it never decides whether the purchase is valid.
-		# The server re-verifies it server-to-server against the Play Developer API before
-		# granting anything (see handleIapSubmitGooglePlayPurchaseRequest).
-		var product_id = str(product_ids[0])
-		var pack_id = product_id.trim_prefix("gems_")
-		network.send_iap_submit_google_play_purchase_request(pack_id, purchase_token, product_id)
-
+	var username = str(network.session_username) if network != null else ""
+	billing.set_obfuscated_account_id(username)
+	if not preview_only:
+		notify("Opening Google Play checkout for " + pack_label + "...")
+	return billing.purchase("gems_" + pack_id, preview_only)
 
 func _on_iap_purchase_result(data: Dictionary) -> void:
 	if not bool(data.get("ok", false)):

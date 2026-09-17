@@ -806,7 +806,7 @@ func update_menu_button_position():
 		return
 
 	var screen_size = get_viewport_rect().size
-	menu_button.position = Vector2(max(8.0, screen_size.x - 102.0), 16)
+	menu_button.position = Vector2(max(8.0, screen_size.x - 102.0), 16.0)
 
 
 func update_menu_button_visibility():

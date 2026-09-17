@@ -49,12 +49,25 @@ var leaderboard_request_id := ""
 var leaderboard_loading := false
 var leaderboard_error := ""
 
+# Real event window, from the same landfill_status_received feed lobby_scene.gd's "Go Green!"
+# card already uses -- see handle_landfill_status_result in network_manager.gd and
+# getEventTiming() in server_calendar_events.ts. Replaces the old assumption that an active
+# season always runs to end-of-month, which silently went wrong the moment the cron window was
+# customized or the event was switched off. landfill_status_known stays false (countdown reads
+# "--") until the first reply lands, so nothing is displayed as a guess.
+var landfill_status_known := false
+var landfill_event_active := false
+var landfill_starts_at_ms := 0
+var landfill_ends_at_ms := 0
+var landfill_status_request_id := ""
+
 # Whatever LeaderboardScene.tscn was authored with, captured at build time. The live tab
 # restores these rather than hardcoding strings here, so editing the title/badge/subtitle in
 # the scene keeps working and the controller never silently overrides the design.
 var designed_title := ""
 var designed_badge := ""
 var designed_subtitle := ""
+var designed_summary_timer_label := ""
 
 var claim_request_id := ""
 var claim_in_progress := false
@@ -172,6 +185,7 @@ func _build_scene() -> void:
 	designed_title = str(scene_instance.get("title_text")) if "title_text" in scene_instance else "LANDFILL"
 	designed_badge = str(scene_instance.get("badge_text")) if "badge_text" in scene_instance else "EVENT LEADERBOARD"
 	designed_subtitle = str(scene_instance.get("subtitle_text")) if "subtitle_text" in scene_instance else ""
+	designed_summary_timer_label = str(scene_instance.get("summary_timer_label")) if "summary_timer_label" in scene_instance else "EVENT ENDS IN:"
 
 	add_child(scene_instance)
 	scene_instance.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -196,6 +210,13 @@ func _connect_network_signals() -> void:
 	var claim_callable := Callable(self, "_on_claim_result_received")
 	if network.has_signal("landfill_claim_result_received") and not network.is_connected("landfill_claim_result_received", claim_callable):
 		network.connect("landfill_claim_result_received", claim_callable)
+
+	# Same status feed lobby_scene.gd's LandfillEventCard already listens to -- reused here rather
+	# than teaching the leaderboard endpoint about scheduling too (single source of truth for
+	# "is the event on, and when's the next boundary").
+	var status_callable := Callable(self, "_on_landfill_status_received")
+	if network.has_signal("landfill_status_received") and not network.is_connected("landfill_status_received", status_callable):
+		network.connect("landfill_status_received", status_callable)
 
 
 # ============================================================
@@ -260,6 +281,7 @@ func _on_scene_tab_selected(index: int, _tab_data: Resource) -> void:
 func _refresh_active_tab() -> void:
 	if _is_tab_live(selected_tab):
 		_request_leaderboard_refresh()
+		_request_landfill_status_refresh()
 	else:
 		_render_coming_soon()
 
@@ -319,6 +341,37 @@ func _on_leaderboard_received(data: Dictionary) -> void:
 	season_key = str(data.get("season_key", season_key)).strip_edges()
 	your_kilograms = int(data.get("your_kilograms", your_kilograms))
 	your_rank = int(data.get("your_rank", your_rank))
+
+	if _is_tab_live(selected_tab):
+		_render()
+
+
+# ============================================================
+# LANDFILL EVENT WINDOW (real start/end, not the old end-of-month guess)
+# ============================================================
+
+func _request_landfill_status_refresh() -> void:
+	var network := get_node_or_null("/root/NetworkManager")
+	if network == null or not network.has_method("request_landfill_status"):
+		return
+
+	landfill_status_request_id = "leaderboard_status_" + str(Time.get_ticks_msec())
+	network.request_landfill_status(landfill_status_request_id)
+
+
+func _on_landfill_status_received(data: Dictionary) -> void:
+	if landfill_status_request_id != "":
+		var response_request_id := str(data.get("request_id", "")).strip_edges()
+		# request_landfill_status() is also polled from elsewhere (e.g. the lobby's event card) on
+		# its own timer with its own/no request_id, so an empty response id is accepted same as the
+		# other _received handlers in this file -- only a MISMATCHED non-empty id is a stale reply.
+		if response_request_id != "" and response_request_id != landfill_status_request_id:
+			return
+
+	landfill_status_known = true
+	landfill_event_active = bool(data.get("event_active", false))
+	landfill_starts_at_ms = int(data.get("starts_at_ms", 0))
+	landfill_ends_at_ms = int(data.get("ends_at_ms", 0))
 
 	if _is_tab_live(selected_tab):
 		_render()
@@ -414,6 +467,7 @@ func _render() -> void:
 	if scene_instance.has_method("set_entries_from_dictionaries"):
 		scene_instance.set_entries_from_dictionaries(_build_entry_dicts())
 
+	_set_scene_text("summary_timer_label", _countdown_label_text())
 	if scene_instance.has_method("set_personal_summary"):
 		var rank_text := str(your_rank) if your_rank > 0 else "--"
 		scene_instance.set_personal_summary(rank_text, your_kilograms, _current_countdown_text())
@@ -423,12 +477,12 @@ func _render() -> void:
 # COUNTDOWN
 # ============================================================
 #
-# The server never stores an "event ends at" timestamp for the Landfill season -- see
-# server_landfill_event.ts: a season is just the current calendar month in UTC
-# (getSeasonKeyForDate -> "YYYY-MM", checked fresh on every request), and it rolls over the
-# instant the wall clock crosses into a new UTC month. There is nothing to add server-side: the
-# season_key already sent on every landfill_leaderboard_received payload IS the answer, so the
-# end instant is computed from it here -- the first moment (00:00 UTC) of the following month.
+# Used to assume an active season always ran to end-of-month (server sends season_key as
+# "YYYY-MM" and rolls it over on the UTC month boundary) -- wrong the moment the cron window is
+# customized or the event is switched off entirely, which is exactly the state that made the
+# panel show "8D 07H 15M" while the lobby's join card stayed hidden: the countdown was reading
+# the calendar, not the actual schedule. getEventTiming() in server_calendar_events.ts now sends
+# the real next boundary (see _on_landfill_status_received above), so this reads that instead.
 
 func _on_countdown_tick() -> void:
 	if not is_open or scene_instance == null or not is_instance_valid(scene_instance):
@@ -440,55 +494,31 @@ func _on_countdown_tick() -> void:
 		scene_instance.set_personal_summary(rank_text, your_kilograms, _current_countdown_text())
 
 
+# "EVENT ENDS IN:" while live, "EVENT STARTS IN:" while waiting on the next window, and the
+# scene's own authored default ("EVENT ENDS IN:") before the first status reply has landed --
+# matches landfill_status_known below staying false until then, so nothing is ever asserted as a
+# guess.
+func _countdown_label_text() -> String:
+	if not landfill_status_known:
+		return designed_summary_timer_label
+	return "EVENT ENDS IN:" if landfill_event_active else "EVENT STARTS IN:"
+
+
 func _current_countdown_text() -> String:
-	if season_key == "":
+	if not landfill_status_known:
 		return "--"
 
-	var end_seconds := _season_end_unix_seconds(season_key)
-	if end_seconds <= 0:
+	var target_ms := landfill_ends_at_ms if landfill_event_active else landfill_starts_at_ms
+	if target_ms <= 0:
 		return "--"
 
-	var now_seconds := int(Time.get_unix_time_from_system())
-	var remaining := end_seconds - now_seconds
-	if remaining <= 0:
-		return "ENDING SOON"
+	var now_ms := int(Time.get_unix_time_from_system() * 1000.0)
+	var remaining_ms := target_ms - now_ms
+	if remaining_ms <= 0:
+		return "ENDING SOON" if landfill_event_active else "STARTING SOON"
 
-	return _format_duration(remaining)
-
-
-# season_key is always "YYYY-MM" (see getSeasonKeyForDate server-side). Returns the Unix
-# timestamp, in seconds, of 00:00 UTC on the 1st of the FOLLOWING month -- i.e. the instant the
-# season rolls over. Returns 0 on any unexpected shape so callers fall back to "--" instead of
-# showing a bogus countdown.
-func _season_end_unix_seconds(key: String) -> int:
-	if key.length() != 7 or key[4] != "-":
-		return 0
-
-	var year_part := key.substr(0, 4)
-	var month_part := key.substr(5, 2)
-	if not year_part.is_valid_int() or not month_part.is_valid_int():
-		return 0
-
-	var year := int(year_part)
-	var month := int(month_part)
-	if month < 1 or month > 12:
-		return 0
-
-	var next_year := year
-	var next_month := month + 1
-	if next_month > 12:
-		next_month = 1
-		next_year += 1
-
-	var datetime_dict := {
-		"year": next_year,
-		"month": next_month,
-		"day": 1,
-		"hour": 0,
-		"minute": 0,
-		"second": 0,
-	}
-	return int(Time.get_unix_time_from_datetime_dict(datetime_dict))
+	@warning_ignore("integer_division")
+	return _format_duration(remaining_ms / 1000)
 
 
 func _format_duration(total_seconds: int) -> String:

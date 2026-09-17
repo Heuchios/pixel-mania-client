@@ -10,6 +10,7 @@ static var _loaded_modified_time := -1
 static var _items_by_id: Dictionary = {}
 static var _ids_by_key: Dictionary = {}
 static var _icon_cache: Dictionary = {}
+static var _next_source_check_msec := 0
 
 
 static func _get_source_modified_time() -> int:
@@ -20,6 +21,7 @@ static func _get_source_modified_time() -> int:
 
 
 static func reload() -> void:
+	_next_source_check_msec = 0
 	_loaded = false
 	_loaded_modified_time = -1
 	_items_by_id.clear()
@@ -29,8 +31,14 @@ static func reload() -> void:
 
 
 static func has_source_changed() -> bool:
-	if not _loaded:
+	# Packaged release assets cannot change on disk. Editor hot reload only
+	# needs a periodic check, never a filesystem stat on every rendered frame.
+	if not _loaded or not OS.has_feature("editor"):
 		return false
+	var now := Time.get_ticks_msec()
+	if now < _next_source_check_msec:
+		return false
+	_next_source_check_msec = now + 1000
 	return _get_source_modified_time() != _loaded_modified_time
 
 

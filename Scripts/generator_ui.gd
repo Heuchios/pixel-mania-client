@@ -395,9 +395,9 @@ func update_generator(data: Dictionary) -> void:
 	var watts := clampi(int(data.get("watts", 0)), 0, max_watts)
 	var display_watts := clampf(float(data.get("display_watts", watts)), 0.0, float(max_watts))
 	var active_consumption := maxf(0.0, float(data.get("active_consumption_watts_per_hour", 0.0)))
-	watts_label.text = _format_watt_value(display_watts) + " / " + str(max_watts) + "W"
+	watts_label.text = _format_watt_value(display_watts) + " / " + str(max_watts) + " energy"
 	if active_consumption > 0.01:
-		watts_label.text += " (-" + _format_watt_value(active_consumption) + " W/h)"
+		watts_label.text += " (-" + _format_watt_value(active_consumption) + " /hour)"
 	progress_bar.max_value = max_watts
 	progress_bar.value = display_watts
 

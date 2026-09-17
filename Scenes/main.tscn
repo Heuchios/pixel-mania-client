@@ -48,7 +48,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player_main"]
-size = Vector2(15, 22)
+size = Vector2(17, 24)
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jjvhh"]
 load_path = "res://.godot/imported/player_idle.png-1e2cfb16122794de397996aed1c9d6f3.ctex"
@@ -2452,7 +2452,6 @@ texture = ExtResource("26_cbgmd")
 texture_region_size = Vector2i(32, 32)
 0:0/animation_columns = 3
 0:0/0 = 0
-0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 1:0/0 = 0
 2:0/0 = 0
 3:0/0 = 0
@@ -2510,7 +2509,6 @@ texture_region_size = Vector2i(32, 32)
 5:2/0 = 0
 6:2/0 = 0
 7:2/0 = 0
-7:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 8:2/0 = 0
 8:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 9:2/0 = 0
@@ -3535,7 +3533,6 @@ texture_region_size = Vector2i(32, 32)
 21:6/0 = 0
 18:7/0 = 0
 18:8/0 = 0
-18:24/0 = 0
 17:15/0 = 0
 18:15/0 = 0
 19:15/0 = 0
@@ -3556,6 +3553,9 @@ texture_region_size = Vector2i(32, 32)
 14:3/0 = 0
 15:3/0 = 0
 21:15/0 = 0
+15:24/0 = 0
+26:24/0 = 0
+18:24/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_1w6v2"]
 tile_size = Vector2i(32, 32)
@@ -3575,7 +3575,7 @@ sprite_frames = SubResource("SpriteFrames_gt3je")
 animation = &"dead_spirit"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=397061839]
-position = Vector2(0.5, -4)
+position = Vector2(0.5, -5)
 shape = SubResource("RectangleShape2D_player_main")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=1521389470]

@@ -77,34 +77,35 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="MenuWindow" type="Control" parent="CenterContainer" unique_id=1383778020]
-custom_minimum_size = Vector2(460, 560)
+custom_minimum_size = Vector2(460, 488)
 layout_mode = 2
 
 [node name="DropShadow" type="Panel" parent="CenterContainer/MenuWindow" unique_id=1904776349]
-custom_minimum_size = Vector2(460, 560)
+self_modulate = Color(1, 1, 1, 0.4)
+custom_minimum_size = Vector2(460, 488)
 layout_mode = 0
 offset_left = 11.0
 offset_top = 14.0
 offset_right = 471.0
-offset_bottom = 574.0
+offset_bottom = 502.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_bja6m")
 
 [node name="WindowBack" type="Panel" parent="CenterContainer/MenuWindow" unique_id=1074752723]
-custom_minimum_size = Vector2(460, 560)
+custom_minimum_size = Vector2(460, 488)
 layout_mode = 0
 offset_right = 460.0
-offset_bottom = 560.0
+offset_bottom = 488.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_0")
 
 [node name="OuterHighlight" type="Panel" parent="CenterContainer/MenuWindow" unique_id=1458471182]
-custom_minimum_size = Vector2(448, 548)
+custom_minimum_size = Vector2(448, 476)
 layout_mode = 0
 offset_left = 6.0
 offset_top = 6.0
 offset_right = 454.0
-offset_bottom = 554.0
+offset_bottom = 482.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_wx82e")
 
@@ -119,23 +120,26 @@ mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_1")
 
 [node name="TitleLabel" type="Label" parent="CenterContainer/MenuWindow/Header" unique_id=1333279615]
-custom_minimum_size = Vector2(260, 52)
+metadata/pixelmania_font_size = 60
+custom_minimum_size = Vector2(444, 64)
 layout_mode = 0
-offset_left = 28.0
-offset_top = 10.0
-offset_right = 288.0
-offset_bottom = 62.0
+offset_left = 0.0
+offset_top = 26.0
+offset_right = 444.0
+offset_bottom = 90.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("4_jquww")
-theme_override_font_sizes/font_size = 48
+theme_override_font_sizes/font_size = 60
 text = "MENU"
+horizontal_alignment = 1
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
 [node name="SubtitleLabel" type="Label" parent="CenterContainer/MenuWindow/Header" unique_id=1593764574]
+visible = false
 custom_minimum_size = Vector2(260, 22)
 layout_mode = 0
 offset_left = 34.0
@@ -148,7 +152,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("4_jquww")
 theme_override_font_sizes/font_size = 14
-text = "GAME OPTIONS"
+text = ""
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
@@ -493,6 +497,7 @@ vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
 [node name="BackButton" type="Button" parent="CenterContainer/MenuWindow" unique_id=1683050669]
+visible = false
 custom_minimum_size = Vector2(344, 48)
 layout_mode = 0
 offset_left = 58.0

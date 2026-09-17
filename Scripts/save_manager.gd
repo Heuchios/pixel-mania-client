@@ -91,6 +91,9 @@ const DUPLICATE_SERVER_PLAYER_STATE_WINDOW_MS := 1500
 const SERVER_PLAYER_STATE_FRESH_MS := 30000
 const NETWORK_PLAYER_STATE_REQUEST_TIMEOUT_MS := 15000
 const DEBUG_ACTION_POSITION_FLOW := false
+# Temporary diagnostics for the "eyewear/hair/shoes silently unequip on world rejoin" report
+# (2026-08-16, see project memory equipment_unequip_on_world_rejoin.md). Off by default.
+const DEBUG_EQUIPMENT_PERSIST_FLOW := true
 const WORLD_EXIT_BLOCK_UPDATE_DRAIN_TIMEOUT_MS := 1800
 # World entry performance: when the server is expected to send the real world state,
 # do not build a full generated world first. The loading overlay can cover an empty
@@ -108,6 +111,45 @@ func debug_action_position_flow(message: String, extra_data: Dictionary = {}) ->
 		player_pos_text = str(world.player.global_position)
 	var world_name_text = str(world.current_world_name) if world != null else ""
 	print("[PM_FLOW][SaveManager] " + message + " world=" + world_name_text + " player_pos=" + player_pos_text + " data=" + str(extra_data))
+
+
+func debug_equipment_persist_flow(message: String, extra_data: Dictionary = {}) -> void:
+	if not DEBUG_EQUIPMENT_PERSIST_FLOW:
+		return
+	var world_name_text = str(world.current_world_name) if world != null else ""
+	print("[EQUIPMENT_PERSIST_DEBUG][SaveManager] " + message + " world=" + world_name_text + " data=" + str(extra_data))
+
+
+# Summarises the three watched slots for a player-state payload: the equipped item id plus the
+# count actually carried for that id in its own inventory dict. The count matters because a
+# dictionary can legitimately hold a key with value 0, so "the id is in the keys list" does not
+# prove ownership on either side of the wire.
+func describe_equipment_persist_payload(payload: Dictionary) -> Dictionary:
+	var summary := {}
+	var slot_fields := {
+		"hair": ["equipped_hair_item", "hair_inventory"],
+		"eyewear": ["equipped_eyewear_item", "eyewear_inventory"],
+		"shoes": ["equipped_shoes_item", "shoes_inventory"]
+	}
+	for slot_name in slot_fields.keys():
+		var equip_field = slot_fields[slot_name][0]
+		var inventory_field = slot_fields[slot_name][1]
+		if not payload.has(equip_field):
+			summary[slot_name] = "<field-absent-from-payload>"
+			continue
+		var item_id = str(payload.get(equip_field, ""))
+		if item_id == "":
+			summary[slot_name] = "<empty>"
+			continue
+		var inventory_value = payload.get(inventory_field, null)
+		if inventory_value is Dictionary:
+			if inventory_value.has(item_id):
+				summary[slot_name] = item_id + " (count=" + str(inventory_value[item_id]) + ")"
+			else:
+				summary[slot_name] = item_id + " (KEY-ABSENT-from-" + inventory_field + ")"
+		else:
+			summary[slot_name] = item_id + " (" + inventory_field + " missing/not-a-dict)"
+	return summary
 
 
 func _safe_int(value, fallback: int, min_value: int = 0, max_value: int = 2147483647) -> int:
@@ -1841,6 +1883,8 @@ func notify_network_player_state_save(player_data: Dictionary):
 	if not is_registered_account_active():
 		return
 
+	debug_equipment_persist_flow("OUTGOING save -> server", describe_equipment_persist_payload(player_data))
+
 	var network = world.get_node_or_null("/root/NetworkManager")
 	if network != null and network.has_method("send_player_state_save"):
 		network.send_player_state_save(player_data)
@@ -2291,6 +2335,9 @@ func reset_player_data_to_defaults():
 
 
 func apply_player_data(data: Dictionary, skip_hotbar_render: bool = false):
+	# Logs what actually arrived BEFORE any of this function's validation runs, so an equip that
+	# comes back already-empty from the server is distinguishable from one this function clears.
+	debug_equipment_persist_flow("INCOMING player_data <- server (before validation)", describe_equipment_persist_payload(data))
 	world.selected_item_type = _safe_string(data.get("selected_item_type", data.get("selected_block_type", world.selected_item_type)), world.selected_item_type, MAX_INVENTORY_STRING_LEN)
 	world.selected_item_category = _safe_string(data.get("selected_item_category", world.selected_item_category), world.selected_item_category, MAX_INVENTORY_STRING_LEN)
 	world.primary_hotbar_tool = _safe_string(data.get("primary_hotbar_tool", world.primary_hotbar_tool), world.primary_hotbar_tool, MAX_INVENTORY_STRING_LEN)
@@ -2392,6 +2439,13 @@ func apply_player_data(data: Dictionary, skip_hotbar_render: bool = false):
 	world.equipped_hair_item = _safe_string(loaded_equipped_hair_item, "", MAX_INVENTORY_STRING_LEN)
 
 	if world.equipped_hair_item != "" and (not world.hair_inventory.has(world.equipped_hair_item) or _safe_int(world.hair_inventory[world.equipped_hair_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
+		debug_equipment_persist_flow("apply_player_data clearing hair (ownership check failed)", {
+			"item": world.equipped_hair_item,
+			"had_inventory_key": world.hair_inventory.has(world.equipped_hair_item),
+			"inventory_count": world.hair_inventory.get(world.equipped_hair_item, 0),
+			"inventory_keys": world.hair_inventory.keys(),
+			"incoming_data_had_field": data.has("equipped_hair_item")
+		})
 		world.equipped_hair_item = ""
 
 	var loaded_equipped_eyewear_item = data.get("equipped_eyewear_item", world.equipped_eyewear_item)
@@ -2402,6 +2456,13 @@ func apply_player_data(data: Dictionary, skip_hotbar_render: bool = false):
 	world.equipped_eyewear_item = _safe_string(loaded_equipped_eyewear_item, "", MAX_INVENTORY_STRING_LEN)
 
 	if world.equipped_eyewear_item != "" and (not world.eyewear_inventory.has(world.equipped_eyewear_item) or _safe_int(world.eyewear_inventory[world.equipped_eyewear_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
+		debug_equipment_persist_flow("apply_player_data clearing eyewear (ownership check failed)", {
+			"item": world.equipped_eyewear_item,
+			"had_inventory_key": world.eyewear_inventory.has(world.equipped_eyewear_item),
+			"inventory_count": world.eyewear_inventory.get(world.equipped_eyewear_item, 0),
+			"inventory_keys": world.eyewear_inventory.keys(),
+			"incoming_data_had_field": data.has("equipped_eyewear_item")
+		})
 		world.equipped_eyewear_item = ""
 
 	var loaded_equipped_beard_item = data.get("equipped_beard_item", world.equipped_beard_item)
@@ -2452,6 +2513,13 @@ func apply_player_data(data: Dictionary, skip_hotbar_render: bool = false):
 	world.equipped_shoes_item = _safe_string(loaded_equipped_shoes_item, "", MAX_INVENTORY_STRING_LEN)
 
 	if world.equipped_shoes_item != "" and (not world.shoes_inventory.has(world.equipped_shoes_item) or _safe_int(world.shoes_inventory[world.equipped_shoes_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
+		debug_equipment_persist_flow("apply_player_data clearing shoes (ownership check failed)", {
+			"item": world.equipped_shoes_item,
+			"had_inventory_key": world.shoes_inventory.has(world.equipped_shoes_item),
+			"inventory_count": world.shoes_inventory.get(world.equipped_shoes_item, 0),
+			"inventory_keys": world.shoes_inventory.keys(),
+			"incoming_data_had_field": data.has("equipped_shoes_item")
+		})
 		world.equipped_shoes_item = ""
 
 	var loaded_equipped_ride_item = data.get("equipped_ride_item", world.equipped_ride_item)

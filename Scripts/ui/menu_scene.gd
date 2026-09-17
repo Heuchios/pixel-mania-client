@@ -27,7 +27,7 @@ const LOBBY_ICON_PATH := "res://Assets/ui/icons/lobby.png"
 	set(value):
 		title_text = value
 		_queue_refresh()
-@export var subtitle_text: String = "GAME OPTIONS":
+@export var subtitle_text: String = "":
 	set(value):
 		subtitle_text = value
 		_queue_refresh()
@@ -78,7 +78,7 @@ const LOBBY_ICON_PATH := "res://Assets/ui/icons/lobby.png"
 	set(value):
 		show_close_button = value
 		_queue_refresh()
-@export var show_back_button: bool = true:
+@export var show_back_button: bool = false:
 	set(value):
 		show_back_button = value
 		_queue_refresh()
@@ -100,7 +100,7 @@ const LOBBY_ICON_PATH := "res://Assets/ui/icons/lobby.png"
 	set(value):
 		center_window_in_viewport = value
 		_queue_refresh()
-@export var window_size: Vector2 = Vector2(460.0, 560.0):
+@export var window_size: Vector2 = Vector2(460.0, 488.0):
 	set(value):
 		window_size = value
 		_queue_refresh()
@@ -120,7 +120,7 @@ const LOBBY_ICON_PATH := "res://Assets/ui/icons/lobby.png"
 	set(value):
 		header_rect = value
 		_queue_refresh()
-@export var title_rect: Rect2 = Rect2(28.0, 10.0, 260.0, 52.0):
+@export var title_rect: Rect2 = Rect2(0.0, 26.0, 444.0, 64.0):
 	set(value):
 		title_rect = value
 		_queue_refresh()
@@ -262,7 +262,7 @@ const LOBBY_ICON_PATH := "res://Assets/ui/icons/lobby.png"
 		_queue_refresh()
 
 @export_category("Typography")
-@export_range(18, 72, 1) var title_font_size: int = 48:
+@export_range(18, 72, 1) var title_font_size: int = 60:
 	set(value):
 		title_font_size = value
 		_queue_refresh()
@@ -380,7 +380,7 @@ func apply_exported_styles() -> void:
 	_style_panel("CenterContainer/MenuWindow/BodyShadow", Color(0.0, 0.0, 0.0, 0.22), Color(0.0, 0.0, 0.0, 0.0), 0, 16, 0)
 	_style_panel("CenterContainer/MenuWindow/BodyPanel", body_fill_color, Color(0.18, 0.46, 0.76, 0.72), 3, 14, 8)
 
-	_style_label("CenterContainer/MenuWindow/Header/TitleLabel", title_font_size, title_color, HORIZONTAL_ALIGNMENT_LEFT)
+	_style_label("CenterContainer/MenuWindow/Header/TitleLabel", title_font_size, title_color, HORIZONTAL_ALIGNMENT_CENTER)
 	_style_label("CenterContainer/MenuWindow/Header/SubtitleLabel", subtitle_font_size, subtitle_color, HORIZONTAL_ALIGNMENT_LEFT)
 
 	if close_button != null:

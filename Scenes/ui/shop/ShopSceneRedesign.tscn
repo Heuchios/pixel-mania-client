@@ -198,6 +198,7 @@ icon = ExtResource("6_p7yut")
 metadata/pixelmania_font_role = "preserve"
 
 [node name="CloseButton" type="Button" parent="ShopWindow/Margin/Layout/Header" unique_id=20379623]
+metadata/close_button_align_top = true
 custom_minimum_size = Vector2(44, 44)
 custom_maximum_size = Vector2(40, 40)
 layout_mode = 2
@@ -359,7 +360,7 @@ metadata/pixelmania_font_role = "preserve"
 [node name="ItemScrollRow" type="HBoxContainer" parent="ShopWindow/Margin/Layout/Body/MainPane" unique_id=-999900001]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 6
+theme_override_constants/separation = 18
 
 [node name="ItemScroll" type="ScrollContainer" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow" unique_id=268276166]
 layout_mode = 2
@@ -4065,7 +4066,7 @@ vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
 [node name="ItemScrollSlider" type="Control" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow" unique_id=-999900002]
-custom_minimum_size = Vector2(21, 0)
+custom_minimum_size = Vector2(18, 0)
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2

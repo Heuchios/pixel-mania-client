@@ -44,6 +44,10 @@ func _draw():
 		return
 	if _any_ui_open():
 		return
+	# Wiring selects devices, not buildable empty cells. Its preview indicates
+	# the single target under the pointer instead of a screen full of boxes.
+	if str(world.equipped_tool) == "electric_tool":
+		return
 
 	var item_type = world.selected_item_type
 	var category  = world.selected_item_category

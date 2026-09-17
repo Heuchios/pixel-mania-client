@@ -2,9 +2,11 @@ extends Control
 
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 
+const RefineryStatus = preload("res://Scripts/refinery_status.gd")
+
 const WINDOW_SIZE := Vector2(640.0, 430.0)
 const MAX_RUNTIME_HOURS: float = 24.0
-const CONSUMPTION_RATE_TEXT := "100 W / h"
+const CONSUMPTION_RATE_TEXT := "100 energy/hour"
 const OUTPUT_CAPACITY := 200
 const CRUDE_OIL_ITEM_ID := "crude_oil"
 const CRUDE_OIL_TEXTURE_FALLBACK := "res://Assets/blocks/special_blocks/oil_refinery/crude_oil.png"
@@ -209,11 +211,39 @@ func _style_scene() -> void:
 		battery_input_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		battery_input_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	if footer_label != null:
-		footer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		footer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	if output_icon != null:
 		output_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		output_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		output_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_apply_refinery_typography(panel)
+	if title_label != null:
+		title_label.add_theme_font_size_override("font_size", 26)
+	if subtitle_label != null:
+		subtitle_label.add_theme_font_size_override("font_size", 13)
+	if battery_input_label != null:
+		battery_input_label.position = Vector2(-8, 64)
+		battery_input_label.size = Vector2(80, 24)
+		battery_input_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	if metal_pad_value_label != null:
+		metal_pad_value_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	for button in [toggle_button, add_battery_button, collect_button]:
+		if button != null:
+			for color_name in ["font_color", "font_hover_color", "font_pressed_color"]:
+				button.add_theme_color_override(color_name, Color(0.22, 0.08, 0.3))
+			button.add_theme_color_override("font_shadow_color", Color.TRANSPARENT)
+
+
+func _apply_refinery_typography(node: Node) -> void:
+	if node is Label or node is Button:
+		# Fixed-size machine cards need their authored sizes, including under the
+		# global typography pass ("icon" opts out of its size override only).
+		node.set_meta("pixelmania_font_role", "icon")
+		node.add_theme_font_size_override("font_size", 16)
+		if "Title" in str(node.name) and node.name != "TitleLabel":
+			node.add_theme_font_size_override("font_size", 18)
+	for child in node.get_children():
+		_apply_refinery_typography(child)
 
 
 func get_crude_oil_texture() -> Texture2D:
@@ -368,7 +398,7 @@ func get_current_state() -> Dictionary:
 func refresh() -> void:
 	var state: Dictionary = get_current_state()
 	var direct_power: bool = bool(state.get("direct_power", state.get("powered", false)))
-	var linked_pole: bool = bool(state.get("linked_pole", false)) or state.has("linked_pole_x") or state.has("pole_x")
+	var linked_pole: bool = bool(state.get("linked_pole", state.has("linked_pole_x") or state.has("pole_x")))
 	var crude_progress: float = clamp(float(state.get("crude_progress", 0.0)), 0.0, 1.0)
 	var enabled: bool = bool(state.get("enabled", state.get("machine_enabled", false)))
 	var running: bool = bool(state.get("running", state.get("is_running", state.get("processing", false))))
@@ -385,34 +415,35 @@ func refresh() -> void:
 	var power_source := str(state.get("power_source", "")).strip_edges().to_lower()
 	if power_source == "" and battery_powered:
 		power_source = "battery"
-	var has_power: bool = enabled and (running or direct_power)
+	var has_power: bool = running
+	var presentation := RefineryStatus.describe(state)
 
 	if status_badge != null:
-		status_badge.text = "FULL" if output_full else ("POWERED" if has_power else "OFFLINE")
-		status_badge.add_theme_stylebox_override("normal", PixelUIStyle.status_badge_style("good" if has_power else "danger"))
+		status_badge.text = presentation.badge
+		status_badge.add_theme_stylebox_override("normal", PixelUIStyle.status_badge_style("warning" if output_full or power_source in ["battery", "hybrid"] else ("good" if has_power else "danger")))
 	if toggle_button != null:
 		toggle_button.text = "TURN OFF" if enabled else "TURN ON"
 		toggle_button.disabled = output_full and not enabled
 
 	if power_value_label != null:
-		power_value_label.text = "Transformer: " + str(transformer_watts) + " W" if linked_pole else "Transformer: none"
+		power_value_label.text = "Network: " + str(transformer_watts) + " energy" if linked_pole else "Network: not connected"
 	if battery_value_label != null:
 		battery_value_label.visible = true
-		battery_value_label.text = "Battery: " + str(battery_watts) + " W (" + str(battery_count) + " / " + str(BATTERY_INPUT_CAPACITY) + ")"
+		battery_value_label.text = presentation.reserve_text
 	if metal_pad_value_label != null:
 		metal_pad_value_label.visible = true
 		if power_source == "hybrid":
-			metal_pad_value_label.text = "Source: transformer + battery"
+			metal_pad_value_label.text = "Source: grid + battery"
 		elif power_source == "battery":
 			metal_pad_value_label.text = "Source: battery"
 		elif power_source == "transformer":
-			metal_pad_value_label.text = "Source: transformer"
+			metal_pad_value_label.text = "Source: grid"
 		else:
 			metal_pad_value_label.text = "Power: online" if direct_power else "Power: offline"
 	if runtime_value_label != null:
-		runtime_value_label.text = format_hours(crude_progress) + " / 1h"
+		runtime_value_label.text = presentation.next_text
 	if output_value_label != null:
-		output_value_label.text = "Crude oil: full" if output_full else ("Crude oil: ready" if produced_count > 0 else ("Crude oil: running" if has_power else "Crude oil: idle"))
+		output_value_label.text = "Full" if output_full else ("Ready" if produced_count > 0 else "Empty")
 	var has_output := produced_count > 0
 	var has_output_icon := false
 	if output_icon != null:
@@ -430,32 +461,19 @@ func refresh() -> void:
 		battery_input_icon.texture = get_battery_texture()
 		battery_input_icon.visible = battery_count > 0
 	if battery_input_label != null:
-		battery_input_label.text = ("x" + str(battery_count) + "\n" + str(battery_watts) + " W") if battery_count > 0 else "BATTERY\nEMPTY"
+		battery_input_label.text = "x%d / %d" % [battery_count, BATTERY_INPUT_CAPACITY]
 	if add_battery_button != null:
 		var available_slots: int = maxi(0, BATTERY_INPUT_CAPACITY - battery_count)
 		add_battery_button.disabled = available_slots <= 0 or get_owned_battery_count() <= 0
 	if footer_label != null:
-		if output_full:
-			footer_label.text = "Output full"
-		elif produced_count > 0:
-			footer_label.text = "Ready to collect"
-		elif running and power_source == "hybrid":
-			footer_label.text = "Producing from transformer + battery"
-		elif running and power_source == "battery":
-			footer_label.text = "Producing from battery"
-		elif running:
-			footer_label.text = "Producing crude oil"
-		elif enabled and not linked_pole and battery_watts <= 0:
-			footer_label.text = "Add batteries or link pole"
-		elif enabled:
-			footer_label.text = "Awaiting transformer or battery power"
-		else:
-			footer_label.text = "Turn on to begin"
+		footer_label.text = presentation.hint
+	if subtitle_label != null:
+		subtitle_label.text = "1 oil / powered hour  |  Automatic battery backup"
 	if consumption_rate_label != null:
 		consumption_rate_label.text = CONSUMPTION_RATE_TEXT
 
 	set_meter(runtime_fill, crude_progress)
-	set_meter(output_fill, 1.0 if produced_count > 0 else crude_progress)
+	set_meter(output_fill, presentation.storage_ratio)
 
 
 func format_hours(value: float) -> String:

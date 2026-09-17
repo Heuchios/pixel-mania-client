@@ -36,9 +36,10 @@ const LINK_LINE_PENDING_COLOR := Color(1.0, 0.92, 0.24, 0.72)
 const LINK_LINE_VALID_COLOR := Color(0.95, 1.0, 0.28, 0.92)
 const LINK_LINE_INVALID_COLOR := Color(1.0, 0.62, 0.18, 0.72)
 const ELECTRIC_WIRE_FLOW_PARTICLES_SCENE_PATH := "res://Scenes/particles/ElectricWireFlowParticlesFX.tscn"
-const ENABLE_PERSISTENT_WIRE_FLOW_FX := true
+const ENABLE_PERSISTENT_WIRE_FLOW_FX := false
 const MAX_PERSISTENT_WIRE_FLOW_FX := 8
 
+var circuit_ux = null
 var world = null
 var electrical_tiles: Dictionary = {}
 var electrical_visible := false
@@ -61,6 +62,8 @@ var local_oil_refinery_links: Dictionary = {}
 var local_battery_charger_links: Dictionary = {}
 var local_pole_links: Dictionary = {}
 var link_lines: Dictionary = {}
+var link_revision := 0
+var preview_target_grid := INVALID_LINK_GRID
 var link_flow_particles: Dictionary = {}
 var link_preview_line: Line2D = null
 var last_visibility_snapshot_key := ""
@@ -73,6 +76,9 @@ func setup(world_ref) -> void:
 	z_index = 2600
 	visible = true
 	load_textures()
+	circuit_ux = preload("res://Scripts/electric_circuit_ux.gd").new()
+	add_child(circuit_ux)
+	circuit_ux.setup(self)
 	set_process(false)
 	refresh_all_visuals()
 
@@ -142,10 +148,21 @@ func is_link_endpoint_valid(endpoint: Dictionary) -> bool:
 
 
 func get_anchor_grid_for_link(raw_grid: Vector2i) -> Vector2i:
-	if world != null and world.has_method("get_anchor_grid_for_block_area"):
-		var anchor_grid: Vector2i = world.get_anchor_grid_for_block_area(raw_grid)
-		if anchor_grid != INVALID_LINK_GRID:
-			return anchor_grid
+	# Electrical picking must never call the general area lookup: an empty cell
+	# there scans every foreground block. Electrical devices occupy local cells.
+	if world == null or not ("blocks" in world):
+		return raw_grid
+	if world.blocks.has(raw_grid) or is_metal_pad_at(raw_grid):
+		return raw_grid
+	# Support the footprint of nearby transformers without a world-wide search.
+	if world.block_manager != null and world.block_manager.has_method("get_block_collision_rect_for_grid"):
+		for x in range(-2, 3):
+			for y in range(-2, 3):
+				var candidate := raw_grid + Vector2i(x, y)
+				if not is_visible_generator_at(candidate): continue
+				var block_type := str(world.blocks.get(candidate, {}).get("type", "generator"))
+				var rect: Rect2 = world.block_manager.get_block_collision_rect_for_grid(candidate, block_type)
+				if rect.has_point(grid_to_world_pos(raw_grid)): return candidate
 	return raw_grid
 
 
@@ -235,11 +252,6 @@ func is_electric_pole_at(grid_pos: Vector2i) -> bool:
 func resolve_electric_pole_grid(grid_pos: Vector2i) -> Vector2i:
 	if is_electric_pole_at(grid_pos):
 		return grid_pos
-
-	if world != null and world.has_method("get_anchor_grid_for_block_area"):
-		var anchor_grid: Vector2i = world.get_anchor_grid_for_block_area(grid_pos)
-		if is_electric_pole_at(anchor_grid):
-			return anchor_grid
 
 	var best_grid := Vector2i(999999, 999999)
 	var best_distance := INF
@@ -599,14 +611,13 @@ func update_electric_tool_link_preview_line() -> void:
 	var pair := make_electric_tool_link_pair(source_endpoint, target_endpoint)
 	var has_target_endpoint := is_link_endpoint_valid(target_endpoint)
 	var target_valid := not pair.is_empty()
+	preview_target_grid = get_link_endpoint_grid(target_endpoint) if target_valid else INVALID_LINK_GRID
 	var end_pos := grid_to_world_pos(get_link_endpoint_grid(target_endpoint)) if has_target_endpoint else get_link_pointer_position()
 	line.default_color = LINK_LINE_VALID_COLOR if target_valid else (LINK_LINE_INVALID_COLOR if has_target_endpoint else LINK_LINE_PENDING_COLOR)
 	set_line_points(line, grid_to_world_pos(electric_tool_link_source_grid), end_pos)
 
 
 func get_link_pointer_position() -> Vector2:
-	if world != null and "player" in world and world.player != null:
-		return world.player.global_position
 	if world != null and world.has_method("get_pointer_global_position"):
 		return world.get_pointer_global_position()
 	return get_global_mouse_position()
@@ -692,7 +703,7 @@ func draw_generator_link_line(generator_grid: Vector2i, target_grid: Vector2i, l
 	if line == null:
 		line = make_wire_line("GeneratorLinkLine", color)
 		link_lines[link_key] = line
-	line.default_color = color
+		link_revision += 1
 	set_line_points(line, grid_to_world_pos(generator_grid), grid_to_world_pos(target_grid))
 	update_wire_flow_particles(link_key, generator_grid, target_grid, clean_kind)
 
@@ -713,7 +724,7 @@ func draw_oil_refinery_link_line(refinery_grid: Vector2i, pole_grid: Vector2i, c
 	if line == null:
 		line = make_wire_line("OilRefineryLinkLine", color)
 		link_lines[link_key] = line
-	line.default_color = color
+		link_revision += 1
 	set_line_points(line, grid_to_world_pos(refinery_grid), grid_to_world_pos(pole_grid))
 	update_wire_flow_particles(link_key, refinery_grid, pole_grid, LINK_MODE_REFINERY_INPUT)
 
@@ -734,7 +745,7 @@ func draw_battery_charger_link_line(charger_grid: Vector2i, pole_grid: Vector2i,
 	if line == null:
 		line = make_wire_line("BatteryChargerLinkLine", color)
 		link_lines[link_key] = line
-	line.default_color = color
+		link_revision += 1
 	set_line_points(line, grid_to_world_pos(charger_grid), grid_to_world_pos(pole_grid))
 	update_wire_flow_particles(link_key, charger_grid, pole_grid, LINK_MODE_CHARGER_INPUT)
 
@@ -757,7 +768,7 @@ func draw_pole_link_line(pole_a_grid: Vector2i, pole_b_grid: Vector2i, color: Co
 	if line == null:
 		line = make_wire_line("PoleLinkLine", color)
 		link_lines[link_key] = line
-	line.default_color = color
+		link_revision += 1
 	set_line_points(line, grid_to_world_pos(pole_a_grid), grid_to_world_pos(pole_b_grid))
 	update_wire_flow_particles(link_key, pole_a_grid, pole_b_grid, LINK_MODE_POLE_COUPLING)
 
@@ -768,6 +779,7 @@ func remove_generator_link_line(link_key: String) -> void:
 		return
 	var line = link_lines[link_key]
 	link_lines.erase(link_key)
+	link_revision += 1
 	if line != null and is_instance_valid(line):
 		line.queue_free()
 
@@ -982,6 +994,7 @@ func begin_electric_tool_link_mode(endpoint: Dictionary) -> bool:
 
 
 func cancel_electric_tool_link_mode(show_message: bool = false) -> void:
+	preview_target_grid = INVALID_LINK_GRID
 	var was_active := electric_tool_link_mode_active
 	electric_tool_link_mode_active = false
 	electric_tool_link_source_type = ""
@@ -1004,8 +1017,12 @@ func try_electric_tool_link_at(raw_grid: Vector2i) -> bool:
 		cancel_electric_tool_link_mode()
 		return true
 
+	if circuit_ux != null and not circuit_ux.pending.is_empty():
+		return true
 	var endpoint := resolve_electrical_link_endpoint(raw_grid)
 	if not is_link_endpoint_valid(endpoint):
+		if circuit_ux != null and circuit_ux.try_select_wire():
+			return true
 		if electric_tool_link_mode_active:
 			world.show_notification(get_electric_tool_link_target_prompt(electric_tool_link_source_type))
 			update_electric_tool_link_preview_line()
@@ -1019,6 +1036,10 @@ func try_electric_tool_link_at(raw_grid: Vector2i) -> bool:
 		return true
 
 	if not electric_tool_link_mode_active:
+		if circuit_ux != null:
+			circuit_ux.select_device(endpoint_grid, get_link_endpoint_type(endpoint))
+			if circuit_ux.inspect_mode:
+				return true
 		return begin_electric_tool_link_mode(endpoint)
 
 	if endpoint_grid == electric_tool_link_source_grid and get_link_endpoint_type(endpoint) == electric_tool_link_source_type:
@@ -1032,6 +1053,8 @@ func try_electric_tool_link_at(raw_grid: Vector2i) -> bool:
 		update_electric_tool_link_preview_line()
 		return true
 
+	if circuit_ux != null and circuit_ux.select_existing(pair):
+		return true
 	return complete_electric_tool_link(pair)
 
 
@@ -1049,7 +1072,7 @@ func complete_electric_tool_link(pair: Dictionary) -> bool:
 				if network != null and network.has_method("send_request_link_generator_pad"):
 					if network.send_request_link_generator_pad(generator_grid, pad_grid, world.current_world_name):
 						world.show_notification("Linking metal pad...")
-						cancel_electric_tool_link_mode()
+						finish_electric_tool_link(pair)
 					else:
 						world.show_notification("Almost ready. Try again in a moment.")
 					return true
@@ -1095,7 +1118,6 @@ func complete_electric_tool_link(pair: Dictionary) -> bool:
 				if network != null and network.has_method("send_request_link_electric_poles"):
 					if network.send_request_link_electric_poles(pole_a_grid, pole_b_grid, world.current_world_name):
 						world.show_notification("Linking electric poles...")
-						link_electric_poles_locally(pole_a_grid, pole_b_grid, false)
 						cancel_electric_tool_link_mode()
 					else:
 						world.show_notification("Almost ready. Try again in a moment.")
@@ -1638,7 +1660,15 @@ func apply_snapshot(entries, visible_state: bool = true, generator_links = [], o
 	if snapshot_key == last_visibility_snapshot_key:
 		electrical_visible = visible_state
 		return
+	var pending_source := electric_tool_link_source_grid
+	var pending_type := electric_tool_link_source_type
+	var pending_mode := electric_tool_link_mode_active
 	clear_all()
+	if visible_state and pending_mode and has_electric_tool_equipped():
+		electric_tool_link_source_grid = pending_source
+		electric_tool_link_source_type = pending_type
+		electric_tool_link_mode_active = true
+		set_process(true)
 	last_visibility_snapshot_key = snapshot_key
 	electrical_visible = visible_state
 	if not visible_state:
@@ -1869,6 +1899,10 @@ func request_open_generator(grid_pos: Vector2i) -> bool:
 
 
 func handle_generator_data_update(data: Dictionary) -> void:
+	if circuit_ux != null and circuit_ux.flow_overlay != null:
+		circuit_ux.flow_overlay.update_generator(data)
+	if circuit_ux != null and bool(data.get("full", false)) and int(data.get("generated_watts", 0)) == 0:
+		circuit_ux.show_generation(data)
 	var grid_pos := make_grid_pos(data)
 	update_foreground_generator_power_visual(grid_pos, data)
 	if electrical_tiles.has(grid_pos):
@@ -1887,6 +1921,8 @@ func handle_generator_data_update(data: Dictionary) -> void:
 
 
 func handle_generator_generation_pulse(data: Dictionary) -> void:
+	if circuit_ux != null:
+		circuit_ux.show_generation(data)
 	var grid_pos := make_grid_pos(data)
 	update_foreground_generator_power_visual(grid_pos, data)
 	if electrical_tiles.has(grid_pos):
@@ -1926,3 +1962,11 @@ func get_save_data() -> Array:
 
 func load_save_data(entries) -> void:
 	apply_snapshot(entries, true)
+
+
+func finish_electric_tool_link(pair: Dictionary) -> void:
+	if circuit_ux != null:
+		circuit_ux.track_request(pair, false)
+		if circuit_ux.multi_connect and electric_tool_link_source_type == LINK_ENDPOINT_TRANSFORMER:
+			return
+	cancel_electric_tool_link_mode()

@@ -1,14 +1,14 @@
-[gd_resource type="StyleBoxTexture" format=3]
+[gd_resource type="StyleBoxTexture" format=3 uid="uid://ddrj2cwthukxq"]
 
-[ext_resource type="Texture2D" path="res://Assets/ui/UI_3.0.png" id="1_atlas"]
+[ext_resource type="Texture2D" uid="uid://dkayrq2tuf3e1" path="res://Assets/ui/UI_3.0.png" id="1_atlas"]
 
 [resource]
 texture = ExtResource("1_atlas")
+texture_margin_left = 2.0
+texture_margin_top = 1.0
+texture_margin_right = 2.0
+texture_margin_bottom = 5.0
 region_rect = Rect2(128, 0, 32, 32)
 modulate_color = Color(0.72, 0.72, 0.72, 1)
-texture_margin_bottom = 5.0
-texture_margin_left = 2.0
-texture_margin_right = 2.0
-texture_margin_top = 1.0
 metadata/atlas_region = "red_button"
 metadata/atlas_properties = "{\"modulate_color\": \"Color(0.72, 0.72, 0.72, 1)\", \"texture_margin_bottom\": \"5.0\", \"texture_margin_left\": \"2.0\", \"texture_margin_right\": \"2.0\", \"texture_margin_top\": \"1.0\"}"

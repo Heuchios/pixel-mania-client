@@ -27,6 +27,7 @@ func apply_to_node_tree(root: Node) -> void:
 
 	# Apply one centralized typography policy after scene-authored overrides load.
 	PixelUIStyle.apply_global_typography_to_node(root)
+	PixelUIStyle.apply_ui_chrome_to_node(root)
 	for child in root.get_children():
 		apply_to_node_tree(child)
 

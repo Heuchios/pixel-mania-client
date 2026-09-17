@@ -1259,14 +1259,7 @@ func apply_close_texture_button_style(button: Button) -> void:
 
 
 func apply_world_lock_tab_style(button: Button, selected: bool, font_size: int = 14) -> void:
-	if button == null:
-		return
-	PixelUIStyle.apply_button_text(button, font_size)
-	button.focus_mode = Control.FOCUS_NONE
-	PixelUIStyle.apply_atlas_button(button, "pink_button" if selected else "blue_button")
-	button.add_theme_color_override("font_color", Color.WHITE if selected else Color(0.82, 0.95, 1.0, 0.92))
-	button.add_theme_color_override("font_pressed_color", Color.WHITE)
-	button.add_theme_color_override("font_hover_color", Color.WHITE)
+	PixelUIStyle.apply_tab_button(button, selected, font_size)
 
 
 func apply_world_lock_arcade_button_style(button: Button, selected: bool = false, danger: bool = false, font_size: int = 14) -> void:

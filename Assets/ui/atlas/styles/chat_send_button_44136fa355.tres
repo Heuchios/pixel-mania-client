@@ -4,6 +4,7 @@
 
 [resource]
 texture = ExtResource("1_atlas")
+modulate_color = Color(0.32, 0.12, 0.4, 1)
 region_rect = Rect2(448, 32, 32, 32)
 metadata/atlas_region = "chat_send_button"
 metadata/atlas_properties = "{}"

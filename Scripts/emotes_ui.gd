@@ -3,7 +3,7 @@ extends Control
 signal emote_selected(emote_id: String)
 
 const EMOTES_BUTTON_SIZE := Vector2(64, 64)
-const EMOTES_BUTTON_Y := 304.0
+const EMOTES_BUTTON_Y := 268.0
 const EMOTES_PANEL_SIZE := Vector2(312, 294)
 const EMOTES_PANEL_MARGIN_RIGHT := 26.0
 const EMOTES_PANEL_GAP := 8.0

@@ -1,13 +1,13 @@
-[gd_resource type="StyleBoxTexture" format=3]
+[gd_resource type="StyleBoxTexture" format=3 uid="uid://clwm5stqtix38"]
 
-[ext_resource type="Texture2D" path="res://Assets/ui/UI_3.0.png" id="1_atlas"]
+[ext_resource type="Texture2D" uid="uid://dkayrq2tuf3e1" path="res://Assets/ui/UI_3.0.png" id="1_atlas"]
 
 [resource]
 texture = ExtResource("1_atlas")
-region_rect = Rect2(32, 0, 32, 32)
-texture_margin_bottom = 1.0
 texture_margin_left = 1.0
-texture_margin_right = 1.0
 texture_margin_top = 1.0
+texture_margin_right = 1.0
+texture_margin_bottom = 1.0
+region_rect = Rect2(32, 0, 32, 32)
 metadata/atlas_region = "inner_panel"
 metadata/atlas_properties = "{\"texture_margin_bottom\": \"1.0\", \"texture_margin_left\": \"1.0\", \"texture_margin_right\": \"1.0\", \"texture_margin_top\": \"1.0\"}"

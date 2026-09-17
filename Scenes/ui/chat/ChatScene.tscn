@@ -18,9 +18,9 @@
 [ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_drag_handle_44136fa355.tres" id="atlas_StyleBoxTexture_button_pressed"]
 [ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_drag_handle_44136fa355.tres" id="atlas_StyleBoxTexture_button_hover"]
 [ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/input_field_c8326ad95d.tres" id="atlas_StyleBoxTexture_8jaiq"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_send_button_44136fa355.tres" id="atlas_StyleBoxTexture_qon6k"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_send_button_44136fa355.tres" id="atlas_StyleBoxTexture_003sp"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_send_button_44136fa355.tres" id="atlas_StyleBoxTexture_n532j"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_bubble_3.tres" id="atlas_StyleBoxTexture_qon6k"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_bubble_3.tres" id="atlas_StyleBoxTexture_003sp"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/chat_bubble_3.tres" id="atlas_StyleBoxTexture_n532j"]
 
 [ext_resource type="Script" uid="uid://bl2p5yoxk8bto" path="res://Scripts/chat_ui.gd" id="0_chat_ui"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/input_field.tres" id="9_tyt54"]
@@ -166,7 +166,7 @@ horizontal_scroll_mode = 0
 [node name="MessagesRoot" type="VBoxContainer" parent="ChatPanel/MessagesPanel/MessagesScroll" unique_id=671447279]
 custom_minimum_size = Vector2(980, 198)
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 3
 alignment = 2
 
 [node name="MessageRow_System" type="Label" parent="ChatPanel/MessagesPanel/MessagesScroll/MessagesRoot" unique_id=1630672586]
@@ -284,15 +284,19 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="HandleVisual" type="TextureRect" parent="ChatPanel/ChatHandle"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 26.5
+offset_top = 0.0
+offset_right = 126.5
+offset_bottom = 42.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("chat_handle_texture")
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 0
 
 [node name="QuickChatBar" type="Control" parent="." unique_id=528386480]
 layout_mode = 1

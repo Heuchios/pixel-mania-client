@@ -839,7 +839,7 @@ func apply_inventory_tab_shared_style():
 			continue
 		var is_selected = tab_name == inventory_tab
 		if tab is Button:
-			apply_arcade_button_style(tab, is_selected, false, 13)
+			PixelUIStyle.apply_tab_button(tab, is_selected, 13)
 		elif tab is ColorRect:
 			if is_selected:
 				tab.color = Color(1.0, 0.88, 0.18, 0.98)
@@ -867,14 +867,7 @@ func apply_gem_counter_shared_style():
 		gem_panel.move_child(back, 0)
 	if back is Panel:
 		back.size = gem_panel.size
-		back.add_theme_stylebox_override(
-			"panel",
-			PixelUIStyle.style_box(
-				Color(0.035, 0.090, 0.165, 0.98),
-				Color(0.15, 0.28, 0.50, 0.82),
-				2, 12, 10
-			)
-		)
+		back.add_theme_stylebox_override("panel", PixelUIStyle.input_style())
 	var glow = gem_panel.get_node_or_null("GemPanelGlow")
 	if glow == null:
 		glow = ColorRect.new()
@@ -3064,19 +3057,9 @@ func animate_inventory_button_icon(pressed: bool):
 
 
 func update_inventory_button_position():
-	if inventory_button == null:
-		return
-	var button_visible: bool = not is_floating_hud_blocked()
-	inventory_button.visible = button_visible
-	if not button_visible:
-		return
-	var screen_size: Vector2 = get_viewport_rect().size
-	var hud_scale: float = get_mobile_hud_scale(screen_size)
-	inventory_button.scale = Vector2.ONE * hud_scale
-	var scaled_button_size: Vector2 = inventory_button.size * hud_scale
-	var right_margin: float = 38.0 * hud_scale
-	var button_x: float = screen_size.x - scaled_button_size.x - right_margin
-	inventory_button.position = Vector2(max(8.0, button_x), 88.0)
+	# Inventory remains accessible from the hotbar bag tab.
+	if inventory_button != null:
+		inventory_button.hide()
 
 
 func setup_gem_counter():
@@ -3120,7 +3103,7 @@ func setup_gem_counter():
 	gem_count_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	gem_count_label.add_theme_font_size_override("font_size", 18)
 	gem_count_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	gem_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	gem_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	apply_gem_counter_shared_style()
 	update_gem_counter_position()
 	update_gem_counter()
@@ -3133,11 +3116,7 @@ func update_gem_counter_position():
 	gem_panel.visible = counter_visible
 	if not counter_visible:
 		return
-	var screen_size = get_viewport_rect().size
-	gem_panel.position = Vector2(
-		max(8.0, screen_size.x - gem_panel.size.x - 16.0),
-		max(8.0, screen_size.y - gem_panel.size.y - 16.0)
-	)
+	gem_panel.position = Vector2(16.0, 16.0)
 
 
 func update_gem_counter():
@@ -3145,7 +3124,7 @@ func update_gem_counter():
 		return
 
 	var gem_text: String = str(world.get_currency_display_text("gem"))
-	var hud_text: String = "x" + gem_text
+	var hud_text: String = gem_text
 	var inventory_refresh_active: bool = is_inventory_window_refresh_active()
 
 	# When the bag is closed and the gem count did not change, skip all UI writes.
