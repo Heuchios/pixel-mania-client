@@ -3,10 +3,10 @@ extends Control
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 const StationRecipes = preload("res://Scripts/station_recipes.gd")
 
-const PANEL_SIZE = Vector2(1080, 620)
+const PANEL_SIZE = Vector2(1080, 700)
 const RECIPE_ROOT_WIDTH = 960.0
 const RECIPE_ROOT_MIN_HEIGHT = 376.0
-const RECIPE_CARD_SIZE = Vector2(304, 154)
+const RECIPE_CARD_SIZE = Vector2(470, 212)
 const RECIPE_CARD_GAP = Vector2(16, 18)
 
 var world = null
@@ -20,6 +20,10 @@ var gem_label = null
 var info_label = null
 
 var recipes = []
+var search_box: LineEdit
+var ready_filter: Button
+var all_filter: Button
+var result_label: Label
 
 
 func setup(parent_world, ui_node):
@@ -146,7 +150,7 @@ func setup_panel():
 	header_gloss.name = "HeaderGloss"
 	header_gloss.position = top_bar.position + Vector2(10, 8)
 	header_gloss.size = Vector2(top_bar.size.x - 20.0, 18)
-	header_gloss.color = Color(1.0, 1.0, 1.0, 0.055)
+	header_gloss.visible = false
 	header_gloss.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_child(header_gloss)
 
@@ -165,14 +169,16 @@ func setup_panel():
 	title.size = Vector2(510, 54)
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(title, 42)
+	title.set_meta("pixelmania_font_size", 28)
+	PixelUIStyle.apply_label_shadow(title, 28)
 	panel.add_child(title)
 
 	var title_sub = Label.new()
 	title_sub.name = "TitleSub"
-	title_sub.text = "RECIPES"
+	title_sub.text = "Combine materials to create items"
 	title_sub.position = Vector2(42, 66)
-	title_sub.size = Vector2(210, 20)
+	title_sub.size = Vector2(560, 20)
+	title_sub.set_meta("pixelmania_font_size", 16)
 	title_sub.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(title_sub, 14)
 	panel.add_child(title_sub)
@@ -183,7 +189,7 @@ func setup_panel():
 	close_button.position = Vector2(panel.size.x - 76.0, 20)
 	close_button.size = Vector2(52, 48)
 	close_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	apply_station_arcade_button_style(close_button, false, true, 24)
+	PixelUIStyle.apply_close_button(close_button)
 	close_button.pressed.connect(close_crafting)
 	panel.add_child(close_button)
 
@@ -214,39 +220,43 @@ func setup_panel():
 	PixelUIStyle.apply_label_shadow(gem_label, 21)
 	panel.add_child(gem_label)
 
-	var info_card = Panel.new()
-	info_card.name = "InfoCard"
-	info_card.position = Vector2(32, 112)
-	info_card.size = Vector2(panel.size.x - 64.0, 52)
-	info_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	info_card.add_theme_stylebox_override("panel", station_section_style())
-	panel.add_child(info_card)
-
-	var section_label = Label.new()
-	section_label.name = "SectionLabel"
-	section_label.text = "AVAILABLE RECIPES"
-	section_label.position = Vector2(50, 125)
-	section_label.size = Vector2(340, 28)
-	section_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	section_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_section_title(section_label, 22)
-	panel.add_child(section_label)
-
-	info_label = Label.new()
-	info_label.name = "Info"
-	info_label.text = "Craft tools, stations, equipment, and special recipes."
-	info_label.position = Vector2(386, 126)
-	info_label.size = Vector2(620, 26)
-	info_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	info_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	info_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(info_label, 14)
-	panel.add_child(info_label)
+	search_box = LineEdit.new()
+	search_box.name = "Search"
+	search_box.position = Vector2(48, 112)
+	search_box.size = Vector2(570, 44)
+	search_box.placeholder_text = "Search recipes or ingredients..."
+	search_box.clear_button_enabled = true
+	search_box.add_theme_stylebox_override("normal", station_chip_style())
+	search_box.add_theme_stylebox_override("focus", PixelUIStyle.input_focus_style())
+	search_box.add_theme_font_override("font", PixelUIStyle.get_game_font())
+	search_box.add_theme_font_size_override("font_size", 18)
+	search_box.text_changed.connect(func(_text): _filter_changed())
+	panel.add_child(search_box)
+	ready_filter = Button.new()
+	ready_filter.toggle_mode = true
+	ready_filter.name = "ReadyFilter"
+	ready_filter.text = "Ready to craft"
+	ready_filter.position = Vector2(806, 112)
+	ready_filter.size = Vector2(224, 44)
+	PixelUIStyle.apply_tab_button(ready_filter, false, 18)
+	ready_filter.toggled.connect(func(_pressed): _filter_changed())
+	panel.add_child(ready_filter)
+	all_filter = Button.new()
+	all_filter.name = "AllRecipes"
+	all_filter.text = "All recipes"
+	all_filter.position = Vector2(634, 112)
+	all_filter.size = Vector2(156, 44)
+	PixelUIStyle.apply_tab_button(all_filter, true, 18)
+	all_filter.pressed.connect(func(): ready_filter.set_pressed_no_signal(false); _filter_changed())
+	panel.add_child(all_filter)
+	info_label = _card_label(panel, "Info", "Select a recipe to craft one item.", Vector2(48, panel.size.y - 38), Vector2(740, 26), 14)
+	result_label = _card_label(panel, "Results", "", Vector2(800, panel.size.y - 38), Vector2(230, 26), 14)
+	result_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
 	var recipe_area = Panel.new()
 	recipe_area.name = "RecipeArea"
 	recipe_area.position = Vector2(32, 178)
-	recipe_area.size = Vector2(panel.size.x - 64.0, panel.size.y - 208.0)
+	recipe_area.size = Vector2(panel.size.x - 64.0, panel.size.y - 226.0)
 	recipe_area.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	recipe_area.add_theme_stylebox_override("panel", station_section_style())
 	panel.add_child(recipe_area)
@@ -254,7 +264,7 @@ func setup_panel():
 	recipe_scroll = ScrollContainer.new()
 	recipe_scroll.name = "RecipeScroll"
 	recipe_scroll.position = Vector2(48, 194)
-	recipe_scroll.size = Vector2(panel.size.x - 96.0, panel.size.y - 240.0)
+	recipe_scroll.size = Vector2(panel.size.x - 96.0, panel.size.y - 258.0)
 	recipe_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	recipe_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	recipe_scroll.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -282,9 +292,15 @@ func create_recipe_cards():
 		child.queue_free()
 
 	var visible_recipes := get_visible_recipes()
-	var columns = 3
+	result_label.text = "%d recipes" % visible_recipes.size()
+	if visible_recipes.is_empty():
+		_card_label(recipe_root, "Empty", "No matching recipes. Try another search or show all recipes.", Vector2(24, 48), Vector2(880, 80), 20)
+	var columns = 2
+	var row_height := RECIPE_CARD_SIZE.y
+	for recipe in visible_recipes:
+		row_height = maxf(row_height, 144 + recipe.cost.size() * 34)
 	var rows = int(ceil(float(visible_recipes.size()) / float(columns)))
-	var content_height = max(RECIPE_ROOT_MIN_HEIGHT, rows * RECIPE_CARD_SIZE.y + max(0, rows - 1) * RECIPE_CARD_GAP.y)
+	var content_height = max(RECIPE_ROOT_MIN_HEIGHT, rows * row_height + max(0, rows - 1) * RECIPE_CARD_GAP.y)
 
 	recipe_root.size = Vector2(RECIPE_ROOT_WIDTH, content_height)
 	recipe_root.custom_minimum_size = Vector2(RECIPE_ROOT_WIDTH, content_height)
@@ -293,14 +309,14 @@ func create_recipe_cards():
 		var recipe = visible_recipes[i]
 		var column = i % columns
 		var row = int(floor(float(i) / float(columns)))
-		create_recipe_card(recipe, Vector2(column * (RECIPE_CARD_SIZE.x + RECIPE_CARD_GAP.x), row * (RECIPE_CARD_SIZE.y + RECIPE_CARD_GAP.y)), i)
+		create_recipe_card(recipe, Vector2(column * (RECIPE_CARD_SIZE.x + RECIPE_CARD_GAP.x), row * (row_height + RECIPE_CARD_GAP.y)), i)
 
 
 func get_visible_recipes() -> Array:
 	var visible_recipes: Array = []
 
 	for recipe in recipes:
-		if should_show_recipe(recipe):
+		if should_show_recipe(recipe) and _matches_filters(recipe):
 			visible_recipes.append(recipe)
 
 	return visible_recipes
@@ -369,109 +385,94 @@ func is_fishing_rod_item_id(item_id: String) -> bool:
 	]
 
 
+func _filter_changed():
+	PixelUIStyle.apply_tab_button(ready_filter, ready_filter.button_pressed, 18)
+	PixelUIStyle.apply_tab_button(all_filter, not ready_filter.button_pressed, 18)
+	create_recipe_cards()
+	recipe_scroll.scroll_vertical = 0
+
+
+func _matches_filters(recipe: Dictionary) -> bool:
+	if ready_filter != null and ready_filter.button_pressed and not can_craft(recipe):
+		return false
+	var query := search_box.text.strip_edges().to_lower() if search_box != null else ""
+	var terms := get_item_display_name(recipe.output.item_id, recipe.output.category)
+	for cost in recipe.cost:
+		terms += " " + get_item_display_name(cost.item_id, cost.category)
+	return query.is_empty() or terms.to_lower().contains(query)
+
+
+func _card_label(parent: Node, node_name: String, text: String, pos: Vector2, dimensions: Vector2, font_size: int) -> Label:
+	var label := Label.new()
+	label.name = node_name
+	label.text = text
+	label.position = pos
+	label.size = dimensions
+	label.set_meta("pixelmania_font_size", font_size)
+	PixelUIStyle.apply_label_shadow(label, font_size)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.clip_text = true
+	label.tooltip_text = text
+	parent.add_child(label)
+	return label
+
+
 func create_recipe_card(recipe: Dictionary, card_position: Vector2, _card_index: int):
-	var can_make = can_craft(recipe)
-
-	var output = recipe["output"]
-	var output_id = str(output["item_id"])
-	var output_category = str(output["category"])
-	var output_amount = int(output["amount"])
-	var rarity = get_item_rarity(output_id)
-
-	var card = Panel.new()
-	card.name = "RecipeCard_" + output_id
+	var can_make := can_craft(recipe)
+	var output: Dictionary = recipe.output
+	var card := Panel.new()
+	card.name = "RecipeCard_" + str(output.item_id)
 	card.position = card_position
-	card.size = RECIPE_CARD_SIZE
+	card.size = Vector2(RECIPE_CARD_SIZE.x, maxf(RECIPE_CARD_SIZE.y, 144 + recipe.cost.size() * 34))
 	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	apply_station_card_style(card, can_make)
+	card.add_theme_stylebox_override("panel", PixelUIStyle.atlas_style("input_field"))
 	recipe_root.add_child(card)
-
-	var ready_strip = ColorRect.new()
-	ready_strip.name = "ReadyStrip"
-	ready_strip.position = Vector2(8, 8)
-	ready_strip.size = Vector2(card.size.x - 16.0, 5)
-	ready_strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-	if can_make:
-		ready_strip.color = Color(0.28, 1.0, 0.42, 0.76)
-	else:
-		ready_strip.color = Color(0.80, 0.20, 0.16, 0.65)
-
-	card.add_child(ready_strip)
-
-	var icon_back = Panel.new()
-	icon_back.name = "IconBack"
-	icon_back.position = Vector2(12, 22)
-	icon_back.size = Vector2(78, 78)
-	icon_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon_back.add_theme_stylebox_override("panel", PixelUIStyle.slot_style(rarity))
-	card.add_child(icon_back)
-
-	var icon = TextureRect.new()
+	var icon_frame := Panel.new()
+	icon_frame.position = Vector2(14, 14)
+	icon_frame.size = Vector2(64, 64)
+	icon_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon_frame.add_theme_stylebox_override("panel", PixelUIStyle.slot_style(get_item_rarity(output.item_id)))
+	card.add_child(icon_frame)
+	var icon := TextureRect.new()
 	icon.name = "Icon"
-	icon.position = Vector2(23, 33)
-	icon.size = Vector2(56, 56)
+	icon.position = Vector2(22, 22)
+	icon.size = Vector2(48, 48)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon.texture = get_item_texture(output_id, output_category)
+	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	icon.texture = get_item_texture(output.item_id, output.category)
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(icon)
+	var title := _card_label(card, "Name", get_item_display_name(output.item_id, output.category), Vector2(90, 15), Vector2(360, 44), 22)
+	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var status := _card_label(card, "Status", "READY TO CRAFT" if can_make else "MATERIALS NEEDED", Vector2(90, 62), Vector2(350, 24), 13)
+	status.modulate = Color("99efb0") if can_make else Color("edbcb0")
+	for i in range(recipe.cost.size()):
+		var cost: Dictionary = recipe.cost[i]
+		var owned := get_crafting_cost_inventory_count(cost.item_id, cost.category)
+		var row_y := 86.0 + i * 34.0
+		var ingredient := TextureRect.new()
+		ingredient.position = Vector2(20, row_y)
+		ingredient.size = Vector2(28, 28)
+		ingredient.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		ingredient.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		ingredient.texture = get_item_texture(cost.item_id, cost.category)
+		ingredient.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		card.add_child(ingredient)
+		_card_label(card, "Ingredient%d" % i, get_item_display_name(cost.item_id, cost.category), Vector2(60, row_y), Vector2(265, 28), 17)
+		var count := _card_label(card, "Count%d" % i, "%s / %s" % [format_cost_amount(owned, cost.category), format_cost_amount(cost.amount, cost.category)], Vector2(330, row_y), Vector2(120, 28), 17)
+		count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		count.modulate = Color("99efb0") if owned >= int(cost.amount) else Color("ffab9c")
+	var button := Button.new()
+	button.name = "CraftButton"
+	button.text = "CRAFT ×%d" % int(output.amount) if can_make else "NEED MATERIALS"
+	button.position = Vector2(16, card.size.y - 52)
+	button.size = Vector2(card.size.x - 32, 38)
+	button.disabled = not can_make
+	apply_station_arcade_button_style(button, true, false, 17)
+	button.pressed.connect(craft_recipe.bind(recipe))
+	card.add_child(button)
 
-	var name_label = Label.new()
-	name_label.set_meta("pixelmania_font_size", 17)
-	name_label.name = "Name"
-	name_label.text = get_item_display_name(output_id, output_category) + " x" + str(output_amount)
-	name_label.position = Vector2(104, 18)
-	name_label.size = Vector2(186, 28)
-	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	name_label.clip_text = true
-	name_label.tooltip_text = name_label.text
-	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(name_label, 17)
-	card.add_child(name_label)
-
-	var status_label = Label.new()
-	status_label.set_meta("pixelmania_font_size", 13)
-	status_label.name = "Status"
-	status_label.position = Vector2(104, 46)
-	status_label.size = Vector2(186, 20)
-	status_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	status_label.clip_text = true
-	status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-	if can_make:
-		status_label.text = "READY"
-		PixelUIStyle.apply_small_label(status_label, 13)
-	else:
-		status_label.text = "MISSING MATERIALS"
-		PixelUIStyle.apply_label_shadow(status_label, 13, Color(1.0, 0.58, 0.50, 1.0))
-
-	card.add_child(status_label)
-
-	var cost_label = Label.new()
-	cost_label.set_meta("pixelmania_font_size", 11)
-	cost_label.name = "Cost"
-	cost_label.text = get_cost_text(recipe)
-	cost_label.position = Vector2(104, 68)
-	cost_label.size = Vector2(186, 34)
-	cost_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	cost_label.clip_text = true
-	cost_label.tooltip_text = cost_label.text
-	cost_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(cost_label, 11)
-	card.add_child(cost_label)
-
-	var craft_button = Button.new()
-	craft_button.name = "CraftButton"
-	craft_button.text = "CRAFT" if can_make else "MISSING"
-	craft_button.position = Vector2(10, card.size.y - 42.0)
-	craft_button.size = Vector2(card.size.x - 20.0, 34)
-	craft_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	craft_button.disabled = not can_make
-	apply_station_arcade_button_style(craft_button, true, false, 16)
-
-	craft_button.pressed.connect(craft_recipe.bind(recipe))
-	card.add_child(craft_button)
 
 
 func get_cost_text(recipe: Dictionary) -> String:
@@ -713,6 +714,8 @@ func get_item_texture(item_id: String, category: String):
 	if category == "material" and world.material_textures.has(item_id):
 		return world.material_textures[item_id]
 
+	if world.item_database.has(item_id):
+		return preload("res://Scripts/ui/recipe_book_data.gd").item_icon(world.item_database[item_id])
 	return null
 
 
@@ -762,10 +765,9 @@ func update_panel_position():
 		return
 
 	var screen_size = get_viewport_rect().size
-	panel.position = Vector2(
-		(screen_size.x - panel.size.x) / 2.0,
-		max(40.0, (screen_size.y - panel.size.y) / 2.0)
-	)
+	var fit_scale: float = minf(1.0, minf((screen_size.x - 64.0) / PANEL_SIZE.x, (screen_size.y - 96.0) / PANEL_SIZE.y))
+	panel.scale = Vector2.ONE * maxf(0.1, fit_scale)
+	panel.position = (screen_size - panel.size * panel.scale) * 0.5
 
 
 # Compatibility helpers kept so older code can still call them if needed.

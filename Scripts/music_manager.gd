@@ -78,22 +78,10 @@ func _ensure_player() -> void:
 		print("[MusicManager] baked loop settings (before fixup): loop_mode=%d loop_begin=%d loop_end=%d mix_rate=%d length=%.2fs" % [
 			wav_stream.loop_mode, wav_stream.loop_begin, wav_stream.loop_end, wav_stream.mix_rate, wav_stream.get_length()
 		])
-		# login.wav.import says edit/loop_mode=1 (forward), edit/loop_begin=0,
-		# edit/loop_end=-1 ("use full length"), which the WAV importer is supposed to
-		# resolve into a real positive sample count when it bakes the compiled
-		# .godot/imported/*.sample resource. In practice the currently-baked resource on
-		# disk reports loop_mode=0 (disabled) and loop_end=0 -- a stale import cache from
-		# before the .import file's loop settings were last edited (Godot only re-bakes a
-		# resource when you reimport it through the editor; a hand-edited .import file
-		# doesn't trigger that by itself). Re-importing login.wav via the editor's Import
-		# dock (select the file -> Import tab -> Reimport) will fix the baked resource
-		# directly, but we also fix it defensively here at runtime so playback is correct
-		# even if that reimport step is ever missed: if looping is enabled but loop_end
-		# isn't meaningfully past loop_begin (a zero/near-zero-length loop region --
-		# exactly what caused the earlier "playing=true but silent" bug, whether from a
-		# bad runtime override or, as turned out to be the actual case here, a stale
-		# import bake), fall back to the real full length computed from the stream itself
-		# instead of trusting whatever got baked in.
+		# Importer mode 2 means Forward (0 detects embedded WAV markers, 1 disables).
+		# This differs from AudioStreamWAV.LOOP_FORWARD, whose runtime value is 1.
+		# The import bakes the full-length sample bounds. Keep a defensive fallback
+		# for older exports or genuinely invalid imported data.
 		if wav_stream.loop_mode == AudioStreamWAV.LOOP_DISABLED:
 			wav_stream.loop_mode = LOGIN_LOOP_MODE
 		if wav_stream.loop_end <= wav_stream.loop_begin:

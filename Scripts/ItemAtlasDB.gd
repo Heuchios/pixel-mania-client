@@ -418,6 +418,7 @@ static func get_item_icon(item_id: int, tile_set: TileSet = null) -> AtlasTextur
 	var region_size := DEFAULT_TILE_SIZE
 	var margins := Vector2i.ZERO
 	var separation := Vector2i.ZERO
+	var tile_region := Rect2i()
 
 	if tile_set != null and tile_set.has_source(source_id):
 		var source = tile_set.get_source(source_id)
@@ -429,6 +430,8 @@ static func get_item_icon(item_id: int, tile_set: TileSet = null) -> AtlasTextur
 			separation = atlas_source.separation
 			if region_size == Vector2i.ZERO and tile_set.tile_size != Vector2i.ZERO:
 				region_size = tile_set.tile_size
+			if atlas_source.has_tile(atlas_coords):
+				tile_region = atlas_source.get_tile_texture_region(atlas_coords)
 
 	if source_texture == null and ResourceLoader.exists(FALLBACK_ATLAS_TEXTURE_PATH):
 		source_texture = load(FALLBACK_ATLAS_TEXTURE_PATH)
@@ -436,10 +439,22 @@ static func get_item_icon(item_id: int, tile_set: TileSet = null) -> AtlasTextur
 	if source_texture == null:
 		return null
 
+	if not tile_region.has_area():
+		tile_region = Rect2i(margins + atlas_coords * (region_size + separation), region_size)
+	# Explicit artwork regions also work before the world's TileSet is available.
+	# A grid cell is 32x32, but a single item can use several atlas cells.
+	var texture_spec: Variant = item.get("texture", {})
+	if texture_spec is Dictionary and str(texture_spec.get("atlas", "")) == source_texture.resource_path:
+		var authored_region: Variant = texture_spec.get("region", [])
+		if authored_region is Array and authored_region.size() == 4:
+			var candidate := Rect2i(int(authored_region[0]), int(authored_region[1]), int(authored_region[2]), int(authored_region[3]))
+			if candidate.has_area():
+				tile_region = candidate
+
 	var texture_key := source_texture.resource_path
 	if texture_key == "":
 		texture_key = str(source_texture.get_instance_id())
-	var cache_key := "%d|%s|%s|%s|%s|%s" % [int(item_id), texture_key, str(source_id), str(atlas_coords), str(region_size), str(margins + separation)]
+	var cache_key := "%d|%s|%s|%s" % [int(item_id), texture_key, str(source_id), str(tile_region)]
 	if _icon_cache.has(cache_key):
 		var cached = _icon_cache[cache_key]
 		if cached is AtlasTexture:
@@ -447,10 +462,6 @@ static func get_item_icon(item_id: int, tile_set: TileSet = null) -> AtlasTextur
 
 	var icon := AtlasTexture.new()
 	icon.atlas = source_texture
-	var step := region_size + separation
-	icon.region = Rect2(
-		Vector2(float(margins.x + atlas_coords.x * step.x), float(margins.y + atlas_coords.y * step.y)),
-		Vector2(float(region_size.x), float(region_size.y))
-	)
+	icon.region = Rect2(tile_region)
 	_icon_cache[cache_key] = icon
 	return icon

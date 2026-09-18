@@ -721,12 +721,11 @@ func _apply_actions_content() -> void:
 		button.visible = has_action
 		if not has_action:
 			continue
-		_apply_action_to_button(button, effective_actions[i], i)
+		_apply_action_to_button(button, effective_actions[i])
 
 
-func _apply_action_to_button(button: Button, action: Resource, index: int) -> void:
+func _apply_action_to_button(button: Button, action: Resource) -> void:
 	var label_text := str(_resource_value(action, "label", "BUTTON"))
-	var action_id := str(_resource_value(action, "action_id", "action_" + str(index))).strip_edges()
 	var icon_texture := _texture_from_value(_resource_value(action, "icon_texture", null))
 	var visible_value := bool(_resource_value(action, "visible", true))
 	var disabled_value := bool(_resource_value(action, "disabled", false))

@@ -1,5 +1,7 @@
 extends Node
 
+const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
+
 var world = null
 
 var item_database = {}
@@ -746,15 +748,12 @@ func tree_type_badge_needs_refresh(seed_node: Node2D) -> bool:
 
 
 func get_tree_type_badge_slot_texture(block_type: String):
+	# Keep the few rarity textures alive across the warmup's many seed types.
 	var slot_path = INVENTORY_UI_STYLE_PATH + get_tree_type_badge_slot_file(block_type)
-	if ResourceLoader.exists(slot_path):
-		return load(slot_path)
-
-	var fallback_path = INVENTORY_UI_STYLE_PATH + "slot_normal.png"
-	if ResourceLoader.exists(fallback_path):
-		return load(fallback_path)
-
-	return null
+	var slot_texture = AtlasTextureFactory.load_texture_path(slot_path)
+	if slot_texture != null:
+		return slot_texture
+	return AtlasTextureFactory.load_texture_path(INVENTORY_UI_STYLE_PATH + "slot_normal.png")
 
 
 func warm_seed_tree_visual_cache() -> void:

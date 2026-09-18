@@ -7,6 +7,7 @@ static var _wearable_atlas_manifest_loaded := false
 static var _wearable_atlas_manifest_modified_time := -1
 static var _wearable_atlas_enabled := false
 static var _wearable_atlas_lookup: Dictionary = {}
+static var _next_wearable_manifest_check_msec := 0
 
 
 static func prime_texture(path: String, texture: Texture2D) -> void:
@@ -319,6 +320,13 @@ static func _coerce_wearable_icon_spec(texture_spec) -> Dictionary:
 
 
 static func _reload_wearable_atlas_manifest_if_needed() -> void:
+	# Retain editor hot reload without a filesystem stat for every texture lookup.
+	# Packaged assets cannot change during a running game.
+	var now := Time.get_ticks_msec()
+	if _wearable_atlas_manifest_loaded:
+		if not OS.has_feature("editor") or now < _next_wearable_manifest_check_msec:
+			return
+	_next_wearable_manifest_check_msec = now + 1000
 	var current_modified_time := _get_wearable_atlas_manifest_modified_time()
 	if _wearable_atlas_manifest_loaded and current_modified_time == _wearable_atlas_manifest_modified_time:
 		return

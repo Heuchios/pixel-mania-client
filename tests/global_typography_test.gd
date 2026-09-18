@@ -28,6 +28,7 @@ func _run() -> void:
 
 	var authored_header := Label.new()
 	authored_header.name = "WorldName"
+	authored_header.set_meta(PixelUIStyle.GLOBAL_FONT_ROLE_META, "header")
 	authored_header.add_theme_font_size_override("font_size", 44)
 	PixelUIStyle.apply_global_typography_to_node(authored_header)
 	assert(authored_header.get_theme_font_size("font_size") == 36)

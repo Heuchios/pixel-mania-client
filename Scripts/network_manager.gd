@@ -2944,7 +2944,7 @@ func send_request_open_generator(grid_pos: Vector2i, world_name: String) -> bool
 	return send_message(attach_session_auth(payload))
 
 
-func send_request_link_generator_pad(generator_grid: Vector2i, pad_grid: Vector2i, world_name: String, disconnect: bool = false) -> bool:
+func send_request_link_generator_pad(generator_grid: Vector2i, pad_grid: Vector2i, world_name: String, should_disconnect: bool = false) -> bool:
 	if not is_server_session_authenticated():
 		return false
 	if not _can_send_rate_limited("request_link_generator_pad", MAX_WORLD_INTERACTION_RATE_PER_SECOND):
@@ -2960,14 +2960,14 @@ func send_request_link_generator_pad(generator_grid: Vector2i, pad_grid: Vector2
 		"generator_y": clamp(generator_grid.y, -MAX_COORDINATE, MAX_COORDINATE),
 		"pad_x": clamp(pad_grid.x, -MAX_COORDINATE, MAX_COORDINATE),
 		"pad_y": clamp(pad_grid.y, -MAX_COORDINATE, MAX_COORDINATE),
-		"disconnect": disconnect,
+		"disconnect": should_disconnect,
 		"world": clean_world
 	}
 	flush_world_position_for_payload(payload)
 	return send_message(attach_session_auth(payload))
 
 
-func send_request_link_generator_pole(generator_grid: Vector2i, pole_grid: Vector2i, world_name: String, disconnect: bool = false) -> bool:
+func send_request_link_generator_pole(generator_grid: Vector2i, pole_grid: Vector2i, world_name: String, should_disconnect: bool = false) -> bool:
 	if not is_server_session_authenticated():
 		return false
 	if not _can_send_rate_limited("request_link_generator_pole", MAX_WORLD_INTERACTION_RATE_PER_SECOND):
@@ -2983,14 +2983,14 @@ func send_request_link_generator_pole(generator_grid: Vector2i, pole_grid: Vecto
 		"generator_y": clamp(generator_grid.y, -MAX_COORDINATE, MAX_COORDINATE),
 		"pole_x": clamp(pole_grid.x, -MAX_COORDINATE, MAX_COORDINATE),
 		"pole_y": clamp(pole_grid.y, -MAX_COORDINATE, MAX_COORDINATE),
-		"disconnect": disconnect,
+		"disconnect": should_disconnect,
 		"world": clean_world
 	}
 	flush_world_position_for_payload(payload)
 	return send_message(attach_session_auth(payload))
 
 
-func send_request_link_electric_poles(pole_a_grid: Vector2i, pole_b_grid: Vector2i, world_name: String, disconnect: bool = false) -> bool:
+func send_request_link_electric_poles(pole_a_grid: Vector2i, pole_b_grid: Vector2i, world_name: String, should_disconnect: bool = false) -> bool:
 	if not is_server_session_authenticated():
 		return false
 	if not _can_send_rate_limited("request_link_electric_poles", MAX_WORLD_INTERACTION_RATE_PER_SECOND):
@@ -3006,7 +3006,7 @@ func send_request_link_electric_poles(pole_a_grid: Vector2i, pole_b_grid: Vector
 		"pole_a_y": clamp(pole_a_grid.y, -MAX_COORDINATE, MAX_COORDINATE),
 		"pole_b_x": clamp(pole_b_grid.x, -MAX_COORDINATE, MAX_COORDINATE),
 		"pole_b_y": clamp(pole_b_grid.y, -MAX_COORDINATE, MAX_COORDINATE),
-		"disconnect": disconnect,
+		"disconnect": should_disconnect,
 		"world": clean_world
 	}
 	flush_world_position_for_payload(payload)

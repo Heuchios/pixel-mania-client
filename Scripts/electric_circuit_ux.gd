@@ -102,11 +102,11 @@ func finish() -> void:
 	inspect_mode = false
 	multi_connect = false
 
-func select_device(grid: Vector2i, endpoint_type: String) -> void:
+func select_device(grid: Vector2i, device_type: String) -> void:
 	focus_grid = grid
-	focus_type = endpoint_type
+	focus_type = device_type
 	selected_wire = ""
-	if endpoint_type == manager.LINK_ENDPOINT_METAL_PAD and not pad_hint_shown:
+	if device_type == manager.LINK_ENDPOINT_METAL_PAD and not pad_hint_shown:
 		pad_hint_shown = true
 		manager.world.show_notification("Place a block over this pad, then break it to charge its transformer.")
 
@@ -168,8 +168,8 @@ func try_select_wire() -> bool:
 	focus_type = endpoint_type(closest.split("|")[0], true)
 	return true
 
-func track_request(pair: Dictionary, disconnect: bool, is_undo: bool = false) -> void:
-	pending = {"pair": pair.duplicate(), "key": pair_key(pair), "disconnect": disconnect, "undo": is_undo, "since": Time.get_ticks_msec()}
+func track_request(pair: Dictionary, should_disconnect: bool, is_undo: bool = false) -> void:
+	pending = {"pair": pair.duplicate(), "key": pair_key(pair), "disconnect": should_disconnect, "undo": is_undo, "since": Time.get_ticks_msec()}
 
 func disconnect_selected() -> void:
 	if not pending.is_empty() or selected_wire.is_empty(): return
@@ -179,15 +179,15 @@ func disconnect_selected() -> void:
 func undo_last() -> void:
 	if not pending.is_empty() or undo_action.is_empty(): return
 	var pair: Dictionary = undo_action.pair
-	var disconnect := not bool(undo_action.disconnect)
+	var should_disconnect := not bool(undo_action.disconnect)
 	# Do not undo someone else's later edit.
-	if manager.link_lines.has(pair_key(pair)) != disconnect:
+	if manager.link_lines.has(pair_key(pair)) != should_disconnect:
 		undo_action.clear()
 		manager.world.show_notification("Connection changed. Select the current wire.")
 		return
-	if send_mutation(pair, disconnect): track_request(pair, disconnect, true)
+	if send_mutation(pair, should_disconnect): track_request(pair, should_disconnect, true)
 
-func send_mutation(pair: Dictionary, disconnect: bool) -> bool:
+func send_mutation(pair: Dictionary, should_disconnect: bool) -> bool:
 	if pair.is_empty() or not manager.has_electric_tool_equipped(): return false
 	if not manager.should_use_server_authoritative_actions():
 		manager.world.show_notification("Connect to the server to edit saved wiring.")
@@ -195,11 +195,11 @@ func send_mutation(pair: Dictionary, disconnect: bool) -> bool:
 	var network = manager.world.get_node_or_null("/root/NetworkManager")
 	if network == null: return false
 	match str(pair.kind):
-		"input": return network.send_request_link_generator_pad(pair.generator_grid, pair.pad_grid, manager.world.current_world_name, disconnect)
-		"output": return network.send_request_link_generator_pole(pair.generator_grid, pair.pole_grid, manager.world.current_world_name, disconnect)
-		"pole_coupling": return network.send_request_link_electric_poles(pair.pole_a_grid, pair.pole_b_grid, manager.world.current_world_name, disconnect)
-		"refinery_input": return network.send_oil_refinery_request(pair.refinery_grid, "link_pole", {"pole_x": pair.pole_grid.x, "pole_y": pair.pole_grid.y, "disconnect": disconnect}, manager.world.current_world_name)
-		"battery_charger_input": return network.send_battery_charger_request(pair.charger_grid, "link_pole", {"pole_x": pair.pole_grid.x, "pole_y": pair.pole_grid.y, "disconnect": disconnect}, manager.world.current_world_name)
+		"input": return network.send_request_link_generator_pad(pair.generator_grid, pair.pad_grid, manager.world.current_world_name, should_disconnect)
+		"output": return network.send_request_link_generator_pole(pair.generator_grid, pair.pole_grid, manager.world.current_world_name, should_disconnect)
+		"pole_coupling": return network.send_request_link_electric_poles(pair.pole_a_grid, pair.pole_b_grid, manager.world.current_world_name, should_disconnect)
+		"refinery_input": return network.send_oil_refinery_request(pair.refinery_grid, "link_pole", {"pole_x": pair.pole_grid.x, "pole_y": pair.pole_grid.y, "disconnect": should_disconnect}, manager.world.current_world_name)
+		"battery_charger_input": return network.send_battery_charger_request(pair.charger_grid, "link_pole", {"pole_x": pair.pole_grid.x, "pole_y": pair.pole_grid.y, "disconnect": should_disconnect}, manager.world.current_world_name)
 	return false
 
 func _process(delta: float) -> void:
@@ -343,8 +343,8 @@ func _draw() -> void:
 	if manager == null or manager.world == null: return
 	if manager.electrical_visible:
 		if manager.electric_tool_link_mode_active and manager.preview_target_grid != manager.INVALID_LINK_GRID:
-			var position: Vector2 = manager.grid_to_world_pos(manager.preview_target_grid)
-			draw_rect(Rect2(position - Vector2(12,12), Vector2(24,24)), Color(0.4,1,0.7), false)
+			var draw_position: Vector2 = manager.grid_to_world_pos(manager.preview_target_grid)
+			draw_rect(Rect2(draw_position - Vector2(12,12), Vector2(24,24)), Color(0.4,1,0.7), false)
 		if manager.link_lines.has(selected_wire):
 			var line: Line2D = manager.link_lines[selected_wire]
 			if is_instance_valid(line) and line.get_point_count() >= 2:
@@ -355,5 +355,5 @@ func _draw() -> void:
 	var now := Time.get_ticks_msec()
 	for note in generation_notes:
 		if int(note.until) <= now: continue
-		var position: Vector2 = manager.grid_to_world_pos(note.grid) + Vector2(-20,-28)
-		draw_string(ThemeDB.fallback_font, position, note.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(1,0.9,0.4))
+		var draw_position: Vector2 = manager.grid_to_world_pos(note.grid) + Vector2(-20,-28)
+		draw_string(ThemeDB.fallback_font, draw_position, note.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(1,0.9,0.4))

@@ -27,7 +27,7 @@
 [ext_resource type="Texture2D" uid="uid://csq4ysed4e5v2" path="res://Assets/player/expressions/underwater.png" id="20_r33sp"]
 [ext_resource type="FontFile" uid="uid://e0ivgh0c6uck" path="res://Assets/font/font.ttf" id="23_u50mg"]
 [ext_resource type="Texture2D" uid="uid://cw58n4hxsavkv" path="res://Assets/items/wearable_64x32.png" id="24_6vcvc"]
-[ext_resource type="Texture2D" uid="uid://clbfwpmntdmj" path="res://image.png" id="26_cbgmd"]
+[ext_resource type="Texture2D" path="res://image.png" id="26_cbgmd"]
 [ext_resource type="Texture2D" uid="uid://bmgnqd6c8iis8" path="res://Assets/items/wearable.png" id="27_1w6v2"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_gt3je"]

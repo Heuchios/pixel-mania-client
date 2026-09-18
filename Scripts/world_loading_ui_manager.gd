@@ -135,7 +135,7 @@ func _set_loading_stage(next_stage, reason: String = "") -> void:
 
 	var stage_name := _get_loading_stage_name(next_stage)
 	_debug("Stage=" + stage_name + (" reason=" + reason if reason != "" else ""))
-	_record_world_entry_profile_stage("client_loading_stage", {
+	_record_world_entry_profile_stage("client_loading_" + stage_name, {
 		"stage": stage_name,
 		"reason": reason
 	})

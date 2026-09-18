@@ -272,7 +272,8 @@ static func input_style() -> StyleBoxTexture:
 static func input_focus_style() -> StyleBoxTexture:
 	return atlas_style("input_field", Color(1.3, 1.3, 1.3), 3)
 
-static func apply_label_shadow(label: Label, font_size: int = DEFAULT_TEXT_FONT_SIZE, color: Color = TEXT_LIGHT) -> void:
+# Legacy size arguments are retained for callers; global typography selects the size.
+static func apply_label_shadow(label: Label, _font_size: int = DEFAULT_TEXT_FONT_SIZE, color: Color = TEXT_LIGHT) -> void:
 	if label == null:
 		return
 
@@ -294,7 +295,7 @@ static func apply_section_title(label: Label, font_size: int = HEADER_FONT_SIZE)
 	apply_label_shadow(label, font_size, GOLD_SOFT)
 
 
-static func apply_button_text(button: Button, font_size: int = DEFAULT_TEXT_FONT_SIZE, color: Color = TEXT_LIGHT) -> void:
+static func apply_button_text(button: Button, _font_size: int = DEFAULT_TEXT_FONT_SIZE, color: Color = TEXT_LIGHT) -> void:
 	if button == null:
 		return
 
