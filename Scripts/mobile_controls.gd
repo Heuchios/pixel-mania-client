@@ -112,7 +112,7 @@ func _input(event):
 		_handle_layout_editor_global_input(event)
 		return
 
-	if event is InputEventScreenTouch and not event.pressed:
+	if event is InputEventScreenTouch and (not event.pressed or event.canceled):
 		_release_touch_index(event.index)
 	elif not _is_mobile_platform() and event is InputEventMouseButton and not event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_release_mouse_actions()
@@ -850,7 +850,7 @@ func _save_layout_preferences() -> bool:
 
 
 func _handle_layout_editor_global_input(event: InputEvent) -> void:
-	if event is InputEventScreenTouch and not event.pressed and event.index == active_layout_touch_index:
+	if event is InputEventScreenTouch and (not event.pressed or event.canceled) and event.index == active_layout_touch_index:
 		active_layout_touch_index = -1
 		active_layout_action = ""
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
@@ -860,7 +860,7 @@ func _handle_layout_editor_global_input(event: InputEvent) -> void:
 
 func _handle_layout_editor_button_input(event: InputEvent, action: String) -> void:
 	if event is InputEventScreenTouch:
-		if event.pressed:
+		if event.pressed and not event.canceled:
 			if active_layout_touch_index != -1 and active_layout_touch_index != event.index:
 				accept_event()
 				return
@@ -957,7 +957,7 @@ func _on_hold_button_gui_input(event: InputEvent, action: String):
 		return
 
 	if event is InputEventScreenTouch:
-		if event.pressed:
+		if event.pressed and not event.canceled:
 			_press_action(action)
 			active_action_touches[action] = event.index
 		elif active_action_touches.get(action, -1) == event.index:
@@ -980,7 +980,7 @@ func _on_punch_button_gui_input(event: InputEvent):
 		return
 
 	if event is InputEventScreenTouch:
-		if event.pressed:
+		if event.pressed and not event.canceled:
 			if not _is_punch_held():
 				_begin_punch_hold(event.index)
 		elif active_action_touches.get("punch", -1) == event.index:
@@ -1003,7 +1003,7 @@ func _on_zoom_button_gui_input(event: InputEvent, action: String):
 		return
 
 	if event is InputEventScreenTouch:
-		if event.pressed:
+		if event.pressed and not event.canceled:
 			_begin_zoom_hold(action, event.index)
 		elif event.index == zoom_hold_touch:
 			_end_zoom_hold()
@@ -1080,10 +1080,11 @@ func _update_punch_hold(delta: float) -> void:
 
 	punch_hold_timer += delta
 	var repeat_delay: float = PUNCH_HOLD_REPEAT_RATE if punch_hold_repeat_active else PUNCH_HOLD_INITIAL_DELAY
-	if punch_hold_timer < repeat_delay:
+	if punch_hold_timer + 0.000001 < repeat_delay:
 		return
 
-	punch_hold_timer = 0.0
+	# Keep fractional frame time, but never replay missed punches in a burst.
+	punch_hold_timer = fposmod(maxf(0.0, punch_hold_timer - repeat_delay), PUNCH_HOLD_REPEAT_RATE)
 	punch_hold_repeat_active = true
 	_trigger_punch(false)
 

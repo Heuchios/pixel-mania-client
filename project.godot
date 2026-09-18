@@ -51,7 +51,7 @@ window/stretch/aspect="expand"
 
 [editor]
 
-run/main_run_args="--pm-collision-trace --movement-sync-debug"
+run/main_run_args=""
 
 [editor_plugins]
 

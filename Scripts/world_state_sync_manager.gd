@@ -1,5 +1,7 @@
 extends Node
 
+const RuntimeProfiler = preload("res://Scripts/runtime_profiler.gd")
+
 const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
 
 var world = null
@@ -1778,6 +1780,10 @@ func apply_network_world_state(data: Dictionary):
 func apply_network_block_reconcile(data: Dictionary) -> void:
 	if not _is_current_world_message(data):
 		return
+	if bool(data.get("authoritative_pending", false)):
+		return
+	if world.block_manager != null and world.block_manager.has_method("resolve_pending_break_response"):
+		world.block_manager.resolve_pending_break_response(data)
 
 	# Seeds live on their own layer but reconcile through this same cell channel, so a
 	# pending seed place must be resolved here before the block path turns an "absent"
@@ -1841,6 +1847,12 @@ func apply_network_block_reconcile(data: Dictionary) -> void:
 
 
 func apply_network_block_update(data: Dictionary):
+	var started := RuntimeProfiler.start()
+	_apply_network_block_update(data)
+	RuntimeProfiler.finish("block_apply_ms", started)
+
+
+func _apply_network_block_update(data: Dictionary):
 	if not _is_current_world_message(data):
 		return
 
@@ -1934,6 +1946,8 @@ func apply_network_block_update(data: Dictionary):
 		})
 
 	if action == "hit":
+		if world.block_manager != null and world.block_manager.has_method("resolve_pending_break_response"):
+			world.block_manager.resolve_pending_break_response(data)
 		update_network_block_hit_visual(layer, grid_pos, data)
 		if layer == "foreground" and world.block_manager != null:
 			var hit_item: Dictionary = world.item_database.get(block_type, {})
@@ -1986,6 +2000,8 @@ func apply_network_block_update(data: Dictionary):
 				world.active_checkpoint_world = ""
 			if world.block_manager != null and world.block_manager.has_method("remove_block_without_drop"):
 				world.block_manager.remove_block_without_drop(grid_pos)
+		if world.block_manager != null and world.block_manager.has_method("trace_break_stage"):
+			world.block_manager.trace_break_stage("visual_and_collision_removed", data)
 		debug_action_position_flow("apply_network_block_update break end", {
 			"layer": layer,
 			"x": grid_pos.x,

@@ -1,5 +1,7 @@
 extends Node
 
+const RuntimeProfiler = preload("res://Scripts/runtime_profiler.gd")
+
 const FOREGROUND_LAYER_NAME := "ForegroundTileMapLayer"
 const FOREGROUND_SHADOW_LAYER_NAME := "ForegroundShadowTileMapLayer"
 const FOREGROUND_COLLISION_LAYER_NAME := "ForegroundCollisionTileMapLayer"
@@ -1259,6 +1261,15 @@ func _process_dirty_chunks(force_all: bool) -> void:
 
 
 func _rebuild_chunk(chunk_pos: Vector2i) -> int:
+	var started := RuntimeProfiler.start()
+	var touched_cells := _rebuild_chunk_cells(chunk_pos)
+	RuntimeProfiler.finish("chunk_rebuild_ms", started)
+	RuntimeProfiler.count("chunk_rebuilds")
+	RuntimeProfiler.count("chunk_cells_touched", touched_cells)
+	return touched_cells
+
+
+func _rebuild_chunk_cells(chunk_pos: Vector2i) -> int:
 	var touched_cells := 0
 	for layer_key in LAYER_KEYS:
 		var layer := _get_layer_for_key(layer_key)

@@ -29,6 +29,11 @@ func setup(world_ref):
 	world = world_ref
 
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		_stop_hold()
+
+
 func get_hotbar_slot_from_key_event(event: InputEventKey) -> int:
 	var number_keys := [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6]
 	var keypad_keys := [KEY_KP_1, KEY_KP_2, KEY_KP_3, KEY_KP_4, KEY_KP_5, KEY_KP_6]
@@ -62,17 +67,19 @@ func _process(delta):
 
 	var using_seed_harvest_hold = _is_seed_harvest_hold_repeat()
 	var using_seed_place_hold = _is_seed_place_hold_repeat()
+	var repeat_rate = HOLD_SEED_HARVEST_REPEAT_RATE if using_seed_harvest_hold else HOLD_SEED_PLACE_REPEAT_RATE if using_seed_place_hold else HOLD_REPEAT_RATE
 
 	if not hold_repeat_active:
 		var initial_delay = HOLD_SEED_HARVEST_INITIAL_DELAY if using_seed_harvest_hold else HOLD_SEED_PLACE_INITIAL_DELAY if using_seed_place_hold else HOLD_INITIAL_DELAY
-		if hold_timer >= initial_delay:
+		if hold_timer + 0.000001 >= initial_delay:
 			hold_repeat_active = true
-			hold_timer = 0.0
+			hold_timer = fposmod(maxf(0.0, hold_timer - initial_delay), repeat_rate)
 			world.use_selected_item_at_mouse()
 	else:
-		var repeat_rate = HOLD_SEED_HARVEST_REPEAT_RATE if using_seed_harvest_hold else HOLD_SEED_PLACE_REPEAT_RATE if using_seed_place_hold else HOLD_REPEAT_RATE
-		if hold_timer >= repeat_rate:
-			hold_timer = 0.0
+		if hold_timer + 0.000001 >= repeat_rate:
+			# Preserve sub-frame remainder; discard missed repeats after a stall.
+			# At most one action per frame, with no catch-up packet burst.
+			hold_timer = fposmod(maxf(0.0, hold_timer - repeat_rate), repeat_rate)
 			world.use_selected_item_at_mouse()
 
 
@@ -399,7 +406,7 @@ func handle_input(event):
 		_stop_hold()
 		return
 
-	if event is InputEventScreenTouch and not event.pressed:
+	if event is InputEventScreenTouch and (not event.pressed or event.canceled):
 		stop_inventory_gameplay_hold(event.index)
 		return
 
@@ -484,7 +491,9 @@ func handle_unhandled_input(event):
 
 	# ── Touch ──────────────────────────────────────────────────────
 	if event is InputEventScreenTouch:
-		if event.pressed:
+		if event.canceled:
+			stop_inventory_gameplay_hold(event.index)
+		elif event.pressed:
 			active_touch_index = event.index
 			if world.has_method("set_mobile_pointer_screen_position"):
 				world.set_mobile_pointer_screen_position(event.position)

@@ -1,7 +1,7 @@
 extends SceneTree
 
 const SETTINGS_SCENE = preload("res://Scenes/ui/settings/SettingsPanel.tscn")
-const TEST_SETTINGS_PATH := "user://pixelmania_mobile_controls_layout_test.cfg"
+const TEST_SETTINGS_PATH := "res://tmp/pixelmania_mobile_controls_layout_test.cfg"
 
 
 class MockWorld:
@@ -52,6 +52,8 @@ func _init() -> void:
 
 
 func _run() -> void:
+	# Exercise actual viewport sizes independently of the game's stretch target.
+	root.content_scale_size = Vector2i.ZERO
 	root.size = Vector2i(1280, 720)
 	var test_settings_absolute_path := ProjectSettings.globalize_path(TEST_SETTINGS_PATH)
 	if FileAccess.file_exists(TEST_SETTINGS_PATH):
@@ -89,13 +91,14 @@ func _run() -> void:
 
 	var normal_parent := controls.get_parent()
 	var normal_child_index := controls.get_index()
+	var normal_z_index := controls.z_index
 	controls.call("_move_to_layout_editor_layer")
 	assert(controls.get_parent() == modal_layer)
 	assert(controls.z_index == 300)
 	controls.call("_restore_from_layout_editor_layer")
 	assert(controls.get_parent() == normal_parent)
 	assert(controls.get_index() == normal_child_index)
-	assert(controls.z_index == 140)
+	assert(controls.z_index == normal_z_index)
 
 	controls.set_process(false)
 	controls.visible = true
@@ -107,11 +110,11 @@ func _run() -> void:
 	left_touch.index = 5
 	left_touch.position = left_button.get_global_rect().get_center()
 	left_touch.pressed = true
-	Input.parse_input_event(left_touch)
+	root.push_input(left_touch, true)
 	await process_frame
 	assert(Input.is_action_pressed("move_left"))
 	left_touch.pressed = false
-	Input.parse_input_event(left_touch)
+	root.push_input(left_touch, true)
 	await process_frame
 	assert(not Input.is_action_pressed("move_left"))
 
@@ -120,11 +123,11 @@ func _run() -> void:
 	zoom_touch.index = 6
 	zoom_touch.position = zoom_button.get_global_rect().get_center()
 	zoom_touch.pressed = true
-	Input.parse_input_event(zoom_touch)
+	root.push_input(zoom_touch, true)
 	await process_frame
 	assert(mock_world.zoom_total > 0.0)
 	zoom_touch.pressed = false
-	Input.parse_input_event(zoom_touch)
+	root.push_input(zoom_touch, true)
 	await process_frame
 
 	var punch_button := action_buttons["punch"] as Panel
@@ -132,12 +135,12 @@ func _run() -> void:
 	punch_touch.index = 7
 	punch_touch.position = punch_button.get_global_rect().get_center()
 	punch_touch.pressed = true
-	Input.parse_input_event(punch_touch)
+	root.push_input(punch_touch, true)
 	await process_frame
 	assert(mock_world.punch_animation_count >= 1)
 	assert(mock_world.punch_block_count == mock_world.punch_animation_count)
 	punch_touch.pressed = false
-	Input.parse_input_event(punch_touch)
+	root.push_input(punch_touch, true)
 	await physics_frame
 	await process_frame
 	assert(not Input.is_action_pressed("punch"))
@@ -156,7 +159,7 @@ func _run() -> void:
 	touch_press.index = 9
 	touch_press.position = touch_position
 	touch_press.pressed = true
-	Input.parse_input_event(touch_press)
+	root.push_input(touch_press, true)
 	await process_frame
 	assert(str(controls.get("selected_layout_action")) == "jump")
 
@@ -165,13 +168,13 @@ func _run() -> void:
 	touch_drag.index = 9
 	touch_drag.position = touch_position + Vector2(-36.0, -24.0)
 	touch_drag.relative = Vector2(-36.0, -24.0)
-	Input.parse_input_event(touch_drag)
+	root.push_input(touch_drag, true)
 	var emulated_mouse_drag := InputEventMouseMotion.new()
 	emulated_mouse_drag.device = InputEvent.DEVICE_ID_EMULATION
 	emulated_mouse_drag.position = touch_drag.position
 	emulated_mouse_drag.relative = touch_drag.relative
 	emulated_mouse_drag.button_mask = MOUSE_BUTTON_MASK_LEFT
-	Input.parse_input_event(emulated_mouse_drag)
+	root.push_input(emulated_mouse_drag, true)
 	await process_frame
 	var applied_drag_delta := jump_button_for_input.position - jump_position_before_drag
 	assert(applied_drag_delta.distance_to(Vector2(-36.0, -24.0)) <= 2.0)
@@ -180,7 +183,7 @@ func _run() -> void:
 	touch_release.index = 9
 	touch_release.position = touch_drag.position
 	touch_release.pressed = false
-	Input.parse_input_event(touch_release)
+	root.push_input(touch_release, true)
 	await process_frame
 
 	controls.set("control_layout", {})
@@ -277,6 +280,7 @@ func _run() -> void:
 	var settings := SETTINGS_SCENE.instantiate()
 	root.add_child(settings)
 	await process_frame
+	settings.call("open_settings")
 	assert(settings.get_node_or_null("Window/MobileControlsRow") is Control)
 	assert(settings.get_node_or_null("Window/MobileControlsRow/CustomizeButton") is Button)
 	var settings_dimmer := settings.get_node("Dimmer") as ColorRect

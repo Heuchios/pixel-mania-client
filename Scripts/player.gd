@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+const RuntimeProfiler = preload("res://Scripts/runtime_profiler.gd")
+
 const PlayerShadowScript = preload("res://Scripts/player_shadow.gd")
 
 const SPEED = 150.0
@@ -232,7 +234,9 @@ func _physics_process(delta):
 	if not MovementMode.is_websocket():
 		return
 
+	var started := RuntimeProfiler.start()
 	run_player_movement_step(delta)
+	RuntimeProfiler.finish("local_movement_physics_ms", started)
 
 
 func warn_if_netfox_nodes_active_in_websocket_mode() -> void:

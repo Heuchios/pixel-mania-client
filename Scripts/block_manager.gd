@@ -99,6 +99,7 @@ var block_item_data_cache_source_size: int = -1
 var existing_variant_path_cache: Dictionary = {}
 var connected_variant_component_cache: Dictionary = {}
 var authoritative_break_request_keys: Dictionary = {}
+var break_request_sequence := 0
 var authoritative_place_request_times: Dictionary = {}
 var authoritative_place_last_request_ms := 0
 var last_block_break_input_at_msec := 0
@@ -607,6 +608,7 @@ func process_pending_foreground_texture_refresh():
 
 
 func _process(delta):
+	_reconcile_pending_breaks()
 	if water_overlay_draw_order_refresh_pending:
 		refresh_water_overlay_draw_order()
 	update_tilemap_foreground_animations()
@@ -861,6 +863,15 @@ func is_applying_network_world_update() -> bool:
 	return false
 
 
+func trace_break_stage(stage: String, data: Dictionary) -> void:
+	if OS.get_environment("PIXELMANIA_BREAK_TRACE") != "1":
+		return
+	var entry := data.duplicate()
+	entry["stage"] = stage
+	entry["client_usec"] = Time.get_ticks_usec()
+	print("[BLOCK_BREAK_TRACE] ", JSON.stringify(entry))
+
+
 func send_network_block_update(action: String, layer: String, grid_pos: Vector2i, block_type: String = "", extra_data: Dictionary = {}) -> bool:
 	if is_applying_network_world_update():
 		trace_authoritative_place_event("client_block_send_blocked", {
@@ -895,6 +906,12 @@ func send_network_block_update(action: String, layer: String, grid_pos: Vector2i
 		return false
 	if network.has_method("send_world_block_update"):
 		var clean_extra_data := extra_data.duplicate(true)
+		var break_key := get_authoritative_break_key(layer, grid_pos)
+		if action in ["hit", "break"] and authoritative_break_request_keys.has(break_key):
+			return false
+		if action in ["hit", "break"] and not clean_extra_data.has("request_id"):
+			break_request_sequence += 1
+			clean_extra_data["request_id"] = "break_%d_%d" % [Time.get_ticks_usec(), break_request_sequence]
 		var atlas_item_id := get_atlas_item_id_for_block_type(block_type)
 		# Do not send atlas item_id on client block actions. block_type is the
 		# stable shared id; atlas ids require server-side atlas_items.json and can
@@ -917,7 +934,11 @@ func send_network_block_update(action: String, layer: String, grid_pos: Vector2i
 			"request_id": str(clean_extra_data.get("request_id", "")),
 			"extra_data": clean_extra_data
 		})
+		if action in ["hit", "break"]:
+			trace_break_stage("request_send", {"action": action, "request_id": clean_extra_data.get("request_id", ""), "x": grid_pos.x, "y": grid_pos.y, "layer": layer})
 		var sent = bool(network.send_world_block_update(action, layer, grid_pos, block_type, world.current_world_name, clean_extra_data))
+		if sent and action == "break":
+			authoritative_break_request_keys[break_key] = {"request_id": str(clean_extra_data.get("request_id", "")), "grid_pos": grid_pos, "layer": layer, "block_type": block_type, "world": world.current_world_name, "last_check_ms": Time.get_ticks_msec()}
 		if str(action).to_lower() == "break" or str(action).to_lower() == "hit":
 			debug_action_position_flow("break block request end", {
 				"action": action,
@@ -9201,7 +9222,52 @@ func clear_all_authoritative_break_state() -> void:
 		update_background_block_crack_visual(grid_pos)
 
 
+func _reconcile_pending_breaks() -> void:
+	if authoritative_break_request_keys.is_empty() or world == null:
+		return
+	var now := Time.get_ticks_msec()
+	var network = get_network_manager()
+	if network == null:
+		return
+	for key in authoritative_break_request_keys.keys():
+		var pending: Dictionary = authoritative_break_request_keys[key]
+		if str(pending.get("world", "")) != str(world.current_world_name):
+			authoritative_break_request_keys.erase(key)
+			continue
+		if now - int(pending.get("last_check_ms", 0)) < 1500:
+			continue
+		pending["last_check_ms"] = now
+		network.send_world_block_reconcile_request(str(pending.request_id), "break", str(pending.layer), pending.grid_pos, str(pending.block_type), str(pending.world))
+
+
+func resolve_pending_break_response(data: Dictionary) -> bool:
+	trace_break_stage("response_received", data)
+	var key := get_authoritative_break_key(str(data.get("layer", "foreground")), Vector2i(int(data.get("x", data.get("target_x", 0))), int(data.get("y", data.get("target_y", 0)))))
+	var request_id := str(data.get("request_id", data.get("action_id", "")))
+	if request_id == "":
+		return false
+	# Rejections can omit the cell, or the server can canonicalize a multi-cell
+	# block to its anchor. Only this exact request may release its pending guard.
+	if not authoritative_break_request_keys.has(key) or str(authoritative_break_request_keys[key].get("request_id", "")) != request_id:
+		key = ""
+		for pending_key in authoritative_break_request_keys:
+			if str(authoritative_break_request_keys[pending_key].get("request_id", "")) == request_id:
+				key = pending_key
+				break
+		if key == "":
+			return false
+	var pending: Dictionary = authoritative_break_request_keys[key]
+	if data.has("world") and pending.has("world") and str(data.world).to_upper() != str(pending.world).to_upper():
+		return false
+	if bool(data.get("authoritative_pending", false)):
+		pending["last_check_ms"] = Time.get_ticks_msec()
+		return false
+	authoritative_break_request_keys.erase(key)
+	return true
+
+
 func handle_rejected_block_update(data: Dictionary) -> bool:
+	resolve_pending_break_response(data)
 	var reason := str(data.get("reason", "")).strip_edges().to_lower()
 	var message := str(data.get("message", "")).strip_edges().to_lower()
 	var request_id := get_request_id_from_block_payload(data)
@@ -9228,6 +9294,11 @@ func handle_rejected_block_update(data: Dictionary) -> bool:
 		rolled_back_prediction = rollback_predicted_authoritative_place(data, false)
 	if rolled_back_prediction and world != null and world.has_method("end_fast_block_place_hold"):
 		world.end_fast_block_place_hold(-1)
+	var rejection_grid := Vector2i(int(data.get("x", data.get("target_x", 0))), int(data.get("y", data.get("target_y", 0))))
+	var rejection_key := get_authoritative_break_key(str(data.get("layer", "foreground")), rejection_grid)
+	if authoritative_break_request_keys.has(rejection_key):
+		# An older hit rejection cannot cancel a newer in-flight break.
+		return false
 	if reason != "break_rate_limited" and reason != "rate_limited" and not message.contains("slow down"):
 		return false
 
@@ -9359,11 +9430,16 @@ func try_consume_block_break_input_cadence() -> bool:
 	if last_block_break_input_at_msec > 0 and now_msec - last_block_break_input_at_msec < BLOCK_BREAK_INPUT_INTERVAL_MSEC:
 		return false
 
-	last_block_break_input_at_msec = now_msec
+	# Advance the cadence deadline, not the quantized render-frame arrival time.
+	# Limit carried lateness to 75ms, preserving the server's 225ms minimum gap.
+	last_block_break_input_at_msec = now_msec if last_block_break_input_at_msec <= 0 else maxi(last_block_break_input_at_msec + BLOCK_BREAK_INPUT_INTERVAL_MSEC, now_msec - 75)
 	return true
 
 
 func hit_background_block_grid(grid_pos: Vector2i):
+	trace_break_stage("hit_started", {"x": grid_pos.x, "y": grid_pos.y, "layer": "background"})
+	if authoritative_break_request_keys.has(get_authoritative_break_key("background", grid_pos)):
+		return
 	if not background_blocks.has(grid_pos):
 		return
 
@@ -9387,6 +9463,8 @@ func hit_background_block_grid(grid_pos: Vector2i):
 
 	if should_use_server_authoritative_world_actions():
 		var action = "hit" if current_hits < max_hits else "break"
+		if action == "break":
+			trace_break_stage("threshold_reached", {"x": grid_pos.x, "y": grid_pos.y, "hits": current_hits})
 		var break_key = get_authoritative_break_key("background", grid_pos)
 		if action == "break" and authoritative_break_request_keys.has(break_key):
 			world.show_notification("Breaking " + world.get_item_display_name(block_type, "block") + "...")
@@ -9397,8 +9475,6 @@ func hit_background_block_grid(grid_pos: Vector2i):
 			"max_hits": max_hits,
 			"source_tool": get_current_block_hit_source_tool()
 		}):
-			if action == "break":
-				authoritative_break_request_keys[break_key] = true
 			spawn_block_hit_particles(grid_pos, block_type, "background")
 			update_background_block_crack_visual(grid_pos)
 			if action == "break":
@@ -9444,7 +9520,7 @@ func break_background_block_grid(grid_pos: Vector2i):
 		if send_network_block_update("break", "background", grid_pos, block_type, {
 			"source_tool": get_current_block_hit_source_tool()
 		}):
-			authoritative_break_request_keys[get_authoritative_break_key("background", grid_pos)] = true
+
 			world.show_notification("Breaking " + world.get_item_display_name(block_type, "block") + "...")
 		else:
 			world.show_notification("Almost ready. Try again in a moment.")
@@ -12341,7 +12417,7 @@ func try_use_water_bucket_at_grid(grid_pos: Vector2i) -> bool:
 						"source_tool": WATER_BUCKET_ITEM_TYPE,
 						"water_bucket_action": "scoop"
 					}):
-						authoritative_break_request_keys[break_key] = true
+
 						play_block_break_sound(anchor_grid_pos)
 						world.show_notification("Collecting water...")
 					else:
@@ -12502,13 +12578,15 @@ func update_block_damage_recovery(delta):
 	for grid_pos in positions_to_reset:
 		world.block_hit_timers.erase(grid_pos)
 		world.block_hit_progress.erase(grid_pos)
-		authoritative_break_request_keys.erase(get_authoritative_break_key("foreground", grid_pos))
-		authoritative_break_request_keys.erase(get_authoritative_break_key("background", grid_pos))
+		# Damage expiry must not unlock an unacknowledged break request.
 		update_block_crack_visual(grid_pos)
 		update_background_block_crack_visual(grid_pos)
 
 
 func hit_block_grid(grid_pos: Vector2i, force_punch_action: bool = false):
+	trace_break_stage("hit_started", {"x": grid_pos.x, "y": grid_pos.y, "layer": "foreground"})
+	if authoritative_break_request_keys.has(get_authoritative_break_key("foreground", grid_pos)):
+		return
 	if is_waiting_for_server_sign_on():
 		show_server_sign_on_notice()
 		return
@@ -12649,8 +12727,7 @@ func hit_block_grid(grid_pos: Vector2i, force_punch_action: bool = false):
 			"max_hits": max_hits,
 			"source_tool": get_current_block_hit_source_tool()
 		}):
-			if action == "break":
-				authoritative_break_request_keys[break_key] = true
+
 			spawn_block_hit_particles(grid_pos, str(block_type), "foreground")
 			update_block_crack_visual(grid_pos)
 			play_block_action_sound(grid_pos, action == "break")
@@ -12702,7 +12779,7 @@ func break_block_grid(grid_pos: Vector2i):
 		if send_network_block_update("break", "foreground", grid_pos, str(block_type), {
 			"source_tool": get_current_block_hit_source_tool()
 		}):
-			authoritative_break_request_keys[get_authoritative_break_key("foreground", grid_pos)] = true
+
 			world.show_notification("Breaking " + world.get_item_display_name(str(block_type), "block") + "...")
 		else:
 			world.show_notification("Almost ready. Try again in a moment.")

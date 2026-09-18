@@ -2421,7 +2421,9 @@ func update_fast_block_place_hold_input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventScreenTouch:
-		if event.pressed:
+		if event.canceled:
+			end_fast_block_place_hold(event.index)
+		elif event.pressed:
 			begin_fast_block_place_hold(event.position, event.index)
 		elif fast_block_place_hold_active and fast_block_place_hold_touch_index == event.index:
 			end_fast_block_place_hold(event.index)
@@ -2498,9 +2500,11 @@ func update_fast_block_place_hold(delta: float) -> void:
 	var item_type := str(selected_item_type)
 	var item_category := str(selected_item_category)
 	if grid_pos == fast_block_place_last_grid and item_type == fast_block_place_last_item_type and item_category == fast_block_place_last_item_category:
+		fast_block_place_hold_timer = 0.0
 		return
 
-	fast_block_place_hold_timer = FAST_BLOCK_PLACE_REPEAT_INTERVAL
+	# Retain fractional frame time without accumulating a burst while stationary.
+	fast_block_place_hold_timer = FAST_BLOCK_PLACE_REPEAT_INTERVAL - fposmod(maxf(0.0, -fast_block_place_hold_timer), FAST_BLOCK_PLACE_REPEAT_INTERVAL)
 
 	if not is_grid_inside_world(grid_pos):
 		trace_fast_block_place_event("tick_blocked", {
@@ -2543,6 +2547,8 @@ func _input(event):
 
 
 func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		end_fast_block_place_hold(-1)
 	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		handle_mobile_back_request()
 

@@ -1,5 +1,7 @@
 extends Node
 
+const RuntimeProfiler = preload("res://Scripts/runtime_profiler.gd")
+
 signal server_auth_finished(data)
 signal server_connection_changed(is_connected)
 signal world_population_changed(world_counts)
@@ -101,6 +103,7 @@ var _last_local_position_debug_msec := 0
 var last_accepted_position_sequence := 0
 var last_rejected_position_sequence := 0
 var world_event_tile_update_queue: Array[Dictionary] = []
+var world_event_cell_generations: Dictionary = {}
 var world_event_tile_update_queue_read_index := 0
 
 const API_BASE := "https://api.pixelmaniagame.com"
@@ -111,7 +114,7 @@ var WORLD_ROUTE_WS_URLS: Array[String] = [
 ]
 # Keep in sync with export_presets.cfg "version/name" on every release build.
 # The server gates packets against this value via MIN_CLIENT_VERSION.
-const CLIENT_VERSION := "1.1.0"
+const CLIENT_VERSION := "1.1.1"
 const CLIENT_PLATFORM := "godot"
 const DEBUG_SERVER_PACKETS := false
 const DEBUG_ACTION_POSITION_FLOW := false
@@ -693,6 +696,7 @@ func _ready():
 
 
 func _process(delta: float) -> void:
+	RuntimeProfiler.frame(delta, socket.get_available_packet_count(), world_event_tile_update_queue.size() - world_event_tile_update_queue_read_index)
 	_sample_world_entry_frame(delta)
 	if not MovementMode.should_run_websocket_backend():
 		return
@@ -723,6 +727,8 @@ func _process(delta: float) -> void:
 			send_account_token_login(session_username, session_token)
 
 	process_server_packets_with_budget(frame_socket, frame_socket_generation)
+	if is_server_session_authenticated() and RuntimeProfiler.ping_due():
+		send_message({"type": "client_ping", "request_id": "perf_%d" % Time.get_ticks_usec()})
 	_process_network_followup()
 
 	# Packet handling may have followed a world-route redirect and installed a
@@ -837,7 +843,9 @@ func process_server_packets_with_budget(peer: WebSocketPeer, generation: int) ->
 	while peer.get_available_packet_count() > 0 and processed < MAX_SERVER_PACKETS_PER_FRAME:
 		var packet_bytes: PackedByteArray = peer.get_packet()
 		var packet: String = packet_bytes.get_string_from_utf8()
+		var dispatch_started := RuntimeProfiler.start()
 		handle_server_message(packet, packet_bytes.size())
+		RuntimeProfiler.finish("packet_dispatch_ms", dispatch_started)
 		processed += 1
 		if generation != socket_generation:
 			break
@@ -1682,6 +1690,8 @@ func send_message(data: Dictionary) -> bool:
 		push_warning("NetworkManager: refused oversized client packet type=" + str(outgoing.get("type", "")))
 		return false
 	var send_error = socket.send_text(payload_text)
+	if send_error == OK and RuntimeProfiler.enabled:
+		RuntimeProfiler.sent(outgoing, payload_text.to_utf8_buffer().size())
 	return send_error == OK
 
 
@@ -4491,6 +4501,7 @@ func handle_player_position_batch(data: Dictionary) -> void:
 func handle_world_update_payload(data: Dictionary) -> void:
 	if not is_message_for_active_world(data):
 		return
+	RuntimeProfiler.acknowledged(data)
 
 	var message_type := _safe_string(data.get("type", ""), "", MAX_SERVER_MESSAGE_TYPE_LENGTH).to_lower()
 	var world_node = null
@@ -4509,6 +4520,10 @@ func handle_world_update_payload(data: Dictionary) -> void:
 					world_node.apply_network_block_update(data)
 					_note_pending_world_entry_block_update(data)
 		"world_block_reconcile":
+			if not bool(data.get("authoritative_pending", false)):
+				var correction := data.duplicate()
+				correction["action"] = "place" if bool(data.get("authoritative_present", false)) else "break"
+				queue_world_block_update_behind_pending_event_updates(correction)
 			apply_player_state_payload_if_present(data)
 			world_node = get_world_node()
 			if world_node != null and is_world_node_active() and world_node.has_method("apply_network_block_reconcile"):
@@ -4605,6 +4620,7 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 	if message_type == "":
 		return
 	_record_world_entry_packet(message_type, wire_bytes, parse_usec)
+	RuntimeProfiler.received(data, wire_bytes, parse_usec)
 	update_developer_pin_state_from_message(data)
 	var world_node = null
 	var safe_world = _get_message_world_name(data)
@@ -5661,16 +5677,21 @@ func handle_world_event_tile_updates(data: Dictionary) -> void:
 			update_payload["world"] = batch_world
 		if not update_payload.has("layer"):
 			update_payload["layer"] = "foreground"
+		update_payload["_event_cell_generation"] = int(world_event_cell_generations.get(_event_cell_key(update_payload), 0))
 		world_event_tile_update_queue.append(update_payload)
 
 
-func queue_world_block_update_behind_pending_event_updates(data: Dictionary) -> bool:
-	if world_event_tile_update_queue_read_index >= world_event_tile_update_queue.size():
-		return false
+func _event_cell_key(data: Dictionary) -> String:
+	return "%s:%s:%d:%d" % [str(data.get("world", current_world_name)).to_upper(), str(data.get("layer", "foreground")), int(data.get("x", 0)), int(data.get("y", 0))]
 
-	compact_world_event_tile_update_queue()
-	world_event_tile_update_queue.append(data.duplicate(true))
-	return true
+
+func queue_world_block_update_behind_pending_event_updates(data: Dictionary) -> bool:
+	# A live update supersedes earlier queued event work at this cell. Do not
+	# delay a confirmed break behind thousands of unrelated snow/event tiles.
+	if world_event_tile_update_queue_read_index < world_event_tile_update_queue.size() and str(data.get("action", "")) in ["break", "place"]:
+		var key := _event_cell_key(data)
+		world_event_cell_generations[key] = int(world_event_cell_generations.get(key, 0)) + 1
+	return false
 
 
 func process_world_event_tile_update_queue() -> void:
@@ -5694,6 +5715,9 @@ func process_world_event_tile_update_queue() -> void:
 	):
 		var update_payload: Dictionary = world_event_tile_update_queue[world_event_tile_update_queue_read_index]
 		world_event_tile_update_queue_read_index += 1
+		if int(update_payload.get("_event_cell_generation", 0)) != int(world_event_cell_generations.get(_event_cell_key(update_payload), 0)):
+			processed += 1
+			continue
 		processed_world_event_update = processed_world_event_update or bool(update_payload.get("_from_world_event", false))
 		world_node.apply_network_block_update(update_payload)
 		processed += 1
@@ -5724,6 +5748,7 @@ func compact_world_event_tile_update_queue() -> void:
 
 
 func clear_world_event_tile_update_queue() -> void:
+	world_event_cell_generations.clear()
 	world_event_tile_update_queue.clear()
 	world_event_tile_update_queue_read_index = 0
 

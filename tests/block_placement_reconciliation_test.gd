@@ -37,6 +37,7 @@ class PlacementWorld:
 class RevisionBlockManager:
 	extends Node
 
+	var last_confirmed_place_visual_applied := true
 	var confirmation_count := 0
 	var pending_request_ids: Dictionary = {}
 
