@@ -933,6 +933,8 @@ func apply_tier_1_splice_balance():
 			seed_id = str(block_id) + "_seed"
 
 		block_data["seed"] = seed_id
+		var authored_break_rules: Variant = block_data.get("drop_rules")
+		var authored_tree_rules: Variant = block_data.get("tree_drop_rules")
 		block_data["drop_rules"] = make_configured_seed_drop_rules(
 			str(block_id),
 			seed_id,
@@ -949,6 +951,9 @@ func apply_tier_1_splice_balance():
 			balance.get("tree_seed_range", [0, 0]),
 			balance.get("tree_gem_range", [])
 		)
+		if bool(block_data.get("authored_drop_rules", false)):
+			block_data["drop_rules"] = authored_break_rules
+			block_data["tree_drop_rules"] = authored_tree_rules
 
 		var seed_data: Dictionary = {}
 		if item_database.has(seed_id) and item_database[seed_id] is Dictionary:
@@ -979,6 +984,8 @@ func apply_coloured_block_seed_and_drop_rules():
 			continue
 
 		var block_data: Dictionary = item_database[block_id]
+		if bool(block_data.get("authored_drop_rules", false)):
+			continue
 		var seed_id: String = str(block_data.get("seed", "")).strip_edges()
 		if seed_id == "":
 			seed_id = str(block_id) + "_seed"

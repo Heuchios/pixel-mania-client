@@ -1,0 +1,150 @@
+Seed 1	Seed 2	Spliced
+Small Vines	Leaf block	Big Vine
+Leaf block	Dirt	Grass
+Leaf block	Grass	Bush
+Leaf block	Tree trunk	Mushroom
+Tree trunk	Dirt	Wood block
+Wood block	Cave Wall	Wood wall
+Stone	Lava	Red brick
+Stone	Dirt	Stone brick
+Sand block	Lava	Glass pane
+Grass	Lava	Dried hay
+Wood block	Big Vine	Wooden platform
+Wood block	Mushroom	Wooden sign
+Wood block	Glass pane	Wooden window
+Wood block	Dirt	Wooden door
+Wood block	Dried hay	Wooden fence
+Wood block	Bush	Wooden table
+Wooden sign	Cave Wall	Mysterious sign
+Wood block	Lava	Campfire
+Red brick	Cave Wall	Red brick wall
+Stone brick	Cave Wall	Stone brick wall
+Red brick	Lily	White block
+Red brick	Rose	Red block
+Red brick	Grass	Green block
+Red brick	Dirt	Brown block
+Red brick	Stone	Grey block
+Red brick	Obsidian	Black block
+Red brick	Sunflower	Yellow block
+Glass pane	Stone	Glass block
+Wood wall	Dried hay	Hay bales
+Magma stone	Stone	Hellbrick
+Wood block	Wooden platform	Wooden ladder
+Wooden door	Wooden platform	Wooden entrance
+Big Vine	Wooden table	Wooden chair
+Wood block	Brown block	Wooden Box
+Stone brick	Black block	Grimstone
+Red block	Yellow block	Orange block
+Yellow block	Solid ice block	Blue block
+Red block	White block	Pink block
+White block	Red brick wall	White wall
+Red block	Red brick wall	Red wall
+Green block	Red brick wall	Green wall
+Brown block	Red brick wall	Brown wall
+Gray block	Red brick wall	Gray wall
+Black block	Red brick wall	Black wall
+Yellow block	Red brick wall	Yellow wall
+Hay bales	Wood block	Barn block
+Red brick	Stone brick	Building brick block
+Stone brick wall	Stone brick	Polished stone brick
+Wooden sign	Mysterious sign	Big sign
+Red brick wall	Blue block	Blue strip wallpaper
+Red brick wall	Blue strip wallpaper	Red strip wallpaper
+Hellbrick	Stone brick wall	Hellbrick wall
+Wooden chair	Green wall	Climbing vine
+Wood block	Wooden Box	Wooden Barrel
+Wooden Box	Lava	Lantern
+Grimstone	Cave Wall	Grimstone wall
+Blue block	Red strip wallpaper	Aqua block
+Red block	Blue strip wallpaper	Purple block
+Red block	Grimstone	Dark red block
+Green block	Grimstone	Dark green block
+Orange block	Grimstone	Dark orange block
+Yellow block	Grimstone	Dark yellow block
+Blue block	Grimstone	Dark blue block
+Pink block	Grimstone	Dark pink block
+Blue block	Yellow wall	Star wallpaper
+Red block	Barn block	Pastel red block
+Green block	Barn block	Pastel green block
+Yellow block	Barn block	Pastel yellow block
+Orange block	Barn block	Pastel orange block
+Pink block	Barn block	Pastel pink block
+Orange block	Red brick wall	Orange wall
+Blue block	Red brick wall	Blue wall
+Pink block	Red brick wall	Pink wall
+Building brick block	Polished stone brick	Metal block
+Grimstone	Campfire	Slime block
+Fish horn	Wooden Box	Fish hanger
+Wooden window	Barn block	Barn Window
+Barn block	Wood wall	Barn wall
+Barn block	Wooden fence	Farm fence
+Barn block	Wooden door	Barn door
+Dried hay	Grimstone	Sugarcane
+Building brick block	Wooden table	House table
+Building brick block	Wooden door	House door
+Wooden window	Barn window	White window
+Building brick block	Cave wall	Building brick wall
+Wooden chair	House door	Fireplace
+Building brick block	Building brick wall	Building brick platform
+Polished stone brick	Stone brick wall	Polished stone wall
+Polished stone wall	Polished stone brick	Polished stone platform
+Wooden ladder	Wooden chair	Park bench
+Wooden sign	Big sign	Right directional sign
+Right directional sign	Big sign	Left directional sign
+Water bucket	Blue strip wallpaper	Aquatic line wallpaper
+Red strip wallpaper	Blue strip wallpaper	Complementary line wallpaper
+Black wall	White wall	Checkered wallpaper
+Wooden box	Yellow block	Pencil Block
+Metal block	House door	Dungeon Door
+Metal block	Wooden box	Sturdy box
+Farm fence	Wooden box	Wagon Wheel
+Dark yellow block	Dark green block	Dark aqua block
+Dark red block	Dark blue block	Dark purple block
+Blue block	Pastel red block	Pastel purple block
+Pastel yellow block	Blue block	Pastel blue block
+Pastel yellow block	Pastel red block	Pastel bunny block
+Pastel blue block	Lily	Pastel lily block
+Dark purple block	Red block	Rainbow block
+Building brick wall	Aqua block	Aqua wall
+Purple block	Building brick wall	Purple wall
+Gray wall	Metal block	Metal wall
+Big sign	Metal block	Metal sign
+Barn door	Metal block	Metal door
+Barn door	House door	Screen door
+Metal block	Campfire	Ceiling lamp
+Wooden ladder	Metal block	Metal ladder
+Wooden platform	Metal block	Metal platform
+Left directional sign	Metal block	Spike
+Spike	Grimstone	Dark Spike
+Wooden barrel	Wooden sign	Wooden shelf
+Big sign	Pencil block	Mailbox
+Wooden sign	Metal block	Electrical pole
+Barn block	Wooden barrel	Composer 0%-49%
+Barn block	Right directional sign	Weathervane
+Polished stone brick	Wooden barrel	Pillar block
+Wooden chair	Polished stone wall	Modern Chair
+Big sign	Polished stone wall	Dresser
+White block	Polished stone wall	Toilet
+White block	Barn Window	Sink
+House table	Blue block	Bed
+Red wall	Left directional sign	Sale sign
+Hellbrick	Building brick platform	Hellbrick platform
+Spike	House door	Portcullis
+Metal door	Metal sign	Metal entrance
+Wooden barrel	Dark spike	Toxic barrel
+Star wallpaper	Rainbow block	Starry block
+Mailbox	Blue block	Blue mailbox
+Wooden sign	Wooden shelf	Donation box
+Metal wall	Electrical pole	Metal pad
+Glass block	Dresser	Empty Jar
+Polished stone brick	Sink	Well
+Grass	Weathervane	Chicken
+Ceiling lamp	Building brick block	House lamp
+Sink	Glass pane	Fishbowl
+Park bench	Bed	Couch
+House door	Dungeon door	House entrance
+White window	Pastel lily block	Purple curtained window
+White window	Pastel bunny block	Pink curtained window
+Toilet	Park bench	Bathtub
+Sale sign	Aqua block	Street Sign
+Metal ladder	House door	Ventilation

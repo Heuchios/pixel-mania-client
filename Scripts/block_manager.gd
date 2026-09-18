@@ -11343,7 +11343,7 @@ func get_server_triggered_animation_frames(block_type: String) -> Array[Texture2
 		return result
 
 	for frame_path in frame_paths:
-		var texture = AtlasTextureFactory.load_texture(str(frame_path))
+		var texture = AtlasTextureFactory.load_texture(frame_path)
 		if texture != null:
 			result.append(texture)
 

@@ -1,0 +1,94 @@
+id	name	x	y	mode	frames
+saw_blade	Spike	0	13	solid	1
+spike	Hanging Spike	1	13	solid	1
+big_spike	Dark Spike	2	13	solid	1
+recycle_bin	Recycle Bin	17	14	return	2
+quest_board	Quest Board	18	15	wide	1
+sashimi_table	Sashimi Table	20	15	decor	1
+leaderboard	Leaderboard	21	15	return	1
+oil_refinery	Oil Refinery	-1	-1	keep	1
+gold_block	Golden Block	21	5	solid	1
+emerald_block	Emerald Block	22	5	solid	1
+diamond_block	Diamond Block	24	5	solid	1
+amethyst_block	Gem Block	25	5	solid	1
+copper_block	Copper Block	21	6	solid	1
+rusty_copper_block	Rusty Copper Block	22	6	solid	1
+hay_bales	Hay Bales	3	23	solid	1
+seaweed_block	Seaweed	6	23	decor	3
+coral_block	Coral	9	23	decor	1
+pearl_clam	Pearl Clam	10	23	decor	1
+pearl_clam_open	Pearl Clam Open	11	23	decor	1
+green_moss_brick	Green Moss Brick	20	5	solid	1
+green_moss_brick_wall	Green Moss Wall	20	6	wall	1
+empty_jar	Empty Jar	1	21	decor	1
+ruby_block	Ruby Block	23	5	solid	1
+bush	Bush	6	4	decor	1
+obsidian	Obsidian	2	2	solid	1
+spring_leaf	Leaf Block (Spring Event)	4	3	decor	1
+autumn_leaf	Leaf Block (Autumn Event)	5	3	decor	1
+hanging_vine	Small Vines	6	3	decor	1
+vines_2	Big Vines	7	3	decor	1
+wooden_crappy_sign	Mysterious Sign	10	6	decor	1
+sand_castle	Sand Castle	12	6	decor	1
+pile_of_sand	Pile of Sand	13	6	decor	1
+tiny_rock	Tiny Rock	2	3	decor	1
+big_rock	Big Rock	3	3	decor	1
+snow_tiny_rock	Snow Tiny Rock	14	5	decor	1
+snow_big_rock	Snow Big Rock	15	5	decor	1
+wooden_barrel	Wooden Barrel	16	2	solid	1
+wooden_box	Wooden Box	17	2	solid	1
+lantern	Lantern	18	2	decor	3
+campfire	Campfire	16	3	decor	3
+dungeon_door	Dungeon Door	19	3	decor	1
+sturdy_box	Sturdy Box	20	3	solid	1
+wagon_wheel	Wagon Wheel	16	4	solid	1
+portcullis	Portcullis	17	4	decor	3
+red_brick	Red Brick	17	5	solid	1
+red_brick_wall	Red Brick Wall	17	6	wall	1
+stone_brick	Stone Brick	18	5	solid	1
+stone_brick_wall	Stone Brick Wall	18	6	wall	1
+green_brick	Grimstone	19	5	solid	1
+green_brick_wall	Grimstone Wall	19	6	wall	1
+white_block	White Block	0	7	solid	1
+red_block	Red Block	1	7	solid	1
+green_block	Green Block	2	7	solid	1
+brown_block	Brown Block	3	7	solid	1
+grey_block	Grey Block	0	8	solid	1
+orange_block	Orange Block	1	8	solid	1
+aqua_block	Aqua Block	2	8	solid	1
+purple_block	Purple Block	3	8	solid	1
+black_block	Black Block	0	9	solid	1
+yellow_block	Yellow Block	1	9	solid	1
+blue_block	Blue Block	2	9	solid	1
+pink_block	Pink Block	3	9	solid	1
+maroon_block	Dark Red Block	4	7	solid	1
+dark_green_block	Dark Green Block	5	7	solid	1
+dark_brown_block	Dark Brown Block	6	7	solid	1
+dark_orange_block	Dark Orange Block	4	8	solid	1
+dark_aqua_block	Dark Aqua Block	5	8	solid	1
+dark_purple_block	Dark Purple Block	6	8	solid	1
+dark_yellow_block	Dark Yellow Block	4	9	solid	1
+dark_blue_block	Dark Blue Block	5	9	solid	1
+dark_pink_block	Dark Pink Block	6	9	solid	1
+red_pastel_block	Pastel Red Block	7	7	solid	1
+green_pastel_block	Pastel Green Block	8	7	solid	1
+purple_pastel_block	Pastel Purple Block	9	7	solid	1
+yellow_pastel_block	Pastel Yellow Block	7	8	solid	1
+orange_pastel_block	Pastel Orange Block	8	8	solid	1
+pink_pastel_block	Pastel Pink Block	7	9	solid	1
+blue_pastel_block	Pastel Blue Block	8	9	solid	1
+happy_block	Pastel Bunny Block	9	8	solid	1
+pastel_flower_block	Pastel Lily Block	9	9	solid	1
+shifty_block	RGB Block	10	8	solid	1
+white_wallpaper	White Wall	0	10	wall	1
+red_wallpaper	Red Wall	1	10	wall	1
+green_wallpaper	Green Wall	2	10	wall	1
+brown_wallpaper	Brown Wall	3	10	wall	1
+grey_wallpaper	Gray Wall	0	11	wall	1
+orange_wallpaper	Orange Wall	1	11	wall	1
+aqua_wallpaper	Aqua Wall	2	11	wall	1
+purple_wallpaper	Purple Wall	3	11	wall	1
+black_wallpaper	Black Wall	0	12	wall	1
+yellow_wallpaper	Yellow Wall	1	12	wall	1
+blue_wallpaper	Blue Wall	2	12	wall	1
+pink_wallpaper	Pink Wall	3	12	wall	1
