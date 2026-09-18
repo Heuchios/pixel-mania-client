@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://Scripts/falling_leaves_fx.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://Assets/blocks/Tier_1/basic blocks/leaf_block.png" id="2_leaf"]
+[ext_resource type="Texture2D" path="res://Assets/inventory_icons/leaf_block.png" id="2_leaf"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_falling_leaves_far"]
 particle_flag_disable_z = true
@@ -89,7 +89,7 @@ hue_variation_max = 0.14
 
 [node name="FallingLeavesFX" type="Node2D"]
 z_as_relative = false
-z_index = 4315
+z_index = 4095
 script = ExtResource("1_script")
 preview_emitting = true
 wall_mode = true

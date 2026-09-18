@@ -15,7 +15,7 @@ extends Node2D
 @export_range(0.05, 3.0, 0.01) var sway_cycle_seconds := 5.5
 @export_range(0.0, 18.0, 0.1) var sway_strength := 8.0
 
-const LEAVES_Z_INDEX := 4315
+const LEAVES_Z_INDEX := 4095
 const EMISSION_HEIGHT := 24.0
 
 var leaf_layers: Array[GPUParticles2D] = []
@@ -36,9 +36,9 @@ func _ready() -> void:
 			layer.process_material = layer.process_material.duplicate(true)
 		layer.emitting = false
 
-			var material := layer.process_material
-			if material is ParticleProcessMaterial:
-				var base_gravity: Vector3 = material.gravity
+		var material := layer.process_material
+		if material is ParticleProcessMaterial:
+			var base_gravity: Vector3 = material.gravity
 			_layer_motion_data.append({
 				"layer": layer,
 				"material": material,

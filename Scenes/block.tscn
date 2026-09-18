@@ -1,10 +1,9 @@
 [gd_scene format=3 uid="uid://bvmxu06f1y37k"]
 
+[ext_resource type="Texture2D" path="res://Assets/inventory_icons/dirt_block.png" id="1_dirt"]
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qncar"]
 size = Vector2(32, 32)
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_fsd7l"]
-load_path = "res://.godot/imported/dirt_block.png-29ce5604ec18ed632d2093b90232b3d1.ctex"
 
 [node name="Block" type="StaticBody2D" unique_id=327817152]
 visible = false
@@ -14,6 +13,6 @@ texture_filter = 1
 shape = SubResource("RectangleShape2D_qncar")
 
 [node name="Visual" type="Sprite2D" parent="." unique_id=1131857351]
-texture = SubResource("CompressedTexture2D_fsd7l")
+texture = ExtResource("1_dirt")
 
 [node name="Shadows" type="Sprite2D" parent="." unique_id=1729738862]
