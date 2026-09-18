@@ -1,10 +1,10 @@
-[gd_resource type="StyleBoxTexture" format=3]
+[gd_resource type="StyleBoxTexture" format=3 uid="uid://csm0mlagadv47"]
 
-[ext_resource type="Texture2D" path="res://Assets/ui/UI_3.0.png" id="1_atlas"]
+[ext_resource type="Texture2D" uid="uid://dkayrq2tuf3e1" path="res://Assets/ui/UI_3.0.png" id="1_atlas"]
 
 [resource]
 texture = ExtResource("1_atlas")
-modulate_color = Color(0.32, 0.12, 0.4, 1)
 region_rect = Rect2(448, 32, 32, 32)
+modulate_color = Color(0.32, 0.12, 0.4, 1)
 metadata/atlas_region = "chat_send_button"
 metadata/atlas_properties = "{}"

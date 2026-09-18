@@ -2,6 +2,7 @@ extends SceneTree
 
 const DB = preload("res://Scripts/item_database.gd")
 const ATLAS = preload("res://Scripts/ItemAtlasDB.gd")
+const STATIONS = preload("res://Scripts/station_recipes.gd")
 
 func _init() -> void:
 	var database = DB.new()
@@ -28,6 +29,18 @@ func _init() -> void:
 		for seed_id in [pair[0], pair[1], DB.SPLICE_RECIPES[key]]:
 			assert(seed_to_block.has(seed_id), seed_id)
 	assert(database.get_splice_result("unknown_seed", "dirt_seed") == "")
+	var crafting = JSON.parse_string(FileAccess.get_file_as_string("res://docs/live-crafting-recipes.json"))
+	assert(STATIONS.validate_recipes().is_empty())
+	assert(not STATIONS.has_duplicate_outputs())
+	assert(STATIONS.get_recipe_count("crafting_station") == crafting.size())
+	for expected in crafting:
+		var actual: Dictionary = STATIONS.get_recipe_by_id("crafting_station", expected.id)
+		assert(JSON.parse_string(JSON.stringify(actual.output)) == expected.output)
+		assert(JSON.parse_string(JSON.stringify(actual.cost)) == expected.cost)
+	for row in rows:
+		if row.method == "crafting" and row.ids[2] != null:
+			var output_seed: String = items.get(row.ids[2], {}).get("seed", "")
+			assert(output_seed == "" or not DB.SPLICE_RECIPES.values().has(output_seed), str(row.names))
 	database.free()
 	print("Splicing client OK: %d chart recipes, %d total." % [count, DB.SPLICE_RECIPES.size()])
 	quit()

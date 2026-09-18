@@ -101,6 +101,24 @@ theme_override_styles/pressed = ExtResource("atlas_SB_close_pressed")
 theme_override_styles/hover = ExtResource("atlas_SB_close_hover")
 text = "X"
 
+[node name="RecipeTools" type="HBoxContainer" parent="Window/Margin/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Method" type="OptionButton" parent="Window/Margin/Layout/RecipeTools"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("atlas_SB_tab_normal")
+theme_override_styles/hover = ExtResource("atlas_SB_tab_hover")
+theme_override_styles/pressed = ExtResource("atlas_SB_tab_pressed")
+
+[node name="Search" type="LineEdit" parent="Window/Margin/Layout/RecipeTools"]
+custom_minimum_size = Vector2(280, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Search recipes or ingredients…"
+clear_button_enabled = true
+
 [node name="TierTabsScroll" type="ScrollContainer" parent="Window/Margin/Layout" unique_id=624891504]
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2

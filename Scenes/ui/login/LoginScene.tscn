@@ -24,7 +24,7 @@
 [ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/pink_button_c4d4758782.tres" id="atlas_StyleBoxTexture_yellow_hover"]
 [ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/pink_button_f72e84db31.tres" id="atlas_StyleBoxTexture_yellow_normal"]
 [ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/pink_button_1b992e4807.tres" id="atlas_StyleBoxTexture_yellow_pressed"]
-[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_0"]
+[ext_resource type="StyleBox" uid="uid://bumlm4ombqyip" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_0"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/outer_panel.tres" id="panel_role_1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_logo"]
@@ -433,12 +433,6 @@ secret = true
 metadata/pixelmania_font_role = "preserve"
 
 [node name="RememberPasswordCheck" type="CheckBox" parent="LoginPanel/Form" unique_id=1460154231]
-theme_override_styles/normal = SubResource("StyleBoxEmpty_focus")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_focus")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_focus")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_focus")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_focus")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 layout_mode = 0
 offset_left = 199.0
 offset_top = 260.0
@@ -448,6 +442,12 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxEmpty_focus")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_focus")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_focus")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_focus")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_focus")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 theme_override_icons/checked = ExtResource("11_ox2yu")
 theme_override_icons/unchecked = ExtResource("12_ui2s7")
 theme_override_icons/checked_disabled = ExtResource("12_ui2s7")

@@ -1,0 +1,82 @@
+[
+  {
+    "id": "sheet_fireplace",
+    "output": {
+      "item_id": "fireplace",
+      "category": "block",
+      "amount": 1
+    },
+    "cost": [
+      {
+        "item_id": "wooden_chair",
+        "category": "block",
+        "amount": 1
+      },
+      {
+        "item_id": "royal_door",
+        "category": "block",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "sheet_red_brick_platform",
+    "output": {
+      "item_id": "red_brick_platform",
+      "category": "block",
+      "amount": 1
+    },
+    "cost": [
+      {
+        "item_id": "building_brick_block",
+        "category": "block",
+        "amount": 1
+      },
+      {
+        "item_id": "building_brick_wall",
+        "category": "block",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "sheet_white_brick_platform",
+    "output": {
+      "item_id": "white_brick_platform",
+      "category": "block",
+      "amount": 1
+    },
+    "cost": [
+      {
+        "item_id": "white_brick_wall",
+        "category": "block",
+        "amount": 1
+      },
+      {
+        "item_id": "white_brick_block",
+        "category": "block",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "sheet_aquatic_line_wall",
+    "output": {
+      "item_id": "aquatic_line_wall",
+      "category": "block",
+      "amount": 1
+    },
+    "cost": [
+      {
+        "item_id": "water_bucket",
+        "category": "block",
+        "amount": 1
+      },
+      {
+        "item_id": "blue_stripe_wall",
+        "category": "block",
+        "amount": 1
+      }
+    ]
+  }
+]

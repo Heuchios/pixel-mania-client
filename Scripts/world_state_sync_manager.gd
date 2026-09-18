@@ -1935,6 +1935,10 @@ func apply_network_block_update(data: Dictionary):
 
 	if action == "hit":
 		update_network_block_hit_visual(layer, grid_pos, data)
+		if layer == "foreground" and world.block_manager != null:
+			var hit_item: Dictionary = world.item_database.get(block_type, {})
+			if str(hit_item.get("animation_trigger", "")) == "on_punch":
+				world.block_manager.play_server_triggered_block_animation(grid_pos, block_type)
 		if not is_local_confirmed_update:
 			spawn_network_block_hit_particles(layer, grid_pos, block_type, source_tool, data)
 			play_confirmed_block_punch_sound(grid_pos)

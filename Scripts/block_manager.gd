@@ -3043,6 +3043,18 @@ func get_vertical_variant_key(block_type: String, grid_pos: Vector2i) -> String:
 
 
 func get_connected_variant_key(block_type: String, grid_pos: Vector2i) -> String:
+	var variants = get_block_item_data(block_type).get("connected_variant_atlas_coords", {})
+	# Furniture with only horizontal artwork connects within its own row.
+	if variants is Dictionary and variants.has("left") and variants.has("right") and not variants.has("top") and not variants.has("top_left_corner"):
+		var left := has_connected_variant_neighbor(grid_pos + Vector2i.LEFT, block_type)
+		var right := has_connected_variant_neighbor(grid_pos + Vector2i.RIGHT, block_type)
+		if left and right:
+			return get_connected_variant_key_or_fallback(block_type, "horizontal_middle", "middle")
+		if right:
+			return "left"
+		if left:
+			return "right"
+		return "single"
 	var bounds_variant_key := get_bounds_connected_variant_key(block_type, grid_pos)
 	if bounds_variant_key != "":
 		return bounds_variant_key
@@ -3533,6 +3545,10 @@ func get_stateful_block_atlas_data(base_block_id: String, grid_pos: Vector2i, ba
 		return {}
 
 	var item_data = world.item_database[clean_base_id]
+	if item_data.has("artwork_atlas_variants"):
+		var artwork := get_weighted_atlas_variant_data(item_data, grid_pos, "artwork_atlas_variants", "artwork_atlas_weights", 51)
+		if not artwork.is_empty():
+			return artwork
 
 	if background:
 		# Only cave_background's weighted variant selection runs on the

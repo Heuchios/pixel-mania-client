@@ -990,7 +990,6 @@ var remote_chat_bubbles := {}
 var remote_chat_pending_messages := {}
 var remote_pending_position_snapshots := {}
 var remote_position_snapshot_generation := 0
-var remote_name_font: Font = null
 var remote_players_root = null
 var remote_visual_stabilization_deferred_queued := false
 var network_position_timer := 0.0
@@ -1020,10 +1019,10 @@ const REMOTE_DEBUG_LABEL_HEIGHT := 120.0
 const REMOTE_DEBUG_LABEL_FONT_SIZE := 12
 const REMOTE_NAME_LABEL_MARGIN_ABOVE_HEAD_WORLD_PX := 18.0
 const REMOTE_NAME_LABEL_FALLBACK_OFFSET_WORLD_PX := 66.0
-const REMOTE_NAME_FONT_PATH := "res://Assets/font/font.ttf"
+const REMOTE_NAME_STYLE = preload("res://Scripts/ui/pixel_ui_style.gd")
 const REMOTE_NAME_FONT_SIZE_META := &"pixelmania_font_size"
-const REMOTE_NAME_FONT_SIZE := 28
-const REMOTE_NAME_OUTLINE_SIZE := 10
+const REMOTE_NAME_FONT_SIZE = 32
+const REMOTE_NAME_OUTLINE_SIZE := 2
 const REMOTE_NAME_WORLD_Z_FALLBACK := 3899
 const REMOTE_NAME_SCREEN_POSITION_META := "remote_name_screen_position"
 const REMOTE_NAME_ABSOLUTE_Z_META := "remote_name_absolute_world_z"
@@ -4361,11 +4360,7 @@ func get_remote_name_style_key(remote_name: String) -> String:
 
 
 func get_remote_name_font() -> Font:
-	if remote_name_font == null and ResourceLoader.exists(REMOTE_NAME_FONT_PATH):
-		var loaded_font: Resource = load(REMOTE_NAME_FONT_PATH)
-		if loaded_font is Font:
-			remote_name_font = loaded_font
-	return remote_name_font
+	return REMOTE_NAME_STYLE.get_game_font()
 
 
 func apply_remote_name_label_font(label: Label) -> void:

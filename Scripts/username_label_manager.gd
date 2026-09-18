@@ -11,10 +11,10 @@ const GROWTH_LABEL_WIDTH = 360.0
 const GROWTH_LABEL_HEIGHT = 46.0
 const LABEL_MARGIN_ABOVE_HEAD_WORLD_PX = 18.0
 const FALLBACK_OFFSET_ABOVE_PLAYER_WORLD_PX = 66.0
-const USERNAME_FONT_PATH = "res://Assets/font/font.ttf"
+const USERNAME_STYLE = preload("res://Scripts/ui/pixel_ui_style.gd")
 const USERNAME_FONT_SIZE_META := &"pixelmania_font_size"
-const FONT_SIZE = 28
-const OUTLINE_SIZE = 10
+const FONT_SIZE = 32
+const OUTLINE_SIZE = 2
 const GROWTH_FONT_SIZE = 17
 const GROWTH_OUTLINE_SIZE = 5
 const GROWTH_LABEL_GAP = 1.0
@@ -45,7 +45,6 @@ var label: Label = null
 var growth_label: Label = null
 var rainbow_time := 0.0
 var growth_label_alpha := 0.0
-var username_font: Font = null
 
 
 func get_network_manager():
@@ -56,11 +55,7 @@ func get_network_manager():
 
 
 func get_username_font() -> Font:
-	if username_font == null and ResourceLoader.exists(USERNAME_FONT_PATH):
-		var loaded_font: Resource = load(USERNAME_FONT_PATH)
-		if loaded_font is Font:
-			username_font = loaded_font
-	return username_font
+	return USERNAME_STYLE.get_game_font()
 
 
 func apply_username_font_to_label(target_label: Label) -> void:

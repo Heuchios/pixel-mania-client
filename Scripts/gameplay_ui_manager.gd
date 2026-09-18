@@ -4,6 +4,14 @@ var world = null
 var ui_refresh_queued := false
 var ui_refresh_in_progress := false
 var sign_hover_label: Label = null
+var entrance_exit_button: TextureButton = null
+var entrance_exit_frames: Array[Texture2D] = []
+var entrance_exit_elapsed := 0.0
+var entrance_exit_requested := false
+
+const EXIT_FRAME_SECONDS := 0.32
+const EXIT_BUTTON_SIZE := Vector2(48, 48)
+const UI_ATLAS = preload("res://Scripts/UIAtlasDB.gd")
 
 const CHAT_SCENE_PATH = "res://Scenes/ui/chat/ChatScene.tscn"
 const DONATION_BOX_SCENE_PATH = "res://Scenes/ui/donation_box/DonationBoxGUI.tscn"
@@ -26,6 +34,63 @@ var last_notification_bubble_time := -999.0
 func setup(world_ref):
 	world = world_ref
 	setup_sign_hover_label()
+	setup_entrance_exit_button()
+
+
+func setup_entrance_exit_button() -> void:
+	var layer = get_overhead_layer()
+	if layer == null or is_instance_valid(entrance_exit_button):
+		return
+	for frame in range(1, 4):
+		entrance_exit_frames.append(UI_ATLAS.get_texture("exit_bubble_%d" % frame))
+	entrance_exit_button = TextureButton.new()
+	entrance_exit_button.name = "EntranceExitButton"
+	entrance_exit_button.texture_normal = entrance_exit_frames[0]
+	entrance_exit_button.ignore_texture_size = true
+	entrance_exit_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	entrance_exit_button.size = EXIT_BUTTON_SIZE
+	entrance_exit_button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	entrance_exit_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	entrance_exit_button.focus_mode = Control.FOCUS_NONE
+	entrance_exit_button.tooltip_text = "Exit world"
+	entrance_exit_button.visible = false
+	entrance_exit_button.pressed.connect(_on_entrance_exit_pressed)
+	layer.add_child(entrance_exit_button)
+
+
+func _can_show_entrance_exit() -> bool:
+	if not is_instance_valid(world) or not world.in_world or entrance_exit_requested:
+		return false
+	if not is_instance_valid(world.player) or not world.player.is_visible_in_tree():
+		return false
+	if world.is_smooth_world_load_waiting_for_server_state() or world.is_gameplay_hud_blocked():
+		return false
+	# Check only the player's cell; avoid scanning every block each frame.
+	var block: Dictionary = world.blocks.get(world.get_player_grid_position(), {})
+	return str(block.get("type", "")) == world.ENTRANCE_GATE_TYPE
+
+
+func _process(delta: float) -> void:
+	if not is_instance_valid(entrance_exit_button):
+		return
+	entrance_exit_button.visible = _can_show_entrance_exit()
+	if not entrance_exit_button.visible:
+		entrance_exit_elapsed = 0.0
+		return
+	entrance_exit_elapsed = fmod(entrance_exit_elapsed + delta, EXIT_FRAME_SECONDS * 3.0)
+	entrance_exit_button.texture_normal = entrance_exit_frames[int(entrance_exit_elapsed / EXIT_FRAME_SECONDS)]
+	var anchor: Vector2 = world.player.get_global_transform_with_canvas() * Vector2(0, -48)
+	var layer := entrance_exit_button.get_parent() as CanvasItem
+	entrance_exit_button.position = layer.get_global_transform_with_canvas().affine_inverse() * anchor - Vector2(EXIT_BUTTON_SIZE.x / 2.0, EXIT_BUTTON_SIZE.y)
+
+
+func _on_entrance_exit_pressed() -> void:
+	# Revalidate on release in case the player moved away while holding the button.
+	if not _can_show_entrance_exit():
+		return
+	entrance_exit_requested = true
+	entrance_exit_button.hide()
+	world.exit_world_from_entrance_gate()
 
 
 func get_overhead_layer():

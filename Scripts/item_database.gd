@@ -4,7 +4,7 @@ extends Node
 #
 # This file controls item/block/seed/tool/equipment data.
 # Important content rules:
-# - Blocks, doors, signs, and platforms should come from seed splicing.
+# - Blocks, doors, signs, and platforms use seed splicing unless their sheet row is red (crafting).
 # - Crafting Station should craft tools, stations, equipment, and rare/special items.
 # - Furnace should output materials only.
 # - Shop should sell stations, special utility items, and selected equipment.
@@ -3123,7 +3123,7 @@ const ITEMS = {
 	},
 "hay": {
 		"category": "block",
-		"display_name": "Hay",
+		"display_name": "Dried Hay",
 		"rarity": "common",
 		"block_health": 3,
 		"texture": "res://image.png",
@@ -3150,13 +3150,9 @@ const ITEMS = {
 		"Collidable": false,
 		"no_collision": true,
 		"collidable": false,
-		"drop_rules": {
-			"seed_chance": 0,
-			"gem_range": [0, 0],
-			"fixed_drops": [
-				{"item_id": "wheat", "item_category": "material", "amount": 1, "chance": 0.2}
-			]
-		},
+		"authored_drop_rules": true,
+		"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"hay","item_category":"block","amount":1},{"item_id":"hay_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]},{"item_id":"wheat","item_category":"material","amount":1,"chance":0.2}]},
+		"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"hay","item_category":"block","amount_range":[2,5]},{"item_id":"hay_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},
 		"order": 2
 	},
 "stone": {
@@ -3773,37 +3769,245 @@ const ITEMS = {
 		"admin_grantable": false,
 		"order": 954
 	},
-"broken_tv": {
+	"broken_tv": {
 		"category": "block",
-		"display_name": "Broken TV",
-		"rarity": "common",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
 		"block_health": 3,
-		"texture": {"atlas": "res://image.png", "cell": [5, 19], "cell_size": [32, 32]},
-		"atlas_coords": Vector2i(5, 19),
-		"inventory_icon": {"atlas": "res://image.png", "cell": [5, 19], "cell_size": [32, 32]},
-		"seed": "",
-		"hidden": true,
-		"placeable": false,
-		"dropable": false,
-		"tradeable": false,
-		"admin_grantable": false,
-		"order": 958
+		"breakable": true,
+		"display_name": "Landfill TV",
+		"seed": "broken_tv_seed",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "broken_tv",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "broken_tv_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				5,
+				19
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				5,
+				19
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"atlas_coords": [
+			5,
+			19
+		],
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "broken_tv",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "broken_tv_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"event": "landfill"
 	},
-"tires": {
+	"tires": {
 		"category": "block",
-		"display_name": "Tires",
-		"rarity": "common",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
 		"block_health": 2,
-		"texture": {"atlas": "res://image.png", "cell": [6, 19], "cell_size": [32, 32]},
-		"atlas_coords": Vector2i(6, 19),
-		"inventory_icon": {"atlas": "res://image.png", "cell": [6, 19], "cell_size": [32, 32]},
-		"seed": "",
-		"hidden": true,
-		"placeable": false,
-		"dropable": false,
-		"tradeable": false,
-		"admin_grantable": false,
-		"order": 959
+		"breakable": true,
+		"display_name": "Used Tires",
+		"seed": "tires_seed",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "tires",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "tires_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				6,
+				19
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				6,
+				19
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"atlas_coords": [
+			6,
+			19
+		],
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "tires",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "tires_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"event": "landfill"
 	},
 "trash_dirt_top": {
 		"category": "block",
@@ -9807,7 +10011,7 @@ const ITEMS = {
 },
 "sugar_cane_seed": {
 		"category": "seed",
-		"display_name": "Sugar Cane Seed",
+		"display_name": "Sugarcane Seed",
 		"rarity": "common",
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
@@ -9827,27 +10031,43 @@ const ITEMS = {
 		"max_grow_time": 150.0,
 		"order": 19
 	},
-"royal_door_seed": {
+	"royal_door_seed": {
 		"category": "seed",
-		"display_name": "Royal Door Seed",
-		"rarity": "uncommon",
-		"texture": "res://Assets/seeds/seed_box.png",
-		"seed_box_icon": true,
+		"display_name": "House Door Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
 		"grows_into": "royal_door",
-		"grow_time": 175.0,
-		"max_grow_time": 175.0,
-		"order": 20
+		"rarity": "uncommon",
+		"grow_time": 175,
+		"max_grow_time": 175
 	},
-"royal_entrance_seed": {
+	"royal_entrance_seed": {
 		"category": "seed",
-		"display_name": "Royal Entrance Seed",
-		"rarity": "rare",
-		"texture": "res://Assets/seeds/seed_box.png",
-		"seed_box_icon": true,
+		"display_name": "House Entrance Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
 		"grows_into": "royal_entrance",
-		"grow_time": 175.0,
-		"max_grow_time": 175.0,
-		"order": 21
+		"rarity": "rare",
+		"grow_time": 175,
+		"max_grow_time": 175
 	},
 "lamp_seed": {
 		"category": "seed",
@@ -9860,16 +10080,24 @@ const ITEMS = {
 		"max_grow_time": 150.0,
 		"order": 22
 	},
-"royal_window_seed": {
+	"royal_window_seed": {
 		"category": "seed",
-		"display_name": "Royal Window Seed",
-		"rarity": "uncommon",
-		"texture": "res://Assets/seeds/seed_box.png",
-		"seed_box_icon": true,
+		"display_name": "White Window Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
 		"grows_into": "royal_window",
-		"grow_time": 150.0,
-		"max_grow_time": 150.0,
-		"order": 23
+		"rarity": "uncommon",
+		"grow_time": 150,
+		"max_grow_time": 150
 	},
 "fish_bowl_seed": {
 		"category": "seed",
@@ -9893,49 +10121,81 @@ const ITEMS = {
 		"max_grow_time": 150.0,
 		"order": 25
 	},
-"purple_curtains_seed": {
+	"purple_curtains_seed": {
 		"category": "seed",
-		"display_name": "Purple Curtains Seed",
-		"rarity": "uncommon",
-		"texture": "res://Assets/seeds/seed_box.png",
-		"seed_box_icon": true,
+		"display_name": "Purple Curtained Window Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				22,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
 		"grows_into": "purple_curtains",
-		"grow_time": 150.0,
-		"max_grow_time": 150.0,
-		"order": 26
-	},
-"pink_curtains_seed": {
-		"category": "seed",
-		"display_name": "Pink Curtains Seed",
 		"rarity": "uncommon",
-		"texture": "res://Assets/seeds/seed_box.png",
-		"seed_box_icon": true,
+		"grow_time": 150,
+		"max_grow_time": 150
+	},
+	"pink_curtains_seed": {
+		"category": "seed",
+		"display_name": "Pink Curtained Window Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
 		"grows_into": "pink_curtains",
-		"grow_time": 150.0,
-		"max_grow_time": 150.0,
-		"order": 27
-	},
-"blue_couch_seed": {
-		"category": "seed",
-		"display_name": "Blue Couch Seed",
 		"rarity": "uncommon",
-		"texture": "res://Assets/seeds/seed_box.png",
-		"seed_box_icon": true,
+		"grow_time": 150,
+		"max_grow_time": 150
+	},
+	"blue_couch_seed": {
+		"category": "seed",
+		"display_name": "Couch Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
 		"grows_into": "blue_couch",
-		"grow_time": 150.0,
-		"max_grow_time": 150.0,
-		"order": 28
-	},
-"green_couch_seed": {
-		"category": "seed",
-		"display_name": "Green Couch Seed",
 		"rarity": "uncommon",
-		"texture": "res://Assets/seeds/seed_box.png",
-		"seed_box_icon": true,
+		"grow_time": 150,
+		"max_grow_time": 150
+	},
+	"green_couch_seed": {
+		"category": "seed",
+		"display_name": "Potato Couch Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
 		"grows_into": "green_couch",
-		"grow_time": 150.0,
-		"max_grow_time": 150.0,
-		"order": 29
+		"rarity": "uncommon",
+		"grow_time": 150,
+		"max_grow_time": 150
 	},
 
 	# ============================================================
@@ -14529,29 +14789,131 @@ const ITEMS = {
 			"order": 313
 		},
 	"white_fence": {
-			"category": "block",
-			"display_name": "White Fence",
-			"rarity": "common",
-			"block_health": 3,
-			"texture": "res://image.png",
-			"atlas_item_id": 24,
-			"atlas_coords": Vector2i(3, 22),
-			"seed": "white_fence_seed",
-			"no_collision": true,
-			"collidable": false,
-			"foreground_over_player": true,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "white_fence", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 314
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"display_name": "Farm Fence",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				3,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
 		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				3,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"atlas_item_id": 24,
+		"atlas_coords": [
+			3,
+			22
+		],
+		"seed": "white_fence_seed",
+		"no_collision": true,
+		"collidable": false,
+		"foreground_over_player": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "white_fence",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "white_fence_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"drops_self": true,
+		"order": 314,
+		"background_block": false,
+		"solid": false,
+		"collision_type": "none",
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "white_fence",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "white_fence_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		}
+	},
 	"sugar_cane": {
 			"category": "block",
-			"display_name": "Sugar Cane",
+			"display_name": "Sugarcane",
 			"rarity": "common",
 			"block_health": 2,
 			"texture": "res://image.png",
@@ -14561,9 +14923,10 @@ const ITEMS = {
 				"single": Vector2i(4, 22),
 				"top": Vector2i(5, 22),
 				"middle": Vector2i(5, 23),
-				"bottom": Vector2i(5, 24)
+				"bottom": Vector2i(4, 23)
 			},
 			"seed": "sugar_cane_seed",
+			"authored_drop_rules": true,
 			"no_collision": true,
 			"collidable": false,
 			"solid": false,
@@ -14673,27 +15036,128 @@ const ITEMS = {
 			"order": 428
 		},
 	"city_fence": {
-			"category": "block",
-			"display_name": "City Fence",
-			"rarity": "uncommon",
-			"block_health": 3,
-			"texture": "res://image.png",
-			"inventory_icon": "res://image.png",
-			"atlas_item_id": 55,
-			"atlas_coords": Vector2i(20, 29),
-			"seed": "",
-			"no_collision": true,
-			"collidable": false,
-			"foreground_over_player": true,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "city_fence", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 429
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"display_name": "Gothic Fence",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				20,
+				29
+			],
+			"cell_size": [
+				32,
+				32
+			]
 		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				20,
+				29
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"atlas_item_id": 55,
+		"atlas_coords": [
+			20,
+			29
+		],
+		"seed": "city_fence_seed",
+		"no_collision": true,
+		"collidable": false,
+		"foreground_over_player": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "city_fence",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "city_fence_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"drops_self": true,
+		"order": 429,
+		"background_block": false,
+		"solid": false,
+		"collision_type": "none",
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "city_fence",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "city_fence_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		}
+	},
 	"fire_hydrant": {
 			"category": "block",
 			"display_name": "Fire Hydrant",
@@ -14809,157 +15273,571 @@ const ITEMS = {
 	"authored_drop_rules": true
 },
 	"barn_block": {
-			"category": "block",
-			"display_name": "Barn Block",
-			"rarity": "common",
-			"block_health": 4,
-			"texture": {"atlas": "res://image.png", "cell": [0, 20], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [0, 20], "cell_size": [32, 32]},
-			"atlas_item_id": 26,
-			"atlas_coords": Vector2i(0, 20),
-			"connected_variant_atlas_coords": {
-				"single": Vector2i(0, 20),
-				"top": Vector2i(1, 20),
-				"middle": Vector2i(1, 21),
-				"top_left_corner": Vector2i(3, 20),
-				"top_right_corner": Vector2i(4, 20),
-				"horizontal_middle": Vector2i(2, 20),
-				"left": Vector2i(0, 21),
-				"right": Vector2i(2, 21),
-				"bottom_left_corner": Vector2i(3, 21),
-				"bottom_right_corner": Vector2i(4, 21),
-				"vertical_middle": Vector2i(0, 22),
-				"bottom": Vector2i(1, 22),
-				"tile_top_left_corner": Vector2i(0, 24),
-				"tile_top_middle": Vector2i(1, 24),
-				"tile_top_right_corner": Vector2i(2, 24),
-				"tile_middle_left": Vector2i(0, 25),
-				"tile_middle_middle": Vector2i(1, 25),
-				"tile_middle_right": Vector2i(2, 25),
-				"tile_bottom_left_corner": Vector2i(0, 26),
-				"tile_bottom_middle": Vector2i(1, 26),
-				"tile_bottom_right_corner": Vector2i(2, 26)
-			},
-			"seed": "barn_block_seed",
-			"collidable": true,
-			"solid": true,
-			"collision_type": "full",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "barn_block", "item_category": "block", "amount_range": [0, 4]},
-					{"item_id": "barn_block_seed", "item_category": "seed", "amount_range": [0, 3]},
-					{"item_id": "gem", "item_category": "currency", "amount_range": [0, 5]}
-				]
-			},
-			"tree_drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "barn_block", "item_category": "block", "amount_range": [0, 4]},
-					{"item_id": "barn_block_seed", "item_category": "seed", "amount_range": [0, 3]},
-					{"item_id": "gem", "item_category": "currency", "amount_range": [0, 5]}
-				]
-			},
-			"order": 316
+		"category": "block",
+		"rarity": "common",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": false,
+		"hidden": true,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": false,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Barn Block",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				0,
+				20
+			],
+			"cell_size": [
+				32,
+				32
+			]
 		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				0,
+				20
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"atlas_item_id": 26,
+		"atlas_coords": [
+			0,
+			20
+		],
+		"connected_variant_atlas_coords": {
+			"single": [
+				0,
+				20
+			],
+			"top": [
+				1,
+				20
+			],
+			"middle": [
+				1,
+				21
+			],
+			"top_left_corner": [
+				3,
+				20
+			],
+			"top_right_corner": [
+				4,
+				20
+			],
+			"horizontal_middle": [
+				2,
+				20
+			],
+			"left": [
+				0,
+				21
+			],
+			"right": [
+				2,
+				21
+			],
+			"bottom_left_corner": [
+				3,
+				21
+			],
+			"bottom_right_corner": [
+				4,
+				21
+			],
+			"vertical_middle": [
+				0,
+				22
+			],
+			"bottom": [
+				1,
+				22
+			],
+			"tile_top_left_corner": [
+				0,
+				24
+			],
+			"tile_top_middle": [
+				1,
+				24
+			],
+			"tile_top_right_corner": [
+				2,
+				24
+			],
+			"tile_middle_left": [
+				0,
+				25
+			],
+			"tile_middle_middle": [
+				1,
+				25
+			],
+			"tile_middle_right": [
+				2,
+				25
+			],
+			"tile_bottom_left_corner": [
+				0,
+				26
+			],
+			"tile_bottom_middle": [
+				1,
+				26
+			],
+			"tile_bottom_right_corner": [
+				2,
+				26
+			]
+		},
+		"seed": "barn_block_seed",
+		"collidable": true,
+		"solid": true,
+		"collision_type": "full",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "barn_block",
+					"item_category": "block",
+					"amount_range": [
+						0,
+						4
+					]
+				},
+				{
+					"item_id": "barn_block_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "barn_block",
+					"item_category": "block",
+					"amount_range": [
+						0,
+						4
+					]
+				},
+				{
+					"item_id": "barn_block_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"order": 316,
+		"atlas_enabled": false
+	},
 	"barn_door": {
-			"category": "block",
-			"display_name": "Barn Door",
-			"rarity": "common",
-			"block_health": 3,
-			"texture": {"atlas": "res://image.png", "cell": [5, 21], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [5, 21], "cell_size": [32, 32]},
-			"atlas_item_id": 27,
-			"atlas_coords": Vector2i(5, 21),
-			"seed": "barn_door_seed",
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"door_block": true,
-			"interact_rules": true,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "barn_door", "item_category": "block", "amount": 1}
-				]
-			},
-			"tree_drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "barn_door", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 317
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"display_name": "Barn Door",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				0,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
 		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				0,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"atlas_item_id": 27,
+		"atlas_coords": [
+			0,
+			21
+		],
+		"seed": "barn_door_seed",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"door_block": true,
+		"interact_rules": {
+			"can_interact": true,
+			"interaction_message": "Edit or enter door."
+		},
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "barn_door",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "barn_door_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "barn_door",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "barn_door_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"drops_self": true,
+		"order": 317,
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false
+	},
 	"barn_background": {
-			"category": "block",
-			"display_name": "Barn Background",
-			"rarity": "common",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [2, 22], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [2, 22], "cell_size": [32, 32]},
-			"atlas_item_id": 28,
-			"atlas_coords": Vector2i(2, 22),
-			"seed": "barn_background_seed",
-			"place_layer": "background",
-			"background_block": true,
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "barn_background", "item_category": "block", "amount": 1}
-				]
-			},
-			"tree_drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "barn_background", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 318
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "background",
+		"block_health": 2,
+		"breakable": true,
+		"seed": "barn_background_seed",
+		"background_block": true,
+		"no_collision": true,
+		"collidable": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "barn_background",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "barn_background_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
 		},
+		"display_name": "Barn Wall",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				2,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				2,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"atlas_item_id": 28,
+		"atlas_coords": [
+			2,
+			26
+		],
+		"solid": false,
+		"collision_type": "none",
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "barn_background",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "barn_background_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"drops_self": true,
+		"order": 318,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false
+	},
 	"barn_window": {
-			"category": "block",
-			"display_name": "Barn Window",
-			"rarity": "common",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [5, 20], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [5, 20], "cell_size": [32, 32]},
-			"atlas_item_id": 29,
-			"atlas_coords": Vector2i(5, 20),
-			"seed": "barn_window_seed",
-			"place_layer": "background",
-			"background_block": true,
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "barn_window", "item_category": "block", "amount": 1}
-				]
-			},
-			"tree_drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "barn_window", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 319
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "background",
+		"block_health": 2,
+		"breakable": true,
+		"seed": "barn_window_seed",
+		"background_block": true,
+		"no_collision": true,
+		"collidable": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "barn_window",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "barn_window_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
 		},
+		"display_name": "Barn Window",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				0,
+				20
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				0,
+				20
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"atlas_item_id": 29,
+		"atlas_coords": [
+			0,
+			20
+		],
+		"solid": false,
+		"collision_type": "none",
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "barn_window",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "barn_window_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"drops_self": true,
+		"order": 319,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false
+	},
 	"water_well": {
 			"category": "block",
 			"display_name": "Water Well",
@@ -15553,558 +16431,9933 @@ const ITEMS = {
 			"order": 416
 		},
 	"blue_couch": {
-			"category": "block",
-			"display_name": "Blue Couch",
-			"rarity": "uncommon",
-			"block_health": 3,
-			"texture": {"atlas": "res://image.png", "cell": [19, 21], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [19, 21], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(19, 21),
-			"seed": "blue_couch_seed",
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"connected_variant_atlas_coords": {
-				"single": Vector2i(19, 21),
-				"left": Vector2i(16, 21),
-				"horizontal_middle": Vector2i(17, 21),
-				"middle": Vector2i(17, 21),
-				"right": Vector2i(18, 21)
-			},
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "blue_couch", "item_category": "block", "amount": 1},
-					{"item_id": "blue_couch_seed", "item_category": "seed", "amount_range": [0, 2]},
-					{"item_id": "gem", "item_category": "currency", "amount_range": [0, 5]}
-				]
-			},
-			"tree_drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "blue_couch", "item_category": "block", "amount_range": [1, 3]},
-					{"item_id": "blue_couch_seed", "item_category": "seed", "amount_range": [0, 3]},
-					{"item_id": "gem", "item_category": "currency", "amount_range": [0, 5]}
-				]
-			},
-			"order": 443
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"atlas_item_id": 69,
+		"atlas_coords": [
+			19,
+			21
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
 		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "blue_couch_seed",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"connected_variant_atlas_coords": {
+			"single": [
+				19,
+				21
+			],
+			"left": [
+				16,
+				21
+			],
+			"middle": [
+				17,
+				21
+			],
+			"horizontal_middle": [
+				17,
+				21
+			],
+			"right": [
+				18,
+				21
+			]
+		},
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "blue_couch",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "blue_couch_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						2
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "blue_couch",
+					"item_category": "block",
+					"amount_range": [
+						1,
+						3
+					]
+				},
+				{
+					"item_id": "blue_couch_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"display_name": "Couch",
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false
+	},
 	"green_couch": {
-			"category": "block",
-			"display_name": "Green Couch",
-			"rarity": "uncommon",
-			"block_health": 3,
-			"texture": {"atlas": "res://image.png", "cell": [23, 21], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [23, 21], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(23, 21),
-			"seed": "green_couch_seed",
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"connected_variant_atlas_coords": {
-				"single": Vector2i(23, 21),
-				"left": Vector2i(20, 21),
-				"horizontal_middle": Vector2i(21, 21),
-				"middle": Vector2i(21, 21),
-				"right": Vector2i(22, 21)
-			},
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "green_couch", "item_category": "block", "amount": 1},
-					{"item_id": "green_couch_seed", "item_category": "seed", "amount_range": [0, 2]},
-					{"item_id": "gem", "item_category": "currency", "amount_range": [0, 5]}
-				]
-			},
-			"tree_drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "green_couch", "item_category": "block", "amount_range": [1, 3]},
-					{"item_id": "green_couch_seed", "item_category": "seed", "amount_range": [0, 3]},
-					{"item_id": "gem", "item_category": "currency", "amount_range": [0, 5]}
-				]
-			},
-			"order": 444
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"atlas_item_id": 70,
+		"atlas_coords": [
+			23,
+			21
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
 		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "green_couch_seed",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"connected_variant_atlas_coords": {
+			"single": [
+				23,
+				21
+			],
+			"left": [
+				20,
+				21
+			],
+			"middle": [
+				21,
+				21
+			],
+			"horizontal_middle": [
+				21,
+				21
+			],
+			"right": [
+				22,
+				21
+			]
+		},
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "green_couch",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "green_couch_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						2
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "green_couch",
+					"item_category": "block",
+					"amount_range": [
+						1,
+						3
+					]
+				},
+				{
+					"item_id": "green_couch_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"display_name": "Potato Couch",
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false
+	},
 	"side_table": {
-			"category": "block",
-			"display_name": "Side Table",
-			"rarity": "common",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [24, 21], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [24, 21], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(24, 21),
-			"seed": "side_table_seed",
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "side_table", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 907
-		},
-	"toilet": {
-			"category": "block",
-			"display_name": "Toilet",
-			"rarity": "uncommon",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [24, 22], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [24, 22], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(24, 22),
-			"seed": "toilet_seed",
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"punch_toggle_block": true,
-			"toggle_active_block": "toilet_open",
-			"toggle_inactive_block": "toilet",
-			"toggle_drop_block": "toilet",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "toilet", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 908
-		},
-	"toilet_open": {
-			"category": "block",
-			"display_name": "Toilet",
-			"rarity": "uncommon",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [25, 22], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [25, 22], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(25, 22),
-			"seed": "",
-			"hidden": true,
-			"placeable": false,
-			"dropable": false,
-			"tradeable": false,
-			"admin_grantable": false,
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"punch_toggle_block": true,
-			"toggle_active_block": "toilet_open",
-			"toggle_inactive_block": "toilet",
-			"toggle_drop_block": "toilet",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "toilet", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 999
-		},
-	"refrigerator": {
-			"category": "block",
-			"display_name": "Refrigerator",
-			"rarity": "uncommon",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [26, 22], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [26, 22], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(26, 22),
-			"seed": "",
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"punch_toggle_block": true,
-			"toggle_active_block": "refrigerator_open",
-			"toggle_inactive_block": "refrigerator",
-			"toggle_drop_block": "refrigerator",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "refrigerator", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 909
-		},
-	"refrigerator_open": {
-			"category": "block",
-			"display_name": "Refrigerator",
-			"rarity": "uncommon",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [27, 22], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [27, 22], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(27, 22),
-			"seed": "",
-			"hidden": true,
-			"placeable": false,
-			"dropable": false,
-			"tradeable": false,
-			"admin_grantable": false,
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"punch_toggle_block": true,
-			"toggle_active_block": "refrigerator_open",
-			"toggle_inactive_block": "refrigerator",
-			"toggle_drop_block": "refrigerator",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "refrigerator", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 999
-		},
-	"fireplace": {
-			"category": "block",
-			"display_name": "Fireplace",
-			"rarity": "uncommon",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [17, 23], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [17, 23], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(17, 23),
-			"seed": "fireplace_seed",
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"punch_toggle_block": true,
-			"toggle_active_block": "fireplace_on",
-			"toggle_inactive_block": "fireplace",
-			"toggle_drop_block": "fireplace",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "fireplace", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 910
-		},
-	"fireplace_on": {
-			"category": "block",
-			"display_name": "Fireplace",
-			"rarity": "uncommon",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [18, 23], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [18, 23], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(18, 23),
-			"animated": true,
-			"animation_frames": [
-				{"atlas": "res://image.png", "cell": [18, 23], "cell_size": [32, 32]},
-				{"atlas": "res://image.png", "cell": [19, 23], "cell_size": [32, 32]},
-				{"atlas": "res://image.png", "cell": [20, 23], "cell_size": [32, 32]}
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 2,
+		"breakable": true,
+		"atlas_coords": [
+			24,
+			21
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				21
 			],
-			"animation_atlas_coords": [
-				Vector2i(18, 23),
-				Vector2i(19, 23),
-				Vector2i(20, 23)
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				21
 			],
-			"animation_frame_seconds": 0.3,
-			"seed": "",
-			"hidden": true,
-			"placeable": false,
-			"dropable": false,
-			"tradeable": false,
-			"admin_grantable": false,
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"punch_toggle_block": true,
-			"toggle_active_block": "fireplace_on",
-			"toggle_inactive_block": "fireplace",
-			"toggle_drop_block": "fireplace",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "fireplace", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 999
+			"cell_size": [
+				32,
+				32
+			]
 		},
-	"bathtub": {
-			"category": "block",
-			"display_name": "Bathtub",
-			"rarity": "uncommon",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [21, 23], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [21, 23], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(21, 23),
-			"seed": "",
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"punch_toggle_block": true,
-			"toggle_active_block": "bathtub_on",
-			"toggle_inactive_block": "bathtub",
-			"toggle_drop_block": "bathtub",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "bathtub", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 911
-		},
-	"bathtub_on": {
-			"category": "block",
-			"display_name": "Bathtub",
-			"rarity": "uncommon",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [22, 23], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [22, 23], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(22, 23),
-			"animated": true,
-			"animation_frames": [
-				{"atlas": "res://image.png", "cell": [22, 23], "cell_size": [32, 32]},
-				{"atlas": "res://image.png", "cell": [23, 23], "cell_size": [32, 32]}
+		"seed": "side_table_seed",
+		"no_collision": false,
+		"collidable": true,
+		"solid": false,
+		"collision_type": "platform",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
 			],
-			"animation_atlas_coords": [
-				Vector2i(22, 23),
-				Vector2i(23, 23)
+			"fixed_drops": [
+				{
+					"item_id": "side_table",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "side_table_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "House Table",
+		"background_block": false,
+		"platform_collision": true,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
 			],
-			"animation_frame_seconds": 0.4,
-			"seed": "",
-			"hidden": true,
-			"placeable": false,
-			"dropable": false,
-			"tradeable": false,
-			"admin_grantable": false,
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"punch_toggle_block": true,
-			"toggle_active_block": "bathtub_on",
-			"toggle_inactive_block": "bathtub",
-			"toggle_drop_block": "bathtub",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "bathtub", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 999
-		},
-	"sink": {
-			"category": "block",
-			"display_name": "Sink",
-			"rarity": "uncommon",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [24, 23], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [24, 23], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(24, 23),
-			"seed": "sink_seed",
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"punch_toggle_block": true,
-			"toggle_active_block": "sink_on",
-			"toggle_inactive_block": "sink",
-			"toggle_drop_block": "sink",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "sink", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 912
-		},
-	"sink_on": {
-			"category": "block",
-			"display_name": "Sink",
-			"rarity": "uncommon",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [25, 23], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [25, 23], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(25, 23),
-			"seed": "",
-			"hidden": true,
-			"placeable": false,
-			"dropable": false,
-			"tradeable": false,
-			"admin_grantable": false,
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"punch_toggle_block": true,
-			"toggle_active_block": "sink_on",
-			"toggle_inactive_block": "sink",
-			"toggle_drop_block": "sink",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "sink", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 999
-		},
-	"red_brick_platform": {
-			"category": "block",
-			"display_name": "Red Brick Platform",
-			"rarity": "common",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [15, 24], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [15, 24], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(15, 24),
-			"seed": "",
-			"platform_collision": true,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "red_brick_platform", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 914
-		},
-	"white_brick_block": {
-			"category": "block",
-			"display_name": "White Brick Block",
-			"rarity": "common",
-			"block_health": 3,
-			"texture": {"atlas": "res://image.png", "cell": [16, 24], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [16, 24], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(16, 24),
-			"seed": "white_brick_block_seed",
-			"collidable": true,
-			"solid": true,
-			"collision_type": "full",
-			"platform_variant_atlas_coords": {
-				"left": Vector2i(16, 24),
-				"right": Vector2i(17, 24)
-			},
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "white_brick_block", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 915
-		},
-	"white_brick_wall": {
-			"category": "block",
-			"display_name": "White Brick Wall",
-			"rarity": "common",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [18, 24], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [18, 24], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(18, 24),
-			"seed": "white_brick_wall_seed",
-			"background_block": true,
-			"place_layer": "background",
-			"no_collision": true,
-			"collidable": false,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "white_brick_wall", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 916
-		},
-	"white_brick_platform": {
-			"category": "block",
-			"display_name": "White Brick Platform",
-			"rarity": "common",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [19, 24], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [19, 24], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(19, 24),
-			"seed": "white_brick_platform_seed",
-			"platform_collision": true,
-			"platform_variant_atlas_coords": {
-				"left": Vector2i(20, 24),
-				"middle": Vector2i(21, 24),
-				"right": Vector2i(22, 24)
-			},
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "white_brick_platform", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 917
-		},
-	"fan": {
-			"category": "block",
-			"display_name": "Fan",
-			"rarity": "common",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [23, 24], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [23, 24], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(23, 24),
-			"animated": true,
-			"animation_frames": [
-				{"atlas": "res://image.png", "cell": [23, 24], "cell_size": [32, 32]},
-				{"atlas": "res://image.png", "cell": [24, 24], "cell_size": [32, 32]}
-			],
-			"animation_atlas_coords": [
-				Vector2i(23, 24),
-				Vector2i(24, 24)
-			],
-			"animation_frame_seconds": 0.15,
-			"seed": "",
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "fan", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 918
-		},
-	"bed": {
-			"category": "block",
-			"display_name": "Bed",
-			"rarity": "uncommon",
-			"block_health": 2,
-			"texture": {"atlas": "res://image.png", "cell": [25, 24], "cell_size": [32, 32]},
-			"inventory_icon": {"atlas": "res://image.png", "cell": [25, 24], "cell_size": [32, 32]},
-			"atlas_coords": Vector2i(25, 24),
-			"seed": "bed_seed",
-			"no_collision": true,
-			"collidable": false,
-			"solid": false,
-			"collision_type": "none",
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "bed", "item_category": "block", "amount": 1}
-				]
-			},
-			"order": 919
+			"fixed_drops": [
+				{
+					"item_id": "side_table",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "side_table_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
 		}
+	},
+	"toilet": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"atlas_coords": [
+			24,
+			22
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "toilet_seed",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"punch_toggle_block": true,
+		"toggle_active_block": "toilet_open",
+		"toggle_inactive_block": "toilet",
+		"toggle_drop_block": "toilet",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "toilet",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "toilet_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Toilet",
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "toilet",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "toilet_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"punch_open_only": true
+	},
+	"toilet_open": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": false,
+		"dropable": false,
+		"admin_grantable": false,
+		"hidden": true,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": false,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"atlas_coords": [
+			25,
+			22
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"punch_toggle_block": true,
+		"toggle_active_block": "toilet_open",
+		"toggle_inactive_block": "toilet",
+		"toggle_drop_block": "toilet",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "toilet",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "toilet_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Toilet",
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					25,
+					22
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			}
+		],
+		"animation_atlas_coords": [
+			[
+				25,
+				22
+			]
+		],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "toilet",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "toilet_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"punch_open_only": true,
+		"animation_frame_seconds": 0.2
+	},
+	"refrigerator": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"atlas_coords": [
+			26,
+			22
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "refrigerator_seed",
+		"no_collision": false,
+		"collidable": true,
+		"solid": true,
+		"collision_type": "full",
+		"punch_toggle_block": true,
+		"toggle_active_block": "refrigerator_open",
+		"toggle_inactive_block": "refrigerator",
+		"toggle_drop_block": "refrigerator",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "refrigerator",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "refrigerator_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Refrigerator",
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "refrigerator",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "refrigerator_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"punch_open_only": true
+	},
+	"refrigerator_open": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": false,
+		"dropable": false,
+		"admin_grantable": false,
+		"hidden": true,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": false,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"atlas_coords": [
+			27,
+			22
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				27,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "",
+		"no_collision": false,
+		"collidable": true,
+		"solid": true,
+		"collision_type": "full",
+		"punch_toggle_block": true,
+		"toggle_active_block": "refrigerator_open",
+		"toggle_inactive_block": "refrigerator",
+		"toggle_drop_block": "refrigerator",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "refrigerator",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "refrigerator_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Refrigerator",
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					27,
+					22
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			}
+		],
+		"animation_atlas_coords": [
+			[
+				27,
+				22
+			]
+		],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "refrigerator",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "refrigerator_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"punch_open_only": true,
+		"animation_frame_seconds": 0.2
+	},
+	"fireplace": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"atlas_coords": [
+			17,
+			23
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "fireplace_seed",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"punch_toggle_block": true,
+		"toggle_active_block": "fireplace_on",
+		"toggle_inactive_block": "fireplace",
+		"toggle_drop_block": "fireplace",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "fireplace",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "fireplace_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Fireplace",
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "fireplace",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "fireplace_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"punch_open_only": false
+	},
+	"fireplace_on": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": false,
+		"dropable": false,
+		"admin_grantable": false,
+		"hidden": true,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": false,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"atlas_coords": [
+			18,
+			23
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"animated": true,
+		"animation_frames": [
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					18,
+					23
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					19,
+					23
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					20,
+					23
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					19,
+					23
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					18,
+					23
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			}
+		],
+		"animation_atlas_coords": [
+			[
+				18,
+				23
+			],
+			[
+				19,
+				23
+			],
+			[
+				20,
+				23
+			],
+			[
+				19,
+				23
+			],
+			[
+				18,
+				23
+			]
+		],
+		"animation_frame_seconds": 0.2,
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"punch_toggle_block": true,
+		"toggle_active_block": "fireplace_on",
+		"toggle_inactive_block": "fireplace",
+		"toggle_drop_block": "fireplace",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "fireplace",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "fireplace_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Fireplace",
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "fireplace",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "fireplace_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"punch_open_only": false
+	},
+	"bathtub": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"atlas_coords": [
+			21,
+			23
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "bathtub_seed",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"punch_toggle_block": true,
+		"toggle_active_block": "bathtub_on",
+		"toggle_inactive_block": "bathtub",
+		"toggle_drop_block": "bathtub",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "bathtub",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "bathtub_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Bathtub",
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "bathtub",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "bathtub_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"punch_open_only": false
+	},
+	"bathtub_on": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": false,
+		"dropable": false,
+		"admin_grantable": false,
+		"hidden": true,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": false,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"atlas_coords": [
+			22,
+			23
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				22,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"animated": true,
+		"animation_frames": [
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					22,
+					23
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					23,
+					23
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			}
+		],
+		"animation_atlas_coords": [
+			[
+				22,
+				23
+			],
+			[
+				23,
+				23
+			]
+		],
+		"animation_frame_seconds": 0.2,
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"punch_toggle_block": true,
+		"toggle_active_block": "bathtub_on",
+		"toggle_inactive_block": "bathtub",
+		"toggle_drop_block": "bathtub",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "bathtub",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "bathtub_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Bathtub",
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "bathtub",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "bathtub_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"punch_open_only": false
+	},
+	"sink": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"atlas_coords": [
+			24,
+			23
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "sink_seed",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"punch_toggle_block": true,
+		"toggle_active_block": "sink_on",
+		"toggle_inactive_block": "sink",
+		"toggle_drop_block": "sink",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "sink",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "sink_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Sink",
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "sink",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "sink_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"punch_open_only": true
+	},
+	"sink_on": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": false,
+		"dropable": false,
+		"admin_grantable": false,
+		"hidden": true,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": false,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"atlas_coords": [
+			25,
+			23
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"punch_toggle_block": true,
+		"toggle_active_block": "sink_on",
+		"toggle_inactive_block": "sink",
+		"toggle_drop_block": "sink",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "sink",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "sink_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Sink",
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					25,
+					23
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			}
+		],
+		"animation_atlas_coords": [
+			[
+				25,
+				23
+			]
+		],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "sink",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "sink_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"punch_open_only": true,
+		"animation_frame_seconds": 0.2
+	},
+	"red_brick_platform": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 2,
+		"breakable": true,
+		"atlas_coords": [
+			15,
+			24
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "red_brick_platform_seed",
+		"platform_collision": true,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "red_brick_platform",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "red_brick_platform_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Building Brick Platform",
+		"background_block": false,
+		"no_collision": false,
+		"collidable": true,
+		"solid": false,
+		"collision_type": "platform",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "red_brick_platform",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "red_brick_platform_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		}
+	},
+	"white_brick_block": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"atlas_coords": [
+			16,
+			24
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "white_brick_block_seed",
+		"collidable": true,
+		"solid": true,
+		"collision_type": "full",
+		"platform_variant_atlas_coords": {
+			"left": [
+				16,
+				24
+			],
+			"right": [
+				17,
+				24
+			]
+		},
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "white_brick_block",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "white_brick_block_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Polished Stone Brick",
+		"background_block": false,
+		"no_collision": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "white_brick_block",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "white_brick_block_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"artwork_atlas_variants": [
+			[
+				16,
+				24
+			],
+			[
+				17,
+				24
+			]
+		]
+	},
+	"white_brick_wall": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "background",
+		"block_health": 2,
+		"breakable": true,
+		"atlas_coords": [
+			18,
+			24
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "white_brick_wall_seed",
+		"background_block": true,
+		"no_collision": true,
+		"collidable": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "white_brick_wall",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "white_brick_wall_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Polished Stone Wall",
+		"solid": false,
+		"collision_type": "none",
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "white_brick_wall",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "white_brick_wall_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		}
+	},
+	"white_brick_platform": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 2,
+		"breakable": true,
+		"atlas_coords": [
+			19,
+			24
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "white_brick_platform_seed",
+		"platform_collision": true,
+		"platform_variant_atlas_coords": {
+			"single": [
+				19,
+				24
+			],
+			"left": [
+				20,
+				24
+			],
+			"middle": [
+				21,
+				24
+			],
+			"right": [
+				22,
+				24
+			]
+		},
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "white_brick_platform",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "white_brick_platform_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Polished Stone Platform",
+		"background_block": false,
+		"no_collision": false,
+		"collidable": true,
+		"solid": false,
+		"collision_type": "platform",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "white_brick_platform",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "white_brick_platform_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		}
+	},
+	"fan": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 2,
+		"breakable": true,
+		"atlas_coords": [
+			23,
+			24
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"animated": true,
+		"animation_frames": [
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					23,
+					24
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					24,
+					24
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					23,
+					24
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					24,
+					24
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			}
+		],
+		"animation_atlas_coords": [
+			[
+				23,
+				24
+			],
+			[
+				24,
+				24
+			],
+			[
+				23,
+				24
+			],
+			[
+				24,
+				24
+			]
+		],
+		"animation_frame_seconds": 0.18,
+		"seed": "fan_seed",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "fan",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "fan_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Fan",
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "fan",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "fan_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"server_triggered_animation": true,
+		"animation_trigger": "on_punch"
+	},
+	"bed": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 2,
+		"breakable": true,
+		"atlas_coords": [
+			25,
+			24
+		],
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"seed": "bed_seed",
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "bed",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "bed_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"display_name": "Bed",
+		"background_block": false,
+		"platform_collision": false,
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "bed",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "bed_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		}
+	},
+	"barn_window_seed": {
+		"category": "seed",
+		"display_name": "Barn Window Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				0,
+				20
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "barn_window",
+		"rarity": "uncommon"
+	},
+	"white_fence_seed": {
+		"category": "seed",
+		"display_name": "Farm Fence Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				3,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "white_fence",
+		"rarity": "uncommon"
+	},
+	"weathervane": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Weathervane",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 149,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			6,
+			21
+		],
+		"alternative_tile": 0,
+		"seed": "weathervane_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "weathervane",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "weathervane_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "weathervane",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "weathervane_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				6,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				6,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"weathervane_seed": {
+		"category": "seed",
+		"display_name": "Weathervane Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				6,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "weathervane",
+		"rarity": "uncommon"
+	},
+	"broken_tv_seed": {
+		"category": "seed",
+		"display_name": "Landfill TV Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				5,
+				19
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "broken_tv",
+		"rarity": "uncommon"
+	},
+	"tires_seed": {
+		"category": "seed",
+		"display_name": "Used Tires Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				6,
+				19
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "tires",
+		"rarity": "uncommon"
+	},
+	"barn_background_seed": {
+		"category": "seed",
+		"display_name": "Barn Wall Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				2,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "barn_background",
+		"rarity": "uncommon"
+	},
+	"barn_door_seed": {
+		"category": "seed",
+		"display_name": "Barn Door Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				0,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "barn_door",
+		"rarity": "uncommon"
+	},
+	"side_table_seed": {
+		"category": "seed",
+		"display_name": "House Table Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "side_table",
+		"rarity": "uncommon"
+	},
+	"modern_chair": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Modern Chair",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 153,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			25,
+			21
+		],
+		"alternative_tile": 0,
+		"seed": "modern_chair_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "modern_chair",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "modern_chair_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "modern_chair",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "modern_chair_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"modern_chair_seed": {
+		"category": "seed",
+		"display_name": "Modern Chair Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "modern_chair",
+		"rarity": "uncommon"
+	},
+	"dresser": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Dresser",
+		"background_block": false,
+		"no_collision": false,
+		"collidable": true,
+		"solid": false,
+		"collision_type": "platform",
+		"atlas_item_id": 154,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			26,
+			21
+		],
+		"alternative_tile": 0,
+		"seed": "dresser_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "dresser",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "dresser_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "dresser",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "dresser_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": true
+	},
+	"dresser_seed": {
+		"category": "seed",
+		"display_name": "Dresser Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				21
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "dresser",
+		"rarity": "uncommon"
+	},
+	"royal_door": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"display_name": "House Door",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 59,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			16,
+			22
+		],
+		"alternative_tile": 0,
+		"seed": "royal_door_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"order": 433,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "royal_door",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "royal_door_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						2
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "royal_door",
+					"item_category": "block",
+					"amount_range": [
+						1,
+						3
+					]
+				},
+				{
+					"item_id": "royal_door_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"door_block": true,
+		"interact_rules": {
+			"can_interact": true,
+			"interaction_message": "Edit or enter door."
+		},
+		"platform_collision": false
+	},
+	"grand_house_door": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Grand House Door",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 155,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			17,
+			22
+		],
+		"alternative_tile": 0,
+		"seed": "grand_house_door_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "grand_house_door",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "grand_house_door_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "grand_house_door",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "grand_house_door_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"door_block": true,
+		"interact_rules": {
+			"can_interact": true,
+			"interaction_message": "Edit or enter door."
+		},
+		"platform_collision": false
+	},
+	"grand_house_door_seed": {
+		"category": "seed",
+		"display_name": "Grand House Door Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "grand_house_door",
+		"rarity": "uncommon"
+	},
+	"royal_entrance": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "House Entrance",
+		"background_block": false,
+		"no_collision": false,
+		"collidable": true,
+		"solid": true,
+		"collision_type": "full",
+		"atlas_item_id": 60,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			18,
+			22
+		],
+		"alternative_tile": 0,
+		"seed": "royal_entrance_seed",
+		"authored_drop_rules": true,
+		"animation_trigger": "on_enter",
+		"break_return_to_inventory": false,
+		"order": 434,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "royal_entrance",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "royal_entrance_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						2
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "royal_entrance",
+					"item_category": "block",
+					"amount_range": [
+						1,
+						3
+					]
+				},
+				{
+					"item_id": "royal_entrance_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"entrance_block": true,
+		"entrance_tilemap_collision": true,
+		"entrance_idle_atlas_coords": [
+			18,
+			22
+		],
+		"entrance_pass_atlas_coords": [
+			18,
+			22
+		],
+		"entrance_pass_atlas_frames": [
+			[
+				18,
+				22
+			],
+			[
+				19,
+				22
+			],
+			[
+				20,
+				22
+			]
+		],
+		"entrance_pass_animation_columns": 3,
+		"entrance_animation_frame_seconds": 0.15,
+		"interact_rules": {
+			"can_interact": true,
+			"interaction_message": "Lock or unlock entrance."
+		},
+		"platform_collision": false,
+		"entrance_idle_texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"entrance_frames": [
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					18,
+					22
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					19,
+					22
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					20,
+					22
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			}
+		]
+	},
+	"royal_window": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"display_name": "White Window",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 63,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			21,
+			22
+		],
+		"alternative_tile": 0,
+		"seed": "royal_window_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"order": 437,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "royal_window",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "royal_window_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						2
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "royal_window",
+					"item_category": "block",
+					"amount_range": [
+						1,
+						3
+					]
+				},
+				{
+					"item_id": "royal_window_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"purple_curtains": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"display_name": "Purple Curtained Window",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 67,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			22,
+			22
+		],
+		"alternative_tile": 0,
+		"seed": "purple_curtains_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"order": 441,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "purple_curtains",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "purple_curtains_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						2
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "purple_curtains",
+					"item_category": "block",
+					"amount_range": [
+						1,
+						3
+					]
+				},
+				{
+					"item_id": "purple_curtains_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				22,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				22,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"pink_curtains": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 3,
+		"breakable": true,
+		"display_name": "Pink Curtained Window",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 68,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			23,
+			22
+		],
+		"alternative_tile": 0,
+		"seed": "pink_curtains_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"order": 442,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "pink_curtains",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "pink_curtains_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						2
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "pink_curtains",
+					"item_category": "block",
+					"amount_range": [
+						1,
+						3
+					]
+				},
+				{
+					"item_id": "pink_curtains_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"toilet_seed": {
+		"category": "seed",
+		"display_name": "Toilet Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "toilet",
+		"rarity": "uncommon"
+	},
+	"refrigerator_seed": {
+		"category": "seed",
+		"display_name": "Refrigerator Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				22
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "refrigerator",
+		"rarity": "uncommon"
+	},
+	"building_brick_block": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Building Brick Block",
+		"background_block": false,
+		"no_collision": false,
+		"collidable": true,
+		"solid": true,
+		"collision_type": "full",
+		"atlas_item_id": 158,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			15,
+			23
+		],
+		"alternative_tile": 0,
+		"seed": "building_brick_block_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "building_brick_block",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "building_brick_block_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "building_brick_block",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "building_brick_block_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"building_brick_block_seed": {
+		"category": "seed",
+		"display_name": "Building Brick Block Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "building_brick_block",
+		"rarity": "uncommon"
+	},
+	"building_brick_wall": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "background",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Building Brick Wall",
+		"background_block": true,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 159,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			16,
+			23
+		],
+		"alternative_tile": 0,
+		"seed": "building_brick_wall_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "building_brick_wall",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "building_brick_wall_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "building_brick_wall",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "building_brick_wall_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"building_brick_wall_seed": {
+		"category": "seed",
+		"display_name": "Building Brick Wall Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "building_brick_wall",
+		"rarity": "uncommon"
+	},
+	"fireplace_seed": {
+		"category": "seed",
+		"display_name": "Fireplace Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "fireplace",
+		"rarity": "uncommon"
+	},
+	"bathtub_seed": {
+		"category": "seed",
+		"display_name": "Bathtub Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "bathtub",
+		"rarity": "uncommon"
+	},
+	"sink_seed": {
+		"category": "seed",
+		"display_name": "Sink Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "sink",
+		"rarity": "uncommon"
+	},
+	"rubber_duck": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Rubber Duck",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 163,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			26,
+			23
+		],
+		"alternative_tile": 0,
+		"seed": "rubber_duck_seed",
+		"authored_drop_rules": true,
+		"server_triggered_animation": true,
+		"animation_trigger": "on_punch",
+		"break_return_to_inventory": false,
+		"animated": true,
+		"animation_frames": [
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					26,
+					23
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					27,
+					23
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					26,
+					23
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			}
+		],
+		"animation_atlas_coords": [
+			[
+				26,
+				23
+			],
+			[
+				27,
+				23
+			],
+			[
+				26,
+				23
+			]
+		],
+		"animation_frame_seconds": 0.18,
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "rubber_duck",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "rubber_duck_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "rubber_duck",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "rubber_duck_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"rubber_duck_seed": {
+		"category": "seed",
+		"display_name": "Rubber Duck Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				23
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "rubber_duck",
+		"rarity": "uncommon"
+	},
+	"red_brick_platform_seed": {
+		"category": "seed",
+		"display_name": "Building Brick Platform Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "red_brick_platform",
+		"rarity": "uncommon"
+	},
+	"white_brick_block_seed": {
+		"category": "seed",
+		"display_name": "Polished Stone Brick Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "white_brick_block",
+		"rarity": "uncommon"
+	},
+	"white_brick_wall_seed": {
+		"category": "seed",
+		"display_name": "Polished Stone Wall Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "white_brick_wall",
+		"rarity": "uncommon"
+	},
+	"white_brick_platform_seed": {
+		"category": "seed",
+		"display_name": "Polished Stone Platform Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "white_brick_platform",
+		"rarity": "uncommon"
+	},
+	"fan_seed": {
+		"category": "seed",
+		"display_name": "Fan Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "fan",
+		"rarity": "uncommon"
+	},
+	"bed_seed": {
+		"category": "seed",
+		"display_name": "Bed Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				24
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "bed",
+		"rarity": "uncommon"
+	},
+	"park_bench": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Park Bench",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 170,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			18,
+			25
+		],
+		"alternative_tile": 0,
+		"seed": "park_bench_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "park_bench",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "park_bench_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "park_bench",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "park_bench_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false,
+		"connected_variant_atlas_coords": {
+			"single": [
+				18,
+				25
+			],
+			"left": [
+				15,
+				25
+			],
+			"middle": [
+				16,
+				25
+			],
+			"horizontal_middle": [
+				16,
+				25
+			],
+			"right": [
+				17,
+				25
+			]
+		}
+	},
+	"park_bench_seed": {
+		"category": "seed",
+		"display_name": "Park Bench Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "park_bench",
+		"rarity": "uncommon"
+	},
+	"big_sign": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Big Sign",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 171,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			23,
+			25
+		],
+		"alternative_tile": 0,
+		"seed": "big_sign_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "big_sign",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "big_sign_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "big_sign",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "big_sign_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"interact_rules": {
+			"can_interact": true,
+			"interaction_message": "Edit sign."
+		},
+		"platform_collision": false,
+		"sign_block": true
+	},
+	"big_sign_seed": {
+		"category": "seed",
+		"display_name": "Big Sign Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "big_sign",
+		"rarity": "uncommon"
+	},
+	"right_directional_sign": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Right Directional Sign",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 172,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			24,
+			25
+		],
+		"alternative_tile": 0,
+		"seed": "right_directional_sign_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "right_directional_sign",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "right_directional_sign_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "right_directional_sign",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "right_directional_sign_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"interact_rules": {
+			"can_interact": true,
+			"interaction_message": "Edit sign."
+		},
+		"platform_collision": false,
+		"sign_block": true
+	},
+	"right_directional_sign_seed": {
+		"category": "seed",
+		"display_name": "Right Directional Sign Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "right_directional_sign",
+		"rarity": "uncommon"
+	},
+	"left_directional_sign": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Left Directional Sign",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 173,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			25,
+			25
+		],
+		"alternative_tile": 0,
+		"seed": "left_directional_sign_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "left_directional_sign",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "left_directional_sign_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "left_directional_sign",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "left_directional_sign_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"interact_rules": {
+			"can_interact": true,
+			"interaction_message": "Edit sign."
+		},
+		"platform_collision": false,
+		"sign_block": true
+	},
+	"left_directional_sign_seed": {
+		"category": "seed",
+		"display_name": "Left Directional Sign Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "left_directional_sign",
+		"rarity": "uncommon"
+	},
+	"digital_sign": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Digital Sign",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 174,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			26,
+			25
+		],
+		"alternative_tile": 0,
+		"seed": "digital_sign_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"punch_toggle_block": true,
+		"toggle_active_block": "digital_sign_on",
+		"toggle_inactive_block": "digital_sign",
+		"toggle_drop_block": "digital_sign",
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "digital_sign",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "digital_sign_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "digital_sign",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "digital_sign_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false,
+		"punch_open_only": false
+	},
+	"digital_sign_seed": {
+		"category": "seed",
+		"display_name": "Digital Sign Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "digital_sign",
+		"rarity": "uncommon"
+	},
+	"star_wall": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "background",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Star Wall",
+		"background_block": true,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 175,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			15,
+			26
+		],
+		"alternative_tile": 0,
+		"seed": "star_wall_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "star_wall",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "star_wall_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "star_wall",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "star_wall_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"star_wall_seed": {
+		"category": "seed",
+		"display_name": "Star Wall Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "star_wall",
+		"rarity": "uncommon"
+	},
+	"blue_stripe_wall": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "background",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Blue Stripe Wall",
+		"background_block": true,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 176,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			16,
+			26
+		],
+		"alternative_tile": 0,
+		"seed": "blue_stripe_wall_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "blue_stripe_wall",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "blue_stripe_wall_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "blue_stripe_wall",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "blue_stripe_wall_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"blue_stripe_wall_seed": {
+		"category": "seed",
+		"display_name": "Blue Stripe Wall Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "blue_stripe_wall",
+		"rarity": "uncommon"
+	},
+	"red_stripe_wall": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "background",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Red Stripe Wall",
+		"background_block": true,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 177,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			17,
+			26
+		],
+		"alternative_tile": 0,
+		"seed": "red_stripe_wall_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "red_stripe_wall",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "red_stripe_wall_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "red_stripe_wall",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "red_stripe_wall_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"red_stripe_wall_seed": {
+		"category": "seed",
+		"display_name": "Red Stripe Wall Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "red_stripe_wall",
+		"rarity": "uncommon"
+	},
+	"aquatic_line_wall": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "background",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Aquatic Line Wall",
+		"background_block": true,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 178,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			18,
+			26
+		],
+		"alternative_tile": 0,
+		"seed": "aquatic_line_wall_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "aquatic_line_wall",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "aquatic_line_wall_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "aquatic_line_wall",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "aquatic_line_wall_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"aquatic_line_wall_seed": {
+		"category": "seed",
+		"display_name": "Aquatic Line Wall Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "aquatic_line_wall",
+		"rarity": "uncommon"
+	},
+	"complementary_line_wall": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "background",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Complementary Line Wall",
+		"background_block": true,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 179,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			19,
+			26
+		],
+		"alternative_tile": 0,
+		"seed": "complementary_line_wall_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "complementary_line_wall",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "complementary_line_wall_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "complementary_line_wall",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "complementary_line_wall_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"complementary_line_wall_seed": {
+		"category": "seed",
+		"display_name": "Complementary Line Wall Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "complementary_line_wall",
+		"rarity": "uncommon"
+	},
+	"checkered_wall": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "background",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Checkered Wall",
+		"background_block": true,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 180,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			20,
+			26
+		],
+		"alternative_tile": 0,
+		"seed": "checkered_wall_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "checkered_wall",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "checkered_wall_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "checkered_wall",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "checkered_wall_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				20,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				20,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"checkered_wall_seed": {
+		"category": "seed",
+		"display_name": "Checkered Wall Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				20,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "checkered_wall",
+		"rarity": "uncommon"
+	},
+	"sale_sign": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Sale Sign",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 181,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			23,
+			26
+		],
+		"alternative_tile": 0,
+		"seed": "sale_sign_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "sale_sign",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "sale_sign_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "sale_sign",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "sale_sign_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"interact_rules": {
+			"can_interact": true,
+			"interaction_message": "Edit sign."
+		},
+		"platform_collision": false,
+		"sign_block": true
+	},
+	"sale_sign_seed": {
+		"category": "seed",
+		"display_name": "Sale Sign Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				23,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "sale_sign",
+		"rarity": "uncommon"
+	},
+	"hazard_sign": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Hazard Sign",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 182,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			24,
+			26
+		],
+		"alternative_tile": 0,
+		"seed": "hazard_sign_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "hazard_sign",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "hazard_sign_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "hazard_sign",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "hazard_sign_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"interact_rules": {
+			"can_interact": true,
+			"interaction_message": "Edit sign."
+		},
+		"platform_collision": false,
+		"sign_block": true
+	},
+	"hazard_sign_seed": {
+		"category": "seed",
+		"display_name": "Hazard Sign Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				24,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "hazard_sign",
+		"rarity": "uncommon"
+	},
+	"open_sign": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Open Sign",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 183,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			25,
+			26
+		],
+		"alternative_tile": 0,
+		"seed": "open_sign_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"punch_toggle_block": true,
+		"toggle_active_block": "open_sign_on",
+		"toggle_inactive_block": "open_sign",
+		"toggle_drop_block": "open_sign",
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "open_sign",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "open_sign_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "open_sign",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "open_sign_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false,
+		"punch_open_only": false
+	},
+	"open_sign_seed": {
+		"category": "seed",
+		"display_name": "Open Sign Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "open_sign",
+		"rarity": "uncommon"
+	},
+	"street_sign": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Street Sign",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 184,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			27,
+			26
+		],
+		"alternative_tile": 0,
+		"seed": "street_sign_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "street_sign",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "street_sign_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "street_sign",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "street_sign_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				27,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				27,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"interact_rules": {
+			"can_interact": true,
+			"interaction_message": "Edit sign."
+		},
+		"platform_collision": false,
+		"sign_block": true
+	},
+	"street_sign_seed": {
+		"category": "seed",
+		"display_name": "Street Sign Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				27,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "street_sign",
+		"rarity": "uncommon"
+	},
+	"chandelier": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Chandelier",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 185,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			15,
+			27
+		],
+		"alternative_tile": 0,
+		"seed": "chandelier_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"punch_toggle_block": true,
+		"toggle_active_block": "chandelier_on",
+		"toggle_inactive_block": "chandelier",
+		"toggle_drop_block": "chandelier",
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "chandelier",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "chandelier_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "chandelier",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "chandelier_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false,
+		"punch_open_only": false
+	},
+	"chandelier_seed": {
+		"category": "seed",
+		"display_name": "Chandelier Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "chandelier",
+		"rarity": "uncommon"
+	},
+	"wall_clock": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Wall Clock",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 186,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			17,
+			27
+		],
+		"alternative_tile": 0,
+		"seed": "wall_clock_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "wall_clock",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "wall_clock_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "wall_clock",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "wall_clock_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"wall_clock_seed": {
+		"category": "seed",
+		"display_name": "Wall Clock Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "wall_clock",
+		"rarity": "uncommon"
+	},
+	"vines_painting": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Vines Painting",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 187,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			18,
+			27
+		],
+		"alternative_tile": 0,
+		"seed": "vines_painting_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "vines_painting",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "vines_painting_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "vines_painting",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "vines_painting_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"vines_painting_seed": {
+		"category": "seed",
+		"display_name": "Vines Painting Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "vines_painting",
+		"rarity": "uncommon"
+	},
+	"scratched_banana_painting": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Scratched Banana Painting",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 188,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			19,
+			27
+		],
+		"alternative_tile": 0,
+		"seed": "scratched_banana_painting_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "scratched_banana_painting",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "scratched_banana_painting_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "scratched_banana_painting",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "scratched_banana_painting_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"scratched_banana_painting_seed": {
+		"category": "seed",
+		"display_name": "Scratched Banana Painting Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "scratched_banana_painting",
+		"rarity": "uncommon"
+	},
+	"heartbreak_painting": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Heartbreak Painting",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 189,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			20,
+			27
+		],
+		"alternative_tile": 0,
+		"seed": "heartbreak_painting_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "heartbreak_painting",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "heartbreak_painting_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "heartbreak_painting",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "heartbreak_painting_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				20,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				20,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"heartbreak_painting_seed": {
+		"category": "seed",
+		"display_name": "Heartbreak Painting Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				20,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "heartbreak_painting",
+		"rarity": "uncommon"
+	},
+	"love_painting": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Love Painting",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 190,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			21,
+			27
+		],
+		"alternative_tile": 0,
+		"seed": "love_painting_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "love_painting",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "love_painting_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "love_painting",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "love_painting_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"love_painting_seed": {
+		"category": "seed",
+		"display_name": "Love Painting Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "love_painting",
+		"rarity": "uncommon"
+	},
+	"the_starry_night": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "The Starry Night",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 191,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			22,
+			27
+		],
+		"alternative_tile": 0,
+		"seed": "the_starry_night_seed",
+		"authored_drop_rules": true,
+		"visual_size": [
+			64,
+			64
+		],
+		"visual_offset": [
+			16,
+			-16
+		],
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "the_starry_night",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "the_starry_night_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "the_starry_night",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "the_starry_night_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"region": [
+				704,
+				864,
+				64,
+				64
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"region": [
+				704,
+				864,
+				64,
+				64
+			]
+		},
+		"platform_collision": false
+	},
+	"the_starry_night_seed": {
+		"category": "seed",
+		"display_name": "The Starry Night Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"region": [
+				704,
+				864,
+				64,
+				64
+			]
+		},
+		"grows_into": "the_starry_night",
+		"rarity": "uncommon"
+	},
+	"sunflower_painting": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Sunflower Painting",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 192,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			18,
+			28
+		],
+		"alternative_tile": 0,
+		"seed": "sunflower_painting_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "sunflower_painting",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "sunflower_painting_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "sunflower_painting",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "sunflower_painting_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				28
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				28
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"sunflower_painting_seed": {
+		"category": "seed",
+		"display_name": "Sunflower Painting Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				18,
+				28
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "sunflower_painting",
+		"rarity": "uncommon"
+	},
+	"mona_lisa": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Mona Lisa",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 193,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			19,
+			28
+		],
+		"alternative_tile": 0,
+		"seed": "mona_lisa_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "mona_lisa",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "mona_lisa_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "mona_lisa",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "mona_lisa_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				28
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				28
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"mona_lisa_seed": {
+		"category": "seed",
+		"display_name": "Mona Lisa Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				28
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "mona_lisa",
+		"rarity": "uncommon"
+	},
+	"american_gothic": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "American Gothic",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 194,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			20,
+			28
+		],
+		"alternative_tile": 0,
+		"seed": "american_gothic_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "american_gothic",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "american_gothic_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "american_gothic",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "american_gothic_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				20,
+				28
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				20,
+				28
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"american_gothic_seed": {
+		"category": "seed",
+		"display_name": "American Gothic Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				20,
+				28
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "american_gothic",
+		"rarity": "uncommon"
+	},
+	"the_girl_the_pearl_painting": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "The Girl the Pearl Painting",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 195,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			21,
+			28
+		],
+		"alternative_tile": 0,
+		"seed": "the_girl_the_pearl_painting_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "the_girl_the_pearl_painting",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "the_girl_the_pearl_painting_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "the_girl_the_pearl_painting",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "the_girl_the_pearl_painting_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				28
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				28
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"the_girl_the_pearl_painting_seed": {
+		"category": "seed",
+		"display_name": "The Girl the Pearl Painting Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				28
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "the_girl_the_pearl_painting",
+		"rarity": "uncommon"
+	},
+	"city_fence_seed": {
+		"category": "seed",
+		"display_name": "Gothic Fence Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				20,
+				29
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "city_fence",
+		"rarity": "uncommon"
+	},
+	"ventilation": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Ventilation",
+		"background_block": false,
+		"no_collision": false,
+		"collidable": true,
+		"solid": true,
+		"collision_type": "full",
+		"atlas_item_id": 196,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			19,
+			31
+		],
+		"alternative_tile": 0,
+		"seed": "ventilation_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "ventilation",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "ventilation_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "ventilation",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "ventilation_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				31
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				31
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"entrance_block": true,
+		"entrance_tilemap_collision": true,
+		"entrance_idle_atlas_coords": [
+			19,
+			31
+		],
+		"entrance_pass_atlas_coords": [
+			20,
+			31
+		],
+		"entrance_pass_atlas_frames": [
+			[
+				20,
+				31
+			],
+			[
+				21,
+				31
+			],
+			[
+				22,
+				31
+			]
+		],
+		"entrance_pass_animation_columns": 3,
+		"entrance_animation_frame_seconds": 0.15,
+		"interact_rules": {
+			"can_interact": true,
+			"interaction_message": "Lock or unlock entrance."
+		},
+		"platform_collision": false,
+		"entrance_idle_texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				31
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"entrance_frames": [
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					20,
+					31
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					21,
+					31
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					22,
+					31
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			}
+		]
+	},
+	"ventilation_seed": {
+		"category": "seed",
+		"display_name": "Ventilation Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				19,
+				31
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "ventilation",
+		"rarity": "uncommon"
+	},
+	"sirene_lamp": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Sirene Lamp",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 197,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			21,
+			30
+		],
+		"alternative_tile": 0,
+		"seed": "sirene_lamp_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"punch_toggle_block": true,
+		"toggle_active_block": "sirene_lamp_on",
+		"toggle_inactive_block": "sirene_lamp",
+		"toggle_drop_block": "sirene_lamp",
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "sirene_lamp",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "sirene_lamp_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "sirene_lamp",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "sirene_lamp_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				30
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				30
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false,
+		"punch_open_only": false
+	},
+	"sirene_lamp_seed": {
+		"category": "seed",
+		"display_name": "Sirene Lamp Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				30
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "sirene_lamp",
+		"rarity": "uncommon"
+	},
+	"water_fountain": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Water Fountain",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 198,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			22,
+			30
+		],
+		"alternative_tile": 0,
+		"seed": "water_fountain_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": true,
+		"animation_frames": [
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					22,
+					30
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					23,
+					30
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			}
+		],
+		"animation_atlas_coords": [
+			[
+				22,
+				30
+			],
+			[
+				23,
+				30
+			]
+		],
+		"animation_frame_seconds": 0.18,
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "water_fountain",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "water_fountain_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "water_fountain",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "water_fountain_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				22,
+				30
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				22,
+				30
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"water_fountain_seed": {
+		"category": "seed",
+		"display_name": "Water Fountain Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				22,
+				30
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "water_fountain",
+		"rarity": "uncommon"
+	},
+	"moon": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Moon",
+		"background_block": false,
+		"no_collision": false,
+		"collidable": true,
+		"solid": true,
+		"collision_type": "full",
+		"atlas_item_id": 199,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			15,
+			32
+		],
+		"alternative_tile": 0,
+		"seed": "moon_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "moon",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "moon_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "moon",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "moon_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				32
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				32
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"moon_seed": {
+		"category": "seed",
+		"display_name": "Moon Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				32
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "moon",
+		"rarity": "uncommon"
+	},
+	"earth": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Earth",
+		"background_block": false,
+		"no_collision": false,
+		"collidable": true,
+		"solid": true,
+		"collision_type": "full",
+		"atlas_item_id": 200,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			16,
+			32
+		],
+		"alternative_tile": 0,
+		"seed": "earth_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "earth",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "earth_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "earth",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "earth_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				32
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				32
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"earth_seed": {
+		"category": "seed",
+		"display_name": "Earth Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				32
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "earth",
+		"rarity": "uncommon"
+	},
+	"sun": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"hidden": false,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": true,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Sun",
+		"background_block": false,
+		"no_collision": false,
+		"collidable": true,
+		"solid": true,
+		"collision_type": "full",
+		"atlas_item_id": 201,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			17,
+			32
+		],
+		"alternative_tile": 0,
+		"seed": "sun_seed",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"animated": false,
+		"animation_frames": [],
+		"animation_atlas_coords": [],
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "sun",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "sun_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "sun",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "sun_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				32
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				32
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false
+	},
+	"sun_seed": {
+		"category": "seed",
+		"display_name": "Sun Seed",
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				17,
+				32
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"grows_into": "sun",
+		"rarity": "uncommon"
+	},
+	"digital_sign_on": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": false,
+		"dropable": false,
+		"admin_grantable": false,
+		"hidden": true,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": false,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Digital Sign",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 207,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			27,
+			25
+		],
+		"alternative_tile": 0,
+		"seed": "",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"punch_toggle_block": true,
+		"toggle_active_block": "digital_sign_on",
+		"toggle_inactive_block": "digital_sign",
+		"toggle_drop_block": "digital_sign",
+		"animated": true,
+		"animation_frames": [
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					27,
+					25
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					28,
+					25
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			},
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					29,
+					25
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			}
+		],
+		"animation_atlas_coords": [
+			[
+				27,
+				25
+			],
+			[
+				28,
+				25
+			],
+			[
+				29,
+				25
+			]
+		],
+		"animation_frame_seconds": 0.2,
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "digital_sign",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "digital_sign_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "digital_sign",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "digital_sign_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				27,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				25
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false,
+		"punch_open_only": false
+	},
+	"open_sign_on": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": false,
+		"dropable": false,
+		"admin_grantable": false,
+		"hidden": true,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": false,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Open Sign",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 208,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			26,
+			26
+		],
+		"alternative_tile": 0,
+		"seed": "",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"punch_toggle_block": true,
+		"toggle_active_block": "open_sign_on",
+		"toggle_inactive_block": "open_sign",
+		"toggle_drop_block": "open_sign",
+		"animated": false,
+		"animation_frames": [
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					26,
+					26
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			}
+		],
+		"animation_atlas_coords": [
+			[
+				26,
+				26
+			]
+		],
+		"animation_frame_seconds": 0.2,
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "open_sign",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "open_sign_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "open_sign",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "open_sign_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				26,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				25,
+				26
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false,
+		"punch_open_only": false
+	},
+	"chandelier_on": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": false,
+		"dropable": false,
+		"admin_grantable": false,
+		"hidden": true,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": false,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Chandelier",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 209,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			16,
+			27
+		],
+		"alternative_tile": 0,
+		"seed": "",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"punch_toggle_block": true,
+		"toggle_active_block": "chandelier_on",
+		"toggle_inactive_block": "chandelier",
+		"toggle_drop_block": "chandelier",
+		"animated": false,
+		"animation_frames": [
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					16,
+					27
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			}
+		],
+		"animation_atlas_coords": [
+			[
+				16,
+				27
+			]
+		],
+		"animation_frame_seconds": 0.2,
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "chandelier",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "chandelier_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "chandelier",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "chandelier_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				16,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				15,
+				27
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false,
+		"punch_open_only": false
+	},
+	"sirene_lamp_on": {
+		"category": "block",
+		"rarity": "uncommon",
+		"stack_limit": 400,
+		"tradeable": false,
+		"dropable": false,
+		"admin_grantable": false,
+		"hidden": true,
+		"equipment_slot": "",
+		"gem_value": 0,
+		"sell_value": 0,
+		"shop_price": 0,
+		"permissions": {},
+		"placeable": false,
+		"place_layer": "foreground",
+		"block_health": 4,
+		"breakable": true,
+		"display_name": "Sirene Lamp",
+		"background_block": false,
+		"no_collision": true,
+		"collidable": false,
+		"solid": false,
+		"collision_type": "none",
+		"atlas_item_id": 210,
+		"atlas_source_id": 0,
+		"atlas_coords": [
+			20,
+			30
+		],
+		"alternative_tile": 0,
+		"seed": "",
+		"authored_drop_rules": true,
+		"break_return_to_inventory": false,
+		"punch_toggle_block": true,
+		"toggle_active_block": "sirene_lamp_on",
+		"toggle_inactive_block": "sirene_lamp",
+		"toggle_drop_block": "sirene_lamp",
+		"animated": false,
+		"animation_frames": [
+			{
+				"atlas": "res://image.png",
+				"cell": [
+					20,
+					30
+				],
+				"cell_size": [
+					32,
+					32
+				]
+			}
+		],
+		"animation_atlas_coords": [
+			[
+				20,
+				30
+			]
+		],
+		"animation_frame_seconds": 0.2,
+		"tileset_animation": false,
+		"drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "sirene_lamp",
+					"item_category": "block",
+					"amount": 1
+				},
+				{
+					"item_id": "sirene_lamp_seed",
+					"item_category": "seed",
+					"amount": 1,
+					"chance": 0.2
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						3
+					]
+				}
+			]
+		},
+		"tree_drop_rules": {
+			"seed_chance": 0,
+			"gem_range": [
+				0,
+				0
+			],
+			"fixed_drops": [
+				{
+					"item_id": "sirene_lamp",
+					"item_category": "block",
+					"amount_range": [
+						2,
+						5
+					]
+				},
+				{
+					"item_id": "sirene_lamp_seed",
+					"item_category": "seed",
+					"amount_range": [
+						0,
+						3
+					]
+				},
+				{
+					"item_id": "gem",
+					"item_category": "currency",
+					"amount_range": [
+						0,
+						5
+					]
+				}
+			]
+		},
+		"texture": {
+			"atlas": "res://image.png",
+			"cell": [
+				20,
+				30
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"inventory_icon": {
+			"atlas": "res://image.png",
+			"cell": [
+				21,
+				30
+			],
+			"cell_size": [
+				32,
+				32
+			]
+		},
+		"platform_collision": false,
+		"punch_open_only": false
+	}
 	}
 
 # ============================================================
@@ -16112,31 +26365,380 @@ const ITEMS = {
 # Format: "seed_a+seed_b": "output_seed"
 # These are used for blocks, doors, signs, platforms, and world items.
 # ============================================================
+# Authored tiers from the SPLICING sheet. Recipes absent from the sheet stay unranked.
+const RECIPE_TIERS = {
+  "aqua_block": 5,
+  "aqua_block_seed": 5,
+  "aqua_wallpaper": 6,
+  "aqua_wallpaper_seed": 6,
+  "aquatic_line_wall": 5,
+  "aquatic_line_wall_seed": 5,
+  "barn_background": 5,
+  "barn_background_seed": 5,
+  "barn_block": 4,
+  "barn_block_seed": 4,
+  "barn_door": 5,
+  "barn_door_seed": 5,
+  "barn_window": 5,
+  "barn_window_seed": 5,
+  "bathtub": 7,
+  "bathtub_seed": 7,
+  "bed": 6,
+  "bed_seed": 6,
+  "big_sign": 4,
+  "big_sign_seed": 4,
+  "big_spike": 6,
+  "big_spike_seed": 6,
+  "biohazard_barrel": 7,
+  "black_block": 3,
+  "black_block_seed": 3,
+  "black_wallpaper": 4,
+  "black_wallpaper_seed": 4,
+  "blue_block": 4,
+  "blue_block_seed": 4,
+  "blue_couch": 7,
+  "blue_couch_seed": 7,
+  "blue_mail_box": 7,
+  "blue_mail_box_seed": 7,
+  "blue_pastel_block": 6,
+  "blue_pastel_block_seed": 6,
+  "blue_portal": 11,
+  "blue_stripe_wall": 4,
+  "blue_stripe_wall_seed": 4,
+  "blue_wallpaper": 5,
+  "blue_wallpaper_seed": 5,
+  "bomb": 9,
+  "brown_block": 3,
+  "brown_block_seed": 3,
+  "brown_wallpaper": 4,
+  "brown_wallpaper_seed": 4,
+  "building_brick_block": 4,
+  "building_brick_block_seed": 4,
+  "building_brick_wall": 5,
+  "building_brick_wall_seed": 5,
+  "bulletin_board": 8,
+  "bush": 2,
+  "bush_seed": 2,
+  "campfire": 3,
+  "campfire_seed": 3,
+  "ceiling_lamp": 6,
+  "chandelier": 10,
+  "chandelier_seed": 10,
+  "checkered_wall": 5,
+  "checkered_wall_seed": 5,
+  "checkpoint": 8,
+  "chicken": 7,
+  "city_fence": 9,
+  "city_fence_seed": 9,
+  "climbing_vine": 5,
+  "climbing_vine_seed": 5,
+  "complementary_line_wall": 5,
+  "complementary_line_wall_seed": 5,
+  "cow": 8,
+  "dark_aqua_block": 6,
+  "dark_aqua_block_seed": 6,
+  "dark_blue_block": 5,
+  "dark_blue_block_seed": 5,
+  "dark_green_block": 5,
+  "dark_green_block_seed": 5,
+  "dark_orange_block": 5,
+  "dark_pink_block": 5,
+  "dark_pink_block_seed": 5,
+  "dark_purple_block": 6,
+  "dark_purple_block_seed": 6,
+  "dark_red_block_seed": 5,
+  "dark_yellow_block": 5,
+  "dark_yellow_block_seed": 5,
+  "dice_block": 10,
+  "digital_sign": 9,
+  "digital_sign_seed": 9,
+  "donation_box": 7,
+  "dresser": 6,
+  "dresser_seed": 6,
+  "duck": 9,
+  "dungeon_door": 6,
+  "dungeon_door_seed": 6,
+  "earth": 11,
+  "earth_seed": 11,
+  "electric_pole": 6,
+  "electric_pole_seed": 6,
+  "empty_jar": 7,
+  "empty_jar_seed": 7,
+  "fan": 9,
+  "fan_seed": 9,
+  "fire_escape": 9,
+  "fire_hydrant": 9,
+  "fireplace": 5,
+  "fireplace_seed": 5,
+  "fish_bowl": 7,
+  "fish_bowl_seed": 7,
+  "fish_hanger": 5,
+  "gem_block_seed": 6,
+  "glass": 3,
+  "glass_panel": 2,
+  "glass_panel_seed": 2,
+  "glass_seed": 3,
+  "grand_house_door": 8,
+  "grand_house_door_seed": 8,
+  "grass": 2,
+  "grass_seed": 2,
+  "green_block": 3,
+  "green_block_seed": 3,
+  "green_brick": 4,
+  "green_brick_seed": 4,
+  "green_brick_wall": 5,
+  "green_brick_wall_seed": 5,
+  "green_couch": 9,
+  "green_couch_seed": 9,
+  "green_pastel_block": 5,
+  "green_pastel_block_seed": 5,
+  "green_wallpaper": 4,
+  "green_wallpaper_seed": 4,
+  "grey_block": 3,
+  "grey_block_seed": 3,
+  "grey_wallpaper": 4,
+  "grey_wallpaper_seed": 4,
+  "happy_block": 6,
+  "happy_block_seed": 6,
+  "hay": 2,
+  "hay_bales": 3,
+  "hay_bales_seed": 3,
+  "hay_seed": 2,
+  "hazard_sign": 8,
+  "hazard_sign_seed": 8,
+  "heartbreak_painting": 9,
+  "heartbreak_painting_seed": 9,
+  "lamp": 7,
+  "lamp_seed": 7,
+  "lantern": 5,
+  "lantern_seed": 5,
+  "left_directional_sign": 5,
+  "left_directional_sign_seed": 5,
+  "light_brown_block_seed": 5,
+  "love_painting": 9,
+  "love_painting_seed": 9,
+  "mail_box": 6,
+  "mail_box_seed": 6,
+  "maroon_block": 5,
+  "mechanical_entrance": 7,
+  "mechanical_entrance_seed": 7,
+  "metal_pad": 7,
+  "metal_pad_seed": 7,
+  "modern_chair": 6,
+  "modern_chair_seed": 6,
+  "moon": 11,
+  "moon_seed": 11,
+  "mushroom": 2,
+  "mushroom_seed": 2,
+  "oil_refinery": 13,
+  "oil_refinery_seed": 13,
+  "open_sign": 8,
+  "open_sign_seed": 8,
+  "orange_block": 4,
+  "orange_block_seed": 4,
+  "orange_pastel_block": 5,
+  "orange_pastel_block_seed": 5,
+  "orange_wallpaper": 5,
+  "orange_wallpaper_seed": 5,
+  "park_bench": 5,
+  "park_bench_seed": 5,
+  "password_door": 11,
+  "pastel_flower_block": 6,
+  "pastel_flower_block_seed": 6,
+  "pillar": 6,
+  "pink_block": 4,
+  "pink_block_seed": 4,
+  "pink_curtains": 7,
+  "pink_curtains_seed": 7,
+  "pink_pastel_block": 5,
+  "pink_pastel_block_seed": 5,
+  "pink_wallpaper": 5,
+  "pink_wallpaper_seed": 5,
+  "portcullis": 7,
+  "portcullis_seed": 7,
+  "purple_block": 5,
+  "purple_block_seed": 5,
+  "purple_curtains": 7,
+  "purple_curtains_seed": 7,
+  "purple_pastel_block": 6,
+  "purple_pastel_block_seed": 6,
+  "purple_wallpaper": 6,
+  "purple_wallpaper_seed": 6,
+  "rainbow_block": 6,
+  "recycle_bin": 10,
+  "red_block": 3,
+  "red_block_seed": 3,
+  "red_brick": 2,
+  "red_brick_platform": 5,
+  "red_brick_platform_seed": 5,
+  "red_brick_seed": 2,
+  "red_brick_wall": 3,
+  "red_brick_wall_seed": 3,
+  "red_pastel_block": 5,
+  "red_pastel_block_seed": 5,
+  "red_stripe_wall": 4,
+  "red_stripe_wall_seed": 4,
+  "red_wallpaper": 4,
+  "red_wallpaper_seed": 4,
+  "refrigerator": 9,
+  "refrigerator_seed": 9,
+  "right_directional_sign": 5,
+  "right_directional_sign_seed": 5,
+  "royal_door": 5,
+  "royal_door_seed": 5,
+  "royal_entrance": 7,
+  "royal_entrance_seed": 7,
+  "royal_window": 5,
+  "royal_window_seed": 5,
+  "rubber_duck": 8,
+  "rubber_duck_seed": 8,
+  "sale_sign": 6,
+  "sale_sign_seed": 6,
+  "sashimi_table": 8,
+  "sashimi_table_seed": 8,
+  "saw_blade": 6,
+  "saw_blade_seed": 6,
+  "scratched_banana_painting": 9,
+  "scratched_banana_painting_seed": 9,
+  "screen_door": 6,
+  "screen_door_seed": 6,
+  "side_table": 5,
+  "side_table_seed": 5,
+  "sign": 3,
+  "sign_seed": 3,
+  "sink": 6,
+  "sink_seed": 6,
+  "sirene_lamp": 9,
+  "sirene_lamp_seed": 9,
+  "slime": 5,
+  "star_block": 7,
+  "star_wall": 5,
+  "star_wall_seed": 5,
+  "steel_background": 6,
+  "steel_background_seed": 6,
+  "steel_block": 5,
+  "steel_block_seed": 5,
+  "steel_door": 6,
+  "steel_door_seed": 6,
+  "steel_ladder": 6,
+  "steel_ladder_seed": 6,
+  "steel_platform": 6,
+  "steel_platform_seed": 6,
+  "steel_sign": 6,
+  "steel_sign_seed": 6,
+  "stone_brick": 2,
+  "stone_brick_seed": 2,
+  "stone_brick_wall": 3,
+  "stone_brick_wall_seed": 3,
+  "street_lamp": 8,
+  "street_lamp_seed": 8,
+  "street_sign": 7,
+  "street_sign_seed": 7,
+  "sturdy_box": 6,
+  "sturdy_box_seed": 6,
+  "sugar_cane": 5,
+  "sugar_cane_seed": 5,
+  "sun": 11,
+  "sun_seed": 11,
+  "toilet": 6,
+  "toilet_seed": 6,
+  "tv": 8,
+  "tv_seed": 8,
+  "ventilation": 7,
+  "ventilation_seed": 7,
+  "vines_2": 2,
+  "vines_2_seed": 2,
+  "vines_painting": 9,
+  "vines_painting_seed": 9,
+  "wagon_wheel": 6,
+  "wagon_wheel_seed": 6,
+  "water_fountain": 9,
+  "water_fountain_seed": 9,
+  "water_well": 7,
+  "water_well_seed": 7,
+  "weathervane": 6,
+  "weathervane_seed": 6,
+  "white_block": 3,
+  "white_block_seed": 3,
+  "white_brick_block": 4,
+  "white_brick_block_seed": 4,
+  "white_brick_platform": 5,
+  "white_brick_platform_seed": 5,
+  "white_brick_wall": 5,
+  "white_brick_wall_seed": 5,
+  "white_fence": 5,
+  "white_fence_seed": 5,
+  "white_wallpaper": 4,
+  "white_wallpaper_seed": 4,
+  "wood_platform": 3,
+  "wood_platform_seed": 3,
+  "wooden_background_seed": 2,
+  "wooden_barrel": 5,
+  "wooden_barrel_seed": 5,
+  "wooden_block": 2,
+  "wooden_block_seed": 2,
+  "wooden_box": 4,
+  "wooden_box_seed": 4,
+  "wooden_chair": 4,
+  "wooden_chair_seed": 4,
+  "wooden_crappy_sign": 3,
+  "wooden_crappy_sign_seed": 3,
+  "wooden_door": 3,
+  "wooden_door_seed": 3,
+  "wooden_entrance": 4,
+  "wooden_entrance_seed": 4,
+  "wooden_fence": 3,
+  "wooden_fence_seed": 3,
+  "wooden_frame_seed": 3,
+  "wooden_ladder": 4,
+  "wooden_ladder_seed": 4,
+  "wooden_table": 3,
+  "wooden_table_seed": 3,
+  "wooden_wallpaper": 2,
+  "wooden_window": 3,
+  "yellow_block": 3,
+  "yellow_block_seed": 3,
+  "yellow_pastel_block": 5,
+  "yellow_pastel_block_seed": 5,
+  "yellow_wallpaper": 4,
+  "yellow_wallpaper_seed": 4
+}
+
 const SPLICE_RECIPES = {
-	"barn_block_seed+green_block_seed": "green_pastel_block_seed",
-	"barn_block_seed+orange_block_seed": "orange_pastel_block_seed",
-	"barn_block_seed+pink_block_seed": "pink_pastel_block_seed",
-	"barn_block_seed+red_block_seed": "red_pastel_block_seed",
-	"barn_block_seed+wooden_background_seed": "barn_background_seed",
-	"barn_block_seed+wooden_door_seed": "barn_door_seed",
-	"barn_block_seed+wooden_fence_seed": "white_fence_seed",
-	"barn_block_seed+wooden_frame_seed": "barn_window_seed",
-	"barn_block_seed+yellow_block_seed": "yellow_pastel_block_seed",
+	"aqua_block_seed+building_brick_wall_seed": "aqua_wallpaper_seed",
+	"aqua_block_seed+sale_sign_seed": "street_sign_seed",
 	"barn_door_seed+royal_door_seed": "screen_door_seed",
 	"barn_door_seed+steel_block_seed": "steel_door_seed",
 	"barn_window_seed+white_block_seed": "sink_seed",
 	"barn_window_seed+wooden_frame_seed": "royal_window_seed",
+	"bed_seed+park_bench_seed": "blue_couch_seed",
+	"big_sign_seed+right_directional_sign_seed": "left_directional_sign_seed",
+	"big_sign_seed+sign_seed": "right_directional_sign_seed",
+	"big_sign_seed+steel_block_seed": "steel_sign_seed",
+	"big_sign_seed+white_brick_wall_seed": "dresser_seed",
 	"black_block_seed+red_brick_wall_seed": "black_wallpaper_seed",
 	"black_block_seed+stone_brick_seed": "green_brick_seed",
+	"black_wallpaper_seed+white_wallpaper_seed": "checkered_wall_seed",
 	"blue_block_seed+green_brick_seed": "dark_blue_block_seed",
 	"blue_block_seed+mail_box_seed": "blue_mail_box_seed",
 	"blue_block_seed+red_brick_wall_seed": "blue_wallpaper_seed",
 	"blue_block_seed+red_pastel_block_seed": "purple_pastel_block_seed",
+	"blue_block_seed+red_stripe_wall_seed": "aqua_block_seed",
 	"blue_block_seed+side_table_seed": "bed_seed",
 	"blue_block_seed+yellow_pastel_block_seed": "blue_pastel_block_seed",
+	"blue_block_seed+yellow_wallpaper_seed": "star_wall_seed",
+	"blue_couch_seed+dirt_seed": "green_couch_seed",
 	"blue_pastel_block_seed+lily_seed": "pastel_flower_block_seed",
+	"blue_stripe_wall_seed+red_block_seed": "purple_block_seed",
+	"blue_stripe_wall_seed+red_brick_wall_seed": "red_stripe_wall_seed",
+	"blue_stripe_wall_seed+red_stripe_wall_seed": "complementary_line_wall_seed",
 	"brown_block_seed+red_brick_wall_seed": "brown_wallpaper_seed",
 	"brown_block_seed+wooden_block_seed": "wooden_box_seed",
+	"building_brick_block_seed+cave_background_seed": "building_brick_wall_seed",
+	"building_brick_block_seed+white_brick_block_seed": "steel_block_seed",
+	"building_brick_block_seed+wooden_door_seed": "royal_door_seed",
+	"building_brick_block_seed+wooden_table_seed": "side_table_seed",
+	"building_brick_wall_seed+purple_block_seed": "purple_wallpaper_seed",
 	"bush_seed+wooden_block_seed": "wooden_table_seed",
 	"cave_background_seed+green_brick_seed": "green_brick_wall_seed",
 	"cave_background_seed+red_brick_seed": "red_brick_wall_seed",
@@ -16151,8 +26753,10 @@ const SPLICE_RECIPES = {
 	"dirt_seed+stone_seed": "stone_brick_seed",
 	"dirt_seed+wood_seed": "wooden_block_seed",
 	"dirt_seed+wooden_block_seed": "wooden_door_seed",
+	"dresser_seed+glass_seed": "empty_jar_seed",
 	"dungeon_door_seed+royal_door_seed": "royal_entrance_seed",
 	"electric_pole_seed+steel_background_seed": "metal_pad_seed",
+	"fish_bowl_seed+side_table_seed": "sashimi_table_seed",
 	"glass_panel_seed+sink_seed": "fish_bowl_seed",
 	"glass_panel_seed+stone_seed": "glass_seed",
 	"glass_panel_seed+wooden_block_seed": "wooden_frame_seed",
@@ -16174,10 +26778,11 @@ const SPLICE_RECIPES = {
 	"grey_block_seed+red_brick_wall_seed": "grey_wallpaper_seed",
 	"grey_wallpaper_seed+steel_block_seed": "steel_background_seed",
 	"happy_block_seed+royal_window_seed": "pink_curtains_seed",
-	"hay_bales_seed+wooden_block_seed": "barn_block_seed",
 	"hay_seed+wooden_background_seed": "hay_bales_seed",
 	"hay_seed+wooden_block_seed": "wooden_fence_seed",
+	"ice_block_seed+tv_seed": "refrigerator_seed",
 	"ice_block_seed+yellow_block_seed": "blue_block_seed",
+	"lamp_seed+street_lamp_seed": "sirene_lamp_seed",
 	"lava_seed+sand_seed": "glass_panel_seed",
 	"lava_seed+stone_seed": "red_brick_seed",
 	"lava_seed+wooden_block_seed": "campfire_seed",
@@ -16185,16 +26790,20 @@ const SPLICE_RECIPES = {
 	"leaf_seed+sand_seed": "tulip_seed",
 	"leaf_seed+vines_seed": "vines_2_seed",
 	"leaf_seed+wood_seed": "mushroom_seed",
+	"left_directional_sign_seed+red_wallpaper_seed": "sale_sign_seed",
+	"left_directional_sign_seed+steel_block_seed": "saw_blade_seed",
 	"lily_seed+red_brick_seed": "white_block_seed",
 	"mushroom_seed+wooden_block_seed": "sign_seed",
 	"obsidian_seed+red_brick_seed": "black_block_seed",
 	"orange_block_seed+red_brick_wall_seed": "orange_wallpaper_seed",
+	"park_bench_seed+toilet_seed": "bathtub_seed",
 	"pastel_flower_block_seed+royal_window_seed": "purple_curtains_seed",
 	"pink_block_seed+red_brick_wall_seed": "pink_wallpaper_seed",
 	"red_block_seed+red_brick_wall_seed": "red_wallpaper_seed",
 	"red_block_seed+white_block_seed": "pink_block_seed",
 	"red_block_seed+yellow_block_seed": "orange_block_seed",
 	"red_brick_seed+rose_seed": "red_block_seed",
+	"red_brick_seed+stone_brick_seed": "building_brick_block_seed",
 	"red_brick_seed+stone_seed": "grey_block_seed",
 	"red_brick_seed+tulip_seed": "yellow_block_seed",
 	"red_brick_wall_seed+white_block_seed": "white_wallpaper_seed",
@@ -16203,10 +26812,12 @@ const SPLICE_RECIPES = {
 	"rose_seed+tulip_seed": "poppy_seed",
 	"royal_door_seed+saw_blade_seed": "portcullis_seed",
 	"royal_door_seed+steel_block_seed": "dungeon_door_seed",
-	"royal_door_seed+wooden_chair_seed": "fireplace_seed",
+	"royal_door_seed+steel_ladder_seed": "ventilation_seed",
+	"sale_sign_seed+street_sign_seed": "open_sign_seed",
 	"sand_seed+stone_seed": "pile_of_sand_seed",
 	"sand_seed+wood_plank_seed": "sand_castle_seed",
 	"sign_seed+steel_block_seed": "electric_pole_seed",
+	"sign_seed+wooden_crappy_sign_seed": "big_sign_seed",
 	"sink_seed+white_brick_block_seed": "water_well_seed",
 	"steel_block_seed+wood_platform_seed": "steel_platform_seed",
 	"steel_block_seed+wooden_box_seed": "sturdy_box_seed",
@@ -16215,14 +26826,17 @@ const SPLICE_RECIPES = {
 	"stone_brick_seed+stone_brick_wall_seed": "white_brick_block_seed",
 	"stone_brick_wall_seed+white_brick_block_seed": "white_brick_wall_seed",
 	"stone_seed+wood_seed": "wood_plank_seed",
+	"street_lamp_seed+water_fountain_seed": "chandelier_seed",
+	"street_lamp_seed+white_fence_seed": "city_fence_seed",
 	"vines_2_seed+wooden_block_seed": "wood_platform_seed",
 	"vines_2_seed+wooden_table_seed": "wooden_chair_seed",
 	"white_block_seed+white_brick_wall_seed": "toilet_seed",
-	"white_brick_block_seed+white_brick_wall_seed": "white_brick_platform_seed",
+	"white_brick_wall_seed+wooden_chair_seed": "modern_chair_seed",
 	"white_fence_seed+wooden_box_seed": "wagon_wheel_seed",
 	"wood_platform_seed+wooden_block_seed": "wooden_ladder_seed",
 	"wood_platform_seed+wooden_door_seed": "wooden_entrance_seed",
 	"wooden_block_seed+wooden_box_seed": "wooden_barrel_seed",
+	"wooden_chair_seed+wooden_ladder_seed": "park_bench_seed"
 }
 
 

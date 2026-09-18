@@ -1,2597 +1,7806 @@
 [
   {
-    "row": 2,
+    "row": 6,
+    "tier": "2",
     "names": [
       "Small Vines",
       "Leaf block",
       "Big Vine"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "hanging_vine",
       "leaf",
       "vines_2"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "vines_seed",
       "leaf_seed",
       "vines_2_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 3,
+    "row": 8,
+    "tier": "2",
     "names": [
       "Leaf block",
       "Dirt",
       "Grass"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "leaf",
       "dirt",
       "grass"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "leaf_seed",
       "dirt_seed",
       "grass_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 4,
+    "row": 10,
+    "tier": "2",
     "names": [
       "Leaf block",
       "Grass",
       "Bush"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "leaf",
       "grass",
       "bush"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "leaf_seed",
       "grass_seed",
       "bush_seed"
-    ]
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 5,
+    "row": 12,
+    "tier": "2",
     "names": [
       "Leaf block",
       "Tree trunk",
       "Mushroom"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "leaf",
       "wood",
       "mushroom"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "leaf_seed",
       "wood_seed",
       "mushroom_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 6,
+    "row": 14,
+    "tier": "2",
     "names": [
       "Tree trunk",
       "Dirt",
       "Wood block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wood",
       "dirt",
       "wooden_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wood_seed",
       "dirt_seed",
       "wooden_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 7,
+    "row": 16,
+    "tier": "2",
     "names": [
       "Wood block",
       "Cave Wall",
       "Wood wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_block",
       "cave_background",
       "wooden_wallpaper"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_block_seed",
       "cave_background_seed",
       "wooden_background_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 8,
+    "row": 18,
+    "tier": "2",
     "names": [
       "Stone",
       "Lava",
       "Red brick"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "stone",
       "lava",
       "red_brick"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "stone_seed",
       "lava_seed",
       "red_brick_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 9,
+    "row": 20,
+    "tier": "2",
     "names": [
       "Stone",
       "Dirt",
       "Stone brick"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "stone",
       "dirt",
       "stone_brick"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "stone_seed",
       "dirt_seed",
       "stone_brick_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 10,
+    "row": 22,
+    "tier": "2",
     "names": [
       "Sand block",
       "Lava",
       "Glass pane"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "sand",
       "lava",
       "glass_panel"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "sand_seed",
       "lava_seed",
       "glass_panel_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 11,
+    "row": 24,
+    "tier": "2",
     "names": [
       "Grass",
       "Lava",
       "Dried hay"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "grass",
       "lava",
       "hay"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "grass_seed",
       "lava_seed",
       "hay_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 12,
+    "row": 26,
+    "tier": "3",
     "names": [
       "Wood block",
       "Big Vine",
       "Wooden platform"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_block",
       "vines_2",
       "wood_platform"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_block_seed",
       "vines_2_seed",
       "wood_platform_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 13,
+    "row": 28,
+    "tier": "3",
     "names": [
       "Wood block",
       "Mushroom",
       "Wooden sign"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_block",
       "mushroom",
       "sign"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_block_seed",
       "mushroom_seed",
       "sign_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 14,
+    "row": 30,
+    "tier": "3",
     "names": [
       "Wood block",
       "Glass pane",
       "Wooden window"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_block",
       "glass_panel",
       "wooden_window"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_block_seed",
       "glass_panel_seed",
       "wooden_frame_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 15,
+    "row": 32,
+    "tier": "3",
     "names": [
       "Wood block",
       "Dirt",
       "Wooden door"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_block",
       "dirt",
       "wooden_door"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_block_seed",
       "dirt_seed",
       "wooden_door_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 16,
+    "row": 34,
+    "tier": "3",
     "names": [
       "Wood block",
       "Dried hay",
       "Wooden fence"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_block",
       "hay",
       "wooden_fence"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_block_seed",
       "hay_seed",
       "wooden_fence_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 17,
+    "row": 36,
+    "tier": "3",
     "names": [
       "Wood block",
       "Bush",
       "Wooden table"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_block",
       "bush",
       "wooden_table"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_block_seed",
       "bush_seed",
       "wooden_table_seed"
-    ]
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 18,
+    "row": 38,
+    "tier": "3",
     "names": [
       "Wooden sign",
       "Cave Wall",
       "Mysterious sign"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "sign",
       "cave_background",
       "wooden_crappy_sign"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "sign_seed",
       "cave_background_seed",
       "wooden_crappy_sign_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 19,
+    "row": 40,
+    "tier": "3",
     "names": [
       "Wood block",
       "Lava",
       "Campfire"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_block",
       "lava",
       "campfire"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_block_seed",
       "lava_seed",
       "campfire_seed"
-    ]
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 20,
+    "row": 42,
+    "tier": "3",
     "names": [
       "Red brick",
       "Cave Wall",
       "Red brick wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "red_brick",
       "cave_background",
       "red_brick_wall"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "red_brick_seed",
       "cave_background_seed",
       "red_brick_wall_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 21,
+    "row": 44,
+    "tier": "3",
     "names": [
       "Stone brick",
       "Cave Wall",
       "Stone brick wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "stone_brick",
       "cave_background",
       "stone_brick_wall"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "stone_brick_seed",
       "cave_background_seed",
       "stone_brick_wall_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 22,
+    "row": 46,
+    "tier": "3",
     "names": [
       "Red brick",
       "Lily",
       "White block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "red_brick",
       "lily",
       "white_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "red_brick_seed",
       "lily_seed",
       "white_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 23,
+    "row": 48,
+    "tier": "3",
     "names": [
       "Red brick",
       "Rose",
       "Red block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "red_brick",
       "rose",
       "red_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "red_brick_seed",
       "rose_seed",
       "red_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 24,
+    "row": 50,
+    "tier": "3",
     "names": [
       "Red brick",
       "Grass",
       "Green block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "red_brick",
       "grass",
       "green_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "red_brick_seed",
       "grass_seed",
       "green_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 25,
+    "row": 52,
+    "tier": "3",
     "names": [
       "Red brick",
       "Dirt",
       "Brown block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "red_brick",
       "dirt",
       "brown_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "red_brick_seed",
       "dirt_seed",
       "brown_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 26,
+    "row": 54,
+    "tier": "3",
     "names": [
       "Red brick",
       "Stone",
       "Grey block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "red_brick",
       "stone",
       "grey_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "red_brick_seed",
       "stone_seed",
       "grey_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 27,
+    "row": 56,
+    "tier": "3",
     "names": [
       "Red brick",
       "Obsidian",
       "Black block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "red_brick",
       "obsidian",
       "black_block"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "red_brick_seed",
       "obsidian_seed",
       "black_block_seed"
-    ]
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 28,
+    "row": 58,
+    "tier": "3",
     "names": [
       "Red brick",
       "Sunflower",
       "Yellow block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "red_brick",
       "sunflower",
       "yellow_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "red_brick_seed",
       "tulip_seed",
       "yellow_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 29,
+    "row": 60,
+    "tier": "3",
     "names": [
       "Glass pane",
       "Stone",
       "Glass block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "glass_panel",
       "stone",
       "glass"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "glass_panel_seed",
       "stone_seed",
       "glass_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 30,
+    "row": 62,
+    "tier": "3",
     "names": [
       "Wood wall",
       "Dried hay",
       "Hay bales"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_wallpaper",
       "hay",
       "hay_bales"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_background_seed",
       "hay_seed",
       "hay_bales_seed"
-    ]
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 31,
+    "row": 64,
+    "tier": "3",
     "names": [
       "Magma stone",
       "Stone",
       "Hellbrick"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       null,
       "stone",
       null
     ],
+    "method": "splicing",
+    "missing_items": [
+      "Magma stone",
+      "Hellbrick"
+    ],
     "status": "missing_items"
   },
   {
-    "row": 32,
+    "row": 66,
+    "tier": "4",
     "names": [
       "Wood block",
       "Wooden platform",
       "Wooden ladder"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_block",
       "wood_platform",
       "wooden_ladder"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_block_seed",
       "wood_platform_seed",
       "wooden_ladder_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 33,
+    "row": 68,
+    "tier": "4",
     "names": [
       "Wooden door",
       "Wooden platform",
       "Wooden entrance"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_door",
       "wood_platform",
       "wooden_entrance"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_door_seed",
       "wood_platform_seed",
       "wooden_entrance_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 34,
+    "row": 70,
+    "tier": "4",
     "names": [
       "Big Vine",
       "Wooden table",
       "Wooden chair"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "vines_2",
       "wooden_table",
       "wooden_chair"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "vines_2_seed",
       "wooden_table_seed",
       "wooden_chair_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 35,
+    "row": 72,
+    "tier": "4",
     "names": [
       "Wood block",
       "Brown block",
       "Wooden Box"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_block",
       "brown_block",
       "wooden_box"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_block_seed",
       "brown_block_seed",
       "wooden_box_seed"
-    ]
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 36,
+    "row": 74,
+    "tier": "4",
     "names": [
       "Stone brick",
       "Black block",
       "Grimstone"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "stone_brick",
       "black_block",
       "green_brick"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "stone_brick_seed",
       "black_block_seed",
       "green_brick_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 37,
+    "row": 76,
+    "tier": "4",
     "names": [
       "Red block",
       "Yellow block",
       "Orange block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "red_block",
       "yellow_block",
       "orange_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "red_block_seed",
       "yellow_block_seed",
       "orange_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 38,
+    "row": 78,
+    "tier": "4",
     "names": [
       "Yellow block",
       "Solid ice block",
       "Blue block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "yellow_block",
       "ice_block",
       "blue_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "yellow_block_seed",
       "ice_block_seed",
       "blue_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 39,
+    "row": 80,
+    "tier": "4",
     "names": [
       "Red block",
       "White block",
       "Pink block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "red_block",
       "white_block",
       "pink_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "red_block_seed",
       "white_block_seed",
       "pink_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 40,
+    "row": 82,
+    "tier": "4",
     "names": [
       "White block",
       "Red brick wall",
       "White wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "white_block",
       "red_brick_wall",
       "white_wallpaper"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "white_block_seed",
       "red_brick_wall_seed",
       "white_wallpaper_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 41,
+    "row": 84,
+    "tier": "4",
     "names": [
       "Red block",
       "Red brick wall",
       "Red wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "red_block",
       "red_brick_wall",
       "red_wallpaper"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "red_block_seed",
       "red_brick_wall_seed",
       "red_wallpaper_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 42,
+    "row": 86,
+    "tier": "4",
     "names": [
       "Green block",
       "Red brick wall",
       "Green wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "green_block",
       "red_brick_wall",
       "green_wallpaper"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "green_block_seed",
       "red_brick_wall_seed",
       "green_wallpaper_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 43,
+    "row": 88,
+    "tier": "4",
     "names": [
       "Brown block",
       "Red brick wall",
       "Brown wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "brown_block",
       "red_brick_wall",
       "brown_wallpaper"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "brown_block_seed",
       "red_brick_wall_seed",
       "brown_wallpaper_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 44,
+    "row": 90,
+    "tier": "4",
     "names": [
       "Gray block",
       "Red brick wall",
       "Gray wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "grey_block",
       "red_brick_wall",
       "grey_wallpaper"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "grey_block_seed",
       "red_brick_wall_seed",
       "grey_wallpaper_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 45,
+    "row": 92,
+    "tier": "4",
     "names": [
       "Black block",
       "Red brick wall",
       "Black wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "black_block",
       "red_brick_wall",
       "black_wallpaper"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "black_block_seed",
       "red_brick_wall_seed",
       "black_wallpaper_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 46,
+    "row": 94,
+    "tier": "4",
     "names": [
       "Yellow block",
       "Red brick wall",
       "Yellow wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "yellow_block",
       "red_brick_wall",
       "yellow_wallpaper"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "yellow_block_seed",
       "red_brick_wall_seed",
       "yellow_wallpaper_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 47,
+    "row": 96,
+    "tier": "4",
     "names": [
       "Hay bales",
       "Wood block",
       "Barn block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "hay_bales",
       "wooden_block",
       "barn_block"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "hay_bales_seed",
       "wooden_block_seed",
       "barn_block_seed"
+    ],
+    "missing_seeds": [],
+    "status": "retired_item",
+    "retired_items": [
+      "Barn block"
     ]
   },
   {
-    "row": 48,
+    "row": 98,
+    "tier": "4",
     "names": [
       "Red brick",
       "Stone brick",
       "Building brick block"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "red_brick",
       "stone_brick",
-      null
+      "building_brick_block"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "red_brick_seed",
+      "stone_brick_seed",
+      "building_brick_block_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 49,
+    "row": 100,
+    "tier": "4",
     "names": [
       "Stone brick wall",
       "Stone brick",
       "Polished stone brick"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "stone_brick_wall",
       "stone_brick",
       "white_brick_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "stone_brick_wall_seed",
       "stone_brick_seed",
       "white_brick_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 50,
+    "row": 102,
+    "tier": "4",
     "names": [
       "Wooden sign",
       "Mysterious sign",
       "Big sign"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "sign",
       "wooden_crappy_sign",
-      null
+      "big_sign"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "sign_seed",
+      "wooden_crappy_sign_seed",
+      "big_sign_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 51,
+    "row": 104,
+    "tier": "4",
     "names": [
       "Red brick wall",
       "Blue block",
       "Blue strip wallpaper"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "red_brick_wall",
       "blue_block",
-      null
+      "blue_stripe_wall"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "red_brick_wall_seed",
+      "blue_block_seed",
+      "blue_stripe_wall_seed"
+    ],
+    "missing_seeds": [],
+    "status": "conflicting_pair",
+    "conflict_with_row": 148
   },
   {
-    "row": 52,
+    "row": 106,
+    "tier": "4",
     "names": [
       "Red brick wall",
       "Blue strip wallpaper",
       "Red strip wallpaper"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "red_brick_wall",
-      null,
-      null
+      "blue_stripe_wall",
+      "red_stripe_wall"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "red_brick_wall_seed",
+      "blue_stripe_wall_seed",
+      "red_stripe_wall_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 53,
+    "row": 108,
+    "tier": "4",
     "names": [
       "Hellbrick",
       "Stone brick wall",
       "Hellbrick wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       null,
       "stone_brick_wall",
       null
     ],
+    "method": "splicing",
+    "missing_items": [
+      "Hellbrick",
+      "Hellbrick wall"
+    ],
     "status": "missing_items"
   },
   {
-    "row": 54,
+    "row": 110,
+    "tier": "5",
     "names": [
       "Wooden chair",
       "Green wall",
       "Climbing vine"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_chair",
       "green_wallpaper",
       "climbing_vine"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_chair_seed",
       "green_wallpaper_seed",
       "climbing_vine_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 55,
+    "row": 112,
+    "tier": "5",
     "names": [
       "Wood block",
       "Wooden Box",
       "Wooden Barrel"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_block",
       "wooden_box",
       "wooden_barrel"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_block_seed",
       "wooden_box_seed",
       "wooden_barrel_seed"
-    ]
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 56,
+    "row": 114,
+    "tier": "5",
     "names": [
       "Wooden Box",
       "Lava",
       "Lantern"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_box",
       "lava",
       "lantern"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_box_seed",
       "lava_seed",
       "lantern_seed"
-    ]
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 57,
+    "row": 116,
+    "tier": "5",
     "names": [
       "Grimstone",
       "Cave Wall",
       "Grimstone wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "green_brick",
       "cave_background",
       "green_brick_wall"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "green_brick_seed",
       "cave_background_seed",
       "green_brick_wall_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 58,
+    "row": 118,
+    "tier": "5",
     "names": [
       "Blue block",
       "Red strip wallpaper",
       "Aqua block"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "blue_block",
-      null,
+      "red_stripe_wall",
       "aqua_block"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "blue_block_seed",
+      "red_stripe_wall_seed",
+      "aqua_block_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 59,
+    "row": 120,
+    "tier": "5",
     "names": [
       "Red block",
       "Blue strip wallpaper",
       "Purple block"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "red_block",
-      null,
+      "blue_stripe_wall",
       "purple_block"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "red_block_seed",
+      "blue_stripe_wall_seed",
+      "purple_block_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 60,
+    "row": 122,
+    "tier": "5",
     "names": [
       "Red block",
       "Grimstone",
       "Dark red block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "red_block",
       "green_brick",
       "maroon_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "red_block_seed",
       "green_brick_seed",
       "dark_red_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 61,
+    "row": 124,
+    "tier": "5",
     "names": [
       "Green block",
       "Grimstone",
       "Dark green block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "green_block",
       "green_brick",
       "dark_green_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "green_block_seed",
       "green_brick_seed",
       "dark_green_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 62,
+    "row": 126,
+    "tier": "5",
     "names": [
       "Orange block",
       "Grimstone",
       "Dark orange block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "orange_block",
       "green_brick",
       "dark_orange_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "orange_block_seed",
       "green_brick_seed",
       "light_brown_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 63,
+    "row": 128,
+    "tier": "5",
     "names": [
       "Yellow block",
       "Grimstone",
       "Dark yellow block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "yellow_block",
       "green_brick",
       "dark_yellow_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "yellow_block_seed",
       "green_brick_seed",
       "dark_yellow_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 64,
+    "row": 130,
+    "tier": "5",
     "names": [
       "Blue block",
       "Grimstone",
       "Dark blue block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "blue_block",
       "green_brick",
       "dark_blue_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "blue_block_seed",
       "green_brick_seed",
       "dark_blue_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 65,
+    "row": 132,
+    "tier": "5",
     "names": [
       "Pink block",
       "Grimstone",
       "Dark pink block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "pink_block",
       "green_brick",
       "dark_pink_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "pink_block_seed",
       "green_brick_seed",
       "dark_pink_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 66,
+    "row": 134,
+    "tier": "5",
     "names": [
       "Blue block",
       "Yellow wall",
       "Star wallpaper"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "blue_block",
       "yellow_wallpaper",
-      null
+      "star_wall"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "blue_block_seed",
+      "yellow_wallpaper_seed",
+      "star_wall_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 67,
+    "row": 136,
+    "tier": "5",
     "names": [
       "Red block",
       "Barn block",
       "Pastel red block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "red_block",
       "barn_block",
       "red_pastel_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "red_block_seed",
       "barn_block_seed",
       "red_pastel_block_seed"
     ],
-    "status": "active"
+    "missing_seeds": [],
+    "status": "retired_item",
+    "retired_items": [
+      "Barn block"
+    ]
   },
   {
-    "row": 68,
+    "row": 138,
+    "tier": "5",
     "names": [
       "Green block",
       "Barn block",
       "Pastel green block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "green_block",
       "barn_block",
       "green_pastel_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "green_block_seed",
       "barn_block_seed",
       "green_pastel_block_seed"
     ],
-    "status": "active"
+    "missing_seeds": [],
+    "status": "retired_item",
+    "retired_items": [
+      "Barn block"
+    ]
   },
   {
-    "row": 69,
+    "row": 140,
+    "tier": "5",
     "names": [
       "Yellow block",
       "Barn block",
       "Pastel yellow block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "yellow_block",
       "barn_block",
       "yellow_pastel_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "yellow_block_seed",
       "barn_block_seed",
       "yellow_pastel_block_seed"
     ],
-    "status": "active"
+    "missing_seeds": [],
+    "status": "retired_item",
+    "retired_items": [
+      "Barn block"
+    ]
   },
   {
-    "row": 70,
+    "row": 142,
+    "tier": "5",
     "names": [
       "Orange block",
       "Barn block",
       "Pastel orange block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "orange_block",
       "barn_block",
       "orange_pastel_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "orange_block_seed",
       "barn_block_seed",
       "orange_pastel_block_seed"
     ],
-    "status": "active"
+    "missing_seeds": [],
+    "status": "retired_item",
+    "retired_items": [
+      "Barn block"
+    ]
   },
   {
-    "row": 71,
+    "row": 144,
+    "tier": "5",
     "names": [
       "Pink block",
       "Barn block",
       "Pastel pink block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "pink_block",
       "barn_block",
       "pink_pastel_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "pink_block_seed",
       "barn_block_seed",
       "pink_pastel_block_seed"
     ],
-    "status": "active"
+    "missing_seeds": [],
+    "status": "retired_item",
+    "retired_items": [
+      "Barn block"
+    ]
   },
   {
-    "row": 72,
+    "row": 146,
+    "tier": "5",
     "names": [
       "Orange block",
       "Red brick wall",
       "Orange wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "orange_block",
       "red_brick_wall",
       "orange_wallpaper"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "orange_block_seed",
       "red_brick_wall_seed",
       "orange_wallpaper_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 73,
+    "row": 148,
+    "tier": "5",
     "names": [
       "Blue block",
       "Red brick wall",
       "Blue wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "blue_block",
       "red_brick_wall",
       "blue_wallpaper"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "blue_block_seed",
       "red_brick_wall_seed",
       "blue_wallpaper_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 74,
+    "row": 150,
+    "tier": "5",
     "names": [
       "Pink block",
       "Red brick wall",
       "Pink wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "pink_block",
       "red_brick_wall",
       "pink_wallpaper"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "pink_block_seed",
       "red_brick_wall_seed",
       "pink_wallpaper_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 75,
+    "row": 152,
+    "tier": "5",
     "names": [
       "Building brick block",
       "Polished stone brick",
       "Metal block"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
-      null,
+      "building_brick_block",
       "white_brick_block",
       "steel_block"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "building_brick_block_seed",
+      "white_brick_block_seed",
+      "steel_block_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 76,
+    "row": 154,
+    "tier": "5",
     "names": [
       "Grimstone",
       "Campfire",
       "Slime block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "green_brick",
       "campfire",
       "slime"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "green_brick_seed",
+      "campfire_seed",
+      null
+    ],
+    "missing_seeds": [
+      "Slime block"
+    ],
+    "status": "missing_seeds"
   },
   {
-    "row": 77,
+    "row": 156,
+    "tier": "5",
     "names": [
       "Fish horn",
       "Wooden Box",
       "Fish hanger"
+    ],
+    "colors": [
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      }
     ],
     "ids": [
       null,
       "wooden_box",
       "fish_hanger"
     ],
+    "method": "crafting",
+    "missing_items": [
+      "Fish horn"
+    ],
     "status": "missing_items"
   },
   {
-    "row": 78,
+    "row": 158,
+    "tier": "5",
     "names": [
       "Wooden window",
       "Barn block",
       "Barn Window"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_window",
       "barn_block",
       "barn_window"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_frame_seed",
       "barn_block_seed",
       "barn_window_seed"
     ],
-    "status": "active"
+    "missing_seeds": [],
+    "status": "retired_item",
+    "retired_items": [
+      "Barn block"
+    ]
   },
   {
-    "row": 79,
+    "row": 160,
+    "tier": "5",
     "names": [
       "Barn block",
       "Wood wall",
       "Barn wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "barn_block",
       "wooden_wallpaper",
       "barn_background"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "barn_block_seed",
       "wooden_background_seed",
       "barn_background_seed"
     ],
-    "status": "active"
+    "missing_seeds": [],
+    "status": "retired_item",
+    "retired_items": [
+      "Barn block"
+    ]
   },
   {
-    "row": 80,
+    "row": 162,
+    "tier": "5",
     "names": [
       "Barn block",
       "Wooden fence",
       "Farm fence"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "barn_block",
       "wooden_fence",
       "white_fence"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "barn_block_seed",
       "wooden_fence_seed",
       "white_fence_seed"
     ],
-    "status": "active"
+    "missing_seeds": [],
+    "status": "retired_item",
+    "retired_items": [
+      "Barn block"
+    ]
   },
   {
-    "row": 81,
+    "row": 164,
+    "tier": "5",
     "names": [
       "Barn block",
       "Wooden door",
       "Barn door"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "barn_block",
       "wooden_door",
       "barn_door"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "barn_block_seed",
       "wooden_door_seed",
       "barn_door_seed"
     ],
-    "status": "active"
+    "missing_seeds": [],
+    "status": "retired_item",
+    "retired_items": [
+      "Barn block"
+    ]
   },
   {
-    "row": 82,
+    "row": 166,
+    "tier": "5",
     "names": [
       "Dried hay",
       "Grimstone",
       "Sugarcane"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "hay",
       "green_brick",
       "sugar_cane"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "hay_seed",
       "green_brick_seed",
       "sugar_cane_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 83,
+    "row": 168,
+    "tier": "5",
     "names": [
       "Building brick block",
       "Wooden table",
       "House table"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
-      null,
+      "building_brick_block",
       "wooden_table",
       "side_table"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "building_brick_block_seed",
+      "wooden_table_seed",
+      "side_table_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 84,
+    "row": 170,
+    "tier": "5",
     "names": [
       "Building brick block",
       "Wooden door",
       "House door"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
-      null,
+      "building_brick_block",
       "wooden_door",
       "royal_door"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "building_brick_block_seed",
+      "wooden_door_seed",
+      "royal_door_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 85,
+    "row": 172,
+    "tier": "5",
     "names": [
       "Wooden window",
       "Barn window",
       "White window"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_window",
       "barn_window",
       "royal_window"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_frame_seed",
       "barn_window_seed",
       "royal_window_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 86,
+    "row": 174,
+    "tier": "5",
     "names": [
       "Building brick block",
       "Cave wall",
       "Building brick wall"
     ],
-    "ids": [
-      null,
-      "cave_background",
-      null
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
-    "status": "missing_items"
+    "ids": [
+      "building_brick_block",
+      "cave_background",
+      "building_brick_wall"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "building_brick_block_seed",
+      "cave_background_seed",
+      "building_brick_wall_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 87,
+    "row": 176,
+    "tier": "5",
     "names": [
       "Wooden chair",
       "House door",
       "Fireplace"
+    ],
+    "colors": [
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      }
     ],
     "ids": [
       "wooden_chair",
       "royal_door",
       "fireplace"
     ],
-    "seeds": [
-      "wooden_chair_seed",
-      "royal_door_seed",
-      "fireplace_seed"
-    ],
-    "status": "active"
+    "method": "crafting",
+    "missing_items": [],
+    "status": "crafting_active",
+    "recipe_id": "sheet_fireplace"
   },
   {
-    "row": 88,
+    "row": 178,
+    "tier": "5",
     "names": [
       "Building brick block",
       "Building brick wall",
       "Building brick platform"
     ],
-    "ids": [
-      null,
-      null,
-      null
+    "colors": [
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      }
     ],
-    "status": "missing_items"
+    "ids": [
+      "building_brick_block",
+      "building_brick_wall",
+      "red_brick_platform"
+    ],
+    "method": "crafting",
+    "missing_items": [],
+    "status": "crafting_active",
+    "recipe_id": "sheet_red_brick_platform"
   },
   {
-    "row": 89,
+    "row": 180,
+    "tier": "5",
     "names": [
       "Polished stone brick",
       "Stone brick wall",
       "Polished stone wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "white_brick_block",
       "stone_brick_wall",
       "white_brick_wall"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "white_brick_block_seed",
       "stone_brick_wall_seed",
       "white_brick_wall_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 90,
+    "row": 182,
+    "tier": "5",
     "names": [
       "Polished stone wall",
       "Polished stone brick",
       "Polished stone platform"
+    ],
+    "colors": [
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      }
     ],
     "ids": [
       "white_brick_wall",
       "white_brick_block",
       "white_brick_platform"
     ],
-    "seeds": [
-      "white_brick_wall_seed",
-      "white_brick_block_seed",
-      "white_brick_platform_seed"
-    ],
-    "status": "active"
+    "method": "crafting",
+    "missing_items": [],
+    "status": "crafting_active",
+    "recipe_id": "sheet_white_brick_platform"
   },
   {
-    "row": 91,
+    "row": 184,
+    "tier": "5",
     "names": [
       "Wooden ladder",
       "Wooden chair",
       "Park bench"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "wooden_ladder",
       "wooden_chair",
-      null
+      "park_bench"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "wooden_ladder_seed",
+      "wooden_chair_seed",
+      "park_bench_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 92,
+    "row": 186,
+    "tier": "5",
     "names": [
       "Wooden sign",
       "Big sign",
       "Right directional sign"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "sign",
-      null,
-      null
+      "big_sign",
+      "right_directional_sign"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "sign_seed",
+      "big_sign_seed",
+      "right_directional_sign_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 93,
+    "row": 188,
+    "tier": "5",
     "names": [
       "Right directional sign",
       "Big sign",
       "Left directional sign"
     ],
-    "ids": [
-      null,
-      null,
-      null
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
-    "status": "missing_items"
+    "ids": [
+      "right_directional_sign",
+      "big_sign",
+      "left_directional_sign"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "right_directional_sign_seed",
+      "big_sign_seed",
+      "left_directional_sign_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 94,
+    "row": 190,
+    "tier": "5",
     "names": [
       "Water bucket",
       "Blue strip wallpaper",
       "Aquatic line wallpaper"
     ],
+    "colors": [
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      }
+    ],
     "ids": [
       "water_bucket",
-      null,
-      null
+      "blue_stripe_wall",
+      "aquatic_line_wall"
     ],
-    "status": "missing_items"
+    "method": "crafting",
+    "missing_items": [],
+    "status": "crafting_active",
+    "recipe_id": "sheet_aquatic_line_wall"
   },
   {
-    "row": 95,
+    "row": 192,
+    "tier": "5",
     "names": [
       "Red strip wallpaper",
       "Blue strip wallpaper",
       "Complementary line wallpaper"
     ],
-    "ids": [
-      null,
-      null,
-      null
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
-    "status": "missing_items"
+    "ids": [
+      "red_stripe_wall",
+      "blue_stripe_wall",
+      "complementary_line_wall"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "red_stripe_wall_seed",
+      "blue_stripe_wall_seed",
+      "complementary_line_wall_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 96,
+    "row": 194,
+    "tier": "5",
     "names": [
       "Black wall",
       "White wall",
       "Checkered wallpaper"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "black_wallpaper",
       "white_wallpaper",
-      null
+      "checkered_wall"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "black_wallpaper_seed",
+      "white_wallpaper_seed",
+      "checkered_wall_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 97,
+    "row": 196,
+    "tier": "5",
     "names": [
       "Wooden box",
       "Yellow block",
       "Pencil Block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_box",
       "yellow_block",
       null
     ],
+    "method": "splicing",
+    "missing_items": [
+      "Pencil Block"
+    ],
     "status": "missing_items"
   },
   {
-    "row": 98,
+    "row": 198,
+    "tier": "6",
     "names": [
       "Metal block",
       "House door",
       "Dungeon Door"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "steel_block",
       "royal_door",
       "dungeon_door"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "steel_block_seed",
       "royal_door_seed",
       "dungeon_door_seed"
-    ]
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 99,
+    "row": 200,
+    "tier": "6",
     "names": [
       "Metal block",
       "Wooden box",
       "Sturdy box"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "steel_block",
       "wooden_box",
       "sturdy_box"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "steel_block_seed",
       "wooden_box_seed",
       "sturdy_box_seed"
-    ]
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 100,
+    "row": 202,
+    "tier": "6",
     "names": [
       "Farm fence",
       "Wooden box",
       "Wagon Wheel"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "white_fence",
       "wooden_box",
       "wagon_wheel"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "white_fence_seed",
       "wooden_box_seed",
       "wagon_wheel_seed"
-    ]
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 101,
+    "row": 204,
+    "tier": "6",
     "names": [
       "Dark yellow block",
       "Dark green block",
       "Dark aqua block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "dark_yellow_block",
       "dark_green_block",
       "dark_aqua_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "dark_yellow_block_seed",
       "dark_green_block_seed",
       "dark_aqua_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 102,
+    "row": 206,
+    "tier": "6",
     "names": [
       "Dark red block",
       "Dark blue block",
       "Dark purple block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "maroon_block",
       "dark_blue_block",
       "dark_purple_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "dark_red_block_seed",
       "dark_blue_block_seed",
       "dark_purple_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 103,
+    "row": 208,
+    "tier": "6",
     "names": [
       "Blue block",
       "Pastel red block",
       "Pastel purple block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "blue_block",
       "red_pastel_block",
       "purple_pastel_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "blue_block_seed",
       "red_pastel_block_seed",
       "purple_pastel_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 104,
+    "row": 210,
+    "tier": "6",
     "names": [
       "Pastel yellow block",
       "Blue block",
       "Pastel blue block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "yellow_pastel_block",
       "blue_block",
       "blue_pastel_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "yellow_pastel_block_seed",
       "blue_block_seed",
       "blue_pastel_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 105,
+    "row": 212,
+    "tier": "6",
     "names": [
       "Pastel yellow block",
       "Pastel red block",
       "Pastel bunny block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "yellow_pastel_block",
       "red_pastel_block",
       "happy_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "yellow_pastel_block_seed",
       "red_pastel_block_seed",
       "happy_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 106,
+    "row": 214,
+    "tier": "6",
     "names": [
       "Pastel blue block",
       "Lily",
       "Pastel lily block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "blue_pastel_block",
       "lily",
       "pastel_flower_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "blue_pastel_block_seed",
       "lily_seed",
       "pastel_flower_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 107,
+    "row": 216,
+    "tier": "6",
     "names": [
       "Dark purple block",
       "Red block",
       "Rainbow block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "dark_purple_block",
       "red_block",
       "rainbow_block"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "dark_purple_block_seed",
       "red_block_seed",
       "gem_block_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 108,
+    "row": 218,
+    "tier": "6",
     "names": [
       "Building brick wall",
       "Aqua block",
       "Aqua wall"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
-      null,
+      "building_brick_wall",
       "aqua_block",
       "aqua_wallpaper"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "building_brick_wall_seed",
+      "aqua_block_seed",
+      "aqua_wallpaper_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 109,
+    "row": 220,
+    "tier": "6",
     "names": [
       "Purple block",
       "Building brick wall",
       "Purple wall"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "purple_block",
-      null,
+      "building_brick_wall",
       "purple_wallpaper"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "purple_block_seed",
+      "building_brick_wall_seed",
+      "purple_wallpaper_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 110,
+    "row": 222,
+    "tier": "6",
     "names": [
       "Gray wall",
       "Metal block",
       "Metal wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "grey_wallpaper",
       "steel_block",
       "steel_background"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "grey_wallpaper_seed",
       "steel_block_seed",
       "steel_background_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 111,
+    "row": 224,
+    "tier": "6",
     "names": [
       "Big sign",
       "Metal block",
       "Metal sign"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
-      null,
+      "big_sign",
       "steel_block",
       "steel_sign"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "big_sign_seed",
+      "steel_block_seed",
+      "steel_sign_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 112,
+    "row": 226,
+    "tier": "6",
     "names": [
       "Barn door",
       "Metal block",
       "Metal door"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "barn_door",
       "steel_block",
       "steel_door"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "barn_door_seed",
       "steel_block_seed",
       "steel_door_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 113,
+    "row": 228,
+    "tier": "6",
     "names": [
       "Barn door",
       "House door",
       "Screen door"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "barn_door",
       "royal_door",
       "screen_door"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "barn_door_seed",
       "royal_door_seed",
       "screen_door_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 114,
+    "row": 230,
+    "tier": "6",
     "names": [
       "Metal block",
       "Campfire",
       "Ceiling lamp"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "steel_block",
       "campfire",
       "ceiling_lamp"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "steel_block_seed",
+      "campfire_seed",
+      null
+    ],
+    "missing_seeds": [
+      "Ceiling lamp"
+    ],
+    "status": "missing_seeds"
   },
   {
-    "row": 115,
+    "row": 232,
+    "tier": "6",
     "names": [
       "Wooden ladder",
       "Metal block",
       "Metal ladder"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_ladder",
       "steel_block",
       "steel_ladder"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wooden_ladder_seed",
       "steel_block_seed",
       "steel_ladder_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 116,
+    "row": 234,
+    "tier": "6",
     "names": [
       "Wooden platform",
       "Metal block",
       "Metal platform"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wood_platform",
       "steel_block",
       "steel_platform"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "wood_platform_seed",
       "steel_block_seed",
       "steel_platform_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 117,
+    "row": 236,
+    "tier": "6",
     "names": [
       "Left directional sign",
       "Metal block",
       "Spike"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
-      null,
+      "left_directional_sign",
       "steel_block",
       "saw_blade"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "left_directional_sign_seed",
+      "steel_block_seed",
+      "saw_blade_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 118,
+    "row": 238,
+    "tier": "6",
     "names": [
       "Spike",
       "Grimstone",
       "Dark Spike"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "saw_blade",
       "green_brick",
       "big_spike"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "saw_blade_seed",
       "green_brick_seed",
       "big_spike_seed"
-    ]
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 119,
+    "row": 240,
+    "tier": "6",
     "names": [
       "Wooden barrel",
       "Wooden sign",
       "Wooden shelf"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_barrel",
       "sign",
       null
     ],
+    "method": "splicing",
+    "missing_items": [
+      "Wooden shelf"
+    ],
     "status": "missing_items"
   },
   {
-    "row": 120,
+    "row": 242,
+    "tier": "6",
     "names": [
       "Big sign",
       "Pencil block",
       "Mailbox"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
-      null,
+      "big_sign",
       null,
       "mail_box"
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Pencil block"
     ],
     "status": "missing_items"
   },
   {
-    "row": 121,
+    "row": 244,
+    "tier": "6",
     "names": [
       "Wooden sign",
       "Metal block",
       "Electrical pole"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "sign",
       "steel_block",
       "electric_pole"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "sign_seed",
       "steel_block_seed",
       "electric_pole_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 122,
+    "row": 246,
+    "tier": "6",
     "names": [
       "Barn block",
       "Wooden barrel",
       "Composer 0%-49%"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "barn_block",
       "wooden_barrel",
       null
     ],
+    "method": "splicing",
+    "missing_items": [
+      "Composer 0%-49%"
+    ],
     "status": "missing_items"
   },
   {
-    "row": 123,
+    "row": 248,
+    "tier": "6",
     "names": [
       "Barn block",
       "Right directional sign",
       "Weathervane"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "barn_block",
-      null,
-      null
+      "right_directional_sign",
+      "weathervane"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "barn_block_seed",
+      "right_directional_sign_seed",
+      "weathervane_seed"
+    ],
+    "missing_seeds": [],
+    "status": "retired_item",
+    "retired_items": [
+      "Barn block"
+    ]
   },
   {
-    "row": 124,
+    "row": 250,
+    "tier": "6",
     "names": [
       "Polished stone brick",
       "Wooden barrel",
       "Pillar block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "white_brick_block",
       "wooden_barrel",
       "pillar"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "white_brick_block_seed",
+      "wooden_barrel_seed",
+      null
+    ],
+    "missing_seeds": [
+      "Pillar block"
+    ],
+    "status": "missing_seeds"
   },
   {
-    "row": 125,
+    "row": 252,
+    "tier": "6",
     "names": [
       "Wooden chair",
       "Polished stone wall",
       "Modern Chair"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "wooden_chair",
       "white_brick_wall",
-      null
+      "modern_chair"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "wooden_chair_seed",
+      "white_brick_wall_seed",
+      "modern_chair_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 126,
+    "row": 254,
+    "tier": "6",
     "names": [
       "Big sign",
       "Polished stone wall",
       "Dresser"
     ],
-    "ids": [
-      null,
-      "white_brick_wall",
-      null
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
-    "status": "missing_items"
+    "ids": [
+      "big_sign",
+      "white_brick_wall",
+      "dresser"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "big_sign_seed",
+      "white_brick_wall_seed",
+      "dresser_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 127,
+    "row": 256,
+    "tier": "6",
     "names": [
       "White block",
       "Polished stone wall",
       "Toilet"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "white_block",
       "white_brick_wall",
       "toilet"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "white_block_seed",
       "white_brick_wall_seed",
       "toilet_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 128,
+    "row": 258,
+    "tier": "6",
     "names": [
       "White block",
       "Barn Window",
       "Sink"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "white_block",
       "barn_window",
       "sink"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "white_block_seed",
       "barn_window_seed",
       "sink_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 129,
+    "row": 260,
+    "tier": "6",
     "names": [
       "House table",
       "Blue block",
       "Bed"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "side_table",
       "blue_block",
       "bed"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "side_table_seed",
       "blue_block_seed",
       "bed_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 130,
+    "row": 262,
+    "tier": "6",
     "names": [
       "Red wall",
       "Left directional sign",
       "Sale sign"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "red_wallpaper",
-      null,
-      null
+      "left_directional_sign",
+      "sale_sign"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "red_wallpaper_seed",
+      "left_directional_sign_seed",
+      "sale_sign_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 131,
+    "row": 264,
+    "tier": "6",
     "names": [
       "Hellbrick",
       "Building brick platform",
       "Hellbrick platform"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       null,
-      null,
+      "red_brick_platform",
       null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Hellbrick",
+      "Hellbrick platform"
     ],
     "status": "missing_items"
   },
   {
-    "row": 132,
+    "row": 266,
+    "tier": "7",
     "names": [
       "Spike",
       "House door",
       "Portcullis"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "saw_blade",
       "royal_door",
       "portcullis"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "saw_blade_seed",
       "royal_door_seed",
       "portcullis_seed"
-    ]
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 133,
+    "row": 268,
+    "tier": "7",
     "names": [
       "Metal door",
       "Metal sign",
       "Metal entrance"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "steel_door",
       "steel_sign",
       "mechanical_entrance"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "steel_door_seed",
       "steel_sign_seed",
       "mechanical_entrance_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 134,
+    "row": 270,
+    "tier": "7",
     "names": [
       "Wooden barrel",
       "Dark spike",
       "Toxic barrel"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "wooden_barrel",
       "big_spike",
       "biohazard_barrel"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "wooden_barrel_seed",
+      "big_spike_seed",
+      null
+    ],
+    "missing_seeds": [
+      "Toxic barrel"
+    ],
+    "status": "missing_seeds"
   },
   {
-    "row": 135,
+    "row": 272,
+    "tier": "7",
     "names": [
       "Star wallpaper",
       "Rainbow block",
       "Starry block"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
-      null,
+      "star_wall",
       "rainbow_block",
       "star_block"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "star_wall_seed",
+      "gem_block_seed",
+      null
+    ],
+    "missing_seeds": [
+      "Starry block"
+    ],
+    "status": "missing_seeds"
   },
   {
-    "row": 136,
+    "row": 274,
+    "tier": "7",
     "names": [
       "Mailbox",
       "Blue block",
       "Blue mailbox"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "mail_box",
       "blue_block",
       "blue_mail_box"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "mail_box_seed",
       "blue_block_seed",
       "blue_mail_box_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 137,
+    "row": 276,
+    "tier": "7",
     "names": [
       "Wooden sign",
       "Wooden shelf",
       "Donation box"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "sign",
       null,
       "donation_box"
     ],
+    "method": "splicing",
+    "missing_items": [
+      "Wooden shelf"
+    ],
     "status": "missing_items"
   },
   {
-    "row": 138,
+    "row": 278,
+    "tier": "7",
     "names": [
       "Metal wall",
       "Electrical pole",
       "Metal pad"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "steel_background",
       "electric_pole",
       "metal_pad"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "steel_background_seed",
       "electric_pole_seed",
       "metal_pad_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 139,
+    "row": 280,
+    "tier": "7",
     "names": [
       "Glass block",
       "Dresser",
       "Empty Jar"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "glass",
-      null,
+      "dresser",
       "empty_jar"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "glass_seed",
+      "dresser_seed",
+      "empty_jar_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 140,
+    "row": 282,
+    "tier": "7",
     "names": [
       "Polished stone brick",
       "Sink",
       "Well"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "white_brick_block",
       "sink",
       "water_well"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "white_brick_block_seed",
       "sink_seed",
       "water_well_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 141,
+    "row": 284,
+    "tier": "7",
     "names": [
       "Grass",
       "Weathervane",
       "Chicken"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "grass",
-      null,
+      "weathervane",
       "chicken"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "grass_seed",
+      "weathervane_seed",
+      null
+    ],
+    "missing_seeds": [
+      "Chicken"
+    ],
+    "status": "missing_seeds"
   },
   {
-    "row": 142,
+    "row": 286,
+    "tier": "7",
     "names": [
       "Ceiling lamp",
       "Building brick block",
       "House lamp"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "ceiling_lamp",
-      null,
+      "building_brick_block",
       "lamp"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      null,
+      "building_brick_block_seed",
+      "lamp_seed"
+    ],
+    "missing_seeds": [
+      "Ceiling lamp"
+    ],
+    "status": "missing_seeds"
   },
   {
-    "row": 143,
+    "row": 288,
+    "tier": "7",
     "names": [
       "Sink",
       "Glass pane",
       "Fishbowl"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "sink",
       "glass_panel",
       "fish_bowl"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "sink_seed",
       "glass_panel_seed",
       "fish_bowl_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 144,
+    "row": 290,
+    "tier": "7",
     "names": [
       "Park bench",
       "Bed",
       "Couch"
     ],
-    "ids": [
-      null,
-      "bed",
-      "green_couch"
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
-    "status": "missing_items"
+    "ids": [
+      "park_bench",
+      "bed",
+      "blue_couch"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "park_bench_seed",
+      "bed_seed",
+      "blue_couch_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 145,
+    "row": 292,
+    "tier": "7",
     "names": [
       "House door",
       "Dungeon door",
       "House entrance"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "royal_door",
       "dungeon_door",
       "royal_entrance"
     ],
-    "status": "active",
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "royal_door_seed",
       "dungeon_door_seed",
       "royal_entrance_seed"
-    ]
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 146,
+    "row": 294,
+    "tier": "7",
     "names": [
       "White window",
       "Pastel lily block",
       "Purple curtained window"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "royal_window",
       "pastel_flower_block",
       "purple_curtains"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "royal_window_seed",
       "pastel_flower_block_seed",
       "purple_curtains_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 147,
+    "row": 296,
+    "tier": "7",
     "names": [
       "White window",
       "Pastel bunny block",
       "Pink curtained window"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "royal_window",
       "happy_block",
       "pink_curtains"
     ],
+    "method": "splicing",
+    "missing_items": [],
     "seeds": [
       "royal_window_seed",
       "happy_block_seed",
       "pink_curtains_seed"
     ],
+    "missing_seeds": [],
     "status": "active"
   },
   {
-    "row": 148,
+    "row": 298,
+    "tier": "7",
     "names": [
       "Toilet",
       "Park bench",
-      "Bathtub"
+      "Bathub"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
     "ids": [
       "toilet",
-      null,
+      "park_bench",
       "bathtub"
     ],
-    "status": "missing_items"
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "toilet_seed",
+      "park_bench_seed",
+      "bathtub_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 149,
+    "row": 300,
+    "tier": "7",
     "names": [
       "Sale sign",
       "Aqua block",
       "Street Sign"
     ],
-    "ids": [
-      null,
-      "aqua_block",
-      null
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
     ],
-    "status": "missing_items"
+    "ids": [
+      "sale_sign",
+      "aqua_block",
+      "street_sign"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "sale_sign_seed",
+      "aqua_block_seed",
+      "street_sign_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
   },
   {
-    "row": 150,
+    "row": 302,
+    "tier": "7",
     "names": [
       "Metal ladder",
       "House door",
       "Ventilation"
     ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
     "ids": [
       "steel_ladder",
       "royal_door",
+      "ventilation"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "steel_ladder_seed",
+      "royal_door_seed",
+      "ventilation_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
+  },
+  {
+    "row": 304,
+    "tier": "7",
+    "names": [
+      "Pencil block",
+      "Wooden shelf",
+      "Cozy chalkboard"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      null,
+      null,
       null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Pencil block",
+      "Wooden shelf",
+      "Cozy chalkboard"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 306,
+    "tier": "7",
+    "names": [
+      "Black block",
+      "Ceiling lamp",
+      "Neon Block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "black_block",
+      "ceiling_lamp",
+      null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Neon Block"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 308,
+    "tier": "8",
+    "names": [
+      "Metal entrance",
+      "Metal block",
+      "Metal gate"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "mechanical_entrance",
+      "steel_block",
+      null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Metal gate"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 310,
+    "tier": "8",
+    "names": [
+      "Empty jar",
+      "Glass pane",
+      "Display wall"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "empty_jar",
+      "glass_panel",
+      null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Display wall"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 312,
+    "tier": "8",
+    "names": [
+      "Cozy chalkboard",
+      "Mailbox",
+      "Bulletin Board"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      null,
+      "mail_box",
+      "bulletin_board"
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Cozy chalkboard"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 314,
+    "tier": "8",
+    "names": [
+      "Dungeon door",
+      "House lamp",
+      "Checkpoint"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "dungeon_door",
+      "lamp",
+      "checkpoint"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "dungeon_door_seed",
+      "lamp_seed",
+      null
+    ],
+    "missing_seeds": [
+      "Checkpoint"
+    ],
+    "status": "missing_seeds"
+  },
+  {
+    "row": 316,
+    "tier": "8",
+    "names": [
+      "Fishbowl",
+      "House table",
+      "Sashimi table"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "fish_bowl",
+      "side_table",
+      "sashimi_table"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "fish_bowl_seed",
+      "side_table_seed",
+      "sashimi_table_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
+  },
+  {
+    "row": 318,
+    "tier": "8",
+    "names": [
+      "Metal pad",
+      "Metal block",
+      "Electrical box"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "metal_pad",
+      "steel_block",
+      null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Electrical box"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 320,
+    "tier": "8",
+    "names": [
+      "Well",
+      "Chicken",
+      "Cow"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "water_well",
+      "chicken",
+      "cow"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "water_well_seed",
+      null,
+      null
+    ],
+    "missing_seeds": [
+      "Chicken",
+      "Cow"
+    ],
+    "status": "missing_seeds"
+  },
+  {
+    "row": 322,
+    "tier": "8",
+    "names": [
+      "Electrical pole",
+      "Neon block",
+      "Modern TV"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "electric_pole",
+      null,
+      "tv"
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Neon block"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 324,
+    "tier": "8",
+    "names": [
+      "Star fragment",
+      "House door",
+      "Grand house door"
+    ],
+    "colors": [
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      }
+    ],
+    "ids": [
+      null,
+      "royal_door",
+      "grand_house_door"
+    ],
+    "method": "crafting",
+    "missing_items": [
+      "Star fragment"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 326,
+    "tier": "8",
+    "names": [
+      "Slime block",
+      "Chicken",
+      "Rubber duck"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "slime",
+      "chicken",
+      "rubber_duck"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      null,
+      null,
+      "rubber_duck_seed"
+    ],
+    "missing_seeds": [
+      "Slime block",
+      "Chicken"
+    ],
+    "status": "missing_seeds"
+  },
+  {
+    "row": 328,
+    "tier": "8",
+    "names": [
+      "Toxic barrel",
+      "Metal sign",
+      "Hazard sign"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "biohazard_barrel",
+      "steel_sign",
+      "hazard_sign"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      null,
+      "steel_sign_seed",
+      "hazard_sign_seed"
+    ],
+    "missing_seeds": [
+      "Toxic barrel"
+    ],
+    "status": "missing_seeds"
+  },
+  {
+    "row": 330,
+    "tier": "8",
+    "names": [
+      "Street Sign",
+      "Sale sign",
+      "Open sign"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "street_sign",
+      "sale_sign",
+      "open_sign"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "street_sign_seed",
+      "sale_sign_seed",
+      "open_sign_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
+  },
+  {
+    "row": 332,
+    "tier": "8",
+    "names": [
+      "Ceiling lamp",
+      "Street sign",
+      "Street lamp"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "ceiling_lamp",
+      "street_sign",
+      "street_lamp"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      null,
+      "street_sign_seed",
+      "street_lamp_seed"
+    ],
+    "missing_seeds": [
+      "Ceiling lamp"
+    ],
+    "status": "missing_seeds"
+  },
+  {
+    "row": 334,
+    "tier": "8",
+    "names": [
+      "Cozy chalkboard",
+      "Blue mailbox",
+      "Almanac"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      null,
+      "blue_mail_box",
+      null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Cozy chalkboard",
+      "Almanac"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 336,
+    "tier": "9",
+    "names": [
+      "Bush",
+      "Display wall",
+      "Cloud Block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "bush",
+      null,
+      null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Display wall",
+      "Cloud Block"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 338,
+    "tier": "9",
+    "names": [
+      "Metal block",
+      "Display wall",
+      "Display block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "steel_block",
+      null,
+      null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Display wall",
+      "Display block"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 340,
+    "tier": "9",
+    "names": [
+      "Checkpoint",
+      "Star fragment",
+      "Blink checkpoint"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "checkpoint",
+      null,
+      null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Star fragment",
+      "Blink checkpoint"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 342,
+    "tier": "9",
+    "names": [
+      "Dark spike",
+      "Hazard sign",
+      "Bomb"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "big_spike",
+      "hazard_sign",
+      "bomb"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "big_spike_seed",
+      "hazard_sign_seed",
+      null
+    ],
+    "missing_seeds": [
+      "Bomb"
+    ],
+    "status": "missing_seeds"
+  },
+  {
+    "row": 344,
+    "tier": "9",
+    "names": [
+      "Sashimi table",
+      "Rubber duck",
+      "Duck"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "sashimi_table",
+      "rubber_duck",
+      "duck"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "sashimi_table_seed",
+      "rubber_duck_seed",
+      null
+    ],
+    "missing_seeds": [
+      "Duck"
+    ],
+    "status": "missing_seeds"
+  },
+  {
+    "row": 346,
+    "tier": "9",
+    "names": [
+      "Couch",
+      "Dirt",
+      "Potato Couch"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "blue_couch",
+      "dirt",
+      "green_couch"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "blue_couch_seed",
+      "dirt_seed",
+      "green_couch_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
+  },
+  {
+    "row": 348,
+    "tier": "9",
+    "names": [
+      "Modern tv",
+      "Solid ice block",
+      "Refrigerator"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "tv",
+      "ice_block",
+      "refrigerator"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "tv_seed",
+      "ice_block_seed",
+      "refrigerator_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
+  },
+  {
+    "row": 350,
+    "tier": "9",
+    "names": [
+      "Electrical box",
+      "Weathervane",
+      "Fan"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      null,
+      "weathervane",
+      "fan"
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Electrical box"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 352,
+    "tier": "9",
+    "names": [
+      "Big sign",
+      "Electrical box",
+      "Digital Sign"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "big_sign",
+      null,
+      "digital_sign"
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Electrical box"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 354,
+    "tier": "9",
+    "names": [
+      "Small vines",
+      "Empty potrait",
+      "Vines painting"
+    ],
+    "colors": [
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      }
+    ],
+    "ids": [
+      "hanging_vine",
+      null,
+      "vines_painting"
+    ],
+    "method": "crafting",
+    "missing_items": [
+      "Empty potrait"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 356,
+    "tier": "9",
+    "names": [
+      "Pastel yellow block",
+      "Empty potrait",
+      "Scratched banana painting"
+    ],
+    "colors": [
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      }
+    ],
+    "ids": [
+      "yellow_pastel_block",
+      null,
+      "scratched_banana_painting"
+    ],
+    "method": "crafting",
+    "missing_items": [
+      "Empty potrait"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 358,
+    "tier": "9",
+    "names": [
+      "Dark red block",
+      "Empty potrait",
+      "Heartbreak painting"
+    ],
+    "colors": [
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      }
+    ],
+    "ids": [
+      "maroon_block",
+      null,
+      "heartbreak_painting"
+    ],
+    "method": "crafting",
+    "missing_items": [
+      "Empty potrait"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 360,
+    "tier": "9",
+    "names": [
+      "Rose",
+      "Empty potrait",
+      "Love painting"
+    ],
+    "colors": [
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      }
+    ],
+    "ids": [
+      "rose",
+      null,
+      "love_painting"
+    ],
+    "method": "crafting",
+    "missing_items": [
+      "Empty potrait"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 362,
+    "tier": "9",
+    "names": [
+      "Metal platform",
+      "Street lamp",
+      "Fire escape"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "steel_platform",
+      "street_lamp",
+      "fire_escape"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "steel_platform_seed",
+      "street_lamp_seed",
+      null
+    ],
+    "missing_seeds": [
+      "Fire escape"
+    ],
+    "status": "missing_seeds"
+  },
+  {
+    "row": 364,
+    "tier": "9",
+    "names": [
+      "Street lamp",
+      "Farm fence",
+      "Gothic fence"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "street_lamp",
+      "white_fence",
+      "city_fence"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "street_lamp_seed",
+      "white_fence_seed",
+      "city_fence_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
+  },
+  {
+    "row": 366,
+    "tier": "9",
+    "names": [
+      "Rubber duck",
+      "Red block",
+      "Fire Hydrant"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "rubber_duck",
+      "red_block",
+      "fire_hydrant"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "rubber_duck_seed",
+      "red_block_seed",
+      null
+    ],
+    "missing_seeds": [
+      "Fire Hydrant"
+    ],
+    "status": "missing_seeds"
+  },
+  {
+    "row": 368,
+    "tier": "9",
+    "names": [
+      "House lamp",
+      "Street lamp",
+      "Sirene lamp (on)"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "lamp",
+      "street_lamp",
+      "sirene_lamp"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "lamp_seed",
+      "street_lamp_seed",
+      "sirene_lamp_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
+  },
+  {
+    "row": 370,
+    "tier": "9",
+    "names": [
+      "Polished stone brick",
+      "Cloud block",
+      "Water fountain"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "white_brick_block",
+      null,
+      "water_fountain"
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Cloud block"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 372,
+    "tier": "9",
+    "names": [
+      "Hellbrick",
+      "Metal gate",
+      "Hell entrance"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      null,
+      null,
+      null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Hellbrick",
+      "Metal gate",
+      "Hell entrance"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 374,
+    "tier": "10",
+    "names": [
+      "Potato couch",
+      "Toxic barrel",
+      "Recycler bin"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "green_couch",
+      "biohazard_barrel",
+      "recycle_bin"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "green_couch_seed",
+      null,
+      null
+    ],
+    "missing_seeds": [
+      "Toxic barrel",
+      "Recycler bin"
+    ],
+    "status": "missing_seeds"
+  },
+  {
+    "row": 376,
+    "tier": "10",
+    "names": [
+      "Scratched banana painting",
+      "Vines painting",
+      "Melter"
+    ],
+    "colors": [
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      }
+    ],
+    "ids": [
+      "scratched_banana_painting",
+      "vines_painting",
+      null
+    ],
+    "method": "crafting",
+    "missing_items": [
+      "Melter"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 378,
+    "tier": "10",
+    "names": [
+      "Bomb",
+      "White block",
+      "Dice Block"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "bomb",
+      "white_block",
+      "dice_block"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      null,
+      "white_block_seed",
+      null
+    ],
+    "missing_seeds": [
+      "Bomb",
+      "Dice Block"
+    ],
+    "status": "missing_seeds"
+  },
+  {
+    "row": 380,
+    "tier": "10",
+    "names": [
+      "Blink checkpoint",
+      "Metal pad",
+      "Battery assambler"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      null,
+      "metal_pad",
+      null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Blink checkpoint",
+      "Battery assambler"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 382,
+    "tier": "10",
+    "names": [
+      "Water fountain",
+      "Street lamp",
+      "Chandelier"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "water_fountain",
+      "street_lamp",
+      "chandelier"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "water_fountain_seed",
+      "street_lamp_seed",
+      "chandelier_seed"
+    ],
+    "missing_seeds": [],
+    "status": "active"
+  },
+  {
+    "row": 384,
+    "tier": "11",
+    "names": [
+      "Orange block",
+      "Chandelier",
+      "Orange Portal"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "orange_block",
+      "chandelier",
+      null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Orange Portal"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 386,
+    "tier": "11",
+    "names": [
+      "Blue block",
+      "Chandelier",
+      "Blue portal"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "blue_block",
+      "chandelier",
+      "blue_portal"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "blue_block_seed",
+      "chandelier_seed",
+      null
+    ],
+    "missing_seeds": [
+      "Blue portal"
+    ],
+    "status": "missing_seeds"
+  },
+  {
+    "row": 388,
+    "tier": "11",
+    "names": [
+      "House door",
+      "Dice block",
+      "Password door"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "royal_door",
+      "dice_block",
+      "password_door"
+    ],
+    "method": "splicing",
+    "missing_items": [],
+    "seeds": [
+      "royal_door_seed",
+      null,
+      null
+    ],
+    "missing_seeds": [
+      "Dice block",
+      "Password door"
+    ],
+    "status": "missing_seeds"
+  },
+  {
+    "row": 390,
+    "tier": "11",
+    "names": [
+      "Starry block",
+      "Moon fragment",
+      "Moon"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "star_block",
+      null,
+      "moon"
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Moon fragment"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 392,
+    "tier": "11",
+    "names": [
+      "Starry block",
+      "Earth fragment",
+      "Earth"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "star_block",
+      null,
+      "earth"
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Earth fragment"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 394,
+    "tier": "11",
+    "names": [
+      "Starry block",
+      "Sun fragment",
+      "Sun"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "star_block",
+      null,
+      "sun"
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Sun fragment"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 396,
+    "tier": "11",
+    "names": [
+      "Chandelier",
+      "Hell entrance",
+      "Hell portal"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "chandelier",
+      null,
+      null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Hell entrance",
+      "Hell portal"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 398,
+    "tier": "13",
+    "names": [
+      "Melter",
+      "Bomb",
+      "Oil refinery"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      null,
+      "bomb",
+      "oil_refinery"
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Melter"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 400,
+    "tier": "13",
+    "names": [
+      "Rainbow block",
+      "Melter",
+      "Colored block maker"
+    ],
+    "colors": [
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      }
+    ],
+    "ids": [
+      "rainbow_block",
+      null,
+      null
+    ],
+    "method": "splicing",
+    "missing_items": [
+      "Melter",
+      "Colored block maker"
+    ],
+    "status": "missing_items"
+  },
+  {
+    "row": 402,
+    "tier": "14",
+    "names": [
+      "Oil refinery",
+      "Gem block",
+      "Gem driller"
+    ],
+    "colors": [
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      },
+      {
+        "red": 1
+      }
+    ],
+    "ids": [
+      "oil_refinery",
+      "amethyst_block",
+      null
+    ],
+    "method": "crafting",
+    "missing_items": [
+      "Gem driller"
     ],
     "status": "missing_items"
   }

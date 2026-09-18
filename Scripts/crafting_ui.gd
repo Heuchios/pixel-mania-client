@@ -40,19 +40,19 @@ func _process(_delta):
 
 
 func station_panel_style():
-	return PixelUIStyle.style_box(PixelUIStyle.GLASS_PANEL_STRONG, PixelUIStyle.GLASS_BORDER_BRIGHT, 4, 18, 13)
+	return PixelUIStyle.panel_style()
 
 
 func station_header_style():
-	return PixelUIStyle.style_box(PixelUIStyle.GLASS_HEADER, PixelUIStyle.GLASS_BORDER, 0, 12, 7)
+	return PixelUIStyle.header_style()
 
 
 func station_section_style():
-	return PixelUIStyle.style_box(PixelUIStyle.GLASS_SECTION, PixelUIStyle.GLASS_BORDER, 3, 13, 6)
+	return PixelUIStyle.section_style()
 
 
 func station_chip_style():
-	return PixelUIStyle.style_box(Color(0.10, 0.24, 0.34, 0.58), PixelUIStyle.GLASS_BORDER_BRIGHT, 3, 14, 8)
+	return PixelUIStyle.input_style()
 
 
 func apply_station_arcade_button_style(button: Button, primary: bool = false, danger: bool = false, font_size: int = 14):
@@ -77,13 +77,7 @@ func apply_station_card_style(card: Panel, can_make: bool):
 	if card == null:
 		return
 
-	var fill = Color(0.18, 0.32, 0.43, 0.42)
-	var border = Color(0.72, 0.92, 1.0, 0.46)
-	if can_make:
-		fill = Color(0.36, 0.30, 0.10, 0.56)
-		border = Color(1.0, 0.82, 0.18, 0.88)
-
-	card.add_theme_stylebox_override("panel", PixelUIStyle.style_box(fill, border, 4, 8, 7))
+	card.add_theme_stylebox_override("panel", PixelUIStyle.card_style_featured() if can_make else PixelUIStyle.card_style())
 
 
 func apply_station_scrollbar_style():
@@ -123,11 +117,13 @@ func setup_panel():
 		child.queue_free()
 
 	var far_shadow = Panel.new()
-	far_shadow.name = "FarShadow"
+	far_shadow.name = "DropShadow"
 	far_shadow.position = Vector2(10, 12)
 	far_shadow.size = panel.size
 	far_shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	far_shadow.add_theme_stylebox_override("panel", PixelUIStyle.style_box(Color(0.0, 0.0, 0.0, 0.28), Color(0.0, 0.0, 0.0, 0.0), 0, 18, 0))
+	var shadow_style := StyleBoxFlat.new()
+	shadow_style.bg_color = Color.BLACK
+	far_shadow.add_theme_stylebox_override("panel", shadow_style)
 	panel.add_child(far_shadow)
 
 	var panel_back = Panel.new()
@@ -422,17 +418,20 @@ func create_recipe_card(recipe: Dictionary, card_position: Vector2, _card_index:
 	card.add_child(icon)
 
 	var name_label = Label.new()
+	name_label.set_meta("pixelmania_font_size", 17)
 	name_label.name = "Name"
 	name_label.text = get_item_display_name(output_id, output_category) + " x" + str(output_amount)
 	name_label.position = Vector2(104, 18)
 	name_label.size = Vector2(186, 28)
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.clip_text = true
+	name_label.tooltip_text = name_label.text
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_label_shadow(name_label, 17)
 	card.add_child(name_label)
 
 	var status_label = Label.new()
+	status_label.set_meta("pixelmania_font_size", 13)
 	status_label.name = "Status"
 	status_label.position = Vector2(104, 46)
 	status_label.size = Vector2(186, 20)
@@ -450,12 +449,14 @@ func create_recipe_card(recipe: Dictionary, card_position: Vector2, _card_index:
 	card.add_child(status_label)
 
 	var cost_label = Label.new()
+	cost_label.set_meta("pixelmania_font_size", 11)
 	cost_label.name = "Cost"
 	cost_label.text = get_cost_text(recipe)
 	cost_label.position = Vector2(104, 68)
 	cost_label.size = Vector2(186, 34)
 	cost_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	cost_label.clip_text = true
+	cost_label.tooltip_text = cost_label.text
 	cost_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(cost_label, 11)
 	card.add_child(cost_label)
@@ -494,20 +495,30 @@ func format_cost_amount(amount: int, category: String) -> String:
 	return str(amount)
 
 
+func _set_craft_status(message: String):
+	if info_label != null:
+		info_label.text = message
+		info_label.tooltip_text = message
+
+
 func craft_recipe(recipe: Dictionary):
 	if not can_craft(recipe):
+		_set_craft_status("Not enough materials.")
 		if world != null and world.has_method("show_notification"):
 			world.show_notification("Not enough materials.")
 		return
 
 	if world != null and world.has_method("should_use_server_authoritative_world_actions") and bool(world.should_use_server_authoritative_world_actions()):
 		if request_server_craft(recipe):
+			_set_craft_status("Crafting...")
 			return
+		_set_craft_status("Could not send crafting request. Check your connection and try again.")
 		if world.has_method("show_notification"):
 			world.show_notification("Almost ready. Try again in a moment.")
 		return
 
 	if request_server_craft(recipe):
+		_set_craft_status("Crafting...")
 		return
 
 	for cost in recipe["cost"]:
@@ -562,6 +573,7 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 
 	create_recipe_cards()
 	update_header()
+	_set_craft_status(str(data.get("message", "Crafting finished.")))
 
 	if world != null and world.has_method("show_notification"):
 		world.show_notification(str(data.get("message", "Crafting finished.")))
@@ -719,10 +731,12 @@ func get_item_rarity(item_id: String) -> String:
 
 
 func open_crafting(grid_pos: Vector2i):
-	station_grid_pos = grid_pos
+	station_grid_pos = world.get_crafting_station_left_pos(grid_pos) if world != null and world.has_method("get_crafting_station_left_pos") else grid_pos
 
 	if panel != null:
 		panel.visible = true
+		# Godot GUI hit testing follows sibling order, not visual z_index.
+		panel.move_to_front()
 
 	create_recipe_cards()
 	update_header()

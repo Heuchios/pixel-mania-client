@@ -59,7 +59,7 @@ const WINDOW_SCREEN_MARGIN := Vector2(32.0, 32.0)
 @export var slot_columns: int = 10
 ## Empty slots drawn for a tier with no recipe data, so the layout stays
 ## visible while you are skinning. Set to 0 to disable.
-@export var placeholder_slot_count: int = 45
+@export var placeholder_slot_count: int = 0
 
 @export_group("Text")
 @export var title_text: String = "Recipe Book"
@@ -95,6 +95,11 @@ const WINDOW_SCREEN_MARGIN := Vector2(32.0, 32.0)
 @onready var found_label: Label = get_node_or_null("Window/Margin/Layout/Footer/FoundLabel") as Label
 
 var world = null
+@onready var method_picker: OptionButton = get_node_or_null("Window/Margin/Layout/RecipeTools/Method")
+@onready var search_box: LineEdit = get_node_or_null("Window/Margin/Layout/RecipeTools/Search")
+var _method := "splicing"
+var _search := ""
+var _available_tiers: Array = []
 
 # tier (int) -> Array[Dictionary]
 var _tier_recipes: Dictionary = {}
@@ -110,6 +115,12 @@ var _window_fit_scale: float = 1.0
 
 
 func _ready() -> void:
+	if method_picker != null:
+		for method_name in ["Splicing", "Crafting Table", "Furnace"]:
+			method_picker.add_item(method_name)
+		method_picker.item_selected.connect(_on_method_selected)
+	if search_box != null:
+		search_box.text_changed.connect(_on_search_changed)
 	if title_label != null:
 		title_label.text = title_text
 	if close_button != null and not close_button.pressed.is_connected(_on_close_pressed):
@@ -185,8 +196,7 @@ func is_open() -> bool:
 # --- Public API -------------------------------------------------------------
 
 func open(tier: int = -1) -> void:
-	if _tier_recipes.is_empty():
-		refresh_from_world()
+	refresh_from_world()
 	visible = true
 	_fit_window_to_screen()
 	var target_tier: int = tier if tier >= 0 else (_current_tier if _current_tier >= 0 else start_tier)
@@ -262,9 +272,11 @@ func get_active_categories() -> PackedStringArray:
 
 
 func select_tier(tier: int) -> void:
-	if tier_count <= 0:
+	if _available_tiers.is_empty():
+		_current_tier = -1
+		_refresh_grid()
 		return
-	var clamped: int = clampi(tier, first_tier, first_tier + tier_count - 1)
+	var clamped: int = tier if _available_tiers.has(tier) else int(_available_tiers[0])
 	if clamped == _current_tier:
 		_sync_tier_button_state()
 		return
@@ -277,10 +289,16 @@ func select_tier(tier: int) -> void:
 
 
 func select_recipe(recipe_id: String) -> void:
-	var recipe: Dictionary = _find_recipe(_current_tier, recipe_id)
+	var recipe: Dictionary = _find_any_recipe(recipe_id)
 	if recipe.is_empty():
 		clear_selection()
 		return
+	if str(recipe.get("method", "splicing")) != _method:
+		_method = str(recipe.get("method", "splicing"))
+		if method_picker != null:
+			method_picker.select(["splicing", "crafting", "furnace"].find(_method))
+		_build_tier_tabs()
+	select_tier(int(recipe.get("tier", _current_tier)))
 	_selected_recipe_id = recipe_id
 	_sync_slot_selection()
 	_show_detail(recipe)
@@ -303,14 +321,19 @@ func _build_tier_tabs() -> void:
 	if tier_tabs == null or tier_tab_template == null:
 		return
 
+	_available_tiers.clear()
+	for tier in _tier_recipes:
+		if (_tier_recipes[tier] as Array).any(func(r): return str(r.get("method", "splicing")) == _method):
+			_available_tiers.append(int(tier))
+	_available_tiers.sort_custom(func(a, b): return a > b if a == 0 or b == 0 else a < b)
 	_tier_buttons.clear()
 	var tabs: Array[Button] = []
 	for child in tier_tabs.get_children():
 		if child is Button and child != tier_tab_template:
 			tabs.append(child as Button)
 
-	for index in range(tier_count):
-		var tier: int = first_tier + index
+	for index in range(_available_tiers.size()):
+		var tier: int = int(_available_tiers[index])
 		var tab: Button
 		if index < tabs.size():
 			tab = tabs[index]
@@ -319,18 +342,18 @@ func _build_tier_tabs() -> void:
 			tier_tabs.add_child(tab)
 			tabs.append(tab)
 		tab.name = "TierTab_%d" % tier
-		tab.text = tier_tab_format % tier
+		tab.text = "OTHER" if tier == 0 else tier_tab_format % tier
 		tab.visible = true
 		tab.disabled = false
 		tab.focus_mode = Control.FOCUS_NONE
 		tab.mouse_filter = Control.MOUSE_FILTER_PASS
 		tab.set_meta(&"tier", tier)
-		var callback := Callable(self, "_on_tier_tab_pressed").bind(tier)
-		if not tab.pressed.is_connected(callback):
-			tab.pressed.connect(callback)
+		for connection in tab.pressed.get_connections():
+			tab.pressed.disconnect(connection.callable)
+		tab.pressed.connect(_on_tier_tab_pressed.bind(tier))
 		_tier_buttons[tier] = tab
 
-	for extra_index in range(tier_count, tabs.size()):
+	for extra_index in range(_available_tiers.size(), tabs.size()):
 		tabs[extra_index].visible = false
 
 	_sync_tier_button_state()
@@ -397,6 +420,7 @@ func _apply_slot_data(slot: Button, recipe: Dictionary) -> void:
 	if icon != null:
 		icon.texture = recipe.get("icon", null) as Texture2D
 		icon.visible = icon.texture != null
+	_set_missing_icon_label(slot, str(recipe.get("name", "")), recipe.get("icon") == null)
 
 	var selected_frame: CanvasItem = slot.get_node_or_null("SelectedFrame") as CanvasItem
 	if selected_frame != null:
@@ -439,7 +463,8 @@ func _show_detail(recipe: Dictionary) -> void:
 	if detail_title != null:
 		detail_title.text = str(recipe.get("name", recipe.get("id", "")))
 	if detail_description != null:
-		detail_description.text = str(recipe.get("description", ""))
+		var tier_text := "Other recipes" if int(recipe.get("tier", 0)) == 0 else "Tier %d" % int(recipe.tier)
+		detail_description.text = tier_text + "\n" + str(recipe.get("description", ""))
 	if preview_icon != null:
 		preview_icon.texture = recipe.get("icon", null) as Texture2D
 		preview_icon.visible = preview_icon.texture != null
@@ -488,9 +513,9 @@ func _fill_mini_grid(grid: GridContainer, pool: Array[Button], entries: Array) -
 	while pool.size() < entries.size():
 		var new_mini: Button = template.duplicate() as Button
 		new_mini.name = "%s_%d" % [grid.name, pool.size()]
-		new_mini.disabled = true
 		new_mini.focus_mode = Control.FOCUS_NONE
-		new_mini.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		new_mini.mouse_filter = Control.MOUSE_FILTER_PASS
+		new_mini.pressed.connect(_on_recipe_link_pressed.bind(new_mini))
 		grid.add_child(new_mini)
 		pool.append(new_mini)
 
@@ -501,16 +526,30 @@ func _fill_mini_grid(grid: GridContainer, pool: Array[Button], entries: Array) -
 			continue
 		mini_button.visible = true
 		var entry: Dictionary = entries[index] as Dictionary
+		mini_button.set_meta(&"target_id", str(entry.get("target_id", "")))
+		mini_button.disabled = str(entry.get("target_id", "")) == ""
 		var icon: TextureRect = mini_button.get_node_or_null("Icon") as TextureRect
 		if icon != null:
 			icon.texture = entry.get("icon", null) as Texture2D
 			icon.visible = icon.texture != null
+			_update_seed_slot_visual.call_deferred(icon, str(entry.get("id", "")))
+		_set_missing_icon_label(mini_button, str(entry.get("name", "")), entry.get("icon") == null)
 		var count_label: Label = mini_button.get_node_or_null("Count") as Label
 		if count_label != null:
 			var count: int = int(entry.get("count", 0))
 			count_label.text = "" if count <= 1 else str(count)
 			count_label.visible = count > 1
 		mini_button.tooltip_text = str(entry.get("name", entry.get("id", "")))
+
+
+func _update_seed_slot_visual(icon: TextureRect, item_id: String) -> void:
+	if not is_instance_valid(icon) or world == null or not is_instance_valid(world):
+		return
+	var inventory = world.inventory_manager
+	if inventory == null or not is_instance_valid(inventory):
+		return
+	var item: Dictionary = world.item_database.get(item_id, {})
+	inventory.update_seed_box_icon_overlay(icon, item_id, str(item.get("category", "")))
 
 
 func _mini_template(grid: GridContainer) -> Button:
@@ -546,23 +585,81 @@ func _on_filter_toggled(_pressed: bool) -> void:
 
 func _filtered_recipes(tier: int) -> Array:
 	var recipes: Array = _tier_recipes.get(tier, []) as Array
+	if _search != "":
+		recipes = []
+		for entries in _tier_recipes.values():
+			recipes.append_array(entries)
 	if recipes.is_empty():
 		return []
 
 	var active: PackedStringArray = get_active_categories()
-	if active.is_empty() or _filter_boxes.is_empty():
-		return recipes.duplicate()
-
 	var filtered: Array = []
 	for entry in recipes:
 		var recipe: Dictionary = entry as Dictionary
 		var category: String = str(recipe.get("category", ""))
-		if category == "" or active.has(category):
+		if str(recipe.get("method", "splicing")) != _method:
+			continue
+		if _search != "":
+			var searchable: String = str(recipe.get("name", ""))
+			for ingredient in recipe.get("ingredients", []):
+				searchable += " " + str(ingredient.get("name", ""))
+			if not searchable.to_lower().contains(_search):
+				continue
+		if _filter_boxes.is_empty() or category == "" or active.has(category):
 			filtered.append(recipe)
 	return filtered
 
 
 # --- Helpers ----------------------------------------------------------------
+
+func _set_missing_icon_label(slot: Button, item_name: String, missing: bool) -> void:
+	var label := slot.get_node_or_null("MissingIconName") as Label
+	if label == null:
+		label = Label.new()
+		label.name = "MissingIconName"
+		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		label.add_theme_font_size_override("font_size", 10)
+		slot.add_child(label)
+	label.text = item_name
+	label.visible = missing and item_name != ""
+
+func _on_method_selected(index: int) -> void:
+	_method = ["splicing", "crafting", "furnace"][index]
+	clear_selection()
+	_build_tier_tabs()
+	_current_tier = -1
+	select_tier(start_tier)
+
+
+func _on_search_changed(value: String) -> void:
+	_search = value.strip_edges().to_lower()
+	clear_selection()
+	_refresh_grid()
+
+
+func _find_any_recipe(recipe_id: String) -> Dictionary:
+	for tier in _tier_recipes:
+		var recipe := _find_recipe(int(tier), recipe_id)
+		if not recipe.is_empty():
+			return recipe
+	return {}
+
+
+func _on_recipe_link_pressed(button: Button) -> void:
+	var target: String = str(button.get_meta(&"target_id", ""))
+	if target == "":
+		return
+	_search = ""
+	if search_box != null:
+		search_box.text = ""
+	for filter in _filter_boxes:
+		filter.set_pressed_no_signal(true)
+	select_recipe(target)
+	_refresh_grid()
 
 func _find_recipe(tier: int, recipe_id: String) -> Dictionary:
 	var recipes: Array = _tier_recipes.get(tier, []) as Array
@@ -578,8 +675,14 @@ func _update_found_label() -> void:
 		return
 
 	var total: int = _visible_recipes.size()
+	if _search != "":
+		found_label.text = "Search results: %d" % total
+		return
+	if _current_tier <= 0:
+		found_label.text = "Other recipes: %d" % total
+		return
 	if total == 0:
-		found_label.text = total_format % [_current_tier, maxi(0, placeholder_slot_count)]
+		found_label.text = "No matching recipes in Tier %d" % _current_tier
 		return
 
 	var tracked: int = 0
@@ -637,6 +740,7 @@ func _fit_window_to_screen() -> void:
 		maxf(1.0, screen_size.y - WINDOW_SCREEN_MARGIN.y)
 	)
 	var layout_size := window.size.max(WINDOW_BASE_SIZE)
+	window.position = (screen_size - window.size) * 0.5
 	_window_fit_scale = minf(1.0, minf(available.x / layout_size.x, available.y / layout_size.y))
 	window.pivot_offset = window.size * 0.5
 	window.scale = Vector2.ONE * _window_fit_scale

@@ -1,0 +1,5309 @@
+{
+  "spreadsheet_id": "1PJLhG99ik5hVTQNTC29gizhC1nSvb3enpCMKma2uumU",
+  "sheet": "SPLICING",
+  "sheet_id": 862678959,
+  "read_date": "2026-09-18",
+  "rows": [
+    {
+      "row": 6,
+      "tier": "2",
+      "names": [
+        "Small Vines",
+        "Leaf block",
+        "Big Vine"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 8,
+      "tier": "2",
+      "names": [
+        "Leaf block",
+        "Dirt",
+        "Grass"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 10,
+      "tier": "2",
+      "names": [
+        "Leaf block",
+        "Grass",
+        "Bush"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 12,
+      "tier": "2",
+      "names": [
+        "Leaf block",
+        "Tree trunk",
+        "Mushroom"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 14,
+      "tier": "2",
+      "names": [
+        "Tree trunk",
+        "Dirt",
+        "Wood block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 16,
+      "tier": "2",
+      "names": [
+        "Wood block",
+        "Cave Wall",
+        "Wood wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 18,
+      "tier": "2",
+      "names": [
+        "Stone",
+        "Lava",
+        "Red brick"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 20,
+      "tier": "2",
+      "names": [
+        "Stone",
+        "Dirt",
+        "Stone brick"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 22,
+      "tier": "2",
+      "names": [
+        "Sand block",
+        "Lava",
+        "Glass pane"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 24,
+      "tier": "2",
+      "names": [
+        "Grass",
+        "Lava",
+        "Dried hay"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 26,
+      "tier": "3",
+      "names": [
+        "Wood block",
+        "Big Vine",
+        "Wooden platform"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 28,
+      "tier": "3",
+      "names": [
+        "Wood block",
+        "Mushroom",
+        "Wooden sign"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 30,
+      "tier": "3",
+      "names": [
+        "Wood block",
+        "Glass pane",
+        "Wooden window"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 32,
+      "tier": "3",
+      "names": [
+        "Wood block",
+        "Dirt",
+        "Wooden door"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 34,
+      "tier": "3",
+      "names": [
+        "Wood block",
+        "Dried hay",
+        "Wooden fence"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 36,
+      "tier": "3",
+      "names": [
+        "Wood block",
+        "Bush",
+        "Wooden table"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 38,
+      "tier": "3",
+      "names": [
+        "Wooden sign",
+        "Cave Wall",
+        "Mysterious sign"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 40,
+      "tier": "3",
+      "names": [
+        "Wood block",
+        "Lava",
+        "Campfire"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 42,
+      "tier": "3",
+      "names": [
+        "Red brick",
+        "Cave Wall",
+        "Red brick wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 44,
+      "tier": "3",
+      "names": [
+        "Stone brick",
+        "Cave Wall",
+        "Stone brick wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 46,
+      "tier": "3",
+      "names": [
+        "Red brick",
+        "Lily",
+        "White block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 48,
+      "tier": "3",
+      "names": [
+        "Red brick",
+        "Rose",
+        "Red block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 50,
+      "tier": "3",
+      "names": [
+        "Red brick",
+        "Grass",
+        "Green block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 52,
+      "tier": "3",
+      "names": [
+        "Red brick",
+        "Dirt",
+        "Brown block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 54,
+      "tier": "3",
+      "names": [
+        "Red brick",
+        "Stone",
+        "Grey block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 56,
+      "tier": "3",
+      "names": [
+        "Red brick",
+        "Obsidian",
+        "Black block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 58,
+      "tier": "3",
+      "names": [
+        "Red brick",
+        "Sunflower",
+        "Yellow block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 60,
+      "tier": "3",
+      "names": [
+        "Glass pane",
+        "Stone",
+        "Glass block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 62,
+      "tier": "3",
+      "names": [
+        "Wood wall",
+        "Dried hay",
+        "Hay bales"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 64,
+      "tier": "3",
+      "names": [
+        "Magma stone",
+        "Stone",
+        "Hellbrick"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 66,
+      "tier": "4",
+      "names": [
+        "Wood block",
+        "Wooden platform",
+        "Wooden ladder"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 68,
+      "tier": "4",
+      "names": [
+        "Wooden door",
+        "Wooden platform",
+        "Wooden entrance"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 70,
+      "tier": "4",
+      "names": [
+        "Big Vine",
+        "Wooden table",
+        "Wooden chair"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 72,
+      "tier": "4",
+      "names": [
+        "Wood block",
+        "Brown block",
+        "Wooden Box"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 74,
+      "tier": "4",
+      "names": [
+        "Stone brick",
+        "Black block",
+        "Grimstone"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 76,
+      "tier": "4",
+      "names": [
+        "Red block",
+        "Yellow block",
+        "Orange block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 78,
+      "tier": "4",
+      "names": [
+        "Yellow block",
+        "Solid ice block",
+        "Blue block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 80,
+      "tier": "4",
+      "names": [
+        "Red block",
+        "White block",
+        "Pink block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 82,
+      "tier": "4",
+      "names": [
+        "White block",
+        "Red brick wall",
+        "White wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 84,
+      "tier": "4",
+      "names": [
+        "Red block",
+        "Red brick wall",
+        "Red wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 86,
+      "tier": "4",
+      "names": [
+        "Green block",
+        "Red brick wall",
+        "Green wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 88,
+      "tier": "4",
+      "names": [
+        "Brown block",
+        "Red brick wall",
+        "Brown wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 90,
+      "tier": "4",
+      "names": [
+        "Gray block",
+        "Red brick wall",
+        "Gray wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 92,
+      "tier": "4",
+      "names": [
+        "Black block",
+        "Red brick wall",
+        "Black wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 94,
+      "tier": "4",
+      "names": [
+        "Yellow block",
+        "Red brick wall",
+        "Yellow wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 96,
+      "tier": "4",
+      "names": [
+        "Hay bales",
+        "Wood block",
+        "Barn block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 98,
+      "tier": "4",
+      "names": [
+        "Red brick",
+        "Stone brick",
+        "Building brick block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 100,
+      "tier": "4",
+      "names": [
+        "Stone brick wall",
+        "Stone brick",
+        "Polished stone brick"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 102,
+      "tier": "4",
+      "names": [
+        "Wooden sign",
+        "Mysterious sign",
+        "Big sign"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 104,
+      "tier": "4",
+      "names": [
+        "Red brick wall",
+        "Blue block",
+        "Blue strip wallpaper"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 106,
+      "tier": "4",
+      "names": [
+        "Red brick wall",
+        "Blue strip wallpaper",
+        "Red strip wallpaper"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 108,
+      "tier": "4",
+      "names": [
+        "Hellbrick",
+        "Stone brick wall",
+        "Hellbrick wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 110,
+      "tier": "5",
+      "names": [
+        "Wooden chair",
+        "Green wall",
+        "Climbing vine"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 112,
+      "tier": "5",
+      "names": [
+        "Wood block",
+        "Wooden Box",
+        "Wooden Barrel"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 114,
+      "tier": "5",
+      "names": [
+        "Wooden Box",
+        "Lava",
+        "Lantern"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 116,
+      "tier": "5",
+      "names": [
+        "Grimstone",
+        "Cave Wall",
+        "Grimstone wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 118,
+      "tier": "5",
+      "names": [
+        "Blue block",
+        "Red strip wallpaper",
+        "Aqua block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 120,
+      "tier": "5",
+      "names": [
+        "Red block",
+        "Blue strip wallpaper",
+        "Purple block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 122,
+      "tier": "5",
+      "names": [
+        "Red block",
+        "Grimstone",
+        "Dark red block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 124,
+      "tier": "5",
+      "names": [
+        "Green block",
+        "Grimstone",
+        "Dark green block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 126,
+      "tier": "5",
+      "names": [
+        "Orange block",
+        "Grimstone",
+        "Dark orange block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 128,
+      "tier": "5",
+      "names": [
+        "Yellow block",
+        "Grimstone",
+        "Dark yellow block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 130,
+      "tier": "5",
+      "names": [
+        "Blue block",
+        "Grimstone",
+        "Dark blue block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 132,
+      "tier": "5",
+      "names": [
+        "Pink block",
+        "Grimstone",
+        "Dark pink block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 134,
+      "tier": "5",
+      "names": [
+        "Blue block",
+        "Yellow wall",
+        "Star wallpaper"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 136,
+      "tier": "5",
+      "names": [
+        "Red block",
+        "Barn block",
+        "Pastel red block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 138,
+      "tier": "5",
+      "names": [
+        "Green block",
+        "Barn block",
+        "Pastel green block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 140,
+      "tier": "5",
+      "names": [
+        "Yellow block",
+        "Barn block",
+        "Pastel yellow block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 142,
+      "tier": "5",
+      "names": [
+        "Orange block",
+        "Barn block",
+        "Pastel orange block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 144,
+      "tier": "5",
+      "names": [
+        "Pink block",
+        "Barn block",
+        "Pastel pink block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 146,
+      "tier": "5",
+      "names": [
+        "Orange block",
+        "Red brick wall",
+        "Orange wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 148,
+      "tier": "5",
+      "names": [
+        "Blue block",
+        "Red brick wall",
+        "Blue wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 150,
+      "tier": "5",
+      "names": [
+        "Pink block",
+        "Red brick wall",
+        "Pink wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 152,
+      "tier": "5",
+      "names": [
+        "Building brick block",
+        "Polished stone brick",
+        "Metal block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 154,
+      "tier": "5",
+      "names": [
+        "Grimstone",
+        "Campfire",
+        "Slime block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 156,
+      "tier": "5",
+      "names": [
+        "Fish horn",
+        "Wooden Box",
+        "Fish hanger"
+      ],
+      "crafting": true,
+      "colors": [
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        }
+      ]
+    },
+    {
+      "row": 158,
+      "tier": "5",
+      "names": [
+        "Wooden window",
+        "Barn block",
+        "Barn Window"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 160,
+      "tier": "5",
+      "names": [
+        "Barn block",
+        "Wood wall",
+        "Barn wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 162,
+      "tier": "5",
+      "names": [
+        "Barn block",
+        "Wooden fence",
+        "Farm fence"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 164,
+      "tier": "5",
+      "names": [
+        "Barn block",
+        "Wooden door",
+        "Barn door"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 166,
+      "tier": "5",
+      "names": [
+        "Dried hay",
+        "Grimstone",
+        "Sugarcane"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 168,
+      "tier": "5",
+      "names": [
+        "Building brick block",
+        "Wooden table",
+        "House table"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 170,
+      "tier": "5",
+      "names": [
+        "Building brick block",
+        "Wooden door",
+        "House door"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 172,
+      "tier": "5",
+      "names": [
+        "Wooden window",
+        "Barn window",
+        "White window"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 174,
+      "tier": "5",
+      "names": [
+        "Building brick block",
+        "Cave wall",
+        "Building brick wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 176,
+      "tier": "5",
+      "names": [
+        "Wooden chair",
+        "House door",
+        "Fireplace"
+      ],
+      "crafting": true,
+      "colors": [
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        }
+      ]
+    },
+    {
+      "row": 178,
+      "tier": "5",
+      "names": [
+        "Building brick block",
+        "Building brick wall",
+        "Building brick platform"
+      ],
+      "crafting": true,
+      "colors": [
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        }
+      ]
+    },
+    {
+      "row": 180,
+      "tier": "5",
+      "names": [
+        "Polished stone brick",
+        "Stone brick wall",
+        "Polished stone wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 182,
+      "tier": "5",
+      "names": [
+        "Polished stone wall",
+        "Polished stone brick",
+        "Polished stone platform"
+      ],
+      "crafting": true,
+      "colors": [
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        }
+      ]
+    },
+    {
+      "row": 184,
+      "tier": "5",
+      "names": [
+        "Wooden ladder",
+        "Wooden chair",
+        "Park bench"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 186,
+      "tier": "5",
+      "names": [
+        "Wooden sign",
+        "Big sign",
+        "Right directional sign"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 188,
+      "tier": "5",
+      "names": [
+        "Right directional sign",
+        "Big sign",
+        "Left directional sign"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 190,
+      "tier": "5",
+      "names": [
+        "Water bucket",
+        "Blue strip wallpaper",
+        "Aquatic line wallpaper"
+      ],
+      "crafting": true,
+      "colors": [
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        }
+      ]
+    },
+    {
+      "row": 192,
+      "tier": "5",
+      "names": [
+        "Red strip wallpaper",
+        "Blue strip wallpaper",
+        "Complementary line wallpaper"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 194,
+      "tier": "5",
+      "names": [
+        "Black wall",
+        "White wall",
+        "Checkered wallpaper"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 196,
+      "tier": "5",
+      "names": [
+        "Wooden box",
+        "Yellow block",
+        "Pencil Block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 198,
+      "tier": "6",
+      "names": [
+        "Metal block",
+        "House door",
+        "Dungeon Door"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 200,
+      "tier": "6",
+      "names": [
+        "Metal block",
+        "Wooden box",
+        "Sturdy box"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 202,
+      "tier": "6",
+      "names": [
+        "Farm fence",
+        "Wooden box",
+        "Wagon Wheel"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 204,
+      "tier": "6",
+      "names": [
+        "Dark yellow block",
+        "Dark green block",
+        "Dark aqua block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 206,
+      "tier": "6",
+      "names": [
+        "Dark red block",
+        "Dark blue block",
+        "Dark purple block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 208,
+      "tier": "6",
+      "names": [
+        "Blue block",
+        "Pastel red block",
+        "Pastel purple block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 210,
+      "tier": "6",
+      "names": [
+        "Pastel yellow block",
+        "Blue block",
+        "Pastel blue block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 212,
+      "tier": "6",
+      "names": [
+        "Pastel yellow block",
+        "Pastel red block",
+        "Pastel bunny block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 214,
+      "tier": "6",
+      "names": [
+        "Pastel blue block",
+        "Lily",
+        "Pastel lily block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 216,
+      "tier": "6",
+      "names": [
+        "Dark purple block",
+        "Red block",
+        "Rainbow block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 218,
+      "tier": "6",
+      "names": [
+        "Building brick wall",
+        "Aqua block",
+        "Aqua wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 220,
+      "tier": "6",
+      "names": [
+        "Purple block",
+        "Building brick wall",
+        "Purple wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 222,
+      "tier": "6",
+      "names": [
+        "Gray wall",
+        "Metal block",
+        "Metal wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 224,
+      "tier": "6",
+      "names": [
+        "Big sign",
+        "Metal block",
+        "Metal sign"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 226,
+      "tier": "6",
+      "names": [
+        "Barn door",
+        "Metal block",
+        "Metal door"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 228,
+      "tier": "6",
+      "names": [
+        "Barn door",
+        "House door",
+        "Screen door"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 230,
+      "tier": "6",
+      "names": [
+        "Metal block",
+        "Campfire",
+        "Ceiling lamp"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 232,
+      "tier": "6",
+      "names": [
+        "Wooden ladder",
+        "Metal block",
+        "Metal ladder"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 234,
+      "tier": "6",
+      "names": [
+        "Wooden platform",
+        "Metal block",
+        "Metal platform"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 236,
+      "tier": "6",
+      "names": [
+        "Left directional sign",
+        "Metal block",
+        "Spike"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 238,
+      "tier": "6",
+      "names": [
+        "Spike",
+        "Grimstone",
+        "Dark Spike"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 240,
+      "tier": "6",
+      "names": [
+        "Wooden barrel",
+        "Wooden sign",
+        "Wooden shelf"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 242,
+      "tier": "6",
+      "names": [
+        "Big sign",
+        "Pencil block",
+        "Mailbox"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 244,
+      "tier": "6",
+      "names": [
+        "Wooden sign",
+        "Metal block",
+        "Electrical pole"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 246,
+      "tier": "6",
+      "names": [
+        "Barn block",
+        "Wooden barrel",
+        "Composer 0%-49%"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 248,
+      "tier": "6",
+      "names": [
+        "Barn block",
+        "Right directional sign",
+        "Weathervane"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 250,
+      "tier": "6",
+      "names": [
+        "Polished stone brick",
+        "Wooden barrel",
+        "Pillar block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 252,
+      "tier": "6",
+      "names": [
+        "Wooden chair",
+        "Polished stone wall",
+        "Modern Chair"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 254,
+      "tier": "6",
+      "names": [
+        "Big sign",
+        "Polished stone wall",
+        "Dresser"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 256,
+      "tier": "6",
+      "names": [
+        "White block",
+        "Polished stone wall",
+        "Toilet"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 258,
+      "tier": "6",
+      "names": [
+        "White block",
+        "Barn Window",
+        "Sink"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 260,
+      "tier": "6",
+      "names": [
+        "House table",
+        "Blue block",
+        "Bed"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 262,
+      "tier": "6",
+      "names": [
+        "Red wall",
+        "Left directional sign",
+        "Sale sign"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 264,
+      "tier": "6",
+      "names": [
+        "Hellbrick",
+        "Building brick platform",
+        "Hellbrick platform"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 266,
+      "tier": "7",
+      "names": [
+        "Spike",
+        "House door",
+        "Portcullis"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 268,
+      "tier": "7",
+      "names": [
+        "Metal door",
+        "Metal sign",
+        "Metal entrance"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 270,
+      "tier": "7",
+      "names": [
+        "Wooden barrel",
+        "Dark spike",
+        "Toxic barrel"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 272,
+      "tier": "7",
+      "names": [
+        "Star wallpaper",
+        "Rainbow block",
+        "Starry block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 274,
+      "tier": "7",
+      "names": [
+        "Mailbox",
+        "Blue block",
+        "Blue mailbox"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 276,
+      "tier": "7",
+      "names": [
+        "Wooden sign",
+        "Wooden shelf",
+        "Donation box"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 278,
+      "tier": "7",
+      "names": [
+        "Metal wall",
+        "Electrical pole",
+        "Metal pad"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 280,
+      "tier": "7",
+      "names": [
+        "Glass block",
+        "Dresser",
+        "Empty Jar"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 282,
+      "tier": "7",
+      "names": [
+        "Polished stone brick",
+        "Sink",
+        "Well"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 284,
+      "tier": "7",
+      "names": [
+        "Grass",
+        "Weathervane",
+        "Chicken"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 286,
+      "tier": "7",
+      "names": [
+        "Ceiling lamp",
+        "Building brick block",
+        "House lamp"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 288,
+      "tier": "7",
+      "names": [
+        "Sink",
+        "Glass pane",
+        "Fishbowl"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 290,
+      "tier": "7",
+      "names": [
+        "Park bench",
+        "Bed",
+        "Couch"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 292,
+      "tier": "7",
+      "names": [
+        "House door",
+        "Dungeon door",
+        "House entrance"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 294,
+      "tier": "7",
+      "names": [
+        "White window",
+        "Pastel lily block",
+        "Purple curtained window"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 296,
+      "tier": "7",
+      "names": [
+        "White window",
+        "Pastel bunny block",
+        "Pink curtained window"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 298,
+      "tier": "7",
+      "names": [
+        "Toilet",
+        "Park bench",
+        "Bathub"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 300,
+      "tier": "7",
+      "names": [
+        "Sale sign",
+        "Aqua block",
+        "Street Sign"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 302,
+      "tier": "7",
+      "names": [
+        "Metal ladder",
+        "House door",
+        "Ventilation"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 304,
+      "tier": "7",
+      "names": [
+        "Pencil block",
+        "Wooden shelf",
+        "Cozy chalkboard"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 306,
+      "tier": "7",
+      "names": [
+        "Black block",
+        "Ceiling lamp",
+        "Neon Block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 308,
+      "tier": "8",
+      "names": [
+        "Metal entrance",
+        "Metal block",
+        "Metal gate"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 310,
+      "tier": "8",
+      "names": [
+        "Empty jar",
+        "Glass pane",
+        "Display wall"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 312,
+      "tier": "8",
+      "names": [
+        "Cozy chalkboard",
+        "Mailbox",
+        "Bulletin Board"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 314,
+      "tier": "8",
+      "names": [
+        "Dungeon door",
+        "House lamp",
+        "Checkpoint"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 316,
+      "tier": "8",
+      "names": [
+        "Fishbowl",
+        "House table",
+        "Sashimi table"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 318,
+      "tier": "8",
+      "names": [
+        "Metal pad",
+        "Metal block",
+        "Electrical box"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 320,
+      "tier": "8",
+      "names": [
+        "Well",
+        "Chicken",
+        "Cow"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 322,
+      "tier": "8",
+      "names": [
+        "Electrical pole",
+        "Neon block",
+        "Modern TV"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 324,
+      "tier": "8",
+      "names": [
+        "Star fragment",
+        "House door",
+        "Grand house door"
+      ],
+      "crafting": true,
+      "colors": [
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        }
+      ]
+    },
+    {
+      "row": 326,
+      "tier": "8",
+      "names": [
+        "Slime block",
+        "Chicken",
+        "Rubber duck"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 328,
+      "tier": "8",
+      "names": [
+        "Toxic barrel",
+        "Metal sign",
+        "Hazard sign"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 330,
+      "tier": "8",
+      "names": [
+        "Street Sign",
+        "Sale sign",
+        "Open sign"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 332,
+      "tier": "8",
+      "names": [
+        "Ceiling lamp",
+        "Street sign",
+        "Street lamp"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 334,
+      "tier": "8",
+      "names": [
+        "Cozy chalkboard",
+        "Blue mailbox",
+        "Almanac"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 336,
+      "tier": "9",
+      "names": [
+        "Bush",
+        "Display wall",
+        "Cloud Block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 338,
+      "tier": "9",
+      "names": [
+        "Metal block",
+        "Display wall",
+        "Display block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 340,
+      "tier": "9",
+      "names": [
+        "Checkpoint",
+        "Star fragment",
+        "Blink checkpoint"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 342,
+      "tier": "9",
+      "names": [
+        "Dark spike",
+        "Hazard sign",
+        "Bomb"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 344,
+      "tier": "9",
+      "names": [
+        "Sashimi table",
+        "Rubber duck",
+        "Duck"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 346,
+      "tier": "9",
+      "names": [
+        "Couch",
+        "Dirt",
+        "Potato Couch"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 348,
+      "tier": "9",
+      "names": [
+        "Modern tv",
+        "Solid ice block",
+        "Refrigerator"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 350,
+      "tier": "9",
+      "names": [
+        "Electrical box",
+        "Weathervane",
+        "Fan"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 352,
+      "tier": "9",
+      "names": [
+        "Big sign",
+        "Electrical box",
+        "Digital Sign"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 354,
+      "tier": "9",
+      "names": [
+        "Small vines",
+        "Empty potrait",
+        "Vines painting"
+      ],
+      "crafting": true,
+      "colors": [
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        }
+      ]
+    },
+    {
+      "row": 356,
+      "tier": "9",
+      "names": [
+        "Pastel yellow block",
+        "Empty potrait",
+        "Scratched banana painting"
+      ],
+      "crafting": true,
+      "colors": [
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        }
+      ]
+    },
+    {
+      "row": 358,
+      "tier": "9",
+      "names": [
+        "Dark red block",
+        "Empty potrait",
+        "Heartbreak painting"
+      ],
+      "crafting": true,
+      "colors": [
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        }
+      ]
+    },
+    {
+      "row": 360,
+      "tier": "9",
+      "names": [
+        "Rose",
+        "Empty potrait",
+        "Love painting"
+      ],
+      "crafting": true,
+      "colors": [
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        }
+      ]
+    },
+    {
+      "row": 362,
+      "tier": "9",
+      "names": [
+        "Metal platform",
+        "Street lamp",
+        "Fire escape"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 364,
+      "tier": "9",
+      "names": [
+        "Street lamp",
+        "Farm fence",
+        "Gothic fence"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 366,
+      "tier": "9",
+      "names": [
+        "Rubber duck",
+        "Red block",
+        "Fire Hydrant"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 368,
+      "tier": "9",
+      "names": [
+        "House lamp",
+        "Street lamp",
+        "Sirene lamp (on)"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 370,
+      "tier": "9",
+      "names": [
+        "Polished stone brick",
+        "Cloud block",
+        "Water fountain"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 372,
+      "tier": "9",
+      "names": [
+        "Hellbrick",
+        "Metal gate",
+        "Hell entrance"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 374,
+      "tier": "10",
+      "names": [
+        "Potato couch",
+        "Toxic barrel",
+        "Recycler bin"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 376,
+      "tier": "10",
+      "names": [
+        "Scratched banana painting",
+        "Vines painting",
+        "Melter"
+      ],
+      "crafting": true,
+      "colors": [
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        }
+      ]
+    },
+    {
+      "row": 378,
+      "tier": "10",
+      "names": [
+        "Bomb",
+        "White block",
+        "Dice Block"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 380,
+      "tier": "10",
+      "names": [
+        "Blink checkpoint",
+        "Metal pad",
+        "Battery assambler"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 382,
+      "tier": "10",
+      "names": [
+        "Water fountain",
+        "Street lamp",
+        "Chandelier"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 384,
+      "tier": "11",
+      "names": [
+        "Orange block",
+        "Chandelier",
+        "Orange Portal"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 386,
+      "tier": "11",
+      "names": [
+        "Blue block",
+        "Chandelier",
+        "Blue portal"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 388,
+      "tier": "11",
+      "names": [
+        "House door",
+        "Dice block",
+        "Password door"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 390,
+      "tier": "11",
+      "names": [
+        "Starry block",
+        "Moon fragment",
+        "Moon"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 392,
+      "tier": "11",
+      "names": [
+        "Starry block",
+        "Earth fragment",
+        "Earth"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 394,
+      "tier": "11",
+      "names": [
+        "Starry block",
+        "Sun fragment",
+        "Sun"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 396,
+      "tier": "11",
+      "names": [
+        "Chandelier",
+        "Hell entrance",
+        "Hell portal"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 398,
+      "tier": "13",
+      "names": [
+        "Melter",
+        "Bomb",
+        "Oil refinery"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 400,
+      "tier": "13",
+      "names": [
+        "Rainbow block",
+        "Melter",
+        "Colored block maker"
+      ],
+      "crafting": false,
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ]
+    },
+    {
+      "row": 402,
+      "tier": "14",
+      "names": [
+        "Oil refinery",
+        "Gem block",
+        "Gem driller"
+      ],
+      "crafting": true,
+      "colors": [
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        },
+        {
+          "red": 1
+        }
+      ]
+    }
+  ]
+}

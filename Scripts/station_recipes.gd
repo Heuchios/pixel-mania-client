@@ -3,7 +3,7 @@ extends RefCounted
 # PixelMania Recipe Cleanup v1
 #
 # Keep recipe ownership clean:
-# - Crafting Station = tools, stations, equipment, rare/special items
+# - Crafting Station = tools, stations, equipment, rare/special items, and red sheet rows
 # - Furnace = materials only
 # - Seed Splicing = blocks, doors, signs, platforms
 # - Shop = stations/special utility items that should be purchased
@@ -23,7 +23,96 @@ const CATEGORY_MATERIAL = "material"
 const CATEGORY_CURRENCY = "currency"
 
 const RECIPES = {
-	STATION_CRAFTING: [],
+	STATION_CRAFTING: [
+	{
+		"id": "sheet_fireplace",
+		"output": {
+			"item_id": "fireplace",
+			"category": "block",
+			"amount": 1
+		},
+		"cost": [
+			{
+				"item_id": "wooden_chair",
+				"category": "block",
+				"amount": 1
+			},
+			{
+				"item_id": "royal_door",
+				"category": "block",
+				"amount": 1
+			}
+		],
+		"name": "Fireplace",
+		"type": "block"
+	},
+	{
+		"id": "sheet_red_brick_platform",
+		"output": {
+			"item_id": "red_brick_platform",
+			"category": "block",
+			"amount": 1
+		},
+		"cost": [
+			{
+				"item_id": "building_brick_block",
+				"category": "block",
+				"amount": 1
+			},
+			{
+				"item_id": "building_brick_wall",
+				"category": "block",
+				"amount": 1
+			}
+		],
+		"name": "Building Brick Platform",
+		"type": "block"
+	},
+	{
+		"id": "sheet_white_brick_platform",
+		"output": {
+			"item_id": "white_brick_platform",
+			"category": "block",
+			"amount": 1
+		},
+		"cost": [
+			{
+				"item_id": "white_brick_wall",
+				"category": "block",
+				"amount": 1
+			},
+			{
+				"item_id": "white_brick_block",
+				"category": "block",
+				"amount": 1
+			}
+		],
+		"name": "Polished Stone Platform",
+		"type": "block"
+	},
+	{
+		"id": "sheet_aquatic_line_wall",
+		"output": {
+			"item_id": "aquatic_line_wall",
+			"category": "block",
+			"amount": 1
+		},
+		"cost": [
+			{
+				"item_id": "water_bucket",
+				"category": "block",
+				"amount": 1
+			},
+			{
+				"item_id": "blue_stripe_wall",
+				"category": "block",
+				"amount": 1
+			}
+		],
+		"name": "Aquatic Line Wall",
+		"type": "block"
+	}
+],
 
 	STATION_FURNACE: [
 		{

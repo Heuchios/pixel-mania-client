@@ -11,14 +11,13 @@ extends RefCounted
 # that is what players look for ("Wood Plank"), while the two ingredients and
 # the used-for links stay in seed space (that is what you actually splice).
 #
-# Tiers are derived from splice depth, not from an authored field, because
-# item_database.gd has no per-item tier today:
-#   tier(result) = 1 + max(tier(ingredient_a), tier(ingredient_b))
-#   a seed that is not the output of any recipe is tier 0 (a base seed)
-# Add a "recipe_tier" key to an item entry to override the derived value.
+# Tiers use the spreadsheet's authored recipe_tier values. Recipes without
+# a spreadsheet tier are shown under Other, never given an invented tier.
 # ---------------------------------------------------------------------------
 
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
+const ItemDatabase = preload("res://Scripts/item_database.gd")
+const StationRecipes = preload("res://Scripts/station_recipes.gd")
 
 const FILTER_BLOCKS := "blocks"
 const FILTER_BACKGROUNDS := "backgrounds"
@@ -57,9 +56,6 @@ static func build_from_world(world) -> Dictionary:
 ## Returns {tier_int: Array[recipe Dictionary]}, sorted inside each tier.
 ## icon_source is optional and only needs get_seed_icon_texture(seed_id).
 static func build(item_database: Dictionary, splice_recipes: Dictionary, splice_balance: Dictionary = {}, icon_source = null) -> Dictionary:
-	if splice_recipes.is_empty():
-		return {}
-
 	var parsed: Array = []
 	for raw_key in splice_recipes.keys():
 		var parts: PackedStringArray = str(raw_key).split("+", false)
@@ -74,9 +70,6 @@ static func build(item_database: Dictionary, splice_recipes: Dictionary, splice_
 			"seed": result_seed,
 		})
 
-	if parsed.is_empty():
-		return {}
-
 	var tier_by_seed: Dictionary = _resolve_seed_tiers(parsed, item_database)
 	var consumers: Dictionary = _build_consumer_index(parsed)
 	var seed_to_block: Dictionary = _build_seed_to_block_index(item_database)
@@ -84,12 +77,14 @@ static func build(item_database: Dictionary, splice_recipes: Dictionary, splice_
 	var by_tier: Dictionary = {}
 	for entry in parsed:
 		var recipe: Dictionary = _build_recipe(entry, item_database, splice_balance, consumers, seed_to_block, icon_source)
-		var tier: int = maxi(1, int(tier_by_seed.get(entry["seed"], 1)))
+		var tier: int = int(tier_by_seed.get(entry["seed"], 0))
 		recipe["tier"] = tier
 		if not by_tier.has(tier):
 			by_tier[tier] = []
 		by_tier[tier].append(recipe)
 
+	_add_station_recipes(by_tier, item_database)
+	_link_recipes(by_tier)
 	for tier_key in by_tier.keys():
 		var tier_recipes: Array = by_tier[tier_key]
 		tier_recipes.sort_custom(_compare_recipes)
@@ -99,49 +94,11 @@ static func build(item_database: Dictionary, splice_recipes: Dictionary, splice_
 # --- Tier derivation --------------------------------------------------------
 
 static func _resolve_seed_tiers(parsed: Array, item_database: Dictionary) -> Dictionary:
-	var recipe_seeds: Dictionary = {}
-	for entry in parsed:
-		recipe_seeds[entry["seed"]] = true
-
 	var tiers: Dictionary = {}
-	# Honour an authored override before deriving anything.
 	for entry in parsed:
-		var override: int = int((item_database.get(entry["seed"], {}) as Dictionary).get("recipe_tier", 0))
-		if override > 0:
-			tiers[entry["seed"]] = override
-
-	var changed: bool = true
-	var guard: int = 0
-	while changed and guard < TIER_RESOLVE_GUARD:
-		changed = false
-		guard += 1
-		for entry in parsed:
-			var result_seed: String = str(entry["seed"])
-			if int((item_database.get(result_seed, {}) as Dictionary).get("recipe_tier", 0)) > 0:
-				continue
-			var a_tier: int = _ingredient_tier(str(entry["a"]), recipe_seeds, tiers)
-			var b_tier: int = _ingredient_tier(str(entry["b"]), recipe_seeds, tiers)
-			if a_tier < 0 or b_tier < 0:
-				# An ingredient is itself a splice output we have not resolved
-				# yet; the next pass picks it up.
-				continue
-			var resolved: int = maxi(a_tier, b_tier) + 1
-			if int(tiers.get(result_seed, -1)) != resolved:
-				tiers[result_seed] = resolved
-				changed = true
-
-	# Anything still unresolved sits in a recipe cycle; keep it visible.
-	for entry in parsed:
-		if not tiers.has(entry["seed"]):
-			tiers[entry["seed"]] = 1
+		var seed_id: String = entry.seed
+		tiers[seed_id] = int(ItemDatabase.RECIPE_TIERS.get(seed_id, (item_database.get(seed_id, {}) as Dictionary).get("recipe_tier", 0)))
 	return tiers
-
-
-static func _ingredient_tier(seed_id: String, recipe_seeds: Dictionary, tiers: Dictionary) -> int:
-	if not recipe_seeds.has(seed_id):
-		return 0
-	return int(tiers.get(seed_id, -1))
-
 
 static func _build_consumer_index(parsed: Array) -> Dictionary:
 	var consumers: Dictionary = {}
@@ -212,13 +169,17 @@ static func _build_recipe(entry: Dictionary, items: Dictionary, balance: Diction
 	var block_data: Dictionary = items.get(block_id, {})
 	var display_data: Dictionary = block_data if not block_data.is_empty() else seed_data
 	var recipe_id: String = block_id if block_id != "" else result_seed
+	var output_icon: Texture2D = item_icon(display_data)
+	if output_icon == null:
+		output_icon = _seed_icon(result_seed, items, seed_to_block, icon_source)
 
 	return {
 		"id": recipe_id,
+		"method": "splicing",
 		"seed_id": result_seed,
 		"block_id": block_id,
 		"name": str(display_data.get("display_name", recipe_id)),
-		"icon": item_icon(display_data),
+		"icon": output_icon,
 		"category": filter_category(display_data),
 		"rarity": str(display_data.get("rarity", "common")),
 		"description": _describe(entry, items, balance, block_id, seed_data, seed_to_block),
@@ -229,6 +190,63 @@ static func _build_recipe(entry: Dictionary, items: Dictionary, balance: Diction
 		"used_for": _used_for_entries(result_seed, consumers, items, seed_to_block),
 		"order": int(display_data.get("order", 0)),
 	}
+
+
+static func _add_station_recipes(by_tier: Dictionary, items: Dictionary) -> void:
+	for station in ["crafting_station", "furnace"]:
+		for source in StationRecipes.get_recipes(station):
+			var output: Dictionary = source.get("output", {})
+			var id: String = str(output.get("item_id", ""))
+			if not items.has(id):
+				continue
+			var ingredients: Array = []
+			var costs: Array[String] = []
+			var valid := true
+			for cost in source.get("cost", []):
+				var ingredient_id: String = str(cost.item_id)
+				if not items.has(ingredient_id):
+					valid = false
+					break
+				var name: String = str(items[ingredient_id].get("display_name", ingredient_id))
+				ingredients.append({"id": ingredient_id, "name": name, "icon": item_icon(items[ingredient_id]), "count": int(cost.amount)})
+				costs.append("%d × %s" % [int(cost.amount), name])
+			if not valid:
+				continue
+			var item: Dictionary = items[id]
+			var tier: int = int(ItemDatabase.RECIPE_TIERS.get(id, 0))
+			var method := "crafting" if station == "crafting_station" else "furnace"
+			var location := "Crafting Table" if method == "crafting" else "Furnace"
+			var recipe := {
+				"id": id, "block_id": id, "seed_id": "", "method": method, "tier": tier,
+				"name": str(item.get("display_name", id)), "icon": item_icon(item),
+				"category": filter_category(item), "ingredients": ingredients, "used_for": [],
+				"description": "%s\n%s\nProduces %d × %s." % [location, " + ".join(costs), int(output.amount), str(item.get("display_name", id))],
+				"order": int(item.get("order", 0))
+			}
+			if not by_tier.has(tier):
+				by_tier[tier] = []
+			by_tier[tier].append(recipe)
+
+
+static func _link_recipes(by_tier: Dictionary) -> void:
+	var all: Array = []
+	var producers: Dictionary = {}
+	for entries in by_tier.values():
+		for recipe in entries:
+			all.append(recipe)
+			producers[recipe.id] = recipe
+			if str(recipe.get("seed_id", "")) != "":
+				producers[recipe.seed_id] = recipe
+			recipe.used_for = []
+	for recipe in all:
+		for ingredient in recipe.ingredients:
+			var producer: Dictionary = producers.get(ingredient.id, {})
+			if producer.is_empty():
+				continue
+			ingredient["target_id"] = producer.id
+			var links: Array = producer.used_for
+			if not links.any(func(link): return link.id == recipe.id):
+				links.append({"id": recipe.id, "target_id": recipe.id, "name": recipe.name, "icon": recipe.icon})
 
 
 static func _ingredient_entry(seed_id: String, items: Dictionary, seed_to_block: Dictionary, icon_source) -> Dictionary:
@@ -335,9 +353,21 @@ static func item_icon(item_data: Dictionary) -> Texture2D:
 	for key in ["inventory_icon", "icon_texture", "texture", "icon", "icon_path"]:
 		if not item_data.has(key):
 			continue
-		var texture: Texture2D = AtlasTextureFactory.load_texture(item_data[key])
+		var spec = item_data[key]
+		# Legacy block definitions store the full sheet path plus separate coordinates.
+		if spec is String and spec == "res://image.png" and item_data.has("atlas_coords"):
+			var cell = item_data.atlas_coords
+			if cell is Vector2i or cell is Vector2:
+				cell = [int(cell.x), int(cell.y)]
+			spec = {"atlas": spec, "cell": cell, "cell_size": [32, 32]}
+		var texture: Texture2D = AtlasTextureFactory.load_texture(spec)
 		if texture != null:
 			return texture
+	if item_data.has("atlas_coords"):
+		var coords = item_data.atlas_coords
+		if coords is Vector2i or coords is Vector2:
+			coords = [int(coords.x), int(coords.y)]
+		return AtlasTextureFactory.load_texture({"atlas": "res://image.png", "cell": coords, "cell_size": [32, 32]})
 	return null
 
 

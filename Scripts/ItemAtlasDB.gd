@@ -249,10 +249,13 @@ static func get_item_database_entries() -> Dictionary:
 			entry["collidable"] = false
 		if bool(item.get("animated", false)):
 			entry["animated"] = true
-		var animation_frames := _to_vector2i_array(item.get("animation_frames", []))
+		var raw_animation_frames = item.get("animation_frames", [])
+		var animation_frames := _to_vector2i_array(item.get("animation_atlas_coords", raw_animation_frames))
 		if animation_frames.size() > 1:
 			entry["animation_atlas_coords"] = animation_frames
 			entry["animation_frames"] = animation_frames
+			if raw_animation_frames is Array and not raw_animation_frames.is_empty() and raw_animation_frames[0] is Dictionary:
+				entry["animation_frames"] = raw_animation_frames
 			entry["tileset_animation"] = false
 			entry["animated"] = true
 			if str(item.get("animation_trigger", "")).strip_edges().to_lower() == "on_enter" and item_key.find("entrance") >= 0:
@@ -264,6 +267,11 @@ static func get_item_database_entries() -> Dictionary:
 			"rarity",
 			"authored_drop_rules",
 			"server_triggered_animation",
+			"punch_open_only",
+			"artwork_atlas_variants",
+			"sign_block",
+			"entrance_frames",
+			"entrance_idle_texture",
 			"visual_size",
 			"visual_offset",
 			"seed",

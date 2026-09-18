@@ -997,6 +997,7 @@ func apply_coloured_block_seed_and_drop_rules():
 
 func ensure_seed_item_definitions_from_blocks():
 	var generated_seed_items: Dictionary = {}
+	var recipe_tiers: Dictionary = (load(ITEM_DATABASE_PATH) as Script).RECIPE_TIERS
 
 	for block_id in item_database.keys():
 		var block_data = item_database[block_id]
@@ -1032,6 +1033,8 @@ func ensure_seed_item_definitions_from_blocks():
 
 	for item_id in item_database.keys():
 		var item_data = item_database[item_id]
+		if item_data is Dictionary and recipe_tiers.has(item_id):
+			item_data["recipe_tier"] = int(recipe_tiers[item_id])
 		if item_data is Dictionary and str(item_data.get("category", "")) == "seed":
 			item_data["texture"] = SEED_BOX_TEXTURE_PATH
 			item_data["seed_box_icon"] = true
