@@ -20,7 +20,10 @@ const PUNCH_HOLD_REPEAT_RATE := 0.30
 const GAMEPLAY_CONTROLS_Z_INDEX := 190
 const MOVE_BUTTON_SIZE := Vector2(96.0, 96.0)
 const ACTION_BUTTON_SIZE := Vector2(104.0, 96.0)
-const ZOOM_BUTTON_SIZE := Vector2(84.0, 84.0)
+const ZOOM_BUTTON_SIZE := Vector2(96.0, 96.0)
+const ZOOM_TAP_STEP := 0.30
+const ZOOM_HOLD_DELAY := 0.16
+const ZOOM_HOLD_SPEED := 2.4
 const MOBILE_CONTROL_MIN_SCALE := 1.20
 const MOBILE_CONTROL_MAX_SCALE := 1.52
 const CUSTOM_SIZE_MIN := 0.65
@@ -53,6 +56,11 @@ const PRESSED_ICON_PATHS := {
 	"jump": "res://Assets/ui/atlas/textures/jump_button.tres",
 	"punch": "res://Assets/ui/atlas/textures/punch_button.tres"
 }
+
+var zoom_hold_action := ""
+var zoom_hold_touch := -1
+var zoom_hold_mouse := false
+var zoom_hold_elapsed := 0.0
 
 var world = null
 var settings_save_path := SETTINGS_SAVE_PATH
@@ -96,6 +104,7 @@ func _process(delta):
 	_layout_controls()
 	_update_visibility()
 	_update_punch_hold(delta)
+	_update_zoom_hold(delta)
 
 
 func _input(event):
@@ -993,14 +1002,54 @@ func _on_zoom_button_gui_input(event: InputEvent, action: String):
 		_handle_layout_editor_button_input(event, action)
 		return
 
-	if event is InputEventScreenTouch and event.pressed:
-		_trigger_zoom(action)
-		_flash_button(action)
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			_begin_zoom_hold(action, event.index)
+		elif event.index == zoom_hold_touch:
+			_end_zoom_hold()
 		accept_event()
-	elif not _is_mobile_platform() and event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		_trigger_zoom(action)
-		_flash_button(action)
+	elif not _is_mobile_platform() and event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			_begin_zoom_hold(action, -1, true)
+		else:
+			_end_zoom_hold()
 		accept_event()
+
+
+func _begin_zoom_hold(action: String, touch_index: int, use_mouse: bool = false):
+	_end_zoom_hold()
+	if world == null or not world.can_use_camera_zoom():
+		return
+	zoom_hold_action = action
+	zoom_hold_touch = touch_index
+	zoom_hold_mouse = use_mouse
+	zoom_hold_elapsed = 0.0
+	_set_button_pressed(action, true)
+	_trigger_zoom(action)
+
+
+func _end_zoom_hold():
+	if zoom_hold_action != "":
+		_set_button_pressed(zoom_hold_action, false)
+	zoom_hold_action = ""
+	zoom_hold_touch = -1
+	zoom_hold_mouse = false
+	zoom_hold_elapsed = 0.0
+
+
+func _update_zoom_hold(delta: float):
+	if zoom_hold_action == "":
+		return
+	if world == null or not visible or not bool(world.get("in_world")) or layout_customization_active or not world.can_use_camera_zoom():
+		_end_zoom_hold()
+		return
+	# Count only the portion after the tap delay, independent of frame rate.
+	var previous_elapsed := zoom_hold_elapsed
+	zoom_hold_elapsed += delta
+	var zoom_delta := maxf(0.0, zoom_hold_elapsed - ZOOM_HOLD_DELAY) - maxf(0.0, previous_elapsed - ZOOM_HOLD_DELAY)
+	var direction := -1.0 if zoom_hold_action == "zoom_out" else 1.0
+	if zoom_delta > 0.0:
+		world.zoom_camera(direction * ZOOM_HOLD_SPEED * zoom_delta, false)
 
 
 func _begin_punch_hold(touch_index: int = -1, use_mouse: bool = false) -> void:
@@ -1098,7 +1147,7 @@ func _trigger_zoom(action: String):
 	if world.has_method("can_use_camera_zoom") and not bool(world.can_use_camera_zoom()):
 		return
 
-	var step = float(world.CAMERA_ZOOM_STEP) if "CAMERA_ZOOM_STEP" in world else 0.12
+	var step := ZOOM_TAP_STEP
 	if action == "zoom_out":
 		step = -step
 
@@ -1131,17 +1180,22 @@ func _release_action(action: String):
 
 
 func _release_touch_index(touch_index: int):
+	if zoom_hold_touch == touch_index:
+		_end_zoom_hold()
 	for action in active_action_touches.keys().duplicate():
 		if active_action_touches.get(action, -1) == touch_index:
 			_release_action(action)
 
 
 func _release_mouse_actions():
+	if zoom_hold_mouse:
+		_end_zoom_hold()
 	for action in active_action_mouse.keys().duplicate():
 		_release_action(action)
 
 
 func _release_all_actions():
+	_end_zoom_hold()
 	punch_action_release_generation += 1
 	punch_hold_timer = 0.0
 	punch_hold_repeat_active = false

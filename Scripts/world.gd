@@ -6861,9 +6861,9 @@ func apply_camera_zoom():
 		return player_manager.apply_camera_zoom()
 
 	return
-func zoom_camera(amount: float):
+func zoom_camera(amount: float, show_feedback: bool = true):
 	if player_manager != null and player_manager.has_method("zoom_camera"):
-		return player_manager.zoom_camera(amount)
+		return player_manager.zoom_camera(amount, show_feedback)
 
 	return
 func reset_camera_zoom():

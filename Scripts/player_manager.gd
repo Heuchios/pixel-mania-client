@@ -422,9 +422,12 @@ func apply_camera_zoom():
 	world.current_camera_zoom = clamp(world.current_camera_zoom, world.CAMERA_ZOOM_MIN, world.CAMERA_ZOOM_MAX)
 	camera.zoom = Vector2(world.current_camera_zoom, world.current_camera_zoom)
 
-func zoom_camera(amount: float):
+func zoom_camera(amount: float, show_feedback: bool = true):
 	world.current_camera_zoom = clamp(world.current_camera_zoom + amount, world.CAMERA_ZOOM_MIN, world.CAMERA_ZOOM_MAX)
 	world.apply_camera_zoom()
+
+	if not show_feedback:
+		return
 
 	if amount > 0.0:
 		world.show_notification("Zoom In: " + str(snapped(world.current_camera_zoom, 0.01)) + "x")
