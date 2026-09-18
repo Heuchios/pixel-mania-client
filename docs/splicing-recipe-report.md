@@ -1,3 +1,5 @@
+Latest correction: 136 source splicing recipes enabled (144 total). See [batch 1 corrections](screenshot-recipe-batch-1.md). The historical conflict below is resolved by the user-approved Blue Block + Building Brick Wall → Blue Wall override; Barn Block remains pending.
+
 # Live recipe sheet audit
 
 Source: [SPLICING tab](https://docs.google.com/spreadsheets/d/1PJLhG99ik5hVTQNTC29gizhC1nSvb3enpCMKma2uumU/edit#gid=862678959), read 2026-09-18. All 199 recipe rows were read with effective cell background colors. Red recipe cells mean crafting-table recipes. The source spreadsheet was not edited.

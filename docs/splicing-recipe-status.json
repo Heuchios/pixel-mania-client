@@ -1997,8 +1997,7 @@
       "blue_stripe_wall_seed"
     ],
     "missing_seeds": [],
-    "status": "conflicting_pair",
-    "conflict_with_row": 148
+    "status": "active"
   },
   {
     "row": 106,
@@ -2879,18 +2878,19 @@
     ],
     "ids": [
       "blue_block",
-      "red_brick_wall",
+      "building_brick_wall",
       "blue_wallpaper"
     ],
     "method": "splicing",
     "missing_items": [],
     "seeds": [
       "blue_block_seed",
-      "red_brick_wall_seed",
+      "building_brick_wall_seed",
       "blue_wallpaper_seed"
     ],
     "missing_seeds": [],
-    "status": "active"
+    "status": "active",
+    "override_reason": "User approved Blue Block + Building Brick Wall -> Blue Wall on 2026-09-18."
   },
   {
     "row": 150,
@@ -3007,12 +3007,10 @@
     "seeds": [
       "green_brick_seed",
       "campfire_seed",
-      null
+      "slime_seed"
     ],
-    "missing_seeds": [
-      "Slime block"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 156,
@@ -4483,12 +4481,10 @@
     "seeds": [
       "steel_block_seed",
       "campfire_seed",
-      null
+      "ceiling_lamp_seed"
     ],
-    "missing_seeds": [
-      "Ceiling lamp"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 232,
@@ -4876,12 +4872,10 @@
     "seeds": [
       "white_brick_block_seed",
       "wooden_barrel_seed",
-      null
+      "pillar_seed"
     ],
-    "missing_seeds": [
-      "Pillar block"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 252,
@@ -5275,12 +5269,10 @@
     "seeds": [
       "wooden_barrel_seed",
       "big_spike_seed",
-      null
+      "biohazard_barrel_seed"
     ],
-    "missing_seeds": [
-      "Toxic barrel"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 272,
@@ -5317,12 +5309,10 @@
     "seeds": [
       "star_wall_seed",
       "gem_block_seed",
-      null
+      "star_block_seed"
     ],
-    "missing_seeds": [
-      "Starry block"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 274,
@@ -5555,12 +5545,10 @@
     "seeds": [
       "grass_seed",
       "weathervane_seed",
-      null
+      "chicken_seed"
     ],
-    "missing_seeds": [
-      "Chicken"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 286,
@@ -5595,14 +5583,12 @@
     "method": "splicing",
     "missing_items": [],
     "seeds": [
-      null,
+      "ceiling_lamp_seed",
       "building_brick_block_seed",
       "lamp_seed"
     ],
-    "missing_seeds": [
-      "Ceiling lamp"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 288,
@@ -6141,12 +6127,10 @@
     "seeds": [
       "dungeon_door_seed",
       "lamp_seed",
-      null
+      "checkpoint_seed"
     ],
-    "missing_seeds": [
-      "Checkpoint"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 316,
@@ -6258,11 +6242,10 @@
     "missing_items": [],
     "seeds": [
       "water_well_seed",
-      null,
+      "chicken_seed",
       null
     ],
     "missing_seeds": [
-      "Chicken",
       "Cow"
     ],
     "status": "missing_seeds"
@@ -6366,15 +6349,12 @@
     "method": "splicing",
     "missing_items": [],
     "seeds": [
-      null,
-      null,
+      "slime_seed",
+      "chicken_seed",
       "rubber_duck_seed"
     ],
-    "missing_seeds": [
-      "Slime block",
-      "Chicken"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 328,
@@ -6409,14 +6389,12 @@
     "method": "splicing",
     "missing_items": [],
     "seeds": [
-      null,
+      "biohazard_barrel_seed",
       "steel_sign_seed",
       "hazard_sign_seed"
     ],
-    "missing_seeds": [
-      "Toxic barrel"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 330,
@@ -6491,14 +6469,12 @@
     "method": "splicing",
     "missing_items": [],
     "seeds": [
-      null,
+      "ceiling_lamp_seed",
       "street_sign_seed",
       "street_lamp_seed"
     ],
-    "missing_seeds": [
-      "Ceiling lamp"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 334,
@@ -7276,11 +7252,10 @@
     "missing_items": [],
     "seeds": [
       "green_couch_seed",
-      null,
+      "biohazard_barrel_seed",
       null
     ],
     "missing_seeds": [
-      "Toxic barrel",
       "Recycler bin"
     ],
     "status": "missing_seeds"

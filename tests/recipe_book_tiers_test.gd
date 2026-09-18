@@ -27,11 +27,12 @@ func run() -> void:
 		var expected = {"single": Vector2i(4, 22), "bottom": Vector2i(4, 23), "middle": Vector2i(5, 23), "top": Vector2i(5, 22)}[key]
 		var coord = cane_variants[key]
 		assert(Vector2i(coord[0], coord[1]) == expected if coord is Array else Vector2i(coord) == expected)
-	for item_id in ["hay", "sugar_cane"]:
+	for item_id in ["hay", "sugar_cane", "slime", "ceiling_lamp", "pillar", "biohazard_barrel", "star_block", "chicken", "checkpoint"]:
+		assert(world.item_database[item_id + "_seed"].grows_into == item_id)
 		for rule_key in ["drop_rules", "tree_drop_rules"]:
 			var drops = world.item_database[item_id][rule_key].fixed_drops
 			for drop_id in [item_id, item_id + "_seed", "gem"]:
-				assert(drops.any(func(drop): return drop.item_id == drop_id))
+				assert(drops.any(func(drop): return drop.item_id == drop_id), item_id + " " + rule_key + " " + drop_id)
 	var tiers: Dictionary = BOOK_DATA.build_from_world(world)
 	for item_id in ["hay", "sugar_cane"]:
 		var icon = BOOK_DATA.item_icon(world.item_database[item_id])
@@ -48,7 +49,7 @@ func run() -> void:
 			assert(recipe.icon != null or not str(recipe.name).is_empty(), recipe.id)
 			for ingredient in recipe.ingredients:
 				assert(ingredient.icon != null, recipe.id + ": " + ingredient.id)
-	assert(counts == {"splicing": 132, "crafting": 4, "furnace": 3}, str(counts))
+	assert(counts == {"splicing": 144, "crafting": 4, "furnace": 3}, str(counts))
 	var rows = JSON.parse_string(FileAccess.get_file_as_string("res://docs/splicing-recipe-status.json"))
 	for row in rows:
 		if row.status not in ["active", "crafting_active"]:
@@ -73,8 +74,8 @@ func run() -> void:
 	assert(book.get_current_tier() == 2)
 	assert(not book._available_tiers.has(1))
 	book.select_tier(5)
-	book.select_recipe("blue_stripe_wall") # no active recipe for this conflicting output
-	assert(book.get_selected_recipe_id() == "")
+	book.select_recipe("blue_stripe_wall") # corrected Tier 4 recipe
+	assert(book.get_selected_recipe_id() == "blue_stripe_wall")
 	book._on_search_changed("chandelier")
 	assert(book._visible_recipes.any(func(r): return r.id == "chandelier"))
 	book._on_method_selected(1)
@@ -124,7 +125,7 @@ func run() -> void:
 		await RenderingServer.frame_post_draw
 		capture.get_texture().get_image().save_png("D:/Pixelmania/recipe-book-preview.png")
 		print("Book rendered: ", book.visible, " ", book.size, " ", book.window.get_global_rect())
-	print("Recipe book OK: 132 splicing, 4 crafting, 3 furnace; sheet tiers, icons, search, links, filters and reusable tier tabs")
+	print("Recipe book OK: 144 splicing, 4 crafting, 3 furnace; sheet tiers, icons, search, links, filters and reusable tier tabs")
 	book.queue_free()
 	inventory.free()
 	world.free()

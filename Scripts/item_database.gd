@@ -9282,7 +9282,7 @@ const ITEMS = {
 		"block_health": 2,
 		"texture": "res://Assets/blocks/Tier_2/steel/ceiling_lamp_off.png",
 		"inventory_icon": "res://Assets/blocks/Tier_2/steel/ceiling_lamp_on.png",
-		"seed": "",
+		"seed": "ceiling_lamp_seed",
 		"no_collision": true,
 		"collidable": false,
 		"toggle_block": true,
@@ -9297,7 +9297,13 @@ const ITEMS = {
 		"light_fx_show_fixture": false,
 		"interact_rules": true,
 		"order": 141
-	},
+	,
+"authored_drop_rules": true
+,
+"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"ceiling_lamp","item_category":"block","amount":1},{"item_id":"ceiling_lamp_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]}
+,
+"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"ceiling_lamp","item_category":"block","amount_range":[2,5]},{"item_id":"ceiling_lamp_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}
+},
 "steel_door": {
 		"category": "block",
 		"display_name": "Steel Door",
@@ -14373,20 +14379,17 @@ const ITEMS = {
 		"rarity": "rare",
 		"block_health": 4,
 		"texture": "res://Assets/blocks/tier_3/biohazard_barrel.png",
-		"seed": "",
+		"seed": "biohazard_barrel_seed",
 		"collidable": true,
 		"break_effect_frames": ["res://Assets/blocks/tier_3/biohazard_barrel_1.png", "res://Assets/blocks/tier_3/biohazard_barrel_2.png"],
 		"break_effect_frame_seconds": 0.28,
-		"drop_rules": {
-			"seed_chance": 0,
-			"gem_range": [0, 0],
-			"fixed_drops": [
-				{"item_id": "biohazard_barrel", "item_category": "block", "amount": 1},
-				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
-			]
-		},
+		"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"biohazard_barrel","item_category":"block","amount":1},{"item_id":"gem","item_category":"currency","amount_range":[1,7]},{"item_id":"biohazard_barrel_seed","item_category":"seed","amount":1,"chance":0.2}]},
 		"order": 302
-	},
+	,
+"authored_drop_rules": true
+,
+"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"biohazard_barrel","item_category":"block","amount_range":[2,5]},{"item_id":"biohazard_barrel_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}
+},
 "blue_mail_box": {
 		"category": "block",
 		"display_name": "Blue Mailbox",
@@ -14522,21 +14525,18 @@ const ITEMS = {
 		"block_health": 3,
 		"texture": "res://Assets/blocks/tier_3/slime.png",
 		"atlas_coords": Vector2i(5, 13),
-		"seed": "",
+		"seed": "slime_seed",
 		"collidable": true,
 		"slow_surface": true,
 		"movement_speed_multiplier": 0.55,
 		"jump_velocity_multiplier": 0.62,
-		"drop_rules": {
-			"seed_chance": 0,
-			"gem_range": [0, 0],
-			"fixed_drops": [
-				{"item_id": "slime", "item_category": "block", "amount": 1},
-				{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
-			]
-		},
+		"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"slime","item_category":"block","amount":1},{"item_id":"gem","item_category":"currency","amount_range":[1,7]},{"item_id":"slime_seed","item_category":"seed","amount":1,"chance":0.2}]},
 		"order": 305
-	},
+	,
+"authored_drop_rules": true
+,
+"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"slime","item_category":"block","amount_range":[2,5]},{"item_id":"slime_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}
+},
 "pinball": {
 		"category": "block",
 		"display_name": "Pinball",
@@ -14687,7 +14687,7 @@ const ITEMS = {
 			"chicken_hungry_atlas_coords": Vector2i(9, 21),
 			"chicken_producing_atlas_coords": Vector2i(7, 21),
 			"chicken_ready_atlas_coords": Vector2i(8, 21),
-			"seed": "",
+			"seed": "chicken_seed",
 			"no_collision": true,
 			"collidable": false,
 			"chicken_block": true,
@@ -14699,15 +14699,13 @@ const ITEMS = {
 			"chicken_golden_reward_item_id": "golden_egg",
 			"chicken_golden_reward_chance": 0.01,
 			"interact_rules": true,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "chicken", "item_category": "block", "amount": 1}
-				]
-			},
+			"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"chicken","item_category":"block","amount":1},{"item_id":"chicken_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},
 			"order": 311
-		},
+		,
+"authored_drop_rules": true
+,
+"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"chicken","item_category":"block","amount_range":[2,5]},{"item_id":"chicken_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}
+},
 	"cow": {
 			"category": "block",
 			"display_name": "Cow",
@@ -15886,21 +15884,18 @@ const ITEMS = {
 			"inventory_icon": "res://Assets/blocks/tier_4/checkpoint_1.png",
 			"checkpoint_inactive_texture": "res://Assets/blocks/tier_4/checkpoint_1.png",
 			"checkpoint_active_texture": "res://Assets/blocks/tier_4/checkpoint_2.png",
-			"seed": "",
+			"seed": "checkpoint_seed",
 			"no_collision": true,
 			"collidable": false,
 			"checkpoint_block": true,
 			"interact_rules": true,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "checkpoint", "item_category": "block", "amount": 1},
-					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
-				]
-			},
+			"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"checkpoint","item_category":"block","amount":1},{"item_id":"gem","item_category":"currency","amount_range":[1,7]},{"item_id":"checkpoint_seed","item_category":"seed","amount":1,"chance":0.2}]},
 			"order": 399
-		},
+		,
+"authored_drop_rules": true
+,
+"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"checkpoint","item_category":"block","amount_range":[2,5]},{"item_id":"checkpoint_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}
+},
 	"star_checkpoint": {
 			"category": "block",
 			"display_name": "Star Checkpoint",
@@ -16109,18 +16104,15 @@ const ITEMS = {
 			"texture": "res://Assets/blocks/tier_4/star_block.png",
 			"atlas_coords": Vector2i(9, 13),
 			"inventory_icon": "res://Assets/blocks/tier_4/star_block.png",
-			"seed": "",
+			"seed": "star_block_seed",
 			"collidable": true,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "star_block", "item_category": "block", "amount": 1},
-					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
-				]
-			},
+			"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"star_block","item_category":"block","amount":1},{"item_id":"gem","item_category":"currency","amount_range":[1,7]},{"item_id":"star_block_seed","item_category":"seed","amount":1,"chance":0.2}]},
 			"order": 407
-		},
+		,
+"authored_drop_rules": true
+,
+"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"star_block","item_category":"block","amount_range":[2,5]},{"item_id":"star_block_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}
+},
 	"anti_punch": {
 			"category": "block",
 			"display_name": "Anti-Punch",
@@ -26357,8 +26349,9 @@ const ITEMS = {
 		},
 		"platform_collision": false,
 		"punch_open_only": false
-	}
-	}
+	},
+"pillar": {"item_id":"pillar","category":"block","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"placeable":true,"place_layer":"foreground","block_health":2,"breakable":true,"display_name":"Pillar","background_block":false,"no_collision":false,"collidable":true,"solid":true,"collision_type":"full","atlas_item_id":58,"atlas_source_id":0,"atlas_coords":[15,19],"alternative_tile":0,"seed":"pillar_seed","order":432,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"pillar","item_category":"block","amount":1},{"item_id":"pillar_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"vertical_variant_atlas_coords":{"single":[15,19],"top":[15,20],"middle":[15,21],"bottom":[15,22]},"recipe_tier":6,"authored_drop_rules":true,"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"pillar","item_category":"block","amount_range":[2,5]},{"item_id":"pillar_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}},
+}
 
 # ============================================================
 # SEED SPLICING RECIPES
@@ -26367,6 +26360,13 @@ const ITEMS = {
 # ============================================================
 # Authored tiers from the SPLICING sheet. Recipes absent from the sheet stay unranked.
 const RECIPE_TIERS = {
+"checkpoint_seed": 8,
+"chicken_seed": 7,
+"star_block_seed": 7,
+"biohazard_barrel_seed": 7,
+"pillar_seed": 6,
+"ceiling_lamp_seed": 6,
+"slime_seed": 5,
   "aqua_block": 5,
   "aqua_block_seed": 5,
   "aqua_wallpaper": 6,
@@ -26705,6 +26705,17 @@ const RECIPE_TIERS = {
 }
 
 const SPLICE_RECIPES = {
+"ceiling_lamp_seed+street_sign_seed": "street_lamp_seed",
+"biohazard_barrel_seed+steel_sign_seed": "hazard_sign_seed",
+"chicken_seed+slime_seed": "rubber_duck_seed",
+"dungeon_door_seed+lamp_seed": "checkpoint_seed",
+"building_brick_block_seed+ceiling_lamp_seed": "lamp_seed",
+"grass_seed+weathervane_seed": "chicken_seed",
+"gem_block_seed+star_wall_seed": "star_block_seed",
+"big_spike_seed+wooden_barrel_seed": "biohazard_barrel_seed",
+"white_brick_block_seed+wooden_barrel_seed": "pillar_seed",
+"campfire_seed+steel_block_seed": "ceiling_lamp_seed",
+"campfire_seed+green_brick_seed": "slime_seed",
 	"aqua_block_seed+building_brick_wall_seed": "aqua_wallpaper_seed",
 	"aqua_block_seed+sale_sign_seed": "street_sign_seed",
 	"barn_door_seed+royal_door_seed": "screen_door_seed",
@@ -26721,7 +26732,8 @@ const SPLICE_RECIPES = {
 	"black_wallpaper_seed+white_wallpaper_seed": "checkered_wall_seed",
 	"blue_block_seed+green_brick_seed": "dark_blue_block_seed",
 	"blue_block_seed+mail_box_seed": "blue_mail_box_seed",
-	"blue_block_seed+red_brick_wall_seed": "blue_wallpaper_seed",
+	"blue_block_seed+red_brick_wall_seed": "blue_stripe_wall_seed",
+"blue_block_seed+building_brick_wall_seed": "blue_wallpaper_seed",
 	"blue_block_seed+red_pastel_block_seed": "purple_pastel_block_seed",
 	"blue_block_seed+red_stripe_wall_seed": "aqua_block_seed",
 	"blue_block_seed+side_table_seed": "bed_seed",
