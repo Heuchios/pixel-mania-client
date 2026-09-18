@@ -647,73 +647,199 @@
       }
     },
     {
-      "id": 21,
-      "item_key": "cow",
-      "name": "Cow",
-      "type": "block",
-      "layer": "foreground",
-      "source_id": 0,
-      "atlas_coords": [
-        7,
-        22
-      ],
-      "alternative_tile": 0,
-      "collision": false,
-      "collision_type": "none",
-      "hardness": 3,
-      "cow_block": true,
-      "cow_feed_item_id": "wheat",
-      "cow_feed_item_category": "material",
-      "cow_production_seconds": 43200,
-      "cow_hunger_seconds": 604800,
-      "cow_reward_item_id": "milk",
-      "cow_hungry_atlas_coords": [
-        9,
-        22
-      ],
-      "cow_producing_atlas_coords": [
-        7,
-        22
-      ],
-      "cow_ready_atlas_coords": [
-        8,
-        22
-      ]
-    },
+  "id": 21,
+  "item_key": "cow",
+  "name": "Cow",
+  "type": "block",
+  "layer": "foreground",
+  "source_id": 0,
+  "atlas_coords": [
+    7,
+    22
+  ],
+  "alternative_tile": 0,
+  "collision": false,
+  "collision_type": "none",
+  "hardness": 3,
+  "cow_block": true,
+  "cow_feed_item_id": "wheat",
+  "cow_feed_item_category": "material",
+  "cow_production_seconds": 43200,
+  "cow_hunger_seconds": 604800,
+  "cow_reward_item_id": "milk",
+  "cow_hungry_atlas_coords": [
+    9,
+    22
+  ],
+  "cow_producing_atlas_coords": [
+    7,
+    22
+  ],
+  "cow_ready_atlas_coords": [
+    8,
+    22
+  ],
+  "seed": "cow_seed",
+  "authored_drop_rules": true,
+  "drop_rules": {
+    "seed_chance": 0,
+    "gem_range": [
+      0,
+      0
+    ],
+    "fixed_drops": [
+      {
+        "item_id": "cow",
+        "item_category": "block",
+        "amount": 1
+      },
+      {
+        "item_id": "cow_seed",
+        "item_category": "seed",
+        "amount": 1,
+        "chance": 0.2
+      },
+      {
+        "item_id": "gem",
+        "item_category": "currency",
+        "amount_range": [
+          0,
+          3
+        ]
+      }
+    ]
+  },
+  "tree_drop_rules": {
+    "seed_chance": 0,
+    "gem_range": [
+      0,
+      0
+    ],
+    "fixed_drops": [
+      {
+        "item_id": "cow",
+        "item_category": "block",
+        "amount_range": [
+          2,
+          5
+        ]
+      },
+      {
+        "item_id": "cow_seed",
+        "item_category": "seed",
+        "amount_range": [
+          0,
+          3
+        ]
+      },
+      {
+        "item_id": "gem",
+        "item_category": "currency",
+        "amount_range": [
+          0,
+          5
+        ]
+      }
+    ]
+  }
+},
     {
-      "id": 31,
-      "item_key": "duck",
-      "name": "Duck",
-      "type": "block",
-      "layer": "foreground",
-      "source_id": 0,
-      "atlas_coords": [
-        10,
-        21
-      ],
-      "alternative_tile": 0,
-      "collision": false,
-      "collision_type": "none",
-      "hardness": 3,
-      "duck_block": true,
-      "duck_feed_item_id": "grain",
-      "duck_feed_item_category": "material",
-      "duck_production_seconds": 43200,
-      "duck_hunger_seconds": 604800,
-      "duck_reward_table": "fishing",
-      "duck_hungry_atlas_coords": [
-        12,
-        21
-      ],
-      "duck_producing_atlas_coords": [
-        10,
-        21
-      ],
-      "duck_ready_atlas_coords": [
-        11,
-        21
-      ]
-    },
+  "id": 31,
+  "item_key": "duck",
+  "name": "Duck",
+  "type": "block",
+  "layer": "foreground",
+  "source_id": 0,
+  "atlas_coords": [
+    10,
+    21
+  ],
+  "alternative_tile": 0,
+  "collision": false,
+  "collision_type": "none",
+  "hardness": 3,
+  "duck_block": true,
+  "duck_feed_item_id": "grain",
+  "duck_feed_item_category": "material",
+  "duck_production_seconds": 43200,
+  "duck_hunger_seconds": 604800,
+  "duck_reward_table": "fishing",
+  "duck_hungry_atlas_coords": [
+    12,
+    21
+  ],
+  "duck_producing_atlas_coords": [
+    10,
+    21
+  ],
+  "duck_ready_atlas_coords": [
+    11,
+    21
+  ],
+  "seed": "duck_seed",
+  "authored_drop_rules": true,
+  "drop_rules": {
+    "seed_chance": 0,
+    "gem_range": [
+      0,
+      0
+    ],
+    "fixed_drops": [
+      {
+        "item_id": "duck",
+        "item_category": "block",
+        "amount": 1
+      },
+      {
+        "item_id": "duck_seed",
+        "item_category": "seed",
+        "amount": 1,
+        "chance": 0.2
+      },
+      {
+        "item_id": "gem",
+        "item_category": "currency",
+        "amount_range": [
+          0,
+          3
+        ]
+      }
+    ]
+  },
+  "tree_drop_rules": {
+    "seed_chance": 0,
+    "gem_range": [
+      0,
+      0
+    ],
+    "fixed_drops": [
+      {
+        "item_id": "duck",
+        "item_category": "block",
+        "amount_range": [
+          2,
+          5
+        ]
+      },
+      {
+        "item_id": "duck_seed",
+        "item_category": "seed",
+        "amount_range": [
+          0,
+          3
+        ]
+      },
+      {
+        "item_id": "gem",
+        "item_category": "currency",
+        "amount_range": [
+          0,
+          5
+        ]
+      }
+    ]
+  }
+},
     {
       "id": 22,
       "item_key": "hay",
@@ -3503,124 +3629,173 @@
       "order": 427
     },
     {
-      "id": 54,
-      "item_key": "fire_escape",
-      "name": "Fire Escape",
-      "type": "block",
-      "layer": "foreground",
-      "source_id": 0,
-      "atlas_coords": [
-        16,
-        29
-      ],
-      "alternative_tile": 0,
-      "collision": false,
-      "collision_type": "none",
-      "hardness": 3,
-      "rarity": "uncommon",
-      "platform_collision": true,
-      "connected_variant_atlas_coords": {
-        "single": [
-          16,
-          29
-        ],
-        "left": [
-          17,
-          29
-        ],
-        "horizontal_middle": [
-          18,
-          29
-        ],
-        "right": [
-          19,
-          29
-        ],
-        "top": [
-          16,
-          30
-        ],
-        "vertical_middle": [
-          16,
-          30
-        ],
-        "bottom": [
-          16,
-          29
-        ],
-        "top_left_corner": [
-          17,
-          30
-        ],
-        "top_right_corner": [
-          19,
-          30
-        ],
-        "bottom_left_corner": [
-          17,
-          29
-        ],
-        "bottom_right_corner": [
-          19,
-          29
-        ],
-        "middle": [
-          18,
-          30
-        ],
-        "tile_top_left_corner": [
-          17,
-          30
-        ],
-        "tile_top_middle": [
-          18,
-          30
-        ],
-        "tile_top_right_corner": [
-          19,
-          30
-        ],
-        "tile_middle_left": [
-          17,
-          30
-        ],
-        "tile_middle_middle": [
-          18,
-          30
-        ],
-        "tile_middle_right": [
-          19,
-          30
-        ],
-        "tile_bottom_left_corner": [
-          17,
-          29
-        ],
-        "tile_bottom_middle": [
-          18,
-          29
-        ],
-        "tile_bottom_right_corner": [
-          19,
-          29
-        ]
+  "id": 54,
+  "item_key": "fire_escape",
+  "name": "Fire Escape",
+  "type": "block",
+  "layer": "foreground",
+  "source_id": 0,
+  "atlas_coords": [
+    16,
+    29
+  ],
+  "alternative_tile": 0,
+  "collision": false,
+  "collision_type": "none",
+  "hardness": 3,
+  "rarity": "uncommon",
+  "platform_collision": true,
+  "connected_variant_atlas_coords": {
+    "single": [
+      16,
+      29
+    ],
+    "left": [
+      17,
+      29
+    ],
+    "horizontal_middle": [
+      18,
+      29
+    ],
+    "right": [
+      19,
+      29
+    ],
+    "top": [
+      16,
+      30
+    ],
+    "vertical_middle": [
+      16,
+      30
+    ],
+    "bottom": [
+      16,
+      29
+    ],
+    "top_left_corner": [
+      17,
+      30
+    ],
+    "top_right_corner": [
+      19,
+      30
+    ],
+    "bottom_left_corner": [
+      17,
+      29
+    ],
+    "bottom_right_corner": [
+      19,
+      29
+    ],
+    "middle": [
+      18,
+      30
+    ],
+    "tile_top_left_corner": [
+      17,
+      30
+    ],
+    "tile_top_middle": [
+      18,
+      30
+    ],
+    "tile_top_right_corner": [
+      19,
+      30
+    ],
+    "tile_middle_left": [
+      17,
+      30
+    ],
+    "tile_middle_middle": [
+      18,
+      30
+    ],
+    "tile_middle_right": [
+      19,
+      30
+    ],
+    "tile_bottom_left_corner": [
+      17,
+      29
+    ],
+    "tile_bottom_middle": [
+      18,
+      29
+    ],
+    "tile_bottom_right_corner": [
+      19,
+      29
+    ]
+  },
+  "drop_rules": {
+    "seed_chance": 0,
+    "gem_range": [
+      0,
+      0
+    ],
+    "fixed_drops": [
+      {
+        "item_id": "fire_escape",
+        "item_category": "block",
+        "amount": 1
       },
-      "drop_rules": {
-        "seed_chance": 0,
-        "gem_range": [
+      {
+        "item_id": "fire_escape_seed",
+        "item_category": "seed",
+        "amount": 1,
+        "chance": 0.2
+      },
+      {
+        "item_id": "gem",
+        "item_category": "currency",
+        "amount_range": [
           0,
-          0
-        ],
-        "fixed_drops": [
-          {
-            "item_id": "fire_escape",
-            "item_category": "block",
-            "amount": 1
-          }
+          3
+        ]
+      }
+    ]
+  },
+  "order": 428,
+  "seed": "fire_escape_seed",
+  "authored_drop_rules": true,
+  "tree_drop_rules": {
+    "seed_chance": 0,
+    "gem_range": [
+      0,
+      0
+    ],
+    "fixed_drops": [
+      {
+        "item_id": "fire_escape",
+        "item_category": "block",
+        "amount_range": [
+          2,
+          5
         ]
       },
-      "order": 428
-    },
+      {
+        "item_id": "fire_escape_seed",
+        "item_category": "seed",
+        "amount_range": [
+          0,
+          3
+        ]
+      },
+      {
+        "item_id": "gem",
+        "item_category": "currency",
+        "amount_range": [
+          0,
+          5
+        ]
+      }
+    ]
+  }
+},
     {
       "id": 55,
       "item_key": "city_fence",
@@ -3745,51 +3920,100 @@
       }
     },
     {
-      "id": 56,
-      "item_key": "fire_hydrant",
-      "name": "Fire Hydrant",
-      "type": "block",
-      "layer": "foreground",
-      "source_id": 0,
-      "atlas_coords": [
-        17,
-        31
-      ],
-      "alternative_tile": 0,
-      "collision": true,
-      "collision_type": "full",
-      "hardness": 2,
-      "rarity": "uncommon",
-      "springboard": true,
-      "springboard_velocity": -420,
-      "springboard_animation_atlas_frames": [
-        [
-          17,
-          31
-        ],
-        [
-          18,
-          31
-        ]
-      ],
-      "springboard_animation_frame_seconds": 0.22,
-      "springboard_water_splash": true,
-      "drop_rules": {
-        "seed_chance": 0,
-        "gem_range": [
+  "id": 56,
+  "item_key": "fire_hydrant",
+  "name": "Fire Hydrant",
+  "type": "block",
+  "layer": "foreground",
+  "source_id": 0,
+  "atlas_coords": [
+    17,
+    31
+  ],
+  "alternative_tile": 0,
+  "collision": true,
+  "collision_type": "full",
+  "hardness": 2,
+  "rarity": "uncommon",
+  "springboard": true,
+  "springboard_velocity": -420,
+  "springboard_animation_atlas_frames": [
+    [
+      17,
+      31
+    ],
+    [
+      18,
+      31
+    ]
+  ],
+  "springboard_animation_frame_seconds": 0.22,
+  "springboard_water_splash": true,
+  "drop_rules": {
+    "seed_chance": 0,
+    "gem_range": [
+      0,
+      0
+    ],
+    "fixed_drops": [
+      {
+        "item_id": "fire_hydrant",
+        "item_category": "block",
+        "amount": 1
+      },
+      {
+        "item_id": "fire_hydrant_seed",
+        "item_category": "seed",
+        "amount": 1,
+        "chance": 0.2
+      },
+      {
+        "item_id": "gem",
+        "item_category": "currency",
+        "amount_range": [
           0,
-          0
-        ],
-        "fixed_drops": [
-          {
-            "item_id": "fire_hydrant",
-            "item_category": "block",
-            "amount": 1
-          }
+          3
+        ]
+      }
+    ]
+  },
+  "order": 430,
+  "seed": "fire_hydrant_seed",
+  "authored_drop_rules": true,
+  "tree_drop_rules": {
+    "seed_chance": 0,
+    "gem_range": [
+      0,
+      0
+    ],
+    "fixed_drops": [
+      {
+        "item_id": "fire_hydrant",
+        "item_category": "block",
+        "amount_range": [
+          2,
+          5
         ]
       },
-      "order": 430
-    },
+      {
+        "item_id": "fire_hydrant_seed",
+        "item_category": "seed",
+        "amount_range": [
+          0,
+          3
+        ]
+      },
+      {
+        "item_id": "gem",
+        "item_category": "currency",
+        "amount_range": [
+          0,
+          5
+        ]
+      }
+    ]
+  }
+},
     {
       "id": 57,
       "item_key": "shifty_block",

@@ -14717,7 +14717,7 @@ const ITEMS = {
 			"cow_hungry_atlas_coords": Vector2i(9, 22),
 			"cow_producing_atlas_coords": Vector2i(7, 22),
 			"cow_ready_atlas_coords": Vector2i(8, 22),
-			"seed": "",
+			"seed": "cow_seed",
 			"no_collision": true,
 			"collidable": false,
 			"cow_block": true,
@@ -14727,15 +14727,13 @@ const ITEMS = {
 			"cow_hunger_seconds": 604800.0,
 			"cow_reward_item_id": "milk",
 			"interact_rules": true,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "cow", "item_category": "block", "amount": 1}
-				]
-			},
+			"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"cow","item_category":"block","amount":1},{"item_id":"cow_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},
 			"order": 312
-		},
+		,
+"authored_drop_rules": true
+,
+"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"cow","item_category":"block","amount_range":[2,5]},{"item_id":"cow_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}
+},
 	"duck": {
 			"category": "block",
 			"display_name": "Duck",
@@ -14747,7 +14745,7 @@ const ITEMS = {
 			"duck_hungry_atlas_coords": Vector2i(12, 21),
 			"duck_producing_atlas_coords": Vector2i(10, 21),
 			"duck_ready_atlas_coords": Vector2i(11, 21),
-			"seed": "",
+			"seed": "duck_seed",
 			"no_collision": true,
 			"collidable": false,
 			"duck_block": true,
@@ -14757,15 +14755,13 @@ const ITEMS = {
 			"duck_hunger_seconds": 604800.0,
 			"duck_reward_table": "fishing",
 			"interact_rules": true,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "duck", "item_category": "block", "amount": 1}
-				]
-			},
+			"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"duck","item_category":"block","amount":1},{"item_id":"duck_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},
 			"order": 313
-		},
+		,
+"authored_drop_rules": true
+,
+"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"duck","item_category":"block","amount_range":[2,5]},{"item_id":"duck_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}
+},
 		"bone": {
 			"category": "block",
 			"display_name": "Bone",
@@ -14999,7 +14995,7 @@ const ITEMS = {
 			"inventory_icon": "res://image.png",
 			"atlas_item_id": 54,
 			"atlas_coords": Vector2i(16, 29),
-			"seed": "",
+			"seed": "fire_escape_seed",
 			"platform_collision": true,
 			"connected_variant_atlas_coords": {
 				"single": Vector2i(16, 29),
@@ -15024,15 +15020,13 @@ const ITEMS = {
 				"tile_bottom_middle": Vector2i(18, 29),
 				"tile_bottom_right_corner": Vector2i(19, 29)
 			},
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "fire_escape", "item_category": "block", "amount": 1}
-				]
-			},
+			"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"fire_escape","item_category":"block","amount":1},{"item_id":"fire_escape_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},
 			"order": 428
-		},
+		,
+"authored_drop_rules": true
+,
+"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"fire_escape","item_category":"block","amount_range":[2,5]},{"item_id":"fire_escape_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}
+},
 	"city_fence": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -15165,7 +15159,7 @@ const ITEMS = {
 			"inventory_icon": "res://image.png",
 			"atlas_item_id": 56,
 			"atlas_coords": Vector2i(17, 31),
-			"seed": "",
+			"seed": "fire_hydrant_seed",
 			"collidable": true,
 			"springboard": true,
 			"springboard_velocity": -420.0,
@@ -15175,15 +15169,13 @@ const ITEMS = {
 			],
 			"springboard_animation_frame_seconds": 0.22,
 			"springboard_water_splash": true,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "fire_hydrant", "item_category": "block", "amount": 1}
-				]
-			},
+			"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"fire_hydrant","item_category":"block","amount":1},{"item_id":"fire_hydrant_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},
 			"order": 430
-		},
+		,
+"authored_drop_rules": true
+,
+"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"fire_hydrant","item_category":"block","amount_range":[2,5]},{"item_id":"fire_hydrant_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}
+},
 	"shifty_block": {
 	"alternative_tile": 0,
 	"atlas_coords": Vector2i(10, 8),
@@ -16007,18 +15999,15 @@ const ITEMS = {
 			"block_health": 4,
 			"texture": "res://Assets/blocks/tier_4/bomb.png",
 			"inventory_icon": "res://Assets/blocks/tier_4/bomb.png",
-			"seed": "",
+			"seed": "bomb_seed",
 			"collidable": true,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "bomb", "item_category": "block", "amount": 1},
-					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
-				]
-			},
+			"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"bomb","item_category":"block","amount":1},{"item_id":"gem","item_category":"currency","amount_range":[1,7]},{"item_id":"bomb_seed","item_category":"seed","amount":1,"chance":0.2}]},
 			"order": 403
-		},
+		,
+"authored_drop_rules": true
+,
+"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"bomb","item_category":"block","amount_range":[2,5]},{"item_id":"bomb_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}
+},
 	"display_shelf": {
 			"category": "block",
 			"display_name": "Display Shelf",
@@ -26360,6 +26349,11 @@ const ITEMS = {
 # ============================================================
 # Authored tiers from the SPLICING sheet. Recipes absent from the sheet stay unranked.
 const RECIPE_TIERS = {
+"fire_hydrant_seed": 9,
+"fire_escape_seed": 9,
+"duck_seed": 9,
+"bomb_seed": 9,
+"cow_seed": 8,
 "checkpoint_seed": 8,
 "chicken_seed": 7,
 "star_block_seed": 7,
@@ -26705,6 +26699,11 @@ const RECIPE_TIERS = {
 }
 
 const SPLICE_RECIPES = {
+"red_block_seed+rubber_duck_seed": "fire_hydrant_seed",
+"steel_platform_seed+street_lamp_seed": "fire_escape_seed",
+"rubber_duck_seed+sashimi_table_seed": "duck_seed",
+"big_spike_seed+hazard_sign_seed": "bomb_seed",
+"chicken_seed+water_well_seed": "cow_seed",
 "ceiling_lamp_seed+street_sign_seed": "street_lamp_seed",
 "biohazard_barrel_seed+steel_sign_seed": "hazard_sign_seed",
 "chicken_seed+slime_seed": "rubber_duck_seed",

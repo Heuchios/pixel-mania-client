@@ -6243,12 +6243,10 @@
     "seeds": [
       "water_well_seed",
       "chicken_seed",
-      null
+      "cow_seed"
     ],
-    "missing_seeds": [
-      "Cow"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 322,
@@ -6659,12 +6657,10 @@
     "seeds": [
       "big_spike_seed",
       "hazard_sign_seed",
-      null
+      "bomb_seed"
     ],
-    "missing_seeds": [
-      "Bomb"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 344,
@@ -6701,12 +6697,10 @@
     "seeds": [
       "sashimi_table_seed",
       "rubber_duck_seed",
-      null
+      "duck_seed"
     ],
-    "missing_seeds": [
-      "Duck"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 346,
@@ -7015,12 +7009,10 @@
     "seeds": [
       "steel_platform_seed",
       "street_lamp_seed",
-      null
+      "fire_escape_seed"
     ],
-    "missing_seeds": [
-      "Fire escape"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 364,
@@ -7097,12 +7089,10 @@
     "seeds": [
       "rubber_duck_seed",
       "red_block_seed",
-      null
+      "fire_hydrant_seed"
     ],
-    "missing_seeds": [
-      "Fire Hydrant"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 368,
@@ -7323,12 +7313,11 @@
     "method": "splicing",
     "missing_items": [],
     "seeds": [
-      null,
+      "bomb_seed",
       "white_block_seed",
       null
     ],
     "missing_seeds": [
-      "Bomb",
       "Dice Block"
     ],
     "status": "missing_seeds"
