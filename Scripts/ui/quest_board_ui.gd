@@ -117,7 +117,7 @@ func _process(_delta: float) -> void:
 	if not board.is_empty():
 		var remaining := maxi(0, int(board.get("reset_at", 0)) - Time.get_ticks_msec() - clock_offset)
 		var seconds := int(remaining / 1000)
-		footer.text = "%d / 5 DAYS  |  +8 STAMPS  |  Refresh %02d:%02d  |  Your story waits for you." % [int(board.get("week_days", 0)), int(seconds / 3600), int(seconds / 60) % 60]
+		footer.text = "%d / 5 DAYS  |  +100 XP  |  Refresh %02d:%02d  |  Play, grow, explore." % [int(board.get("week_days", 0)), int(seconds / 3600), int(seconds / 60) % 60]
 		if remaining == 0 and pending_id.is_empty() and last_refresh_day != int(board.get("day", -1)):
 			last_refresh_day = int(board.get("day", -1))
 			_request("quest_board_get")
@@ -221,7 +221,7 @@ func _render() -> void:
 	for child in content.get_children():
 		content.remove_child(child)
 		child.queue_free()
-	wallet.text = "%s STAMPS" % int(board.get("stamps", 0)) if not board.is_empty() else "— STAMPS"
+	wallet.text = "GEMS + XP"
 	title.text = "TODAY'S DISPATCH"
 	header_decoration.hide()
 	panel.add_theme_stylebox_override("panel", base_panel_style)
@@ -257,8 +257,8 @@ func _render_today() -> void:
 	content.add_child(split)
 	for tier in ["favor", "trip"]:
 		var column := _box(split)
-		_label(column, "LITTLE FAVOR" if tier == "favor" else "FIELD TRIP", GOLD, 28)
-		_label(column, "CHOOSE ONE  |  %s" % ("10 GEMS + 3 STAMPS" if tier == "favor" else "25 GEMS + 5 STAMPS"), LAVENDER, 22)
+		_label(column, "QUICK QUEST" if tier == "favor" else "DAILY CHALLENGE", GOLD, 28)
+		_label(column, "CHOOSE ONE  |  %s" % ("10 GEMS + 50 XP" if tier == "favor" else "25 GEMS + 125 XP"), LAVENDER, 22)
 		if board.get("active", {}).has(tier):
 			var active: Dictionary = board.active[tier]
 			_label(column, str(active.quest.title))
@@ -280,7 +280,7 @@ func _render_today() -> void:
 	else:
 		var quest: Dictionary = board.get("story", {})
 		if not quest.is_empty():
-			_label(story_column, "DISPATCH ENCORE" if board.get("encore", false) else "ARC %s  |  CHAPTER %s OF 4" % [quest.get("arc", "A"), quest.get("chapter_in_arc", 1)], LAVENDER, 22)
+			_label(story_column, "DISPATCH ENCORE" if board.get("encore", false) else "ARC %s  |  CHAPTER %d OF 4" % [quest.get("arc", "A"), int(quest.get("chapter_in_arc", 1))], LAVENDER, 22)
 			_render_offer(story_column, quest, "story")
 	_label(story_column, "THE TOWN THAT MISPLACED TOMORROW", GOLD, 24)
 	_label(story_column, "Letters stamped tomorrow. A paper moth collecting memories. Six neighbors with unfinished stories. Follow the thread, one little adventure at a time.", LAVENDER, 22)
@@ -302,7 +302,9 @@ func _render_offer(parent: Node, quest: Dictionary, tier: String) -> void:
 		_label(box, str(quest.get("opening", "")), LAVENDER, 22)
 		if not str(quest.get("callback", "")).is_empty():
 			_label(box, str(quest.callback), GOLD, 20)
-	_label(box, "Loaned supplies  |  Solo friendly", LAVENDER, 20)
+	for objective in quest.get("objectives", []):
+		_label(box, str(objective.label), GOLD, 22)
+	_label(box, "%d GEMS + %d XP" % [int(quest.get("reward", {}).get("gems", 0)), int(quest.get("reward", {}).get("xp", 0))], LAVENDER, 20)
 	_button(box, "READ LETTER" if tier == "story" else "TAKE THIS LETTER", _accept.bind(quest.id, tier), true)
 
 func _accept(quest_id: String, tier: String) -> void:
@@ -354,11 +356,27 @@ func _render_active(tier: String) -> void:
 	_label(column, str(active.quest.opening), LAVENDER)
 	if not str(active.quest.get("callback", "")).is_empty():
 		_label(column, str(active.quest.callback), GOLD, 22)
-	_label(column, "%s GEMS + %s STAMPS  |  Hints never reduce your reward." % [active.reward.gems, active.reward.stamps], GOLD, 22)
+	_label(column, "%d GEMS + %d XP" % [int(active.reward.gems), int(active.reward.get("xp", 0))], GOLD, 22)
 	if active.get("solved", false):
 		_label(column, "HOW DOES YOUR LETTER END?", Color.WHITE, 28)
 		for choice in active.quest.choices:
 			_button(column, str(choice.label), _active_request.bind("quest_choose", tier, {"choice": choice.id}), true)
+		return
+	if active.has("objectives"):
+		_label(column, "COMPLETE THROUGH GAMEPLAY", Color.WHITE, 28)
+		for i in range(active.objectives.size()):
+			var objective: Dictionary = active.objectives[i]
+			var count := int(active.progress[i]) if i < active.get("progress", []).size() else 0
+			_label(column, "%s  |  %d / %d" % [str(objective.label), count, int(objective.target)], GOLD)
+			var bar := ProgressBar.new()
+			bar.max_value = int(objective.target)
+			bar.value = count
+			bar.custom_minimum_size.y = 24
+			column.add_child(bar)
+		_label(column, "Only successful gameplay after accepting counts. Harvest mature trees; fishing must land a fish. Return to the board to update progress and claim your reward.", LAVENDER, 22)
+		_button(column, "GO PLAY", close_quest_board, true)
+		_button(column, "REFRESH PROGRESS", _request.bind("quest_board_get"))
+		_button(column, "ABANDON QUEST", _confirm_abandon.bind(tier))
 		return
 	_label(column, "1. INSPECT THE CLUES", Color.WHITE, 26)
 	var puzzle: Dictionary = active.puzzle
@@ -425,7 +443,7 @@ func _submit_answer(tier: String) -> void:
 
 func _confirm_abandon(tier: String) -> void:
 	var dialog := ConfirmationDialog.new()
-	dialog.dialog_text = "Put this letter away? Its puzzle progress will reset. Your own items and earned rewards are kept."
+	dialog.dialog_text = "Abandon this quest? Its objective progress will reset. Your own items and earned rewards are kept."
 	dialog.confirmed.connect(func():
 		_active_request("quest_abandon", tier)
 		dialog.queue_free())
@@ -454,6 +472,7 @@ func _render_archive() -> void:
 
 func _render_rewards() -> void:
 	_label(_box(content), "DISPATCH COLLECTION", GOLD, 30)
+	_label(_box(content), "%d legacy stamps. New daily quests reward gems and XP." % int(board.get("stamps", 0)), LAVENDER, 22)
 	_label(_box(content), "Guaranteed cosmetics for your Dispatch. No loot boxes, no trading, and no extra quest slots.", LAVENDER)
 	for reward in board.get("cosmetics", []):
 		var box := _box(content)
