@@ -380,6 +380,7 @@ static func get_item_database_entries() -> Dictionary:
 			"water_well_reward_item_category",
 			"water_well_reward_amount_range",
 			"water_well_producing_atlas_coords",
+			"tackle_box_state_atlas_coords",
 			"water_well_ready_atlas_coords",
 			"water_lower_atlas_coords",
 			"platform_variant_atlas_coords",

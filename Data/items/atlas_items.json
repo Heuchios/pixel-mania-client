@@ -18235,390 +18235,609 @@
 	  "hardness": 4,
 	  "atlas_enabled": true
 	},
-    {
-      "item_id": "melter",
-      "category": "block",
-      "display_name": "Melter",
-      "rarity": "rare",
-      "stack_limit": 400,
-      "tradeable": true,
-      "dropable": true,
-      "admin_grantable": true,
-      "hidden": false,
-      "placeable": true,
-      "breakable": true,
-      "block_health": 4,
-      "place_layer": "foreground",
-      "background_block": false,
-      "solid": false,
-      "collidable": false,
-      "no_collision": true,
-      "collision_type": "none",
-      "atlas_item_id": 231,
-      "atlas_source_id": 0,
-      "atlas_coords": [
-        19,
-        14
-      ],
-      "texture": {
-        "atlas": "res://image.png",
-        "cell": [
-          19,
-          14
-        ],
-        "cell_size": [
-          32,
-          32
-        ]
-      },
-      "inventory_icon": {
-        "atlas": "res://image.png",
-        "cell": [
-          19,
-          14
-        ],
-        "cell_size": [
-          32,
-          32
-        ]
-      },
-      "seed": "melter_seed",
-      "recipe_tier": 10,
-      "animated": false,
-      "tileset_animation": false,
-      "animation_frames": [],
-      "visual_states": {
-        "off": {
-          "frames": [
-            {
-              "atlas": "res://image.png",
-              "cell": [
-                19,
-                14
-              ],
-              "cell_size": [
-                32,
-                32
-              ]
-            }
-          ],
-          "loop": false
-        },
-        "running": {
-          "frames": [
-            {
-              "atlas": "res://image.png",
-              "cell": [
-                20,
-                14
-              ],
-              "cell_size": [
-                32,
-                32
-              ]
-            },
-            {
-              "atlas": "res://image.png",
-              "cell": [
-                21,
-                14
-              ],
-              "cell_size": [
-                32,
-                32
-              ]
-            },
-            {
-              "atlas": "res://image.png",
-              "cell": [
-                22,
-                14
-              ],
-              "cell_size": [
-                32,
-                32
-              ]
-            }
-          ],
-          "frame_seconds": 0.2,
-          "loop": true
-        },
-        "ready": {
-          "frames": [
-            {
-              "atlas": "res://image.png",
-              "cell": [
-                23,
-                14
-              ],
-              "cell_size": [
-                32,
-                32
-              ]
-            }
-          ],
-          "loop": false
-        }
-      },
-      "authored_drop_rules": true,
-      "break_return_to_inventory": false,
-      "drop_rules": {
-        "seed_chance": 0,
-        "gem_range": [
-          0,
-          0
-        ],
-        "fixed_drops": [
-          {
-            "item_id": "melter",
-            "item_category": "block",
-            "amount": 1
-          },
-          {
-            "item_id": "melter_seed",
-            "item_category": "seed",
-            "amount": 1,
-            "chance": 0.2
-          },
-          {
-            "item_id": "gem",
-            "item_category": "currency",
-            "amount_range": [
-              0,
-              3
-            ]
-          }
-        ]
-      },
-      "tree_drop_rules": {
-        "seed_chance": 0,
-        "gem_range": [
-          0,
-          0
-        ],
-        "fixed_drops": [
-          {
-            "item_id": "melter",
-            "item_category": "block",
-            "amount_range": [
-              2,
-              5
-            ]
-          },
-          {
-            "item_id": "melter_seed",
-            "item_category": "seed",
-            "amount_range": [
-              0,
-              3
-            ]
-          },
-          {
-            "item_id": "gem",
-            "item_category": "currency",
-            "amount_range": [
-              0,
-              5
-            ]
-          }
-        ]
-      },
-      "id": 231,
-      "item_key": "melter",
-      "name": "Melter",
-      "type": "block",
-      "layer": "foreground",
-      "source_id": 0,
-      "collision": false,
-      "hardness": 4,
-      "atlas_enabled": true
-    },
-    {
-      "item_id": "colored_block_maker",
-      "category": "block",
-      "display_name": "Coloured Block Maker",
-      "rarity": "rare",
-      "stack_limit": 400,
-      "tradeable": true,
-      "dropable": true,
-      "admin_grantable": true,
-      "hidden": false,
-      "placeable": true,
-      "breakable": true,
-      "block_health": 4,
-      "place_layer": "foreground",
-      "background_block": false,
-      "solid": false,
-      "collidable": false,
-      "no_collision": true,
-      "collision_type": "none",
-      "atlas_item_id": 232,
-      "atlas_source_id": 0,
-      "atlas_coords": [
-        11,
-        16
-      ],
-      "texture": {
-        "atlas": "res://image.png",
-        "cell": [
-          11,
-          16
-        ],
-        "cell_size": [
-          32,
-          32
-        ]
-      },
-      "inventory_icon": {
-        "atlas": "res://image.png",
-        "cell": [
-          11,
-          16
-        ],
-        "cell_size": [
-          32,
-          32
-        ]
-      },
-      "seed": "colored_block_maker_seed",
-      "recipe_tier": 13,
-      "animated": false,
-      "tileset_animation": false,
-      "animation_frames": [],
-      "visual_states": {
-        "off": {
-          "frames": [
-            {
-              "atlas": "res://image.png",
-              "cell": [
-                11,
-                16
-              ],
-              "cell_size": [
-                32,
-                32
-              ]
-            }
-          ],
-          "loop": false
-        },
-        "running": {
-          "frames": [
-            {
-              "atlas": "res://image.png",
-              "cell": [
-                12,
-                16
-              ],
-              "cell_size": [
-                32,
-                32
-              ]
-            },
-            {
-              "atlas": "res://image.png",
-              "cell": [
-                13,
-                16
-              ],
-              "cell_size": [
-                32,
-                32
-              ]
-            }
-          ],
-          "frame_seconds": 0.2,
-          "loop": true
-        },
-        "ready": {
-          "frames": [
-            {
-              "atlas": "res://image.png",
-              "cell": [
-                14,
-                16
-              ],
-              "cell_size": [
-                32,
-                32
-              ]
-            }
-          ],
-          "loop": false
-        }
-      },
-      "authored_drop_rules": true,
-      "break_return_to_inventory": false,
-      "drop_rules": {
-        "seed_chance": 0,
-        "gem_range": [
-          0,
-          0
-        ],
-        "fixed_drops": [
-          {
-            "item_id": "colored_block_maker",
-            "item_category": "block",
-            "amount": 1
-          },
-          {
-            "item_id": "colored_block_maker_seed",
-            "item_category": "seed",
-            "amount": 1,
-            "chance": 0.2
-          },
-          {
-            "item_id": "gem",
-            "item_category": "currency",
-            "amount_range": [
-              0,
-              3
-            ]
-          }
-        ]
-      },
-      "tree_drop_rules": {
-        "seed_chance": 0,
-        "gem_range": [
-          0,
-          0
-        ],
-        "fixed_drops": [
-          {
-            "item_id": "colored_block_maker",
-            "item_category": "block",
-            "amount_range": [
-              2,
-              5
-            ]
-          },
-          {
-            "item_id": "colored_block_maker_seed",
-            "item_category": "seed",
-            "amount_range": [
-              0,
-              3
-            ]
-          },
-          {
-            "item_id": "gem",
-            "item_category": "currency",
-            "amount_range": [
-              0,
-              5
-            ]
-          }
-        ]
-      },
-      "id": 232,
-      "item_key": "colored_block_maker",
-      "name": "Coloured Block Maker",
-      "type": "block",
-      "layer": "foreground",
-      "source_id": 0,
-      "collision": false,
-      "hardness": 4,
-      "atlas_enabled": true
-    }
+	{
+	  "item_id": "melter",
+	  "category": "block",
+	  "display_name": "Melter",
+	  "rarity": "rare",
+	  "stack_limit": 400,
+	  "tradeable": true,
+	  "dropable": true,
+	  "admin_grantable": true,
+	  "hidden": false,
+	  "placeable": true,
+	  "breakable": true,
+	  "block_health": 4,
+	  "place_layer": "foreground",
+	  "background_block": false,
+	  "solid": false,
+	  "collidable": false,
+	  "no_collision": true,
+	  "collision_type": "none",
+	  "atlas_item_id": 231,
+	  "atlas_source_id": 0,
+	  "atlas_coords": [
+		19,
+		14
+	  ],
+	  "texture": {
+		"atlas": "res://image.png",
+		"cell": [
+		  19,
+		  14
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "inventory_icon": {
+		"atlas": "res://image.png",
+		"cell": [
+		  19,
+		  14
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "seed": "melter_seed",
+	  "recipe_tier": 10,
+	  "animated": false,
+	  "tileset_animation": false,
+	  "animation_frames": [],
+	  "visual_states": {
+		"off": {
+		  "frames": [
+			{
+			  "atlas": "res://image.png",
+			  "cell": [
+				19,
+				14
+			  ],
+			  "cell_size": [
+				32,
+				32
+			  ]
+			}
+		  ],
+		  "loop": false
+		},
+		"running": {
+		  "frames": [
+			{
+			  "atlas": "res://image.png",
+			  "cell": [
+				20,
+				14
+			  ],
+			  "cell_size": [
+				32,
+				32
+			  ]
+			},
+			{
+			  "atlas": "res://image.png",
+			  "cell": [
+				21,
+				14
+			  ],
+			  "cell_size": [
+				32,
+				32
+			  ]
+			},
+			{
+			  "atlas": "res://image.png",
+			  "cell": [
+				22,
+				14
+			  ],
+			  "cell_size": [
+				32,
+				32
+			  ]
+			}
+		  ],
+		  "frame_seconds": 0.2,
+		  "loop": true
+		},
+		"ready": {
+		  "frames": [
+			{
+			  "atlas": "res://image.png",
+			  "cell": [
+				23,
+				14
+			  ],
+			  "cell_size": [
+				32,
+				32
+			  ]
+			}
+		  ],
+		  "loop": false
+		}
+	  },
+	  "authored_drop_rules": true,
+	  "break_return_to_inventory": false,
+	  "drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "melter",
+			"item_category": "block",
+			"amount": 1
+		  },
+		  {
+			"item_id": "melter_seed",
+			"item_category": "seed",
+			"amount": 1,
+			"chance": 0.2
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  }
+		]
+	  },
+	  "tree_drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "melter",
+			"item_category": "block",
+			"amount_range": [
+			  2,
+			  5
+			]
+		  },
+		  {
+			"item_id": "melter_seed",
+			"item_category": "seed",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  5
+			]
+		  }
+		]
+	  },
+	  "id": 231,
+	  "item_key": "melter",
+	  "name": "Melter",
+	  "type": "block",
+	  "layer": "foreground",
+	  "source_id": 0,
+	  "collision": false,
+	  "hardness": 4,
+	  "atlas_enabled": true
+	},
+	{
+	  "item_id": "colored_block_maker",
+	  "category": "block",
+	  "display_name": "Coloured Block Maker",
+	  "rarity": "rare",
+	  "stack_limit": 400,
+	  "tradeable": true,
+	  "dropable": true,
+	  "admin_grantable": true,
+	  "hidden": false,
+	  "placeable": true,
+	  "breakable": true,
+	  "block_health": 4,
+	  "place_layer": "foreground",
+	  "background_block": false,
+	  "solid": false,
+	  "collidable": false,
+	  "no_collision": true,
+	  "collision_type": "none",
+	  "atlas_item_id": 232,
+	  "atlas_source_id": 0,
+	  "atlas_coords": [
+		11,
+		16
+	  ],
+	  "texture": {
+		"atlas": "res://image.png",
+		"cell": [
+		  11,
+		  16
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "inventory_icon": {
+		"atlas": "res://image.png",
+		"cell": [
+		  11,
+		  16
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "seed": "colored_block_maker_seed",
+	  "recipe_tier": 13,
+	  "animated": false,
+	  "tileset_animation": false,
+	  "animation_frames": [],
+	  "visual_states": {
+		"off": {
+		  "frames": [
+			{
+			  "atlas": "res://image.png",
+			  "cell": [
+				11,
+				16
+			  ],
+			  "cell_size": [
+				32,
+				32
+			  ]
+			}
+		  ],
+		  "loop": false
+		},
+		"running": {
+		  "frames": [
+			{
+			  "atlas": "res://image.png",
+			  "cell": [
+				12,
+				16
+			  ],
+			  "cell_size": [
+				32,
+				32
+			  ]
+			},
+			{
+			  "atlas": "res://image.png",
+			  "cell": [
+				13,
+				16
+			  ],
+			  "cell_size": [
+				32,
+				32
+			  ]
+			}
+		  ],
+		  "frame_seconds": 0.2,
+		  "loop": true
+		},
+		"ready": {
+		  "frames": [
+			{
+			  "atlas": "res://image.png",
+			  "cell": [
+				14,
+				16
+			  ],
+			  "cell_size": [
+				32,
+				32
+			  ]
+			}
+		  ],
+		  "loop": false
+		}
+	  },
+	  "authored_drop_rules": true,
+	  "break_return_to_inventory": false,
+	  "drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "colored_block_maker",
+			"item_category": "block",
+			"amount": 1
+		  },
+		  {
+			"item_id": "colored_block_maker_seed",
+			"item_category": "seed",
+			"amount": 1,
+			"chance": 0.2
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  }
+		]
+	  },
+	  "tree_drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "colored_block_maker",
+			"item_category": "block",
+			"amount_range": [
+			  2,
+			  5
+			]
+		  },
+		  {
+			"item_id": "colored_block_maker_seed",
+			"item_category": "seed",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  5
+			]
+		  }
+		]
+	  },
+	  "id": 232,
+	  "item_key": "colored_block_maker",
+	  "name": "Coloured Block Maker",
+	  "type": "block",
+	  "layer": "foreground",
+	  "source_id": 0,
+	  "collision": false,
+	  "hardness": 4,
+	  "atlas_enabled": true
+	},
+{
+  "id": 233,
+  "item_key": "tackle_box",
+  "name": "Bait Box",
+  "hardness": 4,
+"type": "block",
+  "layer": "foreground",
+  "source_id": 0,
+  "atlas_coords": [
+    15,
+    15
+  ],
+  "alternative_tile": 0,
+  "collision": false,
+  "collision_type": "none",
+  "display_name": "Bait Box",
+  "texture": {
+    "atlas": "res://image.png",
+    "cell": [
+      15,
+      15
+    ],
+    "cell_size": [
+      32,
+      32
+    ]
+  },
+  "inventory_icon": {
+    "atlas": "res://image.png",
+    "cell": [
+      17,
+      15
+    ],
+    "cell_size": [
+      32,
+      32
+    ]
+  },
+  "atlas_item_id": 233,
+  "atlas_source_id": 0,
+  "tackle_box_state_atlas_coords": [
+    [
+      15,
+      15
+    ],
+    [
+      16,
+      15
+    ],
+    [
+      17,
+      15
+    ]
   ]
+},
+{
+  "id": 234,
+  "item_key": "apple",
+  "name": "Apple",
+  "hardness": 2,
+"type": "block",
+  "layer": "foreground",
+  "source_id": 0,
+  "atlas_coords": [
+    8,
+    3
+  ],
+  "alternative_tile": 0,
+  "collision": false,
+  "collision_type": "none",
+  "display_name": "Apple",
+  "texture": {
+    "atlas": "res://image.png",
+    "cell": [
+      8,
+      3
+    ],
+    "cell_size": [
+      32,
+      32
+    ]
+  },
+  "inventory_icon": {
+    "atlas": "res://image.png",
+    "cell": [
+      8,
+      3
+    ],
+    "cell_size": [
+      32,
+      32
+    ]
+  },
+  "atlas_item_id": 234,
+  "atlas_source_id": 0
+},
+{
+  "id": 235,
+  "item_key": "rose",
+  "name": "Rose",
+  "hardness": 2,
+"type": "block",
+  "layer": "foreground",
+  "source_id": 0,
+  "atlas_coords": [
+    3,
+    4
+  ],
+  "alternative_tile": 0,
+  "collision": false,
+  "collision_type": "none",
+  "display_name": "Rose",
+  "texture": {
+    "atlas": "res://image.png",
+    "cell": [
+      3,
+      4
+    ],
+    "cell_size": [
+      32,
+      32
+    ]
+  },
+  "inventory_icon": {
+    "atlas": "res://image.png",
+    "cell": [
+      3,
+      4
+    ],
+    "cell_size": [
+      32,
+      32
+    ]
+  },
+  "atlas_item_id": 235,
+  "atlas_source_id": 0
+},
+{
+  "id": 236,
+  "item_key": "lily",
+  "name": "Lily",
+  "hardness": 2,
+"type": "block",
+  "layer": "foreground",
+  "source_id": 0,
+  "atlas_coords": [
+    4,
+    4
+  ],
+  "alternative_tile": 0,
+  "collision": false,
+  "collision_type": "none",
+  "display_name": "Lily",
+  "texture": {
+    "atlas": "res://image.png",
+    "cell": [
+      4,
+      4
+    ],
+    "cell_size": [
+      32,
+      32
+    ]
+  },
+  "inventory_icon": {
+    "atlas": "res://image.png",
+    "cell": [
+      4,
+      4
+    ],
+    "cell_size": [
+      32,
+      32
+    ]
+  },
+  "atlas_item_id": 236,
+  "atlas_source_id": 0
+},
+{
+  "id": 237,
+  "item_key": "sunflower",
+  "name": "Sunflower",
+  "hardness": 2,
+"type": "block",
+  "layer": "foreground",
+  "source_id": 0,
+  "atlas_coords": [
+    5,
+    4
+  ],
+  "alternative_tile": 0,
+  "collision": false,
+  "collision_type": "none",
+  "display_name": "Sunflower",
+  "texture": {
+    "atlas": "res://image.png",
+    "cell": [
+      5,
+      4
+    ],
+    "cell_size": [
+      32,
+      32
+    ]
+  },
+  "inventory_icon": {
+    "atlas": "res://image.png",
+    "cell": [
+      5,
+      4
+    ],
+    "cell_size": [
+      32,
+      32
+    ]
+  },
+  "atlas_item_id": 237,
+  "atlas_source_id": 0
+}
+]
 }

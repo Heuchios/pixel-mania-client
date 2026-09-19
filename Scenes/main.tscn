@@ -3255,9 +3255,6 @@ texture_region_size = Vector2i(32, 32)
 6:16/0 = 0
 10:16/0 = 0
 11:16/animation_columns = 3
-11:16/animation_frame_0/duration = 1.0
-11:16/animation_frame_1/duration = 1.0
-11:16/animation_frame_2/duration = 1.0
 11:16/0 = 0
 0:17/0 = 0
 1:17/animation_columns = 3
@@ -3670,6 +3667,8 @@ texture_region_size = Vector2i(32, 32)
 6:19/0 = 0
 2:26/0 = 0
 14:16/0 = 0
+12:16/0 = 0
+13:16/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_1w6v2"]
 tile_size = Vector2i(32, 32)

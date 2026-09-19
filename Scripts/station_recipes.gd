@@ -116,39 +116,7 @@ const RECIPES = {
 	}
 ],
 
-	STATION_FURNACE: [
-		{
-			"id": "refined_stone",
-			"name": "Refined Stone x5",
-			"type": "material",
-			"output": {"item_id": "refined_stone", "category": CATEGORY_MATERIAL, "amount": 5},
-			"cost": [
-				{"item_id": "stone", "category": CATEGORY_BLOCK, "amount": 15},
-				{"item_id": "lava", "category": CATEGORY_BLOCK, "amount": 1}
-			]
-		},
-		{
-			"id": "refined_glass",
-			"name": "Refined Glass x5",
-			"type": "material",
-			"output": {"item_id": "refined_glass", "category": CATEGORY_MATERIAL, "amount": 5},
-			"cost": [
-				{"item_id": "glass", "category": CATEGORY_BLOCK, "amount": 10},
-				{"item_id": "lava", "category": CATEGORY_BLOCK, "amount": 1}
-			]
-		},
-		{
-			"id": "metal_scrap",
-			"name": "Metal Scrap x3",
-			"type": "material",
-			"output": {"item_id": "metal_scrap", "category": CATEGORY_MATERIAL, "amount": 3},
-			"cost": [
-				{"item_id": "stone", "category": CATEGORY_BLOCK, "amount": 25},
-				{"item_id": "lava", "category": CATEGORY_BLOCK, "amount": 2},
-				{"item_id": "gem", "category": CATEGORY_CURRENCY, "amount": 2}
-			]
-		}
-	]
+	STATION_FURNACE: []
 }
 
 

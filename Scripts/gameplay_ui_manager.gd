@@ -454,7 +454,7 @@ func should_ignore_notification(message: String) -> bool:
 
 func is_silent_harvest_notification(lower_message: String) -> bool:
 	var clean_message := lower_message.strip_edges()
-	var mentions_silent_harvest_target := clean_message.find("tackle box") != -1 \
+	var mentions_silent_harvest_target := clean_message.find("bait box") != -1 \
 		or clean_message.find("chicken") != -1 \
 		or clean_message.find("cow") != -1 \
 		or clean_message.find("tree") != -1

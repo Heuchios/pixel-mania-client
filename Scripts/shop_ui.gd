@@ -292,7 +292,7 @@ var shop_items = [
 			"amount": 1,
 			"price": 9500,
 			"section": "fishing",
-			"description": "A harvestable tackle box that refills with lures every 4 hours."
+			"description": "A harvestable bait box that refills with lures every 4 hours."
 		}
 	]
 

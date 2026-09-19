@@ -50,7 +50,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"glass": {
 		"recipe": ["glass_panel_seed", "stone_seed"],
-		"grow_time": 28.0,
+		"grow_time": 240.0,
 		"block_drop_chance": 0.75,
 		"seed_drop_chance": 0.45,
 		"tree_block_range": [4, 7],
@@ -106,7 +106,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"climbing_vine": {
 		"recipe": ["wooden_chair_seed", "green_wallpaper_seed"],
-		"grow_time": 58.0,
+		"grow_time": 1725.0,
 		"block_drop_chance": 0.70,
 		"seed_drop_chance": 0.35,
 		"tree_block_range": [3, 6],
@@ -114,7 +114,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"vines_2": {
 		"recipe": ["vines_seed", "leaf_seed"],
-		"grow_time": 64.0,
+		"grow_time": 100.0,
 		"block_drop_chance": 0.68,
 		"seed_drop_chance": 0.32,
 		"tree_block_range": [3, 6],
@@ -146,7 +146,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"wood_platform": {
 		"recipe": ["wooden_block_seed", "vines_2_seed"],
-		"grow_time": 95.0,
+		"grow_time": 240.0,
 		"block_drop_chance": 0.65,
 		"seed_drop_chance": 0.25,
 		"tree_block_range": [3, 6],
@@ -154,7 +154,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"sign": {
 		"recipe": ["wooden_block_seed", "mushroom_seed"],
-		"grow_time": 105.0,
+		"grow_time": 360.0,
 		"block_drop_chance": 0.62,
 		"seed_drop_chance": 0.22,
 		"tree_block_range": [2, 5],
@@ -162,7 +162,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"wooden_entrance": {
 		"recipe": ["wooden_door_seed", "wood_platform_seed"],
-		"grow_time": 115.0,
+		"grow_time": 510.0,
 		"block_drop_chance": 0.60,
 		"seed_drop_chance": 0.20,
 		"tree_block_range": [2, 5],
@@ -170,7 +170,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"wooden_block": {
 		"recipe": ["wood_seed", "dirt_seed"],
-		"grow_time": 125.0,
+		"grow_time": 100.0,
 		"block_drop_chance": 0.60,
 		"seed_drop_chance": 0.20,
 		"tree_block_range": [2, 5],
@@ -178,7 +178,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"wooden_wallpaper": {
 		"recipe": ["wooden_block_seed", "cave_background_seed"],
-		"grow_time": 135.0,
+		"grow_time": 100.0,
 		"block_drop_chance": 0.58,
 		"seed_drop_chance": 0.18,
 		"tree_block_range": [2, 5],
@@ -186,7 +186,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"wooden_fence": {
 		"recipe": ["wooden_block_seed", "hay_seed"],
-		"grow_time": 150.0,
+		"grow_time": 360.0,
 		"block_drop_chance": 0.55,
 		"seed_drop_chance": 0.16,
 		"tree_block_range": [2, 5],
@@ -194,7 +194,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"wooden_ladder": {
 		"recipe": ["wooden_block_seed", "wood_platform_seed"],
-		"grow_time": 160.0,
+		"grow_time": 480.0,
 		"block_drop_chance": 0.55,
 		"seed_drop_chance": 0.16,
 		"tree_block_range": [2, 5],
@@ -202,7 +202,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"wooden_door": {
 		"recipe": ["wooden_block_seed", "dirt_seed"],
-		"grow_time": 175.0,
+		"grow_time": 240.0,
 		"block_drop_chance": 0.52,
 		"seed_drop_chance": 0.14,
 		"tree_block_range": [2, 5],
@@ -210,7 +210,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"wooden_window": {
 		"recipe": ["wooden_block_seed", "glass_panel_seed"],
-		"grow_time": 190.0,
+		"grow_time": 270.0,
 		"block_drop_chance": 0.50,
 		"seed_drop_chance": 0.12,
 		"tree_block_range": [2, 5],
@@ -218,7 +218,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"mushroom": {
 		"recipe": ["leaf_seed", "wood_seed"],
-		"grow_time": 205.0,
+		"grow_time": 100.0,
 		"block_drop_chance": 0.48,
 		"seed_drop_chance": 0.10,
 		"tree_block_range": [1, 4],
@@ -226,7 +226,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"stone_brick": {
 		"recipe": ["stone_seed", "dirt_seed"],
-		"grow_time": 225.0,
+		"grow_time": 100.0,
 		"block_drop_chance": 0.45,
 		"seed_drop_chance": 0.08,
 		"tree_block_range": [1, 4],
@@ -235,7 +235,7 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"glass_panel": {
 		"recipe": ["sand_seed", "lava_seed"],
-		"grow_time": 250.0,
+		"grow_time": 100.0,
 		"block_drop_chance": 0.42,
 		"seed_drop_chance": 0.07,
 		"tree_block_range": [1, 4],
@@ -243,14 +243,14 @@ const TIER_1_SPLICE_BALANCE = {
 	},
 	"rainbow_block": {
 		"recipe": ["dark_purple_block_seed", "red_block_seed"],
-		"grow_time": 300.0,
+		"grow_time": 9600.0,
 		"block_drop_chance": 0.35,
 		"seed_drop_chance": 0.05,
 		"tree_block_range": [1, 4],
 		"tree_seed_range": [0, 4]
 	},
 	"red_brick": {
-		"grow_time": 225.0,
+		"grow_time": 100.0,
 		"block_drop_chance": 0.45,
 		"seed_drop_chance": 0.08,
 		"tree_block_range": [1, 4],
@@ -258,7 +258,7 @@ const TIER_1_SPLICE_BALANCE = {
 		"break_gem_range": [1, 5]
 	},
 	"green_brick": {
-		"grow_time": 225.0,
+		"grow_time": 480.0,
 		"block_drop_chance": 0.45,
 		"seed_drop_chance": 0.08,
 		"tree_block_range": [1, 4],
@@ -274,7 +274,7 @@ const TIER_1_SPLICE_BALANCE = {
 		"break_gem_range": [1, 5]
 	},
 	"red_brick_wall": {
-		"grow_time": 225.0,
+		"grow_time": 240.0,
 		"block_drop_chance": 0.45,
 		"seed_drop_chance": 0.08,
 		"tree_block_range": [1, 4],
@@ -282,7 +282,7 @@ const TIER_1_SPLICE_BALANCE = {
 		"break_gem_range": [1, 5]
 	},
 	"stone_brick_wall": {
-		"grow_time": 225.0,
+		"grow_time": 270.0,
 		"block_drop_chance": 0.45,
 		"seed_drop_chance": 0.08,
 		"tree_block_range": [1, 4],
@@ -290,7 +290,7 @@ const TIER_1_SPLICE_BALANCE = {
 		"break_gem_range": [1, 5]
 	},
 	"green_brick_wall": {
-		"grow_time": 225.0,
+		"grow_time": 1800.0,
 		"block_drop_chance": 0.45,
 		"seed_drop_chance": 0.08,
 		"tree_block_range": [1, 4],
@@ -391,48 +391,114 @@ const HAIR_PACK_REWARDS = [
 const PRESTIGE_COLOURED_BLOCK_PACK_REWARDS = ["ps_blue_block", "ps_green_block", "ps_purple_block", "ps_red_block", "ps_yellow_block"]
 
 const ITEMS = {
+"password_door_seed": {"category":"seed","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"password_door","seed_box_icon":true,"plantable":true,"display_name":"Password Door Seed","generated_from_block":true,"recipe_tier":11,"grow_time":216000,"max_grow_time":216000},
+
+"blue_portal_seed": {"category":"seed","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"blue_portal","seed_box_icon":true,"plantable":true,"display_name":"Blue Portal Seed","generated_from_block":true,"recipe_tier":11,"grow_time":216000,"max_grow_time":216000},
+
+"dice_block_seed": {"category":"seed","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"dice_block","seed_box_icon":true,"plantable":true,"display_name":"Dice Block Seed","generated_from_block":true,"recipe_tier":10,"grow_time":129600,"max_grow_time":129600},
+
+"fire_hydrant_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"fire_hydrant","seed_box_icon":true,"plantable":true,"display_name":"Fire Hydrant Seed","generated_from_block":true,"recipe_tier":9,"grow_time":81900,"max_grow_time":81900},
+
+"fire_escape_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"fire_escape","seed_box_icon":true,"plantable":true,"display_name":"Fire Escape Seed","generated_from_block":true,"recipe_tier":9,"grow_time":81900,"max_grow_time":81900},
+
+"duck_seed": {"category":"seed","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"duck","seed_box_icon":true,"plantable":true,"display_name":"Duck Seed","generated_from_block":true,"recipe_tier":9,"grow_time":81900,"max_grow_time":81900},
+
+"bomb_seed": {"category":"seed","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"bomb","seed_box_icon":true,"plantable":true,"display_name":"Bomb Seed","generated_from_block":true,"recipe_tier":9,"grow_time":81900,"max_grow_time":81900},
+
+"street_lamp_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"street_lamp","seed_box_icon":true,"plantable":true,"display_name":"Street Lamp Seed","generated_from_block":true,"recipe_tier":8,"grow_time":60300,"max_grow_time":60300},
+
+"cow_seed": {"category":"seed","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"cow","seed_box_icon":true,"plantable":true,"display_name":"Cow Seed","generated_from_block":true,"recipe_tier":8,"grow_time":60300,"max_grow_time":60300},
+
+"checkpoint_seed": {"category":"seed","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"checkpoint","seed_box_icon":true,"plantable":true,"display_name":"Checkpoint Seed","generated_from_block":true,"recipe_tier":8,"grow_time":60300,"max_grow_time":60300},
+
+"chicken_seed": {"category":"seed","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"chicken","seed_box_icon":true,"plantable":true,"display_name":"Chicken Seed","generated_from_block":true,"recipe_tier":7,"grow_time":23100,"max_grow_time":23100},
+
+"water_well_seed": {"category":"seed","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"water_well","seed_box_icon":true,"plantable":true,"display_name":"Water Well Seed","generated_from_block":true,"recipe_tier":7,"grow_time":23100,"max_grow_time":23100},
+
+"metal_pad_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"metal_pad","seed_box_icon":true,"plantable":true,"display_name":"Metal Pad Seed","generated_from_block":true,"recipe_tier":7,"grow_time":28800,"max_grow_time":28800},
+
+"blue_mail_box_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"blue_mail_box","seed_box_icon":true,"plantable":true,"display_name":"Blue Mailbox Seed","generated_from_block":true,"recipe_tier":7,"grow_time":23100,"max_grow_time":23100},
+
+"star_block_seed": {"category":"seed","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"star_block","seed_box_icon":true,"plantable":true,"display_name":"Star Block Seed","generated_from_block":true,"recipe_tier":7,"grow_time":23100,"max_grow_time":23100},
+
+"biohazard_barrel_seed": {"category":"seed","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"biohazard_barrel","seed_box_icon":true,"plantable":true,"display_name":"Biohazard Barrel Seed","generated_from_block":true,"recipe_tier":7,"grow_time":23100,"max_grow_time":23100},
+
+"mechanical_entrance_seed": {"category":"seed","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"mechanical_entrance","seed_box_icon":true,"plantable":true,"display_name":"Mechanical Entrance Seed","generated_from_block":true,"recipe_tier":7,"grow_time":27000,"max_grow_time":27000},
+
+"pillar_seed": {"category":"seed","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"pillar","seed_box_icon":true,"plantable":true,"display_name":"Pillar Seed","generated_from_block":true,"recipe_tier":6,"grow_time":9600,"max_grow_time":9600},
+
+"electric_pole_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"electric_pole","seed_box_icon":true,"plantable":true,"display_name":"Electric Pole Seed","generated_from_block":true,"recipe_tier":6,"grow_time":5400,"max_grow_time":5400},
+
+"mail_box_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"mail_box","seed_box_icon":true,"plantable":true,"display_name":"Mailbox Seed","generated_from_block":true,"recipe_tier":6,"grow_time":7800,"max_grow_time":7800},
+
+"steel_platform_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"steel_platform","seed_box_icon":true,"plantable":true,"display_name":"Steel Platform Seed","generated_from_block":true,"recipe_tier":6,"grow_time":9600,"max_grow_time":9600},
+
+"steel_ladder_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"steel_ladder","seed_box_icon":true,"plantable":true,"display_name":"Steel Ladder Seed","generated_from_block":true,"recipe_tier":6,"grow_time":7800,"max_grow_time":7800},
+
+"ceiling_lamp_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"ceiling_lamp","seed_box_icon":true,"plantable":true,"display_name":"Ceiling Lamp Seed","generated_from_block":true,"recipe_tier":6,"grow_time":9600,"max_grow_time":9600},
+
+"screen_door_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"screen_door","seed_box_icon":true,"plantable":true,"display_name":"Screen Door Seed","generated_from_block":true,"recipe_tier":6,"grow_time":7800,"max_grow_time":7800},
+
+"steel_door_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"steel_door","seed_box_icon":true,"plantable":true,"display_name":"Steel Door Seed","generated_from_block":true,"recipe_tier":6,"grow_time":5400,"max_grow_time":5400},
+
+"steel_sign_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"steel_sign","seed_box_icon":true,"plantable":true,"display_name":"Steel Sign Seed","generated_from_block":true,"recipe_tier":6,"grow_time":9600,"max_grow_time":9600},
+
+"steel_background_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"steel_background","seed_box_icon":true,"plantable":true,"display_name":"Steel Background Seed","generated_from_block":true,"recipe_tier":6,"grow_time":7800,"max_grow_time":7800},
+
+"slime_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"slime","seed_box_icon":true,"plantable":true,"display_name":"Slime Seed","generated_from_block":true,"recipe_tier":5,"grow_time":1725,"max_grow_time":1725},
+
+"steel_block_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"steel_block","seed_box_icon":true,"plantable":true,"display_name":"Steel Block Seed","generated_from_block":true,"recipe_tier":5,"grow_time":1500,"max_grow_time":1500},
+
+"climbing_vine_seed": {"category":"seed","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"climbing_vine","seed_box_icon":true,"plantable":true,"display_name":"Climbing Vine Seed","grow_time":1725,"max_grow_time":1725,"recipe_tier":5},
+
+"wooden_chair_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"wooden_chair","seed_box_icon":true,"plantable":true,"display_name":"Wooden Chair Seed","generated_from_block":true,"recipe_tier":4,"grow_time":510,"max_grow_time":510},
+
+"wooden_table_seed": {"category":"seed","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"wooden_table","seed_box_icon":true,"plantable":true,"display_name":"Wooden Table Seed","generated_from_block":true,"recipe_tier":3,"grow_time":240,"max_grow_time":240},
+
+"hay_seed": {"category":"seed","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"hay","seed_box_icon":true,"plantable":true,"display_name":"Dried Hay Seed","generated_from_block":true,"recipe_tier":2,"grow_time":100,"max_grow_time":100},
+
 "colored_block_maker": {"item_id":"colored_block_maker","category":"block","display_name":"Coloured Block Maker","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"breakable":true,"block_health":4,"place_layer":"foreground","background_block":false,"solid":false,"collidable":false,"no_collision":true,"collision_type":"none","atlas_item_id":232,"atlas_source_id":0,"atlas_coords":[11,16],"texture":{"atlas":"res://image.png","cell":[11,16],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[11,16],"cell_size":[32,32]},"seed":"colored_block_maker_seed","recipe_tier":13,"animated":false,"tileset_animation":false,"animation_frames":[],"visual_states":{"off":{"frames":[{"atlas":"res://image.png","cell":[11,16],"cell_size":[32,32]}],"loop":false},"running":{"frames":[{"atlas":"res://image.png","cell":[12,16],"cell_size":[32,32]},{"atlas":"res://image.png","cell":[13,16],"cell_size":[32,32]}],"frame_seconds":0.2,"loop":true},"ready":{"frames":[{"atlas":"res://image.png","cell":[14,16],"cell_size":[32,32]}],"loop":false}},"authored_drop_rules":true,"break_return_to_inventory":false,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"colored_block_maker","item_category":"block","amount":1},{"item_id":"colored_block_maker_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"colored_block_maker","item_category":"block","amount_range":[2,5]},{"item_id":"colored_block_maker_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"id":232,"item_key":"colored_block_maker","name":"Coloured Block Maker","type":"block","layer":"foreground","source_id":0,"collision":false,"hardness":4,"atlas_enabled":true},
-"colored_block_maker_seed": {"category":"seed","display_name":"Coloured Block Maker Seed","rarity":"rare","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"colored_block_maker","grow_time":150,"max_grow_time":150,"recipe_tier":13},
+"colored_block_maker_seed": {"category":"seed","display_name":"Coloured Block Maker Seed","rarity":"rare","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"colored_block_maker","grow_time": 604800.0,"max_grow_time": 604800.0,"recipe_tier":13},
 "melter": {"item_id":"melter","category":"block","display_name":"Melter","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"breakable":true,"block_health":4,"place_layer":"foreground","background_block":false,"solid":false,"collidable":false,"no_collision":true,"collision_type":"none","atlas_item_id":231,"atlas_source_id":0,"atlas_coords":[19,14],"texture":{"atlas":"res://image.png","cell":[19,14],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[19,14],"cell_size":[32,32]},"seed":"melter_seed","recipe_tier":10,"animated":false,"tileset_animation":false,"animation_frames":[],"visual_states":{"off":{"frames":[{"atlas":"res://image.png","cell":[19,14],"cell_size":[32,32]}],"loop":false},"running":{"frames":[{"atlas":"res://image.png","cell":[20,14],"cell_size":[32,32]},{"atlas":"res://image.png","cell":[21,14],"cell_size":[32,32]},{"atlas":"res://image.png","cell":[22,14],"cell_size":[32,32]}],"frame_seconds":0.2,"loop":true},"ready":{"frames":[{"atlas":"res://image.png","cell":[23,14],"cell_size":[32,32]}],"loop":false}},"authored_drop_rules":true,"break_return_to_inventory":false,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"melter","item_category":"block","amount":1},{"item_id":"melter_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"melter","item_category":"block","amount_range":[2,5]},{"item_id":"melter_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}},
-"melter_seed": {"category":"seed","display_name":"Melter Seed","rarity":"rare","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"melter","grow_time":150,"max_grow_time":150,"recipe_tier":10},
-"recycle_bin_seed": {"category":"seed","display_name":"Recycle Bin Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"recycle_bin","grow_time":150,"max_grow_time":150,"recipe_tier":10},
-"hell_entrance_seed": {"category":"seed","display_name":"Hell Entrance Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"hell_entrance","grow_time":150,"max_grow_time":150,"recipe_tier":9},
+"melter_seed": {"category":"seed","display_name":"Melter Seed","rarity":"rare","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"melter","grow_time": 129600.0,"max_grow_time": 129600.0,"recipe_tier":10},
+"recycle_bin_seed": {"category":"seed","display_name":"Recycle Bin Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"recycle_bin","grow_time": 129600.0,"max_grow_time": 129600.0,"recipe_tier":10},
+"hell_entrance_seed": {"category":"seed","display_name":"Hell Entrance Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"hell_entrance","grow_time": 81900.0,"max_grow_time": 81900.0,"recipe_tier":9},
 "hell_entrance": {"item_id":"hell_entrance","category":"block","display_name":"Hell Entrance","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"breakable":true,"block_health":4,"place_layer":"foreground","background_block":false,"solid":false,"collidable":false,"no_collision":true,"collision_type":"none","platform_collision":false,"texture":{"atlas":"res://image.png","cell":[16,37],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[16,37],"cell_size":[32,32]},"atlas_coords":[16,37],"atlas_item_id":230,"atlas_source_id":0,"seed":"hell_entrance_seed","recipe_tier":9,"break_return_to_inventory":false,"break_return_item_id":"","authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"hell_entrance","item_category":"block","amount":1},{"item_id":"hell_entrance_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"hell_entrance","item_category":"block","amount_range":[2,5]},{"item_id":"hell_entrance_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"animated":false,"animation_frames":[],"animation_atlas_coords":[],"tileset_animation":false,"entrance_block":true,"entrance_tilemap_collision":false,"entrance_idle_texture":{"atlas":"res://image.png","cell":[16,37],"cell_size":[32,32]},"entrance_frames":[{"atlas":"res://image.png","cell":[16,37],"cell_size":[32,32]}],"entrance_idle_atlas_coords":[16,37],"interact_rules":true},
-"hellbrick_platform_seed": {"category":"seed","display_name":"Hellbrick Platform Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"hellbrick_platform","grow_time":150,"max_grow_time":150,"recipe_tier":6},
+"hellbrick_platform_seed": {"category":"seed","display_name":"Hellbrick Platform Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"hellbrick_platform","grow_time": 7800.0,"max_grow_time": 7800.0,"recipe_tier":6},
 "hellbrick_platform": {"item_id":"hellbrick_platform","category":"block","display_name":"Hellbrick Platform","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"breakable":true,"block_health":4,"place_layer":"foreground","background_block":false,"solid":false,"collidable":true,"no_collision":false,"collision_type":"platform","platform_collision":true,"texture":{"atlas":"res://image.png","cell":[17,36],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[17,36],"cell_size":[32,32]},"atlas_coords":[17,36],"atlas_item_id":229,"atlas_source_id":0,"seed":"hellbrick_platform_seed","recipe_tier":6,"break_return_to_inventory":false,"break_return_item_id":"","authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"hellbrick_platform","item_category":"block","amount":1},{"item_id":"hellbrick_platform_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"hellbrick_platform","item_category":"block","amount_range":[2,5]},{"item_id":"hellbrick_platform_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"animated":false,"animation_frames":[],"animation_atlas_coords":[],"tileset_animation":false,"platform_variant_atlas_coords":{"single":[17,36],"left":[18,36],"middle":[19,36],"right":[20,36]}},
-"hell_portal_seed": {"category":"seed","display_name":"Hell Portal Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"hell_portal","grow_time":150,"max_grow_time":150,"recipe_tier":11},
+"hell_portal_seed": {"category":"seed","display_name":"Hell Portal Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"hell_portal","grow_time": 216000.0,"max_grow_time": 216000.0,"recipe_tier":11},
 "hell_portal": {"item_id":"hell_portal","category":"block","display_name":"Hell Portal","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"breakable":true,"block_health":4,"place_layer":"foreground","background_block":false,"solid":false,"collidable":false,"no_collision":true,"collision_type":"none","platform_collision":false,"texture":{"atlas":"res://image.png","cell":[16,36],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[16,36],"cell_size":[32,32]},"atlas_coords":[16,36],"atlas_item_id":228,"atlas_source_id":0,"seed":"hell_portal_seed","recipe_tier":11,"break_return_to_inventory":false,"break_return_item_id":"","authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"hell_portal","item_category":"block","amount":1},{"item_id":"hell_portal_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"hell_portal","item_category":"block","amount_range":[2,5]},{"item_id":"hell_portal_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"animated":false,"animation_frames":[],"animation_atlas_coords":[],"tileset_animation":false,"portal_block":true,"door_block":true,"auto_door_enter":true,"interact_rules":true},
 "magma_stone_seed": {"category":"seed","display_name":"Magma Stone Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"magma_stone","grow_time":150,"max_grow_time":150,"recipe_tier":1},
 "magma_stone": {"item_id":"magma_stone","category":"block","display_name":"Magma Stone","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"breakable":true,"block_health":4,"place_layer":"foreground","background_block":false,"solid":true,"collidable":true,"no_collision":false,"collision_type":"full","platform_collision":false,"texture":{"atlas":"res://image.png","cell":[15,38],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[15,38],"cell_size":[32,32]},"atlas_coords":[15,38],"atlas_item_id":227,"atlas_source_id":0,"seed":"magma_stone_seed","recipe_tier":1,"break_return_to_inventory":false,"break_return_item_id":"","authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"magma_stone","item_category":"block","amount":1},{"item_id":"magma_stone_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"magma_stone","item_category":"block","amount_range":[2,5]},{"item_id":"magma_stone_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"animated":true,"animation_frames":[{"atlas":"res://image.png","cell":[15,38],"cell_size":[32,32]},{"atlas":"res://image.png","cell":[16,38],"cell_size":[32,32]},{"atlas":"res://image.png","cell":[17,38],"cell_size":[32,32]},{"atlas":"res://image.png","cell":[16,38],"cell_size":[32,32]},{"atlas":"res://image.png","cell":[15,38],"cell_size":[32,32]}],"animation_atlas_coords":[[15,38],[16,38],[17,38],[16,38],[15,38]],"tileset_animation":false,"animation_frame_seconds":0.2},
-"hellbrick_wall_seed": {"category":"seed","display_name":"Hellbrick Wall Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"hellbrick_wall","grow_time":150,"max_grow_time":150,"recipe_tier":4},
+"hellbrick_wall_seed": {"category":"seed","display_name":"Hellbrick Wall Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"hellbrick_wall","grow_time": 570.0,"max_grow_time": 570.0,"recipe_tier":4},
 "hellbrick_wall": {"item_id":"hellbrick_wall","category":"block","display_name":"Hellbrick Wall","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"breakable":true,"block_health":4,"place_layer":"background","background_block":true,"solid":false,"collidable":false,"no_collision":true,"collision_type":"none","platform_collision":false,"texture":{"atlas":"res://image.png","cell":[15,37],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[15,37],"cell_size":[32,32]},"atlas_coords":[15,37],"atlas_item_id":226,"atlas_source_id":0,"seed":"hellbrick_wall_seed","recipe_tier":4,"break_return_to_inventory":false,"break_return_item_id":"","authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"hellbrick_wall","item_category":"block","amount":1},{"item_id":"hellbrick_wall_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"hellbrick_wall","item_category":"block","amount_range":[2,5]},{"item_id":"hellbrick_wall_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"animated":false,"animation_frames":[],"animation_atlas_coords":[],"tileset_animation":false},
-"hellbrick_seed": {"category":"seed","display_name":"Hellbrick Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"hellbrick","grow_time":150,"max_grow_time":150,"recipe_tier":3},
+"hellbrick_seed": {"category":"seed","display_name":"Hellbrick Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"hellbrick","grow_time": 240.0,"max_grow_time": 240.0,"recipe_tier":3},
 "hellbrick": {"item_id":"hellbrick","category":"block","display_name":"Hellbrick","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"breakable":true,"block_health":4,"place_layer":"foreground","background_block":false,"solid":true,"collidable":true,"no_collision":false,"collision_type":"full","platform_collision":false,"texture":{"atlas":"res://image.png","cell":[15,36],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[15,36],"cell_size":[32,32]},"atlas_coords":[15,36],"atlas_item_id":225,"atlas_source_id":0,"seed":"hellbrick_seed","recipe_tier":3,"break_return_to_inventory":false,"break_return_item_id":"","authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"hellbrick","item_category":"block","amount":1},{"item_id":"hellbrick_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"hellbrick","item_category":"block","amount_range":[2,5]},{"item_id":"hellbrick_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"animated":false,"animation_frames":[],"animation_atlas_coords":[],"tileset_animation":false},
-"gem_driller_seed": {"category":"seed","display_name":"Gem Driller Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"gem_driller","grow_time":150,"max_grow_time":150,"recipe_tier":14},
+"gem_driller_seed": {"category":"seed","display_name":"Gem Driller Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"gem_driller","grow_time": 712800.0,"max_grow_time": 712800.0,"recipe_tier":14},
 "gem_driller": {"item_id":"gem_driller","category":"block","display_name":"Gem Driller","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"breakable":true,"block_health":4,"place_layer":"foreground","background_block":false,"solid":true,"collidable":true,"no_collision":false,"collision_type":"full","platform_collision":false,"texture":{"atlas":"res://image.png","cell":[5,16],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[5,16],"cell_size":[32,32]},"atlas_coords":[5,16],"atlas_item_id":224,"atlas_source_id":0,"seed":"gem_driller_seed","recipe_tier":14,"break_return_to_inventory":false,"break_return_item_id":"","authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"gem_driller","item_category":"block","amount":1},{"item_id":"gem_driller_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"gem_driller","item_category":"block","amount_range":[2,5]},{"item_id":"gem_driller_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"animated":false,"animation_frames":[],"animation_atlas_coords":[],"tileset_animation":false},
-"yellow_portal_seed": {"category":"seed","display_name":"Orange Portal Seed","rarity":"rare","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"yellow_portal","grow_time":150,"max_grow_time":150,"recipe_tier":11},
-"battery_assembler_seed": {"category":"seed","display_name":"Battery Assembler Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"battery_assembler","grow_time":150,"max_grow_time":150,"recipe_tier":10},
+"yellow_portal_seed": {"category":"seed","display_name":"Orange Portal Seed","rarity":"rare","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"yellow_portal","grow_time": 216000.0,"max_grow_time": 216000.0,"recipe_tier":11},
+"battery_assembler_seed": {"category":"seed","display_name":"Battery Assembler Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"battery_assembler","grow_time": 129600.0,"max_grow_time": 129600.0,"recipe_tier":10},
 "battery_assembler": {"item_id":"battery_assembler","category":"block","display_name":"Battery Assembler","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"breakable":true,"block_health":4,"place_layer":"foreground","background_block":false,"solid":true,"collidable":true,"no_collision":false,"collision_type":"full","platform_collision":false,"texture":{"atlas":"res://image.png","cell":[4,17],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[4,17],"cell_size":[32,32]},"atlas_coords":[4,17],"atlas_item_id":222,"atlas_source_id":0,"seed":"battery_assembler_seed","recipe_tier":10,"break_return_to_inventory":false,"break_return_item_id":"","authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"battery_assembler","item_category":"block","amount":1},{"item_id":"battery_assembler_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"battery_assembler","item_category":"block","amount_range":[2,5]},{"item_id":"battery_assembler_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"animated":false,"animation_frames":[],"animation_atlas_coords":[],"tileset_animation":false},
-"blink_checkpoint_seed": {"category":"seed","display_name":"Blink Checkpoint Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"blink_checkpoint","grow_time":150,"max_grow_time":150,"recipe_tier":9},
+"blink_checkpoint_seed": {"category":"seed","display_name":"Blink Checkpoint Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"blink_checkpoint","grow_time": 81900.0,"max_grow_time": 81900.0,"recipe_tier":9},
 "blink_checkpoint": {"item_id":"blink_checkpoint","category":"block","display_name":"Blink Checkpoint","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"breakable":true,"block_health":4,"place_layer":"foreground","background_block":false,"solid":false,"collidable":false,"no_collision":true,"collision_type":"none","platform_collision":false,"texture":{"atlas":"res://image.png","cell":[11,14],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[11,14],"cell_size":[32,32]},"atlas_coords":[11,14],"atlas_item_id":221,"atlas_source_id":0,"seed":"blink_checkpoint_seed","recipe_tier":9,"break_return_to_inventory":false,"break_return_item_id":"","authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"blink_checkpoint","item_category":"block","amount":1},{"item_id":"blink_checkpoint_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"blink_checkpoint","item_category":"block","amount_range":[2,5]},{"item_id":"blink_checkpoint_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"animated":false,"animation_frames":[],"animation_atlas_coords":[],"tileset_animation":false,"checkpoint_block":true,"checkpoint_inactive_texture":{"atlas":"res://image.png","cell":[11,14],"cell_size":[32,32]},"checkpoint_active_texture":{"atlas":"res://image.png","cell":[11,14],"cell_size":[32,32]},"checkpoint_inactive_atlas_coords":[11,14],"checkpoint_active_atlas_coords":[11,14]},
-"display_box_seed": {"category":"seed","display_name":"Display Block Seed","rarity":"rare","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"display_box","grow_time":150,"max_grow_time":150,"recipe_tier":9},
-"electrical_box_seed": {"category":"seed","display_name":"Electrical Box Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"electrical_box","grow_time":150,"max_grow_time":150,"recipe_tier":8},
+"display_box_seed": {"category":"seed","display_name":"Display Block Seed","rarity":"rare","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"display_box","grow_time": 81900.0,"max_grow_time": 81900.0,"recipe_tier":9},
+"electrical_box_seed": {"category":"seed","display_name":"Electrical Box Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"electrical_box","grow_time": 60300.0,"max_grow_time": 60300.0,"recipe_tier":8},
 "electrical_box": {"item_id":"electrical_box","category":"block","display_name":"Electrical Box","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"breakable":true,"block_health":4,"place_layer":"foreground","background_block":false,"solid":true,"collidable":true,"no_collision":false,"collision_type":"full","platform_collision":false,"texture":{"atlas":"res://image.png","cell":[0,17],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[0,17],"cell_size":[32,32]},"atlas_coords":[0,17],"atlas_item_id":219,"atlas_source_id":0,"seed":"electrical_box_seed","recipe_tier":8,"break_return_to_inventory":false,"break_return_item_id":"","authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"electrical_box","item_category":"block","amount":1},{"item_id":"electrical_box_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"electrical_box","item_category":"block","amount_range":[2,5]},{"item_id":"electrical_box_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"animated":false,"animation_frames":[],"animation_atlas_coords":[],"tileset_animation":false},
-"metal_gate_seed": {"category":"seed","display_name":"Metal Gate Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"metal_gate","grow_time":150,"max_grow_time":150,"recipe_tier":8},
+"metal_gate_seed": {"category":"seed","display_name":"Metal Gate Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"metal_gate","grow_time": 60300.0,"max_grow_time": 60300.0,"recipe_tier":8},
 "metal_gate": {"item_id":"metal_gate","category":"block","display_name":"Metal Gate","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"breakable":true,"block_health":4,"place_layer":"foreground","background_block":false,"solid":true,"collidable":true,"no_collision":false,"collision_type":"full","platform_collision":false,"texture":{"atlas":"res://image.png","cell":[8,11],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[8,11],"cell_size":[32,32]},"atlas_coords":[8,11],"atlas_item_id":218,"atlas_source_id":0,"seed":"metal_gate_seed","recipe_tier":8,"break_return_to_inventory":false,"break_return_item_id":"","authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"metal_gate","item_category":"block","amount":1},{"item_id":"metal_gate_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"metal_gate","item_category":"block","amount_range":[2,5]},{"item_id":"metal_gate_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"animated":false,"animation_frames":[],"animation_atlas_coords":[],"tileset_animation":false},
-"display_case_seed": {"category":"seed","display_name":"Display Wall Seed","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"display_case","rarity":"rare","grow_time":150,"max_grow_time":150,"recipe_tier":8},
+"display_case_seed": {"category":"seed","display_name":"Display Wall Seed","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"display_case","rarity":"rare","grow_time": 60300.0,"max_grow_time": 60300.0,"recipe_tier":8},
 "cloud_block": {"item_id":"cloud_block","display_name":"Cloud Block","category":"block","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"place_layer":"foreground","block_health":4,"breakable":true,"solid":true,"collidable":true,"no_collision":false,"collision_type":"full","atlas_item_id":216,"atlas_source_id":0,"atlas_coords":[24,2],"texture":{"atlas":"res://image.png","cell":[24,2],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[24,2],"cell_size":[32,32]},"seed":"cloud_block_seed","recipe_tier":9,"authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"cloud_block","item_category":"block","amount":1},{"item_id":"cloud_block_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"cloud_block","item_category":"block","amount_range":[2,5]},{"item_id":"cloud_block_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"id":216,"item_key":"cloud_block","name":"Cloud Block","type":"block","layer":"foreground","source_id":0,"collision":true,"hardness":4,"atlas_enabled":true},
-"cloud_block_seed": {"category":"seed","display_name":"Cloud Block Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"cloud_block","grow_time":150,"max_grow_time":150,"recipe_tier":9},
-"donation_box_seed": {"category":"seed","display_name":"Donation Box Seed","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"donation_box","rarity":"common","grow_time":150,"max_grow_time":150,"recipe_tier":7},
+"cloud_block_seed": {"category":"seed","display_name":"Cloud Block Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"cloud_block","grow_time": 81900.0,"max_grow_time": 81900.0,"recipe_tier":9},
+"donation_box_seed": {"category":"seed","display_name":"Donation Box Seed","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"donation_box","rarity":"common","grow_time": 27000.0,"max_grow_time": 27000.0,"recipe_tier":7},
 "wooden_shelf": {"item_id":"wooden_shelf","display_name":"Wooden Shelf","category":"block","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"place_layer":"foreground","block_health":4,"breakable":true,"solid":true,"collidable":true,"no_collision":false,"collision_type":"full","atlas_item_id":215,"atlas_source_id":0,"atlas_coords":[11,13],"texture":{"atlas":"res://image.png","cell":[11,13],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[11,13],"cell_size":[32,32]},"seed":"wooden_shelf_seed","recipe_tier":6,"authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"wooden_shelf","item_category":"block","amount":1},{"item_id":"wooden_shelf_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"wooden_shelf","item_category":"block","amount_range":[2,5]},{"item_id":"wooden_shelf_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"id":215,"item_key":"wooden_shelf","name":"Wooden Shelf","type":"block","layer":"foreground","source_id":0,"collision":true,"hardness":4,"atlas_enabled":true},
-"wooden_shelf_seed": {"category":"seed","display_name":"Wooden Shelf Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"wooden_shelf","grow_time":150,"max_grow_time":150,"recipe_tier":6},
-"bulletin_board_seed": {"category":"seed","display_name":"Bulletin Board Seed","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"bulletin_board","rarity":"common","grow_time":150,"max_grow_time":150,"recipe_tier":8},
+"wooden_shelf_seed": {"category":"seed","display_name":"Wooden Shelf Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"wooden_shelf","grow_time": 9600.0,"max_grow_time": 9600.0,"recipe_tier":6},
+"bulletin_board_seed": {"category":"seed","display_name":"Bulletin Board Seed","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"bulletin_board","rarity":"common","grow_time": 60300.0,"max_grow_time": 60300.0,"recipe_tier":8},
 "pencil_block": {"item_id":"pencil_block","display_name":"Pencil Block","category":"block","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"place_layer":"foreground","block_health":4,"breakable":true,"solid":true,"collidable":true,"no_collision":false,"collision_type":"full","atlas_item_id":214,"atlas_source_id":0,"atlas_coords":[0,29],"texture":{"atlas":"res://image.png","cell":[0,29],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[0,29],"cell_size":[32,32]},"seed":"pencil_block_seed","recipe_tier":5,"authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"pencil_block","item_category":"block","amount":1},{"item_id":"pencil_block_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"pencil_block","item_category":"block","amount_range":[2,5]},{"item_id":"pencil_block_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"vertical_variant_atlas_coords":{"single":[0,29],"top":[0,30],"middle":[0,31],"bottom":[0,32]}},
-"pencil_block_seed": {"category":"seed","display_name":"Pencil Block Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"pencil_block","grow_time":150,"max_grow_time":150,"recipe_tier":5},
+"pencil_block_seed": {"category":"seed","display_name":"Pencil Block Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"pencil_block","grow_time": 1725.0,"max_grow_time": 1725.0,"recipe_tier":5},
 "almanac": {"item_id":"almanac","display_name":"Almanac","category":"block","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"place_layer":"foreground","block_health":4,"breakable":true,"solid":true,"collidable":true,"no_collision":false,"collision_type":"full","atlas_item_id":213,"atlas_source_id":0,"atlas_coords":[1,30],"texture":{"atlas":"res://image.png","cell":[1,30],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[1,30],"cell_size":[32,32]},"seed":"almanac_seed","recipe_tier":8,"authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"almanac","item_category":"block","amount":1},{"item_id":"almanac_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"almanac","item_category":"block","amount_range":[2,5]},{"item_id":"almanac_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}},
-"almanac_seed": {"category":"seed","display_name":"Almanac Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"almanac","grow_time":150,"max_grow_time":150,"recipe_tier":8},
+"almanac_seed": {"category":"seed","display_name":"Almanac Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"almanac","grow_time": 60300.0,"max_grow_time": 60300.0,"recipe_tier":8},
 "cozy_chalkboard": {"item_id":"cozy_chalkboard","display_name":"Cozy Chalkboard","category":"block","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"place_layer":"foreground","block_health":4,"breakable":true,"solid":true,"collidable":true,"no_collision":false,"collision_type":"full","atlas_item_id":212,"atlas_source_id":0,"atlas_coords":[1,29],"texture":{"atlas":"res://image.png","cell":[1,29],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[1,29],"cell_size":[32,32]},"seed":"cozy_chalkboard_seed","recipe_tier":7,"authored_drop_rules":true,"drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"cozy_chalkboard","item_category":"block","amount":1},{"item_id":"cozy_chalkboard_seed","item_category":"seed","amount":1,"chance":0.2},{"item_id":"gem","item_category":"currency","amount_range":[0,3]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"cozy_chalkboard","item_category":"block","amount_range":[2,5]},{"item_id":"cozy_chalkboard_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}},
-"cozy_chalkboard_seed": {"category":"seed","display_name":"Cozy Chalkboard Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"cozy_chalkboard","grow_time":150,"max_grow_time":150,"recipe_tier":7},
+"cozy_chalkboard_seed": {"category":"seed","display_name":"Cozy Chalkboard Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"cozy_chalkboard","grow_time": 23100.0,"max_grow_time": 23100.0,"recipe_tier":7},
 "pink_wallpaper_seed": {
 	"category": "seed",
 	"rarity": "common",
@@ -440,7 +506,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 90,
 	"display_name": "Pink Wall Seed",
-	"grows_into": "pink_wallpaper"
+	"grows_into": "pink_wallpaper",
+"grow_time": 1725.0,
+"max_grow_time": 1725.0
 },
 "blue_wallpaper_seed": {
 	"category": "seed",
@@ -449,7 +517,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 88,
 	"display_name": "Blue Wall Seed",
-	"grows_into": "blue_wallpaper"
+	"grows_into": "blue_wallpaper",
+"grow_time": 1800.0,
+"max_grow_time": 1800.0
 },
 "yellow_wallpaper_seed": {
 	"category": "seed",
@@ -458,7 +528,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 85,
 	"display_name": "Yellow Wall Seed",
-	"grows_into": "yellow_wallpaper"
+	"grows_into": "yellow_wallpaper",
+"grow_time": 480.0,
+"max_grow_time": 480.0
 },
 "black_wallpaper_seed": {
 	"category": "seed",
@@ -467,7 +539,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 82,
 	"display_name": "Black Wall Seed",
-	"grows_into": "black_wallpaper"
+	"grows_into": "black_wallpaper",
+"grow_time": 510.0,
+"max_grow_time": 510.0
 },
 "purple_wallpaper_seed": {
 	"category": "seed",
@@ -476,7 +550,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 89,
 	"display_name": "Purple Wall Seed",
-	"grows_into": "purple_wallpaper"
+	"grows_into": "purple_wallpaper",
+"grow_time": 7800.0,
+"max_grow_time": 7800.0
 },
 "aqua_wallpaper_seed": {
 	"category": "seed",
@@ -485,7 +561,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 87,
 	"display_name": "Aqua Wall Seed",
-	"grows_into": "aqua_wallpaper"
+	"grows_into": "aqua_wallpaper",
+"grow_time": 5400.0,
+"max_grow_time": 5400.0
 },
 "orange_wallpaper_seed": {
 	"category": "seed",
@@ -494,7 +572,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 84,
 	"display_name": "Orange Wall Seed",
-	"grows_into": "orange_wallpaper"
+	"grows_into": "orange_wallpaper",
+"grow_time": 1725.0,
+"max_grow_time": 1725.0
 },
 "grey_wallpaper_seed": {
 	"category": "seed",
@@ -503,7 +583,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 81,
 	"display_name": "Gray Wall Seed",
-	"grows_into": "grey_wallpaper"
+	"grows_into": "grey_wallpaper",
+"grow_time": 570.0,
+"max_grow_time": 570.0
 },
 "brown_wallpaper_seed": {
 	"category": "seed",
@@ -512,7 +594,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 91,
 	"display_name": "Brown Wall Seed",
-	"grows_into": "brown_wallpaper"
+	"grows_into": "brown_wallpaper",
+"grow_time": 480.0,
+"max_grow_time": 480.0
 },
 "green_wallpaper_seed": {
 	"category": "seed",
@@ -521,7 +605,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 86,
 	"display_name": "Green Wall Seed",
-	"grows_into": "green_wallpaper"
+	"grows_into": "green_wallpaper",
+"grow_time": 510.0,
+"max_grow_time": 510.0
 },
 "red_wallpaper_seed": {
 	"category": "seed",
@@ -530,7 +616,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 83,
 	"display_name": "Red Wall Seed",
-	"grows_into": "red_wallpaper"
+	"grows_into": "red_wallpaper",
+"grow_time": 570.0,
+"max_grow_time": 570.0
 },
 "white_wallpaper_seed": {
 	"category": "seed",
@@ -539,7 +627,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 80,
 	"display_name": "White Wall Seed",
-	"grows_into": "white_wallpaper"
+	"grows_into": "white_wallpaper",
+"grow_time": 480.0,
+"max_grow_time": 480.0
 },
 "shifty_block_seed": {
 	"category": "seed",
@@ -557,7 +647,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 420,
 	"display_name": "Grimstone Wall Seed",
-	"grows_into": "green_brick_wall"
+	"grows_into": "green_brick_wall",
+"grow_time": 1800.0,
+"max_grow_time": 1800.0
 },
 "green_brick_seed": {
 	"category": "seed",
@@ -566,7 +658,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 416,
 	"display_name": "Grimstone Seed",
-	"grows_into": "green_brick"
+	"grows_into": "green_brick",
+"grow_time": 480.0,
+"max_grow_time": 480.0
 },
 "stone_brick_wall_seed": {
 	"category": "seed",
@@ -575,7 +669,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 419,
 	"display_name": "Stone Brick Wall Seed",
-	"grows_into": "stone_brick_wall"
+	"grows_into": "stone_brick_wall",
+"grow_time": 270.0,
+"max_grow_time": 270.0
 },
 "red_brick_wall_seed": {
 	"category": "seed",
@@ -584,7 +680,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 418,
 	"display_name": "Red Brick Wall Seed",
-	"grows_into": "red_brick_wall"
+	"grows_into": "red_brick_wall",
+"grow_time": 240.0,
+"max_grow_time": 240.0
 },
 "red_brick_seed": {
 	"category": "seed",
@@ -593,7 +691,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 415,
 	"display_name": "Red Brick Seed",
-	"grows_into": "red_brick"
+	"grows_into": "red_brick",
+"grow_time": 100.0,
+"max_grow_time": 100.0
 },
 "portcullis_seed": {
 	"category": "seed",
@@ -602,7 +702,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 999,
 	"display_name": "Portcullis Seed",
-	"grows_into": "portcullis"
+	"grows_into": "portcullis",
+"grow_time": 23100.0,
+"max_grow_time": 23100.0
 },
 "portcullis": {
 	"category": "block",
@@ -712,7 +814,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 999,
 	"display_name": "Wagon Wheel Seed",
-	"grows_into": "wagon_wheel"
+	"grows_into": "wagon_wheel",
+"grow_time": 9600.0,
+"max_grow_time": 9600.0
 },
 "wagon_wheel": {
 	"category": "block",
@@ -797,7 +901,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 999,
 	"display_name": "Sturdy Box Seed",
-	"grows_into": "sturdy_box"
+	"grows_into": "sturdy_box",
+"grow_time": 7800.0,
+"max_grow_time": 7800.0
 },
 "sturdy_box": {
 	"category": "block",
@@ -882,7 +988,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 999,
 	"display_name": "Dungeon Door Seed",
-	"grows_into": "dungeon_door"
+	"grows_into": "dungeon_door",
+"grow_time": 5400.0,
+"max_grow_time": 5400.0
 },
 "dungeon_door": {
 	"category": "block",
@@ -969,7 +1077,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 999,
 	"display_name": "Campfire Seed",
-	"grows_into": "campfire"
+	"grows_into": "campfire",
+"grow_time": 270.0,
+"max_grow_time": 270.0
 },
 "campfire": {
 	"category": "block",
@@ -1079,7 +1189,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 999,
 	"display_name": "Lantern Seed",
-	"grows_into": "lantern"
+	"grows_into": "lantern",
+"grow_time": 1800.0,
+"max_grow_time": 1800.0
 },
 "lantern": {
 	"category": "block",
@@ -1189,7 +1301,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 999,
 	"display_name": "Wooden Box Seed",
-	"grows_into": "wooden_box"
+	"grows_into": "wooden_box",
+"grow_time": 480.0,
+"max_grow_time": 480.0
 },
 "wooden_box": {
 	"category": "block",
@@ -1274,7 +1388,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 999,
 	"display_name": "Wooden Barrel Seed",
-	"grows_into": "wooden_barrel"
+	"grows_into": "wooden_barrel",
+"grow_time": 1725.0,
+"max_grow_time": 1725.0
 },
 "wooden_barrel": {
 	"category": "block",
@@ -1717,7 +1833,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 54,
 	"display_name": "Mysterious Sign Seed",
-	"grows_into": "wooden_crappy_sign"
+	"grows_into": "wooden_crappy_sign",
+"grow_time": 270.0,
+"max_grow_time": 270.0
 },
 "vines_2_seed": {
 	"category": "seed",
@@ -1726,7 +1844,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 26,
 	"display_name": "Big Vines Seed",
-	"grows_into": "vines_2"
+	"grows_into": "vines_2",
+"grow_time": 100.0,
+"max_grow_time": 100.0
 },
 "autumn_leaf_seed": {
 	"category": "seed",
@@ -1990,7 +2110,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 999,
 	"display_name": "Bush Seed",
-	"grows_into": "bush"
+	"grows_into": "bush",
+"grow_time": 100.0,
+"max_grow_time": 100.0
 },
 "bush": {
 	"category": "block",
@@ -2084,7 +2206,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 999,
 	"display_name": "Empty Jar Seed",
-	"grows_into": "empty_jar"
+	"grows_into": "empty_jar",
+"grow_time": 27000.0,
+"max_grow_time": 27000.0
 },
 "empty_jar": {
 	"category": "block",
@@ -2552,7 +2676,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 999,
 	"display_name": "Hay Bales Seed",
-	"grows_into": "hay_bales"
+	"grows_into": "hay_bales",
+"grow_time": 240.0,
+"max_grow_time": 240.0
 },
 "hay_bales": {
 	"category": "block",
@@ -2843,7 +2969,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 416,
 	"display_name": "Oil Refinery Seed",
-	"grows_into": "oil_refinery"
+	"grows_into": "oil_refinery",
+"grow_time": 604800.0,
+"max_grow_time": 604800.0
 },
 "sashimi_table_seed": {
 	"category": "seed",
@@ -2852,7 +2980,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 999,
 	"display_name": "Sashimi Table Seed",
-	"grows_into": "sashimi_table"
+	"grows_into": "sashimi_table",
+"grow_time": 60300.0,
+"max_grow_time": 60300.0
 },
 "sashimi_table": {
 	"category": "block",
@@ -3023,7 +3153,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 300,
 	"display_name": "Dark Spike Seed",
-	"grows_into": "big_spike"
+	"grows_into": "big_spike",
+"grow_time": 9600.0,
+"max_grow_time": 9600.0
 },
 "spike_seed": {
 	"category": "seed",
@@ -3041,7 +3173,9 @@ const ITEMS = {
 	"seed_box_icon": true,
 	"order": 304,
 	"display_name": "Spike Seed",
-	"grows_into": "saw_blade"
+	"grows_into": "saw_blade",
+"grow_time": 5400.0,
+"max_grow_time": 5400.0
 },
 
 	# ============================================================
@@ -7357,28 +7491,34 @@ const ITEMS = {
 	},
 "rose": {
 		"category": "block",
-		"display_name": "Rose",
+
 		"rarity": "uncommon",
 		"block_health": 2,
-		"texture": {"atlas": "res://image.png", "cell": [3, 4], "cell_size": [32, 32]},
-		"inventory_icon": {"atlas": "res://image.png", "cell": [3, 4], "cell_size": [32, 32]},
-		"atlas_coords": Vector2i(3, 4),
 		"seed": "rose_seed",
 		"no_collision": true,
-		"order": 16
-	},
+		"order": 16,
+"display_name": "Rose",
+"texture": {"atlas":"res://image.png","cell":[3,4],"cell_size":[32,32]},
+"inventory_icon": {"atlas":"res://image.png","cell":[3,4],"cell_size":[32,32]},
+"atlas_item_id": 235,
+"atlas_source_id": 0,
+"atlas_coords": [3,4]
+},
 "sunflower": {
 		"category": "block",
-		"display_name": "Sunflower",
+
 		"rarity": "uncommon",
 		"block_health": 2,
-		"texture": {"atlas": "res://image.png", "cell": [5, 4], "cell_size": [32, 32]},
-		"inventory_icon": {"atlas": "res://image.png", "cell": [5, 4], "cell_size": [32, 32]},
-		"atlas_coords": Vector2i(5, 4),
 		"seed": "tulip_seed",
 		"no_collision": true,
-		"order": 17
-	},
+		"order": 17,
+"display_name": "Sunflower",
+"texture": {"atlas":"res://image.png","cell":[5,4],"cell_size":[32,32]},
+"inventory_icon": {"atlas":"res://image.png","cell":[5,4],"cell_size":[32,32]},
+"atlas_item_id": 237,
+"atlas_source_id": 0,
+"atlas_coords": [5,4]
+},
 "hanging_vine": {
 	"atlas_coords": Vector2i(6, 3),
 	"block_health": 2,
@@ -7460,12 +7600,9 @@ const ITEMS = {
 },
 "apple": {
 		"category": "block",
-		"display_name": "Apple",
+
 		"rarity": "common",
 		"block_health": 2,
-		"texture": {"atlas": "res://image.png", "cell": [8, 3], "cell_size": [32, 32]},
-		"inventory_icon": {"atlas": "res://image.png", "cell": [8, 3], "cell_size": [32, 32]},
-		"atlas_coords": Vector2i(8, 3),
 		"seed": "apple_seed",
 		"no_collision": true,
 		"drop_rules": {
@@ -7477,8 +7614,14 @@ const ITEMS = {
 				{"item_id": "gem", "item_category": "currency", "amount_range": [0, 3]}
 			]
 		},
-		"order": 19
-	},
+		"order": 19,
+"display_name": "Apple",
+"texture": {"atlas":"res://image.png","cell":[8,3],"cell_size":[32,32]},
+"inventory_icon": {"atlas":"res://image.png","cell":[8,3],"cell_size":[32,32]},
+"atlas_item_id": 234,
+"atlas_source_id": 0,
+"atlas_coords": [8,3]
+},
 "climbing_vine": {
 		"category": "block",
 		"display_name": "Climbing Vine",
@@ -7548,12 +7691,9 @@ const ITEMS = {
 	},
 "lily": {
 		"category": "block",
-		"display_name": "Lily",
+
 		"rarity": "common",
 		"block_health": 2,
-		"texture": {"atlas": "res://image.png", "cell": [4, 4], "cell_size": [32, 32]},
-		"inventory_icon": {"atlas": "res://image.png", "cell": [4, 4], "cell_size": [32, 32]},
-		"atlas_coords": Vector2i(4, 4),
 		"seed": "lily_seed",
 		"no_collision": true,
 		"drop_rules": {
@@ -7565,8 +7705,14 @@ const ITEMS = {
 				{"item_id": "gem", "item_category": "currency", "amount_range": [0, 3]}
 			]
 		},
-		"order": 23
-	},
+		"order": 23,
+"display_name": "Lily",
+"texture": {"atlas":"res://image.png","cell":[4,4],"cell_size":[32,32]},
+"inventory_icon": {"atlas":"res://image.png","cell":[4,4],"cell_size":[32,32]},
+"atlas_item_id": 236,
+"atlas_source_id": 0,
+"atlas_coords": [4,4]
+},
 "sand_castle": {
 	"atlas_coords": Vector2i(12, 6),
 	"block_health": 2,
@@ -9619,8 +9765,10 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/grass_seed.png",
 		"grows_into": "grass",
 		"order": 1,
-		"tree_textures": ["res://Assets/seed_tree_sprites/grass_tree_stage0.png", "res://Assets/seed_tree_sprites/grass_tree_stage1.png", "res://Assets/seed_tree_sprites/grass_tree_stage2.png", "res://Assets/seed_tree_sprites/grass_tree_mature.png"]
-	},
+		"tree_textures": ["res://Assets/seed_tree_sprites/grass_tree_stage0.png", "res://Assets/seed_tree_sprites/grass_tree_stage1.png", "res://Assets/seed_tree_sprites/grass_tree_stage2.png", "res://Assets/seed_tree_sprites/grass_tree_mature.png"],
+"grow_time": 100.0,
+"max_grow_time": 100.0
+},
 "stone_seed": {
 		"category": "seed",
 		"display_name": "Stone Seed",
@@ -9673,8 +9821,10 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/glass_seed.png",
 		"grows_into": "glass",
 		"order": 7,
-		"tree_textures": ["res://Assets/seed_tree_sprites/glass_tree_stage0.png", "res://Assets/seed_tree_sprites/glass_tree_stage1.png", "res://Assets/seed_tree_sprites/glass_tree_stage2.png", "res://Assets/seed_tree_sprites/glass_tree_mature.png"]
-	},
+		"tree_textures": ["res://Assets/seed_tree_sprites/glass_tree_stage0.png", "res://Assets/seed_tree_sprites/glass_tree_stage1.png", "res://Assets/seed_tree_sprites/glass_tree_stage2.png", "res://Assets/seed_tree_sprites/glass_tree_mature.png"],
+"grow_time": 240.0,
+"max_grow_time": 240.0
+},
 "ice_block_seed": {
 		"category": "seed",
 		"display_name": "Ice Block Seed",
@@ -9700,7 +9850,9 @@ const ITEMS = {
 	"order": 9,
 	"rarity": "uncommon",
 	"texture": "res://Assets/seeds/red_block_seed.png",
-	"tree_textures": ["res://Assets/seed_tree_sprites/red_block_tree_stage0.png", "res://Assets/seed_tree_sprites/red_block_tree_stage1.png", "res://Assets/seed_tree_sprites/red_block_tree_stage2.png", "res://Assets/seed_tree_sprites/red_block_tree_mature.png"]
+	"tree_textures": ["res://Assets/seed_tree_sprites/red_block_tree_stage0.png", "res://Assets/seed_tree_sprites/red_block_tree_stage1.png", "res://Assets/seed_tree_sprites/red_block_tree_stage2.png", "res://Assets/seed_tree_sprites/red_block_tree_mature.png"],
+"grow_time": 240.0,
+"max_grow_time": 240.0
 },
 "blue_block_seed": {
 	"category": "seed",
@@ -9709,7 +9861,9 @@ const ITEMS = {
 	"order": 10,
 	"rarity": "uncommon",
 	"texture": "res://Assets/seeds/blue_block_seed.png",
-	"tree_textures": ["res://Assets/seed_tree_sprites/blue_block_tree_stage0.png", "res://Assets/seed_tree_sprites/blue_block_tree_stage1.png", "res://Assets/seed_tree_sprites/blue_block_tree_stage1.png", "res://Assets/seed_tree_sprites/blue_block_tree_mature.png"]
+	"tree_textures": ["res://Assets/seed_tree_sprites/blue_block_tree_stage0.png", "res://Assets/seed_tree_sprites/blue_block_tree_stage1.png", "res://Assets/seed_tree_sprites/blue_block_tree_stage1.png", "res://Assets/seed_tree_sprites/blue_block_tree_mature.png"],
+"grow_time": 480.0,
+"max_grow_time": 480.0
 },
 "green_block_seed": {
 	"category": "seed",
@@ -9718,7 +9872,9 @@ const ITEMS = {
 	"order": 11,
 	"rarity": "uncommon",
 	"texture": "res://Assets/seeds/green_block_seed.png",
-	"tree_textures": ["res://Assets/seed_tree_sprites/green_block_tree_stage0.png", "res://Assets/seed_tree_sprites/green_block_tree_stage1.png", "res://Assets/seed_tree_sprites/green_block_tree_stage1.png", "res://Assets/seed_tree_sprites/green_block_tree_mature.png"]
+	"tree_textures": ["res://Assets/seed_tree_sprites/green_block_tree_stage0.png", "res://Assets/seed_tree_sprites/green_block_tree_stage1.png", "res://Assets/seed_tree_sprites/green_block_tree_stage1.png", "res://Assets/seed_tree_sprites/green_block_tree_mature.png"],
+"grow_time": 360.0,
+"max_grow_time": 360.0
 },
 "purple_block_seed": {
 	"category": "seed",
@@ -9727,7 +9883,9 @@ const ITEMS = {
 	"order": 12,
 	"rarity": "uncommon",
 	"texture": "res://Assets/seeds/purple_block_seed.png",
-	"tree_textures": ["res://Assets/seed_tree_sprites/purple_block_tree_stage0.png", "res://Assets/seed_tree_sprites/purple_block_tree_stage1.png", "res://Assets/seed_tree_sprites/purple_block_tree_stage2.png", "res://Assets/seed_tree_sprites/purple_block_tree_mature.png"]
+	"tree_textures": ["res://Assets/seed_tree_sprites/purple_block_tree_stage0.png", "res://Assets/seed_tree_sprites/purple_block_tree_stage1.png", "res://Assets/seed_tree_sprites/purple_block_tree_stage2.png", "res://Assets/seed_tree_sprites/purple_block_tree_mature.png"],
+"grow_time": 1500.0,
+"max_grow_time": 1500.0
 },
 "yellow_block_seed": {
 	"category": "seed",
@@ -9736,7 +9894,9 @@ const ITEMS = {
 	"order": 13,
 	"rarity": "uncommon",
 	"texture": "res://Assets/inventory_icons/yellow_block_seed.png",
-	"tree_textures": ["res://Assets/seed_tree_sprites/yellow_block_tree_stage0.png", "res://Assets/seed_tree_sprites/yellow_block_tree_stage1.png", "res://Assets/seed_tree_sprites/yellow_block_tree_stage2.png", "res://Assets/seed_tree_sprites/yellow_block_tree_mature.png"]
+	"tree_textures": ["res://Assets/seed_tree_sprites/yellow_block_tree_stage0.png", "res://Assets/seed_tree_sprites/yellow_block_tree_stage1.png", "res://Assets/seed_tree_sprites/yellow_block_tree_stage2.png", "res://Assets/seed_tree_sprites/yellow_block_tree_mature.png"],
+"grow_time": 270.0,
+"max_grow_time": 270.0
 },
 "black_block_seed": {
 	"category": "seed",
@@ -9745,7 +9905,9 @@ const ITEMS = {
 	"order": 14,
 	"rarity": "uncommon",
 	"texture": "res://Assets/seeds/black_block_seed.png",
-	"tree_textures": ["res://Assets/seed_tree_sprites/black_block_tree_stage0.png", "res://Assets/seed_tree_sprites/black_block_tree_stage1.png", "res://Assets/seed_tree_sprites/black_block_tree_stage2.png", "res://Assets/seed_tree_sprites/black_block_tree_mature.png"]
+	"tree_textures": ["res://Assets/seed_tree_sprites/black_block_tree_stage0.png", "res://Assets/seed_tree_sprites/black_block_tree_stage1.png", "res://Assets/seed_tree_sprites/black_block_tree_stage2.png", "res://Assets/seed_tree_sprites/black_block_tree_mature.png"],
+"grow_time": 360.0,
+"max_grow_time": 360.0
 },
 "aqua_block_seed": {
 	"category": "seed",
@@ -9754,7 +9916,9 @@ const ITEMS = {
 	"order": 100,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 1725.0,
+"max_grow_time": 1725.0
 },
 "blue_pastel_block_seed": {
 	"category": "seed",
@@ -9763,7 +9927,9 @@ const ITEMS = {
 	"order": 102,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 9600.0,
+"max_grow_time": 9600.0
 },
 "brown_block_seed": {
 	"category": "seed",
@@ -9772,7 +9938,9 @@ const ITEMS = {
 	"order": 103,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 270.0,
+"max_grow_time": 270.0
 },
 "dark_aqua_block_seed": {
 	"category": "seed",
@@ -9781,7 +9949,9 @@ const ITEMS = {
 	"order": 104,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 5400.0,
+"max_grow_time": 5400.0
 },
 "dark_blue_block_seed": {
 	"category": "seed",
@@ -9790,7 +9960,9 @@ const ITEMS = {
 	"order": 105,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 1500.0,
+"max_grow_time": 1500.0
 },
 "dark_brown_block_seed": {
 	"category": "seed",
@@ -9808,7 +9980,9 @@ const ITEMS = {
 	"order": 107,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 1500.0,
+"max_grow_time": 1500.0
 },
 "dark_pink_block_seed": {
 	"category": "seed",
@@ -9817,7 +9991,9 @@ const ITEMS = {
 	"order": 108,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 1800.0,
+"max_grow_time": 1800.0
 },
 "dark_purple_block_seed": {
 	"category": "seed",
@@ -9826,7 +10002,9 @@ const ITEMS = {
 	"order": 109,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 7800.0,
+"max_grow_time": 7800.0
 },
 "dark_red_block_seed": {
 	"category": "seed",
@@ -9835,7 +10013,9 @@ const ITEMS = {
 	"order": 110,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 1725.0,
+"max_grow_time": 1725.0
 },
 "dark_yellow_block_seed": {
 	"category": "seed",
@@ -9844,7 +10024,9 @@ const ITEMS = {
 	"order": 111,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 1725.0,
+"max_grow_time": 1725.0
 },
 "green_pastel_block_seed": {
 	"category": "seed",
@@ -9853,7 +10035,9 @@ const ITEMS = {
 	"order": 112,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 1500.0,
+"max_grow_time": 1500.0
 },
 "grey_block_seed": {
 	"category": "seed",
@@ -9862,7 +10046,9 @@ const ITEMS = {
 	"order": 113,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 240.0,
+"max_grow_time": 240.0
 },
 "happy_block_seed": {
 	"category": "seed",
@@ -9871,7 +10057,9 @@ const ITEMS = {
 	"order": 114,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 5400.0,
+"max_grow_time": 5400.0
 },
 "light_brown_block_seed": {
 	"category": "seed",
@@ -9880,7 +10068,9 @@ const ITEMS = {
 	"order": 115,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 1725.0,
+"max_grow_time": 1725.0
 },
 "orange_block_seed": {
 	"category": "seed",
@@ -9889,7 +10079,9 @@ const ITEMS = {
 	"order": 116,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 570.0,
+"max_grow_time": 570.0
 },
 "orange_pastel_block_seed": {
 	"category": "seed",
@@ -9898,7 +10090,9 @@ const ITEMS = {
 	"order": 117,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 1500.0,
+"max_grow_time": 1500.0
 },
 "pastel_flower_block_seed": {
 	"category": "seed",
@@ -9907,7 +10101,9 @@ const ITEMS = {
 	"order": 118,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 7800.0,
+"max_grow_time": 7800.0
 },
 "pink_block_seed": {
 	"category": "seed",
@@ -9916,7 +10112,9 @@ const ITEMS = {
 	"order": 119,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 570.0,
+"max_grow_time": 570.0
 },
 "pink_pastel_block_seed": {
 	"category": "seed",
@@ -9925,7 +10123,9 @@ const ITEMS = {
 	"order": 120,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 1800.0,
+"max_grow_time": 1800.0
 },
 "purple_pastel_block_seed": {
 	"category": "seed",
@@ -9934,7 +10134,9 @@ const ITEMS = {
 	"order": 121,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 7800.0,
+"max_grow_time": 7800.0
 },
 "red_pastel_block_seed": {
 	"category": "seed",
@@ -9943,7 +10145,9 @@ const ITEMS = {
 	"order": 122,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 1725.0,
+"max_grow_time": 1725.0
 },
 "white_block_seed": {
 	"category": "seed",
@@ -9952,7 +10156,9 @@ const ITEMS = {
 	"order": 123,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 270.0,
+"max_grow_time": 270.0
 },
 "yellow_pastel_block_seed": {
 	"category": "seed",
@@ -9961,7 +10167,9 @@ const ITEMS = {
 	"order": 124,
 	"rarity": "uncommon",
 	"seed_box_icon": true,
-	"texture": "res://Assets/seeds/seed_box.png"
+	"texture": "res://Assets/seeds/seed_box.png",
+"grow_time": 1725.0,
+"max_grow_time": 1725.0
 },
 "rose_seed": {
 		"category": "seed",
@@ -10000,8 +10208,8 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
 		"grows_into": "sugar_cane",
-		"grow_time": 120.0,
-		"max_grow_time": 120.0,
+		"grow_time": 1725.0,
+		"max_grow_time": 1725.0,
 		"order": 18
 	},
 "barn_block_seed": {
@@ -10011,8 +10219,8 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
 		"grows_into": "barn_block",
-		"grow_time": 150.0,
-		"max_grow_time": 150.0,
+		"grow_time": 480.0,
+		"max_grow_time": 480.0,
 		"order": 19
 	},
 	"royal_door_seed": {
@@ -10031,8 +10239,8 @@ const ITEMS = {
 		},
 		"grows_into": "royal_door",
 		"rarity": "uncommon",
-		"grow_time": 175,
-		"max_grow_time": 175
+		"grow_time": 1800.0,
+		"max_grow_time": 1800.0
 	},
 	"royal_entrance_seed": {
 		"category": "seed",
@@ -10050,8 +10258,8 @@ const ITEMS = {
 		},
 		"grows_into": "royal_entrance",
 		"rarity": "rare",
-		"grow_time": 175,
-		"max_grow_time": 175
+		"grow_time": 23100.0,
+		"max_grow_time": 23100.0
 	},
 "lamp_seed": {
 		"category": "seed",
@@ -10060,8 +10268,8 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
 		"grows_into": "lamp",
-		"grow_time": 150.0,
-		"max_grow_time": 150.0,
+		"grow_time": 23100.0,
+		"max_grow_time": 23100.0,
 		"order": 22
 	},
 	"royal_window_seed": {
@@ -10080,8 +10288,8 @@ const ITEMS = {
 		},
 		"grows_into": "royal_window",
 		"rarity": "uncommon",
-		"grow_time": 150,
-		"max_grow_time": 150
+		"grow_time": 1800.0,
+		"max_grow_time": 1800.0
 	},
 "fish_bowl_seed": {
 		"category": "seed",
@@ -10090,8 +10298,8 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
 		"grows_into": "fish_bowl",
-		"grow_time": 150.0,
-		"max_grow_time": 150.0,
+		"grow_time": 27000.0,
+		"max_grow_time": 27000.0,
 		"order": 24
 	},
 "tv_seed": {
@@ -10101,8 +10309,8 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
 		"grows_into": "tv",
-		"grow_time": 150.0,
-		"max_grow_time": 150.0,
+		"grow_time": 60300.0,
+		"max_grow_time": 60300.0,
 		"order": 25
 	},
 	"purple_curtains_seed": {
@@ -10121,8 +10329,8 @@ const ITEMS = {
 		},
 		"grows_into": "purple_curtains",
 		"rarity": "uncommon",
-		"grow_time": 150,
-		"max_grow_time": 150
+		"grow_time": 27000.0,
+		"max_grow_time": 27000.0
 	},
 	"pink_curtains_seed": {
 		"category": "seed",
@@ -10140,8 +10348,8 @@ const ITEMS = {
 		},
 		"grows_into": "pink_curtains",
 		"rarity": "uncommon",
-		"grow_time": 150,
-		"max_grow_time": 150
+		"grow_time": 23100.0,
+		"max_grow_time": 23100.0
 	},
 	"blue_couch_seed": {
 		"category": "seed",
@@ -10159,8 +10367,8 @@ const ITEMS = {
 		},
 		"grows_into": "blue_couch",
 		"rarity": "uncommon",
-		"grow_time": 150,
-		"max_grow_time": 150
+		"grow_time": 27000.0,
+		"max_grow_time": 27000.0
 	},
 	"green_couch_seed": {
 		"category": "seed",
@@ -10178,8 +10386,8 @@ const ITEMS = {
 		},
 		"grows_into": "green_couch",
 		"rarity": "uncommon",
-		"grow_time": 150,
-		"max_grow_time": 150
+		"grow_time": 81900.0,
+		"max_grow_time": 81900.0
 	},
 
 	# ============================================================
@@ -10201,8 +10409,10 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/special/wood_platform_seed.png",
 		"grows_into": "wood_platform",
 		"order": 31,
-		"tree_textures": ["res://Assets/seed_tree_sprites/special/wood_platform_tree_stage0.png", "res://Assets/seed_tree_sprites/special/wood_platform_tree_stage1.png", "res://Assets/seed_tree_sprites/special/wood_platform_tree_stage2.png", "res://Assets/seed_tree_sprites/special/wood_platform_tree_stage3.png"]
-	},
+		"tree_textures": ["res://Assets/seed_tree_sprites/special/wood_platform_tree_stage0.png", "res://Assets/seed_tree_sprites/special/wood_platform_tree_stage1.png", "res://Assets/seed_tree_sprites/special/wood_platform_tree_stage2.png", "res://Assets/seed_tree_sprites/special/wood_platform_tree_stage3.png"],
+"grow_time": 240.0,
+"max_grow_time": 240.0
+},
 "wooden_entrance_seed": {
 		"category": "seed",
 		"display_name": "Wooden Entrance Seed",
@@ -10210,8 +10420,10 @@ const ITEMS = {
 		"texture": "res://Assets/inventory_icons/wooden_entrance.png",
 		"grows_into": "wooden_entrance",
 		"order": 32,
-		"tree_textures": ["res://Assets/blocks/Tier_1/wooden/wooden_entrance_1.png", "res://Assets/blocks/Tier_1/wooden/wooden_entrance_2.png", "res://Assets/blocks/Tier_1/wooden/wooden_entrance_3.png"]
-	},
+		"tree_textures": ["res://Assets/blocks/Tier_1/wooden/wooden_entrance_1.png", "res://Assets/blocks/Tier_1/wooden/wooden_entrance_2.png", "res://Assets/blocks/Tier_1/wooden/wooden_entrance_3.png"],
+"grow_time": 510.0,
+"max_grow_time": 510.0
+},
 "sign_seed": {
 		"category": "seed",
 		"display_name": "Sign Seed",
@@ -10219,8 +10431,10 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/special/sign_seed.png",
 		"grows_into": "sign",
 		"order": 33,
-		"tree_textures": ["res://Assets/seed_tree_sprites/special/sign_tree_stage0.png", "res://Assets/seed_tree_sprites/special/sign_tree_stage1.png", "res://Assets/seed_tree_sprites/special/sign_tree_stage2.png", "res://Assets/seed_tree_sprites/special/sign_tree_stage3.png"]
-	},
+		"tree_textures": ["res://Assets/seed_tree_sprites/special/sign_tree_stage0.png", "res://Assets/seed_tree_sprites/special/sign_tree_stage1.png", "res://Assets/seed_tree_sprites/special/sign_tree_stage2.png", "res://Assets/seed_tree_sprites/special/sign_tree_stage3.png"],
+"grow_time": 360.0,
+"max_grow_time": 360.0
+},
 "stone_brick_seed": {
 	"category": "seed",
 	"display_name": "Stone Brick Seed",
@@ -10228,7 +10442,9 @@ const ITEMS = {
 	"order": 34,
 	"rarity": "uncommon",
 	"texture": "res://Assets/seeds/special/stone_brick_seed.png",
-	"tree_textures": ["res://Assets/seed_tree_sprites/special/stone_brick_tree_stage0.png", "res://Assets/seed_tree_sprites/special/stone_brick_tree_stage1.png", "res://Assets/seed_tree_sprites/special/stone_brick_tree_stage2.png", "res://Assets/seed_tree_sprites/special/stone_brick_tree_stage3.png"]
+	"tree_textures": ["res://Assets/seed_tree_sprites/special/stone_brick_tree_stage0.png", "res://Assets/seed_tree_sprites/special/stone_brick_tree_stage1.png", "res://Assets/seed_tree_sprites/special/stone_brick_tree_stage2.png", "res://Assets/seed_tree_sprites/special/stone_brick_tree_stage3.png"],
+"grow_time": 100.0,
+"max_grow_time": 100.0
 },
 "glass_panel_seed": {
 		"category": "seed",
@@ -10237,8 +10453,10 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/special/glass_panel_seed.png",
 		"grows_into": "glass_panel",
 		"order": 35,
-		"tree_textures": ["res://Assets/seed_tree_sprites/special/glass_panel_tree_stage0.png", "res://Assets/seed_tree_sprites/special/glass_panel_tree_stage1.png", "res://Assets/seed_tree_sprites/special/glass_panel_tree_stage2.png", "res://Assets/seed_tree_sprites/special/glass_panel_tree_stage3.png"]
-	},
+		"tree_textures": ["res://Assets/seed_tree_sprites/special/glass_panel_tree_stage0.png", "res://Assets/seed_tree_sprites/special/glass_panel_tree_stage1.png", "res://Assets/seed_tree_sprites/special/glass_panel_tree_stage2.png", "res://Assets/seed_tree_sprites/special/glass_panel_tree_stage3.png"],
+"grow_time": 100.0,
+"max_grow_time": 100.0
+},
 "gem_block_seed": {
 		"category": "seed",
 		"display_name": "Gem Block Seed",
@@ -10246,8 +10464,10 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/special/gem_block_seed.png",
 		"grows_into": "rainbow_block",
 		"order": 36,
-		"tree_textures": ["res://Assets/seed_tree_sprites/special/gem_block_tree_stage0.png", "res://Assets/seed_tree_sprites/special/gem_block_tree_stage1.png", "res://Assets/seed_tree_sprites/special/gem_block_tree_stage2.png", "res://Assets/seed_tree_sprites/special/gem_block_tree_stage3.png"]
-	},
+		"tree_textures": ["res://Assets/seed_tree_sprites/special/gem_block_tree_stage0.png", "res://Assets/seed_tree_sprites/special/gem_block_tree_stage1.png", "res://Assets/seed_tree_sprites/special/gem_block_tree_stage2.png", "res://Assets/seed_tree_sprites/special/gem_block_tree_stage3.png"],
+"grow_time": 9600.0,
+"max_grow_time": 9600.0
+},
 "wooden_block_seed": {
 		"category": "seed",
 		"display_name": "Wooden Block Seed",
@@ -10255,8 +10475,8 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
 		"grows_into": "wooden_block",
-		"grow_time": 125.0,
-		"max_grow_time": 125.0,
+		"grow_time": 100.0,
+		"max_grow_time": 100.0,
 		"order": 37
 	},
 "wooden_background_seed": {
@@ -10266,8 +10486,8 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
 		"grows_into": "wooden_wallpaper",
-		"grow_time": 135.0,
-		"max_grow_time": 135.0,
+		"grow_time": 100.0,
+		"max_grow_time": 100.0,
 		"order": 38
 	},
 "wooden_fence_seed": {
@@ -10277,8 +10497,8 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
 		"grows_into": "wooden_fence",
-		"grow_time": 150.0,
-		"max_grow_time": 150.0,
+		"grow_time": 360.0,
+		"max_grow_time": 360.0,
 		"order": 39
 	},
 "wooden_ladder_seed": {
@@ -10288,8 +10508,8 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
 		"grows_into": "wooden_ladder",
-		"grow_time": 160.0,
-		"max_grow_time": 160.0,
+		"grow_time": 480.0,
+		"max_grow_time": 480.0,
 		"order": 40
 	},
 "wooden_door_seed": {
@@ -10299,8 +10519,8 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
 		"grows_into": "wooden_door",
-		"grow_time": 175.0,
-		"max_grow_time": 175.0,
+		"grow_time": 240.0,
+		"max_grow_time": 240.0,
 		"order": 41
 	},
 "wooden_frame_seed": {
@@ -10310,8 +10530,8 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
 		"grows_into": "wooden_window",
-		"grow_time": 190.0,
-		"max_grow_time": 190.0,
+		"grow_time": 270.0,
+		"max_grow_time": 270.0,
 		"order": 42
 	},
 "mushroom_seed": {
@@ -10321,8 +10541,8 @@ const ITEMS = {
 		"texture": "res://Assets/seeds/seed_box.png",
 		"seed_box_icon": true,
 		"grows_into": "mushroom",
-		"grow_time": 205.0,
-		"max_grow_time": 205.0,
+		"grow_time": 100.0,
+		"max_grow_time": 100.0,
 		"order": 43
 	},
 
@@ -14608,11 +14828,11 @@ const ITEMS = {
 		},
 	"tackle_box": {
 			"category": "block",
-			"display_name": "Tackle Box",
+
 			"rarity": "rare",
 			"block_health": 4,
-			"texture": "res://Assets/items/fishing/tackle_box_empty.png",
-			"inventory_icon": "res://Assets/items/fishing/tackle_box_full.png",
+
+
 			"tackle_box_empty_texture": "res://Assets/items/fishing/tackle_box_empty.png",
 			"tackle_box_full_texture": "res://Assets/items/fishing/tackle_box_full.png",
 			"seed": "",
@@ -14630,8 +14850,15 @@ const ITEMS = {
 					{"item_id": "tackle_box", "item_category": "block", "amount": 1}
 				]
 			},
-			"order": 310
-		},
+			"order": 310,
+"display_name": "Bait Box",
+"texture": {"atlas":"res://image.png","cell":[15,15],"cell_size":[32,32]},
+"inventory_icon": {"atlas":"res://image.png","cell":[17,15],"cell_size":[32,32]},
+"atlas_item_id": 233,
+"atlas_source_id": 0,
+"atlas_coords": [15,15],
+"tackle_box_state_atlas_coords": [[15,15],[16,15],[17,15]]
+},
 	"chicken": {
 			"category": "block",
 			"display_name": "Chicken",
@@ -15220,7 +15447,7 @@ const ITEMS = {
 },
 	"barn_block": {"item_id":"barn_block","category":"block","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"placeable":true,"place_layer":"foreground","block_health":4,"breakable":true,"display_name":"Barn Block","background_block":false,"no_collision":false,"collidable":true,"solid":true,"collision_type":"full","atlas_item_id":26,"atlas_source_id":0,"atlas_coords":[0,24],"alternative_tile":0,"seed":"barn_block_seed","drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"barn_block","item_category":"block","amount_range":[0,4]},{"item_id":"barn_block_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"barn_block","item_category":"block","amount_range":[0,4]},{"item_id":"barn_block_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"connected_variant_atlas_coords":{"single":[0,24],"tile_1_24":[1,24],"tile_2_24":[2,24],"tile_3_24":[3,24],"tile_4_24":[4,24],"tile_5_24":[5,24],"tile_6_24":[6,24],"tile_7_24":[7,24],"tile_8_24":[8,24],"tile_9_24":[9,24],"tile_0_25":[0,25],"tile_1_25":[1,25],"tile_2_25":[2,25],"tile_3_25":[3,25],"tile_4_25":[4,25],"tile_5_25":[5,25],"tile_6_25":[6,25],"tile_7_25":[7,25],"tile_8_25":[8,25],"tile_9_25":[9,25],"tile_0_26":[0,26],"tile_1_26":[1,26],"tile_2_26":[2,26],"tile_3_26":[3,26],"tile_4_26":[4,26],"tile_5_26":[5,26],"tile_6_26":[6,26],"tile_7_26":[7,26],"tile_8_26":[8,26],"tile_9_26":[9,26],"tile_0_27":[0,27],"tile_1_27":[1,27],"tile_2_27":[2,27],"tile_3_27":[3,27],"tile_4_27":[4,27],"tile_5_27":[5,27],"tile_6_27":[6,27],"tile_7_27":[7,27],"tile_8_27":[8,27],"tile_9_27":[9,27],"tile_0_28":[0,28],"tile_1_28":[1,28],"tile_2_28":[2,28],"tile_3_28":[3,28],"tile_4_28":[4,28],"tile_5_28":[5,28],"tile_6_28":[6,28],"tile_7_28":[7,28]},"texture":{"atlas":"res://image.png","cell":[0,24],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[0,24],"cell_size":[32,32]},"order":316,"recipe_tier":4,"atlas_enabled":true},
 	"neon_block": {"item_id":"neon_block","category":"block","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"placeable":true,"place_layer":"foreground","block_health":4,"breakable":true,"display_name":"Neon Block","background_block":false,"no_collision":false,"collidable":true,"solid":true,"collision_type":"full","atlas_item_id":211,"atlas_source_id":0,"atlas_coords":[0,33],"alternative_tile":0,"seed":"neon_block_seed","drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"neon_block","item_category":"block","amount_range":[0,4]},{"item_id":"neon_block_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"neon_block","item_category":"block","amount_range":[0,4]},{"item_id":"neon_block_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"connected_variant_atlas_coords":{"single":[0,33],"tile_1_24":[1,33],"tile_2_24":[2,33],"tile_3_24":[3,33],"tile_4_24":[4,33],"tile_5_24":[5,33],"tile_6_24":[6,33],"tile_7_24":[7,33],"tile_8_24":[8,33],"tile_9_24":[9,33],"tile_0_25":[0,34],"tile_1_25":[1,34],"tile_2_25":[2,34],"tile_3_25":[3,34],"tile_4_25":[4,34],"tile_5_25":[5,34],"tile_6_25":[6,34],"tile_7_25":[7,34],"tile_8_25":[8,34],"tile_9_25":[9,34],"tile_0_26":[0,35],"tile_1_26":[1,35],"tile_2_26":[2,35],"tile_3_26":[3,35],"tile_4_26":[4,35],"tile_5_26":[5,35],"tile_6_26":[6,35],"tile_7_26":[7,35],"tile_8_26":[8,35],"tile_9_26":[9,35],"tile_0_27":[0,36],"tile_1_27":[1,36],"tile_2_27":[2,36],"tile_3_27":[3,36],"tile_4_27":[4,36],"tile_5_27":[5,36],"tile_6_27":[6,36],"tile_7_27":[7,36],"tile_8_27":[8,36],"tile_9_27":[9,36],"tile_0_28":[0,37],"tile_1_28":[1,37],"tile_2_28":[2,37],"tile_3_28":[3,37],"tile_4_28":[4,37],"tile_5_28":[5,37],"tile_6_28":[6,37],"tile_7_28":[7,37]},"texture":{"atlas":"res://image.png","cell":[0,33],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[0,33],"cell_size":[32,32]},"order":316,"recipe_tier":7,"atlas_enabled":true},
-	"neon_block_seed": {"category":"seed","display_name":"Neon Block Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"neon_block","grow_time":150,"max_grow_time":150,"recipe_tier":7},
+	"neon_block_seed": {"category":"seed","display_name":"Neon Block Seed","rarity":"common","texture":"res://Assets/seeds/seed_box.png","seed_box_icon":true,"grows_into":"neon_block","grow_time": 27000.0,"max_grow_time": 27000.0,"recipe_tier":7},
 	"barn_door": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -18776,8 +19003,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "barn_window",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1800.0,
+"max_grow_time": 1800.0
+},
 	"white_fence_seed": {
 		"category": "seed",
 		"display_name": "Farm Fence Seed",
@@ -18793,8 +19022,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "white_fence",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1500.0,
+"max_grow_time": 1500.0
+},
 	"weathervane": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -18932,8 +19163,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "weathervane",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 9600.0,
+"max_grow_time": 9600.0
+},
 	"broken_tv_seed": {
 		"category": "seed",
 		"display_name": "Landfill TV Seed",
@@ -18983,8 +19216,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "barn_background",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1725.0,
+"max_grow_time": 1725.0
+},
 	"barn_door_seed": {
 		"category": "seed",
 		"display_name": "Barn Door Seed",
@@ -19000,8 +19235,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "barn_door",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1800.0,
+"max_grow_time": 1800.0
+},
 	"side_table_seed": {
 		"category": "seed",
 		"display_name": "House Table Seed",
@@ -19017,8 +19254,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "side_table",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1800.0,
+"max_grow_time": 1800.0
+},
 	"modern_chair": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -19156,8 +19395,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "modern_chair",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 9600.0,
+"max_grow_time": 9600.0
+},
 	"dresser": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -19295,8 +19536,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "dresser",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 5400.0,
+"max_grow_time": 5400.0
+},
 	"royal_door": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -19569,8 +19812,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "grand_house_door",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 60300.0,
+"max_grow_time": 60300.0
+},
 	"royal_entrance": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -20163,8 +20408,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "toilet",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 7800.0,
+"max_grow_time": 7800.0
+},
 	"refrigerator_seed": {
 		"category": "seed",
 		"display_name": "Refrigerator Seed",
@@ -20180,8 +20427,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "refrigerator",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 81900.0,
+"max_grow_time": 81900.0
+},
 	"building_brick_block": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -20319,8 +20568,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "building_brick_block",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 510.0,
+"max_grow_time": 510.0
+},
 	"building_brick_wall": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -20458,8 +20709,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "building_brick_wall",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1500.0,
+"max_grow_time": 1500.0
+},
 	"fireplace_seed": {
 		"category": "seed",
 		"display_name": "Fireplace Seed",
@@ -20475,8 +20728,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "fireplace",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1800.0,
+"max_grow_time": 1800.0
+},
 	"bathtub_seed": {
 		"category": "seed",
 		"display_name": "Bathtub Seed",
@@ -20492,8 +20747,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "bathtub",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 23100.0,
+"max_grow_time": 23100.0
+},
 	"sink_seed": {
 		"category": "seed",
 		"display_name": "Sink Seed",
@@ -20509,8 +20766,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "sink",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 9600.0,
+"max_grow_time": 9600.0
+},
 	"rubber_duck": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -20698,8 +20957,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "rubber_duck",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 60300.0,
+"max_grow_time": 60300.0
+},
 	"red_brick_platform_seed": {
 		"category": "seed",
 		"display_name": "Building Brick Platform Seed",
@@ -20715,8 +20976,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "red_brick_platform",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1500.0,
+"max_grow_time": 1500.0
+},
 	"white_brick_block_seed": {
 		"category": "seed",
 		"display_name": "Polished Stone Brick Seed",
@@ -20732,8 +20995,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "white_brick_block",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 570.0,
+"max_grow_time": 570.0
+},
 	"white_brick_wall_seed": {
 		"category": "seed",
 		"display_name": "Polished Stone Wall Seed",
@@ -20749,8 +21014,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "white_brick_wall",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1500.0,
+"max_grow_time": 1500.0
+},
 	"white_brick_platform_seed": {
 		"category": "seed",
 		"display_name": "Polished Stone Platform Seed",
@@ -20766,8 +21033,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "white_brick_platform",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1800.0,
+"max_grow_time": 1800.0
+},
 	"fan_seed": {
 		"category": "seed",
 		"display_name": "Fan Seed",
@@ -20783,8 +21052,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "fan",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 81900.0,
+"max_grow_time": 81900.0
+},
 	"bed_seed": {
 		"category": "seed",
 		"display_name": "Bed Seed",
@@ -20800,8 +21071,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "bed",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 5400.0,
+"max_grow_time": 5400.0
+},
 	"park_bench": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -20961,8 +21234,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "park_bench",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1800.0,
+"max_grow_time": 1800.0
+},
 	"big_sign": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -21105,8 +21380,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "big_sign",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 510.0,
+"max_grow_time": 510.0
+},
 	"right_directional_sign": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -21249,8 +21526,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "right_directional_sign",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1500.0,
+"max_grow_time": 1500.0
+},
 	"left_directional_sign": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -21393,8 +21672,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "left_directional_sign",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1800.0,
+"max_grow_time": 1800.0
+},
 	"digital_sign": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -21537,8 +21818,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "digital_sign",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 81900.0,
+"max_grow_time": 81900.0
+},
 	"star_wall": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -21676,8 +21959,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "star_wall",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 480.0,
+"max_grow_time": 480.0
+},
 	"blue_stripe_wall": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -21815,8 +22100,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "blue_stripe_wall",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 570.0,
+"max_grow_time": 570.0
+},
 	"red_stripe_wall": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -21954,8 +22241,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "red_stripe_wall",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 510.0,
+"max_grow_time": 510.0
+},
 	"aquatic_line_wall": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -22093,8 +22382,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "aquatic_line_wall",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1500.0,
+"max_grow_time": 1500.0
+},
 	"complementary_line_wall": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -22232,8 +22523,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "complementary_line_wall",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1800.0,
+"max_grow_time": 1800.0
+},
 	"checkered_wall": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -22371,8 +22664,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "checkered_wall",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 1725.0,
+"max_grow_time": 1725.0
+},
 	"sale_sign": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -22515,8 +22810,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "sale_sign",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 5400.0,
+"max_grow_time": 5400.0
+},
 	"hazard_sign": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -22659,8 +22956,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "hazard_sign",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 60300.0,
+"max_grow_time": 60300.0
+},
 	"open_sign": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -22803,8 +23102,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "open_sign",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 60300.0,
+"max_grow_time": 60300.0
+},
 	"street_sign": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -22947,8 +23248,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "street_sign",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 28800.0,
+"max_grow_time": 28800.0
+},
 	"chandelier": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -23091,8 +23394,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "chandelier",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 129600.0,
+"max_grow_time": 129600.0
+},
 	"wall_clock": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -23369,8 +23674,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "vines_painting",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 81900.0,
+"max_grow_time": 81900.0
+},
 	"scratched_banana_painting": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -23508,8 +23815,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "scratched_banana_painting",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 81900.0,
+"max_grow_time": 81900.0
+},
 	"heartbreak_painting": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -23647,8 +23956,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "heartbreak_painting",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 81900.0,
+"max_grow_time": 81900.0
+},
 	"love_painting": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -23786,8 +24097,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "love_painting",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 81900.0,
+"max_grow_time": 81900.0
+},
 	"the_starry_night": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -24500,8 +24813,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "city_fence",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 81900.0,
+"max_grow_time": 81900.0
+},
 	"ventilation": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -24715,8 +25030,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "ventilation",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 28800.0,
+"max_grow_time": 28800.0
+},
 	"sirene_lamp": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -24859,8 +25176,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "sirene_lamp",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 81900.0,
+"max_grow_time": 81900.0
+},
 	"water_fountain": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -25031,8 +25350,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "water_fountain",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 81900.0,
+"max_grow_time": 81900.0
+},
 	"moon": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -25170,8 +25491,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "moon",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 216000.0,
+"max_grow_time": 216000.0
+},
 	"earth": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -25309,8 +25632,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "earth",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 216000.0,
+"max_grow_time": 216000.0
+},
 	"sun": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -25448,8 +25773,10 @@ const ITEMS = {
 			]
 		},
 		"grows_into": "sun",
-		"rarity": "uncommon"
-	},
+		"rarity": "uncommon",
+"grow_time": 216000.0,
+"max_grow_time": 216000.0
+},
 	"digital_sign_on": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -26581,12 +26908,9 @@ const SPLICE_RECIPES = {
 	"glass_panel_seed+sink_seed": "fish_bowl_seed",
 	"glass_panel_seed+stone_seed": "glass_seed",
 	"glass_panel_seed+wooden_block_seed": "wooden_frame_seed",
-	"glass_seed+grass_seed": "lily_seed",
-	"glass_seed+wood_seed": "apple_seed",
 	"grass_seed+lava_seed": "hay_seed",
 	"grass_seed+leaf_seed": "bush_seed",
 	"grass_seed+red_brick_seed": "green_block_seed",
-	"grass_seed+sand_seed": "sun_flower_seed",
 	"green_block_seed+green_brick_seed": "dark_green_block_seed",
 	"green_block_seed+red_brick_wall_seed": "green_wallpaper_seed",
 	"green_brick_seed+hay_seed": "sugar_cane_seed",
@@ -26608,7 +26932,6 @@ const SPLICE_RECIPES = {
 	"lava_seed+stone_seed": "red_brick_seed",
 	"lava_seed+wooden_block_seed": "campfire_seed",
 	"lava_seed+wooden_box_seed": "lantern_seed",
-	"leaf_seed+sand_seed": "tulip_seed",
 	"leaf_seed+vines_seed": "vines_2_seed",
 	"leaf_seed+wood_seed": "mushroom_seed",
 	"left_directional_sign_seed+red_wallpaper_seed": "sale_sign_seed",
@@ -26630,13 +26953,10 @@ const SPLICE_RECIPES = {
 	"red_brick_wall_seed+white_block_seed": "white_wallpaper_seed",
 	"red_brick_wall_seed+yellow_block_seed": "yellow_wallpaper_seed",
 	"red_pastel_block_seed+yellow_pastel_block_seed": "happy_block_seed",
-	"rose_seed+tulip_seed": "poppy_seed",
 	"royal_door_seed+saw_blade_seed": "portcullis_seed",
 	"royal_door_seed+steel_block_seed": "dungeon_door_seed",
 	"royal_door_seed+steel_ladder_seed": "ventilation_seed",
 	"sale_sign_seed+street_sign_seed": "open_sign_seed",
-	"sand_seed+stone_seed": "pile_of_sand_seed",
-	"sand_seed+wood_plank_seed": "sand_castle_seed",
 	"sign_seed+steel_block_seed": "electric_pole_seed",
 	"sign_seed+wooden_crappy_sign_seed": "big_sign_seed",
 	"sink_seed+white_brick_block_seed": "water_well_seed",
@@ -26646,7 +26966,6 @@ const SPLICE_RECIPES = {
 	"steel_door_seed+steel_sign_seed": "mechanical_entrance_seed",
 	"stone_brick_seed+stone_brick_wall_seed": "white_brick_block_seed",
 	"stone_brick_wall_seed+white_brick_block_seed": "white_brick_wall_seed",
-	"stone_seed+wood_seed": "wood_plank_seed",
 	"street_lamp_seed+water_fountain_seed": "chandelier_seed",
 	"street_lamp_seed+white_fence_seed": "city_fence_seed",
 	"vines_2_seed+wooden_block_seed": "wood_platform_seed",

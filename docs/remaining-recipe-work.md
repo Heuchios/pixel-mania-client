@@ -1,6 +1,6 @@
 # Remaining recipe work
 
-190 splicing and 6 crafting recipes implemented; 11 spreadsheet rows remain blocked.
+182 splicing and 6 crafting recipes implemented; 11 spreadsheet rows remain blocked.
 
 - Tier 5: Fish horn + Wooden Box + Fish hanger — missing: Fish horn
 - Tier 6: Barn block + Wooden barrel + Composer 0%-49% — missing: Composer 0%-49%

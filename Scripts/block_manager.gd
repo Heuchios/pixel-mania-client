@@ -3558,6 +3558,8 @@ func get_stateful_block_texture_path(base_block_id: String, grid_pos: Vector2i, 
 		return str(item_data.get(mailbox_texture_key, "")).strip_edges()
 
 	if bool(item_data.get("tackle_box_block", false)):
+		if item_data.has("tackle_box_state_atlas_coords"):
+			return ""
 		var tackle_texture_key = "tackle_box_full_texture" if get_tackle_box_visual_state_frame(grid_pos) == 2 else "tackle_box_empty_texture"
 		return str(item_data.get(tackle_texture_key, "")).strip_edges()
 
@@ -3719,6 +3721,9 @@ func get_stateful_block_atlas_data(base_block_id: String, grid_pos: Vector2i, ba
 			return {
 				"atlas_coords": parse_block_vector2i(item_data.get(duck_atlas_key), Vector2i.ZERO)
 			}
+
+	if bool(item_data.get("tackle_box_block", false)) and item_data.has("tackle_box_state_atlas_coords"):
+		return {"atlas_coords": parse_block_vector2i(item_data.tackle_box_state_atlas_coords[get_tackle_box_visual_state_frame(grid_pos)], Vector2i(15, 15))}
 
 	if bool(item_data.get("water_well_block", false)):
 		var water_well_atlas_key := "water_well_ready_atlas_coords" if water_well_is_ready(grid_pos) else "water_well_producing_atlas_coords"
@@ -4026,7 +4031,11 @@ func tackle_box_is_ready(grid_pos: Vector2i) -> bool:
 
 
 func get_tackle_box_visual_state_frame(grid_pos: Vector2i) -> int:
-	return 2 if tackle_box_is_ready(grid_pos) else 1
+	var remaining := get_tackle_box_remaining_ms(grid_pos)
+	if remaining <= 0:
+		return 2
+	var cooldown_ms := float(world.item_database.get("tackle_box", {}).get("tackle_box_cooldown_seconds", 14400.0)) * 1000.0
+	return 0 if remaining > cooldown_ms / 2.0 else 1
 
 
 func clear_tackle_box_visual_animation(grid_pos: Vector2i) -> void:
@@ -4245,7 +4254,7 @@ func update_tackle_box_timer_hover() -> void:
 		tackle_box_timer_label.text = get_atm_machine_timer_text(player_grid)
 	else:
 		var remaining_ms := get_tackle_box_remaining_ms(player_grid)
-		tackle_box_timer_label.text = "Tackle Box Ready" if remaining_ms <= 0 else "Tackle Box " + format_tackle_box_remaining_time(remaining_ms)
+		tackle_box_timer_label.text = "Bait Box Ready" if remaining_ms <= 0 else "Bait Box " + format_tackle_box_remaining_time(remaining_ms)
 	tackle_box_timer_label.size = Vector2(TACKLE_BOX_TIMER_LABEL_WIDTH, TACKLE_BOX_TIMER_LABEL_HEIGHT)
 
 	var canvas_transform = world.get_viewport().get_canvas_transform()
@@ -4271,8 +4280,8 @@ func update_due_tackle_box_visuals() -> void:
 	next_tackle_box_visual_refresh_at_ms = now_ms + TACKLE_BOX_VISUAL_REFRESH_INTERVAL_MS
 
 	for raw_grid_pos in world.tackle_box_states.keys():
-		if raw_grid_pos is Vector2i and tackle_box_is_ready(raw_grid_pos):
-			update_tackle_box_visual(raw_grid_pos)
+		if raw_grid_pos is Vector2i:
+			update_tackle_box_visual(raw_grid_pos, tackle_box_is_ready(raw_grid_pos))
 
 
 func update_due_chicken_visuals() -> void:
@@ -5550,8 +5559,9 @@ func update_vending_machine_visual(grid_pos: Vector2i):
 				set_block_texture(refreshed_node, block_type, grid_pos, false)
 
 
-func update_tackle_box_visual(grid_pos: Vector2i):
-	clear_tackle_box_harvest_pending(grid_pos)
+func update_tackle_box_visual(grid_pos: Vector2i, clear_pending := true):
+	if clear_pending:
+		clear_tackle_box_harvest_pending(grid_pos)
 	if world == null or not world.blocks.has(grid_pos):
 		return
 	var block_data = world.blocks.get(grid_pos, {})
@@ -13150,7 +13160,7 @@ func try_harvest_tackle_box(grid_pos: Vector2i) -> bool:
 		spawn_hand_item_swing_particles_at_grid(grid_pos)
 		if world.has_method("play_sound_punch"):
 			world.play_sound_punch(get_block_sound_position(grid_pos))
-		world.show_notification("Harvesting Tackle Box...")
+		world.show_notification("Harvesting Bait Box...")
 	else:
 		world.show_notification("Almost ready. Try again in a moment.")
 	return true

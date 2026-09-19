@@ -2401,7 +2401,7 @@ func apply_network_world_interaction_update(data: Dictionary):
 						var local_atm_block_type := str(local_atm_block_data.get("type", "")).strip_edges().to_lower()
 						atm_machine_harvest = bool(world.is_atm_machine_block_type(local_atm_block_type))
 			if not water_well_harvest and not atm_machine_harvest:
-				world.show_notification("Tackle Box harvested.")
+				world.show_notification("Bait Box harvested.")
 
 	elif action == "chicken_state":
 		var chicken_grid_pos = _safe_grid_position(data.get("x", 0), data.get("y", 0))
