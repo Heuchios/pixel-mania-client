@@ -2681,6 +2681,7 @@ func apply_network_seed_update(data: Dictionary):
 		)
 		if world.seed_system != null and world.seed_system.planted_seeds.has(grid_pos):
 			world.seed_system.planted_seeds[grid_pos]["server_tree_created_at"] = planted_at
+			world.seed_system.planted_seeds[grid_pos]["spliced"] = action == "splice" or _safe_bool(data.get("spliced", false), false)
 
 		if world.seed_system != null and world.seed_system.has_method("set_seed_mutated"):
 			world.seed_system.set_seed_mutated(grid_pos, _safe_bool(data.get("mutated", false), false))

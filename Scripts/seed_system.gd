@@ -299,6 +299,9 @@ func try_splice_seed_tree(
 		return false
 
 	var first_seed = str(seed_data["seed_type"])
+	if bool(seed_data.get("spliced", false)):
+		notify("This tree has already been spliced. Harvest it and plant a new seed first.")
+		return false
 	var second_seed = selected_item_type
 	var result_seed = get_splice_result(first_seed, second_seed)
 
@@ -310,6 +313,7 @@ func try_splice_seed_tree(
 
 	var result_seed_grow_time := get_seed_growth_time(result_seed)
 	planted_seeds[grid_pos]["seed_type"] = result_seed
+	planted_seeds[grid_pos]["spliced"] = true
 	planted_seeds[grid_pos]["grow_time"] = result_seed_grow_time
 	planted_seeds[grid_pos]["max_grow_time"] = result_seed_grow_time
 	planted_seeds[grid_pos]["growth_deadline"] = growth_clock_seconds + result_seed_grow_time
@@ -1227,6 +1231,7 @@ func get_save_data() -> Array:
 				"grow_time": get_remaining_growth_time(seed_data),
 				"max_grow_time": seed_data.get("max_grow_time", seed_grow_time),
 				"mature": seed_data.get("mature", false),
+				"spliced": seed_data.get("spliced", false),
 				"mutated": seed_data.get("mutated", false)
 			})
 
@@ -1249,6 +1254,7 @@ func load_seed_data(saved_seeds: Array):
 
 			if planted_seeds.has(grid_pos):
 				planted_seeds[grid_pos]["mature"] = mature
+				planted_seeds[grid_pos]["spliced"] = bool(seed_data.get("spliced", false))
 				planted_seeds[grid_pos]["mutated"] = mutated
 				planted_seeds[grid_pos]["server_tree_created_at"] = int(seed_data.get("tree_created_at", seed_data.get("planted_at", 0)))
 

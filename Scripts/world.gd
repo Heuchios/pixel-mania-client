@@ -6237,6 +6237,9 @@ func get_clicked_planted_seed_grid() -> Vector2i:
 
 
 func try_splice_seed_tree(grid_pos: Vector2i) -> bool:
+	if seed_system != null and bool(seed_system.planted_seeds.get(grid_pos, {}).get("spliced", false)):
+		show_notification("This tree has already been spliced. Harvest it and plant a new seed first.")
+		return false
 	if seed_system == null:
 		return false
 
@@ -6269,6 +6272,8 @@ func try_splice_seed_tree(grid_pos: Vector2i) -> bool:
 
 
 func request_server_seed_splice(grid_pos: Vector2i) -> bool:
+	if seed_system != null and bool(seed_system.planted_seeds.get(grid_pos, {}).get("spliced", false)):
+		return false
 	if not should_use_server_authoritative_world_actions():
 		return false
 
