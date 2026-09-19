@@ -430,6 +430,7 @@ var bulletin_board_ui = null
 var leaderboard_ui = null
 var display_ui = null
 var fish_monger_ui = null
+var quest_board_ui = null
 var cctv_ui = null
 var oil_refinery_ui = null
 var battery_charger_ui = null
@@ -2735,6 +2736,7 @@ func is_panel_ui_at_point(point: Vector2) -> bool:
 		leaderboard_ui,
 		display_ui,
 		fish_monger_ui,
+		quest_board_ui,
 		cctv_ui,
 		oil_refinery_ui,
 		battery_charger_ui,
@@ -8007,9 +8009,11 @@ func handle_inventory_transaction_result(data: Dictionary):
 		reject_pending_authoritative_seed_place(transaction_data)
 
 	var handled := false
+	if quest_board_ui != null and str(transaction_data.get("action", "")).begins_with("quest_"):
+		handled = bool(quest_board_ui.handle_inventory_transaction_result(transaction_data))
 
 	if display_ui != null and display_ui.has_method("handle_inventory_transaction_result"):
-		handled = bool(display_ui.handle_inventory_transaction_result(transaction_data))
+		handled = handled or bool(display_ui.handle_inventory_transaction_result(transaction_data))
 
 	if safe_ui != null and safe_ui.has_method("handle_inventory_transaction_result"):
 		handled = handled or bool(safe_ui.handle_inventory_transaction_result(transaction_data))
@@ -8178,6 +8182,8 @@ func is_chat_input_focused() -> bool:
 
 
 func is_major_ui_open() -> bool:
+	if is_quest_board_open():
+		return true
 	if is_wooden_entrance_confirm_open():
 		return true
 	if is_theme_machine_confirm_open():
@@ -8248,6 +8254,8 @@ func is_major_ui_open() -> bool:
 
 
 func is_movement_blocking_ui_open() -> bool:
+	if is_quest_board_open():
+		return true
 	if is_wooden_entrance_confirm_open():
 		return true
 	if is_theme_machine_confirm_open():
@@ -9275,6 +9283,23 @@ func open_crafting_station(grid_pos: Vector2i):
 		return gameplay_ui_manager.open_crafting_station(grid_pos)
 
 	return
+
+
+func open_quest_board(grid_pos: Vector2i) -> void:
+	if quest_board_ui == null:
+		quest_board_ui = preload("res://Scenes/ui/quests/QuestBoardScene.tscn").instantiate()
+		ui_layer.add_child(quest_board_ui)
+		quest_board_ui.setup(self, ui_layer)
+	quest_board_ui.open_quest_board(grid_pos)
+
+
+func close_quest_board() -> void:
+	if quest_board_ui != null:
+		quest_board_ui.close_quest_board()
+
+
+func is_quest_board_open() -> bool:
+	return quest_board_ui != null and quest_board_ui.is_quest_board_open()
 
 func close_crafting():
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("close_crafting"):

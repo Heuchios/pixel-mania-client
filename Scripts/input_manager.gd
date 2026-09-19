@@ -140,6 +140,7 @@ func _any_ui_blocking() -> bool:
 	if world.is_player_menu_open():     return true
 	if world.has_method("is_game_menu_open") and world.is_game_menu_open(): return true
 	if world.is_world_menu_open():      return true
+	if world.has_method("is_quest_board_open") and world.is_quest_board_open(): return true
 	if world.is_crafting_open():        return true
 	if world.is_furnace_open():         return true
 	if world.is_sign_open():            return true
@@ -195,6 +196,7 @@ func _non_chat_ui_blocking() -> bool:
 	if world.is_player_menu_open():     return true
 	if world.has_method("is_game_menu_open") and world.is_game_menu_open(): return true
 	if world.is_world_menu_open():      return true
+	if world.has_method("is_quest_board_open") and world.is_quest_board_open(): return true
 	if world.is_crafting_open():        return true
 	if world.is_furnace_open():         return true
 	if world.is_sign_open():            return true
@@ -346,6 +348,8 @@ func handle_back_request() -> bool:
 		world.close_friends_panel()
 	elif world.is_furnace_open():
 		world.close_furnace()
+	elif world.is_quest_board_open():
+		world.close_quest_board()
 	elif world.is_crafting_open():
 		world.close_crafting()
 	elif world.has_method("is_notification_panel_open") and world.is_notification_panel_open():

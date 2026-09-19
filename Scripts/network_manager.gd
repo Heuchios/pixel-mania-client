@@ -262,6 +262,8 @@ const WORLD_INTERACTION_ACTIONS := [
 ]
 
 const INVENTORY_TRANSACTION_ACTIONS := [
+	"quest_board_get", "quest_accept", "quest_refresh", "quest_inspect", "quest_hint",
+	"quest_solve", "quest_choose", "quest_abandon", "quest_redeem", "quest_equip",
 	"craft_recipe",
 	"furnace_recipe",
 	"safe_get_state",

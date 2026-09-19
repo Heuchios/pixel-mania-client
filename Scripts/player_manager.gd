@@ -460,6 +460,8 @@ func can_use_camera_zoom(ignore_chat_text_focus: bool = false) -> bool:
 	if world.is_shop_open():
 		return false
 
+	if world.is_quest_board_open():
+		return false
 	if world.is_crafting_open():
 		return false
 
@@ -4455,6 +4457,8 @@ func are_remote_name_labels_hidden_by_ui() -> bool:
 		return true
 
 	if world.has_method("is_movement_blocking_ui_open") and world.is_movement_blocking_ui_open():
+		return true
+	if world.is_quest_board_open():
 		return true
 	if world.has_method("is_crafting_open") and world.is_crafting_open():
 		return true

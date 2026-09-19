@@ -44,6 +44,8 @@ func setup(world_ref):
 
 
 func use_selected_item_at_mouse():
+	if world.has_method("is_quest_board_open") and world.is_quest_board_open():
+		return
 	if world.is_chat_input_focused():
 		return
 
@@ -332,6 +334,10 @@ func interact_with_grid(grid_pos: Vector2i):
 		world.open_crafting_station(grid_pos)
 		return
 
+	if block_type == "quest_board":
+		world.open_quest_board(grid_pos)
+		return
+
 	if is_furnace_block(block_type):
 		world.open_furnace_station(grid_pos)
 		return
@@ -616,6 +622,8 @@ func use_door_mover_at_mouse():
 
 
 func is_interactable_block(block_type: String) -> bool:
+	if block_type == "quest_board":
+		return true
 	var clean_type := str(block_type).strip_edges()
 	if clean_type == "":
 		return false

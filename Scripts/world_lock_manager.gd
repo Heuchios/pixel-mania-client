@@ -1801,6 +1801,9 @@ func can_current_player_break_block_at(block_type: String = "", grid_pos: Vector
 
 
 func can_current_player_interact_with_block_at(block_type: String, grid_pos: Vector2i) -> bool:
+	# Reading personal Dispatch letters does not edit the board owner's world.
+	if block_type == "quest_board":
+		return true
 	if is_area_lock_block_type(block_type):
 		return true
 	# Leaderboard is read-only and deliberately public: ANY player may open it, including

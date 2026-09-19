@@ -1,0 +1,103 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/ui/quest_board_ui.gd" id="1"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/outer_panel_26aea83603.tres" id="2"]
+
+[node name="QuestBoardUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+z_index = 150
+script = ExtResource("1")
+
+[node name="Dim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.04, 0.01, 0.07, 0.5)
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_right = 1160.0
+offset_bottom = 760.0
+theme_override_styles/panel = ExtResource("2")
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Layout" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Header" type="HBoxContainer" parent="Panel/Margin/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Panel/Margin/Layout/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TODAY'S DISPATCH"
+theme_override_font_sizes/font_size = 34
+
+[node name="Wallet" type="Label" parent="Panel/Margin/Layout/Header"]
+layout_mode = 2
+text = "— STAMPS"
+theme_override_font_sizes/font_size = 24
+
+[node name="Close" type="Button" parent="Panel/Margin/Layout/Header"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+text = "X"
+
+[node name="Tabs" type="HBoxContainer" parent="Panel/Margin/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Today" type="Button" parent="Panel/Margin/Layout/Tabs"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TODAY"
+
+[node name="Storybook" type="Button" parent="Panel/Margin/Layout/Tabs"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "STORYBOOK"
+
+[node name="Rewards" type="Button" parent="Panel/Margin/Layout/Tabs"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "REWARDS"
+
+[node name="Scroll" type="ScrollContainer" parent="Panel/Margin/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Content" type="VBoxContainer" parent="Panel/Margin/Layout/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="Status" type="Label" parent="Panel/Margin/Layout"]
+layout_mode = 2
+autowrap_mode = 2
+text = "Your story waits for you."
+theme_override_font_sizes/font_size = 22
+
+[node name="Footer" type="Label" parent="Panel/Margin/Layout"]
+layout_mode = 2
+autowrap_mode = 2
+text = "The Threadlight Dispatch"
+theme_override_font_sizes/font_size = 20

@@ -2287,6 +2287,7 @@ func _is_blocking_ui_open_for_fishing() -> bool:
 	if world.has_method("is_player_menu_open") and world.is_player_menu_open(): return true
 	if world.has_method("is_game_menu_open") and world.is_game_menu_open(): return true
 	if world.has_method("is_world_menu_open") and world.is_world_menu_open(): return true
+	if world.is_quest_board_open(): return true
 	if world.has_method("is_crafting_open") and world.is_crafting_open(): return true
 	if world.has_method("is_furnace_open") and world.is_furnace_open(): return true
 	if world.has_method("is_sign_open") and world.is_sign_open(): return true
