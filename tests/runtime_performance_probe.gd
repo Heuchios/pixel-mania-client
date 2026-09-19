@@ -5,6 +5,7 @@ class WorldStub extends Node:
 	var selected_item_category := "block"
 	var selected_item_type := "dirt"
 	var inventory_manager = null
+	var fishing_manager = null
 	var uses := 0
 	func use_selected_item_at_mouse(): uses += 1
 	func is_movement_locked(): return false
@@ -32,7 +33,7 @@ func run():
 	var input := InputProbe.new()
 	input.world = world
 	var place = load("res://tests/runtime_place_fixture.gd").new()
-	for fps in [15, 30, 60, 144]:
+	for fps in [15, 30, 45, 60, 144]:
 		world.uses = 0
 		controls.uses = 0
 		controls.punch_hold_timer = 0.0

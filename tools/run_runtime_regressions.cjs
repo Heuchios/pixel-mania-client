@@ -11,7 +11,8 @@ if (!tests.length) tests.push('runtime_performance_probe', 'break_sync_test', 's
   'mobile_single_tap_input_test', 'mobile_controls_layout_test', 'websocket_snapshot_buffer_test',
   'network_batch_protocol_test', 'inventory_incremental_refresh_test', 'world_rejoin_visual_reconciliation_test',
   'event_queue_latency_test', 'chunk_edit_performance_test', 'runtime_profiler_test', 'block_break_renderer_test',
-  'corner_contact_test', 'mobile_inventory_layout_test', 'mobile_punch_reach_test', 'mobile_zoom_test', 'device_ui_scaling_test');
+  'corner_contact_test', 'mobile_inventory_layout_test', 'mobile_punch_reach_test', 'mobile_zoom_test', 'device_ui_scaling_test',
+  'seed_prediction_test', 'growing_tree_break_hits_test', 'remote_equipment_performance_test', 'movement_encoding_probe');
 let failed = 0;
 for (const test of tests) {
   const result = spawnSync(godot, ['--headless', '--path', root, '--log-file', path.join(output, `${test}-engine.log`),

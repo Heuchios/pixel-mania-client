@@ -1,6 +1,7 @@
 extends Node
 
 const RuntimeProfiler = preload("res://Scripts/runtime_profiler.gd")
+const MovementBatchCodec = preload("res://Scripts/networking/movement_batch_codec.gd")
 
 signal server_auth_finished(data)
 signal server_connection_changed(is_connected)
@@ -1665,7 +1666,8 @@ func attach_action_request_identity(payload: Dictionary, action_type: String) ->
 func make_login_payload() -> Dictionary:
 	var payload = {
 		"type": "login",
-		"name": player_name
+		"name": player_name,
+		"movement_batch_format": "columns_v1"
 	}
 	if has_active_session():
 		payload["username"] = session_username
@@ -4482,7 +4484,7 @@ func handle_player_position_batch(data: Dictionary) -> void:
 			if world_node != null and is_world_node_active() and world_node.has_method("handle_network_player_left"):
 				world_node.handle_network_player_left(left_player_id)
 
-	var batch_players = data.get("players", [])
+	var batch_players = MovementBatchCodec.decode_players(data)
 	if batch_players is Array:
 		for raw_player_entry in batch_players:
 			if not (raw_player_entry is Dictionary):

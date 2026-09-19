@@ -1,5 +1,6 @@
 extends Node
 
+const RuntimeProfiler = preload("res://Scripts/runtime_profiler.gd")
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 
 var world = null
@@ -47,6 +48,7 @@ var predicted_seed_visuals: Dictionary = {}
 
 
 func show_predicted_seed(grid_pos: Vector2i, seed_type: String, request_id: String) -> void:
+	var profile_started := RuntimeProfiler.start()
 	clear_predicted_seed(grid_pos)
 	if planted_seeds.has(grid_pos):
 		return
@@ -60,6 +62,7 @@ func show_predicted_seed(grid_pos: Vector2i, seed_type: String, request_id: Stri
 	else:
 		add_child(preview)
 	predicted_seed_visuals[grid_pos] = {"node": preview, "request_id": request_id}
+	RuntimeProfiler.finish("seed_prediction_cpu_ms", profile_started, {"request_id": request_id})
 
 
 func clear_predicted_seed(grid_pos: Vector2i) -> void:

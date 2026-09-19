@@ -4975,17 +4975,21 @@ func update_remote_shared_equipment_visuals(remote_player) -> bool:
 	if equipment_manager == null:
 		return false
 
-	var equipment_slots = normalize_remote_equipment_slots(remote_player.get_meta("equipment_slots", {}))
 	var facing = int(remote_player.get_meta("facing", 1))
-	var animation_state = clean_remote_animation_state(str(remote_player.get_meta("animation_state", "idle")))
-	if animation_state == "":
-		animation_state = "idle"
-	var applied_key = get_equipment_slots_debug_key(equipment_slots)
+	# Network snapshots normalize the slots and cache this key together. Reuse it
+	# here instead of allocating a dictionary, sorting and joining strings per frame.
+	var applied_key = str(remote_player.get_meta("equipment_slots_debug_key", ""))
+	if not remote_player.has_meta("equipment_slots_debug_key"):
+		applied_key = get_equipment_slots_debug_key(normalize_remote_equipment_slots(remote_player.get_meta("equipment_slots", {})))
 	var previous_applied_key = str(remote_player.get_meta("applied_equipment_slots_debug_key", ""))
 	var previous_applied_facing = int(remote_player.get_meta("applied_equipment_facing", 0))
 	if previous_applied_key == applied_key and previous_applied_facing == facing:
 		return true
 
+	var equipment_slots = normalize_remote_equipment_slots(remote_player.get_meta("equipment_slots", {}))
+	var animation_state = clean_remote_animation_state(str(remote_player.get_meta("animation_state", "idle")))
+	if animation_state == "":
+		animation_state = "idle"
 	if equipment_manager.has_method("set_forced_animation_state"):
 		equipment_manager.set_forced_animation_state(animation_state)
 	if equipment_manager.has_method("update_equipped_tool_visual"):

@@ -7,18 +7,24 @@ static var counters: Dictionary = {}
 static var pending: Dictionary = {}
 static var window_started_usec: int = 0
 static var last_ping_usec: int = 0
+static var spike_window_usec: int = 0
+static var emitted_spikes: int = 0
+static var suppressed_spikes: int = 0
 const SAMPLE_LIMIT := 512
 const PENDING_LIMIT := 512
+const METRIC_LIMIT := 128
 
 static func start() -> int:
 	return Time.get_ticks_usec() if enabled else 0
 
-static func finish(metric: String, started: int) -> void:
+static func finish(metric: String, started: int, context: Dictionary = {}) -> void:
 	if enabled and started > 0:
-		observe(metric, float(Time.get_ticks_usec() - started) / 1000.0)
+		observe(metric, float(Time.get_ticks_usec() - started) / 1000.0, context)
 
-static func observe(metric: String, value: float) -> void:
+static func observe(metric: String, value: float, context: Dictionary = {}) -> void:
 	if not enabled:
+		return
+	if not is_finite(value) or (not samples.has(metric) and samples.size() >= METRIC_LIMIT):
 		return
 	var bucket: Dictionary = samples.get(metric, {"values": [], "count": 0, "sum": 0.0, "max": 0.0})
 	var values: Array = bucket.values
@@ -30,9 +36,24 @@ static func observe(metric: String, value: float) -> void:
 	bucket.sum += value
 	bucket.max = maxf(float(bucket.max), value)
 	samples[metric] = bucket
+	if value >= (50.0 if metric == "frame_ms" else 25.0) and metric.ends_with("_ms"):
+		var now := Time.get_ticks_usec()
+		if now - spike_window_usec >= 5000000:
+			spike_window_usec = now
+			emitted_spikes = 0
+			suppressed_spikes = 0
+		if emitted_spikes >= 8:
+			suppressed_spikes += 1
+			return
+		emitted_spikes += 1
+		var event := {"at_unix_ms": int(Time.get_unix_time_from_system() * 1000.0), "monotonic_ms": now / 1000.0, "operation": metric, "duration_ms": value}
+		for key in ["world", "chunk", "request_id", "queued_packets", "queued_tiles"]:
+			if context.has(key) and (context[key] is String or context[key] is int or context[key] is float):
+				event[key] = str(context[key]).left(96) if context[key] is String else context[key]
+		print("[PERFORMANCE_SPIKE] ", JSON.stringify(event))
 
 static func count(metric: String, amount: int = 1) -> void:
-	if enabled:
+	if enabled and (counters.has(metric) or counters.size() < METRIC_LIMIT):
 		counters[metric] = int(counters.get(metric, 0)) + amount
 
 static func sent(data: Dictionary, bytes: int) -> void:
@@ -52,7 +73,7 @@ static func sent(data: Dictionary, bytes: int) -> void:
 	if pending.size() >= PENDING_LIMIT:
 		pending.erase(pending.keys()[0])
 		count("operation_samples_evicted")
-	pending[request_id] = {"started": Time.get_ticks_usec(), "action": "application_rtt" if kind == "client_ping" else str(data.get("action", "unknown"))}
+	pending[request_id] = {"started": Time.get_ticks_usec(), "world": str(data.get("world", "")).left(96), "action": "application_rtt" if kind == "client_ping" else str(data.get("action", "unknown"))}
 
 static func ping_due() -> bool:
 	if not enabled or Time.get_ticks_usec() - last_ping_usec < 5000000:
@@ -66,6 +87,10 @@ static func received(data: Dictionary, bytes: int, parse_usec: int) -> void:
 	count("rx_messages")
 	count("rx_bytes", bytes)
 	observe("json_parse_ms", float(parse_usec) / 1000.0)
+	if str(data.get("type", "")) == "world_block_reconcile":
+		count("block_reconciliations")
+	if str(data.get("type", "")) == "action_rejected" and str(data.get("action", "")) == "player_position":
+		count("position_corrections")
 	acknowledged(data)
 
 static func acknowledged(data: Dictionary) -> void:
@@ -74,13 +99,14 @@ static func acknowledged(data: Dictionary) -> void:
 	var request_id := str(data.get("request_id", data.get("action_id", "")))
 	if pending.has(request_id) and not bool(data.get("authoritative_pending", false)):
 		var operation: Dictionary = pending[request_id]
-		finish(str(operation.action) + "_request_to_response_ms", int(operation.started))
+		finish(str(operation.action) + "_request_to_response_ms", int(operation.started), {"request_id": request_id, "world": operation.get("world", "")})
 		pending.erase(request_id)
 
 static func frame(delta: float, queued_packets: int, queued_tiles: int) -> void:
 	if not enabled:
 		return
-	observe("frame_ms", delta * 1000.0)
+	observe("frame_ms", delta * 1000.0, {"queued_packets": queued_packets, "queued_tiles": queued_tiles})
+	observe("fps", Performance.get_monitor(Performance.TIME_FPS))
 	observe("engine_process_ms", Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0)
 	observe("engine_physics_ms", Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0)
 	observe("queued_packets", float(queued_packets))
@@ -91,6 +117,13 @@ static func frame(delta: float, queued_packets: int, queued_tiles: int) -> void:
 	if now - window_started_usec < 5000000:
 		return
 	var summary := {"window_seconds": float(now - window_started_usec) / 1000000.0, "metrics": {}, "counts": counters.duplicate(), "nodes": Performance.get_monitor(Performance.OBJECT_NODE_COUNT), "objects": Performance.get_monitor(Performance.OBJECT_COUNT), "static_memory_bytes": Performance.get_monitor(Performance.MEMORY_STATIC), "draw_calls": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), "pending_operations": pending.size()}
+	summary["at_unix_ms"] = int(Time.get_unix_time_from_system() * 1000.0)
+	summary["monotonic_ms"] = now / 1000.0
+	summary["suppressed_spikes"] = suppressed_spikes
+	summary["orphan_nodes"] = Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)
+	summary["rates_per_second"] = {}
+	for key in counters:
+		summary.rates_per_second[key] = float(counters[key]) / maxf(0.001, float(summary.window_seconds))
 	for key in samples:
 		var bucket: Dictionary = samples[key]
 		var values: Array = bucket.values.duplicate()

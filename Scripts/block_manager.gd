@@ -1,5 +1,6 @@
 extends Node
 
+const RuntimeProfiler = preload("res://Scripts/runtime_profiler.gd")
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 const WorldTileMapRenderer = preload("res://Scripts/world_tilemap_renderer.gd")
 const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
@@ -820,6 +821,7 @@ func trace_authoritative_place_event(event: String, data: Dictionary = {}) -> vo
 		"seq": place_trace_sequence,
 		"event": event,
 		"ms": Time.get_ticks_msec(),
+		"at_unix_ms": int(Time.get_unix_time_from_system() * 1000.0),
 		"pending_predictions": predicted_authoritative_place_requests.size(),
 		"lines_left": place_trace_lines_left,
 		"world": str(world.current_world_name) if world != null else "",
@@ -869,6 +871,7 @@ func trace_break_stage(stage: String, data: Dictionary) -> void:
 	var entry := data.duplicate()
 	entry["stage"] = stage
 	entry["client_usec"] = Time.get_ticks_usec()
+	entry["at_unix_ms"] = int(Time.get_unix_time_from_system() * 1000.0)
 	print("[BLOCK_BREAK_TRACE] ", JSON.stringify(entry))
 
 
@@ -1272,6 +1275,7 @@ func get_available_place_item_count_for_prediction(item_type: String, category: 
 
 
 func apply_predicted_authoritative_place(request_id: String, layer: String, grid_pos: Vector2i, block_type: String, category: String) -> bool:
+	var profile_started := RuntimeProfiler.start()
 	if world == null:
 		trace_authoritative_place_event("prediction_skipped", {
 			"reason": "missing_world",
@@ -1400,6 +1404,7 @@ func apply_predicted_authoritative_place(request_id: String, layer: String, grid
 			return false
 
 	mark_predicted_authoritative_place_visual(clean_layer, grid_pos, clean_request)
+	RuntimeProfiler.finish("place_prediction_cpu_ms", profile_started, {"request_id": clean_request})
 	trace_authoritative_place_event("prediction_applied", {
 		"request_id": clean_request,
 		"layer": clean_layer,

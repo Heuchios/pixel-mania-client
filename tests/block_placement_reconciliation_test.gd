@@ -12,6 +12,7 @@ class PlacementWorld:
 	var blocks: Dictionary = {}
 	var inventory: Dictionary = {"dirt": 20}
 	var seed_inventory: Dictionary = {}
+	var seed_system = null
 	var lure_inventory: Dictionary = {}
 	var material_inventory: Dictionary = {}
 	var block_hit_progress: Dictionary = {}

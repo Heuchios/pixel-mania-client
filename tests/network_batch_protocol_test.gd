@@ -104,5 +104,18 @@ func _run() -> void:
 	assert(str(test_world.received_block_reconciliations[0].get("request_id", "")) == "place_direct")
 	assert(str(test_world.received_block_reconciliations[1].get("request_id", "")) == "place_batched")
 
+	var codec = preload("res://Scripts/networking/movement_batch_codec.gd")
+	var encoded := {"type": "player_position_batch", "world": "BATCHTEST", "player_fields": ["player_id", "x", "y", "equipment_slots"], "player_rows": [["COLUMN", 14.123456789, 20.0, {"hand": "pickaxe"}]]}
+	network.handle_player_position_batch(encoded)
+	assert(test_world.received_positions.size() == 2)
+	assert(test_world.received_positions[-1].x == 14.123456789)
+	assert(test_world.received_positions[-1].equipment_slots.hand == "pickaxe")
+	encoded.player_rows[0][3] = {"hand": ""}
+	network.handle_player_position_batch(encoded)
+	assert(test_world.received_positions[-1].equipment_slots.hand == "", "Complete column snapshots must preserve unequips")
+	assert(codec.decode_players({"player_fields": ["x", "x"], "player_rows": [[1, 2]]}).is_empty())
+	assert(codec.decode_players({"player_fields": ["x"], "player_rows": [[1, 2]]}).is_empty())
+	assert(codec.decode_players({"player_fields": [2], "player_rows": [[1]]}).is_empty())
+	assert(network.make_login_payload().movement_batch_format == "columns_v1")
 	print("[network-batch-protocol] success")
 	quit(0)

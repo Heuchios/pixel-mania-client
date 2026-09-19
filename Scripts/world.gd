@@ -2161,6 +2161,7 @@ func _process(delta):
 	if not in_world:
 		return
 
+	var profile_started := RuntimeProfiler.start()
 	update_smooth_world_load_timeout()
 	if is_smooth_world_load_waiting_for_server_state():
 		return
@@ -2189,6 +2190,7 @@ func _process(delta):
 	update_multiplayer_movement(delta)
 	process_multiplayer_remote_visuals(delta)
 	update_fast_block_place_hold(delta)
+	RuntimeProfiler.finish("world_process_ms", profile_started)
 
 
 func _physics_process(delta):
@@ -5939,7 +5941,9 @@ func is_drop_stack_covered(drop_data) -> bool:
 
 func update_item_drops(delta):
 	if drop_manager != null and drop_manager.has_method("update_drops"):
+		var started := RuntimeProfiler.start()
 		drop_manager.update_drops(delta)
+		RuntimeProfiler.finish("drop_update_ms", started)
 
 
 func should_use_server_authoritative_world_actions() -> bool:
@@ -9762,7 +9766,10 @@ func process_multiplayer_remote_visuals(delta: float):
 		return
 
 	if player_manager != null and player_manager.has_method("process_multiplayer_remote_visuals"):
-		return player_manager.process_multiplayer_remote_visuals(delta)
+		var profile_started := RuntimeProfiler.start()
+		var result = player_manager.process_multiplayer_remote_visuals(delta)
+		RuntimeProfiler.finish("remote_visual_update_ms", profile_started)
+		return result
 
 	return
 
