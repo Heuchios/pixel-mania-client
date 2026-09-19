@@ -1216,7 +1216,200 @@
 	  "collision": true,
 	  "collision_type": "full",
 	  "hardness": 4,
-	  "connected_variant_atlas_coords": {},
+	  "connected_variant_atlas_coords": {
+		"single": [
+		  0,
+		  24
+		],
+		"tile_1_24": [
+		  1,
+		  24
+		],
+		"tile_2_24": [
+		  2,
+		  24
+		],
+		"tile_3_24": [
+		  3,
+		  24
+		],
+		"tile_4_24": [
+		  4,
+		  24
+		],
+		"tile_5_24": [
+		  5,
+		  24
+		],
+		"tile_6_24": [
+		  6,
+		  24
+		],
+		"tile_7_24": [
+		  7,
+		  24
+		],
+		"tile_8_24": [
+		  8,
+		  24
+		],
+		"tile_9_24": [
+		  9,
+		  24
+		],
+		"tile_0_25": [
+		  0,
+		  25
+		],
+		"tile_1_25": [
+		  1,
+		  25
+		],
+		"tile_2_25": [
+		  2,
+		  25
+		],
+		"tile_3_25": [
+		  3,
+		  25
+		],
+		"tile_4_25": [
+		  4,
+		  25
+		],
+		"tile_5_25": [
+		  5,
+		  25
+		],
+		"tile_6_25": [
+		  6,
+		  25
+		],
+		"tile_7_25": [
+		  7,
+		  25
+		],
+		"tile_8_25": [
+		  8,
+		  25
+		],
+		"tile_9_25": [
+		  9,
+		  25
+		],
+		"tile_0_26": [
+		  0,
+		  26
+		],
+		"tile_1_26": [
+		  1,
+		  26
+		],
+		"tile_2_26": [
+		  2,
+		  26
+		],
+		"tile_3_26": [
+		  3,
+		  26
+		],
+		"tile_4_26": [
+		  4,
+		  26
+		],
+		"tile_5_26": [
+		  5,
+		  26
+		],
+		"tile_6_26": [
+		  6,
+		  26
+		],
+		"tile_7_26": [
+		  7,
+		  26
+		],
+		"tile_8_26": [
+		  8,
+		  26
+		],
+		"tile_9_26": [
+		  9,
+		  26
+		],
+		"tile_0_27": [
+		  0,
+		  27
+		],
+		"tile_1_27": [
+		  1,
+		  27
+		],
+		"tile_2_27": [
+		  2,
+		  27
+		],
+		"tile_3_27": [
+		  3,
+		  27
+		],
+		"tile_4_27": [
+		  4,
+		  27
+		],
+		"tile_5_27": [
+		  5,
+		  27
+		],
+		"tile_6_27": [
+		  6,
+		  27
+		],
+		"tile_7_27": [
+		  7,
+		  27
+		],
+		"tile_8_27": [
+		  8,
+		  27
+		],
+		"tile_9_27": [
+		  9,
+		  27
+		],
+		"tile_0_28": [
+		  0,
+		  28
+		],
+		"tile_1_28": [
+		  1,
+		  28
+		],
+		"tile_2_28": [
+		  2,
+		  28
+		],
+		"tile_3_28": [
+		  3,
+		  28
+		],
+		"tile_4_28": [
+		  4,
+		  28
+		],
+		"tile_5_28": [
+		  5,
+		  28
+		],
+		"tile_6_28": [
+		  6,
+		  28
+		],
+		"tile_7_28": [
+		  7,
+		  28
+		]
+	  },
 	  "drop_rules": {
 		"seed_chance": 0,
 		"gem_range": [
@@ -15076,6 +15269,313 @@
 	  "toggle_drop_block": "sirene_lamp",
 	  "punch_open_only": false,
 	  "animation_frame_seconds": 0.2
+	},
+	{
+	  "id": 211,
+	  "item_key": "neon_block",
+	  "name": "Neon Block",
+	  "type": "block",
+	  "layer": "foreground",
+	  "source_id": 0,
+	  "atlas_coords": [
+		0,
+		33
+	  ],
+	  "alternative_tile": 0,
+	  "collision": true,
+	  "collision_type": "full",
+	  "hardness": 4,
+	  "connected_variant_atlas_coords": {
+		"single": [
+		  0,
+		  33
+		],
+		"tile_1_24": [
+		  1,
+		  33
+		],
+		"tile_2_24": [
+		  2,
+		  33
+		],
+		"tile_3_24": [
+		  3,
+		  33
+		],
+		"tile_4_24": [
+		  4,
+		  33
+		],
+		"tile_5_24": [
+		  5,
+		  33
+		],
+		"tile_6_24": [
+		  6,
+		  33
+		],
+		"tile_7_24": [
+		  7,
+		  33
+		],
+		"tile_8_24": [
+		  8,
+		  33
+		],
+		"tile_9_24": [
+		  9,
+		  33
+		],
+		"tile_0_25": [
+		  0,
+		  34
+		],
+		"tile_1_25": [
+		  1,
+		  34
+		],
+		"tile_2_25": [
+		  2,
+		  34
+		],
+		"tile_3_25": [
+		  3,
+		  34
+		],
+		"tile_4_25": [
+		  4,
+		  34
+		],
+		"tile_5_25": [
+		  5,
+		  34
+		],
+		"tile_6_25": [
+		  6,
+		  34
+		],
+		"tile_7_25": [
+		  7,
+		  34
+		],
+		"tile_8_25": [
+		  8,
+		  34
+		],
+		"tile_9_25": [
+		  9,
+		  34
+		],
+		"tile_0_26": [
+		  0,
+		  35
+		],
+		"tile_1_26": [
+		  1,
+		  35
+		],
+		"tile_2_26": [
+		  2,
+		  35
+		],
+		"tile_3_26": [
+		  3,
+		  35
+		],
+		"tile_4_26": [
+		  4,
+		  35
+		],
+		"tile_5_26": [
+		  5,
+		  35
+		],
+		"tile_6_26": [
+		  6,
+		  35
+		],
+		"tile_7_26": [
+		  7,
+		  35
+		],
+		"tile_8_26": [
+		  8,
+		  35
+		],
+		"tile_9_26": [
+		  9,
+		  35
+		],
+		"tile_0_27": [
+		  0,
+		  36
+		],
+		"tile_1_27": [
+		  1,
+		  36
+		],
+		"tile_2_27": [
+		  2,
+		  36
+		],
+		"tile_3_27": [
+		  3,
+		  36
+		],
+		"tile_4_27": [
+		  4,
+		  36
+		],
+		"tile_5_27": [
+		  5,
+		  36
+		],
+		"tile_6_27": [
+		  6,
+		  36
+		],
+		"tile_7_27": [
+		  7,
+		  36
+		],
+		"tile_8_27": [
+		  8,
+		  36
+		],
+		"tile_9_27": [
+		  9,
+		  36
+		],
+		"tile_0_28": [
+		  0,
+		  37
+		],
+		"tile_1_28": [
+		  1,
+		  37
+		],
+		"tile_2_28": [
+		  2,
+		  37
+		],
+		"tile_3_28": [
+		  3,
+		  37
+		],
+		"tile_4_28": [
+		  4,
+		  37
+		],
+		"tile_5_28": [
+		  5,
+		  37
+		],
+		"tile_6_28": [
+		  6,
+		  37
+		],
+		"tile_7_28": [
+		  7,
+		  37
+		]
+	  },
+	  "drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "neon_block",
+			"item_category": "block",
+			"amount_range": [
+			  0,
+			  4
+			]
+		  },
+		  {
+			"item_id": "neon_block_seed",
+			"item_category": "seed",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  5
+			]
+		  }
+		]
+	  },
+	  "tree_drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "neon_block",
+			"item_category": "block",
+			"amount_range": [
+			  0,
+			  4
+			]
+		  },
+		  {
+			"item_id": "neon_block_seed",
+			"item_category": "seed",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  5
+			]
+		  }
+		]
+	  },
+	  "atlas_enabled": true,
+	  "hidden": false,
+	  "placeable": true,
+	  "admin_grantable": true,
+	  "texture": {
+		"atlas": "res://image.png",
+		"cell": [
+		  0,
+		  24
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "inventory_icon": {
+		"atlas": "res://image.png",
+		"cell": [
+		  0,
+		  24
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "solid": true,
+	  "collidable": true,
+	  "no_collision": false,
+	  "seed": "neon_block_seed",
+	  "recipe_tier": 7
 	}
   ]
 }

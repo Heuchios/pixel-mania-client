@@ -52,6 +52,10 @@ func _process(delta):
 	if world == null or not world.in_world:
 		_stop_hold()
 		return
+	# Casting is a single press. Never repeat a held cast into a hook or reel tap.
+	if world.fishing_manager != null and world.fishing_manager.has_method("is_fishing_active") and world.fishing_manager.is_fishing_active():
+		_stop_hold()
+		return
 
 	# Cancel hold the moment any UI steals focus.
 	if _any_ui_blocking():
@@ -295,7 +299,7 @@ func handle_back_request() -> bool:
 			world.cancel_trade_ui()
 		else:
 			world.close_trade_ui()
-	elif world.fishing_active:
+	elif world.fishing_active or (world.fishing_manager != null and world.fishing_manager.is_fishing_active()):
 		if world.fishing_manager != null and world.fishing_manager.has_method("cancel_fishing"):
 			world.fishing_manager.cancel_fishing()
 	elif world.is_sign_open():

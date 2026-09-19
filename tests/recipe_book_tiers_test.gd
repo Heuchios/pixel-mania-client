@@ -35,7 +35,7 @@ func run() -> void:
 				assert(drops.any(func(drop): return drop.item_id == drop_id), item_id + " " + rule_key + " " + drop_id)
 	assert(world.item_database.barn_block.atlas_coords == Vector2i(0, 24))
 	assert(world.item_database.barn_block.solid)
-	assert(world.item_database.barn_block.connected_variant_atlas_coords.is_empty())
+	assert(world.item_database.barn_block.connected_variant_atlas_coords.size() == 48)
 	assert(not world.item_database.barn_block.hidden)
 	var tiers: Dictionary = BOOK_DATA.build_from_world(world)
 	for item_id in ["hay", "sugar_cane"]:
@@ -53,7 +53,7 @@ func run() -> void:
 			assert(recipe.icon != null or not str(recipe.name).is_empty(), recipe.id)
 			for ingredient in recipe.ingredients:
 				assert(ingredient.icon != null, recipe.id + ": " + ingredient.id)
-	assert(counts == {"splicing": 163, "crafting": 4, "furnace": 3}, str(counts))
+	assert(counts == {"splicing": 164, "crafting": 4, "furnace": 3}, str(counts))
 	var rows = JSON.parse_string(FileAccess.get_file_as_string("res://docs/splicing-recipe-status.json"))
 	for row in rows:
 		if row.status not in ["active", "crafting_active"]:
@@ -129,7 +129,7 @@ func run() -> void:
 		await RenderingServer.frame_post_draw
 		capture.get_texture().get_image().save_png("D:/Pixelmania/recipe-book-preview.png")
 		print("Book rendered: ", book.visible, " ", book.size, " ", book.window.get_global_rect())
-	print("Recipe book OK: 163 splicing, 4 crafting, 3 furnace; sheet tiers, icons, search, links, filters and reusable tier tabs")
+	print("Recipe book OK: 164 splicing, 4 crafting, 3 furnace; sheet tiers, icons, search, links, filters and reusable tier tabs")
 	book.queue_free()
 	inventory.free()
 	world.free()

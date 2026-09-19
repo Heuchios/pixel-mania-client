@@ -2,6 +2,7 @@ extends Node
 
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 const FishingMinigameUI = preload("res://Scripts/ui/fishing_minigame_ui.gd")
+const FishingPullGame = preload("res://Scripts/fishing_pull_game.gd")
 
 # PixelMania Fishing Manager v2
 #
@@ -23,8 +24,7 @@ const STATE_MINIGAME  = "minigame"
 const CAST_ANIMATION_TIME  = 0.35
 const BITE_MIN_TIME        = 2.0
 const BITE_MAX_TIME        = 5.5
-const REACTION_WINDOW_TIME = 2.2
-const MINIGAME_DURATION    = 5.0
+const REACTION_WINDOW_TIME = 3.0
 const CATCH_POPUP_DURATION = 3.6
 # How long the client waits for the server to acknowledge a "fishing_start" request before
 # giving up and re-enabling casting. Without this, a dropped/lost server response (network
@@ -33,11 +33,7 @@ const CATCH_POPUP_DURATION = 3.6
 # server's ack arrives, in start_local_cast()), so there was nothing to time out and no way
 # to retry short of leaving the world.
 const CAST_ACK_TIMEOUT_TIME = 8.0
-# How long the reeling minigame allows the player to do nothing before the fish gets away.
-# Previously there was no timeout at all: mg_progress/mg_tension are clamped to >= 0.0, so an
-# idle (or AFK, or mobile reel-button-missed) player just sat at 0 forever with the minigame
-# never resolving either way.
-const MINIGAME_AFK_TIMEOUT_TIME = 20.0
+const CATCH_ACK_TIMEOUT_TIME = 12.0
 const FISHING_LINE_SEGMENTS = 16
 const FISHING_LINE_SAG = 26.0
 const FISHING_LINE_WAVE_AMPLITUDE = 2.0
@@ -62,22 +58,15 @@ var server_fishing_session_id = ""
 var waiting_for_server_catch = false
 var awaiting_cast_ack    = false
 var cast_ack_timer       = 0.0
+var catch_ack_timer      = 0.0
+var cast_request_id      = ""
+var catch_request_id     = ""
+var cast_request_contexts: Dictionary = {}
+var handled_fishing_results: Dictionary = {}
+var silent_fishing_completions: Dictionary = {}
+var last_fishing_action_frame := -1
 
-# ── Minigame state ────────────────────────────────────────────
-var mg_cursor_t         = 0.0
-var mg_cursor_dir       = 1.0
-var mg_green_start      = 0.38
-var mg_green_size       = 0.24
-var mg_cursor_speed     = 1.35
-var mg_time_left        = 0.0
-var mg_progress         = 0.0
-var mg_tension          = 0.0
-var mg_fish_resist_phase = 0.0
-var mg_reel_rate        = 0.22
-var mg_tension_gain     = 0.22
-var mg_tension_release  = 0.32
-var mg_progress_decay   = 0.030
-var mg_afk_timer        = 0.0
+var pull_game = FishingPullGame.new()
 
 # ── Dedicated fishing UI ──────────────────────────────────────
 var fishing_ui          = null
@@ -100,18 +89,6 @@ var fishing_records: Dictionary = {}
 # ── Catch popup state ─────────────────────────────────────────
 var catch_popup_timer   = 0.0
 
-# ── Minigame UI nodes ─────────────────────────────────────────
-var mg_panel            = null
-var mg_fish_icon        = null
-var mg_fish_name        = null
-var mg_rarity_label     = null
-var mg_lure_label       = null
-var mg_time_bar_fill    = null
-var mg_bar_bg           = null
-var mg_green_zone       = null
-var mg_cursor_bar       = null
-var mg_hint_label       = null
-
 # ── Catch popup UI nodes ──────────────────────────────────────
 var catch_popup         = null
 var catch_icon          = null
@@ -132,7 +109,7 @@ func is_fishing_active() -> bool:
 	if world != null and "fishing_active" in world and bool(world.fishing_active):
 		return true
 
-	return state != STATE_IDLE or waiting_for_server_catch
+	return state != STATE_IDLE or awaiting_cast_ack or waiting_for_server_catch
 
 
 # ── Public API ────────────────────────────────────────────────
@@ -173,12 +150,8 @@ func get_active_fishing_rod_id() -> String:
 
 
 func use_fishing_rod_at_mouse(preferred_lure_id: String = ""):
-	if world.fishing_active:
+	if is_fishing_active():
 		handle_fishing_action()
-		return
-
-	if awaiting_cast_ack:
-		world.show_notification("Still casting, please wait...")
 		return
 
 	var target_grid = world.get_mouse_grid_position()
@@ -221,7 +194,7 @@ func use_selected_lure_at_mouse():
 
 
 func cancel_fishing():
-	if not world.fishing_active:
+	if not world.fishing_active and not awaiting_cast_ack:
 		return
 	world.show_notification("Fishing cancelled.")
 	if fishing_ui != null and fishing_ui.has_method("hide_all"):
@@ -235,6 +208,8 @@ func cancel_fishing():
 # ── Cast ──────────────────────────────────────────────────────
 
 func start_cast(target_grid: Vector2i, lure_id: String):
+	if is_fishing_active():
+		return
 	if world != null and world.has_method("should_use_server_authoritative_world_actions") and bool(world.should_use_server_authoritative_world_actions()):
 		if request_server_fishing_start(target_grid, lure_id):
 			awaiting_cast_ack = true
@@ -307,14 +282,25 @@ func request_server_fishing_start(target_grid: Vector2i, lure_id: String) -> boo
 	if rod_id == "":
 		return false
 
-	return bool(network.send_inventory_transaction_request({
+	var request_id := "fish-cast-%s-%s" % [get_instance_id(), Time.get_ticks_usec()]
+	var sent := bool(network.send_inventory_transaction_request({
 		"action": "fishing_start",
+		"request_id": request_id,
 		"world": world.current_world_name,
 		"target_x": target_grid.x,
 		"target_y": target_grid.y,
 		"rod_id": rod_id,
 		"lure_id": lure_id
 	}))
+	if sent:
+		cast_request_id = request_id
+		cast_request_contexts[request_id] = {
+			"world": str(world.current_world_name),
+			"item": str(world.selected_item_type), "category": str(world.selected_item_category)
+		}
+		if cast_request_contexts.size() > 32:
+			cast_request_contexts.erase(cast_request_contexts.keys()[0])
+	return sent
 
 
 # ── Bobber ────────────────────────────────────────────────────
@@ -638,11 +624,18 @@ func get_vector2_from_data(value, fallback: Vector2) -> Vector2:
 # ── Input dispatch ────────────────────────────────────────────
 
 func handle_fishing_action():
+	if world == null or _is_blocking_ui_open_for_fishing():
+		return
+	# A touchscreen press and its mouse-emulation copy may arrive in the same frame.
+	var action_frame := Engine.get_process_frames()
+	if last_fishing_action_frame == action_frame:
+		return
+	last_fishing_action_frame = action_frame
 	match state:
 		STATE_BITE:
 			start_minigame()
 		STATE_MINIGAME:
-			pass
+			try_finish_minigame()
 		STATE_CASTING, STATE_WAITING:
 			world.show_notification("Wait for a bite...")
 		_:
@@ -652,6 +645,13 @@ func handle_fishing_action():
 # ── Update loop ───────────────────────────────────────────────
 
 func update_fishing(delta: float):
+	if waiting_for_server_catch:
+		catch_ack_timer += delta
+		if catch_ack_timer >= CATCH_ACK_TIMEOUT_TIME:
+			waiting_for_server_catch = false
+			if fishing_ui != null:
+				fishing_ui.hide_waiting()
+			world.show_notification("Fishing response delayed. You can cast again.")
 	# This check must run even while fishing_active is still false: the client doesn't flip
 	# fishing_active to true until start_local_cast() runs, which only happens once the
 	# server's "fishing_start" ack arrives (see start_cast()/handle_inventory_transaction_result).
@@ -662,6 +662,7 @@ func update_fishing(delta: float):
 		if cast_ack_timer >= CAST_ACK_TIMEOUT_TIME:
 			awaiting_cast_ack = false
 			cast_ack_timer    = 0.0
+			cast_request_id = ""
 			world.show_notification("Casting failed. Try again.")
 
 	if not world.fishing_active:
@@ -691,9 +692,6 @@ func update_fishing(delta: float):
 				trigger_bite()
 
 		STATE_BITE:
-			if _is_reeling_input_down():
-				start_minigame()
-				return
 			state_timer -= delta
 			_update_bite_ui()
 			if state_timer <= 0.0:
@@ -733,104 +731,43 @@ func trigger_bite():
 # ── Minigame ──────────────────────────────────────────────────
 
 func start_minigame():
+	if state != STATE_BITE:
+		return
 	state         = STATE_MINIGAME
-	mg_time_left  = MINIGAME_DURATION
-	mg_afk_timer  = 0.0
 	_configure_minigame(pending_fish_id, current_lure_id)
-	if fishing_ui != null and fishing_ui.has_method("show_reeling"):
-		fishing_ui.show_reeling(mg_progress, mg_tension, false)
+	if fishing_ui != null:
+		fishing_ui.set_reeling_reward(get_reward_texture(pending_fish_id, get_pending_reward_category()))
+	update_minigame_visuals()
 
 
 func _configure_minigame(_fish_id: String, lure_id: String):
-	var difficulty  = int(pending_fish_data.get("difficulty", 1))
-	var lure_bonus  = _lure_bonus(lure_id)
-
-	mg_green_size   = clamp(0.34 - (difficulty * 0.035) + lure_bonus, 0.13, 0.38)
-	mg_cursor_speed = clamp(1.0 + (difficulty * 0.18) - (lure_bonus * 1.2), 0.9, 2.2)
-	mg_green_start  = randf_range(0.10, 0.88 - mg_green_size)
-	mg_cursor_t     = 0.0
-	mg_cursor_dir   = 1.0
-	mg_progress     = 0.0
-	mg_tension      = clamp(0.08 + difficulty * 0.018, 0.06, 0.24)
-	mg_fish_resist_phase = randf_range(0.0, TAU)
-	mg_reel_rate = clamp(0.28 - difficulty * 0.012 + lure_bonus * 0.70, 0.16, 0.34)
-	mg_tension_gain = clamp(0.18 + difficulty * 0.035 - lure_bonus * 0.48, 0.16, 0.46)
-	mg_tension_release = clamp(0.34 + lure_bonus * 0.65, 0.30, 0.52)
-	mg_progress_decay = clamp(0.030 + difficulty * 0.004, 0.026, 0.065)
-
-
-func _populate_mg_info():
-	if world == null:
-		return
-
-	var reward_category := get_pending_reward_category()
-	var fish_name = world.get_item_display_name(pending_fish_id, reward_category)
-	var rarity    = "common"
-	if world.item_database.has(pending_fish_id):
-		rarity = str(world.item_database[pending_fish_id].get("rarity", "common"))
-
-	if mg_fish_name != null:
-		mg_fish_name.text = fish_name
-
-	if mg_rarity_label != null:
-		mg_rarity_label.text = rarity.capitalize()
-		mg_rarity_label.add_theme_color_override("font_color", _rarity_color(rarity))
-
-	if mg_fish_icon != null:
-		mg_fish_icon.texture = get_reward_texture(pending_fish_id, reward_category)
-
-	if mg_lure_label != null:
-		mg_lure_label.text = world.get_item_display_name(current_lure_id, "lure")
+	var rarity := _get_reward_rarity(pending_fish_id, get_pending_reward_category())
+	pull_game.start(rarity in ["rare", "epic", "legendary"], _lure_bonus(lure_id))
 
 
 func _update_minigame(delta: float):
-	mg_time_left = max(0.0, mg_time_left - delta)
-	mg_fish_resist_phase += delta * mg_cursor_speed
-	var fish_resist = 0.5 + sin(mg_fish_resist_phase) * 0.5
-	var reeling := _is_reeling_input_down()
-
-	if reeling:
-		mg_afk_timer = 0.0
-		var safe_tension = clamp(1.0 - max(0.0, mg_tension - 0.62) * 0.82, 0.35, 1.0)
-		mg_progress += mg_reel_rate * safe_tension * (1.0 - fish_resist * 0.20) * delta
-		mg_tension += (mg_tension_gain + fish_resist * 0.20) * delta
-	else:
-		mg_afk_timer += delta
-		mg_progress -= mg_progress_decay * delta
-		mg_tension -= mg_tension_release * delta
-
-	mg_progress = clamp(mg_progress, 0.0, 1.0)
-	mg_tension = clamp(mg_tension, 0.0, 1.0)
-
-	if fishing_ui != null and fishing_ui.has_method("show_reeling"):
-		fishing_ui.show_reeling(mg_progress, mg_tension, reeling)
-
-	if mg_progress >= 1.0:
-		catch_fish()
-		return
-
-	if mg_tension >= 1.0:
-		fail_fishing("The fish snapped the line!")
-		return
-
-	# No timeout previously existed here at all -- mg_progress/mg_tension are clamped to
-	# >= 0.0, so an AFK (or unresponsive-input) player just sat at 0 forever with the
-	# minigame never resolving. 20 continuous seconds of no reeling input now ends it.
-	if mg_afk_timer >= MINIGAME_AFK_TIMEOUT_TIME:
-		fail_fishing("The fish swam away while you were away.")
-		return
+	pull_game.update(delta)
+	_resolve_pull_game()
 
 
 func try_finish_minigame():
-	if mg_cursor_t >= mg_green_start and mg_cursor_t <= (mg_green_start + mg_green_size):
+	if state != STATE_MINIGAME:
+		return
+	pull_game.pull()
+	_resolve_pull_game()
+
+
+func _resolve_pull_game() -> void:
+	update_minigame_visuals()
+	if pull_game.outcome == "caught":
 		catch_fish()
-	else:
-		fail_fishing("Missed! The fish escaped.")
+	elif pull_game.outcome == "escaped":
+		fail_fishing("The fish slipped away. Try another cast!")
 
-
-# ── Catch / Fail ──────────────────────────────────────────────
 
 func catch_fish():
+	if state != STATE_MINIGAME or pull_game.outcome != "caught" or waiting_for_server_catch:
+		return
 	if pending_fish_id == "":
 		fail_fishing("Nothing bit the lure.")
 		return
@@ -840,6 +777,8 @@ func catch_fish():
 			play_bobber_anim("reel_success")
 			waiting_for_server_catch = true
 			reset_fishing_state(true)
+			if fishing_ui != null:
+				fishing_ui.show_resolving()
 			return
 
 		fail_fishing("Connection required to finish fishing.")
@@ -851,7 +790,7 @@ func catch_fish():
 		if added <= 0:
 			fail_fishing("Could not save fishing reward.")
 			return
-		_show_catch_result(pending_fish_id, false, -1.0, reward_category)
+		_show_catch_result(pending_fish_id, false, -1.0, reward_category, true)
 		_show_catch_notification(pending_fish_id, reward_category)
 		_maybe_spawn_fishing_reward_confetti(pending_fish_id, reward_category)
 		play_bobber_anim("reel_success")
@@ -866,7 +805,7 @@ func catch_fish():
 	var was_new: bool = bool(catch_record.get("was_new", owned_before <= 0.0))
 	_add_fish_weight_to_inventory(pending_fish_id, catch_weight)
 
-	_show_catch_result(pending_fish_id, was_new, catch_weight)
+	_show_catch_result(pending_fish_id, was_new, catch_weight, "fish", true)
 	_show_catch_notification(pending_fish_id, "fish")
 	_maybe_broadcast_legendary_catch(pending_fish_id)
 	_maybe_spawn_fishing_reward_confetti(pending_fish_id, "fish")
@@ -1147,7 +1086,7 @@ func get_reward_texture(item_id: String, category: String):
 			return null
 
 
-func request_server_fishing_complete(success: bool) -> bool:
+func request_server_fishing_complete(success: bool, session_id: String = "", session_world: String = "", track_response: bool = true) -> bool:
 	var network = world.get_node_or_null("/root/NetworkManager") if world != null else null
 	if network == null:
 		return false
@@ -1161,27 +1100,65 @@ func request_server_fishing_complete(success: bool) -> bool:
 	if not network.has_method("send_inventory_transaction_request"):
 		return false
 
-	return bool(network.send_inventory_transaction_request({
+	var resolved_session: String = session_id if session_id != "" else server_fishing_session_id
+	if resolved_session == "":
+		return false
+	var request_id := "fish-finish-%s-%s" % [get_instance_id(), Time.get_ticks_usec()]
+	var sent := bool(network.send_inventory_transaction_request({
 		"action": "fishing_complete",
-		"world": world.current_world_name,
-		"session_id": server_fishing_session_id,
+		"request_id": request_id,
+		"world": session_world if session_world != "" else world.current_world_name,
+		"session_id": resolved_session,
 		"success": success
 	}))
+	if sent:
+		if track_response:
+			catch_request_id = request_id
+			catch_ack_timer = 0.0
+			waiting_for_server_catch = true
+		if not success:
+			silent_fishing_completions[request_id] = true
+			if silent_fishing_completions.size() > 64:
+				silent_fishing_completions.erase(silent_fishing_completions.keys()[0])
+	return sent
 
 
 func handle_inventory_transaction_result(data: Dictionary) -> bool:
 	var action = str(data.get("action", ""))
 	if action != "fishing_start" and action != "fishing_complete":
 		return false
+	var request_id := str(data.get("request_id", ""))
+	if request_id != "":
+		if handled_fishing_results.has(request_id):
+			return true
+		handled_fishing_results[request_id] = true
+		if handled_fishing_results.size() > 128:
+			handled_fishing_results.erase(handled_fishing_results.keys()[0])
 
 	if action == "fishing_start":
+		var context: Dictionary = cast_request_contexts.get(request_id, {})
+		cast_request_contexts.erase(request_id)
+		var is_current := awaiting_cast_ack and request_id == cast_request_id and request_id != ""
+		if is_current and not bool(data.get("ok", false)):
+			awaiting_cast_ack = false
+			cast_request_id = ""
+			world.show_notification(str(data.get("message", "Could not start fishing.")))
+			return true
+		var target_grid = Vector2i(int(data.get("target_x", 0)), int(data.get("target_y", 0)))
+		if not is_current or not _is_cast_context_valid(context, target_grid):
+			if is_current:
+				awaiting_cast_ack = false
+				cast_request_id = ""
+			if bool(data.get("ok", false)) and str(data.get("session_id", "")) != "":
+				request_server_fishing_complete(false, str(data.session_id), str(context.get("world", world.current_world_name)), false)
+			return true
 		awaiting_cast_ack = false
 		cast_ack_timer    = 0.0
+		cast_request_id = ""
 		if not bool(data.get("ok", false)):
 			world.show_notification(str(data.get("message", "Could not start fishing.")))
 			return true
 
-		var target_grid = Vector2i(int(data.get("target_x", 0)), int(data.get("target_y", 0)))
 		var lure_id = str(data.get("lure_id", ""))
 		var fish_data = {
 			"item_id": str(data.get("item_id", data.get("fish_id", ""))),
@@ -1193,7 +1170,15 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 		return true
 
 	if action == "fishing_complete":
-		waiting_for_server_catch = false
+		if request_id == catch_request_id:
+			waiting_for_server_catch = false
+			catch_ack_timer = 0.0
+			catch_request_id = ""
+			if fishing_ui != null and not world.fishing_active and not awaiting_cast_ack:
+				fishing_ui.hide_waiting()
+		if silent_fishing_completions.has(request_id):
+			silent_fishing_completions.erase(request_id)
+			return true
 		var message = str(data.get("message", "Fishing finished."))
 		var caught_fish_id: String = ""
 
@@ -1236,6 +1221,30 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 	return false
 
 
+func _is_cast_context_valid(context: Dictionary, target: Vector2i) -> bool:
+	return (
+		world != null and bool(world.in_world) and not context.is_empty()
+		and str(world.current_world_name) == str(context.get("world", ""))
+		and _cast_selection_matches(str(context.get("item", "")), str(context.get("category", "")))
+		and get_active_fishing_rod_id() != ""
+		and can_reach_fishing_grid(target) and is_fishable_water(target)
+		and not _is_blocking_ui_open_for_fishing()
+	)
+
+
+func _cast_selection_matches(item: String, category: String) -> bool:
+	if str(world.selected_item_type) == item and str(world.selected_item_category) == category:
+		return true
+	# Inventory normalization selects the primary tool after the last bait is spent.
+	# That automatic change must not cancel a cast which has already paid for its lure.
+	if category != "lure" or int(world.lure_inventory.get(item, 0)) > 0:
+		return false
+	var primary_tool := "punch"
+	if world.has_method("get_primary_hotbar_tool"):
+		primary_tool = str(world.get_primary_hotbar_tool())
+	return str(world.selected_item_category) == "tool" and str(world.selected_item_type) == primary_tool and is_fishing_rod_item(str(world.equipped_tool))
+
+
 func fail_fishing(message: String):
 	world.show_notification(message)
 	if fishing_ui != null and fishing_ui.has_method("show_escape"):
@@ -1249,6 +1258,7 @@ func fail_fishing(message: String):
 func reset_fishing_state(delay_bobber: bool = true):
 	awaiting_cast_ack = false
 	cast_ack_timer    = 0.0
+	cast_request_id = ""
 	world.fishing_active      = false
 	world.fishing_timer       = 0.0
 	world.fishing_lure_id     = ""
@@ -1266,10 +1276,18 @@ func reset_fishing_state(delay_bobber: bool = true):
 	flush_fishing_visual_sync()
 	_hide_fishing_state_ui()
 
-	if delay_bobber:
-		call_deferred("clear_bobber")
-	else:
-		clear_bobber()
+	# Detach now: an old deferred cleanup must never erase a new cast's bobber.
+	var old_bobber = bobber
+	bobber = null
+	bobber_anim = null
+	fishing_line = null
+	fishing_line_start = null
+	fishing_line_end = null
+	if is_instance_valid(old_bobber):
+		if delay_bobber:
+			get_tree().create_timer(0.22).timeout.connect(old_bobber.queue_free)
+		else:
+			old_bobber.queue_free()
 
 
 func flush_fishing_visual_sync():
@@ -1528,363 +1546,6 @@ func roll_lure_from_pack() -> String:
 		if roll <= running:
 			return str(entry.get("item_id", "worm_lure"))
 	return "worm_lure"
-
-
-# ── Minigame UI (pure code) ───────────────────────────────────
-
-const MG_W  = 780.0
-const MG_H  = 338.0
-const BAR_X = 38.0
-const BAR_Y = 204.0
-const BAR_W = 704.0
-const BAR_H = 58.0
-
-
-func _build_minigame_ui():
-	if world == null or world.ui_layer == null:
-		return
-
-	var old = world.ui_layer.get_node_or_null("FishingMinigamePanel")
-	if old != null:
-		old.queue_free()
-
-	# ── Main panel ─────────────────────────────────────────────
-	mg_panel = Control.new()
-	mg_panel.name = "FishingMinigamePanel"
-	mg_panel.size = Vector2(MG_W, MG_H)
-	mg_panel.z_index = 200
-	mg_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	world.ui_layer.add_child(mg_panel)
-
-	var shadow = Panel.new()
-	shadow.name = "Shadow"
-	shadow.position = Vector2(8, 8)
-	shadow.size = mg_panel.size
-	shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	shadow.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.0, 0.0, 0.0, 0.34),
-		Color(0.0, 0.0, 0.0, 0.0),
-		0,
-		20,
-		0
-	))
-	mg_panel.add_child(shadow)
-
-	var panel_back = Panel.new()
-	panel_back.name = "PanelBack"
-	panel_back.position = Vector2.ZERO
-	panel_back.size = mg_panel.size
-	panel_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_PANEL_STRONG,
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		3,
-		20,
-		12
-	))
-	mg_panel.add_child(panel_back)
-
-	var top_bar = Panel.new()
-	top_bar.name = "TopBar"
-	top_bar.position = Vector2.ZERO
-	top_bar.size = Vector2(MG_W, 78)
-	top_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	top_bar.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_HEADER,
-		PixelUIStyle.GLASS_BORDER,
-		0,
-		20,
-		8
-	))
-	mg_panel.add_child(top_bar)
-
-	var top_line = ColorRect.new()
-	top_line.name = "TopLine"
-	top_line.position = Vector2(0, 73)
-	top_line.size = Vector2(MG_W, 4)
-	top_line.color = Color(0.30, 0.38, 0.78, 0.55)
-	top_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	mg_panel.add_child(top_line)
-
-	var title = Label.new()
-	title.name = "Title"
-	title.text = "FISHING"
-	title.position = Vector2(36, 8)
-	title.size = Vector2(300, 50)
-	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(title, 46)
-	mg_panel.add_child(title)
-
-	var title_sub = Label.new()
-	title_sub.name = "TitleSub"
-	title_sub.text = "HOOK THE FISH"
-	title_sub.position = Vector2(42, 58)
-	title_sub.size = Vector2(220, 22)
-	title_sub.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(title_sub, 14)
-	mg_panel.add_child(title_sub)
-
-	var status_badge = Panel.new()
-	status_badge.name = "StatusBadge"
-	status_badge.position = Vector2(MG_W - 250, 16)
-	status_badge.size = Vector2(212, 46)
-	status_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	status_badge.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.030, 0.060, 0.110, 0.98),
-		Color(1.0, 0.80, 0.12, 0.92),
-		3,
-		12,
-		6
-	))
-	mg_panel.add_child(status_badge)
-
-	var status = Label.new()
-	status.name = "StatusTitle"
-	status.text = "TARGET ZONE"
-	status.position = Vector2(MG_W - 238, 23)
-	status.size = Vector2(188, 30)
-	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	status.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	status.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(status, 18, PixelUIStyle.GOLD_SOFT)
-	mg_panel.add_child(status)
-
-	var fish_card = Panel.new()
-	fish_card.name = "FishCard"
-	fish_card.position = Vector2(38, 96)
-	fish_card.size = Vector2(432, 88)
-	fish_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	fish_card.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_SECTION,
-		PixelUIStyle.GLASS_BORDER,
-		3,
-		12,
-		5
-	))
-	mg_panel.add_child(fish_card)
-
-	# Fish icon slot
-	var icon_back = Panel.new()
-	icon_back.name = "FishIconBack"
-	icon_back.position = Vector2(52, 106)
-	icon_back.size = Vector2(68, 68)
-	icon_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon_back.add_theme_stylebox_override("panel", PixelUIStyle.slot_style("common"))
-	mg_panel.add_child(icon_back)
-
-	mg_fish_icon = TextureRect.new()
-	mg_fish_icon.name = "FishIcon"
-	mg_fish_icon.position = Vector2(60, 114)
-	mg_fish_icon.size = Vector2(52, 52)
-	mg_fish_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	mg_fish_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	mg_fish_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	mg_panel.add_child(mg_fish_icon)
-
-	# Fish name
-	mg_fish_name = Label.new()
-	mg_fish_name.name = "FishName"
-	mg_fish_name.position = Vector2(136, 106)
-	mg_fish_name.size = Vector2(284, 32)
-	mg_fish_name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	mg_fish_name.clip_text = true
-	mg_fish_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(mg_fish_name, 22)
-	mg_panel.add_child(mg_fish_name)
-
-	# Rarity label
-	mg_rarity_label = Label.new()
-	mg_rarity_label.name = "RarityLabel"
-	mg_rarity_label.position = Vector2(136, 140)
-	mg_rarity_label.size = Vector2(260, 24)
-	mg_rarity_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	mg_rarity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(mg_rarity_label, 15)
-	mg_panel.add_child(mg_rarity_label)
-
-	# Lure label
-	var lure_card = Panel.new()
-	lure_card.name = "LureCard"
-	lure_card.position = Vector2(492, 96)
-	lure_card.size = Vector2(250, 88)
-	lure_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	lure_card.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_SECTION,
-		PixelUIStyle.GLASS_BORDER,
-		3,
-		12,
-		5
-	))
-	mg_panel.add_child(lure_card)
-
-	var lure_title = Label.new()
-	lure_title.text = "ACTIVE LURE"
-	lure_title.position = Vector2(18, 12)
-	lure_title.size = Vector2(214, 22)
-	lure_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lure_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	lure_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(lure_title, 13)
-	lure_card.add_child(lure_title)
-
-	mg_lure_label = Label.new()
-	mg_lure_label.name = "LureLabel"
-	mg_lure_label.position = Vector2(18, 40)
-	mg_lure_label.size = Vector2(214, 34)
-	mg_lure_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	mg_lure_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	mg_lure_label.clip_text = true
-	mg_lure_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(mg_lure_label, 18, PixelUIStyle.GOLD_SOFT)
-	lure_card.add_child(mg_lure_label)
-
-	var bar_title = Label.new()
-	bar_title.text = "CATCH TIMING"
-	bar_title.position = Vector2(BAR_X, BAR_Y - 30)
-	bar_title.size = Vector2(180, 22)
-	bar_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	bar_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(bar_title, 13)
-	mg_panel.add_child(bar_title)
-
-	# Time header
-	var time_header = Label.new()
-	time_header.text = "TIME LEFT"
-	time_header.position = Vector2(BAR_X, 278)
-	time_header.size = Vector2(120, 18)
-	time_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(time_header, 13)
-	mg_panel.add_child(time_header)
-
-	# Time bar background
-	var time_bg = Panel.new()
-	time_bg.position = Vector2(BAR_X, 300)
-	time_bg.size = Vector2(BAR_W, 18)
-	time_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	time_bg.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.04, 0.08, 0.10, 0.95),
-		Color(0.01, 0.03, 0.04, 1.0),
-		2,
-		6,
-		1
-	))
-	mg_panel.add_child(time_bg)
-
-	mg_time_bar_fill = ColorRect.new()
-	mg_time_bar_fill.name = "TimeBarFill"
-	mg_time_bar_fill.position = Vector2(BAR_X + 3, 303)
-	mg_time_bar_fill.size = Vector2(BAR_W - 6, 12)
-	mg_time_bar_fill.color = Color(0.28, 0.88, 0.52, 0.92)
-	mg_time_bar_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	mg_panel.add_child(mg_time_bar_fill)
-
-	# Fishing bar background
-	mg_bar_bg = Panel.new()
-	mg_bar_bg.name = "FishingBarBg"
-	mg_bar_bg.position = Vector2(BAR_X, BAR_Y)
-	mg_bar_bg.size = Vector2(BAR_W, BAR_H)
-	mg_bar_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	mg_bar_bg.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.030, 0.060, 0.105, 0.94),
-		Color(0.30, 0.52, 0.82, 0.72),
-		3,
-		14,
-		7
-	))
-	mg_panel.add_child(mg_bar_bg)
-
-	mg_green_zone = ColorRect.new()
-	mg_green_zone.name = "GreenZone"
-	mg_green_zone.position = Vector2(BAR_X, BAR_Y + 7)
-	mg_green_zone.size = Vector2(110, BAR_H - 14)
-	mg_green_zone.color = Color(0.20, 0.78, 0.32, 0.80)
-	mg_green_zone.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	mg_panel.add_child(mg_green_zone)
-
-	mg_cursor_bar = ColorRect.new()
-	mg_cursor_bar.name = "CursorBar"
-	mg_cursor_bar.position = Vector2(BAR_X, BAR_Y - 7)
-	mg_cursor_bar.size = Vector2(8, BAR_H + 14)
-	mg_cursor_bar.color = Color(1.0, 1.0, 1.0, 0.96)
-	mg_cursor_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	mg_panel.add_child(mg_cursor_bar)
-
-	mg_hint_label = Label.new()
-	mg_hint_label.name = "HintLabel"
-	mg_hint_label.text = "CLICK WHEN IN THE GREEN!"
-	mg_hint_label.position = Vector2(BAR_X + 190, BAR_Y - 30)
-	mg_hint_label.size = Vector2(BAR_W - 190, 24)
-	mg_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	mg_hint_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	mg_hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(mg_hint_label, 18, PixelUIStyle.TEXT_SOFT)
-	mg_panel.add_child(mg_hint_label)
-
-	mg_panel.visible = false
-	_position_mg_panel()
-
-
-func _show_mg_panel(show: bool):
-	if mg_panel != null and is_instance_valid(mg_panel):
-		mg_panel.visible = show
-		if show:
-			PixelUIStyle.play_panel_open(mg_panel, Vector2(0.98, 0.98), 0.14)
-
-
-func _position_mg_panel():
-	if mg_panel == null:
-		return
-	var ss = mg_panel.get_viewport_rect().size
-	var max_x = max(12.0, ss.x - MG_W - 12.0)
-	var max_y = max(76.0, ss.y - MG_H - 24.0)
-	mg_panel.position = Vector2(
-		clamp((ss.x - MG_W) / 2.0, 12.0, max_x),
-		clamp(ss.y - MG_H - 150.0, 76.0, max_y)
-	)
-
-
-func _update_mg_visuals():
-	if mg_panel == null or not is_instance_valid(mg_panel):
-		return
-
-	# Green zone position
-	if mg_green_zone != null:
-		mg_green_zone.position.x = BAR_X + BAR_W * mg_green_start
-		mg_green_zone.size.x     = BAR_W * mg_green_size
-
-	# Cursor position
-	if mg_cursor_bar != null:
-		mg_cursor_bar.position.x = BAR_X + BAR_W * mg_cursor_t - mg_cursor_bar.size.x * 0.5
-
-	# Cursor-in-green check — visual feedback
-	var in_green = mg_cursor_t >= mg_green_start and mg_cursor_t <= (mg_green_start + mg_green_size)
-
-	if mg_cursor_bar != null:
-		mg_cursor_bar.color = Color(1.0, 0.94, 0.18, 1.0) if in_green else Color(1.0, 1.0, 1.0, 0.96)
-
-	if mg_green_zone != null:
-		mg_green_zone.color = Color(0.28, 1.0, 0.44, 0.92) if in_green else Color(0.22, 0.80, 0.35, 0.78)
-
-	if mg_hint_label != null:
-		if in_green:
-			mg_hint_label.text = "CLICK NOW!"
-			mg_hint_label.add_theme_color_override("font_color", Color(1.0, 0.94, 0.18, 1.0))
-		else:
-			mg_hint_label.text = "CLICK WHEN IN THE GREEN!"
-			mg_hint_label.add_theme_color_override("font_color", Color(0.70, 0.88, 0.96, 0.88))
-
-	# Time bar
-	if mg_time_bar_fill != null:
-		var ratio = clamp(mg_time_left / MINIGAME_DURATION, 0.0, 1.0)
-		mg_time_bar_fill.size.x = (BAR_W - 6.0) * ratio
-
-		if ratio < 0.25:
-			mg_time_bar_fill.color = Color(0.95, 0.28, 0.22, 0.92)
-		elif ratio < 0.55:
-			mg_time_bar_fill.color = Color(0.95, 0.74, 0.18, 0.92)
-		else:
-			mg_time_bar_fill.color = Color(0.28, 0.88, 0.52, 0.92)
 
 
 # ── Fish caught popup ─────────────────────────────────────────
@@ -2388,6 +2049,8 @@ func _setup_fishing_ui():
 
 	if fishing_ui != null and fishing_ui.has_method("setup"):
 		fishing_ui.setup(world)
+	if not fishing_ui.reel_pressed.is_connected(handle_fishing_action):
+		fishing_ui.reel_pressed.connect(handle_fishing_action)
 
 
 func _show_waiting_ui():
@@ -2405,7 +2068,10 @@ func _hide_fishing_state_ui():
 		fishing_ui.hide_fishing_state()
 
 
-func _show_catch_result(fish_id: String, was_new: bool = false, catch_weight: float = -1.0, category: String = "fish"):
+func _show_catch_result(fish_id: String, was_new: bool = false, catch_weight: float = -1.0, category: String = "fish", allow_active: bool = false):
+	# A delayed reward must not hide the UI for a newer cast.
+	if not allow_active and (world.fishing_active or awaiting_cast_ack):
+		return
 	if fishing_ui == null or not fishing_ui.has_method("show_catch_result"):
 		return
 	fishing_ui.show_catch_result(_build_catch_result_data(fish_id, was_new, catch_weight, category))
@@ -2588,23 +2254,6 @@ func _is_fishing_rod_ready_for_targeting() -> bool:
 	return str(world.selected_item_category) == "tool" and is_fishing_rod_item(str(world.selected_item_type))
 
 
-func _is_reeling_input_down() -> bool:
-	if world != null:
-		if world.has_method("is_chat_input_focused") and world.is_chat_input_focused():
-			return false
-		if world.has_method("is_any_text_input_focused") and world.is_any_text_input_focused():
-			return false
-	if fishing_ui != null and fishing_ui.has_method("is_reel_button_down") and bool(fishing_ui.is_reel_button_down()):
-		return true
-	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-		return true
-	if Input.is_key_pressed(KEY_E):
-		return true
-	if Input.is_key_pressed(KEY_SPACE):
-		return true
-	return false
-
-
 func _should_cancel_for_cleanup_rule() -> bool:
 	if world == null:
 		return true
@@ -2618,18 +2267,23 @@ func _should_cancel_for_cleanup_rule() -> bool:
 		return true
 	if world.fishing_target_grid != world.INVALID_GRID_POS and not can_reach_fishing_grid(world.fishing_target_grid):
 		return true
+	if not is_fishable_water(world.fishing_target_grid):
+		return true
 	if not is_fishing_rod_item(str(world.equipped_tool)) and not (str(world.selected_item_category) == "tool" and is_fishing_rod_item(str(world.selected_item_type))):
 		return true
-	if cast_selected_item_type != "" and str(world.selected_item_type) != cast_selected_item_type:
+	if cast_selected_item_type != "" and not _cast_selection_matches(cast_selected_item_type, cast_selected_item_category):
 		return true
-	if cast_selected_item_category != "" and str(world.selected_item_category) != cast_selected_item_category:
-		return true
+	cast_selected_item_type = str(world.selected_item_type)
+	cast_selected_item_category = str(world.selected_item_category)
 	return false
 
 
 func _is_blocking_ui_open_for_fishing() -> bool:
 	if world == null:
 		return true
+	if world.has_method("is_chat_input_focused") and world.is_chat_input_focused(): return true
+	if world.has_method("is_any_text_input_focused") and world.is_any_text_input_focused(): return true
+	if fishing_ui != null and fishing_ui.journal_ui != null and fishing_ui.journal_ui.visible: return true
 	if world.has_method("is_player_menu_open") and world.is_player_menu_open(): return true
 	if world.has_method("is_game_menu_open") and world.is_game_menu_open(): return true
 	if world.has_method("is_world_menu_open") and world.is_world_menu_open(): return true
@@ -2666,11 +2320,12 @@ func show_minigame_ui(show: bool):
 		_setup_fishing_ui()
 	if fishing_ui == null:
 		return
-	if show and fishing_ui.has_method("show_reeling"):
-		fishing_ui.show_reeling(mg_progress, mg_tension, false)
-	elif fishing_ui.has_method("hide_fishing_state"):
+	if show and state == STATE_MINIGAME:
+		update_minigame_visuals()
+	else:
 		fishing_ui.hide_fishing_state()
 
+
 func update_minigame_visuals():
-	if fishing_ui != null and fishing_ui.has_method("show_reeling") and state == STATE_MINIGAME:
-		fishing_ui.show_reeling(mg_progress, mg_tension, _is_reeling_input_down())
+	if fishing_ui != null and state == STATE_MINIGAME:
+		fishing_ui.show_pull_game(pull_game.snapshot())

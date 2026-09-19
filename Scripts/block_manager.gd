@@ -2415,7 +2415,7 @@ func metadata_should_prefer_texture_visual_cell(metadata: Dictionary, texture: T
 
 	if block_type == "water":
 		return true
-	if block_type == BARN_BLOCK_TYPE or visual_block_type == BARN_BLOCK_TYPE:
+	if block_type in [BARN_BLOCK_TYPE, "neon_block"] or visual_block_type in [BARN_BLOCK_TYPE, "neon_block"]:
 		return false
 	if grid_pos == NO_VARIANT_GRID_POS or visual_block_type == "":
 		return false
@@ -2435,7 +2435,7 @@ func sync_renderer_block_visual_cell(renderer, grid_pos: Vector2i, texture: Text
 		return false
 	var block_type := str(metadata.get("block_type", "")).strip_edges().to_lower()
 	var visual_block_type := str(metadata.get("visual_block_type", block_type)).strip_edges().to_lower()
-	var is_barn_visual := block_type == BARN_BLOCK_TYPE or visual_block_type == BARN_BLOCK_TYPE
+	var is_barn_visual := block_type in [BARN_BLOCK_TYPE, "neon_block"] or visual_block_type in [BARN_BLOCK_TYPE, "neon_block"]
 	if metadata_should_prefer_texture_visual_cell(metadata, texture) and renderer.has_method("set_block_cell"):
 		if bool(renderer.set_block_cell(grid_pos, texture, background, texture_shadow, cell_source)):
 			return true
@@ -2629,7 +2629,7 @@ func has_connected_variant_atlas_coords(block_type: String) -> bool:
 
 
 func has_connected_variant_textures(block_type: String) -> bool:
-	if str(block_type).strip_edges().to_lower() == BARN_BLOCK_TYPE:
+	if str(block_type).strip_edges().to_lower() in [BARN_BLOCK_TYPE, "neon_block"]:
 		return false
 	var variants = get_block_item_data(block_type).get("connected_variant_textures", {})
 	return variants is Dictionary and not variants.is_empty()
@@ -2802,8 +2802,8 @@ func get_connected_variant_component_data(block_type: String, grid_pos: Vector2i
 	return component_data
 
 
-func is_barn_block_at(grid_pos: Vector2i) -> bool:
-	return str(get_foreground_block_type_at(grid_pos)).strip_edges().to_lower() == BARN_BLOCK_TYPE
+func is_barn_block_at(grid_pos: Vector2i, block_type: String = BARN_BLOCK_TYPE) -> bool:
+	return str(get_foreground_block_type_at(grid_pos)).strip_edges().to_lower() == block_type
 
 
 func get_barn_atlas_item_data() -> Dictionary:
@@ -2834,28 +2834,28 @@ func get_barn_atlas_alternative_tile() -> int:
 	return int(atlas_item.get("alternative_tile", 0))
 
 
-func get_barn_neighbor_mask(grid_pos: Vector2i) -> int:
+func get_barn_neighbor_mask(grid_pos: Vector2i, block_type: String = BARN_BLOCK_TYPE) -> int:
 	var mask := 0
-	if is_barn_block_at(Vector2i(grid_pos.x, grid_pos.y - 1)):
+	if is_barn_block_at(Vector2i(grid_pos.x, grid_pos.y - 1), block_type):
 		mask |= BARN_NEIGHBOR_UP
-	if is_barn_block_at(Vector2i(grid_pos.x + 1, grid_pos.y)):
+	if is_barn_block_at(Vector2i(grid_pos.x + 1, grid_pos.y), block_type):
 		mask |= BARN_NEIGHBOR_RIGHT
-	if is_barn_block_at(Vector2i(grid_pos.x, grid_pos.y + 1)):
+	if is_barn_block_at(Vector2i(grid_pos.x, grid_pos.y + 1), block_type):
 		mask |= BARN_NEIGHBOR_DOWN
-	if is_barn_block_at(Vector2i(grid_pos.x - 1, grid_pos.y)):
+	if is_barn_block_at(Vector2i(grid_pos.x - 1, grid_pos.y), block_type):
 		mask |= BARN_NEIGHBOR_LEFT
 	return mask
 
 
-func get_barn_neighbor_data(grid_pos: Vector2i) -> Dictionary:
-	var up := is_barn_block_at(Vector2i(grid_pos.x, grid_pos.y - 1))
-	var right := is_barn_block_at(Vector2i(grid_pos.x + 1, grid_pos.y))
-	var down := is_barn_block_at(Vector2i(grid_pos.x, grid_pos.y + 1))
-	var left := is_barn_block_at(Vector2i(grid_pos.x - 1, grid_pos.y))
-	var up_left := is_barn_block_at(Vector2i(grid_pos.x - 1, grid_pos.y - 1))
-	var up_right := is_barn_block_at(Vector2i(grid_pos.x + 1, grid_pos.y - 1))
-	var down_left := is_barn_block_at(Vector2i(grid_pos.x - 1, grid_pos.y + 1))
-	var down_right := is_barn_block_at(Vector2i(grid_pos.x + 1, grid_pos.y + 1))
+func get_barn_neighbor_data(grid_pos: Vector2i, block_type: String = BARN_BLOCK_TYPE) -> Dictionary:
+	var up := is_barn_block_at(Vector2i(grid_pos.x, grid_pos.y - 1), block_type)
+	var right := is_barn_block_at(Vector2i(grid_pos.x + 1, grid_pos.y), block_type)
+	var down := is_barn_block_at(Vector2i(grid_pos.x, grid_pos.y + 1), block_type)
+	var left := is_barn_block_at(Vector2i(grid_pos.x - 1, grid_pos.y), block_type)
+	var up_left := is_barn_block_at(Vector2i(grid_pos.x - 1, grid_pos.y - 1), block_type)
+	var up_right := is_barn_block_at(Vector2i(grid_pos.x + 1, grid_pos.y - 1), block_type)
+	var down_left := is_barn_block_at(Vector2i(grid_pos.x - 1, grid_pos.y + 1), block_type)
+	var down_right := is_barn_block_at(Vector2i(grid_pos.x + 1, grid_pos.y + 1), block_type)
 
 	return {
 		"up": up,
@@ -2866,7 +2866,7 @@ func get_barn_neighbor_data(grid_pos: Vector2i) -> Dictionary:
 		"up_right": up_right,
 		"down_left": down_left,
 		"down_right": down_right,
-		"mask": get_barn_neighbor_mask(grid_pos)
+		"mask": get_barn_neighbor_mask(grid_pos, block_type)
 	}
 
 
@@ -2930,28 +2930,73 @@ func get_barn_basic_mask_atlas_coords(mask: int) -> Vector2i:
 	return BARN_CONNECTED_VARIANT_ATLAS_COORDS["single"]
 
 
-func get_barn_atlas_coords(grid_pos: Vector2i) -> Vector2i:
-	var neighbors := get_barn_neighbor_data(grid_pos)
-	var mask := int(neighbors.get("mask", 0))
-	if mask == 15:
-		if barn_neighbors_have_all_diagonals(neighbors):
-			return BARN_CONNECTED_VARIANT_ATLAS_COORDS["tile_middle_middle"]
-		return BARN_CONNECTED_VARIANT_ATLAS_COORDS["middle"]
+func get_barn_atlas_coords(grid_pos: Vector2i, block_type: String = BARN_BLOCK_TYPE) -> Vector2i:
+	# Each corner needs trim unless both adjoining blocks and the diagonal exist.
+	# This reduces all 256 neighborhoods to the 47 distinct border patterns.
+	var n := get_barn_neighbor_data(grid_pos, block_type)
+	var signature := 0
+	if not (n.up and n.left and n.up_left): signature |= 1
+	if not (n.up and n.right and n.up_right): signature |= 2
+	if not (n.down and n.right and n.down_right): signature |= 4
+	if not (n.down and n.left and n.down_left): signature |= 8
+	if not n.up: signature |= 16
+	if not n.right: signature |= 32
+	if not n.down: signature |= 64
+	if not n.left: signature |= 128
+	var tiles := {
+		255: Vector2i(0, 24),
+		191: Vector2i(1, 24),
+		175: Vector2i(2, 24),
+		155: Vector2i(3, 24),
+		19: Vector2i(4, 24),
+		55: Vector2i(5, 24),
+		4: Vector2i(6, 24),
+		8: Vector2i(7, 24),
+		159: Vector2i(8, 24),
+		63: Vector2i(9, 24),
+		223: Vector2i(0, 25),
+		15: Vector2i(1, 25),
+		127: Vector2i(2, 25),
+		137: Vector2i(3, 25),
+		0: Vector2i(4, 25),
+		38: Vector2i(5, 25),
+		2: Vector2i(6, 25),
+		1: Vector2i(7, 25),
+		207: Vector2i(8, 25),
+		111: Vector2i(9, 25),
+		95: Vector2i(0, 26),
+		239: Vector2i(1, 26),
+		205: Vector2i(3, 26),
+		76: Vector2i(4, 26),
+		110: Vector2i(5, 26),
+		141: Vector2i(6, 26),
+		46: Vector2i(7, 26),
+		23: Vector2i(8, 26),
+		27: Vector2i(9, 26),
+		14: Vector2i(0, 27),
+		13: Vector2i(1, 27),
+		12: Vector2i(2, 27),
+		9: Vector2i(3, 27),
+		31: Vector2i(4, 27),
+		47: Vector2i(5, 27),
+		139: Vector2i(6, 27),
+		39: Vector2i(7, 27),
+		78: Vector2i(8, 27),
+		77: Vector2i(9, 27),
+		7: Vector2i(0, 28),
+		11: Vector2i(1, 28),
+		3: Vector2i(2, 28),
+		6: Vector2i(3, 28),
+		79: Vector2i(4, 28),
+		143: Vector2i(5, 28),
+		5: Vector2i(6, 28),
+		10: Vector2i(7, 28)
+	}
+	return tiles[signature] + (Vector2i(0, 9) if block_type == "neon_block" else Vector2i.ZERO)
 
-	var square_style_coords := get_barn_square_style_atlas_coords(mask, neighbors)
-	if square_style_coords != BARN_NO_ATLAS_COORDS:
-		return square_style_coords
 
-	if BARN_T_JUNCTION_FALLBACK_ATLAS_COORDS.has(mask) or BARN_DEDICATED_T_JUNCTION_ATLAS_COORDS.has(mask):
-		# Real T artwork is not present in the current barn atlas. The fallback
-		# table keeps the missing coordinates centralized for future art.
-		return get_barn_t_junction_atlas_coords(mask)
-
-	return get_barn_basic_mask_atlas_coords(mask)
-
-
-func get_barn_atlas_data(grid_pos: Vector2i) -> Dictionary:
-	var atlas_coords := get_barn_atlas_coords(grid_pos)
+func get_barn_atlas_data(grid_pos: Vector2i, block_type: String = BARN_BLOCK_TYPE) -> Dictionary:
+	var atlas_coords := get_barn_atlas_coords(grid_pos, block_type)
 	var source_id := get_barn_atlas_source_id()
 	var alternative_tile := get_barn_atlas_alternative_tile()
 	return {
@@ -3461,7 +3506,7 @@ func get_visual_block_variant(base_block_id: String, grid_pos: Vector2i, backgro
 		# background render pass too.
 		return ""
 
-	if str(base_block_id).strip_edges().to_lower() == BARN_BLOCK_TYPE:
+	if str(base_block_id).strip_edges().to_lower() in [BARN_BLOCK_TYPE, "neon_block"]:
 		return ""
 
 	# Dirt and stone weighted variants now live in get_stateful_block_atlas_data()
@@ -3612,8 +3657,8 @@ func get_stateful_block_atlas_data(base_block_id: String, grid_pos: Vector2i, ba
 			"atlas_coords": parse_block_vector2i(item_data.get("water_lower_atlas_coords", WATER_LOWER_ATLAS_COORDS), WATER_LOWER_ATLAS_COORDS)
 		}
 
-	if clean_base_id == BARN_BLOCK_TYPE:
-		var barn_atlas_data := get_barn_atlas_data(grid_pos)
+	if clean_base_id in [BARN_BLOCK_TYPE, "neon_block"]:
+		var barn_atlas_data := get_barn_atlas_data(grid_pos, clean_base_id)
 		if not barn_atlas_data.is_empty():
 			return barn_atlas_data
 	if has_platform_variant_atlas_coords(clean_base_id):
@@ -8681,7 +8726,7 @@ func refresh_barn_autotile_around(grid_pos: Vector2i) -> void:
 			var candidate := Vector2i(grid_pos.x + x_offset, grid_pos.y + y_offset)
 			if refreshed_cells.has(candidate):
 				continue
-			if not is_barn_block_at(candidate):
+			if get_foreground_block_type_at(candidate) not in [BARN_BLOCK_TYPE, "neon_block"]:
 				continue
 			refreshed_cells[candidate] = true
 			normalize_block_variant_at(candidate, false)
@@ -8696,7 +8741,7 @@ func has_neighbor_dependent_visual_variant(block_type: String) -> bool:
 		or clean_type == "water" \
 		or clean_type == "wood" \
 		or clean_type == "climbing_vine" \
-		or clean_type == BARN_BLOCK_TYPE:
+		or clean_type in [BARN_BLOCK_TYPE, "neon_block"]:
 		return true
 
 	# Snow-storm leaf caps depend on whether another leaf is directly above.

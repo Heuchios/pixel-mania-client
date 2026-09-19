@@ -1,20 +1,23 @@
 extends Control
 
+signal reel_pressed
+
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 const FishingJournalUI = preload("res://Scripts/ui/fishing_journal_ui.gd")
 
 const WAITING_W := 390.0
 const WAITING_H := 112.0
 const BITE_W := 430.0
-const BITE_H := 190.0
+const BITE_H := 206.0
 const REEL_W := 720.0
-const REEL_H := 236.0
+const REEL_H := 390.0
 const CATCH_W := 500.0
 const CATCH_H := 410.0
 const ESCAPE_W := 330.0
 const ESCAPE_H := 72.0
 
 var world = null
+var last_viewport_size := Vector2.ZERO
 
 var waiting_panel: Panel = null
 var waiting_title: Label = null
@@ -36,18 +39,22 @@ var bite_time_left := 0.0
 
 var reeling_panel: Panel = null
 var reeling_title: Label = null
-var progress_fill: ColorRect = null
-var tension_fill: ColorRect = null
 var progress_label: Label = null
-var tension_label: Label = null
+var mistakes_label: Label = null
 var reel_button: Button = null
 var reel_hint: Label = null
+var pull_feedback: Label = null
+var pull_track: Panel = null
+var pull_zone: ColorRect = null
+var pull_marker: ColorRect = null
+var pull_zone_label: Label = null
+var reel_scene: Panel = null
+var reel_fish: TextureRect = null
+var reel_line: ColorRect = null
 var progress_value := 0.0
-var tension_value := 0.0
 var progress_target := 0.0
-var tension_target := 0.0
-var reel_button_down := false
-var reel_input_active := false
+var pull_state: Dictionary = {}
+
 
 var catch_card: Panel = null
 var catch_special_label: Label = null
@@ -96,23 +103,25 @@ func _process(delta: float) -> void:
 	_update_waiting_dots(delta)
 	_update_target_pulse(delta)
 	_update_bite_timer(delta)
-	_update_reeling_bars(delta)
+	_update_pull_preview(delta)
 	_update_auto_hide(delta)
 
 
 func show_waiting(lure_name: String) -> void:
 	_ensure_ready()
+	_hide_results()
 	hide_bite()
 	hide_reeling()
 	if waiting_panel == null:
 		return
+	waiting_title.text = "Fishing..."
 	waiting_lure.text = lure_name
 	waiting_status.text = "Waiting for bite"
 	waiting_dot_time = 0.0
 	waiting_dot_count = 0
 	waiting_panel.visible = true
 	_position_waiting_panel()
-	PixelUIStyle.play_panel_open(waiting_panel, Vector2(0.94, 0.94), 0.14)
+	_open_fitted_panel(waiting_panel, 0.14)
 
 
 func show_bite(reaction_time: float) -> void:
@@ -123,12 +132,10 @@ func show_bite(reaction_time: float) -> void:
 		return
 	bite_total_time = max(0.1, reaction_time)
 	bite_time_left = bite_total_time
-	reel_button_down = false
 	bite_bar_fill.size.x = 360.0
 	bite_panel.visible = true
 	_position_bite_panel()
-	PixelUIStyle.play_panel_open(bite_panel, Vector2(0.82, 0.82), 0.12)
-	_shake_control(bite_panel, 10.0, 0.20)
+	_open_fitted_panel(bite_panel, 0.12)
 
 
 func update_bite_timer(time_left: float, total_time: float) -> void:
@@ -137,27 +144,38 @@ func update_bite_timer(time_left: float, total_time: float) -> void:
 	_apply_bite_bar()
 
 
-func show_reeling(progress: float, tension: float, is_reeling: bool = false) -> void:
+func set_reeling_reward(texture: Texture2D) -> void:
+	_ensure_ready()
+	reel_fish.texture = texture
+
+
+func show_resolving() -> void:
+	show_waiting("")
+	waiting_title.text = "Landing catch..."
+	waiting_status.text = "Waiting for server"
+
+
+func show_pull_game(data: Dictionary) -> void:
 	_ensure_ready()
 	hide_waiting()
 	hide_bite()
-	if reeling_panel == null:
-		return
-	progress_target = clamp(progress, 0.0, 1.0)
-	tension_target = clamp(tension, 0.0, 1.0)
-	reel_input_active = is_reeling
+	pull_state = data
+	progress_target = float(data.get("pulls", 0)) / maxf(1.0, float(data.get("required_pulls", 3)))
 	if not reeling_panel.visible:
 		progress_value = progress_target
-		tension_value = tension_target
 		reeling_panel.visible = true
 		_position_reeling_panel()
-		_layout_reeling_panel()
-		PixelUIStyle.play_panel_open(reeling_panel, Vector2(0.94, 0.94), 0.14)
-	_update_reel_button_state()
+		_open_fitted_panel(reeling_panel, 0.12)
+	progress_label.text = "Pulls %d/%d" % [data.get("pulls", 0), data.get("required_pulls", 3)]
+	mistakes_label.text = "Misses %d/3" % data.get("misses", 0)
+	pull_feedback.text = str(data.get("feedback", ""))
+	reel_button.text = "GET READY..." if bool(data.get("resting", false)) else "REEL"
+	_layout_reeling_panel()
 
 
 func show_catch_result(fish_data: Dictionary) -> void:
 	_ensure_ready()
+	_stop_panel_fade(catch_card)
 	hide_fishing_state()
 	if catch_card == null:
 		return
@@ -202,17 +220,18 @@ func show_catch_result(fish_data: Dictionary) -> void:
 
 	_show_sparkles(rarity)
 	_position_catch_card()
+	var fitted_scale := catch_card.scale
 	var final_pos: Vector2 = catch_card.position
 	catch_card.position = final_pos + Vector2(0, 48)
 	catch_card.modulate = Color(1.0, 1.0, 1.0, 0.0)
-	catch_card.scale = Vector2(0.92, 0.92)
+	catch_card.scale = fitted_scale * 0.92
 	catch_card.visible = true
 	catch_timer = 4.8 if rarity == "legendary" else 3.9
 
 	var tween: Tween = catch_card.create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(catch_card, "position", final_pos, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.tween_property(catch_card, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(catch_card, "scale", fitted_scale, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.tween_property(catch_card, "modulate", Color.WHITE, 0.16).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 	if special_text != "":
@@ -221,6 +240,7 @@ func show_catch_result(fish_data: Dictionary) -> void:
 
 func show_escape() -> void:
 	_ensure_ready()
+	_stop_panel_fade(escape_panel)
 	hide_fishing_state()
 	if escape_panel == null:
 		return
@@ -228,18 +248,23 @@ func show_escape() -> void:
 	escape_panel.visible = true
 	escape_timer = 1.8
 	_position_escape_panel()
-	PixelUIStyle.play_panel_open(escape_panel, Vector2(0.96, 0.96), 0.12)
+	_open_fitted_panel(escape_panel, 0.12)
 
 
 func hide_all() -> void:
 	hide_fishing_state()
+	_hide_results()
+
+
+func _hide_results() -> void:
+	_stop_panel_fade(catch_card)
+	_stop_panel_fade(escape_panel)
 	if catch_card != null:
 		catch_card.visible = false
 	if escape_panel != null:
 		escape_panel.visible = false
 	catch_timer = 0.0
 	escape_timer = 0.0
-	reel_button_down = false
 
 
 func open_journal() -> void:
@@ -253,7 +278,6 @@ func hide_fishing_state() -> void:
 	hide_bite()
 	hide_reeling()
 	hide_target_indicator()
-	reel_button_down = false
 
 
 func show_target_indicator(_grid_pos: Vector2i) -> void:
@@ -263,10 +287,6 @@ func show_target_indicator(_grid_pos: Vector2i) -> void:
 func hide_target_indicator() -> void:
 	if target_panel != null:
 		target_panel.visible = false
-
-
-func is_reel_button_down() -> bool:
-	return reel_button_down
 
 
 func hide_waiting() -> void:
@@ -284,7 +304,6 @@ func hide_bite() -> void:
 func hide_reeling() -> void:
 	if reeling_panel != null:
 		reeling_panel.visible = false
-	reel_input_active = false
 
 
 func _ensure_ready() -> void:
@@ -416,7 +435,8 @@ func _build_bite_panel() -> void:
 	bite_panel.add_child(bite_title)
 
 	bite_hint = Label.new()
-	bite_hint.text = "Hold click, E, Space, or the reel button"
+	bite_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	bite_hint.text = "Tap HOOK, click, E, or Space"
 	bite_hint.position = Vector2(24, 78)
 	bite_hint.size = Vector2(BITE_W - 48.0, 26)
 	bite_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -425,6 +445,7 @@ func _build_bite_panel() -> void:
 	bite_panel.add_child(bite_hint)
 
 	var bar_bg: Panel = Panel.new()
+	bar_bg.name = "BiteBar"
 	bar_bg.position = Vector2(34, 114)
 	bar_bg.size = Vector2(362, 18)
 	bar_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -446,13 +467,14 @@ func _build_bite_panel() -> void:
 
 	var hook_button: Button = Button.new()
 	hook_button.name = "HookButton"
-	hook_button.text = "HOLD TO HOOK"
+	hook_button.text = "HOOK"
+	hook_button.focus_mode = Control.FOCUS_NONE
+	hook_button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 	hook_button.position = Vector2(115, 146)
-	hook_button.size = Vector2(200, 34)
+	hook_button.size = Vector2(200, 48)
 	hook_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	PixelUIStyle.apply_yellow_button(hook_button, 15)
-	hook_button.button_down.connect(_on_reel_button_down)
-	hook_button.button_up.connect(_on_reel_button_up)
+	hook_button.pressed.connect(_on_reel_pressed)
 	bite_panel.add_child(hook_button)
 
 
@@ -460,102 +482,92 @@ func _build_reeling_panel() -> void:
 	reeling_panel = Panel.new()
 	reeling_panel.name = "ReelingPanel"
 	reeling_panel.size = Vector2(REEL_W, REEL_H)
-	reeling_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	reeling_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	reeling_panel.add_theme_stylebox_override("panel", PixelUIStyle.premium_panel_style())
 	add_child(reeling_panel)
 
-	reeling_title = Label.new()
-	reeling_title.text = "REEL STEADY"
-	reeling_title.position = Vector2(28, 14)
-	reeling_title.size = Vector2(320, 38)
-	reeling_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	PixelUIStyle.apply_label_shadow(reeling_title, 28, PixelUIStyle.GOLD_SOFT)
-	reeling_panel.add_child(reeling_title)
+	reeling_title = _reel_label("ReelingTitle", "REEL IT IN!", Vector2(24, 16), Vector2(672, 42))
+	PixelUIStyle.apply_label_shadow(reeling_title, 36, PixelUIStyle.GOLD_SOFT)
+	reel_hint = _reel_label("ReelHint", "Tap REEL in the green zone. Click, E or Space.", Vector2(24, 62), Vector2(672, 36))
+	reel_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
-	var journal_button: Button = Button.new()
-	journal_button.name = "JournalButton"
-	journal_button.text = "JOURNAL"
-	journal_button.position = Vector2(REEL_W - 142.0, 18)
-	journal_button.size = Vector2(108, 34)
-	journal_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	PixelUIStyle.apply_blue_button(journal_button, 13)
-	journal_button.pressed.connect(_on_journal_pressed)
-	reeling_panel.add_child(journal_button)
+	reel_scene = Panel.new()
+	reel_scene.name = "ReelScene"
+	reel_scene.position = Vector2(24, 106)
+	reel_scene.size = Vector2(672, 64)
+	reel_scene.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	reel_scene.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
+	reeling_panel.add_child(reel_scene)
+	reel_line = ColorRect.new()
+	reel_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	reel_line.color = PixelUIStyle.TEXT_SOFT
+	reel_line.position = Vector2(12, 32)
+	reel_scene.add_child(reel_line)
+	reel_fish = TextureRect.new()
+	reel_fish.name = "ReelingFish"
+	reel_fish.size = Vector2(64, 64)
+	reel_fish.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	reel_fish.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	reel_fish.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	reel_fish.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	reel_scene.add_child(reel_fish)
 
-	reel_hint = Label.new()
-	reel_hint.text = "Hold to reel. Release when tension climbs."
-	reel_hint.position = Vector2(28, 52)
-	reel_hint.size = Vector2(REEL_W - 56.0, 24)
-	reel_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	PixelUIStyle.apply_small_label(reel_hint, 15)
-	reeling_panel.add_child(reel_hint)
+	progress_label = _reel_label("PullCount", "Pulls 0/3", Vector2(24, 180), Vector2(330, 30))
+	mistakes_label = _reel_label("MissCount", "Misses 0/3", Vector2(366, 180), Vector2(330, 30))
+	mistakes_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	pull_track = Panel.new()
+	pull_track.name = "PullTrack"
+	pull_track.position = Vector2(24, 220)
+	pull_track.size = Vector2(672, 40)
+	pull_track.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pull_track.add_theme_stylebox_override("panel", PixelUIStyle.input_style())
+	reeling_panel.add_child(pull_track)
+	pull_zone = ColorRect.new()
+	pull_zone.name = "PullZone"
+	pull_zone.color = Color(0.18, 0.62, 0.30)
+	pull_zone.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pull_track.add_child(pull_zone)
+	pull_zone_label = Label.new()
+	pull_zone_label.text = "PULL"
+	pull_zone_label.set_meta("pixelmania_font_size", 18)
+	pull_zone_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	pull_zone_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	pull_zone_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	PixelUIStyle.apply_small_label(pull_zone_label)
+	pull_zone.add_child(pull_zone_label)
+	pull_marker = ColorRect.new()
+	pull_marker.name = "PullMarker"
+	pull_marker.color = PixelUIStyle.GOLD_SOFT
+	pull_marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pull_track.add_child(pull_marker)
 
-	progress_label = Label.new()
-	progress_label.text = "Catch Progress"
-	progress_label.position = Vector2(32, 86)
-	progress_label.size = Vector2(210, 22)
-	PixelUIStyle.apply_small_label(progress_label, 14)
-	reeling_panel.add_child(progress_label)
-
-	var progress_bg: Panel = Panel.new()
-	progress_bg.name = "ProgressBg"
-	progress_bg.position = Vector2(32, 112)
-	progress_bg.size = Vector2(REEL_W - 64.0, 28)
-	progress_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	progress_bg.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.03, 0.06, 0.10, 0.96),
-		PixelUIStyle.GLASS_BORDER,
-		2,
-		9,
-		2
-	))
-	reeling_panel.add_child(progress_bg)
-
-	progress_fill = ColorRect.new()
-	progress_fill.position = Vector2(36, 116)
-	progress_fill.size = Vector2(0, 20)
-	progress_fill.color = Color(0.28, 0.95, 0.46, 0.92)
-	progress_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	reeling_panel.add_child(progress_fill)
-
-	tension_label = Label.new()
-	tension_label.text = "Line Tension"
-	tension_label.position = Vector2(32, 146)
-	tension_label.size = Vector2(210, 22)
-	PixelUIStyle.apply_small_label(tension_label, 14)
-	reeling_panel.add_child(tension_label)
-
-	var tension_bg: Panel = Panel.new()
-	tension_bg.name = "TensionBg"
-	tension_bg.position = Vector2(32, 172)
-	tension_bg.size = Vector2(REEL_W - 284.0, 26)
-	tension_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	tension_bg.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.03, 0.06, 0.10, 0.96),
-		PixelUIStyle.GLASS_BORDER,
-		2,
-		9,
-		2
-	))
-	reeling_panel.add_child(tension_bg)
-
-	tension_fill = ColorRect.new()
-	tension_fill.position = Vector2(36, 176)
-	tension_fill.size = Vector2(0, 18)
-	tension_fill.color = PixelUIStyle.GOLD_SOFT
-	tension_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	reeling_panel.add_child(tension_fill)
-
+	pull_feedback = _reel_label("PullFeedback", "Two mistakes forgiven.", Vector2(24, 270), Vector2(672, 42))
+	pull_feedback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	pull_feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	reel_button = Button.new()
 	reel_button.name = "ReelButton"
-	reel_button.text = "HOLD TO REEL"
-	reel_button.position = Vector2(REEL_W - 218.0, 162)
-	reel_button.size = Vector2(186, 50)
+	reel_button.text = "REEL"
+	reel_button.position = Vector2(24, 324)
+	reel_button.size = Vector2(672, 46)
+	reel_button.focus_mode = Control.FOCUS_NONE
+	reel_button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 	reel_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	PixelUIStyle.apply_yellow_button(reel_button, 18)
-	reel_button.button_down.connect(_on_reel_button_down)
-	reel_button.button_up.connect(_on_reel_button_up)
+	PixelUIStyle.apply_yellow_button(reel_button, 24)
+	reel_button.pressed.connect(_on_reel_pressed)
 	reeling_panel.add_child(reel_button)
+
+
+func _reel_label(node_name: String, text: String, pos: Vector2, dimensions: Vector2) -> Label:
+	var label := Label.new()
+	label.name = node_name
+	label.text = text
+	label.position = pos
+	label.size = dimensions
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	PixelUIStyle.apply_small_label(label)
+	reeling_panel.add_child(label)
+	return label
 
 
 func _build_catch_card() -> void:
@@ -708,6 +720,8 @@ func _build_escape_panel() -> void:
 
 
 func _position_visible_panels() -> void:
+	var resized := last_viewport_size != get_viewport_rect().size
+	last_viewport_size = get_viewport_rect().size
 	if waiting_panel != null and waiting_panel.visible:
 		_position_waiting_panel()
 	if reeling_panel != null and reeling_panel.visible:
@@ -715,41 +729,50 @@ func _position_visible_panels() -> void:
 		_layout_reeling_panel()
 	if escape_panel != null and escape_panel.visible:
 		_position_escape_panel()
+	if resized and bite_panel != null and bite_panel.visible:
+		_position_bite_panel()
+	if resized and catch_card != null and catch_card.visible:
+		_position_catch_card()
 
 
 func _position_waiting_panel() -> void:
-	var ss: Vector2 = get_viewport_rect().size
-	waiting_panel.position = Vector2(
-		clamp((ss.x - WAITING_W) * 0.5, 12.0, max(12.0, ss.x - WAITING_W - 12.0)),
-		clamp(ss.y - WAITING_H - 150.0, 72.0, max(72.0, ss.y - WAITING_H - 18.0))
-	)
+	_fit_fixed_panel(waiting_panel, Vector2(WAITING_W, WAITING_H), false)
 
 
 func _position_bite_panel() -> void:
-	var ss: Vector2 = get_viewport_rect().size
-	bite_panel.position = Vector2(
-		clamp((ss.x - BITE_W) * 0.5, 12.0, max(12.0, ss.x - BITE_W - 12.0)),
-		clamp((ss.y - BITE_H) * 0.5 - 58.0, 64.0, max(64.0, ss.y - BITE_H - 24.0))
-	)
+	var ss := get_viewport_rect().size
+	var width := minf(BITE_W, maxf(1.0, ss.x - 24.0))
+	_fit_fixed_panel(bite_panel, Vector2(width, BITE_H), true)
+	bite_title.size.x = width - 40.0
+	bite_hint.size = Vector2(width - 48.0, 36)
+	bite_hint.position.y = 74.0
+	var hint_size := 18 if width < BITE_W else 24
+	bite_hint.set_meta("pixelmania_font_size", hint_size)
+	bite_hint.add_theme_font_size_override("font_size", hint_size)
+	var bar: Control = bite_panel.get_node("BiteBar")
+	bar.position.x = 24.0
+	bar.size.x = width - 48.0
+	bite_bar_fill.position.x = 25.0
+	var hook: Button = bite_panel.get_node("HookButton")
+	hook.position.x = 24.0
+	hook.size.x = width - 48.0
+	_apply_bite_bar()
 
 
 func _position_reeling_panel() -> void:
 	var ss: Vector2 = get_viewport_rect().size
-	var panel_w: float = clampf(float(ss.x - 24.0), 330.0, REEL_W)
+	var panel_w: float = minf(maxf(1.0, ss.x - 24.0), REEL_W)
 	reeling_panel.size = Vector2(panel_w, REEL_H)
 	reeling_panel.pivot_offset = reeling_panel.size * 0.5
-	reeling_panel.position = Vector2(
-		clamp((ss.x - panel_w) * 0.5, 12.0, max(12.0, ss.x - panel_w - 12.0)),
-		clamp(ss.y - REEL_H - 112.0, 70.0, max(70.0, ss.y - REEL_H - 18.0))
-	)
+	var factor := minf(1.0, maxf(1.0, ss.y - 24.0) / REEL_H)
+	reeling_panel.scale = Vector2.ONE * factor
+	var drawn_size := reeling_panel.size * factor
+	var top_left := Vector2((ss.x - drawn_size.x) * 0.5, clampf(ss.y - drawn_size.y - 112.0, 12.0, maxf(12.0, ss.y - drawn_size.y - 12.0)))
+	reeling_panel.position = top_left - reeling_panel.pivot_offset * (1.0 - factor)
 
 
 func _position_catch_card() -> void:
-	var ss: Vector2 = get_viewport_rect().size
-	catch_card.position = Vector2(
-		clamp((ss.x - CATCH_W) * 0.5, 12.0, max(12.0, ss.x - CATCH_W - 12.0)),
-		clamp((ss.y - CATCH_H) * 0.5 - 30.0, 36.0, max(36.0, ss.y - CATCH_H - 24.0))
-	)
+	_fit_fixed_panel(catch_card, Vector2(CATCH_W, CATCH_H), true)
 
 
 func get_catch_card_confetti_position() -> Vector2:
@@ -762,32 +785,57 @@ func get_catch_card_confetti_position() -> Vector2:
 
 
 func _position_escape_panel() -> void:
+	_fit_fixed_panel(escape_panel, Vector2(ESCAPE_W, ESCAPE_H), false)
+
+
+func _fit_fixed_panel(panel: Control, design_size: Vector2, centered: bool) -> void:
 	var ss: Vector2 = get_viewport_rect().size
-	escape_panel.position = Vector2(
-		clamp((ss.x - ESCAPE_W) * 0.5, 12.0, max(12.0, ss.x - ESCAPE_W - 12.0)),
-		clamp(ss.y - ESCAPE_H - 150.0, 72.0, max(72.0, ss.y - ESCAPE_H - 18.0))
-	)
+	var factor := minf(1.0, minf(maxf(1.0, ss.x - 24.0) / design_size.x, maxf(1.0, ss.y - 24.0) / design_size.y))
+	panel.size = design_size
+	panel.pivot_offset = design_size * 0.5
+	panel.scale = Vector2.ONE * factor
+	var drawn_size := design_size * factor
+	var y := (ss.y - drawn_size.y) * 0.5 - 30.0 if centered else ss.y - drawn_size.y - 150.0
+	var top_left := Vector2((ss.x - drawn_size.x) * 0.5, clampf(y, 12.0, maxf(12.0, ss.y - drawn_size.y - 12.0)))
+	panel.position = top_left - panel.pivot_offset * (1.0 - factor)
+
+
+func _open_fitted_panel(panel: Control, duration: float) -> void:
+	panel.modulate = Color(1, 1, 1, 0)
+	var tween := panel.create_tween()
+	tween.tween_property(panel, "modulate", Color.WHITE, duration)
 
 
 func _layout_reeling_panel() -> void:
-	var w: float = reeling_panel.size.x
-	reeling_title.size.x = max(220.0, w - 56.0)
-	reel_hint.size.x = max(220.0, w - 56.0)
-	var progress_bg: Control = reeling_panel.get_node_or_null("ProgressBg") as Control
-	var tension_bg: Control = reeling_panel.get_node_or_null("TensionBg") as Control
-	if progress_bg != null:
-		progress_bg.size.x = max(252.0, w - 64.0)
-	if tension_bg != null:
-		tension_bg.size.x = max(170.0, w - 284.0)
-	if reel_button != null:
-		reel_button.position.x = max(32.0, w - 218.0)
-	var journal_button: Control = reeling_panel.get_node_or_null("JournalButton") as Control
-	if journal_button != null:
-		journal_button.position.x = max(32.0, w - 142.0)
-	var bar_w: float = max(246.0, w - 72.0)
-	progress_fill.size.x = bar_w * progress_value
-	var tension_w: float = max(164.0, w - 292.0)
-	tension_fill.size.x = tension_w * tension_value
+	var width := maxf(1.0, reeling_panel.size.x - 48.0)
+	var narrow := width < 430.0
+	reeling_title.size.x = width
+	reel_hint.size.x = width
+	reel_scene.size.x = width
+	progress_label.size.x = width * 0.5
+	mistakes_label.position.x = 24.0 + width * 0.5
+	mistakes_label.size.x = width * 0.5
+	pull_track.size.x = width
+	pull_feedback.size.x = width
+	reel_button.size.x = width
+	for label in [reel_hint, progress_label, mistakes_label, pull_feedback]:
+		var text_size := 18 if narrow else 24
+		if int(label.get_meta("pixelmania_font_size", 0)) != text_size:
+			label.set_meta("pixelmania_font_size", text_size)
+			label.add_theme_font_size_override("font_size", text_size)
+	var title_size := 26 if narrow else 36
+	if int(reeling_title.get_meta("pixelmania_font_size", 0)) != title_size:
+		reeling_title.set_meta("pixelmania_font_size", title_size)
+		reeling_title.add_theme_font_size_override("font_size", title_size)
+	var lane_width := maxf(1.0, width - 12.0)
+	pull_zone.position = Vector2(6.0 + lane_width * float(pull_state.get("zone_start", 0.26)), 4)
+	pull_zone.size = Vector2(lane_width * float(pull_state.get("zone_size", 0.44)), 32)
+	pull_zone_label.size = pull_zone.size
+	# Draw the authoritative cursor directly: interpolation would give false misses.
+	pull_marker.position = Vector2(6.0 + lane_width * float(pull_state.get("cursor", 0.0)) - 3.0, -5)
+	pull_marker.size = Vector2(6, 50)
+	reel_fish.position = Vector2(lerpf(maxf(12.0, width - 76.0), 12.0, progress_value), 0)
+	reel_line.size = Vector2(maxf(0.0, reel_fish.position.x + 20.0), 2)
 
 
 func _update_waiting_dots(delta: float) -> void:
@@ -800,7 +848,7 @@ func _update_waiting_dots(delta: float) -> void:
 		var dots: String = ""
 		for i in range(waiting_dot_count):
 			dots += "."
-		waiting_status.text = "Waiting for bite" + dots
+		waiting_status.text = ("Waiting for server" if waiting_title.text == "Landing catch..." else "Waiting for bite") + dots
 
 
 func _update_target_pulse(delta: float) -> void:
@@ -817,11 +865,10 @@ func _update_target_pulse(delta: float) -> void:
 	))
 
 
-func _update_bite_timer(delta: float) -> void:
+func _update_bite_timer(_delta: float) -> void:
 	if bite_panel == null or not bite_panel.visible:
 		return
-	if bite_total_time > 0.0:
-		bite_time_left = max(0.0, bite_time_left - delta)
+	# The manager owns time; a second countdown here makes the bar run ahead.
 	_apply_bite_bar()
 
 
@@ -829,7 +876,7 @@ func _apply_bite_bar() -> void:
 	if bite_bar_fill == null:
 		return
 	var ratio: float = clampf(float(bite_time_left / max(0.1, bite_total_time)), 0.0, 1.0)
-	bite_bar_fill.size.x = 360.0 * ratio
+	bite_bar_fill.size.x = maxf(1.0, bite_panel.size.x - 50.0) * ratio
 	if ratio < 0.28:
 		bite_bar_fill.color = PixelUIStyle.WARNING_RED
 	elif ratio < 0.55:
@@ -838,20 +885,11 @@ func _apply_bite_bar() -> void:
 		bite_bar_fill.color = PixelUIStyle.ACTION_YELLOW
 
 
-func _update_reeling_bars(delta: float) -> void:
+func _update_pull_preview(delta: float) -> void:
 	if reeling_panel == null or not reeling_panel.visible:
 		return
-	progress_value = lerp(progress_value, progress_target, min(1.0, delta * 12.0))
-	tension_value = lerp(tension_value, tension_target, min(1.0, delta * 12.0))
+	progress_value = move_toward(progress_value, progress_target, delta * 1.6)
 	_layout_reeling_panel()
-	progress_label.text = "Catch Progress  " + str(int(round(progress_value * 100.0))) + "%"
-	tension_label.text = "Line Tension  " + str(int(round(tension_value * 100.0))) + "%"
-	if tension_value > 0.82:
-		tension_fill.color = PixelUIStyle.WARNING_RED
-	elif tension_value > 0.56:
-		tension_fill.color = Color(1.0, 0.72, 0.12, 0.94)
-	else:
-		tension_fill.color = PixelUIStyle.GOLD_SOFT
 
 
 func _update_auto_hide(delta: float) -> void:
@@ -865,30 +903,28 @@ func _update_auto_hide(delta: float) -> void:
 			_fade_out(escape_panel)
 
 
-func _update_reel_button_state() -> void:
-	if reel_button == null:
-		return
-	reel_button.text = "REELING..." if reel_input_active else "HOLD TO REEL"
-	if reel_input_active:
-		reel_button.scale = Vector2(1.035, 1.035)
-	else:
-		reel_button.scale = Vector2.ONE
-
-
-func _on_reel_button_down() -> void:
-	reel_button_down = true
-
-
-func _on_reel_button_up() -> void:
-	reel_button_down = false
+func _on_reel_pressed() -> void:
+	if (bite_panel != null and bite_panel.visible) or (reeling_panel != null and reeling_panel.visible):
+		reel_pressed.emit()
 
 
 func _fade_out(node: Control) -> void:
 	if node == null or not node.visible:
 		return
 	var tween: Tween = node.create_tween()
+	node.set_meta("fishing_fade", tween)
 	tween.tween_property(node, "modulate", Color(1.0, 1.0, 1.0, 0.0), 0.16).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.tween_callback(Callable(node, "hide"))
+
+
+func _stop_panel_fade(node: Control) -> void:
+	if node == null or not node.has_meta("fishing_fade"):
+		return
+	var tween = node.get_meta("fishing_fade")
+	if tween is Tween and tween.is_valid():
+		tween.kill()
+	if node.has_meta("fishing_fade"):
+		node.remove_meta("fishing_fade")
 
 
 func _shake_control(node: Control, strength: float, duration: float) -> void:
