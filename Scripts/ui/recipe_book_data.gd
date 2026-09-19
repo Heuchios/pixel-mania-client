@@ -304,15 +304,7 @@ static func _resolve_grow_time(balance: Dictionary, block_id: String, seed_data:
 
 
 static func _format_duration(seconds: float) -> String:
-	var total: int = int(round(maxf(0.0, seconds)))
-	if total < 60:
-		return "%ds" % total
-	@warning_ignore("integer_division")
-	var minutes: int = total / 60
-	var remainder: int = total % 60
-	if remainder == 0:
-		return "%dm" % minutes
-	return "%dm %ds" % [minutes, remainder]
+	return preload("res://Scripts/growth_duration.gd").format_seconds(seconds)
 
 
 static func _compare_recipes(a: Dictionary, b: Dictionary) -> bool:

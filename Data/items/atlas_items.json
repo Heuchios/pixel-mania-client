@@ -18629,50 +18629,50 @@
   "layer": "foreground",
   "source_id": 0,
   "atlas_coords": [
-    15,
-    15
+	15,
+	15
   ],
   "alternative_tile": 0,
   "collision": false,
   "collision_type": "none",
   "display_name": "Bait Box",
   "texture": {
-    "atlas": "res://image.png",
-    "cell": [
-      15,
-      15
-    ],
-    "cell_size": [
-      32,
-      32
-    ]
+	"atlas": "res://image.png",
+	"cell": [
+	  15,
+	  15
+	],
+	"cell_size": [
+	  32,
+	  32
+	]
   },
   "inventory_icon": {
-    "atlas": "res://image.png",
-    "cell": [
-      17,
-      15
-    ],
-    "cell_size": [
-      32,
-      32
-    ]
+	"atlas": "res://image.png",
+	"cell": [
+	  17,
+	  15
+	],
+	"cell_size": [
+	  32,
+	  32
+	]
   },
   "atlas_item_id": 233,
   "atlas_source_id": 0,
   "tackle_box_state_atlas_coords": [
-    [
-      15,
-      15
-    ],
-    [
-      16,
-      15
-    ],
-    [
-      17,
-      15
-    ]
+	[
+	  15,
+	  15
+	],
+	[
+	  16,
+	  15
+	],
+	[
+	  17,
+	  15
+	]
   ]
 },
 {
@@ -18684,34 +18684,34 @@
   "layer": "foreground",
   "source_id": 0,
   "atlas_coords": [
-    8,
-    3
+	8,
+	3
   ],
   "alternative_tile": 0,
   "collision": false,
   "collision_type": "none",
   "display_name": "Apple",
   "texture": {
-    "atlas": "res://image.png",
-    "cell": [
-      8,
-      3
-    ],
-    "cell_size": [
-      32,
-      32
-    ]
+	"atlas": "res://image.png",
+	"cell": [
+	  8,
+	  3
+	],
+	"cell_size": [
+	  32,
+	  32
+	]
   },
   "inventory_icon": {
-    "atlas": "res://image.png",
-    "cell": [
-      8,
-      3
-    ],
-    "cell_size": [
-      32,
-      32
-    ]
+	"atlas": "res://image.png",
+	"cell": [
+	  8,
+	  3
+	],
+	"cell_size": [
+	  32,
+	  32
+	]
   },
   "atlas_item_id": 234,
   "atlas_source_id": 0
@@ -18725,34 +18725,34 @@
   "layer": "foreground",
   "source_id": 0,
   "atlas_coords": [
-    3,
-    4
+	3,
+	4
   ],
   "alternative_tile": 0,
   "collision": false,
   "collision_type": "none",
   "display_name": "Rose",
   "texture": {
-    "atlas": "res://image.png",
-    "cell": [
-      3,
-      4
-    ],
-    "cell_size": [
-      32,
-      32
-    ]
+	"atlas": "res://image.png",
+	"cell": [
+	  3,
+	  4
+	],
+	"cell_size": [
+	  32,
+	  32
+	]
   },
   "inventory_icon": {
-    "atlas": "res://image.png",
-    "cell": [
-      3,
-      4
-    ],
-    "cell_size": [
-      32,
-      32
-    ]
+	"atlas": "res://image.png",
+	"cell": [
+	  3,
+	  4
+	],
+	"cell_size": [
+	  32,
+	  32
+	]
   },
   "atlas_item_id": 235,
   "atlas_source_id": 0
@@ -18766,34 +18766,34 @@
   "layer": "foreground",
   "source_id": 0,
   "atlas_coords": [
-    4,
-    4
+	4,
+	4
   ],
   "alternative_tile": 0,
   "collision": false,
   "collision_type": "none",
   "display_name": "Lily",
   "texture": {
-    "atlas": "res://image.png",
-    "cell": [
-      4,
-      4
-    ],
-    "cell_size": [
-      32,
-      32
-    ]
+	"atlas": "res://image.png",
+	"cell": [
+	  4,
+	  4
+	],
+	"cell_size": [
+	  32,
+	  32
+	]
   },
   "inventory_icon": {
-    "atlas": "res://image.png",
-    "cell": [
-      4,
-      4
-    ],
-    "cell_size": [
-      32,
-      32
-    ]
+	"atlas": "res://image.png",
+	"cell": [
+	  4,
+	  4
+	],
+	"cell_size": [
+	  32,
+	  32
+	]
   },
   "atlas_item_id": 236,
   "atlas_source_id": 0
@@ -18807,34 +18807,34 @@
   "layer": "foreground",
   "source_id": 0,
   "atlas_coords": [
-    5,
-    4
+	5,
+	4
   ],
   "alternative_tile": 0,
   "collision": false,
   "collision_type": "none",
   "display_name": "Sunflower",
   "texture": {
-    "atlas": "res://image.png",
-    "cell": [
-      5,
-      4
-    ],
-    "cell_size": [
-      32,
-      32
-    ]
+	"atlas": "res://image.png",
+	"cell": [
+	  5,
+	  4
+	],
+	"cell_size": [
+	  32,
+	  32
+	]
   },
   "inventory_icon": {
-    "atlas": "res://image.png",
-    "cell": [
-      5,
-      4
-    ],
-    "cell_size": [
-      32,
-      32
-    ]
+	"atlas": "res://image.png",
+	"cell": [
+	  5,
+	  4
+	],
+	"cell_size": [
+	  32,
+	  32
+	]
   },
   "atlas_item_id": 237,
   "atlas_source_id": 0

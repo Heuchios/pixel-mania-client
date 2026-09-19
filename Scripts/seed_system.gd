@@ -200,16 +200,7 @@ func get_tree_display_name(block_type: String, seed_type: String = "") -> String
 
 
 func format_seed_growth_time(seconds_remaining: float) -> String:
-	var total_seconds = int(ceil(max(0.0, seconds_remaining)))
-	if total_seconds >= 60:
-		var minutes = int(float(total_seconds) / 60.0)
-		var seconds = total_seconds % 60
-		var seconds_text = str(seconds)
-		if seconds < 10:
-			seconds_text = "0" + seconds_text
-		return str(minutes) + "m " + seconds_text + "s"
-
-	return str(total_seconds) + "s"
+	return preload("res://Scripts/growth_duration.gd").format_seconds(seconds_remaining)
 
 
 func get_clicked_planted_seed_grid(direct_grid: Vector2i, mouse_pos: Vector2) -> Vector2i:
