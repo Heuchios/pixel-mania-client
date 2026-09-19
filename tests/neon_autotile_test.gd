@@ -28,6 +28,8 @@ func run():
 	var item = world.item_database.neon_block
 	assert(item.solid and item.collidable and item.seed == "neon_block_seed")
 	assert(item.connected_variant_atlas_coords.size() == 48)
+	assert(int(item.texture.cell[0]) == 0 and int(item.texture.cell[1]) == 33, str(item.texture))
+	assert(int(item.inventory_icon.cell[0]) == 0 and int(item.inventory_icon.cell[1]) == 33, str(item.inventory_icon))
 	assert(world.item_database.neon_block_seed.grows_into == "neon_block")
 	var atlas := Image.load_from_file("res://image.png")
 	var canvas := Image.create(224,96,false,Image.FORMAT_RGBA8)
