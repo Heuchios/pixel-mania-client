@@ -18,7 +18,7 @@ func _run() -> void:
 			"id": "layout_item_%d" % item_index,
 			"display_name": "Layout Item %d" % item_index,
 			"category": "block",
-			"count": 1,
+			"count": [1, 2, 23, 344, 999][item_index % 5],
 			"rarity": "common"
 		})
 	inventory.set_inventory_items(items)
@@ -44,9 +44,15 @@ func _run() -> void:
 	assert(visible_slots.size() == 10)
 	for slot in visible_slots:
 		assert(slot.custom_minimum_size.is_equal_approx(Vector2(96, 96)))
+		_assert_count_in_corner(slot)
 
 	var tab_button := tabs.get_node("Tab_all") as Button
 	assert(tab_button.custom_minimum_size.is_equal_approx(Vector2(72, 72)))
+	inventory.set_current_tab("blocks")
+	inventory.set_current_tab("all")
+	await process_frame
+	for slot in visible_slots:
+		_assert_count_in_corner(slot)
 	assert(inventory_grid.get_combined_minimum_size().x <= inventory_scroll.size.x)
 	assert(tabs.position.x + tabs.size.x <= inventory_scroll.position.x)
 
@@ -62,3 +68,12 @@ func _run() -> void:
 
 	print("[mobile-inventory-layout] success")
 	quit(0)
+
+
+func _assert_count_in_corner(slot: Control) -> void:
+	var frame := slot.get_node("Frame") as Control
+	var count := slot.get_node("Count") as Label
+	assert(count.horizontal_alignment == HORIZONTAL_ALIGNMENT_RIGHT)
+	assert(count.vertical_alignment == VERTICAL_ALIGNMENT_BOTTOM)
+	assert((frame.get_rect().end - count.get_rect().end).is_equal_approx(Vector2(8, 8)),
+		"Stack counts must stay inset from the visible frame, including offset templates")

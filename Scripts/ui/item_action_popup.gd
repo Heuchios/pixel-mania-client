@@ -8,9 +8,8 @@ signal trash_requested(item: Dictionary)
 signal closed
 
 const MIN_AMOUNT := 1
-const WINDOW_BASE_SIZE := Vector2(430.0, 300.0)
+const WINDOW_BASE_SIZE := Vector2(430.0, 368.0)
 const WINDOW_RENDER_SCALE := 1.35
-const WINDOW_SIZE := WINDOW_BASE_SIZE * WINDOW_RENDER_SCALE
 const VIEWPORT_MARGIN := 12.0
 const ANCHOR_GAP := 12.0
 const OPEN_ANIMATION_SECONDS := 0.14
@@ -22,6 +21,7 @@ var amount_limit: int = MIN_AMOUNT
 var syncing_amount: bool = false
 var popup_tween: Tween = null
 var window_base_scale := Vector2(WINDOW_RENDER_SCALE, WINDOW_RENDER_SCALE)
+var last_anchor_position := Vector2.ZERO
 
 @onready var window: Control = get_node_or_null("Window") as Control
 @onready var dismiss_area: Button = get_node_or_null("DismissArea") as Button
@@ -49,7 +49,8 @@ func _ready() -> void:
 	if window != null:
 		window.mouse_filter = Control.MOUSE_FILTER_STOP
 		window_base_scale = window.scale
-		window.pivot_offset = window.size * Vector2(0.5, 1.0)
+		window.size = WINDOW_BASE_SIZE
+		window.pivot_offset = Vector2.ZERO
 		if not window.gui_input.is_connected(_on_modal_gui_input):
 			window.gui_input.connect(_on_modal_gui_input)
 	_set_popup_visible(false)
@@ -72,6 +73,14 @@ func _ready() -> void:
 		info_button.pressed.connect(_on_info_pressed)
 	if trash_button != null:
 		trash_button.pressed.connect(_on_trash_pressed)
+	get_viewport().size_changed.connect(_on_viewport_resized)
+
+
+func _on_viewport_resized() -> void:
+	if is_open():
+		_kill_popup_tween()
+		window.modulate.a = 1.0
+		_position_window(last_anchor_position)
 
 
 func _input(event: InputEvent) -> void:
@@ -88,7 +97,14 @@ func _input(event: InputEvent) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_VISIBILITY_CHANGED and visible and item_data.is_empty():
-		call_deferred("_hide_popup_immediate", false)
+		call_deferred("_hide_invalid_popup")
+
+
+func _hide_invalid_popup() -> void:
+	# A selection can arrive in the same frame that the popup is instantiated.
+	# Recheck before hiding so the deferred initial visibility event cannot close it.
+	if visible and item_data.is_empty():
+		_hide_popup_immediate(false)
 
 
 func open_popup(item: Dictionary, icon_texture: Texture2D = null, anchor_position: Vector2 = Vector2.ZERO) -> void:
@@ -275,15 +291,22 @@ func _position_window(anchor_position: Vector2) -> void:
 	if window == null:
 		return
 	var viewport_size: Vector2 = get_viewport_rect().size
+	last_anchor_position = anchor_position
+	var fit_scale := minf(WINDOW_RENDER_SCALE, minf(
+		(viewport_size.x - VIEWPORT_MARGIN * 2.0) / WINDOW_BASE_SIZE.x,
+		(viewport_size.y - VIEWPORT_MARGIN * 2.0) / WINDOW_BASE_SIZE.y))
+	window_base_scale = Vector2.ONE * maxf(0.1, fit_scale)
+	window.scale = window_base_scale
+	var rendered_size := WINDOW_BASE_SIZE * window_base_scale
 	var target_position: Vector2
 	if anchor_position == Vector2.ZERO:
-		target_position = (viewport_size - WINDOW_SIZE) * 0.5
+		target_position = (viewport_size - rendered_size) * 0.5
 	else:
-		target_position = Vector2(anchor_position.x - WINDOW_SIZE.x * 0.5, anchor_position.y - WINDOW_SIZE.y - ANCHOR_GAP)
+		target_position = Vector2(anchor_position.x - rendered_size.x * 0.5, anchor_position.y - rendered_size.y - ANCHOR_GAP)
 		if target_position.y < VIEWPORT_MARGIN:
 			target_position.y = anchor_position.y + ANCHOR_GAP
-	target_position.x = clampf(target_position.x, VIEWPORT_MARGIN, maxf(VIEWPORT_MARGIN, viewport_size.x - WINDOW_SIZE.x - VIEWPORT_MARGIN))
-	target_position.y = clampf(target_position.y, VIEWPORT_MARGIN, maxf(VIEWPORT_MARGIN, viewport_size.y - WINDOW_SIZE.y - VIEWPORT_MARGIN))
+	target_position.x = clampf(target_position.x, VIEWPORT_MARGIN, maxf(VIEWPORT_MARGIN, viewport_size.x - rendered_size.x - VIEWPORT_MARGIN))
+	target_position.y = clampf(target_position.y, VIEWPORT_MARGIN, maxf(VIEWPORT_MARGIN, viewport_size.y - rendered_size.y - VIEWPORT_MARGIN))
 	window.position = target_position
 
 
@@ -291,7 +314,6 @@ func _play_open_animation() -> void:
 	if window == null:
 		return
 	_kill_popup_tween()
-	window.pivot_offset = window.size * Vector2(0.5, 1.0)
 	window.scale = window_base_scale * 0.9
 	window.modulate.a = 0.0
 	popup_tween = create_tween()
@@ -308,7 +330,6 @@ func _play_close_animation(emit_closed: bool) -> void:
 			closed.emit()
 		return
 	_kill_popup_tween()
-	window.pivot_offset = window.size * Vector2(0.5, 1.0)
 	popup_tween = create_tween()
 	var closing_tween: Tween = popup_tween
 	closing_tween.set_parallel(true)
@@ -332,16 +353,18 @@ func _update_item_preview(icon_texture: Texture2D) -> void:
 	if display_name == "":
 		display_name = "Item"
 	if item_name_label != null:
-		item_name_label.text = display_name + " (" + str(amount_limit) + "x)"
-		var title_size: int = 19
+		item_name_label.text = display_name
+		item_name_label.tooltip_text = display_name
+		var title_size: int = 24
 		if item_name_label.text.length() > 32:
 			title_size = 13
 		elif item_name_label.text.length() > 23:
 			title_size = 16
 		item_name_label.add_theme_font_size_override("font_size", title_size)
+		item_name_label.set_meta("pixelmania_font_size", title_size)
 	if item_count_label != null:
-		item_count_label.text = "AVAILABLE  x" + str(amount_limit)
-		item_count_label.visible = false
+		item_count_label.text = str(amount_limit) + " IN INVENTORY"
+		item_count_label.visible = true
 	if item_icon_shadow != null:
 		item_icon_shadow.texture = icon_texture
 		item_icon_shadow.visible = icon_texture != null
@@ -368,6 +391,7 @@ func _update_item_facts() -> void:
 		more_details_label.text = "... (More details)"
 	if description_label != null:
 		description_label.text = description
+		description_label.tooltip_text = description
 
 
 func _display_case_text(raw_text: String) -> String:
@@ -402,7 +426,7 @@ func _sync_amount_controls() -> void:
 	amount = clampi(amount, MIN_AMOUNT, amount_limit)
 	syncing_amount = true
 	if amount_label != null:
-		amount_label.text = "AMOUNT  " + str(amount) + " / " + str(amount_limit)
+		amount_label.text = "QUANTITY  / " + str(amount_limit)
 	if amount_input != null:
 		amount_input.text = str(amount)
 		amount_input.caret_column = amount_input.text.length()

@@ -1042,11 +1042,22 @@ func _apply_slot_display_layout(slot: Button, _display_index: int) -> void:
 		target_control.size = template_control.size
 		target_control.pivot_offset = template_control.pivot_offset
 	slot.set_meta("slot_template_index", TEMPLATE_INDEX)
+	_align_slot_count(slot)
+
+
+func _align_slot_count(slot: Button) -> void:
 	var count: Label = slot.get_node_or_null("Count") as Label
 	if count != null:
-		count.position = Vector2(4, 66)
-		count.size = Vector2(88, 26)
+		# Scene templates can offset the visible frame within the grid cell.
+		# Align to that frame so every stack ends at the same inset, at any scale.
+		var frame: Control = slot.get_node_or_null("Frame") as Control
+		var bounds := frame.get_rect() if frame != null else Rect2(Vector2.ZERO, SLOT_SIZE)
+		count.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		count.position = bounds.position + Vector2(8, bounds.size.y - 34)
+		count.size = Vector2(bounds.size.x - 16, 26)
 		count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		count.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+		count.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		count.clip_text = true
 
 
@@ -1177,21 +1188,14 @@ func _create_slot(item: Dictionary, _item_index: int = 0) -> Button:
 	if label == null and count_text != "":
 		label = Label.new()
 		label.name = "Count"
-		label.position = Vector2(55, 67)
-		label.size = Vector2(38, 21)
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_apply_label_style(label, 12, Color.WHITE)
 		slot.add_child(label)
 	if label != null:
 		label.visible = count_text != ""
 		label.text = count_text
-		label.position = Vector2(4, 66)
-		label.size = Vector2(88, 26)
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		label.clip_text = true
 		label.tooltip_text = str(_count_from_value(item.get("count", 0)))
+		_align_slot_count(slot)
 
 	var equipped_label: Label = slot.get_node_or_null("Equipped") as Label
 	var generated_equipped_label: bool = false
