@@ -2167,7 +2167,7 @@
 	{
 	  "id": 35,
 	  "item_key": "donation_box",
-      "seed": "donation_box_seed",
+	  "seed": "donation_box_seed",
 	  "name": "Donation Box",
 	  "type": "block",
 	  "layer": "foreground",
@@ -15578,9 +15578,507 @@
 	  "seed": "neon_block_seed",
 	  "recipe_tier": 7
 	},
+	{
+	  "item_id": "cozy_chalkboard",
+	  "display_name": "Cozy Chalkboard",
+	  "category": "block",
+	  "rarity": "common",
+	  "stack_limit": 400,
+	  "tradeable": true,
+	  "dropable": true,
+	  "admin_grantable": true,
+	  "hidden": false,
+	  "placeable": true,
+	  "place_layer": "foreground",
+	  "block_health": 4,
+	  "breakable": true,
+	  "solid": true,
+	  "collidable": true,
+	  "no_collision": false,
+	  "collision_type": "full",
+	  "atlas_item_id": 212,
+	  "atlas_source_id": 0,
+	  "atlas_coords": [
+		1,
+		29
+	  ],
+	  "texture": {
+		"atlas": "res://image.png",
+		"cell": [
+		  1,
+		  29
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "inventory_icon": {
+		"atlas": "res://image.png",
+		"cell": [
+		  1,
+		  29
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "seed": "cozy_chalkboard_seed",
+	  "recipe_tier": 7,
+	  "authored_drop_rules": true,
+	  "drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "cozy_chalkboard",
+			"item_category": "block",
+			"amount": 1
+		  },
+		  {
+			"item_id": "cozy_chalkboard_seed",
+			"item_category": "seed",
+			"amount": 1,
+			"chance": 0.2
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  }
+		]
+	  },
+	  "tree_drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "cozy_chalkboard",
+			"item_category": "block",
+			"amount_range": [
+			  2,
+			  5
+			]
+		  },
+		  {
+			"item_id": "cozy_chalkboard_seed",
+			"item_category": "seed",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  5
+			]
+		  }
+		]
+	  },
+	  "id": 212,
+	  "item_key": "cozy_chalkboard",
+	  "name": "Cozy Chalkboard",
+	  "type": "block",
+	  "layer": "foreground",
+	  "source_id": 0,
+	  "collision": true,
+	  "hardness": 4,
+	  "atlas_enabled": true
+	},
+	{
+	  "item_id": "almanac",
+	  "display_name": "Almanac",
+	  "category": "block",
+	  "rarity": "common",
+	  "stack_limit": 400,
+	  "tradeable": true,
+	  "dropable": true,
+	  "admin_grantable": true,
+	  "hidden": false,
+	  "placeable": true,
+	  "place_layer": "foreground",
+	  "block_health": 4,
+	  "breakable": true,
+	  "solid": true,
+	  "collidable": true,
+	  "no_collision": false,
+	  "collision_type": "full",
+	  "atlas_item_id": 213,
+	  "atlas_source_id": 0,
+	  "atlas_coords": [
+		1,
+		30
+	  ],
+	  "texture": {
+		"atlas": "res://image.png",
+		"cell": [
+		  1,
+		  30
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "inventory_icon": {
+		"atlas": "res://image.png",
+		"cell": [
+		  1,
+		  30
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "seed": "almanac_seed",
+	  "recipe_tier": 8,
+	  "authored_drop_rules": true,
+	  "drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "almanac",
+			"item_category": "block",
+			"amount": 1
+		  },
+		  {
+			"item_id": "almanac_seed",
+			"item_category": "seed",
+			"amount": 1,
+			"chance": 0.2
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  }
+		]
+	  },
+	  "tree_drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "almanac",
+			"item_category": "block",
+			"amount_range": [
+			  2,
+			  5
+			]
+		  },
+		  {
+			"item_id": "almanac_seed",
+			"item_category": "seed",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  5
+			]
+		  }
+		]
+	  },
+	  "id": 213,
+	  "item_key": "almanac",
+	  "name": "Almanac",
+	  "type": "block",
+	  "layer": "foreground",
+	  "source_id": 0,
+	  "collision": true,
+	  "hardness": 4,
+	  "atlas_enabled": true
+	},
+	{
+	  "item_id": "pencil_block",
+	  "display_name": "Pencil Block",
+	  "category": "block",
+	  "rarity": "common",
+	  "stack_limit": 400,
+	  "tradeable": true,
+	  "dropable": true,
+	  "admin_grantable": true,
+	  "hidden": false,
+	  "placeable": true,
+	  "place_layer": "foreground",
+	  "block_health": 4,
+	  "breakable": true,
+	  "solid": true,
+	  "collidable": true,
+	  "no_collision": false,
+	  "collision_type": "full",
+	  "atlas_item_id": 214,
+	  "atlas_source_id": 0,
+	  "atlas_coords": [
+		0,
+		29
+	  ],
+	  "texture": {
+		"atlas": "res://image.png",
+		"cell": [
+		  0,
+		  29
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "inventory_icon": {
+		"atlas": "res://image.png",
+		"cell": [
+		  0,
+		  29
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "seed": "pencil_block_seed",
+	  "recipe_tier": 5,
+	  "authored_drop_rules": true,
+	  "drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "pencil_block",
+			"item_category": "block",
+			"amount": 1
+		  },
+		  {
+			"item_id": "pencil_block_seed",
+			"item_category": "seed",
+			"amount": 1,
+			"chance": 0.2
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  }
+		]
+	  },
+	  "tree_drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "pencil_block",
+			"item_category": "block",
+			"amount_range": [
+			  2,
+			  5
+			]
+		  },
+		  {
+			"item_id": "pencil_block_seed",
+			"item_category": "seed",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  5
+			]
+		  }
+		]
+	  },
+	  "vertical_variant_atlas_coords": {
+		"single": [
+		  0,
+		  29
+		],
+		"top": [
+		  0,
+		  30
+		],
+		"middle": [
+		  0,
+		  31
+		],
+		"bottom": [
+		  0,
+		  32
+		]
+	  },
+	  "id": 214,
+	  "item_key": "pencil_block",
+	  "name": "Pencil Block",
+	  "type": "block",
+	  "layer": "foreground",
+	  "source_id": 0,
+	  "collision": true,
+	  "hardness": 4,
+	  "atlas_enabled": true
+	},
+	{
+	  "item_id": "wooden_shelf",
+	  "display_name": "Wooden Shelf",
+	  "category": "block",
+	  "rarity": "common",
+	  "stack_limit": 400,
+	  "tradeable": true,
+	  "dropable": true,
+	  "admin_grantable": true,
+	  "hidden": false,
+	  "placeable": true,
+	  "place_layer": "foreground",
+	  "block_health": 4,
+	  "breakable": true,
+	  "solid": true,
+	  "collidable": true,
+	  "no_collision": false,
+	  "collision_type": "full",
+	  "atlas_item_id": 215,
+	  "atlas_source_id": 0,
+	  "atlas_coords": [
+		11,
+		13
+	  ],
+	  "texture": {
+		"atlas": "res://image.png",
+		"cell": [
+		  11,
+		  13
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "inventory_icon": {
+		"atlas": "res://image.png",
+		"cell": [
+		  11,
+		  13
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "seed": "wooden_shelf_seed",
+	  "recipe_tier": 6,
+	  "authored_drop_rules": true,
+	  "drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "wooden_shelf",
+			"item_category": "block",
+			"amount": 1
+		  },
+		  {
+			"item_id": "wooden_shelf_seed",
+			"item_category": "seed",
+			"amount": 1,
+			"chance": 0.2
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  }
+		]
+	  },
+	  "tree_drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "wooden_shelf",
+			"item_category": "block",
+			"amount_range": [
+			  2,
+			  5
+			]
+		  },
+		  {
+			"item_id": "wooden_shelf_seed",
+			"item_category": "seed",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  5
+			]
+		  }
+		]
+	  },
+	  "id": 215,
+	  "item_key": "wooden_shelf",
+	  "name": "Wooden Shelf",
+	  "type": "block",
+	  "layer": "foreground",
+	  "source_id": 0,
+	  "collision": true,
+	  "hardness": 4,
+	  "atlas_enabled": true
+	},
     {
-      "item_id": "cozy_chalkboard",
-      "display_name": "Cozy Chalkboard",
+      "item_id": "cloud_block",
+      "display_name": "Cloud Block",
       "category": "block",
       "rarity": "common",
       "stack_limit": 400,
@@ -15596,17 +16094,17 @@
       "collidable": true,
       "no_collision": false,
       "collision_type": "full",
-      "atlas_item_id": 212,
+      "atlas_item_id": 216,
       "atlas_source_id": 0,
       "atlas_coords": [
-        1,
-        29
+        24,
+        2
       ],
       "texture": {
         "atlas": "res://image.png",
         "cell": [
-          1,
-          29
+          24,
+          2
         ],
         "cell_size": [
           32,
@@ -15616,16 +16114,16 @@
       "inventory_icon": {
         "atlas": "res://image.png",
         "cell": [
-          1,
-          29
+          24,
+          2
         ],
         "cell_size": [
           32,
           32
         ]
       },
-      "seed": "cozy_chalkboard_seed",
-      "recipe_tier": 7,
+      "seed": "cloud_block_seed",
+      "recipe_tier": 9,
       "authored_drop_rules": true,
       "drop_rules": {
         "seed_chance": 0,
@@ -15635,12 +16133,12 @@
         ],
         "fixed_drops": [
           {
-            "item_id": "cozy_chalkboard",
+            "item_id": "cloud_block",
             "item_category": "block",
             "amount": 1
           },
           {
-            "item_id": "cozy_chalkboard_seed",
+            "item_id": "cloud_block_seed",
             "item_category": "seed",
             "amount": 1,
             "chance": 0.2
@@ -15663,7 +16161,7 @@
         ],
         "fixed_drops": [
           {
-            "item_id": "cozy_chalkboard",
+            "item_id": "cloud_block",
             "item_category": "block",
             "amount_range": [
               2,
@@ -15671,7 +16169,7 @@
             ]
           },
           {
-            "item_id": "cozy_chalkboard_seed",
+            "item_id": "cloud_block_seed",
             "item_category": "seed",
             "amount_range": [
               0,
@@ -15688,387 +16186,9 @@
           }
         ]
       },
-      "id": 212,
-      "item_key": "cozy_chalkboard",
-      "name": "Cozy Chalkboard",
-      "type": "block",
-      "layer": "foreground",
-      "source_id": 0,
-      "collision": true,
-      "hardness": 4,
-      "atlas_enabled": true
-    },
-    {
-      "item_id": "almanac",
-      "display_name": "Almanac",
-      "category": "block",
-      "rarity": "common",
-      "stack_limit": 400,
-      "tradeable": true,
-      "dropable": true,
-      "admin_grantable": true,
-      "hidden": false,
-      "placeable": true,
-      "place_layer": "foreground",
-      "block_health": 4,
-      "breakable": true,
-      "solid": true,
-      "collidable": true,
-      "no_collision": false,
-      "collision_type": "full",
-      "atlas_item_id": 213,
-      "atlas_source_id": 0,
-      "atlas_coords": [
-        1,
-        30
-      ],
-      "texture": {
-        "atlas": "res://image.png",
-        "cell": [
-          1,
-          30
-        ],
-        "cell_size": [
-          32,
-          32
-        ]
-      },
-      "inventory_icon": {
-        "atlas": "res://image.png",
-        "cell": [
-          1,
-          30
-        ],
-        "cell_size": [
-          32,
-          32
-        ]
-      },
-      "seed": "almanac_seed",
-      "recipe_tier": 8,
-      "authored_drop_rules": true,
-      "drop_rules": {
-        "seed_chance": 0,
-        "gem_range": [
-          0,
-          0
-        ],
-        "fixed_drops": [
-          {
-            "item_id": "almanac",
-            "item_category": "block",
-            "amount": 1
-          },
-          {
-            "item_id": "almanac_seed",
-            "item_category": "seed",
-            "amount": 1,
-            "chance": 0.2
-          },
-          {
-            "item_id": "gem",
-            "item_category": "currency",
-            "amount_range": [
-              0,
-              3
-            ]
-          }
-        ]
-      },
-      "tree_drop_rules": {
-        "seed_chance": 0,
-        "gem_range": [
-          0,
-          0
-        ],
-        "fixed_drops": [
-          {
-            "item_id": "almanac",
-            "item_category": "block",
-            "amount_range": [
-              2,
-              5
-            ]
-          },
-          {
-            "item_id": "almanac_seed",
-            "item_category": "seed",
-            "amount_range": [
-              0,
-              3
-            ]
-          },
-          {
-            "item_id": "gem",
-            "item_category": "currency",
-            "amount_range": [
-              0,
-              5
-            ]
-          }
-        ]
-      },
-      "id": 213,
-      "item_key": "almanac",
-      "name": "Almanac",
-      "type": "block",
-      "layer": "foreground",
-      "source_id": 0,
-      "collision": true,
-      "hardness": 4,
-      "atlas_enabled": true
-    },
-    {
-      "item_id": "pencil_block",
-      "display_name": "Pencil Block",
-      "category": "block",
-      "rarity": "common",
-      "stack_limit": 400,
-      "tradeable": true,
-      "dropable": true,
-      "admin_grantable": true,
-      "hidden": false,
-      "placeable": true,
-      "place_layer": "foreground",
-      "block_health": 4,
-      "breakable": true,
-      "solid": true,
-      "collidable": true,
-      "no_collision": false,
-      "collision_type": "full",
-      "atlas_item_id": 214,
-      "atlas_source_id": 0,
-      "atlas_coords": [
-        0,
-        29
-      ],
-      "texture": {
-        "atlas": "res://image.png",
-        "cell": [
-          0,
-          29
-        ],
-        "cell_size": [
-          32,
-          32
-        ]
-      },
-      "inventory_icon": {
-        "atlas": "res://image.png",
-        "cell": [
-          0,
-          29
-        ],
-        "cell_size": [
-          32,
-          32
-        ]
-      },
-      "seed": "pencil_block_seed",
-      "recipe_tier": 5,
-      "authored_drop_rules": true,
-      "drop_rules": {
-        "seed_chance": 0,
-        "gem_range": [
-          0,
-          0
-        ],
-        "fixed_drops": [
-          {
-            "item_id": "pencil_block",
-            "item_category": "block",
-            "amount": 1
-          },
-          {
-            "item_id": "pencil_block_seed",
-            "item_category": "seed",
-            "amount": 1,
-            "chance": 0.2
-          },
-          {
-            "item_id": "gem",
-            "item_category": "currency",
-            "amount_range": [
-              0,
-              3
-            ]
-          }
-        ]
-      },
-      "tree_drop_rules": {
-        "seed_chance": 0,
-        "gem_range": [
-          0,
-          0
-        ],
-        "fixed_drops": [
-          {
-            "item_id": "pencil_block",
-            "item_category": "block",
-            "amount_range": [
-              2,
-              5
-            ]
-          },
-          {
-            "item_id": "pencil_block_seed",
-            "item_category": "seed",
-            "amount_range": [
-              0,
-              3
-            ]
-          },
-          {
-            "item_id": "gem",
-            "item_category": "currency",
-            "amount_range": [
-              0,
-              5
-            ]
-          }
-        ]
-      },
-      "vertical_variant_atlas_coords": {
-        "single": [
-          0,
-          29
-        ],
-        "top": [
-          0,
-          30
-        ],
-        "middle": [
-          0,
-          31
-        ],
-        "bottom": [
-          0,
-          32
-        ]
-      },
-      "id": 214,
-      "item_key": "pencil_block",
-      "name": "Pencil Block",
-      "type": "block",
-      "layer": "foreground",
-      "source_id": 0,
-      "collision": true,
-      "hardness": 4,
-      "atlas_enabled": true
-    },
-    {
-      "item_id": "wooden_shelf",
-      "display_name": "Wooden Shelf",
-      "category": "block",
-      "rarity": "common",
-      "stack_limit": 400,
-      "tradeable": true,
-      "dropable": true,
-      "admin_grantable": true,
-      "hidden": false,
-      "placeable": true,
-      "place_layer": "foreground",
-      "block_health": 4,
-      "breakable": true,
-      "solid": true,
-      "collidable": true,
-      "no_collision": false,
-      "collision_type": "full",
-      "atlas_item_id": 215,
-      "atlas_source_id": 0,
-      "atlas_coords": [
-        11,
-        13
-      ],
-      "texture": {
-        "atlas": "res://image.png",
-        "cell": [
-          11,
-          13
-        ],
-        "cell_size": [
-          32,
-          32
-        ]
-      },
-      "inventory_icon": {
-        "atlas": "res://image.png",
-        "cell": [
-          11,
-          13
-        ],
-        "cell_size": [
-          32,
-          32
-        ]
-      },
-      "seed": "wooden_shelf_seed",
-      "recipe_tier": 6,
-      "authored_drop_rules": true,
-      "drop_rules": {
-        "seed_chance": 0,
-        "gem_range": [
-          0,
-          0
-        ],
-        "fixed_drops": [
-          {
-            "item_id": "wooden_shelf",
-            "item_category": "block",
-            "amount": 1
-          },
-          {
-            "item_id": "wooden_shelf_seed",
-            "item_category": "seed",
-            "amount": 1,
-            "chance": 0.2
-          },
-          {
-            "item_id": "gem",
-            "item_category": "currency",
-            "amount_range": [
-              0,
-              3
-            ]
-          }
-        ]
-      },
-      "tree_drop_rules": {
-        "seed_chance": 0,
-        "gem_range": [
-          0,
-          0
-        ],
-        "fixed_drops": [
-          {
-            "item_id": "wooden_shelf",
-            "item_category": "block",
-            "amount_range": [
-              2,
-              5
-            ]
-          },
-          {
-            "item_id": "wooden_shelf_seed",
-            "item_category": "seed",
-            "amount_range": [
-              0,
-              3
-            ]
-          },
-          {
-            "item_id": "gem",
-            "item_category": "currency",
-            "amount_range": [
-              0,
-              5
-            ]
-          }
-        ]
-      },
-      "id": 215,
-      "item_key": "wooden_shelf",
-      "name": "Wooden Shelf",
+      "id": 216,
+      "item_key": "cloud_block",
+      "name": "Cloud Block",
       "type": "block",
       "layer": "foreground",
       "source_id": 0,
