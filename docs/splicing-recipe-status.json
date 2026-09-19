@@ -7315,12 +7315,10 @@
     "seeds": [
       "bomb_seed",
       "white_block_seed",
-      null
+      "dice_block_seed"
     ],
-    "missing_seeds": [
-      "Dice Block"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 380,
@@ -7470,12 +7468,10 @@
     "seeds": [
       "blue_block_seed",
       "chandelier_seed",
-      null
+      "blue_portal_seed"
     ],
-    "missing_seeds": [
-      "Blue portal"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 388,
@@ -7511,14 +7507,11 @@
     "missing_items": [],
     "seeds": [
       "royal_door_seed",
-      null,
-      null
+      "dice_block_seed",
+      "password_door_seed"
     ],
-    "missing_seeds": [
-      "Dice block",
-      "Password door"
-    ],
-    "status": "missing_seeds"
+    "missing_seeds": [],
+    "status": "active"
   },
   {
     "row": 390,

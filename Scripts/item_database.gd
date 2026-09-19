@@ -15926,20 +15926,17 @@ const ITEMS = {
 			"dice_face_textures": ["res://Assets/blocks/tier_4/dice_1.png", "res://Assets/blocks/tier_4/dice_2.png", "res://Assets/blocks/tier_4/dice_3.png", "res://Assets/blocks/tier_4/dice_4.png", "res://Assets/blocks/tier_4/dice_5.png", "res://Assets/blocks/tier_4/dice_6.png"],
 			"dice_roll_frame_seconds": 0.08,
 			"dice_roll_duration_seconds": 1.05,
-			"seed": "",
+			"seed": "dice_block_seed",
 			"collidable": true,
 			"dice_block": true,
 			"interact_rules": true,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "dice_block", "item_category": "block", "amount": 1},
-					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
-				]
-			},
+			"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"dice_block","item_category":"block","amount":1},{"item_id":"gem","item_category":"currency","amount_range":[1,7]},{"item_id":"dice_block_seed","item_category":"seed","amount":1,"chance":0.2}]},
 			"order": 400
-		},
+		,
+"authored_drop_rules": true
+,
+"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"dice_block","item_category":"block","amount_range":[2,5]},{"item_id":"dice_block_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}
+},
 	"blue_portal": {
 			"category": "block",
 			"display_name": "Blue Portal",
@@ -15949,23 +15946,20 @@ const ITEMS = {
 			"inventory_icon": "res://Assets/blocks/tier_4/blue_portal_1.png",
 			"animation_frames": ["res://Assets/blocks/tier_4/blue_portal_1.png", "res://Assets/blocks/tier_4/blue_portal_2.png", "res://Assets/blocks/tier_4/blue_portal_3.png", "res://Assets/blocks/tier_4/blue_portal_4.png"],
 			"animation_frame_seconds": 0.12,
-			"seed": "",
+			"seed": "blue_portal_seed",
 			"no_collision": true,
 			"collidable": false,
 			"door_block": true,
 			"portal_block": true,
 			"auto_door_enter": true,
 			"interact_rules": true,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "blue_portal", "item_category": "block", "amount": 1},
-					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
-				]
-			},
+			"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"blue_portal","item_category":"block","amount":1},{"item_id":"gem","item_category":"currency","amount_range":[1,7]},{"item_id":"blue_portal_seed","item_category":"seed","amount":1,"chance":0.2}]},
 			"order": 401
-		},
+		,
+"authored_drop_rules": true
+,
+"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"blue_portal","item_category":"block","amount_range":[2,5]},{"item_id":"blue_portal_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}
+},
 	"yellow_portal": {
 			"category": "block",
 			"display_name": "Yellow Portal",
@@ -16069,22 +16063,19 @@ const ITEMS = {
 			"texture": "res://Assets/blocks/tier_4/password_door.png",
 			"atlas_coords": Vector2i(8, 15),
 			"inventory_icon": "res://Assets/blocks/tier_4/password_door.png",
-			"seed": "",
+			"seed": "password_door_seed",
 			"no_collision": true,
 			"collidable": false,
 			"door_block": true,
 			"password_door": true,
 			"interact_rules": true,
-			"drop_rules": {
-				"seed_chance": 0,
-				"gem_range": [0, 0],
-				"fixed_drops": [
-					{"item_id": "password_door", "item_category": "block", "amount": 1},
-					{"item_id": "gem", "item_category": "currency", "amount_range": [1, 7]}
-				]
-			},
+			"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"password_door","item_category":"block","amount":1},{"item_id":"gem","item_category":"currency","amount_range":[1,7]},{"item_id":"password_door_seed","item_category":"seed","amount":1,"chance":0.2}]},
 			"order": 406
-		},
+		,
+"authored_drop_rules": true
+,
+"tree_drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"password_door","item_category":"block","amount_range":[2,5]},{"item_id":"password_door_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]}
+},
 	"star_block": {
 			"category": "block",
 			"display_name": "Star Block",
@@ -26349,6 +26340,9 @@ const ITEMS = {
 # ============================================================
 # Authored tiers from the SPLICING sheet. Recipes absent from the sheet stay unranked.
 const RECIPE_TIERS = {
+"password_door_seed": 11,
+"blue_portal_seed": 11,
+"dice_block_seed": 10,
 "fire_hydrant_seed": 9,
 "fire_escape_seed": 9,
 "duck_seed": 9,
@@ -26699,6 +26693,9 @@ const RECIPE_TIERS = {
 }
 
 const SPLICE_RECIPES = {
+"dice_block_seed+royal_door_seed": "password_door_seed",
+"blue_block_seed+chandelier_seed": "blue_portal_seed",
+"bomb_seed+white_block_seed": "dice_block_seed",
 "red_block_seed+rubber_duck_seed": "fire_hydrant_seed",
 "steel_platform_seed+street_lamp_seed": "fire_escape_seed",
 "rubber_duck_seed+sashimi_table_seed": "duck_seed",
