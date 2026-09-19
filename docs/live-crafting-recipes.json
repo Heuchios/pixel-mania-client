@@ -1,5 +1,25 @@
 [
   {
+    "id": "sheet_gem_driller",
+    "output": {
+      "item_id": "gem_driller",
+      "category": "block",
+      "amount": 1
+    },
+    "cost": [
+      {
+        "item_id": "oil_refinery",
+        "category": "block",
+        "amount": 1
+      },
+      {
+        "item_id": "amethyst_block",
+        "category": "block",
+        "amount": 1
+      }
+    ]
+  },
+  {
     "id": "sheet_fireplace",
     "output": {
       "item_id": "fireplace",

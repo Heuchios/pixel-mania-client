@@ -1185,16 +1185,18 @@
       }
     ],
     "ids": [
-      null,
+      "magma_stone",
       "stone",
-      null
+      "hellbrick"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Magma stone",
-      "Hellbrick"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "magma_stone_seed",
+      "stone_seed",
+      "hellbrick_seed"
+    ]
   },
   {
     "row": 66,
@@ -2065,16 +2067,18 @@
       }
     ],
     "ids": [
-      null,
+      "hellbrick",
       "stone_brick_wall",
-      null
+      "hellbrick_wall"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Hellbrick",
-      "Hellbrick wall"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "hellbrick_seed",
+      "stone_brick_wall_seed",
+      "hellbrick_wall_seed"
+    ]
   },
   {
     "row": 110,
@@ -5152,16 +5156,18 @@
       }
     ],
     "ids": [
-      null,
+      "hellbrick",
       "red_brick_platform",
-      null
+      "hellbrick_platform"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Hellbrick",
-      "Hellbrick platform"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "hellbrick_seed",
+      "red_brick_platform_seed",
+      "hellbrick_platform_seed"
+    ]
   },
   {
     "row": 266,
@@ -6028,13 +6034,16 @@
     "ids": [
       "mechanical_entrance",
       "steel_block",
-      null
+      "metal_gate"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Metal gate"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "mechanical_entrance_seed",
+      "steel_block_seed",
+      "metal_gate_seed"
+    ]
   },
   {
     "row": 310,
@@ -6222,13 +6231,16 @@
     "ids": [
       "metal_pad",
       "steel_block",
-      null
+      "electrical_box"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Electrical box"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "metal_pad_seed",
+      "steel_block_seed",
+      "electrical_box_seed"
+    ]
   },
   {
     "row": 320,
@@ -6605,13 +6617,16 @@
     "ids": [
       "steel_block",
       "display_case",
-      null
+      "display_box"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Display block"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "steel_block_seed",
+      "display_case_seed",
+      "display_box_seed"
+    ]
   },
   {
     "row": 340,
@@ -6641,12 +6656,11 @@
     "ids": [
       "checkpoint",
       null,
-      null
+      "blink_checkpoint"
     ],
     "method": "splicing",
     "missing_items": [
-      "Star fragment",
-      "Blink checkpoint"
+      "Star fragment"
     ],
     "status": "missing_items"
   },
@@ -6836,15 +6850,18 @@
       }
     ],
     "ids": [
-      null,
+      "electrical_box",
       "weathervane",
       "fan"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Electrical box"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "electrical_box_seed",
+      "weathervane_seed",
+      "fan_seed"
+    ]
   },
   {
     "row": 352,
@@ -6873,14 +6890,17 @@
     ],
     "ids": [
       "big_sign",
-      null,
+      "electrical_box",
       "digital_sign"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Electrical box"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "big_sign_seed",
+      "electrical_box_seed",
+      "digital_sign_seed"
+    ]
   },
   {
     "row": 354,
@@ -7227,17 +7247,18 @@
       }
     ],
     "ids": [
-      null,
-      null,
-      null
+      "hellbrick",
+      "metal_gate",
+      "hell_entrance"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Hellbrick",
-      "Metal gate",
-      "Hell entrance"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "hellbrick_seed",
+      "metal_gate_seed",
+      "hell_entrance_seed"
+    ]
   },
   {
     "row": 374,
@@ -7274,12 +7295,12 @@
     "seeds": [
       "green_couch_seed",
       "biohazard_barrel_seed",
-      null
+      "recycle_bin_seed"
     ],
     "missing_seeds": [
       "Recycler bin"
     ],
-    "status": "missing_seeds"
+    "status": "active"
   },
   {
     "row": 376,
@@ -7377,16 +7398,18 @@
       }
     ],
     "ids": [
-      null,
+      "blink_checkpoint",
       "metal_pad",
-      null
+      "battery_assembler"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Blink checkpoint",
-      "Battery assambler"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "blink_checkpoint_seed",
+      "metal_pad_seed",
+      "battery_assembler_seed"
+    ]
   },
   {
     "row": 382,
@@ -7456,13 +7479,16 @@
     "ids": [
       "orange_block",
       "chandelier",
-      null
+      "yellow_portal"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Orange Portal"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "orange_block_seed",
+      "chandelier_seed",
+      "yellow_portal_seed"
+    ]
   },
   {
     "row": 386,
@@ -7679,15 +7705,17 @@
     ],
     "ids": [
       "chandelier",
-      null,
-      null
+      "hell_entrance",
+      "hell_portal"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Hell entrance",
-      "Hell portal"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "chandelier_seed",
+      "hell_entrance_seed",
+      "hell_portal_seed"
+    ]
   },
   {
     "row": 398,
@@ -7784,12 +7812,11 @@
     "ids": [
       "oil_refinery",
       "amethyst_block",
-      null
+      "gem_driller"
     ],
     "method": "crafting",
-    "missing_items": [
-      "Gem driller"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "crafting_active",
+    "recipe_id": "sheet_gem_driller"
   }
 ]
