@@ -1,0 +1,1805 @@
+{
+  "interpretation": "Bulk totals / block count; floor guaranteed plus fractional chance of one extra. Block and seed probabilities unchanged.",
+  "applied": [
+    {
+      "id": "dirt",
+      "average": 0.2,
+      "rows": [
+        6
+      ]
+    },
+    {
+      "id": "cave_background",
+      "average": 0.2,
+      "rows": [
+        12
+      ]
+    },
+    {
+      "id": "stone",
+      "average": 0.2,
+      "rows": [
+        18
+      ]
+    },
+    {
+      "id": "obsidian",
+      "average": 0.35,
+      "rows": [
+        22
+      ]
+    },
+    {
+      "id": "lava",
+      "average": 0.2,
+      "rows": [
+        24
+      ]
+    },
+    {
+      "id": "water",
+      "average": 0.5,
+      "rows": [
+        26
+      ]
+    },
+    {
+      "id": "tiny_rock",
+      "average": 0.35,
+      "rows": [
+        28
+      ]
+    },
+    {
+      "id": "big_rock",
+      "average": 0.2,
+      "rows": [
+        30
+      ]
+    },
+    {
+      "id": "water_bucket",
+      "average": 1.8,
+      "rows": [
+        42
+      ]
+    },
+    {
+      "id": "leaf",
+      "average": 0.35,
+      "rows": [
+        88
+      ]
+    },
+    {
+      "id": "spring_leaf",
+      "average": 0.2,
+      "rows": [
+        90
+      ]
+    },
+    {
+      "id": "autumn_leaf",
+      "average": 0.5,
+      "rows": [
+        92
+      ]
+    },
+    {
+      "id": "hanging_vine",
+      "average": 0.35,
+      "rows": [
+        94
+      ]
+    },
+    {
+      "id": "vines_2",
+      "average": 0.4,
+      "rows": [
+        96
+      ]
+    },
+    {
+      "id": "grass",
+      "average": 0.8,
+      "rows": [
+        98
+      ]
+    },
+    {
+      "id": "rose",
+      "average": 0.35,
+      "rows": [
+        100
+      ]
+    },
+    {
+      "id": "lily",
+      "average": 0.2,
+      "rows": [
+        102
+      ]
+    },
+    {
+      "id": "sunflower",
+      "average": 0.5,
+      "rows": [
+        104
+      ]
+    },
+    {
+      "id": "bush",
+      "average": 0.6,
+      "rows": [
+        106
+      ]
+    },
+    {
+      "id": "wood_platform",
+      "average": 0.8,
+      "rows": [
+        108
+      ]
+    },
+    {
+      "id": "mushroom",
+      "average": 0.8,
+      "rows": [
+        110
+      ]
+    },
+    {
+      "id": "apple",
+      "average": 0.2,
+      "rows": [
+        114
+      ]
+    },
+    {
+      "id": "wooden_ladder",
+      "average": 1.2,
+      "rows": [
+        120
+      ]
+    },
+    {
+      "id": "sign",
+      "average": 1.2,
+      "rows": [
+        122
+      ]
+    },
+    {
+      "id": "wooden_entrance",
+      "average": 1.5,
+      "rows": [
+        124
+      ]
+    },
+    {
+      "id": "wooden_block",
+      "average": 0.4,
+      "rows": [
+        126
+      ]
+    },
+    {
+      "id": "wooden_wallpaper",
+      "average": 0.8,
+      "rows": [
+        128
+      ]
+    },
+    {
+      "id": "wooden_window",
+      "average": 1,
+      "rows": [
+        130
+      ]
+    },
+    {
+      "id": "wooden_door",
+      "average": 0.8,
+      "rows": [
+        132
+      ]
+    },
+    {
+      "id": "wooden_fence",
+      "average": 1.2,
+      "rows": [
+        134
+      ]
+    },
+    {
+      "id": "wooden_chair",
+      "average": 1.5,
+      "rows": [
+        136
+      ]
+    },
+    {
+      "id": "wooden_table",
+      "average": 0.8,
+      "rows": [
+        138
+      ]
+    },
+    {
+      "id": "wood",
+      "average": 0.5,
+      "rows": [
+        140
+      ]
+    },
+    {
+      "id": "climbing_vine",
+      "average": 2,
+      "rows": [
+        142
+      ]
+    },
+    {
+      "id": "wooden_crappy_sign",
+      "average": 1,
+      "rows": [
+        148
+      ]
+    },
+    {
+      "id": "sand",
+      "average": 0.2,
+      "rows": [
+        150
+      ]
+    },
+    {
+      "id": "sand_castle",
+      "average": 0.2,
+      "rows": [
+        156
+      ]
+    },
+    {
+      "id": "pile_of_sand",
+      "average": 0.5,
+      "rows": [
+        158
+      ]
+    },
+    {
+      "id": "snow_block",
+      "average": 0.35,
+      "rows": [
+        160
+      ]
+    },
+    {
+      "id": "snow_dirt",
+      "average": 0.2,
+      "rows": [
+        162
+      ]
+    },
+    {
+      "id": "pile_of_snow",
+      "average": 0.5,
+      "rows": [
+        170
+      ]
+    },
+    {
+      "id": "frozen_grass",
+      "average": 0.35,
+      "rows": [
+        172
+      ]
+    },
+    {
+      "id": "frozen_grass_1",
+      "average": 0.35,
+      "rows": [
+        172
+      ]
+    },
+    {
+      "id": "frozen_grass_2",
+      "average": 0.35,
+      "rows": [
+        172
+      ]
+    },
+    {
+      "id": "frozen_grass_3",
+      "average": 0.35,
+      "rows": [
+        172
+      ]
+    },
+    {
+      "id": "snow_stone",
+      "average": 0.2,
+      "rows": [
+        174
+      ]
+    },
+    {
+      "id": "ice_block",
+      "average": 0.5,
+      "rows": [
+        176
+      ]
+    },
+    {
+      "id": "snow_tiny_rock",
+      "average": 0.35,
+      "rows": [
+        178
+      ]
+    },
+    {
+      "id": "snow_big_rock",
+      "average": 0.2,
+      "rows": [
+        180
+      ]
+    },
+    {
+      "id": "snow_leaf",
+      "average": 0.5,
+      "rows": [
+        182
+      ]
+    },
+    {
+      "id": "wooden_barrel",
+      "average": 2,
+      "rows": [
+        184
+      ]
+    },
+    {
+      "id": "wooden_box",
+      "average": 1.2,
+      "rows": [
+        186
+      ]
+    },
+    {
+      "id": "lantern",
+      "average": 2.5,
+      "rows": [
+        188
+      ]
+    },
+    {
+      "id": "campfire",
+      "average": 1,
+      "rows": [
+        190
+      ]
+    },
+    {
+      "id": "dungeon_door",
+      "average": 2.2,
+      "rows": [
+        192
+      ]
+    },
+    {
+      "id": "sturdy_box",
+      "average": 3,
+      "rows": [
+        194
+      ]
+    },
+    {
+      "id": "wagon_wheel",
+      "average": 2.5,
+      "rows": [
+        196
+      ]
+    },
+    {
+      "id": "portcullis",
+      "average": 3,
+      "rows": [
+        198
+      ]
+    },
+    {
+      "id": "cloud_block",
+      "average": 6.5,
+      "rows": [
+        200
+      ]
+    },
+    {
+      "id": "red_brick",
+      "average": 0.6,
+      "rows": [
+        202
+      ]
+    },
+    {
+      "id": "red_brick_wall",
+      "average": 0.8,
+      "rows": [
+        204
+      ]
+    },
+    {
+      "id": "stone_brick",
+      "average": 0.8,
+      "rows": [
+        206
+      ]
+    },
+    {
+      "id": "stone_brick_wall",
+      "average": 1,
+      "rows": [
+        208
+      ]
+    },
+    {
+      "id": "green_brick",
+      "average": 1.2,
+      "rows": [
+        210
+      ]
+    },
+    {
+      "id": "green_brick_wall",
+      "average": 2.5,
+      "rows": [
+        212
+      ]
+    },
+    {
+      "id": "white_block",
+      "average": 1,
+      "rows": [
+        214
+      ]
+    },
+    {
+      "id": "red_block",
+      "average": 0.8,
+      "rows": [
+        216
+      ]
+    },
+    {
+      "id": "green_block",
+      "average": 1.2,
+      "rows": [
+        218
+      ]
+    },
+    {
+      "id": "brown_block",
+      "average": 1,
+      "rows": [
+        220
+      ]
+    },
+    {
+      "id": "grey_block",
+      "average": 0.8,
+      "rows": [
+        222
+      ]
+    },
+    {
+      "id": "orange_block",
+      "average": 1.8,
+      "rows": [
+        224
+      ]
+    },
+    {
+      "id": "aqua_block",
+      "average": 2,
+      "rows": [
+        226
+      ]
+    },
+    {
+      "id": "purple_block",
+      "average": 1.8,
+      "rows": [
+        228
+      ]
+    },
+    {
+      "id": "black_block",
+      "average": 1.2,
+      "rows": [
+        230
+      ]
+    },
+    {
+      "id": "yellow_block",
+      "average": 1,
+      "rows": [
+        232
+      ]
+    },
+    {
+      "id": "blue_block",
+      "average": 1.2,
+      "rows": [
+        234
+      ]
+    },
+    {
+      "id": "pink_block",
+      "average": 1.8,
+      "rows": [
+        236
+      ]
+    },
+    {
+      "id": "maroon_block",
+      "average": 2,
+      "rows": [
+        238
+      ]
+    },
+    {
+      "id": "dark_green_block",
+      "average": 1.8,
+      "rows": [
+        240
+      ]
+    },
+    {
+      "id": "dark_brown_block",
+      "average": 2.5,
+      "rows": [
+        242
+      ]
+    },
+    {
+      "id": "dark_orange_block",
+      "average": 2,
+      "rows": [
+        244
+      ]
+    },
+    {
+      "id": "dark_aqua_block",
+      "average": 2.2,
+      "rows": [
+        246
+      ]
+    },
+    {
+      "id": "dark_purple_block",
+      "average": 3,
+      "rows": [
+        248
+      ]
+    },
+    {
+      "id": "dark_yellow_block",
+      "average": 2,
+      "rows": [
+        250
+      ]
+    },
+    {
+      "id": "dark_blue_block",
+      "average": 1.8,
+      "rows": [
+        252
+      ]
+    },
+    {
+      "id": "dark_pink_block",
+      "average": 2.5,
+      "rows": [
+        254
+      ]
+    },
+    {
+      "id": "red_pastel_block",
+      "average": 2,
+      "rows": [
+        256
+      ]
+    },
+    {
+      "id": "green_pastel_block",
+      "average": 1.8,
+      "rows": [
+        258
+      ]
+    },
+    {
+      "id": "purple_pastel_block",
+      "average": 3,
+      "rows": [
+        260
+      ]
+    },
+    {
+      "id": "yellow_pastel_block",
+      "average": 2,
+      "rows": [
+        262
+      ]
+    },
+    {
+      "id": "orange_pastel_block",
+      "average": 1.8,
+      "rows": [
+        264
+      ]
+    },
+    {
+      "id": "pink_pastel_block",
+      "average": 2.5,
+      "rows": [
+        266
+      ]
+    },
+    {
+      "id": "blue_pastel_block",
+      "average": 2.5,
+      "rows": [
+        268
+      ]
+    },
+    {
+      "id": "happy_block",
+      "average": 2.2,
+      "rows": [
+        270
+      ]
+    },
+    {
+      "id": "pastel_flower_block",
+      "average": 3,
+      "rows": [
+        272
+      ]
+    },
+    {
+      "id": "rainbow_block",
+      "average": 2.5,
+      "rows": [
+        274
+      ]
+    },
+    {
+      "id": "white_wallpaper",
+      "average": 1.2,
+      "rows": [
+        288
+      ]
+    },
+    {
+      "id": "red_wallpaper",
+      "average": 1.8,
+      "rows": [
+        290
+      ]
+    },
+    {
+      "id": "green_wallpaper",
+      "average": 1.5,
+      "rows": [
+        292
+      ]
+    },
+    {
+      "id": "brown_wallpaper",
+      "average": 1.2,
+      "rows": [
+        294
+      ]
+    },
+    {
+      "id": "grey_wallpaper",
+      "average": 1.8,
+      "rows": [
+        296
+      ]
+    },
+    {
+      "id": "orange_wallpaper",
+      "average": 2,
+      "rows": [
+        298
+      ]
+    },
+    {
+      "id": "aqua_wallpaper",
+      "average": 2.2,
+      "rows": [
+        300
+      ]
+    },
+    {
+      "id": "purple_wallpaper",
+      "average": 3,
+      "rows": [
+        302
+      ]
+    },
+    {
+      "id": "black_wallpaper",
+      "average": 1.5,
+      "rows": [
+        304
+      ]
+    },
+    {
+      "id": "yellow_wallpaper",
+      "average": 1.2,
+      "rows": [
+        306
+      ]
+    },
+    {
+      "id": "blue_wallpaper",
+      "average": 2.5,
+      "rows": [
+        308
+      ]
+    },
+    {
+      "id": "pink_wallpaper",
+      "average": 2,
+      "rows": [
+        310
+      ]
+    },
+    {
+      "id": "steel_block",
+      "average": 1.8,
+      "rows": [
+        312
+      ]
+    },
+    {
+      "id": "steel_background",
+      "average": 3,
+      "rows": [
+        314
+      ]
+    },
+    {
+      "id": "steel_sign",
+      "average": 2.5,
+      "rows": [
+        316
+      ]
+    },
+    {
+      "id": "steel_door",
+      "average": 2.2,
+      "rows": [
+        318
+      ]
+    },
+    {
+      "id": "screen_door",
+      "average": 3,
+      "rows": [
+        320
+      ]
+    },
+    {
+      "id": "ceiling_lamp",
+      "average": 2.5,
+      "rows": [
+        322
+      ]
+    },
+    {
+      "id": "steel_ladder",
+      "average": 3,
+      "rows": [
+        326
+      ]
+    },
+    {
+      "id": "mechanical_entrance",
+      "average": 3.5,
+      "rows": [
+        328
+      ]
+    },
+    {
+      "id": "glass",
+      "average": 0.8,
+      "rows": [
+        330
+      ]
+    },
+    {
+      "id": "glass_panel",
+      "average": 0.8,
+      "rows": [
+        332
+      ]
+    },
+    {
+      "id": "steel_platform",
+      "average": 2.5,
+      "rows": [
+        334
+      ]
+    },
+    {
+      "id": "saw_blade",
+      "average": 2.2,
+      "rows": [
+        336
+      ]
+    },
+    {
+      "id": "big_spike",
+      "average": 2.5,
+      "rows": [
+        340
+      ]
+    },
+    {
+      "id": "pinball",
+      "average": 3,
+      "rows": [
+        342
+      ]
+    },
+    {
+      "id": "slime",
+      "average": 2,
+      "rows": [
+        346
+      ]
+    },
+    {
+      "id": "biohazard_barrel",
+      "average": 3,
+      "rows": [
+        348
+      ]
+    },
+    {
+      "id": "star_block",
+      "average": 3,
+      "rows": [
+        354
+      ]
+    },
+    {
+      "id": "fish_hanger",
+      "average": 2.5,
+      "rows": [
+        356
+      ]
+    },
+    {
+      "id": "wooden_shelf",
+      "average": 2.5,
+      "rows": [
+        358
+      ]
+    },
+    {
+      "id": "metal_gate",
+      "average": 4.5,
+      "rows": [
+        360
+      ]
+    },
+    {
+      "id": "display_box",
+      "average": 6,
+      "rows": [
+        376
+      ]
+    },
+    {
+      "id": "display_case",
+      "average": 4.5,
+      "rows": [
+        378
+      ]
+    },
+    {
+      "id": "mail_box",
+      "average": 3,
+      "rows": [
+        380
+      ]
+    },
+    {
+      "id": "blue_mail_box",
+      "average": 3,
+      "rows": [
+        384
+      ]
+    },
+    {
+      "id": "donation_box",
+      "average": 3.5,
+      "rows": [
+        388
+      ]
+    },
+    {
+      "id": "bulletin_board",
+      "average": 5.5,
+      "rows": [
+        392
+      ]
+    },
+    {
+      "id": "checkpoint",
+      "average": 5,
+      "rows": [
+        394
+      ]
+    },
+    {
+      "id": "blink_checkpoint",
+      "average": 6.5,
+      "rows": [
+        398
+      ]
+    },
+    {
+      "id": "bomb",
+      "average": 5.5,
+      "rows": [
+        402
+      ]
+    },
+    {
+      "id": "recycle_bin",
+      "average": 7,
+      "rows": [
+        408
+      ]
+    },
+    {
+      "id": "melter",
+      "average": 8,
+      "rows": [
+        410
+      ]
+    },
+    {
+      "id": "yellow_portal",
+      "average": 9.5,
+      "rows": [
+        416
+      ]
+    },
+    {
+      "id": "blue_portal",
+      "average": 9,
+      "rows": [
+        418
+      ]
+    },
+    {
+      "id": "password_door",
+      "average": 8.5,
+      "rows": [
+        420
+      ]
+    },
+    {
+      "id": "dice_block",
+      "average": 8,
+      "rows": [
+        422
+      ]
+    },
+    {
+      "id": "sashimi_table",
+      "average": 5,
+      "rows": [
+        430
+      ]
+    },
+    {
+      "id": "oil_refinery",
+      "average": 14.5,
+      "rows": [
+        434
+      ]
+    },
+    {
+      "id": "gem_driller",
+      "average": 16,
+      "rows": [
+        442
+      ]
+    },
+    {
+      "id": "colored_block_maker",
+      "average": 13.5,
+      "rows": [
+        448
+      ]
+    },
+    {
+      "id": "electrical_box",
+      "average": 5.5,
+      "rows": [
+        452
+      ]
+    },
+    {
+      "id": "battery_assembler",
+      "average": 7,
+      "rows": [
+        456
+      ]
+    },
+    {
+      "id": "electric_pole",
+      "average": 2.2,
+      "rows": [
+        462
+      ]
+    },
+    {
+      "id": "metal_pad",
+      "average": 4,
+      "rows": [
+        464
+      ]
+    },
+    {
+      "id": "gold_block",
+      "average": 7.5,
+      "rows": [
+        466
+      ]
+    },
+    {
+      "id": "emerald_block",
+      "average": 7,
+      "rows": [
+        468
+      ]
+    },
+    {
+      "id": "ruby_block",
+      "average": 8,
+      "rows": [
+        470
+      ]
+    },
+    {
+      "id": "diamond_block",
+      "average": 7.5,
+      "rows": [
+        472
+      ]
+    },
+    {
+      "id": "amethyst_block",
+      "average": 7,
+      "rows": [
+        474
+      ]
+    },
+    {
+      "id": "copper_block",
+      "average": 5.5,
+      "rows": [
+        476
+      ]
+    },
+    {
+      "id": "rusty_copper_block",
+      "average": 5,
+      "rows": [
+        478
+      ]
+    },
+    {
+      "id": "broken_tv",
+      "average": 0.2,
+      "rows": [
+        504
+      ]
+    },
+    {
+      "id": "tires",
+      "average": 0.5,
+      "rows": [
+        506
+      ]
+    },
+    {
+      "id": "barn_block",
+      "average": 1.2,
+      "rows": [
+        510
+      ]
+    },
+    {
+      "id": "barn_window",
+      "average": 2.5,
+      "rows": [
+        512
+      ]
+    },
+    {
+      "id": "barn_background",
+      "average": 2,
+      "rows": [
+        514
+      ]
+    },
+    {
+      "id": "white_fence",
+      "average": 1.8,
+      "rows": [
+        522
+      ]
+    },
+    {
+      "id": "barn_door",
+      "average": 2.5,
+      "rows": [
+        524
+      ]
+    },
+    {
+      "id": "empty_jar",
+      "average": 3.5,
+      "rows": [
+        526
+      ]
+    },
+    {
+      "id": "water_well",
+      "average": 3,
+      "rows": [
+        528
+      ]
+    },
+    {
+      "id": "weathervane",
+      "average": 2.5,
+      "rows": [
+        532
+      ]
+    },
+    {
+      "id": "chicken",
+      "average": 3,
+      "rows": [
+        534
+      ]
+    },
+    {
+      "id": "duck",
+      "average": 6,
+      "rows": [
+        544
+      ]
+    },
+    {
+      "id": "sugar_cane",
+      "average": 2,
+      "rows": [
+        550
+      ]
+    },
+    {
+      "id": "bone",
+      "average": 0.2,
+      "rows": [
+        552
+      ]
+    },
+    {
+      "id": "cow",
+      "average": 5.5,
+      "rows": [
+        554
+      ]
+    },
+    {
+      "id": "hay",
+      "average": 0.6,
+      "rows": [
+        562
+      ]
+    },
+    {
+      "id": "hay_bales",
+      "average": 0.8,
+      "rows": [
+        564
+      ]
+    },
+    {
+      "id": "seaweed_block",
+      "average": 0.5,
+      "rows": [
+        566
+      ]
+    },
+    {
+      "id": "coral_block",
+      "average": 0.35,
+      "rows": [
+        568
+      ]
+    },
+    {
+      "id": "pearl_clam",
+      "average": 0.2,
+      "rows": [
+        570
+      ]
+    },
+    {
+      "id": "pillar",
+      "average": 2.5,
+      "rows": [
+        574
+      ]
+    },
+    {
+      "id": "lamp",
+      "average": 3,
+      "rows": [
+        576
+      ]
+    },
+    {
+      "id": "fish_bowl",
+      "average": 3.5,
+      "rows": [
+        580
+      ]
+    },
+    {
+      "id": "tv",
+      "average": 4.5,
+      "rows": [
+        582
+      ]
+    },
+    {
+      "id": "blue_couch",
+      "average": 3.5,
+      "rows": [
+        586
+      ]
+    },
+    {
+      "id": "green_couch",
+      "average": 5.5,
+      "rows": [
+        588
+      ]
+    },
+    {
+      "id": "side_table",
+      "average": 2.5,
+      "rows": [
+        590
+      ]
+    },
+    {
+      "id": "modern_chair",
+      "average": 2.5,
+      "rows": [
+        592
+      ]
+    },
+    {
+      "id": "dresser",
+      "average": 2.2,
+      "rows": [
+        594
+      ]
+    },
+    {
+      "id": "royal_door",
+      "average": 2.5,
+      "rows": [
+        596
+      ]
+    },
+    {
+      "id": "grand_house_door",
+      "average": 5,
+      "rows": [
+        598
+      ]
+    },
+    {
+      "id": "royal_entrance",
+      "average": 3,
+      "rows": [
+        600
+      ]
+    },
+    {
+      "id": "royal_window",
+      "average": 2.5,
+      "rows": [
+        602
+      ]
+    },
+    {
+      "id": "purple_curtains",
+      "average": 3.5,
+      "rows": [
+        604
+      ]
+    },
+    {
+      "id": "pink_curtains",
+      "average": 3,
+      "rows": [
+        606
+      ]
+    },
+    {
+      "id": "toilet",
+      "average": 3,
+      "rows": [
+        608
+      ]
+    },
+    {
+      "id": "refrigerator",
+      "average": 5.5,
+      "rows": [
+        612
+      ]
+    },
+    {
+      "id": "building_brick_block",
+      "average": 1.5,
+      "rows": [
+        616
+      ]
+    },
+    {
+      "id": "building_brick_wall",
+      "average": 1.8,
+      "rows": [
+        618
+      ]
+    },
+    {
+      "id": "fireplace",
+      "average": 2.5,
+      "rows": [
+        620
+      ]
+    },
+    {
+      "id": "bathtub",
+      "average": 3,
+      "rows": [
+        624
+      ]
+    },
+    {
+      "id": "sink",
+      "average": 2.5,
+      "rows": [
+        628
+      ]
+    },
+    {
+      "id": "rubber_duck",
+      "average": 5.5,
+      "rows": [
+        632
+      ]
+    },
+    {
+      "id": "red_brick_platform",
+      "average": 1.8,
+      "rows": [
+        636
+      ]
+    },
+    {
+      "id": "white_brick_block",
+      "average": 1.8,
+      "rows": [
+        638
+      ]
+    },
+    {
+      "id": "white_brick_wall",
+      "average": 1.8,
+      "rows": [
+        642
+      ]
+    },
+    {
+      "id": "white_brick_platform",
+      "average": 2.5,
+      "rows": [
+        644
+      ]
+    },
+    {
+      "id": "fan",
+      "average": 6,
+      "rows": [
+        646
+      ]
+    },
+    {
+      "id": "bed",
+      "average": 2.2,
+      "rows": [
+        648
+      ]
+    },
+    {
+      "id": "park_bench",
+      "average": 2.5,
+      "rows": [
+        650
+      ]
+    },
+    {
+      "id": "big_sign",
+      "average": 1.5,
+      "rows": [
+        652
+      ]
+    },
+    {
+      "id": "right_directional_sign",
+      "average": 1.8,
+      "rows": [
+        654
+      ]
+    },
+    {
+      "id": "left_directional_sign",
+      "average": 2.5,
+      "rows": [
+        656
+      ]
+    },
+    {
+      "id": "digital_sign",
+      "average": 6,
+      "rows": [
+        658
+      ]
+    },
+    {
+      "id": "star_wall",
+      "average": 1.2,
+      "rows": [
+        660
+      ]
+    },
+    {
+      "id": "blue_stripe_wall",
+      "average": 1.8,
+      "rows": [
+        662
+      ]
+    },
+    {
+      "id": "red_stripe_wall",
+      "average": 1.5,
+      "rows": [
+        664
+      ]
+    },
+    {
+      "id": "aquatic_line_wall",
+      "average": 1.8,
+      "rows": [
+        666
+      ]
+    },
+    {
+      "id": "complementary_line_wall",
+      "average": 2.5,
+      "rows": [
+        668
+      ]
+    },
+    {
+      "id": "checkered_wall",
+      "average": 2,
+      "rows": [
+        670
+      ]
+    },
+    {
+      "id": "sale_sign",
+      "average": 2.2,
+      "rows": [
+        672
+      ]
+    },
+    {
+      "id": "hazard_sign",
+      "average": 5.5,
+      "rows": [
+        674
+      ]
+    },
+    {
+      "id": "open_sign",
+      "average": 5,
+      "rows": [
+        676
+      ]
+    },
+    {
+      "id": "street_sign",
+      "average": 4,
+      "rows": [
+        680
+      ]
+    },
+    {
+      "id": "chandelier",
+      "average": 7.5,
+      "rows": [
+        682
+      ]
+    },
+    {
+      "id": "vines_painting",
+      "average": 6,
+      "rows": [
+        688
+      ]
+    },
+    {
+      "id": "scratched_banana_painting",
+      "average": 5.5,
+      "rows": [
+        690
+      ]
+    },
+    {
+      "id": "heartbreak_painting",
+      "average": 6.5,
+      "rows": [
+        692
+      ]
+    },
+    {
+      "id": "love_painting",
+      "average": 6,
+      "rows": [
+        694
+      ]
+    },
+    {
+      "id": "fire_escape",
+      "average": 6,
+      "rows": [
+        706
+      ]
+    },
+    {
+      "id": "city_fence",
+      "average": 5.5,
+      "rows": [
+        708
+      ]
+    },
+    {
+      "id": "street_lamp",
+      "average": 5.5,
+      "rows": [
+        710
+      ]
+    },
+    {
+      "id": "fire_hydrant",
+      "average": 6,
+      "rows": [
+        712
+      ]
+    },
+    {
+      "id": "ventilation",
+      "average": 4,
+      "rows": [
+        716
+      ]
+    },
+    {
+      "id": "sirene_lamp_on",
+      "average": 6,
+      "rows": [
+        718
+      ]
+    },
+    {
+      "id": "water_fountain",
+      "average": 6.5,
+      "rows": [
+        722
+      ]
+    },
+    {
+      "id": "moon",
+      "average": 9,
+      "rows": [
+        724
+      ]
+    },
+    {
+      "id": "earth",
+      "average": 8.5,
+      "rows": [
+        726
+      ]
+    },
+    {
+      "id": "pencil_block",
+      "average": 2,
+      "rows": [
+        730
+      ]
+    },
+    {
+      "id": "cozy_chalkboard",
+      "average": 3,
+      "rows": [
+        732
+      ]
+    },
+    {
+      "id": "almanac",
+      "average": 5.5,
+      "rows": [
+        734
+      ]
+    },
+    {
+      "id": "neon_block",
+      "average": 3.5,
+      "rows": [
+        736
+      ]
+    },
+    {
+      "id": "hellbrick",
+      "average": 0.8,
+      "rows": [
+        750
+      ]
+    },
+    {
+      "id": "hellbrick_wall",
+      "average": 1.8,
+      "rows": [
+        752
+      ]
+    },
+    {
+      "id": "magma_stone",
+      "average": 0.35,
+      "rows": [
+        754
+      ]
+    },
+    {
+      "id": "hell_portal",
+      "average": 8.5,
+      "rows": [
+        756
+      ]
+    },
+    {
+      "id": "hellbrick_platform",
+      "average": 3,
+      "rows": [
+        758
+      ]
+    },
+    {
+      "id": "hell_entrance",
+      "average": 6,
+      "rows": [
+        760
+      ]
+    },
+    {
+      "id": "toilet_open",
+      "average": 3,
+      "rows": [
+        608
+      ]
+    },
+    {
+      "id": "refrigerator_open",
+      "average": 5.5,
+      "rows": [
+        612
+      ]
+    },
+    {
+      "id": "fireplace_on",
+      "average": 2.5,
+      "rows": [
+        620
+      ]
+    },
+    {
+      "id": "bathtub_on",
+      "average": 3,
+      "rows": [
+        624
+      ]
+    },
+    {
+      "id": "sink_on",
+      "average": 2.5,
+      "rows": [
+        628
+      ]
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "wooden_treasure_chest_open",
+      "rows": [
+        146
+      ],
+      "reason": "Existing special reward rules require separate integration"
+    },
+    {
+      "id": "sun",
+      "entries": [
+        {
+          "row": 728,
+          "average": 9.5
+        },
+        {
+          "row": 738,
+          "average": 8.5
+        },
+        {
+          "row": 740,
+          "average": 9.5
+        },
+        {
+          "row": 742,
+          "average": 9
+        },
+        {
+          "row": 744,
+          "average": 8.5
+        },
+        {
+          "row": 746,
+          "average": 9.5
+        },
+        {
+          "row": 748,
+          "average": 9
+        }
+      ],
+      "reason": "Duplicate item rows have conflicting averages; unchanged"
+    }
+  ]
+}

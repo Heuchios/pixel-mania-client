@@ -1497,7 +1497,7 @@ func get_magnetic_fishing_table() -> Array:
 		{"item_id": "rusty_bicycle", "item_category": "material", "weight": 7, "difficulty": 4},
 		{"item_id": "lost_chapter", "item_category": "material", "weight": 5, "difficulty": 5},
 		{"item_id": "topaz_necklace", "item_category": "material", "weight": 4, "difficulty": 6},
-		{"item_id": "toxic_waste", "item_category": "material", "weight": 4, "difficulty": 6},
+		{"item_id": "toxic_waste", "item_category": "block", "weight": 4, "difficulty": 6},
 		{"item_id": "naval_mines", "item_category": "material", "weight": 2, "difficulty": 7},
 		{"item_id": "atlantic_chest", "item_category": "block", "weight": 1, "difficulty": 6}
 	]

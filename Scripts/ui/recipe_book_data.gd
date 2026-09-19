@@ -97,7 +97,7 @@ static func _resolve_seed_tiers(parsed: Array, item_database: Dictionary) -> Dic
 	var tiers: Dictionary = {}
 	for entry in parsed:
 		var seed_id: String = entry.seed
-		tiers[seed_id] = int(ItemDatabase.RECIPE_TIERS.get(seed_id, (item_database.get(seed_id, {}) as Dictionary).get("recipe_tier", 0)))
+		tiers[seed_id] = int((item_database.get(seed_id, {}) as Dictionary).get("recipe_tier", ItemDatabase.RECIPE_TIERS.get(seed_id, 0)))
 	return tiers
 
 static func _build_consumer_index(parsed: Array) -> Dictionary:
@@ -213,7 +213,7 @@ static func _add_station_recipes(by_tier: Dictionary, items: Dictionary) -> void
 			if not valid:
 				continue
 			var item: Dictionary = items[id]
-			var tier: int = int(ItemDatabase.RECIPE_TIERS.get(id, 0))
+			var tier: int = int(item.get("recipe_tier", ItemDatabase.RECIPE_TIERS.get(id, 0)))
 			var method := "crafting" if station == "crafting_station" else "furnace"
 			var location := "Crafting Table" if method == "crafting" else "Furnace"
 			var recipe := {

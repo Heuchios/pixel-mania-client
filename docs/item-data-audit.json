@@ -1,0 +1,11077 @@
+{
+  "rows": [
+    {
+      "row": 6,
+      "name": "Dirt",
+      "values": [
+        "Dirt",
+        "The usual stuff.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [
+        "dirt"
+      ],
+      "resolved_ids": [
+        "dirt"
+      ]
+    },
+    {
+      "row": 12,
+      "name": "Cave Wall",
+      "values": [
+        "Cave Wall",
+        "Good old cave wall.",
+        "bg",
+        "SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [
+        "cave_background"
+      ],
+      "resolved_ids": [
+        "cave_background"
+      ]
+    },
+    {
+      "row": 18,
+      "name": "Stone",
+      "values": [
+        "Stone",
+        "Just stone.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [
+        "stone"
+      ],
+      "resolved_ids": [
+        "stone"
+      ]
+    },
+    {
+      "row": 22,
+      "name": "Obsidian",
+      "values": [
+        "Obsidian",
+        "Very black. Very hard.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "ids": [
+        "obsidian"
+      ],
+      "resolved_ids": [
+        "obsidian"
+      ]
+    },
+    {
+      "row": 24,
+      "name": "Lava",
+      "values": [
+        "Lava",
+        "Do not touch.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "YES",
+        "BLOCK, SEED",
+        null,
+        "0",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [
+        "lava"
+      ],
+      "resolved_ids": [
+        "lava"
+      ]
+    },
+    {
+      "row": 26,
+      "name": "Water",
+      "values": [
+        "Water",
+        "-",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "-",
+        "FIXED",
+        "NO",
+        "NOTHING",
+        null,
+        "0",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": [
+        "water"
+      ],
+      "resolved_ids": [
+        "water"
+      ]
+    },
+    {
+      "row": 28,
+      "name": "Tiny Rock",
+      "values": [
+        "Tiny Rock",
+        "Tiny rock. Bonk.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "NOTHING",
+        null,
+        "0",
+        "17.5",
+        "35",
+        "175",
+        "350",
+        null,
+        "35s"
+      ],
+      "ids": [
+        "tiny_rock"
+      ],
+      "resolved_ids": [
+        "tiny_rock"
+      ]
+    },
+    {
+      "row": 30,
+      "name": "Large Rock",
+      "values": [
+        "Large Rock",
+        "Big rock. Don't throw it.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "5",
+        "FIXED",
+        "NO",
+        "NOTHING",
+        null,
+        "0",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "big_rock"
+      ]
+    },
+    {
+      "row": 32,
+      "name": "Seed pack",
+      "values": [
+        "Seed pack",
+        "Seeds. Pick a spot.",
+        "material",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 34,
+      "name": "Small gem",
+      "values": [
+        "Small gem",
+        "A small shiny thing.",
+        "material",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-",
+        null,
+        null,
+        null,
+        "1 gem"
+      ],
+      "ids": []
+    },
+    {
+      "row": 36,
+      "name": "Medium gem",
+      "values": [
+        "Medium gem",
+        "A decent shiny thing.",
+        "material",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-",
+        null,
+        null,
+        null,
+        "20 gem"
+      ],
+      "ids": []
+    },
+    {
+      "row": 38,
+      "name": "Big gem",
+      "values": [
+        "Big gem",
+        "Now that's a gem.",
+        "material",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-",
+        null,
+        null,
+        null,
+        "50 gem"
+      ],
+      "ids": []
+    },
+    {
+      "row": 40,
+      "name": "Huge gem",
+      "values": [
+        "Huge gem",
+        "Okay, that's huge.",
+        "material",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-",
+        null,
+        null,
+        null,
+        "100 gem"
+      ],
+      "ids": []
+    },
+    {
+      "row": 42,
+      "name": "Water bucket",
+      "values": [
+        "Water bucket",
+        "A bucket full of water.",
+        "consumable",
+        "-",
+        null,
+        "5",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "0",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "25m"
+      ],
+      "ids": [
+        "water_bucket"
+      ],
+      "resolved_ids": [
+        "water_bucket"
+      ]
+    },
+    {
+      "row": 44,
+      "name": "World entrance mover",
+      "values": [
+        "World entrance mover",
+        "Move a world entrance.",
+        "consumable",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "entrance_mover"
+      ]
+    },
+    {
+      "row": 46,
+      "name": "World lock mover",
+      "values": [
+        "World lock mover",
+        "Move a world lock.",
+        "consumable",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "lock_mover"
+      ]
+    },
+    {
+      "row": 48,
+      "name": "Door mover",
+      "values": [
+        "Door mover",
+        "Move a door.",
+        "consumable",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "door_mover"
+      ],
+      "resolved_ids": [
+        "door_mover"
+      ]
+    },
+    {
+      "row": 50,
+      "name": "Fertilizer Spray",
+      "values": [
+        "Fertilizer Spray",
+        "Makes plants grow faster.",
+        "consumable",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 52,
+      "name": "Super Fertilizer Spray",
+      "values": [
+        "Super Fertilizer Spray",
+        "Makes plants grow REALLY fast.",
+        "consumable",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 54,
+      "name": "World lock",
+      "values": [
+        "World lock",
+        "Keeps your world yours.",
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        "BACK TO INV",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-",
+        null,
+        null,
+        null,
+        "Lock world, full access"
+      ],
+      "ids": [
+        "world_lock"
+      ],
+      "resolved_ids": [
+        "world_lock"
+      ]
+    },
+    {
+      "row": 60,
+      "name": "World key",
+      "values": [
+        "World key",
+        "Opens a world lock.",
+        "material",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "world_lock_key"
+      ]
+    },
+    {
+      "row": 62,
+      "name": "World Entrance",
+      "values": [
+        "World Entrance",
+        "The way into a world.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "-",
+        "FIXED",
+        "NO",
+        "BACK TO INV",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-",
+        null,
+        null,
+        null,
+        "Initial player spawn point"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "entrance_gate"
+      ]
+    },
+    {
+      "row": 64,
+      "name": "Vending Machine",
+      "values": [
+        "Vending Machine",
+        "Put stuff in. Get stuff out.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "4",
+        "FIXED",
+        "NO",
+        "BACK TO INV",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-",
+        null,
+        null,
+        null,
+        "Sell stuff with world lock, feature: each/per type of sell, world key cant be collected when safe placed"
+      ],
+      "ids": [
+        "vending_machine"
+      ],
+      "resolved_ids": [
+        "vending_machine"
+      ]
+    },
+    {
+      "row": 70,
+      "name": "Super world lock",
+      "values": [
+        "Super world lock",
+        "A very serious lock.",
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        "BACK TO INV",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-",
+        null,
+        null,
+        null,
+        "World lock effect + glowy purple name"
+      ],
+      "ids": [
+        "super_world_lock"
+      ],
+      "resolved_ids": [
+        "super_world_lock"
+      ]
+    },
+    {
+      "row": 76,
+      "name": "Small lock",
+      "values": [
+        "Small lock",
+        "A small lock.",
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        "BACK TO INV",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-",
+        null,
+        null,
+        null,
+        "Lock ..x.. tiles, has ignore empty space and access management features"
+      ],
+      "ids": [
+        "small_lock"
+      ],
+      "resolved_ids": [
+        "small_lock"
+      ]
+    },
+    {
+      "row": 78,
+      "name": "Big lock",
+      "values": [
+        "Big lock",
+        "A big lock.",
+        null,
+        null,
+        null,
+        null,
+        null,
+        "FIXED",
+        "NO",
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        null,
+        null,
+        null,
+        null,
+        "Lock ..x.. tiles, has ignore empty space and access management features"
+      ],
+      "ids": [
+        "big_lock"
+      ],
+      "resolved_ids": [
+        "big_lock"
+      ]
+    },
+    {
+      "row": 80,
+      "name": "large lock",
+      "values": [
+        "large lock",
+        "A really big lock.",
+        null,
+        null,
+        null,
+        null,
+        null,
+        "FIXED",
+        "NO",
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        null,
+        null,
+        null,
+        null,
+        "Lock ..x.. tiles, has ignore empty space and access management features"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "big_lock"
+      ]
+    },
+    {
+      "row": 82,
+      "name": "Crafting table",
+      "values": [
+        "Crafting table",
+        "Where things get made.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "4",
+        "FIXED",
+        "NO",
+        "BACK TO INV",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-",
+        null,
+        null,
+        null,
+        "Way to create stuff besides splicing, level up crafting role to open more recipes, has duration"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "crafting_station"
+      ]
+    },
+    {
+      "row": 84,
+      "name": "Safe",
+      "values": [
+        "Safe",
+        "Good place for valuables.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        "BACK TO INV",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-",
+        null,
+        null,
+        null,
+        "Store tradeable/untradeable item. world key cant be collected when safe placed"
+      ],
+      "ids": [
+        "safe"
+      ],
+      "resolved_ids": [
+        "safe"
+      ]
+    },
+    {
+      "row": 86,
+      "name": "Bedrock block",
+      "values": [
+        "Bedrock block",
+        "Not going anywhere.",
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "-",
+        "FIXED",
+        "NO",
+        "BACK TO INV",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-",
+        null,
+        null,
+        null,
+        "indestructible"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "bedrock"
+      ]
+    },
+    {
+      "row": 88,
+      "name": "Leaf block",
+      "values": [
+        "Leaf block",
+        "A block of leaves.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "2",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350",
+        null,
+        "35s"
+      ],
+      "ids": [
+        "leaf"
+      ],
+      "resolved_ids": [
+        "leaf"
+      ]
+    },
+    {
+      "row": 90,
+      "name": "Leaf block (Spring Event)",
+      "values": [
+        "Leaf block (Spring Event)",
+        "Spring leaves.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "2",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "ids": [
+        "spring_leaf"
+      ],
+      "resolved_ids": [
+        "spring_leaf"
+      ]
+    },
+    {
+      "row": 92,
+      "name": "Leaf block (Autumn Event)",
+      "values": [
+        "Leaf block (Autumn Event)",
+        "Autumn leaves.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "2",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "ids": [
+        "autumn_leaf"
+      ],
+      "resolved_ids": [
+        "autumn_leaf"
+      ]
+    },
+    {
+      "row": 94,
+      "name": "Small Vines",
+      "values": [
+        "Small Vines",
+        "Little vines.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "2",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350",
+        null,
+        "35s"
+      ],
+      "ids": [
+        "hanging_vine"
+      ],
+      "resolved_ids": [
+        "hanging_vine"
+      ]
+    },
+    {
+      "row": 96,
+      "name": "Big Vine",
+      "values": [
+        "Big Vine",
+        "Big vine.",
+        "block",
+        "NON SOLID",
+        null,
+        "2",
+        "2",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.4",
+        "20",
+        "40",
+        "200",
+        "400",
+        null,
+        "1m 40s"
+      ],
+      "ids": [
+        "vines_2"
+      ],
+      "resolved_ids": [
+        "vines_2"
+      ]
+    },
+    {
+      "row": 98,
+      "name": "Grass",
+      "values": [
+        "Grass",
+        "Touch grass.",
+        "block",
+        "NON SOLID",
+        null,
+        "2",
+        "2",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800",
+        null,
+        "1m 40s"
+      ],
+      "ids": [
+        "grass"
+      ],
+      "resolved_ids": [
+        "grass"
+      ]
+    },
+    {
+      "row": 100,
+      "name": "Rose",
+      "values": [
+        "Rose",
+        "A red rose.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350",
+        null,
+        "35s"
+      ],
+      "ids": [
+        "rose"
+      ],
+      "resolved_ids": [
+        "rose"
+      ]
+    },
+    {
+      "row": 102,
+      "name": "Lily",
+      "values": [
+        "Lily",
+        "A little lily.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [
+        "lily"
+      ],
+      "resolved_ids": [
+        "lily"
+      ]
+    },
+    {
+      "row": 104,
+      "name": "Sunflower",
+      "values": [
+        "Sunflower",
+        "Likes the sun.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": [
+        "sunflower",
+        "sun_flower"
+      ],
+      "resolved_ids": [
+        "sunflower"
+      ]
+    },
+    {
+      "row": 106,
+      "name": "Bush",
+      "values": [
+        "Bush",
+        "A bush. Good for hiding.",
+        "block",
+        "NON SOLID",
+        null,
+        "2",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.6",
+        "30",
+        "60",
+        "300",
+        "600",
+        null,
+        "1m 40s"
+      ],
+      "ids": [
+        "bush"
+      ],
+      "resolved_ids": [
+        "bush"
+      ]
+    },
+    {
+      "row": 108,
+      "name": "Wooden platform",
+      "values": [
+        "Wooden platform",
+        "A wooden place to stand.",
+        "block",
+        "BOTH",
+        null,
+        "3",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800",
+        null,
+        "4m"
+      ],
+      "ids": [
+        "wood_platform"
+      ],
+      "resolved_ids": [
+        "wood_platform"
+      ]
+    },
+    {
+      "row": 110,
+      "name": "Mushroom",
+      "values": [
+        "Mushroom",
+        "Don't eat random mushrooms.",
+        "block",
+        "SOLID",
+        null,
+        "2",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800",
+        null,
+        "1m 40s",
+        null,
+        null,
+        null,
+        "Bouncy bouncy"
+      ],
+      "ids": [
+        "mushroom"
+      ],
+      "resolved_ids": [
+        "mushroom"
+      ]
+    },
+    {
+      "row": 114,
+      "name": "Apple",
+      "values": [
+        "Apple",
+        "An apple.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [
+        "apple"
+      ],
+      "resolved_ids": [
+        "apple"
+      ]
+    },
+    {
+      "row": 116,
+      "name": "Grains",
+      "values": [
+        "Grains",
+        "Just a handful of grains.",
+        "material, consumable",
+        "-",
+        null,
+        "1",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "grain"
+      ]
+    },
+    {
+      "row": 118,
+      "name": "Wheat",
+      "values": [
+        "Wheat",
+        "Ready for harvest.",
+        "material, consumable",
+        "-",
+        null,
+        "1",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350",
+        null,
+        "35s"
+      ],
+      "ids": [
+        "wheat"
+      ],
+      "resolved_ids": [
+        "wheat"
+      ]
+    },
+    {
+      "row": 120,
+      "name": "Wooden ladder",
+      "values": [
+        "Wooden ladder",
+        "Up you go.",
+        "block",
+        "BOTH",
+        null,
+        "4",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200",
+        null,
+        "8m"
+      ],
+      "ids": [
+        "wooden_ladder"
+      ],
+      "resolved_ids": [
+        "wooden_ladder"
+      ]
+    },
+    {
+      "row": 122,
+      "name": "Wooden sign",
+      "values": [
+        "Wooden sign",
+        "Write something here.",
+        "block",
+        "NON SOLID",
+        null,
+        "3",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200",
+        null,
+        "6m"
+      ],
+      "ids": [
+        "sign"
+      ],
+      "resolved_ids": [
+        "sign"
+      ]
+    },
+    {
+      "row": 124,
+      "name": "Wooden entrance",
+      "values": [
+        "Wooden entrance",
+        "A wooden way in.",
+        "block",
+        "BOTH",
+        null,
+        "4",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500",
+        null,
+        "8m 30s"
+      ],
+      "ids": [
+        "wooden_entrance"
+      ],
+      "resolved_ids": [
+        "wooden_entrance"
+      ]
+    },
+    {
+      "row": 126,
+      "name": "Wood block",
+      "values": [
+        "Wood block",
+        "Plain old wood.",
+        "block",
+        "SOLID",
+        null,
+        "2",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.4",
+        "20",
+        "40",
+        "200",
+        "400",
+        null,
+        "1m 40s"
+      ],
+      "ids": [
+        "wooden_block"
+      ],
+      "resolved_ids": [
+        "wooden_block"
+      ]
+    },
+    {
+      "row": 128,
+      "name": "Wood wall",
+      "values": [
+        "Wood wall",
+        "Plain old wood, but wider.",
+        "bg",
+        "NON SOLID",
+        null,
+        "2",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800",
+        null,
+        "1m 40s"
+      ],
+      "ids": [
+        "wooden_wallpaper"
+      ],
+      "resolved_ids": [
+        "wooden_wallpaper"
+      ]
+    },
+    {
+      "row": 130,
+      "name": "Wooden window",
+      "values": [
+        "Wooden window",
+        "Let some light in.",
+        "block",
+        "NON SOLID",
+        null,
+        "3",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000",
+        null,
+        "4m 30s"
+      ],
+      "ids": [
+        "wooden_window"
+      ],
+      "resolved_ids": [
+        "wooden_window"
+      ]
+    },
+    {
+      "row": 132,
+      "name": "Wooden door",
+      "values": [
+        "Wooden door",
+        "A wooden door.",
+        "block",
+        "NON SOLID",
+        null,
+        "3",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800",
+        null,
+        "4m"
+      ],
+      "ids": [
+        "wooden_door"
+      ],
+      "resolved_ids": [
+        "wooden_door"
+      ]
+    },
+    {
+      "row": 134,
+      "name": "Wooden fence",
+      "values": [
+        "Wooden fence",
+        "Keeps things in. Mostly.",
+        "block",
+        "NON SOLID",
+        null,
+        "3",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200",
+        null,
+        "6m"
+      ],
+      "ids": [
+        "wooden_fence"
+      ],
+      "resolved_ids": [
+        "wooden_fence"
+      ]
+    },
+    {
+      "row": 136,
+      "name": "Wooden chair",
+      "values": [
+        "Wooden chair",
+        "A chair.",
+        "block",
+        "NON SOLID",
+        null,
+        "4",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500",
+        null,
+        "8m 30s"
+      ],
+      "ids": [
+        "wooden_chair"
+      ],
+      "resolved_ids": [
+        "wooden_chair"
+      ]
+    },
+    {
+      "row": 138,
+      "name": "Wooden table",
+      "values": [
+        "Wooden table",
+        "A table.",
+        "block",
+        "BOTH",
+        null,
+        "3",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800",
+        null,
+        "4m"
+      ],
+      "ids": [
+        "wooden_table"
+      ],
+      "resolved_ids": [
+        "wooden_table"
+      ]
+    },
+    {
+      "row": 140,
+      "name": "Tree trunk",
+      "values": [
+        "Tree trunk",
+        "The chunky bit of a tree.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": [
+        "wood"
+      ],
+      "resolved_ids": [
+        "wood"
+      ]
+    },
+    {
+      "row": 142,
+      "name": "Climbing vine",
+      "values": [
+        "Climbing vine",
+        "For climbing things.",
+        "block",
+        "BOTH",
+        null,
+        "5",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "climbing_vine"
+      ],
+      "resolved_ids": [
+        "climbing_vine"
+      ]
+    },
+    {
+      "row": 144,
+      "name": "Wooden treasure chest (closed)",
+      "values": [
+        "Wooden treasure chest (closed)",
+        "Something's in there.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "4",
+        "FIXED",
+        "NO",
+        "SPECIAL ITEM",
+        "old cloth, roman coins, eyepatch, parrot pet (really low chance), pirate hand",
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "wooden_treasure_chest"
+      ]
+    },
+    {
+      "row": 146,
+      "name": "Wooden treasure chest (open)",
+      "values": [
+        "Wooden treasure chest (open)",
+        "Yep. It's empty now.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "4",
+        "FIXED",
+        "NO",
+        null,
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": [
+        "wooden_treasure_chest_open"
+      ],
+      "resolved_ids": [
+        "wooden_treasure_chest_open"
+      ]
+    },
+    {
+      "row": 148,
+      "name": "Mysterious sign",
+      "values": [
+        "Mysterious sign",
+        "It says something. Probably.",
+        "block",
+        "NON SOLID",
+        null,
+        "3",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000",
+        null,
+        "4m 30s"
+      ],
+      "ids": [
+        "wooden_crappy_sign"
+      ],
+      "resolved_ids": [
+        "wooden_crappy_sign"
+      ]
+    },
+    {
+      "row": 150,
+      "name": "Sand block",
+      "values": [
+        "Sand block",
+        "It's sand.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [
+        "sand"
+      ],
+      "resolved_ids": [
+        "sand"
+      ]
+    },
+    {
+      "row": 156,
+      "name": "Sand castle",
+      "values": [
+        "Sand castle",
+        "Great until it rains.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "2",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [
+        "sand_castle"
+      ],
+      "resolved_ids": [
+        "sand_castle"
+      ]
+    },
+    {
+      "row": 158,
+      "name": "Pile of sand",
+      "values": [
+        "Pile of sand",
+        "Just sand in a pile.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "2",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": [
+        "pile_of_sand"
+      ],
+      "resolved_ids": [
+        "pile_of_sand"
+      ]
+    },
+    {
+      "row": 160,
+      "name": "Snow block",
+      "values": [
+        "Snow block",
+        "Cold stuff.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350",
+        null,
+        "35s"
+      ],
+      "ids": [
+        "snow_block"
+      ],
+      "resolved_ids": [
+        "snow_block"
+      ]
+    },
+    {
+      "row": 162,
+      "name": "Snow dirt",
+      "values": [
+        "Snow dirt",
+        "Frozen dirt.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [
+        "snow_dirt"
+      ],
+      "resolved_ids": [
+        "snow_dirt"
+      ]
+    },
+    {
+      "row": 164,
+      "name": "Ice block",
+      "values": [
+        "Ice block",
+        "Slippery.",
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "3",
+        "FIXED",
+        "NO",
+        "SPECIAL ITEM",
+        "solid ice block",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "ice_block"
+      ]
+    },
+    {
+      "row": 166,
+      "name": "Ice corpse",
+      "values": [
+        "Ice corpse",
+        "Someone had a bad day.",
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "3",
+        "FIXED",
+        "NO",
+        "SPECIAL ITEM",
+        "solid ice block, rotten flesh",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 168,
+      "name": "Frozen treasure",
+      "values": [
+        "Frozen treasure",
+        "Treasure, but frozen.",
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "3",
+        "FIXED",
+        "NO",
+        "SPECIAL ITEM",
+        "solid ice block, snowy treasure chest",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "frozen_treasure"
+      ],
+      "resolved_ids": [
+        "frozen_treasure"
+      ]
+    },
+    {
+      "row": 170,
+      "name": "Pile of snow",
+      "values": [
+        "Pile of snow",
+        "A pile of snow.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "2",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": [
+        "pile_of_snow"
+      ],
+      "resolved_ids": [
+        "pile_of_snow"
+      ]
+    },
+    {
+      "row": 172,
+      "name": "Frozen grass",
+      "values": [
+        "Frozen grass",
+        "Cold grass.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "2",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350",
+        null,
+        "35s"
+      ],
+      "ids": [
+        "frozen_grass",
+        "frozen_grass_1",
+        "frozen_grass_2",
+        "frozen_grass_3"
+      ],
+      "resolved_ids": [
+        "frozen_grass",
+        "frozen_grass_1",
+        "frozen_grass_2",
+        "frozen_grass_3"
+      ]
+    },
+    {
+      "row": 174,
+      "name": "Snow stone block",
+      "values": [
+        "Snow stone block",
+        "Stone with snow on it.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "snow_stone"
+      ]
+    },
+    {
+      "row": 176,
+      "name": "Solid ice block",
+      "values": [
+        "Solid ice block",
+        "Thick ice.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": [
+        "ice_block"
+      ],
+      "resolved_ids": [
+        "ice_block"
+      ]
+    },
+    {
+      "row": 178,
+      "name": "Snowy Tiny Rock",
+      "values": [
+        "Snowy Tiny Rock",
+        "Tiny rock, now snowy.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350",
+        null,
+        "35s"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "snow_tiny_rock"
+      ]
+    },
+    {
+      "row": 180,
+      "name": "Snowy Large Rock",
+      "values": [
+        "Snowy Large Rock",
+        "Big rock, now snowy.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "snow_big_rock"
+      ]
+    },
+    {
+      "row": 182,
+      "name": "Snow leaf block",
+      "values": [
+        "Snow leaf block",
+        "Leaves with snow on them.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "snow_leaf"
+      ]
+    },
+    {
+      "row": 184,
+      "name": "Wooden Barrel",
+      "values": [
+        "Wooden Barrel",
+        "A wooden barrel.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "wooden_barrel"
+      ],
+      "resolved_ids": [
+        "wooden_barrel"
+      ]
+    },
+    {
+      "row": 186,
+      "name": "Wooden Box",
+      "values": [
+        "Wooden Box",
+        "A wooden box.",
+        "block",
+        "SOLID",
+        null,
+        "4",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200",
+        null,
+        "8m"
+      ],
+      "ids": [
+        "wooden_box"
+      ],
+      "resolved_ids": [
+        "wooden_box"
+      ]
+    },
+    {
+      "row": 188,
+      "name": "Lantern",
+      "values": [
+        "Lantern",
+        "Keeps the dark away.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "lantern"
+      ],
+      "resolved_ids": [
+        "lantern"
+      ]
+    },
+    {
+      "row": 190,
+      "name": "Campfire",
+      "values": [
+        "Campfire",
+        "Warm. Smoky. Nice.",
+        "block",
+        "SOLID",
+        null,
+        "3",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000",
+        null,
+        "4m 30s"
+      ],
+      "ids": [
+        "campfire"
+      ],
+      "resolved_ids": [
+        "campfire"
+      ]
+    },
+    {
+      "row": 192,
+      "name": "Dungeon Door",
+      "values": [
+        "Dungeon Door",
+        "Probably leads somewhere bad.",
+        "block",
+        "SOLID",
+        null,
+        "6",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200",
+        null,
+        "1h 30m"
+      ],
+      "ids": [
+        "dungeon_door"
+      ],
+      "resolved_ids": [
+        "dungeon_door"
+      ]
+    },
+    {
+      "row": 194,
+      "name": "Sturdy box",
+      "values": [
+        "Sturdy box",
+        "A sturdy box.",
+        "block",
+        "SOLID",
+        null,
+        "6",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "2h 10m"
+      ],
+      "ids": [
+        "sturdy_box"
+      ],
+      "resolved_ids": [
+        "sturdy_box"
+      ]
+    },
+    {
+      "row": 196,
+      "name": "Wagon Wheel",
+      "values": [
+        "Wagon Wheel",
+        "Old wagon wheel.",
+        "block",
+        "SOLID",
+        null,
+        "6",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "2h 40m"
+      ],
+      "ids": [
+        "wagon_wheel"
+      ],
+      "resolved_ids": [
+        "wagon_wheel"
+      ]
+    },
+    {
+      "row": 198,
+      "name": "Portcullis",
+      "values": [
+        "Portcullis",
+        "Big metal gate.",
+        "block",
+        "SOLID",
+        null,
+        "7",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "6h 25m"
+      ],
+      "ids": [
+        "portcullis"
+      ],
+      "resolved_ids": [
+        "portcullis"
+      ]
+    },
+    {
+      "row": 200,
+      "name": "Cloud Block",
+      "values": [
+        "Cloud Block",
+        "A block of cloud.",
+        "block",
+        "SOLID",
+        null,
+        "9",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "6.5",
+        "325",
+        "650",
+        "3250",
+        "6500",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "cloud_block"
+      ],
+      "resolved_ids": [
+        "cloud_block"
+      ]
+    },
+    {
+      "row": 202,
+      "name": "Red brick",
+      "values": [
+        "Red brick",
+        "A red brick.",
+        "block",
+        "SOLID",
+        null,
+        "2",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.6",
+        "30",
+        "60",
+        "300",
+        "600",
+        null,
+        "1m 40s"
+      ],
+      "ids": [
+        "red_brick"
+      ],
+      "resolved_ids": [
+        "red_brick"
+      ]
+    },
+    {
+      "row": 204,
+      "name": "Red brick wall",
+      "values": [
+        "Red brick wall",
+        "A wall of red brick.",
+        "bg",
+        "NON SOLID",
+        null,
+        "3",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800",
+        null,
+        "4m"
+      ],
+      "ids": [
+        "red_brick_wall",
+        "building_brick_wall"
+      ],
+      "resolved_ids": [
+        "red_brick_wall"
+      ]
+    },
+    {
+      "row": 206,
+      "name": "Stone brick",
+      "values": [
+        "Stone brick",
+        "Stone, but tidier.",
+        "block",
+        "SOLID",
+        null,
+        "2",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800",
+        null,
+        "1m 40s"
+      ],
+      "ids": [
+        "stone_brick"
+      ],
+      "resolved_ids": [
+        "stone_brick"
+      ]
+    },
+    {
+      "row": 208,
+      "name": "Stone brick wall",
+      "values": [
+        "Stone brick wall",
+        "A stone brick wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "3",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000",
+        null,
+        "4m 30s"
+      ],
+      "ids": [
+        "stone_brick_wall"
+      ],
+      "resolved_ids": [
+        "stone_brick_wall"
+      ]
+    },
+    {
+      "row": 210,
+      "name": "Grimstone",
+      "values": [
+        "Grimstone",
+        "Dark stone.",
+        "block",
+        "SOLID",
+        null,
+        "4",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200",
+        null,
+        "8m"
+      ],
+      "ids": [
+        "green_brick"
+      ],
+      "resolved_ids": [
+        "green_brick"
+      ]
+    },
+    {
+      "row": 212,
+      "name": "Grimstone wall",
+      "values": [
+        "Grimstone wall",
+        "A wall of dark stone.",
+        "bg",
+        "NON SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "green_brick_wall"
+      ],
+      "resolved_ids": [
+        "green_brick_wall"
+      ]
+    },
+    {
+      "row": 214,
+      "name": "White block",
+      "values": [
+        "White block",
+        "white block.",
+        "block",
+        "SOLID",
+        null,
+        "3",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000",
+        null,
+        "4m 30s"
+      ],
+      "ids": [
+        "white_block"
+      ],
+      "resolved_ids": [
+        "white_block"
+      ]
+    },
+    {
+      "row": 216,
+      "name": "Red block",
+      "values": [
+        "Red block",
+        "red block.",
+        "block",
+        "SOLID",
+        null,
+        "3",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800",
+        null,
+        "4m"
+      ],
+      "ids": [
+        "red_block"
+      ],
+      "resolved_ids": [
+        "red_block"
+      ]
+    },
+    {
+      "row": 218,
+      "name": "Green block",
+      "values": [
+        "Green block",
+        "green block.",
+        "block",
+        "SOLID",
+        null,
+        "3",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200",
+        null,
+        "6m"
+      ],
+      "ids": [
+        "green_block"
+      ],
+      "resolved_ids": [
+        "green_block"
+      ]
+    },
+    {
+      "row": 220,
+      "name": "Brown block",
+      "values": [
+        "Brown block",
+        "brown block.",
+        "block",
+        "SOLID",
+        null,
+        "3",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000",
+        null,
+        "4m 30s"
+      ],
+      "ids": [
+        "brown_block"
+      ],
+      "resolved_ids": [
+        "brown_block"
+      ]
+    },
+    {
+      "row": 222,
+      "name": "Grey block",
+      "values": [
+        "Grey block",
+        "grey block.",
+        "block",
+        "SOLID",
+        null,
+        "3",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800",
+        null,
+        "4m"
+      ],
+      "ids": [
+        "grey_block"
+      ],
+      "resolved_ids": [
+        "grey_block"
+      ]
+    },
+    {
+      "row": 224,
+      "name": "Orange block",
+      "values": [
+        "Orange block",
+        "orange block.",
+        "block",
+        "SOLID",
+        null,
+        "4",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "9m 30s"
+      ],
+      "ids": [
+        "orange_block"
+      ],
+      "resolved_ids": [
+        "orange_block"
+      ]
+    },
+    {
+      "row": 226,
+      "name": "Aqua block",
+      "values": [
+        "Aqua block",
+        "aqua block.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "aqua_block"
+      ],
+      "resolved_ids": [
+        "aqua_block"
+      ]
+    },
+    {
+      "row": 228,
+      "name": "Purple block",
+      "values": [
+        "Purple block",
+        "purple block.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "25m"
+      ],
+      "ids": [
+        "purple_block"
+      ],
+      "resolved_ids": [
+        "purple_block"
+      ]
+    },
+    {
+      "row": 230,
+      "name": "Black block",
+      "values": [
+        "Black block",
+        "black block.",
+        "block",
+        "SOLID",
+        null,
+        "3",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200",
+        null,
+        "6m"
+      ],
+      "ids": [
+        "black_block"
+      ],
+      "resolved_ids": [
+        "black_block"
+      ]
+    },
+    {
+      "row": 232,
+      "name": "Yellow block",
+      "values": [
+        "Yellow block",
+        "yellow block.",
+        "block",
+        "SOLID",
+        null,
+        "3",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000",
+        null,
+        "4m 30s"
+      ],
+      "ids": [
+        "yellow_block"
+      ],
+      "resolved_ids": [
+        "yellow_block"
+      ]
+    },
+    {
+      "row": 234,
+      "name": "Blue block",
+      "values": [
+        "Blue block",
+        "blue block.",
+        "block",
+        "SOLID",
+        null,
+        "4",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200",
+        null,
+        "8m"
+      ],
+      "ids": [
+        "blue_block"
+      ],
+      "resolved_ids": [
+        "blue_block"
+      ]
+    },
+    {
+      "row": 236,
+      "name": "Pink block",
+      "values": [
+        "Pink block",
+        "pink block.",
+        "block",
+        "SOLID",
+        null,
+        "4",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "9m 30s"
+      ],
+      "ids": [
+        "pink_block"
+      ],
+      "resolved_ids": [
+        "pink_block"
+      ]
+    },
+    {
+      "row": 238,
+      "name": "Dark red block",
+      "values": [
+        "Dark red block",
+        "dark red block.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "maroon_block"
+      ],
+      "resolved_ids": [
+        "maroon_block"
+      ]
+    },
+    {
+      "row": 240,
+      "name": "Dark green block",
+      "values": [
+        "Dark green block",
+        "dark green block.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "25m"
+      ],
+      "ids": [
+        "dark_green_block"
+      ],
+      "resolved_ids": [
+        "dark_green_block"
+      ]
+    },
+    {
+      "row": 242,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block",
+        "dark brown block.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 244,
+      "name": "Dark orange block",
+      "values": [
+        "Dark orange block",
+        "dark orange block.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "dark_orange_block"
+      ],
+      "resolved_ids": [
+        "dark_orange_block"
+      ]
+    },
+    {
+      "row": 246,
+      "name": "Dark aqua block",
+      "values": [
+        "Dark aqua block",
+        "dark aqua block.",
+        "block",
+        "SOLID",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200",
+        null,
+        "1h 30m"
+      ],
+      "ids": [
+        "dark_aqua_block"
+      ],
+      "resolved_ids": [
+        "dark_aqua_block"
+      ]
+    },
+    {
+      "row": 248,
+      "name": "Dark purple block",
+      "values": [
+        "Dark purple block",
+        "dark purple block.",
+        "block",
+        "SOLID",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "2h 10m"
+      ],
+      "ids": [
+        "dark_purple_block"
+      ],
+      "resolved_ids": [
+        "dark_purple_block"
+      ]
+    },
+    {
+      "row": 250,
+      "name": "Dark yellow block",
+      "values": [
+        "Dark yellow block",
+        "dark yellow block.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "dark_yellow_block"
+      ],
+      "resolved_ids": [
+        "dark_yellow_block"
+      ]
+    },
+    {
+      "row": 252,
+      "name": "Dark blue block",
+      "values": [
+        "Dark blue block",
+        "dark blue block.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "25m"
+      ],
+      "ids": [
+        "dark_blue_block"
+      ],
+      "resolved_ids": [
+        "dark_blue_block"
+      ]
+    },
+    {
+      "row": 254,
+      "name": "Dark pink block",
+      "values": [
+        "Dark pink block",
+        "dark pink block.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "dark_pink_block"
+      ],
+      "resolved_ids": [
+        "dark_pink_block"
+      ]
+    },
+    {
+      "row": 256,
+      "name": "Pastel red block",
+      "values": [
+        "Pastel red block",
+        "pastel red block.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "red_pastel_block"
+      ],
+      "resolved_ids": [
+        "red_pastel_block"
+      ]
+    },
+    {
+      "row": 258,
+      "name": "Pastel green block",
+      "values": [
+        "Pastel green block",
+        "pastel green block.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "25m"
+      ],
+      "ids": [
+        "green_pastel_block"
+      ],
+      "resolved_ids": [
+        "green_pastel_block"
+      ]
+    },
+    {
+      "row": 260,
+      "name": "Pastel purple block",
+      "values": [
+        "Pastel purple block",
+        "pastel purple block.",
+        "block",
+        "SOLID",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "2h 10m"
+      ],
+      "ids": [
+        "purple_pastel_block"
+      ],
+      "resolved_ids": [
+        "purple_pastel_block"
+      ]
+    },
+    {
+      "row": 262,
+      "name": "Pastel yellow block",
+      "values": [
+        "Pastel yellow block",
+        "pastel yellow block.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "yellow_pastel_block"
+      ],
+      "resolved_ids": [
+        "yellow_pastel_block"
+      ]
+    },
+    {
+      "row": 264,
+      "name": "Pastel orange block",
+      "values": [
+        "Pastel orange block",
+        "pastel orange block.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "25m"
+      ],
+      "ids": [
+        "orange_pastel_block"
+      ],
+      "resolved_ids": [
+        "orange_pastel_block"
+      ]
+    },
+    {
+      "row": 266,
+      "name": "Pastel pink block",
+      "values": [
+        "Pastel pink block",
+        "pastel pink block.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "pink_pastel_block"
+      ],
+      "resolved_ids": [
+        "pink_pastel_block"
+      ]
+    },
+    {
+      "row": 268,
+      "name": "Pastel blue block",
+      "values": [
+        "Pastel blue block",
+        "pastel blue block.",
+        "block",
+        "SOLID",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "2h 40m"
+      ],
+      "ids": [
+        "blue_pastel_block"
+      ],
+      "resolved_ids": [
+        "blue_pastel_block"
+      ]
+    },
+    {
+      "row": 270,
+      "name": "Pastel bunny block",
+      "values": [
+        "Pastel bunny block",
+        "pastel bunny block.",
+        "block",
+        "SOLID",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200",
+        null,
+        "1h 30m"
+      ],
+      "ids": [
+        "happy_block"
+      ],
+      "resolved_ids": [
+        "happy_block"
+      ]
+    },
+    {
+      "row": 272,
+      "name": "Pastel lily block",
+      "values": [
+        "Pastel lily block",
+        "pastel lily block.",
+        "block",
+        "SOLID",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "2h 10m"
+      ],
+      "ids": [
+        "pastel_flower_block"
+      ],
+      "resolved_ids": [
+        "pastel_flower_block"
+      ]
+    },
+    {
+      "row": 274,
+      "name": "Rainbow block",
+      "values": [
+        "Rainbow block",
+        "All the colors at once.",
+        "block",
+        "SOLID",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "2h 40m"
+      ],
+      "ids": [
+        "rainbow_block"
+      ],
+      "resolved_ids": [
+        "rainbow_block"
+      ]
+    },
+    {
+      "row": 276,
+      "name": "RGB block",
+      "values": [
+        "RGB block",
+        "Red. Green. Blue.",
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "5",
+        "FIXED",
+        "NO",
+        "BACK TO INV",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "shifty_block"
+      ],
+      "resolved_ids": [
+        "shifty_block"
+      ]
+    },
+    {
+      "row": 278,
+      "name": "Plant 1",
+      "values": [
+        "Plant 1",
+        "A plant.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        "SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 280,
+      "name": "Plant (background)",
+      "values": [
+        "Plant (background)",
+        "A plant for the background.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "1",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 282,
+      "name": "Plant (material)",
+      "values": [
+        "Plant (material)",
+        "Plant material.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "1",
+        "FIXED",
+        "NO",
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 284,
+      "name": "Plant (wearable)",
+      "values": [
+        "Plant (wearable)",
+        "Wearable plant stuff.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "1",
+        "FIXED",
+        "NO",
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 286,
+      "name": "Plant (block)",
+      "values": [
+        "Plant (block)",
+        "A plant block.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "1",
+        "FIXED",
+        "NO",
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 288,
+      "name": "White wall",
+      "values": [
+        "White wall",
+        "white wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "4",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200",
+        null,
+        "8m"
+      ],
+      "ids": [
+        "white_wallpaper"
+      ],
+      "resolved_ids": [
+        "white_wallpaper"
+      ]
+    },
+    {
+      "row": 290,
+      "name": "Red wall",
+      "values": [
+        "Red wall",
+        "red wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "4",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "9m 30s"
+      ],
+      "ids": [
+        "red_wallpaper"
+      ],
+      "resolved_ids": [
+        "red_wallpaper"
+      ]
+    },
+    {
+      "row": 292,
+      "name": "Green wall",
+      "values": [
+        "Green wall",
+        "green wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "4",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500",
+        null,
+        "8m 30s"
+      ],
+      "ids": [
+        "green_wallpaper"
+      ],
+      "resolved_ids": [
+        "green_wallpaper"
+      ]
+    },
+    {
+      "row": 294,
+      "name": "Brown wall",
+      "values": [
+        "Brown wall",
+        "brown wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "4",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200",
+        null,
+        "8m"
+      ],
+      "ids": [
+        "brown_wallpaper"
+      ],
+      "resolved_ids": [
+        "brown_wallpaper"
+      ]
+    },
+    {
+      "row": 296,
+      "name": "Gray wall",
+      "values": [
+        "Gray wall",
+        "gray wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "4",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "9m 30s"
+      ],
+      "ids": [
+        "grey_wallpaper"
+      ],
+      "resolved_ids": [
+        "grey_wallpaper"
+      ]
+    },
+    {
+      "row": 298,
+      "name": "Orange wall",
+      "values": [
+        "Orange wall",
+        "orange wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "5",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "orange_wallpaper"
+      ],
+      "resolved_ids": [
+        "orange_wallpaper"
+      ]
+    },
+    {
+      "row": 300,
+      "name": "Aqua wall",
+      "values": [
+        "Aqua wall",
+        "aqua wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "6",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200",
+        null,
+        "1h 30m"
+      ],
+      "ids": [
+        "aqua_wallpaper"
+      ],
+      "resolved_ids": [
+        "aqua_wallpaper"
+      ]
+    },
+    {
+      "row": 302,
+      "name": "Purple wall",
+      "values": [
+        "Purple wall",
+        "purple wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "6",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "2h 10m"
+      ],
+      "ids": [
+        "purple_wallpaper"
+      ],
+      "resolved_ids": [
+        "purple_wallpaper"
+      ]
+    },
+    {
+      "row": 304,
+      "name": "Black wall",
+      "values": [
+        "Black wall",
+        "black wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "4",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500",
+        null,
+        "8m 30s"
+      ],
+      "ids": [
+        "black_wallpaper"
+      ],
+      "resolved_ids": [
+        "black_wallpaper"
+      ]
+    },
+    {
+      "row": 306,
+      "name": "Yellow wall",
+      "values": [
+        "Yellow wall",
+        "yellow wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "4",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200",
+        null,
+        "8m"
+      ],
+      "ids": [
+        "yellow_wallpaper"
+      ],
+      "resolved_ids": [
+        "yellow_wallpaper"
+      ]
+    },
+    {
+      "row": 308,
+      "name": "Blue wall",
+      "values": [
+        "Blue wall",
+        "blue wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "5",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "blue_wallpaper"
+      ],
+      "resolved_ids": [
+        "blue_wallpaper"
+      ]
+    },
+    {
+      "row": 310,
+      "name": "Pink wall",
+      "values": [
+        "Pink wall",
+        "pink wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "5",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "pink_wallpaper"
+      ],
+      "resolved_ids": [
+        "pink_wallpaper"
+      ]
+    },
+    {
+      "row": 312,
+      "name": "Metal block",
+      "values": [
+        "Metal block",
+        "Solid metal.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "25m"
+      ],
+      "ids": [
+        "steel_block"
+      ],
+      "resolved_ids": [
+        "steel_block"
+      ]
+    },
+    {
+      "row": 314,
+      "name": "Metal wall",
+      "values": [
+        "Metal wall",
+        "A metal wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "2h 10m"
+      ],
+      "ids": [
+        "steel_background"
+      ],
+      "resolved_ids": [
+        "steel_background"
+      ]
+    },
+    {
+      "row": 316,
+      "name": "Metal sign",
+      "values": [
+        "Metal sign",
+        "Write it in metal.",
+        "block",
+        "NON SOLID",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "2h 40m"
+      ],
+      "ids": [
+        "steel_sign"
+      ],
+      "resolved_ids": [
+        "steel_sign"
+      ]
+    },
+    {
+      "row": 318,
+      "name": "Metal door",
+      "values": [
+        "Metal door",
+        "A heavy metal door.",
+        "block",
+        "NON SOLID",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200",
+        null,
+        "1h 30m"
+      ],
+      "ids": [
+        "steel_door"
+      ],
+      "resolved_ids": [
+        "steel_door"
+      ]
+    },
+    {
+      "row": 320,
+      "name": "Screen door",
+      "values": [
+        "Screen door",
+        "Keeps bugs out. Maybe.",
+        "block",
+        "NON SOLID",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "2h 10m"
+      ],
+      "ids": [
+        "screen_door"
+      ],
+      "resolved_ids": [
+        "screen_door"
+      ]
+    },
+    {
+      "row": 322,
+      "name": "Ceiling lamp",
+      "values": [
+        "Ceiling lamp",
+        "A lamp for the ceiling.",
+        "block",
+        "NON SOLID",
+        null,
+        "6",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "2h 40m"
+      ],
+      "ids": [
+        "ceiling_lamp"
+      ],
+      "resolved_ids": [
+        "ceiling_lamp"
+      ]
+    },
+    {
+      "row": 324,
+      "name": "Ceiling lamp (on)",
+      "values": [
+        "Ceiling lamp (on)",
+        "Lights on.",
+        "block",
+        "NON SOLID",
+        null,
+        "6",
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200",
+        null,
+        "1h 30m"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "ceiling_lamp"
+      ]
+    },
+    {
+      "row": 326,
+      "name": "Metal ladder",
+      "values": [
+        "Metal ladder",
+        "A metal ladder.",
+        "block",
+        "BOTH",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "2h 10m"
+      ],
+      "ids": [
+        "steel_ladder"
+      ],
+      "resolved_ids": [
+        "steel_ladder"
+      ]
+    },
+    {
+      "row": 328,
+      "name": "Metal entrance",
+      "values": [
+        "Metal entrance",
+        "A metal way in.",
+        "block",
+        "BOTH",
+        null,
+        "7",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3.5",
+        "175",
+        "350",
+        "1750",
+        "3500",
+        null,
+        "7h 30m"
+      ],
+      "ids": [
+        "mechanical_entrance"
+      ],
+      "resolved_ids": [
+        "mechanical_entrance"
+      ]
+    },
+    {
+      "row": 330,
+      "name": "Glass block",
+      "values": [
+        "Glass block",
+        "See-through block.",
+        "block",
+        "SOLID",
+        null,
+        "3",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800",
+        null,
+        "4m"
+      ],
+      "ids": [
+        "glass"
+      ],
+      "resolved_ids": [
+        "glass"
+      ]
+    },
+    {
+      "row": 332,
+      "name": "Glass pane",
+      "values": [
+        "Glass pane",
+        "A sheet of glass.",
+        "bg",
+        "NON SOLID",
+        null,
+        "2",
+        "2",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800",
+        null,
+        "1m 40s"
+      ],
+      "ids": [
+        "glass_panel"
+      ],
+      "resolved_ids": [
+        "glass_panel"
+      ]
+    },
+    {
+      "row": 334,
+      "name": "Metal platform",
+      "values": [
+        "Metal platform",
+        "A metal place to stand.",
+        "block",
+        "BOTH",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "2h 40m"
+      ],
+      "ids": [
+        "steel_platform"
+      ],
+      "resolved_ids": [
+        "steel_platform"
+      ]
+    },
+    {
+      "row": 336,
+      "name": "Spike",
+      "values": [
+        "Spike",
+        "Pointy. Don't touch.",
+        "block",
+        "SOLID",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "YES",
+        "BLOCK, SEED",
+        null,
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200",
+        null,
+        "1h 30m"
+      ],
+      "ids": [
+        "spike",
+        "saw_blade"
+      ],
+      "resolved_ids": [
+        "saw_blade"
+      ]
+    },
+    {
+      "row": 338,
+      "name": "Spike (Hanging)",
+      "values": [
+        "Spike (Hanging)",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "saw_blade"
+      ],
+      "visual_state": true
+    },
+    {
+      "row": 340,
+      "name": "Dark Spike",
+      "values": [
+        "Dark Spike",
+        "An even worse spike.",
+        "block",
+        "SOLID",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "YES",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "2h 40m"
+      ],
+      "ids": [
+        "big_spike"
+      ],
+      "resolved_ids": [
+        "big_spike"
+      ]
+    },
+    {
+      "row": 342,
+      "name": "Pinball",
+      "values": [
+        "Pinball",
+        "Boing.",
+        "block",
+        "SOLID",
+        null,
+        "7",
+        "6",
+        "FIXED",
+        "NO",
+        null,
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "6h 25m"
+      ],
+      "ids": [
+        "pinball"
+      ],
+      "resolved_ids": [
+        "pinball"
+      ]
+    },
+    {
+      "row": 344,
+      "name": "Pinball (Hit)",
+      "values": [
+        "Pinball (Hit)",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "pinball"
+      ]
+    },
+    {
+      "row": 346,
+      "name": "Slime block",
+      "values": [
+        "Slime block",
+        "Bouncy, sticky slime.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "slime"
+      ],
+      "resolved_ids": [
+        "slime"
+      ]
+    },
+    {
+      "row": 348,
+      "name": "Toxic barrel",
+      "values": [
+        "Toxic barrel",
+        "Definitely don't open it.",
+        "block",
+        "SOLID",
+        null,
+        "7",
+        "4",
+        "FIXED",
+        "YES",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "6h 25m"
+      ],
+      "ids": [
+        "biohazard_barrel"
+      ],
+      "resolved_ids": [
+        "biohazard_barrel"
+      ]
+    },
+    {
+      "row": 350,
+      "name": "Toxic waste",
+      "values": [
+        "Toxic waste",
+        "-",
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "1",
+        "FIXED",
+        "YES",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "toxic_waste"
+      ],
+      "resolved_ids": [
+        "toxic_waste"
+      ]
+    },
+    {
+      "row": 354,
+      "name": "Starry block",
+      "values": [
+        "Starry block",
+        "Stars on a block.",
+        "block",
+        "SOLID",
+        null,
+        "7",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "6h 25m"
+      ],
+      "ids": [
+        "star_block"
+      ],
+      "resolved_ids": [
+        "star_block"
+      ]
+    },
+    {
+      "row": 356,
+      "name": "Fish hanger",
+      "values": [
+        "Fish hanger",
+        "Hang your fish here.",
+        "block",
+        "NON SOLID",
+        null,
+        "5",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "fish_hanger"
+      ],
+      "resolved_ids": [
+        "fish_hanger"
+      ]
+    },
+    {
+      "row": 358,
+      "name": "Wooden shelf",
+      "values": [
+        "Wooden shelf",
+        "Put stuff on it.",
+        "block",
+        "BOTH",
+        null,
+        "6",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "2h 40m"
+      ],
+      "ids": [
+        "wooden_shelf"
+      ],
+      "resolved_ids": [
+        "wooden_shelf"
+      ]
+    },
+    {
+      "row": 360,
+      "name": "Metal gate",
+      "values": [
+        "Metal gate",
+        "Keep out.",
+        "block",
+        "SOLID",
+        null,
+        "8",
+        "6",
+        "FIXED",
+        "YES",
+        "BLOCK, SEED",
+        null,
+        "4.5",
+        "225",
+        "450",
+        "2250",
+        "4500",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "metal_gate"
+      ],
+      "resolved_ids": [
+        "metal_gate"
+      ]
+    },
+    {
+      "row": 362,
+      "name": "Metal gate (open)",
+      "values": [
+        "Metal gate (open)",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        null,
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 364,
+      "name": "Anti punch",
+      "values": [
+        "Anti punch",
+        "No punching.",
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        "BACK TO INV",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "anti_punch"
+      ],
+      "resolved_ids": [
+        "anti_punch"
+      ]
+    },
+    {
+      "row": 366,
+      "name": "Anti punch (on)",
+      "values": [
+        "Anti punch (on)",
+        null,
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "anti_punch"
+      ]
+    },
+    {
+      "row": 368,
+      "name": "Anti talk",
+      "values": [
+        "Anti talk",
+        "No talking.",
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        "BACK TO INV",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "anti_talk"
+      ],
+      "resolved_ids": [
+        "anti_talk"
+      ]
+    },
+    {
+      "row": 370,
+      "name": "Anti talk (on)",
+      "values": [
+        "Anti talk (on)",
+        null,
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "anti_talk"
+      ]
+    },
+    {
+      "row": 372,
+      "name": "Anti gravity",
+      "values": [
+        "Anti gravity",
+        "Gravity? Not here.",
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        "BACK TO INV",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "anti_gravity"
+      ],
+      "resolved_ids": [
+        "anti_gravity"
+      ]
+    },
+    {
+      "row": 374,
+      "name": "Anti gravity (on)",
+      "values": [
+        "Anti gravity (on)",
+        null,
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "anti_gravity"
+      ]
+    },
+    {
+      "row": 376,
+      "name": "Display block",
+      "values": [
+        "Display block",
+        "Put something on display.",
+        "block",
+        "SOLID",
+        null,
+        "9",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "6",
+        "300",
+        "600",
+        "3000",
+        "6000",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "display_box"
+      ],
+      "resolved_ids": [
+        "display_box"
+      ]
+    },
+    {
+      "row": 378,
+      "name": "Display wall",
+      "values": [
+        "Display wall",
+        "Show it off.",
+        "block",
+        "NON SOLID",
+        null,
+        "8",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "4.5",
+        "225",
+        "450",
+        "2250",
+        "4500",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "display_case"
+      ],
+      "resolved_ids": [
+        "display_case"
+      ]
+    },
+    {
+      "row": 380,
+      "name": "Mailbox",
+      "values": [
+        "Mailbox",
+        "For mail.",
+        "block",
+        "NON SOLID",
+        null,
+        "6",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "2h 10m"
+      ],
+      "ids": [
+        "mail_box"
+      ],
+      "resolved_ids": [
+        "mail_box"
+      ]
+    },
+    {
+      "row": 382,
+      "name": "Mailbox (filled)",
+      "values": [
+        "Mailbox (filled)",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        "6",
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "2h 40m"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "mail_box"
+      ]
+    },
+    {
+      "row": 384,
+      "name": "Blue mailbox",
+      "values": [
+        "Blue mailbox",
+        "A blue mailbox.",
+        "block",
+        "SOLID",
+        null,
+        "7",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "6h 25m"
+      ],
+      "ids": [
+        "blue_mail_box"
+      ],
+      "resolved_ids": [
+        "blue_mail_box"
+      ]
+    },
+    {
+      "row": 386,
+      "name": "Blue mailbox (filled) ",
+      "values": [
+        "Blue mailbox (filled) ",
+        null,
+        "block",
+        "SOLID",
+        null,
+        "7",
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "4",
+        "200",
+        "400",
+        "2000",
+        "4000",
+        null,
+        "8h"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "blue_mail_box"
+      ]
+    },
+    {
+      "row": 388,
+      "name": "Donation box",
+      "values": [
+        "Donation box",
+        "For donations.",
+        "block",
+        "NON SOLID",
+        null,
+        "7",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3.5",
+        "175",
+        "350",
+        "1750",
+        "3500",
+        null,
+        "7h 30m"
+      ],
+      "ids": [
+        "donation_box"
+      ],
+      "resolved_ids": [
+        "donation_box"
+      ]
+    },
+    {
+      "row": 390,
+      "name": "Donation box (filled) ",
+      "values": [
+        "Donation box (filled) ",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        "7",
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "6h 25m"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "donation_box"
+      ]
+    },
+    {
+      "row": 392,
+      "name": "Bulletin Board",
+      "values": [
+        "Bulletin Board",
+        "Pin it here.",
+        "block",
+        "NON SOLID",
+        null,
+        "8",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "bulletin_board"
+      ],
+      "resolved_ids": [
+        "bulletin_board"
+      ]
+    },
+    {
+      "row": 394,
+      "name": "Checkpoint",
+      "values": [
+        "Checkpoint",
+        "Save your spot.",
+        "block",
+        "NON SOLID",
+        null,
+        "8",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5",
+        "250",
+        "500",
+        "2500",
+        "5000",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "checkpoint"
+      ],
+      "resolved_ids": [
+        "checkpoint"
+      ]
+    },
+    {
+      "row": 396,
+      "name": "Checkpoint (on) ",
+      "values": [
+        "Checkpoint (on) ",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        "8",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "4.5",
+        "225",
+        "450",
+        "2250",
+        "4500",
+        null,
+        "16h 45m"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "checkpoint"
+      ]
+    },
+    {
+      "row": 398,
+      "name": "Blink checkpoint",
+      "values": [
+        "Blink checkpoint",
+        "A checkpoint that blinks.",
+        "block",
+        "NON SOLID",
+        null,
+        "9",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "6.5",
+        "325",
+        "650",
+        "3250",
+        "6500",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "blink_checkpoint"
+      ],
+      "resolved_ids": [
+        "blink_checkpoint"
+      ]
+    },
+    {
+      "row": 400,
+      "name": "Blink checkpoint (on) ",
+      "values": [
+        "Blink checkpoint (on) ",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "blink_checkpoint"
+      ]
+    },
+    {
+      "row": 402,
+      "name": "Bomb",
+      "values": [
+        "Bomb",
+        "Yeah... be careful.",
+        "block",
+        "NON SOLID",
+        null,
+        "9",
+        "5",
+        "FIXED",
+        "YES",
+        "BLOCK, SEED",
+        null,
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "bomb"
+      ],
+      "resolved_ids": [
+        "bomb"
+      ]
+    },
+    {
+      "row": 404,
+      "name": "CCTV",
+      "values": [
+        "CCTV",
+        "Someone's watching.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "cctv"
+      ],
+      "resolved_ids": [
+        "cctv"
+      ]
+    },
+    {
+      "row": 406,
+      "name": "Snow repellent",
+      "values": [
+        "Snow repellent",
+        "No snow allowed.",
+        "block",
+        "SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "snow_repellent"
+      ],
+      "resolved_ids": [
+        "snow_repellent"
+      ]
+    },
+    {
+      "row": 408,
+      "name": "Recycler bin",
+      "values": [
+        "Recycler bin",
+        "Turn junk into something useful.",
+        "block",
+        "NON SOLID",
+        null,
+        "10",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "7",
+        "350",
+        "700",
+        "3500",
+        "7000",
+        null,
+        "1d 12h"
+      ],
+      "ids": [
+        "recycle_bin"
+      ],
+      "resolved_ids": [
+        "recycle_bin"
+      ]
+    },
+    {
+      "row": 410,
+      "name": "Melter",
+      "values": [
+        "Melter",
+        "Melts things down.",
+        "block",
+        "NON SOLID",
+        null,
+        "10",
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "8",
+        "400",
+        "800",
+        "4000",
+        "8000",
+        null,
+        "1d 12h"
+      ],
+      "ids": [
+        "melter"
+      ],
+      "resolved_ids": [
+        "melter"
+      ]
+    },
+    {
+      "row": 412,
+      "name": "Melter (on) ",
+      "values": [
+        "Melter (on) ",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "melter"
+      ]
+    },
+    {
+      "row": 414,
+      "name": "Melter (ready to collect) ",
+      "values": [
+        "Melter (ready to collect) ",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "melter"
+      ]
+    },
+    {
+      "row": 416,
+      "name": "Orange Portal",
+      "values": [
+        "Orange Portal",
+        "Orange way out.",
+        "block",
+        "NON SOLID",
+        null,
+        "11",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "9.5",
+        "475",
+        "950",
+        "4750",
+        "9500",
+        null,
+        "2d 12h"
+      ],
+      "ids": [
+        "yellow_portal"
+      ],
+      "resolved_ids": [
+        "yellow_portal"
+      ]
+    },
+    {
+      "row": 418,
+      "name": "Blue portal",
+      "values": [
+        "Blue portal",
+        "Blue way out.",
+        "block",
+        "NON SOLID",
+        null,
+        "11",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "9",
+        "450",
+        "900",
+        "4500",
+        "9000",
+        null,
+        "2d 12h"
+      ],
+      "ids": [
+        "blue_portal"
+      ],
+      "resolved_ids": [
+        "blue_portal"
+      ]
+    },
+    {
+      "row": 420,
+      "name": "Password door",
+      "values": [
+        "Password door",
+        "Password required.",
+        "block",
+        "NON SOLID",
+        null,
+        "11",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "8.5",
+        "425",
+        "850",
+        "4250",
+        "8500",
+        null,
+        "2d 12h"
+      ],
+      "ids": [
+        "password_door"
+      ],
+      "resolved_ids": [
+        "password_door"
+      ]
+    },
+    {
+      "row": 422,
+      "name": "Dice Block",
+      "values": [
+        "Dice Block",
+        "Roll it.",
+        "block",
+        "NON SOLID",
+        null,
+        "10",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "8",
+        "400",
+        "800",
+        "4000",
+        "8000",
+        null,
+        "1d 12h"
+      ],
+      "ids": [
+        "dice_block"
+      ],
+      "resolved_ids": [
+        "dice_block"
+      ]
+    },
+    {
+      "row": 424,
+      "name": "Bait box",
+      "values": [
+        "Bait box",
+        "Something fishy is inside.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        "BACK TO INV",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "tackle_box"
+      ],
+      "resolved_ids": [
+        "tackle_box"
+      ]
+    },
+    {
+      "row": 426,
+      "name": "Bait box (ready) ",
+      "values": [
+        "Bait box (ready) ",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        null,
+        "FIXED",
+        "NO",
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "tackle_box"
+      ]
+    },
+    {
+      "row": 428,
+      "name": "Quest board",
+      "values": [
+        "Quest board",
+        "Jobs go here.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "quest_board"
+      ],
+      "resolved_ids": [
+        "quest_board"
+      ]
+    },
+    {
+      "row": 430,
+      "name": "Sashimi table",
+      "values": [
+        "Sashimi table",
+        "Fresh cuts.",
+        "block",
+        "NON SOLID",
+        null,
+        "8",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5",
+        "250",
+        "500",
+        "2500",
+        "5000",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "sashimi_table"
+      ],
+      "resolved_ids": [
+        "sashimi_table"
+      ]
+    },
+    {
+      "row": 432,
+      "name": "Leaderboard",
+      "values": [
+        "Leaderboard",
+        "See who's winning.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "5",
+        "FIXED",
+        "NO",
+        "BACK TO INV",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "leaderboard"
+      ],
+      "resolved_ids": [
+        "leaderboard"
+      ]
+    },
+    {
+      "row": 434,
+      "name": "Oil refinery",
+      "values": [
+        "Oil refinery",
+        "Makes oil useful.",
+        "block",
+        "NON SOLID",
+        null,
+        "13",
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "14.5",
+        "725",
+        "1450",
+        "7250",
+        "14500",
+        null,
+        "7d"
+      ],
+      "ids": [
+        "oil_refinery"
+      ],
+      "resolved_ids": [
+        "oil_refinery"
+      ]
+    },
+    {
+      "row": 436,
+      "name": "Oil refinery (ready) ",
+      "values": [
+        "Oil refinery (ready) ",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        "13",
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "13.5",
+        "675",
+        "1350",
+        "6750",
+        "13500",
+        null,
+        "7d"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "oil_refinery"
+      ]
+    },
+    {
+      "row": 438,
+      "name": "Crude oil",
+      "values": [
+        "Crude oil",
+        "Black gold.",
+        "material",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "crude_oil"
+      ],
+      "resolved_ids": [
+        "crude_oil"
+      ]
+    },
+    {
+      "row": 440,
+      "name": "Gasoline",
+      "values": [
+        "Gasoline",
+        "Makes things go.",
+        "material",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 442,
+      "name": "Gem driller",
+      "values": [
+        "Gem driller",
+        "Finds gems underground.",
+        "block",
+        "NON SOLID",
+        null,
+        "14",
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "16",
+        "800",
+        "1600",
+        "8000",
+        "16000",
+        null,
+        "7d 30h"
+      ],
+      "ids": [
+        "gem_driller"
+      ],
+      "resolved_ids": [
+        "gem_driller"
+      ]
+    },
+    {
+      "row": 444,
+      "name": "Gem driller (on) ",
+      "values": [
+        "Gem driller (on) ",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        "14",
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "15",
+        "750",
+        "1500",
+        "7500",
+        "15000"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "gem_driller"
+      ]
+    },
+    {
+      "row": 446,
+      "name": "Gem driller (ready) ",
+      "values": [
+        "Gem driller (ready) ",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        "14",
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "17",
+        "850",
+        "1700",
+        "8500",
+        "17000"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "gem_driller"
+      ]
+    },
+    {
+      "row": 448,
+      "name": "Colored block maker",
+      "values": [
+        "Colored block maker",
+        "Makes colored blocks.",
+        "block",
+        "NON SOLID",
+        null,
+        "13",
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "13.5",
+        "675",
+        "1350",
+        "6750",
+        "13500",
+        null,
+        "7d"
+      ],
+      "ids": [
+        "colored_block_maker"
+      ],
+      "resolved_ids": [
+        "colored_block_maker"
+      ]
+    },
+    {
+      "row": 450,
+      "name": "Colored block maker (ready) ",
+      "values": [
+        "Colored block maker (ready) ",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "colored_block_maker"
+      ]
+    },
+    {
+      "row": 452,
+      "name": "Electrical box",
+      "values": [
+        "Electrical box",
+        "Keeps the power organized.",
+        "block",
+        "SOLID",
+        null,
+        "8",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "electrical_box"
+      ],
+      "resolved_ids": [
+        "electrical_box"
+      ]
+    },
+    {
+      "row": 454,
+      "name": "Electrical box (on) ",
+      "values": [
+        "Electrical box (on) ",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "electrical_box"
+      ]
+    },
+    {
+      "row": 456,
+      "name": "Battery assambler",
+      "values": [
+        "Battery assambler",
+        "Makes batteries.",
+        "block",
+        "NON SOLID",
+        null,
+        "10",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "7",
+        "350",
+        "700",
+        "3500",
+        "7000",
+        null,
+        "1d 12h"
+      ],
+      "ids": [
+        "battery_assembler"
+      ],
+      "resolved_ids": [
+        "battery_assembler"
+      ]
+    },
+    {
+      "row": 458,
+      "name": "Battery assambler (on) ",
+      "values": [
+        "Battery assambler (on) ",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "battery_assembler"
+      ]
+    },
+    {
+      "row": 460,
+      "name": "Battery",
+      "values": [
+        "Battery",
+        "Portable power.",
+        "material",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "battery"
+      ],
+      "resolved_ids": [
+        "battery"
+      ]
+    },
+    {
+      "row": 462,
+      "name": "Electrical pole",
+      "values": [
+        "Electrical pole",
+        "Carries electricity.",
+        "block",
+        "NON SOLID",
+        null,
+        "6",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200",
+        null,
+        "1h 30m"
+      ],
+      "ids": [
+        "electric_pole"
+      ],
+      "resolved_ids": [
+        "electric_pole"
+      ]
+    },
+    {
+      "row": 464,
+      "name": "Metal pad",
+      "values": [
+        "Metal pad",
+        "A metal power pad.",
+        "bg",
+        "NON SOLID",
+        null,
+        "7",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "4",
+        "200",
+        "400",
+        "2000",
+        "4000",
+        null,
+        "8h"
+      ],
+      "ids": [
+        "metal_pad"
+      ],
+      "resolved_ids": [
+        "metal_pad"
+      ]
+    },
+    {
+      "row": 466,
+      "name": "Golden block",
+      "values": [
+        "Golden block",
+        "Shiny gold.",
+        "block, material",
+        "SOLID",
+        null,
+        "10",
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK",
+        null,
+        "7.5",
+        "375",
+        "750",
+        "3750",
+        "7500",
+        null,
+        "1d 12h"
+      ],
+      "ids": [
+        "gold_block"
+      ],
+      "resolved_ids": [
+        "gold_block"
+      ]
+    },
+    {
+      "row": 468,
+      "name": "Emerald block",
+      "values": [
+        "Emerald block",
+        "Green and shiny.",
+        "block, material",
+        "SOLID",
+        null,
+        "10",
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK",
+        null,
+        "7",
+        "350",
+        "700",
+        "3500",
+        "7000",
+        null,
+        "1d 12h"
+      ],
+      "ids": [
+        "emerald_block"
+      ],
+      "resolved_ids": [
+        "emerald_block"
+      ]
+    },
+    {
+      "row": 470,
+      "name": "Ruby block",
+      "values": [
+        "Ruby block",
+        "Red and shiny.",
+        "block, material",
+        "SOLID",
+        null,
+        "10",
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK",
+        null,
+        "8",
+        "400",
+        "800",
+        "4000",
+        "8000",
+        null,
+        "1d 12h"
+      ],
+      "ids": [
+        "ruby_block"
+      ],
+      "resolved_ids": [
+        "ruby_block"
+      ]
+    },
+    {
+      "row": 472,
+      "name": "Diamond block",
+      "values": [
+        "Diamond block",
+        "Very shiny. Very hard.",
+        "block, material",
+        "SOLID",
+        null,
+        "10",
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK",
+        null,
+        "7.5",
+        "375",
+        "750",
+        "3750",
+        "7500",
+        null,
+        "1d 12h"
+      ],
+      "ids": [
+        "diamond_block"
+      ],
+      "resolved_ids": [
+        "diamond_block"
+      ]
+    },
+    {
+      "row": 474,
+      "name": "Gem block",
+      "values": [
+        "Gem block",
+        "A block full of gems.",
+        "block, material",
+        "SOLID",
+        null,
+        "10",
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK",
+        null,
+        "7",
+        "350",
+        "700",
+        "3500",
+        "7000",
+        null,
+        "1d 12h"
+      ],
+      "ids": [
+        "amethyst_block"
+      ],
+      "resolved_ids": [
+        "amethyst_block"
+      ]
+    },
+    {
+      "row": 476,
+      "name": "Copper block",
+      "values": [
+        "Copper block",
+        "Nice warm copper.",
+        "block, material",
+        "SOLID",
+        null,
+        "8",
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK",
+        null,
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "copper_block"
+      ],
+      "resolved_ids": [
+        "copper_block"
+      ]
+    },
+    {
+      "row": 478,
+      "name": "Rusty copper block ",
+      "values": [
+        "Rusty copper block ",
+        "Copper got a little rusty.",
+        "block, material",
+        "SOLID",
+        null,
+        "8",
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK",
+        null,
+        "5",
+        "250",
+        "500",
+        "2500",
+        "5000",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "rusty_copper_block"
+      ],
+      "resolved_ids": [
+        "rusty_copper_block"
+      ]
+    },
+    {
+      "row": 480,
+      "name": "Scrap",
+      "values": [
+        "Scrap",
+        "Old junk.",
+        "material",
+        "-",
+        null,
+        "1",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "metal_scrap"
+      ]
+    },
+    {
+      "row": 482,
+      "name": "Assambled scrap",
+      "values": [
+        "Assambled scrap",
+        "Junk, but useful now.",
+        "material",
+        "-",
+        null,
+        "1",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": []
+    },
+    {
+      "row": 484,
+      "name": "Roman coin",
+      "values": [
+        "Roman coin",
+        "An old Roman coin.",
+        "material",
+        "-",
+        null,
+        "1",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350",
+        null,
+        "35s"
+      ],
+      "ids": []
+    },
+    {
+      "row": 486,
+      "name": "Golden roman coin",
+      "values": [
+        "Golden roman coin",
+        "A Roman coin in gold.",
+        "material",
+        "-",
+        null,
+        "1",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": []
+    },
+    {
+      "row": 488,
+      "name": "Landfill dirt",
+      "values": [
+        "Landfill dirt",
+        "Dirt from the landfill.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": []
+    },
+    {
+      "row": 492,
+      "name": "Landfill cave wall",
+      "values": [
+        "Landfill cave wall",
+        "Landfill cave wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": []
+    },
+    {
+      "row": 494,
+      "name": "Landfill mineral gallon",
+      "values": [
+        "Landfill mineral gallon",
+        "An old container of something.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": []
+    },
+    {
+      "row": 496,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block",
+        "dark brown block.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350",
+        null,
+        "35s"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 498,
+      "name": "Landfill glass bottle",
+      "values": [
+        "Landfill glass bottle",
+        "Someone left this here.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": []
+    },
+    {
+      "row": 500,
+      "name": "Landfill cardboard",
+      "values": [
+        "Landfill cardboard",
+        "Just cardboard.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": []
+    },
+    {
+      "row": 502,
+      "name": "Landfill vend",
+      "values": [
+        "Landfill vend",
+        "An old vending machine.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "7",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350",
+        null,
+        "35s"
+      ],
+      "ids": []
+    },
+    {
+      "row": 504,
+      "name": "Landfill TV",
+      "values": [
+        "Landfill TV",
+        "Broken TV.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [
+        "broken_tv"
+      ],
+      "resolved_ids": [
+        "broken_tv"
+      ]
+    },
+    {
+      "row": 506,
+      "name": "Used tires",
+      "values": [
+        "Used tires",
+        "Can't use them anymore.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "7",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": [
+        "tires"
+      ],
+      "resolved_ids": [
+        "tires"
+      ]
+    },
+    {
+      "row": 508,
+      "name": "Landfill ticket",
+      "values": [
+        "Landfill ticket",
+        "An old ticket.",
+        "material",
+        "-",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 510,
+      "name": "Barn block",
+      "values": [
+        "Barn block",
+        "Part of the barn.",
+        "block",
+        "SOLID",
+        null,
+        "4",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200",
+        null,
+        "8m"
+      ],
+      "ids": [
+        "barn_block"
+      ],
+      "resolved_ids": [
+        "barn_block"
+      ]
+    },
+    {
+      "row": 512,
+      "name": "Barn Window",
+      "values": [
+        "Barn Window",
+        "A barn window.",
+        "block",
+        "NON SOLID",
+        null,
+        "5",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "barn_window"
+      ],
+      "resolved_ids": [
+        "barn_window"
+      ]
+    },
+    {
+      "row": 514,
+      "name": "Barn wall",
+      "values": [
+        "Barn wall",
+        "A barn wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "5",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "barn_background"
+      ],
+      "resolved_ids": [
+        "barn_background"
+      ]
+    },
+    {
+      "row": 516,
+      "name": "Composer 0%-49%",
+      "values": [
+        "Composer 0%-49%",
+        "Still working on it.",
+        "block",
+        "NON SOLID",
+        null,
+        "6",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200",
+        null,
+        "1h 30m"
+      ],
+      "ids": []
+    },
+    {
+      "row": 518,
+      "name": "Composer 50%-99%",
+      "values": [
+        "Composer 50%-99%",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 520,
+      "name": "Composer 100%",
+      "values": [
+        "Composer 100%",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 522,
+      "name": "Farm fence",
+      "values": [
+        "Farm fence",
+        "Keeps the animals in.",
+        "block",
+        "NON SOLID",
+        null,
+        "5",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "25m"
+      ],
+      "ids": [
+        "white_fence"
+      ],
+      "resolved_ids": [
+        "white_fence"
+      ]
+    },
+    {
+      "row": 524,
+      "name": "Barn door",
+      "values": [
+        "Barn door",
+        "A big barn door.",
+        "block",
+        "NON SOLID",
+        null,
+        "5",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "barn_door"
+      ],
+      "resolved_ids": [
+        "barn_door"
+      ]
+    },
+    {
+      "row": 526,
+      "name": "Empty Jar",
+      "values": [
+        "Empty Jar",
+        "Empty jar.",
+        "block",
+        "NON SOLID",
+        null,
+        "7",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3.5",
+        "175",
+        "350",
+        "1750",
+        "3500",
+        null,
+        "7h 30m"
+      ],
+      "ids": [
+        "empty_jar"
+      ],
+      "resolved_ids": [
+        "empty_jar"
+      ]
+    },
+    {
+      "row": 528,
+      "name": "Well",
+      "values": [
+        "Well",
+        "Pull up some water.",
+        "block",
+        "NON SOLID",
+        null,
+        "7",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "6h 25m"
+      ],
+      "ids": [
+        "water_well"
+      ],
+      "resolved_ids": [
+        "water_well"
+      ]
+    },
+    {
+      "row": 530,
+      "name": "Well (ready) ",
+      "values": [
+        "Well (ready) ",
+        "Water's ready.",
+        "block",
+        "NON SOLID",
+        null,
+        null,
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "water_well"
+      ]
+    },
+    {
+      "row": 532,
+      "name": "Weathervane",
+      "values": [
+        "Weathervane",
+        "Shows the wind.",
+        "block",
+        "NON SOLID",
+        null,
+        "6",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "2h 40m"
+      ],
+      "ids": [
+        "weathervane"
+      ],
+      "resolved_ids": [
+        "weathervane"
+      ]
+    },
+    {
+      "row": 534,
+      "name": "Chicken",
+      "values": [
+        "Chicken",
+        "Cluck.",
+        "block",
+        "NON SOLID",
+        null,
+        "7",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "6h 25m"
+      ],
+      "ids": [
+        "chicken"
+      ],
+      "resolved_ids": [
+        "chicken"
+      ]
+    },
+    {
+      "row": 536,
+      "name": "Chicken (ready) ",
+      "values": [
+        "Chicken (ready) ",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        null,
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "chicken"
+      ]
+    },
+    {
+      "row": 538,
+      "name": "Chicken (Hungry) ",
+      "values": [
+        "Chicken (Hungry) ",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        null,
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "chicken"
+      ]
+    },
+    {
+      "row": 540,
+      "name": "Egg",
+      "values": [
+        "Egg",
+        "Fresh egg.",
+        "material, consumable",
+        "-",
+        null,
+        "1",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [
+        "egg"
+      ],
+      "resolved_ids": [
+        "egg"
+      ]
+    },
+    {
+      "row": 542,
+      "name": "Golden egg",
+      "values": [
+        "Golden egg",
+        "A very fancy egg.",
+        "material",
+        "-",
+        null,
+        "1",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": [
+        "golden_egg"
+      ],
+      "resolved_ids": [
+        "golden_egg"
+      ]
+    },
+    {
+      "row": 544,
+      "name": "Duck",
+      "values": [
+        "Duck",
+        "Quack.",
+        "block",
+        "NON SOLID",
+        null,
+        "9",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "6",
+        "300",
+        "600",
+        "3000",
+        "6000",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "duck"
+      ],
+      "resolved_ids": [
+        "duck"
+      ]
+    },
+    {
+      "row": 546,
+      "name": "Duck (ready) ",
+      "values": [
+        "Duck (ready) ",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        null,
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "duck"
+      ]
+    },
+    {
+      "row": 548,
+      "name": "Duck (hungry) ",
+      "values": [
+        "Duck (hungry) ",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        null,
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "duck"
+      ]
+    },
+    {
+      "row": 550,
+      "name": "Sugarcane",
+      "values": [
+        "Sugarcane",
+        "Tall and sweet.",
+        "block",
+        "NON SOLID",
+        null,
+        "5",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "sugar_cane"
+      ],
+      "resolved_ids": [
+        "sugar_cane"
+      ]
+    },
+    {
+      "row": 552,
+      "name": "Death bone",
+      "values": [
+        "Death bone",
+        "Poor animal, what have you done.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "bone"
+      ]
+    },
+    {
+      "row": 554,
+      "name": "Cow",
+      "values": [
+        "Cow",
+        "Moo.",
+        "block",
+        "NON SOLID",
+        null,
+        "8",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "cow"
+      ],
+      "resolved_ids": [
+        "cow"
+      ]
+    },
+    {
+      "row": 556,
+      "name": "Cow (ready) ",
+      "values": [
+        "Cow (ready) ",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        null,
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "cow"
+      ]
+    },
+    {
+      "row": 558,
+      "name": "Cow (hungry) ",
+      "values": [
+        "Cow (hungry) ",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        null,
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "cow"
+      ]
+    },
+    {
+      "row": 560,
+      "name": "Bucket Milk",
+      "values": [
+        "Bucket Milk",
+        "Fresh milk.",
+        "material, consumable",
+        "-",
+        null,
+        "1",
+        "-",
+        "-",
+        "-",
+        "NOTHING",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "milk"
+      ]
+    },
+    {
+      "row": 562,
+      "name": "Dried hay",
+      "values": [
+        "Dried hay",
+        "Dry grass.",
+        "block",
+        "NON SOLID",
+        null,
+        "2",
+        "2",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.6",
+        "30",
+        "60",
+        "300",
+        "600",
+        null,
+        "1m 40s"
+      ],
+      "ids": [
+        "hay"
+      ],
+      "resolved_ids": [
+        "hay"
+      ]
+    },
+    {
+      "row": 564,
+      "name": "Hay bales",
+      "values": [
+        "Hay bales",
+        "Big bundles of hay.",
+        "block",
+        "SOLID",
+        null,
+        "3",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800",
+        null,
+        "4m"
+      ],
+      "ids": [
+        "hay_bales"
+      ],
+      "resolved_ids": [
+        "hay_bales"
+      ]
+    },
+    {
+      "row": 566,
+      "name": "Seaweed",
+      "values": [
+        "Seaweed",
+        "Underwater grass.",
+        "block",
+        "NON SOLID",
+        null,
+        "1",
+        "2",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500",
+        null,
+        "40s"
+      ],
+      "ids": [
+        "seaweed",
+        "seaweed_block"
+      ],
+      "resolved_ids": [
+        "seaweed_block"
+      ]
+    },
+    {
+      "row": 568,
+      "name": "Coral",
+      "values": [
+        "Coral",
+        "Colorful coral.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "2",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350",
+        null,
+        "35s"
+      ],
+      "ids": [
+        "coral",
+        "coral_block"
+      ],
+      "resolved_ids": [
+        "coral_block"
+      ]
+    },
+    {
+      "row": 570,
+      "name": "Pearl clam",
+      "values": [
+        "Pearl clam",
+        "A clam with a secret.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200",
+        null,
+        "30s"
+      ],
+      "ids": [
+        "pearl_clam"
+      ],
+      "resolved_ids": [
+        "pearl_clam"
+      ]
+    },
+    {
+      "row": 572,
+      "name": "Pearl clam (open) ",
+      "values": [
+        "Pearl clam (open) ",
+        "There's the pearl.",
+        "block",
+        "NON SOLID",
+        null,
+        null,
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "pearl_clam_open"
+      ],
+      "resolved_ids": [
+        "pearl_clam_open"
+      ]
+    },
+    {
+      "row": 574,
+      "name": "Pillar block",
+      "values": [
+        "Pillar block",
+        "Holds things up.",
+        "block",
+        "SOLID",
+        null,
+        "6",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "2h 40m"
+      ],
+      "ids": [
+        "pillar"
+      ],
+      "resolved_ids": [
+        "pillar"
+      ]
+    },
+    {
+      "row": 576,
+      "name": "House lamp",
+      "values": [
+        "House lamp",
+        "A lamp for the house.",
+        "block",
+        "NON SOLID",
+        null,
+        "7",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "6h 25m"
+      ],
+      "ids": [
+        "lamp"
+      ],
+      "resolved_ids": [
+        "lamp"
+      ]
+    },
+    {
+      "row": 578,
+      "name": "House lamp (on) ",
+      "values": [
+        "House lamp (on) ",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "lamp"
+      ]
+    },
+    {
+      "row": 580,
+      "name": "Fishbowl",
+      "values": [
+        "Fishbowl",
+        "A tiny fish home.",
+        "block",
+        "NON SOLID",
+        null,
+        "7",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3.5",
+        "175",
+        "350",
+        "1750",
+        "3500",
+        null,
+        "7h 30m"
+      ],
+      "ids": [
+        "fish_bowl"
+      ],
+      "resolved_ids": [
+        "fish_bowl"
+      ]
+    },
+    {
+      "row": 582,
+      "name": "Modern TV",
+      "values": [
+        "Modern TV",
+        "A TV.",
+        "block",
+        "NON SOLID",
+        null,
+        "8",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "4.5",
+        "225",
+        "450",
+        "2250",
+        "4500",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "tv"
+      ],
+      "resolved_ids": [
+        "tv"
+      ]
+    },
+    {
+      "row": 584,
+      "name": "Modern TV (on) ",
+      "values": [
+        "Modern TV (on) ",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        null,
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "tv"
+      ]
+    },
+    {
+      "row": 586,
+      "name": "Couch",
+      "values": [
+        "Couch",
+        "Sit down.",
+        "block",
+        "NON SOLID",
+        null,
+        "7",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3.5",
+        "175",
+        "350",
+        "1750",
+        "3500",
+        null,
+        "7h 30m"
+      ],
+      "ids": [
+        "blue_couch"
+      ],
+      "resolved_ids": [
+        "blue_couch"
+      ]
+    },
+    {
+      "row": 588,
+      "name": "Potato Couch",
+      "values": [
+        "Potato Couch",
+        "A couch. But used like 1000x times.",
+        "block",
+        "NON SOLID",
+        null,
+        "9",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "green_couch"
+      ],
+      "resolved_ids": [
+        "green_couch"
+      ]
+    },
+    {
+      "row": 590,
+      "name": "House table",
+      "values": [
+        "House table",
+        "For eating and stuff.",
+        "block",
+        "BOTH",
+        null,
+        "5",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "side_table"
+      ],
+      "resolved_ids": [
+        "side_table"
+      ]
+    },
+    {
+      "row": 592,
+      "name": "Modern Chair",
+      "values": [
+        "Modern Chair",
+        "A modern chair.",
+        "block",
+        "BOTH",
+        null,
+        "6",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "2h 40m"
+      ],
+      "ids": [
+        "modern_chair"
+      ],
+      "resolved_ids": [
+        "modern_chair"
+      ]
+    },
+    {
+      "row": 594,
+      "name": "Dresser",
+      "values": [
+        "Dresser",
+        "Put your clothes somewhere.",
+        "block",
+        "BOTH",
+        null,
+        "6",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200",
+        null,
+        "1h 30m"
+      ],
+      "ids": [
+        "dresser"
+      ],
+      "resolved_ids": [
+        "dresser"
+      ]
+    },
+    {
+      "row": 596,
+      "name": "House door",
+      "values": [
+        "House door",
+        "The front door.",
+        "block",
+        "NON SOLID",
+        null,
+        "5",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "royal_door"
+      ],
+      "resolved_ids": [
+        "royal_door"
+      ]
+    },
+    {
+      "row": 598,
+      "name": "Grand house door",
+      "values": [
+        "Grand house door",
+        "A fancy front door.",
+        "block",
+        "NON SOLID",
+        null,
+        "8",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5",
+        "250",
+        "500",
+        "2500",
+        "5000",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "grand_house_door"
+      ],
+      "resolved_ids": [
+        "grand_house_door"
+      ]
+    },
+    {
+      "row": 600,
+      "name": "House entrance",
+      "values": [
+        "House entrance",
+        "Welcome in.",
+        "block",
+        "BOTH",
+        null,
+        "7",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "6h 25m"
+      ],
+      "ids": [
+        "royal_entrance"
+      ],
+      "resolved_ids": [
+        "royal_entrance"
+      ]
+    },
+    {
+      "row": 602,
+      "name": "White window",
+      "values": [
+        "White window",
+        "A plain window.",
+        "block",
+        "NON SOLID",
+        null,
+        "5",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "royal_window"
+      ],
+      "resolved_ids": [
+        "royal_window"
+      ]
+    },
+    {
+      "row": 604,
+      "name": "Purple curtained window",
+      "values": [
+        "Purple curtained window",
+        "Purple curtains included.",
+        "block",
+        "NON SOLID",
+        null,
+        "7",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3.5",
+        "175",
+        "350",
+        "1750",
+        "3500",
+        null,
+        "7h 30m"
+      ],
+      "ids": [
+        "purple_curtains"
+      ],
+      "resolved_ids": [
+        "purple_curtains"
+      ]
+    },
+    {
+      "row": 606,
+      "name": "Pink curtained window",
+      "values": [
+        "Pink curtained window",
+        "Pink curtains included.",
+        "block",
+        "NON SOLID",
+        null,
+        "7",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "6h 25m"
+      ],
+      "ids": [
+        "pink_curtains"
+      ],
+      "resolved_ids": [
+        "pink_curtains"
+      ]
+    },
+    {
+      "row": 608,
+      "name": "Toilet",
+      "values": [
+        "Toilet",
+        "Yep. It's a toilet.",
+        "block",
+        "NON SOLID",
+        null,
+        "6",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "2h 10m"
+      ],
+      "ids": [
+        "toilet",
+        "toilet_open"
+      ],
+      "resolved_ids": [
+        "toilet"
+      ]
+    },
+    {
+      "row": 610,
+      "name": "Toilet (open) ",
+      "values": [
+        "Toilet (open) ",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        null,
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "toilet_open"
+      ],
+      "resolved_ids": [
+        "toilet_open"
+      ]
+    },
+    {
+      "row": 612,
+      "name": "Refrigerator",
+      "values": [
+        "Refrigerator",
+        "Keeps food cold.",
+        "block",
+        "SOLID",
+        null,
+        "9",
+        "6",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "refrigerator",
+        "refrigerator_open"
+      ],
+      "resolved_ids": [
+        "refrigerator"
+      ]
+    },
+    {
+      "row": 614,
+      "name": "Refrigerator (open)",
+      "values": [
+        "Refrigerator (open)",
+        null,
+        "block",
+        "NON SOLID",
+        null,
+        null,
+        null,
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "refrigerator_open"
+      ],
+      "resolved_ids": [
+        "refrigerator_open"
+      ]
+    },
+    {
+      "row": 616,
+      "name": "Building brick block",
+      "values": [
+        "Building brick block",
+        "A building brick.",
+        "block",
+        "SOLID",
+        null,
+        "4",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500",
+        null,
+        "8m 30s"
+      ],
+      "ids": [
+        "building_brick_block"
+      ],
+      "resolved_ids": [
+        "building_brick_block"
+      ]
+    },
+    {
+      "row": 618,
+      "name": "Building brick wall",
+      "values": [
+        "Building brick wall",
+        "A brick wall.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "25m"
+      ],
+      "ids": [
+        "building_brick_wall"
+      ],
+      "resolved_ids": [
+        "building_brick_wall"
+      ]
+    },
+    {
+      "row": 620,
+      "name": "Fireplace",
+      "values": [
+        "Fireplace",
+        "Cozy fire spot.",
+        "block",
+        "NON SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "fireplace",
+        "fireplace_on"
+      ],
+      "resolved_ids": [
+        "fireplace"
+      ]
+    },
+    {
+      "row": 622,
+      "name": "Fireplace (on)",
+      "values": [
+        "Fireplace (on)",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "ids": [
+        "fireplace_on"
+      ],
+      "resolved_ids": [
+        "fireplace_on"
+      ]
+    },
+    {
+      "row": 624,
+      "name": "Bathub",
+      "values": [
+        "Bathub",
+        "For taking a bath.",
+        "block",
+        "NON SOLID",
+        null,
+        "7",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "6h 25m"
+      ],
+      "ids": [
+        "bathtub"
+      ],
+      "resolved_ids": [
+        "bathtub"
+      ]
+    },
+    {
+      "row": 626,
+      "name": "Bathub (on)",
+      "values": [
+        "Bathub (on)",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "ids": [],
+      "resolved_ids": [
+        "bathtub_on"
+      ]
+    },
+    {
+      "row": 628,
+      "name": "Sink",
+      "values": [
+        "Sink",
+        "Wash up here.",
+        "block",
+        "NON SOLID",
+        null,
+        "6",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "2h 40m"
+      ],
+      "ids": [
+        "sink",
+        "sink_on"
+      ],
+      "resolved_ids": [
+        "sink"
+      ]
+    },
+    {
+      "row": 630,
+      "name": "Sink (on)",
+      "values": [
+        "Sink (on)",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "ids": [
+        "sink_on"
+      ],
+      "resolved_ids": [
+        "sink_on"
+      ]
+    },
+    {
+      "row": 632,
+      "name": "Rubber duck",
+      "values": [
+        "Rubber duck",
+        "Quack. Artificially.",
+        "block",
+        "BOTH",
+        null,
+        "8",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "rubber_duck"
+      ],
+      "resolved_ids": [
+        "rubber_duck"
+      ]
+    },
+    {
+      "row": 634,
+      "name": "Rubber duck (punched)",
+      "values": [
+        "Rubber duck (punched)",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "ids": [],
+      "visual_state": true,
+      "resolved_ids": [
+        "rubber_duck"
+      ]
+    },
+    {
+      "row": 636,
+      "name": "Building brick platform",
+      "values": [
+        "Building brick platform",
+        "A brick platform.",
+        "block",
+        "BOTH",
+        null,
+        "5",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "25m"
+      ],
+      "ids": [
+        "red_brick_platform"
+      ],
+      "resolved_ids": [
+        "red_brick_platform"
+      ]
+    },
+    {
+      "row": 638,
+      "name": "Polished stone brick",
+      "values": [
+        "Polished stone brick",
+        "Smooth stone brick.",
+        "block",
+        "SOLID",
+        null,
+        "4",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "9m 30s"
+      ],
+      "ids": [
+        "white_brick_block"
+      ],
+      "resolved_ids": [
+        "white_brick_block"
+      ]
+    },
+    {
+      "row": 642,
+      "name": "Polished stone wall",
+      "values": [
+        "Polished stone wall",
+        "A smooth stone wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "5",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "25m"
+      ],
+      "ids": [
+        "white_brick_wall"
+      ],
+      "resolved_ids": [
+        "white_brick_wall"
+      ]
+    },
+    {
+      "row": 644,
+      "name": "Polished stone platform",
+      "values": [
+        "Polished stone platform",
+        "A smooth stone platform.",
+        "block",
+        "BOTH",
+        null,
+        "5",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "white_brick_platform"
+      ],
+      "resolved_ids": [
+        "white_brick_platform"
+      ]
+    },
+    {
+      "row": 646,
+      "name": "Fan",
+      "values": [
+        "Fan",
+        "Makes the air move.",
+        "block",
+        "NON SOLID",
+        null,
+        "9",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "6",
+        "300",
+        "600",
+        "3000",
+        "6000",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "fan"
+      ],
+      "resolved_ids": [
+        "fan"
+      ]
+    },
+    {
+      "row": 648,
+      "name": "Bed",
+      "values": [
+        "Bed",
+        "Time for a nap.",
+        "block",
+        "NON SOLID",
+        null,
+        "6",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200",
+        null,
+        "1h 30m"
+      ],
+      "ids": [
+        "bed"
+      ],
+      "resolved_ids": [
+        "bed"
+      ]
+    },
+    {
+      "row": 650,
+      "name": "Park bench",
+      "values": [
+        "Park bench",
+        "Have a seat.",
+        "block",
+        "NON SOLID",
+        null,
+        "5",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "park_bench"
+      ],
+      "resolved_ids": [
+        "park_bench"
+      ]
+    },
+    {
+      "row": 652,
+      "name": "Big sign",
+      "values": [
+        "Big sign",
+        "A very big sign.",
+        "block",
+        "NON SOLID",
+        null,
+        "4",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500",
+        null,
+        "8m 30s"
+      ],
+      "ids": [
+        "big_sign"
+      ],
+      "resolved_ids": [
+        "big_sign"
+      ]
+    },
+    {
+      "row": 654,
+      "name": "Right directional sign",
+      "values": [
+        "Right directional sign",
+        "That way →",
+        "block",
+        "NON SOLID",
+        null,
+        "5",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "25m"
+      ],
+      "ids": [
+        "right_directional_sign"
+      ],
+      "resolved_ids": [
+        "right_directional_sign"
+      ]
+    },
+    {
+      "row": 656,
+      "name": "Left directional sign",
+      "values": [
+        "Left directional sign",
+        "← That way",
+        "block",
+        "NON SOLID",
+        null,
+        "5",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "left_directional_sign"
+      ],
+      "resolved_ids": [
+        "left_directional_sign"
+      ]
+    },
+    {
+      "row": 658,
+      "name": "Digital Sign",
+      "values": [
+        "Digital Sign",
+        "A sign, but digital.",
+        "block",
+        "NON SOLID",
+        null,
+        "9",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "6",
+        "300",
+        "600",
+        "3000",
+        "6000",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "digital_sign",
+        "digital_sign_on"
+      ],
+      "resolved_ids": [
+        "digital_sign"
+      ]
+    },
+    {
+      "row": 660,
+      "name": "Star wallpaper",
+      "values": [
+        "Star wallpaper",
+        "Stars on the wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "4",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200",
+        null,
+        "8m"
+      ],
+      "ids": [
+        "star_wall"
+      ],
+      "resolved_ids": [
+        "star_wall"
+      ]
+    },
+    {
+      "row": 662,
+      "name": "Blue strip wallpaper",
+      "values": [
+        "Blue strip wallpaper",
+        "Blue stripes.",
+        "bg",
+        "NON SOLID",
+        null,
+        "4",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "9m 30s"
+      ],
+      "ids": [
+        "blue_stripe_wall"
+      ],
+      "resolved_ids": [
+        "blue_stripe_wall"
+      ]
+    },
+    {
+      "row": 664,
+      "name": "Red strip wallpaper",
+      "values": [
+        "Red strip wallpaper",
+        "Red stripes.",
+        "bg",
+        "NON SOLID",
+        null,
+        "4",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500",
+        null,
+        "8m 30s"
+      ],
+      "ids": [
+        "red_stripe_wall"
+      ],
+      "resolved_ids": [
+        "red_stripe_wall"
+      ]
+    },
+    {
+      "row": 666,
+      "name": "Aquatic line wallpaper",
+      "values": [
+        "Aquatic line wallpaper",
+        "A watery pattern.",
+        "bg",
+        "NON SOLID",
+        null,
+        "5",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "25m"
+      ],
+      "ids": [
+        "aquatic_line_wall"
+      ],
+      "resolved_ids": [
+        "aquatic_line_wall"
+      ]
+    },
+    {
+      "row": 668,
+      "name": "Complementary line wallpaper",
+      "values": [
+        "Complementary line wallpaper",
+        "Two colors. One wall.",
+        "bg",
+        "NON SOLID",
+        null,
+        "5",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500",
+        null,
+        "30m"
+      ],
+      "ids": [
+        "complementary_line_wall"
+      ],
+      "resolved_ids": [
+        "complementary_line_wall"
+      ]
+    },
+    {
+      "row": 670,
+      "name": "Checkered wallpaper",
+      "values": [
+        "Checkered wallpaper",
+        "Squares everywhere.",
+        "bg",
+        "NON SOLID",
+        null,
+        "5",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "checkered_wall"
+      ],
+      "resolved_ids": [
+        "checkered_wall"
+      ]
+    },
+    {
+      "row": 672,
+      "name": "Sale sign",
+      "values": [
+        "Sale sign",
+        "Yep, it's for sale.",
+        "block",
+        "NON SOLID",
+        null,
+        "6",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200",
+        null,
+        "1h 30m"
+      ],
+      "ids": [
+        "sale_sign"
+      ],
+      "resolved_ids": [
+        "sale_sign"
+      ]
+    },
+    {
+      "row": 674,
+      "name": "Hazard sign",
+      "values": [
+        "Hazard sign",
+        "Something's probably wrong.",
+        "block",
+        "NON SOLID",
+        null,
+        "8",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "hazard_sign"
+      ],
+      "resolved_ids": [
+        "hazard_sign"
+      ]
+    },
+    {
+      "row": 676,
+      "name": "Open sign",
+      "values": [
+        "Open sign",
+        "We're open.",
+        "block",
+        "NON SOLID",
+        null,
+        "8",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5",
+        "250",
+        "500",
+        "2500",
+        "5000",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "open_sign",
+        "open_sign_on"
+      ],
+      "resolved_ids": [
+        "open_sign"
+      ]
+    },
+    {
+      "row": 680,
+      "name": "Street Sign",
+      "values": [
+        "Street Sign",
+        "For telling people where to go.",
+        "block",
+        "NON SOLID",
+        null,
+        "7",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "4",
+        "200",
+        "400",
+        "2000",
+        "4000",
+        null,
+        "8h"
+      ],
+      "ids": [
+        "street_sign"
+      ],
+      "resolved_ids": [
+        "street_sign"
+      ]
+    },
+    {
+      "row": 682,
+      "name": "Chandelier",
+      "values": [
+        "Chandelier",
+        "Fancy ceiling light.",
+        "block",
+        "NON SOLID",
+        null,
+        "10",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "7.5",
+        "375",
+        "750",
+        "3750",
+        "7500",
+        null,
+        "1d 12h"
+      ],
+      "ids": [
+        "chandelier",
+        "chandelier_on"
+      ],
+      "resolved_ids": [
+        "chandelier"
+      ]
+    },
+    {
+      "row": 686,
+      "name": "Wall clock",
+      "values": [
+        "Wall clock",
+        "Tick tock.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "7",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "wall_clock"
+      ],
+      "resolved_ids": [
+        "wall_clock"
+      ]
+    },
+    {
+      "row": 688,
+      "name": "Vines painting",
+      "values": [
+        "Vines painting",
+        "A painting of vines.",
+        "block",
+        "NON SOLID",
+        null,
+        "9",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "6",
+        "300",
+        "600",
+        "3000",
+        "6000",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "vines_painting"
+      ],
+      "resolved_ids": [
+        "vines_painting"
+      ]
+    },
+    {
+      "row": 690,
+      "name": "Scratched banana painting",
+      "values": [
+        "Scratched banana painting",
+        "Someone scratched the banana.",
+        "block",
+        "NON SOLID",
+        null,
+        "9",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "scratched_banana_painting"
+      ],
+      "resolved_ids": [
+        "scratched_banana_painting"
+      ]
+    },
+    {
+      "row": 692,
+      "name": "Heartbreak painting",
+      "values": [
+        "Heartbreak painting",
+        "Bit sad, isn't it?",
+        "block",
+        "NON SOLID",
+        null,
+        "9",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "6.5",
+        "325",
+        "650",
+        "3250",
+        "6500",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "heartbreak_painting"
+      ],
+      "resolved_ids": [
+        "heartbreak_painting"
+      ]
+    },
+    {
+      "row": 694,
+      "name": "Love painting",
+      "values": [
+        "Love painting",
+        "That's cute.",
+        "block",
+        "NON SOLID",
+        null,
+        "9",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "6",
+        "300",
+        "600",
+        "3000",
+        "6000",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "love_painting"
+      ],
+      "resolved_ids": [
+        "love_painting"
+      ]
+    },
+    {
+      "row": 696,
+      "name": "Sunflower painting",
+      "values": [
+        "Sunflower painting",
+        "A sunflower that never wilts.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "sunflower_painting"
+      ],
+      "resolved_ids": [
+        "sunflower_painting"
+      ]
+    },
+    {
+      "row": 698,
+      "name": "Mona lisa",
+      "values": [
+        "Mona lisa",
+        "She's looking at you.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "mona_lisa"
+      ],
+      "resolved_ids": [
+        "mona_lisa"
+      ]
+    },
+    {
+      "row": 700,
+      "name": "American gothic",
+      "values": [
+        "American gothic",
+        "Two very serious people.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "american_gothic"
+      ],
+      "resolved_ids": [
+        "american_gothic"
+      ]
+    },
+    {
+      "row": 702,
+      "name": "The girl with pearl earrings",
+      "values": [
+        "The girl with pearl earrings",
+        "A famous face and a shiny earring.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": []
+    },
+    {
+      "row": 704,
+      "name": "The starry night",
+      "values": [
+        "The starry night",
+        "A very starry night.",
+        "block",
+        "NON SOLID",
+        null,
+        "-",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        null,
+        "-"
+      ],
+      "ids": [
+        "the_starry_night"
+      ],
+      "resolved_ids": [
+        "the_starry_night"
+      ]
+    },
+    {
+      "row": 706,
+      "name": "Fire escape",
+      "values": [
+        "Fire escape",
+        "For emergencies. Hopefully.",
+        "block",
+        "BOTH",
+        null,
+        "9",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "6",
+        "300",
+        "600",
+        "3000",
+        "6000",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "fire_escape"
+      ],
+      "resolved_ids": [
+        "fire_escape"
+      ]
+    },
+    {
+      "row": 708,
+      "name": "Gothic fence",
+      "values": [
+        "Gothic fence",
+        "Spooky fence.",
+        "block",
+        "NON SOLID",
+        null,
+        "9",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "city_fence"
+      ],
+      "resolved_ids": [
+        "city_fence"
+      ]
+    },
+    {
+      "row": 710,
+      "name": "Street lamp",
+      "values": [
+        "Street lamp",
+        "Lights up the street.",
+        "block",
+        "NON SOLID",
+        null,
+        "8",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "street_lamp"
+      ],
+      "resolved_ids": [
+        "street_lamp"
+      ]
+    },
+    {
+      "row": 712,
+      "name": "Fire Hydrant",
+      "values": [
+        "Fire Hydrant",
+        "Emergency water.",
+        "block",
+        "SOLID",
+        null,
+        "9",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "6",
+        "300",
+        "600",
+        "3000",
+        "6000",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "fire_hydrant"
+      ],
+      "resolved_ids": [
+        "fire_hydrant"
+      ]
+    },
+    {
+      "row": 716,
+      "name": "Ventilation",
+      "values": [
+        "Ventilation",
+        "Let the air through.",
+        "block",
+        "BOTH",
+        null,
+        "7",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "4",
+        "200",
+        "400",
+        "2000",
+        "4000",
+        null,
+        "8h"
+      ],
+      "ids": [
+        "ventilation"
+      ],
+      "resolved_ids": [
+        "ventilation"
+      ]
+    },
+    {
+      "row": 718,
+      "name": "Sirene lamp (on)",
+      "values": [
+        "Sirene lamp (on)",
+        "Lights are flashing.",
+        "block",
+        "NON SOLID",
+        null,
+        "9",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "6",
+        "300",
+        "600",
+        "3000",
+        "6000",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "sirene_lamp_on",
+        "sirene_lamp"
+      ],
+      "resolved_ids": [
+        "sirene_lamp_on"
+      ]
+    },
+    {
+      "row": 720,
+      "name": "Sirene lamp",
+      "values": [
+        "Sirene lamp",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "ids": [
+        "sirene_lamp",
+        "sirene_lamp_on"
+      ],
+      "resolved_ids": [
+        "sirene_lamp"
+      ]
+    },
+    {
+      "row": 722,
+      "name": "Water fountain",
+      "values": [
+        "Water fountain",
+        "Free water. Probably.",
+        "block",
+        "NON SOLID",
+        null,
+        "9",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "6.5",
+        "325",
+        "650",
+        "3250",
+        "6500",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "water_fountain"
+      ],
+      "resolved_ids": [
+        "water_fountain"
+      ]
+    },
+    {
+      "row": 724,
+      "name": "Moon",
+      "values": [
+        "Moon",
+        "The night light.",
+        "block",
+        "SOLID",
+        null,
+        "11",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "9",
+        "450",
+        "900",
+        "4500",
+        "9000",
+        null,
+        "2d 12h"
+      ],
+      "ids": [
+        "moon"
+      ],
+      "resolved_ids": [
+        "moon"
+      ]
+    },
+    {
+      "row": 726,
+      "name": "Earth",
+      "values": [
+        "Earth",
+        "Home.",
+        "block",
+        "SOLID",
+        null,
+        "11",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "8.5",
+        "425",
+        "850",
+        "4250",
+        "8500",
+        null,
+        "2d 12h"
+      ],
+      "ids": [
+        "earth"
+      ],
+      "resolved_ids": [
+        "earth"
+      ]
+    },
+    {
+      "row": 728,
+      "name": "Sun",
+      "values": [
+        "Sun",
+        "It's the sun.",
+        "block",
+        "SOLID",
+        null,
+        "11",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "9.5",
+        "475",
+        "950",
+        "4750",
+        "9500",
+        null,
+        "2d 12h"
+      ],
+      "ids": [
+        "sun"
+      ],
+      "resolved_ids": [
+        "sun"
+      ]
+    },
+    {
+      "row": 730,
+      "name": "Pencil Block",
+      "values": [
+        "Pencil Block",
+        "Draw on it.",
+        "block",
+        "SOLID",
+        null,
+        "5",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000",
+        null,
+        "28m 45s"
+      ],
+      "ids": [
+        "pencil_block"
+      ],
+      "resolved_ids": [
+        "pencil_block"
+      ]
+    },
+    {
+      "row": 732,
+      "name": "Cozy Chalkboard",
+      "values": [
+        "Cozy Chalkboard",
+        "Write something down.",
+        "block",
+        "SOLID",
+        null,
+        "7",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "6h 25m"
+      ],
+      "ids": [
+        "cozy_chalkboard"
+      ],
+      "resolved_ids": [
+        "cozy_chalkboard"
+      ]
+    },
+    {
+      "row": 734,
+      "name": "Almanac",
+      "values": [
+        "Almanac",
+        "Lots of useful stuff inside.",
+        "block",
+        "SOLID",
+        null,
+        "8",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500",
+        null,
+        "16h 45m"
+      ],
+      "ids": [
+        "almanac"
+      ],
+      "resolved_ids": [
+        "almanac"
+      ]
+    },
+    {
+      "row": 736,
+      "name": "Neon Block",
+      "values": [
+        "Neon Block",
+        "Very bright.",
+        "block",
+        "SOLID",
+        null,
+        "7",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3.5",
+        "175",
+        "350",
+        "1750",
+        "3500",
+        null,
+        "7h 30m"
+      ],
+      "ids": [
+        "neon_block"
+      ],
+      "resolved_ids": [
+        "neon_block"
+      ]
+    },
+    {
+      "row": 738,
+      "name": "Sun",
+      "values": [
+        "Sun",
+        "It's the sun.",
+        "block",
+        "SOLID",
+        null,
+        "11",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "8.5",
+        "425",
+        "850",
+        "4250",
+        "8500",
+        null,
+        "2d 12h"
+      ],
+      "ids": [
+        "sun"
+      ],
+      "resolved_ids": [
+        "sun"
+      ]
+    },
+    {
+      "row": 740,
+      "name": "Sun",
+      "values": [
+        "Sun",
+        "It's the sun.",
+        "block",
+        "SOLID",
+        null,
+        "11",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "9.5",
+        "475",
+        "950",
+        "4750",
+        "9500",
+        null,
+        "2d 12h"
+      ],
+      "ids": [
+        "sun"
+      ],
+      "resolved_ids": [
+        "sun"
+      ]
+    },
+    {
+      "row": 742,
+      "name": "Sun",
+      "values": [
+        "Sun",
+        "It's the sun.",
+        "block",
+        "SOLID",
+        null,
+        "11",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "9",
+        "450",
+        "900",
+        "4500",
+        "9000",
+        null,
+        "2d 12h"
+      ],
+      "ids": [
+        "sun"
+      ],
+      "resolved_ids": [
+        "sun"
+      ]
+    },
+    {
+      "row": 744,
+      "name": "Sun",
+      "values": [
+        "Sun",
+        "It's the sun.",
+        "block",
+        "SOLID",
+        null,
+        "11",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "8.5",
+        "425",
+        "850",
+        "4250",
+        "8500",
+        null,
+        "2d 12h"
+      ],
+      "ids": [
+        "sun"
+      ],
+      "resolved_ids": [
+        "sun"
+      ]
+    },
+    {
+      "row": 746,
+      "name": "Sun",
+      "values": [
+        "Sun",
+        "It's the sun.",
+        "block",
+        "SOLID",
+        null,
+        "11",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "9.5",
+        "475",
+        "950",
+        "4750",
+        "9500",
+        null,
+        "2d 12h"
+      ],
+      "ids": [
+        "sun"
+      ],
+      "resolved_ids": [
+        "sun"
+      ]
+    },
+    {
+      "row": 748,
+      "name": "Sun",
+      "values": [
+        "Sun",
+        "It's the sun.",
+        "block",
+        "SOLID",
+        null,
+        "11",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "9",
+        "450",
+        "900",
+        "4500",
+        "9000",
+        null,
+        "2d 12h"
+      ],
+      "ids": [
+        "sun"
+      ],
+      "resolved_ids": [
+        "sun"
+      ]
+    },
+    {
+      "row": 750,
+      "name": "Hellbrick",
+      "values": [
+        "Hellbrick",
+        "Hot bricks.",
+        "block",
+        "SOLID",
+        null,
+        "3",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800",
+        null,
+        "4m"
+      ],
+      "ids": [
+        "hellbrick"
+      ],
+      "resolved_ids": [
+        "hellbrick"
+      ]
+    },
+    {
+      "row": 752,
+      "name": "Hellbrick wall",
+      "values": [
+        "Hellbrick wall",
+        null,
+        "bg",
+        "Hot brick wall.",
+        null,
+        "4",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800",
+        null,
+        "9m 30s"
+      ],
+      "ids": [
+        "hellbrick_wall"
+      ],
+      "resolved_ids": [
+        "hellbrick_wall"
+      ]
+    },
+    {
+      "row": 754,
+      "name": "Magma stone",
+      "values": [
+        "Magma stone",
+        "Hot rock.",
+        "block",
+        "SOLID",
+        null,
+        "1",
+        "5",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350",
+        null,
+        "35s"
+      ],
+      "ids": [
+        "magma_stone"
+      ],
+      "resolved_ids": [
+        "magma_stone"
+      ]
+    },
+    {
+      "row": 756,
+      "name": "Hell portal",
+      "values": [
+        "Hell portal",
+        "Definitely don't go through.",
+        "block",
+        "NON SOLID",
+        null,
+        "11",
+        "3",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "8.5",
+        "425",
+        "850",
+        "4250",
+        "8500",
+        null,
+        "2d 12h"
+      ],
+      "ids": [
+        "hell_portal"
+      ],
+      "resolved_ids": [
+        "hell_portal"
+      ]
+    },
+    {
+      "row": 758,
+      "name": "Hellbrick platform",
+      "values": [
+        "Hellbrick platform",
+        "A hot brick platform.",
+        "block",
+        "BOTH",
+        null,
+        "6",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000",
+        null,
+        "2h 10m"
+      ],
+      "ids": [
+        "hellbrick_platform"
+      ],
+      "resolved_ids": [
+        "hellbrick_platform"
+      ]
+    },
+    {
+      "row": 760,
+      "name": "Hell entrance",
+      "values": [
+        "Hell entrance",
+        "Welcome to hell.",
+        "block",
+        "NON SOLID",
+        null,
+        "9",
+        "4",
+        "FIXED",
+        "NO",
+        "BLOCK, SEED",
+        null,
+        "6",
+        "300",
+        "600",
+        "3000",
+        "6000",
+        null,
+        "22h 45m"
+      ],
+      "ids": [
+        "hell_entrance"
+      ],
+      "resolved_ids": [
+        "hell_entrance"
+      ]
+    },
+    {
+      "row": 921,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 923,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 925,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 927,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 929,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 931,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 933,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 935,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 937,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 939,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 941,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 943,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 945,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 947,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 949,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 951,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 953,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 955,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 957,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 959,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 961,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 963,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 965,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 967,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 969,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 971,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 973,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 975,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 977,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 979,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 981,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 983,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 985,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 987,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 989,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 991,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    },
+    {
+      "row": 993,
+      "name": "Dark brown block",
+      "values": [
+        "Dark brown block"
+      ],
+      "ids": [
+        "dark_brown_block"
+      ],
+      "resolved_ids": [
+        "dark_brown_block"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "row": 362,
+      "name": "Metal gate (open)",
+      "reason": "Missing item or visual-state row; requires mapping"
+    },
+    {
+      "row": 702,
+      "name": "The girl with pearl earrings",
+      "reason": "Missing item or visual-state row; requires mapping"
+    },
+    {
+      "row": 752,
+      "name": "Hellbrick wall",
+      "reason": "Invalid collision value: Hot brick wall."
+    }
+  ]
+}

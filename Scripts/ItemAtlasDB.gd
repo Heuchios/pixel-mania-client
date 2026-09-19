@@ -405,7 +405,7 @@ static func merge_item_database(item_database: Dictionary) -> Dictionary:
 		for field in atlas_entry.keys():
 			merged[field] = atlas_entry[field]
 		item_database[item_key] = merged
-	return item_database
+	return preload("res://Scripts/item_data_contract.gd").apply(item_database)
 
 
 static func get_item_icon(item_id: int, tile_set: TileSet = null) -> AtlasTexture:

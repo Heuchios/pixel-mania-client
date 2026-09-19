@@ -1041,6 +1041,9 @@ func ensure_seed_item_definitions_from_blocks():
 			item_data["seed_box_icon"] = true
 			item_data.erase("inventory_icon")
 
+	# Apply authored properties after legacy balance and generated-seed defaults.
+	preload("res://Scripts/item_data_contract.gd").apply(item_database)
+
 
 func get_seed_icon_texture(seed_type: String):
 	return get_seed_box_composite_texture(seed_type, seed_icon_texture_cache)
@@ -5276,6 +5279,8 @@ func can_current_player_pass_door() -> bool:
 
 
 func can_current_player_break_block(block_type: String) -> bool:
+	if block_type == "toxic_waste":
+		return true
 	if world_lock_manager != null and world_lock_manager.has_method("can_current_player_break_block"):
 		return world_lock_manager.can_current_player_break_block(block_type)
 
@@ -5283,6 +5288,8 @@ func can_current_player_break_block(block_type: String) -> bool:
 
 
 func can_current_player_break_block_at(block_type: String, grid_pos: Vector2i) -> bool:
+	if block_type == "toxic_waste" and str(blocks.get(grid_pos, {}).get("type", "")) == "toxic_waste":
+		return true
 	if world_lock_manager != null and world_lock_manager.has_method("can_current_player_break_block_at"):
 		return bool(world_lock_manager.can_current_player_break_block_at(block_type, grid_pos))
 

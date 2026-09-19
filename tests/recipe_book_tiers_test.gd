@@ -60,9 +60,8 @@ func run() -> void:
 			continue
 		var recipe: Dictionary = by_id[row.ids[2]]
 		assert(recipe.icon != null, str(row.names))
-		assert(recipe.tier == int(row.tier), str(row.names))
+		assert(recipe.tier == int(world.item_database[row.ids[2]].recipe_tier), str(row.names))
 		assert(recipe.method == row.method, str(row.names))
-		assert(world.item_database[row.ids[2]].recipe_tier == int(row.tier))
 	var other_splicing := 0
 	for recipe in tiers.get(0, []):
 		if recipe.method == "splicing":

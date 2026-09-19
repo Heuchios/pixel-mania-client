@@ -1,0 +1,39 @@
+{
+  "ignored_rows": [
+    32,
+    34,
+    36,
+    38,
+    40,
+    50,
+    52,
+    144,
+    164,
+    166,
+    168,
+    278,
+    280,
+    282,
+    284,
+    286,
+    440,
+    482,
+    484,
+    486,
+    488,
+    492,
+    494,
+    496,
+    498,
+    500,
+    502,
+    508,
+    516,
+    518,
+    520
+  ],
+  "aliases": {
+    "Spike (Hanging)": "saw_blade"
+  },
+  "note": "User excluded these rows from remaining implementation work. Hanging Spike shares Spike's item and properties."
+}
