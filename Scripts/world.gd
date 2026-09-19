@@ -103,6 +103,7 @@ const RED_TRACTOR_ITEM_ID = "red_tractor"
 const RED_TRACTOR_AUTO_HARVEST_PENDING_MS = 250
 const BLOCK_MAX_HITS = 3
 const BLOCK_DAMAGE_RESET_DELAY = 3.0
+const RuntimeProfiler = preload("res://Scripts/runtime_profiler.gd")
 const GEM_DROP_CHANCE = 1.0
 const GEM_DROP_MIN = 1
 const GEM_DROP_MAX = 3
@@ -6297,9 +6298,19 @@ func request_server_seed_place(grid_pos: Vector2i) -> bool:
 	if selected_item_category != "seed":
 		return false
 
+	if pending_authoritative_seed_places.has(get_pending_authoritative_seed_place_key(grid_pos)):
+		return false
+	var reserved := 0
+	for pending in pending_authoritative_seed_places.values():
+		if str(pending.get("seed_type", "")) == selected_item_type:
+			reserved += 1
+	if int(seed_inventory.get(selected_item_type, 0)) <= reserved:
+		return false
+	var request_id := make_authoritative_seed_place_request_id(grid_pos)
 	var seed_grow_time := get_seed_growth_time(selected_item_type)
 	var sent := bool(network.send_inventory_transaction_request({
 		"action": "seed_place",
+		"request_id": request_id,
 		"world": current_world_name,
 		"x": grid_pos.x,
 		"y": grid_pos.y,
@@ -6308,7 +6319,9 @@ func request_server_seed_place(grid_pos: Vector2i) -> bool:
 		"max_grow_time": seed_grow_time
 	}))
 	if sent:
-		track_pending_authoritative_seed_place(grid_pos, selected_item_type)
+		track_pending_authoritative_seed_place(grid_pos, selected_item_type, request_id)
+		if seed_system != null:
+			seed_system.show_predicted_seed(grid_pos, selected_item_type, request_id)
 		play_player_place_animation()
 	return sent
 
@@ -6329,6 +6342,8 @@ func get_anchor_grid_for_block_area(grid_pos: Vector2i) -> Vector2i:
 	return INVALID_GRID_POS
 
 func can_plant_seed_here(grid_pos: Vector2i) -> bool:
+	if pending_authoritative_seed_places.has(get_pending_authoritative_seed_place_key(grid_pos)):
+		return false
 	if blocks.has(grid_pos):
 		return false
 
@@ -6369,7 +6384,9 @@ func create_planted_seed(grid_pos: Vector2i, seed_type: String, grow_time: float
 func update_planted_seeds(delta):
 	update_pending_authoritative_seed_places()
 	if seed_system != null and seed_system.has_method("update_seed_system"):
+		var started := RuntimeProfiler.start()
 		seed_system.update_seed_system(delta)
+		RuntimeProfiler.finish("seed_growth_ms", started)
 
 
 func update_seed_tree_visual(grid_pos: Vector2i):
@@ -6378,8 +6395,20 @@ func update_seed_tree_visual(grid_pos: Vector2i):
 
 
 func harvest_planted_seed(grid_pos: Vector2i):
+	if pending_authoritative_seed_places.has(get_pending_authoritative_seed_place_key(grid_pos)):
+		return
+	if not has_planted_seed(grid_pos):
+		return
+	var growing := not can_harvest_seed_tree_now(grid_pos)
+	if growing and int(block_hit_progress.get(grid_pos, 0)) >= 3:
+		return
+	if block_manager != null and not block_manager.try_consume_block_break_input_cadence():
+		return
 	if not should_use_server_authoritative_world_actions():
 		if seed_system != null and seed_system.has_method("harvest_planted_seed"):
+			if growing:
+				apply_seed_break_feedback(grid_pos, int(block_hit_progress.get(grid_pos, 0)) + 1)
+				seed_system.planted_seeds[grid_pos]["break_hits"] = int(block_hit_progress.get(grid_pos, 0)) - 1
 			seed_system.harvest_planted_seed(grid_pos)
 		return
 
@@ -6387,9 +6416,21 @@ func harvest_planted_seed(grid_pos: Vector2i):
 	if not request_server_seed_harvest(grid_pos):
 		show_notification("Almost ready. Try again in a moment.")
 		return
+	if growing:
+		apply_seed_break_feedback(grid_pos, int(block_hit_progress.get(grid_pos, 0)) + 1)
 
 	if predict_local_removal and not apply_local_seed_harvest_feedback(grid_pos):
 		return
+
+
+func apply_seed_break_feedback(grid_pos: Vector2i, hit_count: int, play_hit_sound: bool = true) -> void:
+	if not has_planted_seed(grid_pos) or block_manager == null:
+		return
+	block_hit_progress[grid_pos] = clampi(hit_count, 0, 3)
+	block_hit_timers[grid_pos] = BLOCK_DAMAGE_RESET_DELAY
+	block_manager.update_block_crack_visual(grid_pos)
+	if play_hit_sound:
+		block_manager.play_block_hit_sound(grid_pos)
 
 
 
@@ -6446,8 +6487,10 @@ func _capture_seed_harvest_snapshot(grid_pos: Vector2i) -> Dictionary:
 	return {
 		"x": grid_pos.x,
 		"y": grid_pos.y,
+		"world": current_world_name,
+		"server_tree_created_at": int(seed_data.get("server_tree_created_at", 0)),
 		"seed_type": str(seed_data.get("seed_type", "")),
-		"grow_time": float(seed_data.get("grow_time", 0.0)),
+		"grow_time": seed_system.get_remaining_growth_time(seed_data),
 		"max_grow_time": float(seed_data.get("max_grow_time", seed_data.get("grow_time", 0.0))),
 		"mature": bool(seed_data.get("mature", false)),
 		"mutated": bool(seed_data.get("mutated", false)),
@@ -6506,13 +6549,15 @@ func _clear_seed_harvest_rollback_request(request_id: String) -> bool:
 func _restore_seed_harvest_from_snapshot(snapshot: Dictionary) -> bool:
 	if not (snapshot is Dictionary) or snapshot.is_empty():
 		return false
+	if str(snapshot.get("world", current_world_name)) != current_world_name:
+		return false
 
 	if seed_system == null or not seed_system.has_method("create_planted_seed"):
 		return false
 
 	var grid_pos = Vector2i(int(snapshot.get("x", 0)), int(snapshot.get("y", 0)))
 	if has_planted_seed(grid_pos):
-		return true
+		return int(seed_system.planted_seeds[grid_pos].get("server_tree_created_at", 0)) == int(snapshot.get("server_tree_created_at", 0))
 
 	var restored = seed_system.create_planted_seed(
 		grid_pos,
@@ -6522,6 +6567,7 @@ func _restore_seed_harvest_from_snapshot(snapshot: Dictionary) -> bool:
 	)
 	if not restored:
 		return false
+	seed_system.planted_seeds[grid_pos]["server_tree_created_at"] = int(snapshot.get("server_tree_created_at", 0))
 
 	if bool(snapshot.get("mature", false)) and seed_system.has_method("set_seed_mature"):
 		seed_system.set_seed_mature(grid_pos, true)
@@ -6621,6 +6667,7 @@ func request_server_seed_harvest(grid_pos: Vector2i) -> bool:
 
 	var sent = bool(network.send_inventory_transaction_request({
 		"action": "seed_harvest",
+		"tree_created_at": int(seed_system.planted_seeds.get(grid_pos, {}).get("server_tree_created_at", 0)),
 		"world": current_world_name,
 		"x": grid_pos.x,
 		"y": grid_pos.y,
@@ -6648,12 +6695,12 @@ func make_authoritative_seed_place_request_id(grid_pos: Vector2i) -> String:
 	]
 
 
-func track_pending_authoritative_seed_place(grid_pos: Vector2i, seed_type: String) -> void:
+func track_pending_authoritative_seed_place(grid_pos: Vector2i, seed_type: String, request_id: String = "") -> void:
 	var clean_seed := str(seed_type).strip_edges().to_lower()
 	if clean_seed == "":
 		return
 	pending_authoritative_seed_places[get_pending_authoritative_seed_place_key(grid_pos)] = {
-		"request_id": make_authoritative_seed_place_request_id(grid_pos),
+		"request_id": request_id if request_id != "" else make_authoritative_seed_place_request_id(grid_pos),
 		"world": str(current_world_name).strip_edges().to_upper(),
 		"grid_pos": grid_pos,
 		"seed_type": clean_seed,
@@ -6664,7 +6711,22 @@ func track_pending_authoritative_seed_place(grid_pos: Vector2i, seed_type: Strin
 
 
 func clear_pending_authoritative_seed_place(grid_pos: Vector2i) -> void:
+	if seed_system != null:
+		seed_system.clear_predicted_seed(grid_pos)
 	pending_authoritative_seed_places.erase(get_pending_authoritative_seed_place_key(grid_pos))
+
+
+func reject_pending_authoritative_seed_place(data: Dictionary) -> void:
+	var request_id := str(data.get("request_id", ""))
+	if request_id == "":
+		return
+	for entry in pending_authoritative_seed_places.values():
+		if str(entry.get("request_id", "")) != request_id:
+			continue
+		if str(data.get("world", entry.world)).to_upper() != str(entry.world).to_upper():
+			return
+		clear_pending_authoritative_seed_place(entry.grid_pos)
+		return
 
 
 func note_pending_authoritative_seed_place_removed(grid_pos: Vector2i) -> void:
@@ -6697,6 +6759,8 @@ func update_pending_authoritative_seed_places() -> void:
 		# A request for a world this client has left can never be answered here, and one
 		# that has aged out has to stop asking.
 		if str(pending.get("world", "")).strip_edges().to_upper() != current_world or age_ms > AUTHORITATIVE_SEED_PLACE_GIVE_UP_MS:
+			if seed_system != null:
+				seed_system.clear_predicted_seed(pending.get("grid_pos", INVALID_GRID_POS))
 			pending_authoritative_seed_places.erase(key)
 			continue
 		if age_ms <= AUTHORITATIVE_SEED_PLACE_TIMEOUT_MS:
@@ -6754,7 +6818,7 @@ func handle_authoritative_seed_place_reconcile(data: Dictionary) -> String:
 	if reconcile_reason == "wrong_world" or reconcile_reason == "invalid_grid":
 		# The server never looked at the seed map for this cell, so there is nothing to
 		# confirm or undo. Stop tracking rather than reporting a failed plant.
-		pending_authoritative_seed_places.erase(matched_key)
+		clear_pending_authoritative_seed_place(pending_grid)
 		return "dropped"
 
 	# Either the server is still working on it, or it predates seed reconciliation. Keep the
@@ -6764,7 +6828,7 @@ func handle_authoritative_seed_place_reconcile(data: Dictionary) -> String:
 		pending_authoritative_seed_places[matched_key] = pending
 		return "pending"
 
-	pending_authoritative_seed_places.erase(matched_key)
+	clear_pending_authoritative_seed_place(pending_grid)
 
 	if bool(data.get("authoritative_seed_present", false)):
 		var seed_payload: Variant = data.get("authoritative_seed", {})
@@ -7915,17 +7979,20 @@ func handle_inventory_transaction_result(data: Dictionary):
 		apply_inventory_slot_count(transaction_data.get("inventory_slot_count", inventory_slot_count))
 	if action == "seed_harvest":
 		var request_id = str(transaction_data.get("request_id", "")).strip_edges()
-		if transaction_ok and bool(transaction_data.get("seed_removed", true)):
-			_clear_seed_harvest_rollback_request(request_id)
+		if transaction_ok:
+			var snapshot := _consume_seed_harvest_rollback(request_id)
+			if not bool(transaction_data.get("seed_removed", true)) and not snapshot.is_empty():
+				if _restore_seed_harvest_from_snapshot(snapshot):
+					var grid := Vector2i(int(snapshot.x), int(snapshot.y))
+					apply_seed_break_feedback(grid, maxi(int(block_hit_progress.get(grid, 0)), int(transaction_data.get("hit_count", 0))), false)
+					block_hit_timers[grid] = maxf(BLOCK_DAMAGE_RESET_DELAY, float(transaction_data.get("damage_reset_ms", 0)) / 1000.0)
 		else:
-			_restore_seed_harvest_request(request_id)
-	if action == "seed_place" and not transaction_ok and transaction_data.has("x") and transaction_data.has("y"):
-		# The server has answered for this tile, so stop tracking it: the pending place only
-		# exists to catch a reply that never arrives.
-		clear_pending_authoritative_seed_place(Vector2i(
-			int(transaction_data.get("x", 0)),
-			int(transaction_data.get("y", 0))
-		))
+			var snapshot := _consume_seed_harvest_rollback(request_id)
+			if not snapshot.is_empty():
+				if _restore_seed_harvest_from_snapshot(snapshot):
+					apply_seed_break_feedback(Vector2i(int(snapshot.x), int(snapshot.y)), 0, false)
+	if action == "seed_place" and not transaction_ok:
+		reject_pending_authoritative_seed_place(transaction_data)
 
 	var handled := false
 
@@ -7970,7 +8037,7 @@ func handle_inventory_transaction_result(data: Dictionary):
 		var source_type_for_message := str(transaction_data.get("source_type", "")).strip_edges().to_lower()
 		var is_pickup_transaction := action_for_message == "drop_pickup" or action_for_message == "world_item_drop_pickup" or action_for_message == "world_drop_pickup" or source_type_for_message == "item_pickup"
 		var is_seed_harvest_transaction := action_for_message == "seed_harvest" or source_type_for_message == "seed_harvest" or source_type_for_message == "tackle_box_harvest" or source_type_for_message == "chicken_feed" or source_type_for_message == "chicken_harvest" or source_type_for_message == "cow_feed" or source_type_for_message == "cow_harvest" or source_type_for_message == "duck_feed" or source_type_for_message == "duck_harvest" or source_type_for_message == "seed_place"
-		if message.strip_edges() != "" and not is_pickup_transaction and not is_seed_harvest_transaction:
+		if message.strip_edges() != "" and not is_pickup_transaction and (not is_seed_harvest_transaction or not transaction_ok):
 			show_notification(message)
 
 	var refreshed_inventory_delta := refresh_ui_for_inventory_transaction_deltas(transaction_data)

@@ -56,8 +56,7 @@ func _run() -> void:
 
 	seed_system.harvest_planted_seed(grid_pos)
 	assert(not seed_system.planted_seeds.has(grid_pos))
-	assert(world.drops.size() == 1)
-	assert(str(world.drops[0].get("item_id", "")) == "dirt_seed")
+	assert(world.drops.is_empty(), "Breaking an immature tree must never return its seed")
 
 	var mature_grid_pos := Vector2i(5, 3)
 	var mature_seed_node := Node2D.new()

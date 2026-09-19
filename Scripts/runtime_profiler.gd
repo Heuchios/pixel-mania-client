@@ -43,7 +43,8 @@ static func sent(data: Dictionary, bytes: int) -> void:
 	var kind := str(data.get("type", ""))
 	if kind == "player_position":
 		count("movement_tx")
-	if kind != "world_block_update" and kind != "client_ping":
+	var seed_transaction := kind == "inventory_transaction_request" and str(data.get("action", "")).begins_with("seed_")
+	if kind != "world_block_update" and kind != "client_ping" and not seed_transaction:
 		return
 	var request_id := str(data.get("request_id", ""))
 	if request_id == "" or pending.has(request_id):

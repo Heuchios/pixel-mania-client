@@ -9706,6 +9706,11 @@ func create_foreground_tilemap_crack_overlay(grid_pos: Vector2i, block_data: Dic
 
 func update_block_crack_visual(grid_pos: Vector2i):
 	if not world.blocks.has(grid_pos):
+		if world.seed_system != null and world.seed_system.planted_seeds.has(grid_pos):
+			var tree: Dictionary = world.seed_system.planted_seeds[grid_pos]
+			var tree_node = tree.get("node")
+			if is_instance_valid(tree_node):
+				update_node_crack_visual(tree_node, int(world.block_hit_progress.get(grid_pos, 0)), world.seed_system.GROWING_TREE_BREAK_HITS_REQUIRED)
 		return
 
 	var block_data: Dictionary = world.blocks[grid_pos]
@@ -9748,6 +9753,23 @@ func update_block_crack_visual(grid_pos: Vector2i):
 
 	crack_overlay.texture = world.crack_textures[stage]
 	crack_overlay.visible = true
+
+
+func update_node_crack_visual(node: Node, current_hits: int, max_hits: int) -> void:
+	# Trees use the same stages, textures and node overlay as ordinary blocks.
+	var stage := get_crack_stage(current_hits, max_hits)
+	var overlay = node.get_node_or_null("CrackOverlay")
+	if stage <= 0:
+		if is_instance_valid(overlay):
+			node.remove_child(overlay)
+			overlay.queue_free()
+		return
+	if not world.crack_textures.has(stage):
+		return
+	if not is_instance_valid(overlay):
+		overlay = create_foreground_node_crack_overlay(node)
+	overlay.texture = world.crack_textures[stage]
+	overlay.visible = true
 
 
 func is_non_collideable_block(block_type: String) -> bool:
@@ -12622,7 +12644,7 @@ func update_block_damage_recovery(delta):
 	var positions_to_reset = []
 
 	for grid_pos in world.block_hit_timers.keys():
-		if not world.blocks.has(grid_pos) and not background_blocks.has(grid_pos):
+		if not world.blocks.has(grid_pos) and not background_blocks.has(grid_pos) and not world.has_planted_seed(grid_pos):
 			positions_to_reset.append(grid_pos)
 			continue
 

@@ -1559,6 +1559,8 @@ func apply_network_world_state(data: Dictionary):
 					"x": _safe_int(entry.get("x", 0), 0, 0, MAX_WORLD_COORD),
 					"y": _safe_int(entry.get("y", 0), 0, 0, MAX_WORLD_COORD),
 					"seed_type": _safe_string(entry.get("seed_type", ""), "", 64),
+					"planted_at": int(entry.get("planted_at", 0)),
+					"tree_created_at": int(entry.get("tree_created_at", entry.get("planted_at", 0))),
 					"grow_time": _safe_float(entry.get("grow_time", world.SEED_GROW_TIME), float(world.SEED_GROW_TIME), 0.0, MAX_WORLD_STATE_GROW_TIME_SECONDS),
 					"max_grow_time": _safe_float(entry.get("max_grow_time", world.SEED_GROW_TIME), float(world.SEED_GROW_TIME), 0.0, MAX_WORLD_STATE_GROW_TIME_SECONDS),
 					"mature": _safe_bool(entry.get("mature", false), false),
@@ -2623,13 +2625,40 @@ func apply_network_seed_update(data: Dictionary):
 	world.applying_network_world_update = true
 
 	var action = _safe_string(data.get("action", ""), "", 16).to_lower()
-	if action != "place" and action != "splice" and action != "remove":
+	if action != "place" and action != "splice" and action != "remove" and action != "hit":
 		world.applying_network_world_update = old_flag
 		return
 
 	var grid_pos = _safe_grid_position(data.get("x", 0), data.get("y", 0))
 	var seed_type = _safe_string(data.get("seed_type", ""), "", 64)
 	var is_local_confirmed_update := _is_local_player_confirmed_update(data)
+	var planted_at := int(data.get("tree_created_at", data.get("planted_at", 0)))
+	var existing_seed: Dictionary = world.seed_system.planted_seeds.get(grid_pos, {}) if world.seed_system != null else {}
+	var existing_planted_at := int(existing_seed.get("server_tree_created_at", 0))
+	if planted_at > 0 and existing_planted_at > 0:
+		if planted_at < existing_planted_at or ((action == "hit" or action == "remove") and planted_at != existing_planted_at):
+			world.applying_network_world_update = old_flag
+			return
+		if (action == "place" or action == "splice") and planted_at == existing_planted_at:
+			# Server speedups change the growth deadline, not the tree identity.
+			var remaining := _safe_float(data.get("grow_time", world.SEED_GROW_TIME), float(world.SEED_GROW_TIME), 0.0, MAX_WORLD_STATE_GROW_TIME_SECONDS)
+			if remaining < world.seed_system.get_remaining_growth_time(existing_seed):
+				existing_seed["growth_deadline"] = world.seed_system.growth_clock_seconds + remaining
+				existing_seed["grow_time"] = remaining
+				if remaining <= 0.0:
+					world.seed_system.set_seed_mature(grid_pos, true)
+				else:
+					world.seed_system.update_seed_tree_visual(grid_pos)
+			world.clear_pending_authoritative_seed_place(grid_pos)
+			world.applying_network_world_update = old_flag
+			return
+	if action == "hit":
+		if world.has_planted_seed(grid_pos):
+			var hits := _safe_int(data.get("hit_count", 0), 0, 0, 3)
+			world.apply_seed_break_feedback(grid_pos, maxi(hits, int(world.block_hit_progress.get(grid_pos, 0))), not is_local_confirmed_update)
+			world.block_hit_timers[grid_pos] = maxf(world.BLOCK_DAMAGE_RESET_DELAY, float(data.get("damage_reset_ms", 0)) / 1000.0)
+		world.applying_network_world_update = old_flag
+		return
 	# A confirmed seed on this cell ends the pending place. A removal does not: this map is
 	# keyed by cell, so a late removal broadcast for an earlier seed would otherwise cancel a
 	# newer plant that is still waiting. It only records that an empty cell here is expected,
@@ -2650,6 +2679,8 @@ func apply_network_seed_update(data: Dictionary):
 			_safe_float(data.get("grow_time", world.SEED_GROW_TIME), float(world.SEED_GROW_TIME), 0.0, MAX_WORLD_STATE_GROW_TIME_SECONDS),
 			_safe_float(data.get("max_grow_time", world.SEED_GROW_TIME), float(world.SEED_GROW_TIME), 0.0, MAX_WORLD_STATE_GROW_TIME_SECONDS)
 		)
+		if world.seed_system != null and world.seed_system.planted_seeds.has(grid_pos):
+			world.seed_system.planted_seeds[grid_pos]["server_tree_created_at"] = planted_at
 
 		if world.seed_system != null and world.seed_system.has_method("set_seed_mutated"):
 			world.seed_system.set_seed_mutated(grid_pos, _safe_bool(data.get("mutated", false), false))
@@ -2661,6 +2692,14 @@ func apply_network_seed_update(data: Dictionary):
 			if world.has_method("play_remote_player_place_animation"):
 				world.play_remote_player_place_animation(data)
 	elif action == "remove":
+		world.block_hit_progress.erase(grid_pos)
+		world.block_hit_timers.erase(grid_pos)
+		# A confirmed removal invalidates rollback snapshots for this tree, preventing
+		# a late rejection for an earlier punch from resurrecting it.
+		for request_id in world.seed_harvest_pending_rollback.keys():
+			var snapshot: Dictionary = world.seed_harvest_pending_rollback[request_id]
+			if int(snapshot.x) == grid_pos.x and int(snapshot.y) == grid_pos.y and int(snapshot.get("server_tree_created_at", 0)) == planted_at:
+				world.seed_harvest_pending_rollback.erase(request_id)
 		if world.seed_system != null and world.seed_system.has_method("remove_seed_at"):
 			var should_play_tree_break_sound := false
 			if world.seed_system.has_method("get_seed_break_particle_data"):

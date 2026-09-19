@@ -33,10 +33,47 @@ const TREE_TEXTURE_SHADOW_OFFSET = Vector2(1.5, 1.5)
 const TREE_TEXTURE_SHADOW_ALPHA = 0.38
 const SEED_GROWTH_UPDATE_INTERVAL := 0.25
 const GROWING_TREE_BREAK_HITS_REQUIRED := 3
+const MAX_GROWTH_VISUALS_PER_FRAME := 64
+const GROWTH_FRAME_BUDGET_USEC := 1000
 
 var seed_growth_update_elapsed := 0.0
 var animated_mature_seed_grids: Dictionary = {}
 var seed_tree_visual_cache_warmed := false
+var growing_seed_grids: Dictionary = {}
+var growth_clock_seconds := 0.0
+var growth_work: Array = []
+var growth_work_index := 0
+var predicted_seed_visuals: Dictionary = {}
+
+
+func show_predicted_seed(grid_pos: Vector2i, seed_type: String, request_id: String) -> void:
+	clear_predicted_seed(grid_pos)
+	if planted_seeds.has(grid_pos):
+		return
+	var preview := Sprite2D.new()
+	preview.name = "PendingSeed"
+	preview.texture = get_seed_tree_texture(seed_to_block_type(seed_type), 0)
+	preview.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	preview.position = Vector2(grid_pos) * block_size
+	if is_instance_valid(world):
+		world.add_child(preview)
+	else:
+		add_child(preview)
+	predicted_seed_visuals[grid_pos] = {"node": preview, "request_id": request_id}
+
+
+func clear_predicted_seed(grid_pos: Vector2i) -> void:
+	var preview: Dictionary = predicted_seed_visuals.get(grid_pos, {})
+	var node = preview.get("node")
+	if is_instance_valid(node):
+		node.queue_free()
+	predicted_seed_visuals.erase(grid_pos)
+
+
+func get_remaining_growth_time(seed_data: Dictionary) -> float:
+	if bool(seed_data.get("mature", false)):
+		return 0.0
+	return maxf(0.0, float(seed_data.get("growth_deadline", growth_clock_seconds + float(seed_data.get("grow_time", 0.0)))) - growth_clock_seconds)
 
 
 func setup(
@@ -96,7 +133,7 @@ func get_seed_grid_overlapping_player(player_grid_pos: Vector2i, player_world_po
 	var best_grid = invalid_grid_pos
 	var best_distance = 100000000.0
 
-	for grid_pos in planted_seeds.keys():
+	for grid_pos in get_seed_candidates_at_point(player_world_pos):
 		var base_pos = Vector2(grid_pos.x * block_size, grid_pos.y * block_size)
 		var tree_overlap_rect = Rect2(
 			base_pos + Vector2(-24, -54),
@@ -120,7 +157,7 @@ func get_seed_growth_status_text(grid_pos: Vector2i) -> String:
 	if is_seed_ready_to_harvest(grid_pos):
 		return "Ready to harvest"
 
-	return "Growth: " + format_seed_growth_time(float(seed_data.get("grow_time", 0.0)))
+	return "Growth: " + format_seed_growth_time(get_remaining_growth_time(seed_data))
 
 
 func is_seed_ready_to_harvest(grid_pos: Vector2i) -> bool:
@@ -128,7 +165,7 @@ func is_seed_ready_to_harvest(grid_pos: Vector2i) -> bool:
 		return false
 
 	var seed_data = planted_seeds[grid_pos]
-	return bool(seed_data.get("mature", false)) or float(seed_data.get("grow_time", 0.0)) <= 0.0
+	return get_remaining_growth_time(seed_data) <= 0.0
 
 
 func get_ready_seed_grid_overlapping_player(player_grid_pos: Vector2i, player_world_pos: Vector2) -> Vector2i:
@@ -138,7 +175,7 @@ func get_ready_seed_grid_overlapping_player(player_grid_pos: Vector2i, player_wo
 	var best_grid = invalid_grid_pos
 	var best_distance = 100000000.0
 
-	for grid_pos in planted_seeds.keys():
+	for grid_pos in get_seed_candidates_at_point(player_world_pos):
 		if not is_seed_ready_to_harvest(grid_pos):
 			continue
 
@@ -203,11 +240,25 @@ func format_seed_growth_time(seconds_remaining: float) -> String:
 	return preload("res://Scripts/growth_duration.gd").format_seconds(seconds_remaining)
 
 
+func get_seed_candidates_at_point(point: Vector2) -> Array[Vector2i]:
+	# Tree hit rectangles extend 24px sideways, 54px up and 18px down.
+	# Query only cells that can overlap the point instead of scanning every tree.
+	var candidates: Array[Vector2i] = []
+	var min_cell := Vector2i(floori((point.x - 24.0) / block_size), floori((point.y - 18.0) / block_size))
+	var max_cell := Vector2i(ceili((point.x + 24.0) / block_size), ceili((point.y + 54.0) / block_size))
+	for y in range(min_cell.y, max_cell.y + 1):
+		for x in range(min_cell.x, max_cell.x + 1):
+			var grid := Vector2i(x, y)
+			if planted_seeds.has(grid):
+				candidates.append(grid)
+	return candidates
+
+
 func get_clicked_planted_seed_grid(direct_grid: Vector2i, mouse_pos: Vector2) -> Vector2i:
 	if planted_seeds.has(direct_grid):
 		return direct_grid
 
-	for grid_pos in planted_seeds.keys():
+	for grid_pos in get_seed_candidates_at_point(mouse_pos):
 		var base_pos = Vector2(grid_pos.x * block_size, grid_pos.y * block_size)
 
 		var tree_click_rect = Rect2(
@@ -261,6 +312,8 @@ func try_splice_seed_tree(
 	planted_seeds[grid_pos]["seed_type"] = result_seed
 	planted_seeds[grid_pos]["grow_time"] = result_seed_grow_time
 	planted_seeds[grid_pos]["max_grow_time"] = result_seed_grow_time
+	planted_seeds[grid_pos]["growth_deadline"] = growth_clock_seconds + result_seed_grow_time
+	growing_seed_grids[grid_pos] = true
 	planted_seeds[grid_pos]["mature"] = false
 	planted_seeds[grid_pos]["stage"] = -1
 
@@ -326,10 +379,12 @@ func create_planted_seed(grid_pos: Vector2i, seed_type: String, grow_time: float
 		"seed_type": seed_type,
 		"grow_time": grow_time,
 		"max_grow_time": max_grow_time,
+		"growth_deadline": growth_clock_seconds + maxf(0.0, grow_time),
 		"stage": -1,
 		"mature": false,
 		"mutated": false
 	}
+	growing_seed_grids[grid_pos] = true
 
 	update_seed_tree_visual(grid_pos)
 	sync_seed_animation_membership(grid_pos)
@@ -338,55 +393,74 @@ func create_planted_seed(grid_pos: Vector2i, seed_type: String, grow_time: float
 
 
 func update_seed_system(delta):
+	growth_clock_seconds += maxf(0.0, float(delta))
 	if planted_seeds.is_empty():
 		seed_growth_update_elapsed = 0.0
 		animated_mature_seed_grids.clear()
+		growing_seed_grids.clear()
+		growth_work.clear()
+		growth_work_index = 0
 		return
 
-	for grid_pos in animated_mature_seed_grids.keys().duplicate():
+	for grid_pos in animated_mature_seed_grids.keys():
 		if not planted_seeds.has(grid_pos):
 			animated_mature_seed_grids.erase(grid_pos)
 			continue
 		animate_mature_seed_tree(grid_pos)
 
 	seed_growth_update_elapsed += delta
-	if seed_growth_update_elapsed < SEED_GROWTH_UPDATE_INTERVAL:
-		return
+	if growth_work_index >= growth_work.size() and seed_growth_update_elapsed >= SEED_GROWTH_UPDATE_INTERVAL:
+		growth_work = growing_seed_grids.keys()
+		growth_work_index = 0
+		seed_growth_update_elapsed = 0.0
 
-	var growth_delta := seed_growth_update_elapsed
-	seed_growth_update_elapsed = 0.0
-
-	for grid_pos in planted_seeds.keys().duplicate():
-		if not planted_seeds.has(grid_pos):
+	# A shared clock keeps elapsed growth correct while expensive stage rebuilds are
+	# spread over frames. Mature ordinary trees never enter this work queue.
+	var started := Time.get_ticks_usec()
+	var processed := 0
+	while growth_work_index < growth_work.size() and processed < MAX_GROWTH_VISUALS_PER_FRAME:
+		if processed > 0 and Time.get_ticks_usec() - started >= GROWTH_FRAME_BUDGET_USEC:
+			break
+		var grid_pos: Vector2i = growth_work[growth_work_index]
+		growth_work_index += 1
+		processed += 1
+		if not planted_seeds.has(grid_pos) or not growing_seed_grids.has(grid_pos):
 			continue
 
 		var seed_data = planted_seeds[grid_pos]
 
 		if not is_instance_valid(seed_data["node"]):
 			animated_mature_seed_grids.erase(grid_pos)
+			growing_seed_grids.erase(grid_pos)
 			planted_seeds.erase(grid_pos)
 			continue
 
 		if bool(seed_data.get("mature", false)):
+			growing_seed_grids.erase(grid_pos)
 			sync_seed_animation_membership(grid_pos)
 			continue
 
-		var new_grow_time = max(0.0, float(seed_data["grow_time"]) - growth_delta)
+		var new_grow_time = maxf(0.0, float(seed_data.get("growth_deadline", growth_clock_seconds + float(seed_data["grow_time"]))) - growth_clock_seconds)
 		planted_seeds[grid_pos]["grow_time"] = new_grow_time
 
 		if new_grow_time <= 0.0:
 			planted_seeds[grid_pos]["mature"] = true
+			growing_seed_grids.erase(grid_pos)
 
-		update_seed_tree_visual(grid_pos)
+		if int(seed_data.get("stage", -1)) != get_seed_tree_stage(grid_pos):
+			update_seed_tree_visual(grid_pos)
 		sync_seed_animation_membership(grid_pos)
 
 
 func sync_seed_animation_membership(grid_pos: Vector2i) -> void:
 	if not planted_seeds.has(grid_pos):
 		animated_mature_seed_grids.erase(grid_pos)
+		growing_seed_grids.erase(grid_pos)
 		return
 
 	var seed_data = planted_seeds[grid_pos]
+	if bool(seed_data.get("mature", false)):
+		growing_seed_grids.erase(grid_pos)
 	if bool(seed_data.get("mature", false)) and bool(seed_data.get("mutated", false)):
 		animated_mature_seed_grids[grid_pos] = true
 	else:
@@ -403,7 +477,7 @@ func get_seed_tree_stage(grid_pos: Vector2i) -> int:
 		return 3
 
 	var max_time = float(seed_data.get("max_grow_time", seed_grow_time))
-	var current_time = float(seed_data["grow_time"])
+	var current_time = get_remaining_growth_time(seed_data)
 	var progress = clamp(1.0 - (current_time / max_time), 0.0, 1.0)
 
 	if progress < 0.30:
@@ -480,6 +554,8 @@ func update_seed_tree_visual(grid_pos: Vector2i):
 		create_tree_type_badge(seed_node, block_type, tree_texture)
 
 	emit_tree_growth_particles(grid_pos, block_type, stage, previous_stage)
+	if is_instance_valid(world) and is_instance_valid(world.get("block_manager")):
+		world.block_manager.update_block_crack_visual(grid_pos)
 
 
 func emit_tree_growth_particles(grid_pos: Vector2i, block_type: String, stage: int, previous_stage: int):
@@ -1033,7 +1109,7 @@ func harvest_planted_seed(grid_pos: Vector2i):
 	var block_type = seed_to_block_type(seed_type)
 	var seed_node = seed_data["node"]
 	var drop_position = Vector2(grid_pos.x * block_size, grid_pos.y * block_size)
-	var was_mature := bool(seed_data.get("mature", false))
+	var was_mature := is_seed_ready_to_harvest(grid_pos)
 	if not was_mature:
 		var break_hits := mini(GROWING_TREE_BREAK_HITS_REQUIRED, int(seed_data.get("break_hits", 0)) + 1)
 		if break_hits < GROWING_TREE_BREAK_HITS_REQUIRED:
@@ -1047,6 +1123,7 @@ func harvest_planted_seed(grid_pos: Vector2i):
 		seed_node.queue_free()
 
 	animated_mature_seed_grids.erase(grid_pos)
+	growing_seed_grids.erase(grid_pos)
 	planted_seeds.erase(grid_pos)
 
 	if world == null:
@@ -1072,9 +1149,7 @@ func harvest_planted_seed(grid_pos: Vector2i):
 			if randf() <= mature_seed_extra_drop_chance:
 				if world.has_method("spawn_item_drop"):
 					world.spawn_item_drop(seed_type, drop_position + Vector2(0, -8), true)
-	else:
-		if world.has_method("spawn_item_drop"):
-			world.spawn_item_drop(seed_type, drop_position, true)
+	# An immature tree consumes its planted seed permanently, including offline play.
 
 
 func remove_seed_at(grid_pos: Vector2i) -> bool:
@@ -1086,6 +1161,7 @@ func remove_seed_at(grid_pos: Vector2i) -> bool:
 		seed_node.queue_free()
 
 	animated_mature_seed_grids.erase(grid_pos)
+	growing_seed_grids.erase(grid_pos)
 	planted_seeds.erase(grid_pos)
 	return true
 
@@ -1120,6 +1196,8 @@ func set_seed_mature(grid_pos: Vector2i, mature: bool):
 func set_seed_mutated(grid_pos: Vector2i, mutated: bool):
 	if not planted_seeds.has(grid_pos):
 		return
+	if bool(planted_seeds[grid_pos].get("mutated", false)) == mutated:
+		return
 
 	planted_seeds[grid_pos]["mutated"] = mutated
 	planted_seeds[grid_pos]["stage"] = -1
@@ -1146,7 +1224,7 @@ func get_save_data() -> Array:
 				"x": grid_pos.x,
 				"y": grid_pos.y,
 				"seed_type": seed_data["seed_type"],
-				"grow_time": seed_data["grow_time"],
+				"grow_time": get_remaining_growth_time(seed_data),
 				"max_grow_time": seed_data.get("max_grow_time", seed_grow_time),
 				"mature": seed_data.get("mature", false),
 				"mutated": seed_data.get("mutated", false)
@@ -1172,6 +1250,7 @@ func load_seed_data(saved_seeds: Array):
 			if planted_seeds.has(grid_pos):
 				planted_seeds[grid_pos]["mature"] = mature
 				planted_seeds[grid_pos]["mutated"] = mutated
+				planted_seeds[grid_pos]["server_tree_created_at"] = int(seed_data.get("tree_created_at", seed_data.get("planted_at", 0)))
 
 				if mature:
 					planted_seeds[grid_pos]["grow_time"] = 0.0
@@ -1182,6 +1261,8 @@ func load_seed_data(saved_seeds: Array):
 
 
 func clear():
+	for grid_pos in predicted_seed_visuals.keys():
+		clear_predicted_seed(grid_pos)
 	for grid_pos in planted_seeds.keys():
 		var seed_node = planted_seeds[grid_pos]["node"]
 
@@ -1191,6 +1272,9 @@ func clear():
 	planted_seeds.clear()
 	animated_mature_seed_grids.clear()
 	seed_growth_update_elapsed = 0.0
+	growing_seed_grids.clear()
+	growth_work.clear()
+	growth_work_index = 0
 
 
 func notify(message: String):
