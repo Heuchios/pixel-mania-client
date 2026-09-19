@@ -3798,13 +3798,16 @@
     "ids": [
       "wooden_box",
       "yellow_block",
-      null
+      "pencil_block"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Pencil Block"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "wooden_box_seed",
+      "yellow_block_seed",
+      "pencil_block_seed"
+    ]
   },
   {
     "row": 198,
@@ -4674,13 +4677,16 @@
     "ids": [
       "wooden_barrel",
       "sign",
-      null
+      "wooden_shelf"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Wooden shelf"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "wooden_barrel_seed",
+      "sign_seed",
+      "wooden_shelf_seed"
+    ]
   },
   {
     "row": 242,
@@ -4709,14 +4715,17 @@
     ],
     "ids": [
       "big_sign",
-      null,
+      "pencil_block",
       "mail_box"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Pencil block"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "big_sign_seed",
+      "pencil_block_seed",
+      "mail_box_seed"
+    ]
   },
   {
     "row": 244,
@@ -5381,14 +5390,17 @@
     ],
     "ids": [
       "sign",
-      null,
+      "wooden_shelf",
       "donation_box"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Wooden shelf"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "sign_seed",
+      "wooden_shelf_seed",
+      "donation_box_seed"
+    ]
   },
   {
     "row": 278,
@@ -5936,17 +5948,18 @@
       }
     ],
     "ids": [
-      null,
-      null,
-      null
+      "pencil_block",
+      "wooden_shelf",
+      "cozy_chalkboard"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Pencil block",
-      "Wooden shelf",
-      "Cozy chalkboard"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "pencil_block_seed",
+      "wooden_shelf_seed",
+      "cozy_chalkboard_seed"
+    ]
   },
   {
     "row": 306,
@@ -5976,13 +5989,16 @@
     "ids": [
       "black_block",
       "ceiling_lamp",
-      null
+      "neon_block"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Neon Block"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "black_block_seed",
+      "ceiling_lamp_seed",
+      "neon_block_seed"
+    ]
   },
   {
     "row": 308,
@@ -6048,13 +6064,16 @@
     "ids": [
       "empty_jar",
       "glass_panel",
-      null
+      "display_case"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Display wall"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "empty_jar_seed",
+      "glass_panel_seed",
+      "display_case_seed"
+    ]
   },
   {
     "row": 312,
@@ -6082,15 +6101,18 @@
       }
     ],
     "ids": [
-      null,
+      "cozy_chalkboard",
       "mail_box",
       "bulletin_board"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Cozy chalkboard"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "cozy_chalkboard_seed",
+      "mail_box_seed",
+      "bulletin_board_seed"
+    ]
   },
   {
     "row": 314,
@@ -6275,14 +6297,17 @@
     ],
     "ids": [
       "electric_pole",
-      null,
+      "neon_block",
       "tv"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Neon block"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "electric_pole_seed",
+      "neon_block_seed",
+      "tv_seed"
+    ]
   },
   {
     "row": 324,
@@ -6500,16 +6525,18 @@
       }
     ],
     "ids": [
-      null,
+      "cozy_chalkboard",
       "blue_mail_box",
-      null
+      "almanac"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Cozy chalkboard",
-      "Almanac"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "cozy_chalkboard_seed",
+      "blue_mail_box_seed",
+      "almanac_seed"
+    ]
   },
   {
     "row": 336,
@@ -6538,15 +6565,17 @@
     ],
     "ids": [
       "bush",
-      null,
-      null
+      "display_case",
+      "cloud_block"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Display wall",
-      "Cloud Block"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "bush_seed",
+      "display_case_seed",
+      "cloud_block_seed"
+    ]
   },
   {
     "row": 338,
@@ -6575,12 +6604,11 @@
     ],
     "ids": [
       "steel_block",
-      null,
+      "display_case",
       null
     ],
     "method": "splicing",
     "missing_items": [
-      "Display wall",
       "Display block"
     ],
     "status": "missing_items"
@@ -7161,14 +7189,17 @@
     ],
     "ids": [
       "white_brick_block",
-      null,
+      "cloud_block",
       "water_fountain"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Cloud block"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "white_brick_block_seed",
+      "cloud_block_seed",
+      "water_fountain_seed"
+    ]
   },
   {
     "row": 372,

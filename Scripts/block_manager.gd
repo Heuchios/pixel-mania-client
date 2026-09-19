@@ -2413,7 +2413,7 @@ func metadata_should_prefer_texture_visual_cell(metadata: Dictionary, texture: T
 	var grid_pos := parse_block_vector2i(metadata.get("grid_pos", NO_VARIANT_GRID_POS), NO_VARIANT_GRID_POS)
 	var background := bool(metadata.get("background", false))
 
-	if block_type == "water":
+	if block_type in ["water", "cloud_block"]:
 		return true
 	if block_type in [BARN_BLOCK_TYPE, "neon_block"] or visual_block_type in [BARN_BLOCK_TYPE, "neon_block"]:
 		return false
@@ -3496,6 +3496,8 @@ func uses_lower_dirt_variant_when_above(block_type: String) -> bool:
 
 
 func get_visual_block_variant(base_block_id: String, grid_pos: Vector2i, background := false) -> String:
+	if base_block_id == "cloud_block" and not background and grid_pos != NO_VARIANT_GRID_POS:
+		return "res://Assets/blocks/cloud_connected/mask_%d.png" % get_barn_neighbor_mask(grid_pos, "cloud_block")
 	if grid_pos == NO_VARIANT_GRID_POS:
 		return ""
 
@@ -8726,7 +8728,7 @@ func refresh_barn_autotile_around(grid_pos: Vector2i) -> void:
 			var candidate := Vector2i(grid_pos.x + x_offset, grid_pos.y + y_offset)
 			if refreshed_cells.has(candidate):
 				continue
-			if get_foreground_block_type_at(candidate) not in [BARN_BLOCK_TYPE, "neon_block"]:
+			if get_foreground_block_type_at(candidate) not in [BARN_BLOCK_TYPE, "neon_block", "cloud_block"]:
 				continue
 			refreshed_cells[candidate] = true
 			normalize_block_variant_at(candidate, false)
@@ -8741,7 +8743,7 @@ func has_neighbor_dependent_visual_variant(block_type: String) -> bool:
 		or clean_type == "water" \
 		or clean_type == "wood" \
 		or clean_type == "climbing_vine" \
-		or clean_type in [BARN_BLOCK_TYPE, "neon_block"]:
+		or clean_type in [BARN_BLOCK_TYPE, "neon_block", "cloud_block"]:
 		return true
 
 	# Snow-storm leaf caps depend on whether another leaf is directly above.

@@ -16076,125 +16076,166 @@
 	  "hardness": 4,
 	  "atlas_enabled": true
 	},
-    {
-      "item_id": "cloud_block",
-      "display_name": "Cloud Block",
-      "category": "block",
-      "rarity": "common",
-      "stack_limit": 400,
-      "tradeable": true,
-      "dropable": true,
-      "admin_grantable": true,
-      "hidden": false,
-      "placeable": true,
-      "place_layer": "foreground",
-      "block_health": 4,
-      "breakable": true,
-      "solid": true,
-      "collidable": true,
-      "no_collision": false,
-      "collision_type": "full",
-      "atlas_item_id": 216,
-      "atlas_source_id": 0,
-      "atlas_coords": [
-        24,
-        2
-      ],
-      "texture": {
-        "atlas": "res://image.png",
-        "cell": [
-          24,
-          2
-        ],
-        "cell_size": [
-          32,
-          32
-        ]
-      },
-      "inventory_icon": {
-        "atlas": "res://image.png",
-        "cell": [
-          24,
-          2
-        ],
-        "cell_size": [
-          32,
-          32
-        ]
-      },
-      "seed": "cloud_block_seed",
-      "recipe_tier": 9,
-      "authored_drop_rules": true,
-      "drop_rules": {
-        "seed_chance": 0,
-        "gem_range": [
-          0,
-          0
-        ],
-        "fixed_drops": [
-          {
-            "item_id": "cloud_block",
-            "item_category": "block",
-            "amount": 1
-          },
-          {
-            "item_id": "cloud_block_seed",
-            "item_category": "seed",
-            "amount": 1,
-            "chance": 0.2
-          },
-          {
-            "item_id": "gem",
-            "item_category": "currency",
-            "amount_range": [
-              0,
-              3
-            ]
-          }
-        ]
-      },
-      "tree_drop_rules": {
-        "seed_chance": 0,
-        "gem_range": [
-          0,
-          0
-        ],
-        "fixed_drops": [
-          {
-            "item_id": "cloud_block",
-            "item_category": "block",
-            "amount_range": [
-              2,
-              5
-            ]
-          },
-          {
-            "item_id": "cloud_block_seed",
-            "item_category": "seed",
-            "amount_range": [
-              0,
-              3
-            ]
-          },
-          {
-            "item_id": "gem",
-            "item_category": "currency",
-            "amount_range": [
-              0,
-              5
-            ]
-          }
-        ]
-      },
-      "id": 216,
-      "item_key": "cloud_block",
-      "name": "Cloud Block",
-      "type": "block",
-      "layer": "foreground",
-      "source_id": 0,
-      "collision": true,
-      "hardness": 4,
-      "atlas_enabled": true
-    }
+	{
+	  "item_id": "cloud_block",
+	  "display_name": "Cloud Block",
+	  "category": "block",
+	  "rarity": "common",
+	  "stack_limit": 400,
+	  "tradeable": true,
+	  "dropable": true,
+	  "admin_grantable": true,
+	  "hidden": false,
+	  "placeable": true,
+	  "place_layer": "foreground",
+	  "block_health": 4,
+	  "breakable": true,
+	  "solid": true,
+	  "collidable": true,
+	  "no_collision": false,
+	  "collision_type": "full",
+	  "atlas_item_id": 216,
+	  "atlas_source_id": 0,
+	  "atlas_coords": [
+		24,
+		2
+	  ],
+	  "texture": {
+		"atlas": "res://image.png",
+		"cell": [
+		  24,
+		  2
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "inventory_icon": {
+		"atlas": "res://image.png",
+		"cell": [
+		  24,
+		  2
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "seed": "cloud_block_seed",
+	  "recipe_tier": 9,
+	  "authored_drop_rules": true,
+	  "drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "cloud_block",
+			"item_category": "block",
+			"amount": 1
+		  },
+		  {
+			"item_id": "cloud_block_seed",
+			"item_category": "seed",
+			"amount": 1,
+			"chance": 0.2
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  }
+		]
+	  },
+	  "tree_drop_rules": {
+		"seed_chance": 0,
+		"gem_range": [
+		  0,
+		  0
+		],
+		"fixed_drops": [
+		  {
+			"item_id": "cloud_block",
+			"item_category": "block",
+			"amount_range": [
+			  2,
+			  5
+			]
+		  },
+		  {
+			"item_id": "cloud_block_seed",
+			"item_category": "seed",
+			"amount_range": [
+			  0,
+			  3
+			]
+		  },
+		  {
+			"item_id": "gem",
+			"item_category": "currency",
+			"amount_range": [
+			  0,
+			  5
+			]
+		  }
+		]
+	  },
+	  "id": 216,
+	  "item_key": "cloud_block",
+	  "name": "Cloud Block",
+	  "type": "block",
+	  "layer": "foreground",
+	  "source_id": 0,
+	  "collision": true,
+	  "hardness": 4,
+	  "atlas_enabled": true
+	},
+	{
+	  "id": 217,
+	  "item_key": "display_case",
+	  "name": "Display Wall",
+	  "type": "block",
+	  "layer": "foreground",
+	  "source_id": 0,
+	  "atlas_coords": [
+		1,
+		14
+	  ],
+	  "alternative_tile": 0,
+	  "collision": false,
+	  "collision_type": "none",
+	  "hardness": 4,
+	  "texture": {
+		"atlas": "res://image.png",
+		"cell": [
+		  1,
+		  14
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "inventory_icon": {
+		"atlas": "res://image.png",
+		"cell": [
+		  1,
+		  14
+		],
+		"cell_size": [
+		  32,
+		  32
+		]
+	  },
+	  "seed": "display_case_seed",
+	  "recipe_tier": 8,
+	  "atlas_enabled": true
+	}
   ]
 }
