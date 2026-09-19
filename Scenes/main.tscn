@@ -27,7 +27,7 @@
 [ext_resource type="Texture2D" uid="uid://csq4ysed4e5v2" path="res://Assets/player/expressions/underwater.png" id="20_r33sp"]
 [ext_resource type="FontFile" uid="uid://e0ivgh0c6uck" path="res://Assets/font/font.ttf" id="23_u50mg"]
 [ext_resource type="Texture2D" uid="uid://cw58n4hxsavkv" path="res://Assets/items/wearable_64x32.png" id="24_6vcvc"]
-[ext_resource type="Texture2D" path="res://image.png" id="26_cbgmd"]
+[ext_resource type="Texture2D" uid="uid://clbfwpmntdmj" path="res://image.png" id="26_cbgmd"]
 [ext_resource type="Texture2D" uid="uid://bmgnqd6c8iis8" path="res://Assets/items/wearable.png" id="27_1w6v2"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_gt3je"]
@@ -3458,7 +3458,6 @@ texture_region_size = Vector2i(32, 32)
 0:25/0 = 0
 0:26/0 = 0
 1:26/0 = 0
-2:26/0 = 0
 6:12/0 = 0
 10:8/0 = 0
 10:7/0 = 0
@@ -3669,6 +3668,7 @@ texture_region_size = Vector2i(32, 32)
 27:26/0 = 0
 5:19/0 = 0
 6:19/0 = 0
+2:26/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_1w6v2"]
 tile_size = Vector2i(32, 32)

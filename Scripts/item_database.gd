@@ -15262,210 +15262,7 @@ const ITEMS = {
 	"platform_collision": false,
 	"authored_drop_rules": true
 },
-	"barn_block": {
-		"category": "block",
-		"rarity": "common",
-		"stack_limit": 400,
-		"tradeable": true,
-		"dropable": true,
-		"admin_grantable": false,
-		"hidden": true,
-		"equipment_slot": "",
-		"gem_value": 0,
-		"sell_value": 0,
-		"shop_price": 0,
-		"permissions": {},
-		"placeable": false,
-		"place_layer": "foreground",
-		"block_health": 4,
-		"breakable": true,
-		"display_name": "Barn Block",
-		"texture": {
-			"atlas": "res://image.png",
-			"cell": [
-				0,
-				20
-			],
-			"cell_size": [
-				32,
-				32
-			]
-		},
-		"inventory_icon": {
-			"atlas": "res://image.png",
-			"cell": [
-				0,
-				20
-			],
-			"cell_size": [
-				32,
-				32
-			]
-		},
-		"atlas_item_id": 26,
-		"atlas_coords": [
-			0,
-			20
-		],
-		"connected_variant_atlas_coords": {
-			"single": [
-				0,
-				20
-			],
-			"top": [
-				1,
-				20
-			],
-			"middle": [
-				1,
-				21
-			],
-			"top_left_corner": [
-				3,
-				20
-			],
-			"top_right_corner": [
-				4,
-				20
-			],
-			"horizontal_middle": [
-				2,
-				20
-			],
-			"left": [
-				0,
-				21
-			],
-			"right": [
-				2,
-				21
-			],
-			"bottom_left_corner": [
-				3,
-				21
-			],
-			"bottom_right_corner": [
-				4,
-				21
-			],
-			"vertical_middle": [
-				0,
-				22
-			],
-			"bottom": [
-				1,
-				22
-			],
-			"tile_top_left_corner": [
-				0,
-				24
-			],
-			"tile_top_middle": [
-				1,
-				24
-			],
-			"tile_top_right_corner": [
-				2,
-				24
-			],
-			"tile_middle_left": [
-				0,
-				25
-			],
-			"tile_middle_middle": [
-				1,
-				25
-			],
-			"tile_middle_right": [
-				2,
-				25
-			],
-			"tile_bottom_left_corner": [
-				0,
-				26
-			],
-			"tile_bottom_middle": [
-				1,
-				26
-			],
-			"tile_bottom_right_corner": [
-				2,
-				26
-			]
-		},
-		"seed": "barn_block_seed",
-		"collidable": true,
-		"solid": true,
-		"collision_type": "full",
-		"drop_rules": {
-			"seed_chance": 0,
-			"gem_range": [
-				0,
-				0
-			],
-			"fixed_drops": [
-				{
-					"item_id": "barn_block",
-					"item_category": "block",
-					"amount_range": [
-						0,
-						4
-					]
-				},
-				{
-					"item_id": "barn_block_seed",
-					"item_category": "seed",
-					"amount_range": [
-						0,
-						3
-					]
-				},
-				{
-					"item_id": "gem",
-					"item_category": "currency",
-					"amount_range": [
-						0,
-						5
-					]
-				}
-			]
-		},
-		"tree_drop_rules": {
-			"seed_chance": 0,
-			"gem_range": [
-				0,
-				0
-			],
-			"fixed_drops": [
-				{
-					"item_id": "barn_block",
-					"item_category": "block",
-					"amount_range": [
-						0,
-						4
-					]
-				},
-				{
-					"item_id": "barn_block_seed",
-					"item_category": "seed",
-					"amount_range": [
-						0,
-						3
-					]
-				},
-				{
-					"item_id": "gem",
-					"item_category": "currency",
-					"amount_range": [
-						0,
-						5
-					]
-				}
-			]
-		},
-		"order": 316,
-		"atlas_enabled": false
-	},
+	"barn_block": {"item_id":"barn_block","category":"block","rarity":"common","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"placeable":true,"place_layer":"foreground","block_health":4,"breakable":true,"display_name":"Barn Block","background_block":false,"no_collision":false,"collidable":true,"solid":true,"collision_type":"full","atlas_item_id":26,"atlas_source_id":0,"atlas_coords":[0,24],"alternative_tile":0,"seed":"barn_block_seed","drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"barn_block","item_category":"block","amount_range":[0,4]},{"item_id":"barn_block_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"tree_drop_rules":{"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"barn_block","item_category":"block","amount_range":[0,4]},{"item_id":"barn_block_seed","item_category":"seed","amount_range":[0,3]},{"item_id":"gem","item_category":"currency","amount_range":[0,5]}]},"connected_variant_atlas_coords":{},"texture":{"atlas":"res://image.png","cell":[0,24],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[0,24],"cell_size":[32,32]},"order":316,"recipe_tier":4,"atlas_enabled":true},
 	"barn_door": {
 		"category": "block",
 		"rarity": "uncommon",
@@ -26693,6 +26490,17 @@ const RECIPE_TIERS = {
 }
 
 const SPLICE_RECIPES = {
+"barn_block_seed+right_directional_sign_seed": "weathervane_seed",
+"barn_block_seed+wooden_door_seed": "barn_door_seed",
+"barn_block_seed+wooden_fence_seed": "white_fence_seed",
+"barn_block_seed+wooden_background_seed": "barn_background_seed",
+"barn_block_seed+wooden_frame_seed": "barn_window_seed",
+"barn_block_seed+pink_block_seed": "pink_pastel_block_seed",
+"barn_block_seed+orange_block_seed": "orange_pastel_block_seed",
+"barn_block_seed+yellow_block_seed": "yellow_pastel_block_seed",
+"barn_block_seed+green_block_seed": "green_pastel_block_seed",
+"barn_block_seed+red_block_seed": "red_pastel_block_seed",
+"hay_bales_seed+wooden_block_seed": "barn_block_seed",
 "dice_block_seed+royal_door_seed": "password_door_seed",
 "blue_block_seed+chandelier_seed": "blue_portal_seed",
 "bomb_seed+white_block_seed": "dice_block_seed",

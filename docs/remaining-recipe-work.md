@@ -1,3 +1,5 @@
+Barn Block update: restored as a solid single tile at (0,24); 11 recipes enabled, including its own recipe. Total: 163 splicing, 4 crafting. Remaining: 40 spreadsheet rows. Barn Block + Wooden Barrel → Composter still requires the missing Composter item. Older counts below are historical.
+
 # Remaining work to finish spreadsheet recipes
 
 199 spreadsheet rows audited. 144 source splicing recipes plus 8 retained legacy recipes = 152 active splicing recipes. Four crafting recipes active. 51 spreadsheet rows remain pending (43 splicing, 8 crafting).
