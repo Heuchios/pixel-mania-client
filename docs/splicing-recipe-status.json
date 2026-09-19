@@ -7324,13 +7324,12 @@
     "ids": [
       "scratched_banana_painting",
       "vines_painting",
-      null
+      "melter"
     ],
     "method": "crafting",
-    "missing_items": [
-      "Melter"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "crafting_active",
+    "recipe_id": "sheet_melter"
   },
   {
     "row": 378,
@@ -7743,15 +7742,18 @@
       }
     ],
     "ids": [
-      null,
+      "melter",
       "bomb",
       "oil_refinery"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Melter"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "melter_seed",
+      "bomb_seed",
+      "oil_refinery_seed"
+    ]
   },
   {
     "row": 400,
@@ -7780,15 +7782,17 @@
     ],
     "ids": [
       "rainbow_block",
-      null,
-      null
+      "melter",
+      "colored_block_maker"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Melter",
-      "Colored block maker"
-    ],
-    "status": "missing_items"
+    "missing_items": [],
+    "status": "active",
+    "seeds": [
+      "gem_block_seed",
+      "melter_seed",
+      "colored_block_maker_seed"
+    ]
   },
   {
     "row": 402,

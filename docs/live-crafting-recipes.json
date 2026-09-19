@@ -1,5 +1,25 @@
 [
   {
+    "id": "sheet_melter",
+    "output": {
+      "item_id": "melter",
+      "category": "block",
+      "amount": 1
+    },
+    "cost": [
+      {
+        "item_id": "scratched_banana_painting",
+        "category": "block",
+        "amount": 1
+      },
+      {
+        "item_id": "vines_painting",
+        "category": "block",
+        "amount": 1
+      }
+    ]
+  },
+  {
     "id": "sheet_gem_driller",
     "output": {
       "item_id": "gem_driller",
