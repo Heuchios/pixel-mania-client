@@ -13,6 +13,16 @@ class TestWorld extends Node:
 		received_updates.append(data.duplicate(true))
 
 
+class CollisionWorld extends Node2D:
+	var BLOCK_SIZE := 32
+	var blocks: Dictionary = {}
+	var item_database := {
+		"water": {"category": "block", "solid": false, "collidable": false, "collision_type": "none"},
+		"ice_block": {"category": "block", "solid": true, "collidable": true, "collision_type": "full"},
+		"ice_treasure": {"category": "block", "solid": true, "collidable": true, "collision_type": "full"},
+	}
+
+
 func _init() -> void:
 	call_deferred("_run")
 
@@ -33,10 +43,34 @@ func _run() -> void:
 	var snow_visual_setter := source_between(
 		block_manager_source,
 		"func set_snow_storm_visuals_active",
-		"func get_snow_storm_source_block_type"
+		"func refresh_all_foreground_block_textures"
 	)
 	assert(not snow_visual_setter.contains("apply_snow_storm_local_block_overrides()"))
-	assert(snow_visual_setter.contains("restore_snow_storm_local_block_overrides()"))
+	assert(not snow_visual_setter.contains("refresh_all_foreground_block_textures()"))
+	assert(not block_manager_source.contains("apply_snow_storm_actual_block_type"))
+	var collision_world := CollisionWorld.new()
+	root.add_child(collision_world)
+	var manager = load("res://tests/snow_storm_collision_fixture.gd").new()
+	manager.world = collision_world
+	manager.foreground_tilemap_collision_enabled = false
+	var body := StaticBody2D.new()
+	var shape := CollisionShape2D.new()
+	shape.shape = RectangleShape2D.new()
+	body.add_child(shape)
+	collision_world.add_child(body)
+	var cell := Vector2i(12, 15)
+	collision_world.blocks[cell] = {"node": body, "type": "water"}
+	manager.set_snow_storm_visuals_active(true)
+	assert(manager.get_snow_storm_visual_block_type("water", cell) == "water")
+	for block_type in ["water", "ice_treasure", "water", "ice_block", "water"]:
+		collision_world.blocks[cell]["type"] = block_type
+		manager.configure_block_collision(body, block_type, cell)
+		assert(shape.disabled == (block_type == "water"))
+		assert((body.collision_layer == 0) == (block_type == "water"))
+	manager.set_snow_storm_visuals_active(false)
+	assert(shape.disabled)
+	manager.free()
+	collision_world.free()
 	assert(block_manager_source.contains("FOREGROUND_TEXTURE_REFRESH_BATCH_SIZE := 1024"))
 	assert(block_manager_source.contains("FOREGROUND_TEXTURE_REFRESH_PROCESS_USEC"))
 	assert(block_manager_source.contains("Time.get_ticks_usec() - started_usec >= FOREGROUND_TEXTURE_REFRESH_PROCESS_USEC"))

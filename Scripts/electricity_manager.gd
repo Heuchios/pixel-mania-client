@@ -121,6 +121,26 @@ func is_electrical_item(item_id: String) -> bool:
 	return false
 
 
+func has_wire_cutter_equipped() -> bool:
+	return world != null and str(world.equipped_tool).strip_edges() == "wire_cutter"
+
+
+func try_wire_cutter_at(grid: Vector2i) -> bool:
+	if not has_wire_cutter_equipped():
+		return false
+	cancel_electric_tool_link_mode()
+	if circuit_ux == null or not circuit_ux.pending.is_empty():
+		return true
+	if world.has_method("can_reach_grid") and not world.can_reach_grid(grid):
+		world.show_notification("Too far away.")
+		return true
+	if circuit_ux.try_select_wire():
+		circuit_ux.disconnect_selected()
+	elif not try_break_electrical_at(grid):
+		world.show_notification("Tap a wire to cut its connection.")
+	return true
+
+
 func has_electric_tool_equipped() -> bool:
 	return world != null and str(world.equipped_tool).strip_edges() == ELECTRIC_TOOL
 
@@ -973,7 +993,7 @@ func linked_pad_keys_to_positions(linked_pads: Array) -> Array[Vector2i]:
 func begin_electric_tool_link_mode(endpoint: Dictionary) -> bool:
 	if not has_electric_tool_equipped():
 		if world != null and world.has_method("show_notification"):
-			world.show_notification("Equip the Electric Tool to link circuits.")
+			world.show_notification("Equip the Screwdriver to link circuits.")
 		return false
 	if not is_link_endpoint_valid(endpoint):
 		return false
@@ -1158,7 +1178,7 @@ func begin_generator_link_mode_for_kind(generator_grid: Vector2i, link_kind: Str
 	cancel_battery_charger_link_mode()
 	if not has_electric_tool_equipped():
 		if world != null and world.has_method("show_notification"):
-			world.show_notification("Equip the Electric Tool to link circuits.")
+			world.show_notification("Equip the Screwdriver to link circuits.")
 		return false
 	if not is_visible_generator_at(generator_grid):
 		if world != null and world.has_method("show_notification"):
@@ -1197,7 +1217,7 @@ func begin_oil_refinery_link_mode(refinery_grid: Vector2i) -> bool:
 	cancel_battery_charger_link_mode()
 	if not has_electric_tool_equipped():
 		if world != null and world.has_method("show_notification"):
-			world.show_notification("Equip the Electric Tool to link oil refineries.")
+			world.show_notification("Equip the Screwdriver to link oil refineries.")
 		return false
 	if not is_oil_refinery_at(refinery_grid):
 		if world != null and world.has_method("show_notification"):
@@ -1234,7 +1254,7 @@ func begin_battery_charger_link_mode(charger_grid: Vector2i) -> bool:
 	cancel_oil_refinery_link_mode()
 	if not has_electric_tool_equipped():
 		if world != null and world.has_method("show_notification"):
-			world.show_notification("Equip the Electric Tool to link battery chargers.")
+			world.show_notification("Equip the Screwdriver to link battery chargers.")
 		return false
 	if not is_battery_charger_at(charger_grid):
 		if world != null and world.has_method("show_notification"):
@@ -1272,7 +1292,7 @@ func try_link_generator_pad_at(target_grid: Vector2i) -> bool:
 		cancel_generator_link_mode()
 		return true
 	if not has_electric_tool_equipped():
-		world.show_notification("Equip the Electric Tool to link circuits.")
+		world.show_notification("Equip the Screwdriver to link circuits.")
 		cancel_generator_link_mode()
 		return true
 	if not is_visible_generator_at(generator_link_source_grid):
@@ -1328,7 +1348,7 @@ func try_link_oil_refinery_pole_at(target_grid: Vector2i) -> bool:
 		cancel_oil_refinery_link_mode()
 		return true
 	if not has_electric_tool_equipped():
-		world.show_notification("Equip the Electric Tool to link oil refineries.")
+		world.show_notification("Equip the Screwdriver to link oil refineries.")
 		cancel_oil_refinery_link_mode()
 		return true
 	if not is_oil_refinery_at(oil_refinery_link_source_grid):
@@ -1375,7 +1395,7 @@ func try_link_battery_charger_pole_at(target_grid: Vector2i) -> bool:
 		cancel_battery_charger_link_mode()
 		return true
 	if not has_electric_tool_equipped():
-		world.show_notification("Equip the Electric Tool to link battery chargers.")
+		world.show_notification("Equip the Screwdriver to link battery chargers.")
 		cancel_battery_charger_link_mode()
 		return true
 	if not is_battery_charger_at(battery_charger_link_source_grid):
@@ -1807,7 +1827,7 @@ func try_place_selected_electrical_at(grid_pos: Vector2i) -> bool:
 	if not is_electrical_item(item_id):
 		return false
 	if not has_electric_tool_equipped():
-		world.show_notification("Equip the Electric Tool to link wiring.")
+		world.show_notification("Equip the Screwdriver to link wiring.")
 		return true
 	if electrical_tiles.has(grid_pos) and not can_replace_existing_tile(electrical_tiles[grid_pos], item_id):
 		world.show_notification("That electrical spot is occupied.")
@@ -1848,8 +1868,8 @@ func try_break_electrical_at(grid_pos: Vector2i) -> bool:
 		return false
 	if not electrical_tiles.has(grid_pos):
 		return false
-	if not has_electric_tool_equipped():
-		world.show_notification("Equip the Electric Tool to remove wiring.")
+	if not has_wire_cutter_equipped():
+		world.show_notification("Equip the Wire Cutter to remove wiring.")
 		return true
 
 	if should_use_server_authoritative_actions():
@@ -1910,7 +1930,7 @@ func handle_generator_data_update(data: Dictionary) -> void:
 			electrical_tiles[grid_pos][key] = data[key]
 		refresh_tile_visual(grid_pos)
 	if data.has("linked_pads") or data.has("linked_poles"):
-		if has_electric_tool_equipped():
+		if has_electric_tool_equipped() or has_wire_cutter_equipped():
 			electrical_visible = true
 		apply_generator_links_for_generator(grid_pos, extract_linked_pad_positions(data), extract_linked_pole_positions(data))
 	if world != null and "generator_ui" in world and world.generator_ui != null:

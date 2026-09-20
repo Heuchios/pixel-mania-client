@@ -503,7 +503,7 @@ func get_equipped_tool_text() -> String:
 func hide_electrical_layer_if_tool_not_equipped():
 	if world == null:
 		return
-	if str(world.equipped_tool).strip_edges() == ELECTRIC_TOOL_ITEM:
+	if str(world.equipped_tool).strip_edges() in [ELECTRIC_TOOL_ITEM, "wire_cutter"]:
 		return
 	if world.has_method("apply_network_wire_visibility_refresh"):
 		world.apply_network_wire_visibility_refresh({
@@ -519,7 +519,7 @@ func hide_electrical_layer_if_tool_not_equipped():
 func request_electrical_visibility_if_tool_equipped():
 	if world == null:
 		return
-	if str(world.equipped_tool).strip_edges() != ELECTRIC_TOOL_ITEM:
+	if str(world.equipped_tool).strip_edges() not in [ELECTRIC_TOOL_ITEM, "wire_cutter"]:
 		return
 	var network = world.get_node_or_null("/root/NetworkManager")
 	if network != null and network.has_method("send_request_wire_visibility_refresh"):

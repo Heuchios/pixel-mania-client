@@ -46,7 +46,7 @@ func _draw():
 		return
 	# Wiring selects devices, not buildable empty cells. Its preview indicates
 	# the single target under the pointer instead of a screen full of boxes.
-	if str(world.equipped_tool) == "electric_tool":
+	if str(world.equipped_tool) in ["electric_tool", "wire_cutter"]:
 		return
 
 	var item_type = world.selected_item_type

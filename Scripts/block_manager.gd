@@ -62,7 +62,7 @@ var pending_duck_interactions: Dictionary = {}
 var pending_dice_rolls: Dictionary = {}
 var dice_roll_break_windows: Dictionary = {}
 var snow_storm_visuals_active := false
-var snow_storm_local_block_overrides: Dictionary = {}
+
 var last_wooden_entrance_grid := Vector2i(-999999, -999999)
 var visual_variant_texture_cache: Dictionary = {}
 var atlas_variant_texture_cache: Dictionary = {}
@@ -141,7 +141,6 @@ const WATER_OVERLAY_Z_INDEX := 4050
 const WATER_VISUAL_Z_INDEX := 0
 const FOREGROUND_OVER_PLAYER_Z_INDEX := 4020
 const COLOUR_CYCLE_BLOCK_UPDATE_SECONDS := 0.033
-const SNOW_STORM_ICE_VARIANT_SALT := 9047
 const FOREGROUND_TEXTURE_REFRESH_BATCH_SIZE := 1024
 const FOREGROUND_TEXTURE_REFRESH_PROCESS_USEC := 2500
 # Final world-load visual pass. Bulk loading skips neighbor refresh per block,
@@ -465,117 +464,8 @@ func spawn_block_place_particles(grid_pos: Vector2i, block_type: String, layer: 
 
 
 func set_snow_storm_visuals_active(active: bool):
-	if snow_storm_visuals_active == active:
-		return
-
+	# Tile types, loot and collision arrive together from the authoritative event.
 	snow_storm_visuals_active = active
-	if not snow_storm_visuals_active:
-		restore_snow_storm_local_block_overrides()
-	refresh_all_foreground_block_textures()
-
-
-func get_snow_storm_source_block_type(grid_pos: Vector2i, source_types: Dictionary = {}) -> String:
-	if source_types.has(grid_pos):
-		return str(source_types[grid_pos])
-
-	return get_foreground_block_type_at(grid_pos)
-
-
-func get_snow_storm_actual_block_type(grid_pos: Vector2i, block_type: String, source_types: Dictionary = {}) -> String:
-	if not snow_storm_visuals_active:
-		return block_type
-
-	match block_type:
-		"water":
-			return get_snow_storm_ice_block_type(grid_pos)
-		"sand":
-			return "snow_bank"
-		"stone":
-			return "snow_stone"
-		"dirt":
-			var above_type = get_snow_storm_source_block_type(Vector2i(grid_pos.x, grid_pos.y - 1), source_types)
-			if above_type == "snow_block":
-				return "snow_dirt"
-			if above_type == "snow_dirt":
-				return "dirt"
-			if above_type != "dirt":
-				return "snow_block"
-			var above_above_type = get_snow_storm_source_block_type(Vector2i(grid_pos.x, grid_pos.y - 2), source_types)
-			if above_type == "dirt":
-				if above_above_type == "dirt" or above_above_type == "snow_block" or above_above_type == "snow_dirt":
-					return "dirt"
-				return "snow_dirt"
-
-	return block_type
-
-
-func remember_snow_storm_local_block_override(grid_pos: Vector2i, original_type: String, event_type: String):
-	if snow_storm_local_block_overrides.has(grid_pos):
-		return
-
-	snow_storm_local_block_overrides[grid_pos] = {
-		"original_type": original_type,
-		"event_type": event_type
-	}
-
-
-func apply_snow_storm_actual_block_type(grid_pos: Vector2i, block_type: String, source_types: Dictionary = {}) -> String:
-	var event_type = get_snow_storm_actual_block_type(grid_pos, block_type, source_types)
-	if event_type != block_type:
-		remember_snow_storm_local_block_override(grid_pos, block_type, event_type)
-		return event_type
-
-	return event_type
-
-
-func apply_snow_storm_local_block_overrides():
-	if world == null:
-		return
-
-	var source_types: Dictionary = {}
-	for grid_pos in world.blocks.keys():
-		if not world.blocks.has(grid_pos):
-			continue
-
-		source_types[grid_pos] = str(world.blocks[grid_pos].get("type", ""))
-
-	for grid_pos in source_types.keys():
-		if not world.blocks.has(grid_pos):
-			continue
-
-		var block_type := str(source_types[grid_pos])
-		var event_type = apply_snow_storm_actual_block_type(grid_pos, block_type, source_types)
-		if event_type == block_type:
-			continue
-
-		replace_event_block_without_drop(grid_pos, event_type)
-
-
-func restore_snow_storm_local_block_overrides():
-	if world == null:
-		snow_storm_local_block_overrides.clear()
-		return
-
-	for grid_pos in snow_storm_local_block_overrides.keys():
-		if not world.blocks.has(grid_pos):
-			continue
-
-		var override_data = snow_storm_local_block_overrides[grid_pos]
-		if not (override_data is Dictionary):
-			continue
-
-		var current_type := str(world.blocks[grid_pos].get("type", ""))
-		var event_type := str(override_data.get("event_type", ""))
-		if current_type != event_type:
-			continue
-
-		var original_type := str(override_data.get("original_type", ""))
-		if original_type == "":
-			continue
-
-		replace_event_block_without_drop(grid_pos, original_type)
-
-	snow_storm_local_block_overrides.clear()
 
 
 func refresh_all_foreground_block_textures():
@@ -1961,15 +1851,6 @@ func get_stable_variant_index(grid_pos: Vector2i, count: int, salt: int = 0) -> 
 
 	var value = int((grid_pos.x * 73856093) + (grid_pos.y * 19349663) + (salt * 83492791))
 	return posmod(value, count)
-
-
-func get_snow_storm_ice_block_type(grid_pos: Vector2i) -> String:
-	var roll = get_stable_variant_index(grid_pos, 100, SNOW_STORM_ICE_VARIANT_SALT)
-	if roll < 2:
-		return "ice_fossil"
-	if roll < 7:
-		return "ice_treasure"
-	return "ice_block"
 
 
 func get_weighted_stable_variant_index(grid_pos: Vector2i, weights: Array, salt: int = 0) -> int:
@@ -7060,35 +6941,8 @@ func refresh_anti_gravity_animation_after_texture_refresh(grid_pos: Vector2i, bl
 		apply_tilemap_foreground_animation_frame(grid_pos, true)
 
 
-func get_snow_storm_visual_block_type(base_block_id: String, grid_pos: Vector2i, background := false) -> String:
-	if background or not snow_storm_visuals_active or grid_pos == NO_VARIANT_GRID_POS:
-		return base_block_id
-
-	match base_block_id:
-		"dirt":
-			var above_type = get_snow_storm_source_block_type(Vector2i(grid_pos.x, grid_pos.y - 1))
-			if above_type == "snow_block":
-				return "snow_dirt"
-			if above_type == "snow_dirt":
-				return base_block_id
-			if above_type != "dirt":
-				return "snow_block"
-			var above_above_type = get_snow_storm_source_block_type(Vector2i(grid_pos.x, grid_pos.y - 2))
-			if above_above_type == "dirt" or above_above_type == "snow_block" or above_above_type == "snow_dirt":
-				return base_block_id
-			return "snow_dirt"
-		"water":
-			return get_snow_storm_ice_block_type(grid_pos)
-		"sand":
-			return "snow_bank"
-		"stone":
-			return "snow_stone"
-		"grass":
-			return "frozen_grass"
-		"leaf":
-			if get_foreground_block_type_at(Vector2i(grid_pos.x, grid_pos.y - 1)) != "leaf":
-				return "snow_leaf"
-
+func get_snow_storm_visual_block_type(base_block_id: String, _grid_pos: Vector2i, _background := false) -> String:
+	# Do not draw water as solid ice before its server update (or refreeze a refill).
 	return base_block_id
 
 
@@ -10388,6 +10242,13 @@ func replace_event_block_without_drop(grid_pos: Vector2i, block_type: String):
 	if block_node == null or not is_instance_valid(block_node):
 		var _previous_invalid_block_type := str(block_data.get("type", ""))
 		clear_foreground_crack_visual_for_data(block_data)
+		# Reuse the tile cell instead of erasing/recreating it and refreshing its
+		# neighbors for every terrain cell in the storm. This also replaces the
+		# water animation and collision metadata in the same operation.
+		if create_tilemap_only_foreground_block(grid_pos, block_type):
+			world.block_hit_progress.erase(grid_pos)
+			world.block_hit_timers.erase(grid_pos)
+			return
 		clear_tilemap_cell(grid_pos, false)
 		clear_foreground_tilemap_collision_cell(grid_pos)
 		world.blocks.erase(grid_pos)
@@ -10396,6 +10257,7 @@ func replace_event_block_without_drop(grid_pos: Vector2i, block_type: String):
 
 	var _previous_block_type := str(block_data.get("type", ""))
 	block_data["type"] = block_type
+	block_data["item_id"] = get_atlas_item_id_for_block_type(block_type)
 	world.blocks[grid_pos] = block_data
 	authoritative_break_request_keys.erase(get_authoritative_break_key("foreground", grid_pos))
 	authoritative_place_request_times.erase(get_authoritative_place_key("foreground", grid_pos, block_type))
@@ -10442,7 +10304,6 @@ func apply_background_block_style(block):
 
 func create_block(grid_pos: Vector2i, block_type: String = "dirt"):
 	block_type = normalize_legacy_block_id(block_type)
-	block_type = apply_snow_storm_actual_block_type(grid_pos, block_type)
 	if block_type == "":
 		return
 

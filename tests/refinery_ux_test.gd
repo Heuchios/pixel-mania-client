@@ -96,6 +96,20 @@ func run() -> void:
 	assert(live.link_flow_particles.is_empty(), "Connectivity alone must not animate power")
 	inspector.finish()
 	assert(not live.electric_tool_link_mode_active)
+	world.equipped_tool = "wire_cutter"
+	assert(live.has_wire_cutter_equipped() and not live.has_electric_tool_equipped())
+	assert(not live.try_electric_tool_link_at(Vector2i(4, 4)), "Cutters cannot connect wires")
+	var cut_wire := live.make_wire_line("CutTest", Color.YELLOW)
+	cut_wire.add_point(Vector2(300, 320))
+	cut_wire.add_point(Vector2(340, 320))
+	live.link_lines["output|9,10|11,10"] = cut_wire
+	assert(inspector.try_select_wire(), "Cutters pick wires without Inspect mode")
+	assert(inspector.selected_wire == "output|9,10|11,10")
+	assert(not inspector.send_mutation(inspector.key_pair(inspector.selected_wire), false), "Cutters cannot reconnect via Undo")
+	world.equipped_tool = "electric_tool"
+	assert(not inspector.send_mutation(inspector.key_pair(inspector.selected_wire), true), "Screwdrivers cannot disconnect")
+	assert(not live.try_wire_cutter_at(Vector2i(10, 10)))
+	inspector.finish()
 	inspector.pending.clear()
 	for i in range(1500):
 		var key := "pole_coupling|%d,0|%d,0" % [i, i+1]

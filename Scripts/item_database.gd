@@ -14195,7 +14195,7 @@ const ITEMS = {
 	},
 "electric_tool": {
 		"category": "tool",
-		"display_name": "Electric Tool",
+		"display_name": "Screwdriver",
 		"rarity": "rare",
 		"texture": "electric_tool_1",
 		"inventory_icon": "electric_tool_icon",
@@ -14226,7 +14226,7 @@ const ITEMS = {
 		"hand_scale": 1.0,
 		"hand_rotation": -10,
 		"hand_rotation_left": 10,
-		"shop_price": 0,
+		"shop_price": 5000,
 		"order": 48
 	},
 "metal_detector": {

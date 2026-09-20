@@ -38,6 +38,7 @@ const FEATURED_PICKS := [
 	{"type": "item", "id": "fish_monger"},
 	{"type": "item", "id": "red_tractor"},
 	{"type": "item", "id": "electric_tool"},
+	{"type": "item", "id": "wire_cutter"},
 	{"type": "item", "id": "tungsten_rod"},
 ]
 
@@ -272,6 +273,13 @@ var shop_items = [
 		"price": 5000,
 		"section": "tools",
 		"description": "Link electrical wires between transformers, pads, and devices."
+	},
+	{
+		"item_id": "wire_cutter",
+		"amount": 1,
+		"price": 5000,
+		"section": "tools",
+		"description": "Cut wires to disconnect electrical circuits."
 	},
 	{
 		"item_id": "bamboo_rod",

@@ -148,6 +148,9 @@ func use_selected_item_at_mouse():
 		return
 
 	var clicked_grid = world.get_mouse_grid_position()
+	if str(world.equipped_tool) == "wire_cutter" and world.electricity_manager != null:
+		if world.electricity_manager.try_wire_cutter_at(clicked_grid):
+			return
 	if world.has_method("try_display_selected_item_at") and bool(world.try_display_selected_item_at(clicked_grid)):
 		return
 

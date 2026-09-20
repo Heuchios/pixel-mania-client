@@ -150,7 +150,7 @@ func select_existing(pair: Dictionary) -> bool:
 	return true
 
 func try_select_wire() -> bool:
-	if not inspect_mode: return false
+	if not inspect_mode and not manager.has_wire_cutter_equipped(): return false
 	var point: Vector2 = manager.get_link_pointer_position()
 	var closest := ""
 	var distance := 10.0 / maxf(0.1, get_global_transform_with_canvas().get_scale().x)
@@ -188,7 +188,9 @@ func undo_last() -> void:
 	if send_mutation(pair, should_disconnect): track_request(pair, should_disconnect, true)
 
 func send_mutation(pair: Dictionary, should_disconnect: bool) -> bool:
-	if pair.is_empty() or not manager.has_electric_tool_equipped(): return false
+	if pair.is_empty(): return false
+	if should_disconnect and not manager.has_wire_cutter_equipped(): return false
+	if not should_disconnect and not manager.has_electric_tool_equipped(): return false
 	if not manager.should_use_server_authoritative_actions():
 		manager.world.show_notification("Connect to the server to edit saved wiring.")
 		return false
@@ -212,13 +214,13 @@ func _process(delta: float) -> void:
 		generation_pulses.clear()
 		generation_notes.clear()
 		finish()
-	var tool: bool = manager.has_electric_tool_equipped()
+	var tool: bool = manager.has_electric_tool_equipped() or manager.has_wire_cutter_equipped()
 	toolbar.visible = tool and manager.electrical_visible
 	for ui_name in ["oil_refinery_ui", "generator_ui", "battery_charger_ui"]:
 		if ui_name in manager.world:
 			var ui = manager.world.get(ui_name)
 			if ui != null and is_instance_valid(ui) and ui.visible: toolbar.hide()
-	if not tool and manager.electric_tool_link_mode_active: finish()
+	if not manager.has_electric_tool_equipped() and manager.electric_tool_link_mode_active: finish()
 	elapsed += delta
 	if elapsed >= 0.15:
 		elapsed = 0.0
@@ -239,6 +241,7 @@ func refresh_inspection() -> void:
 			manager.world.show_notification("Wiring was not confirmed. Inspect the connection and try again.")
 	var size := get_viewport_rect().size
 	toolbar.position = Vector2(12, 56)
+	connect_button.visible = manager.has_electric_tool_equipped()
 	connect_button.set_pressed_no_signal(not inspect_mode)
 	inspect_button.set_pressed_no_signal(inspect_mode)
 	view_button.visible = focus_grid != manager.INVALID_LINK_GRID
@@ -246,17 +249,19 @@ func refresh_inspection() -> void:
 	multi_button.visible = manager.electric_tool_link_mode_active and manager.electric_tool_link_source_type == "transformer"
 	multi_button.set_pressed_no_signal(multi_connect)
 	done_button.visible = focus_grid != manager.INVALID_LINK_GRID or manager.electric_tool_link_mode_active
-	disconnect_button.visible = not selected_wire.is_empty() and manager.link_lines.has(selected_wire)
+	disconnect_button.visible = manager.has_wire_cutter_equipped() and not selected_wire.is_empty() and manager.link_lines.has(selected_wire)
 	disconnect_button.disabled = not pending.is_empty()
 	undo_button.visible = not undo_action.is_empty()
-	undo_button.disabled = not pending.is_empty()
+	undo_button.disabled = not pending.is_empty() or (not undo_action.is_empty() and (not manager.has_electric_tool_equipped() if bool(undo_action.disconnect) else not manager.has_wire_cutter_equipped()))
 	if not pending.is_empty():
 		hint.text = "Saving connection..."
 	elif manager.electric_tool_link_mode_active:
 		hint.text = manager.get_electric_tool_link_target_prompt(manager.electric_tool_link_source_type)
+	elif manager.has_wire_cutter_equipped():
+		hint.text = "Tap a wire to cut its connection. Equip the Screwdriver to reconnect."
 	elif inspect_mode:
 		hint.text = "Tap a device to trace power, or a wire to select it."
-		if not selected_wire.is_empty(): hint.text = "Wire selected. Disconnect removes this connection."
+		if not selected_wire.is_empty(): hint.text = "Wire selected. Equip the Wire Cutter to disconnect."
 		elif focus_type == "oil_refinery":
 			var state: Dictionary = manager.world.oil_refinery_states.get(focus_grid, {})
 			hint.text = "Refinery: " + str(Status.describe(state).hint)
