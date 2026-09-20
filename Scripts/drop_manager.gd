@@ -2072,6 +2072,12 @@ func create_item_drop(
 					send_network_drop_update(existing_stack)
 				return
 
+	# Authoritative drops must stay collectible even if older servers or world
+	# rewards put more than the manual-drop limit on a tile. Keep overflow as
+	# a separate stack with its original server ID instead of discarding it.
+	if has_external_drop_id and not sync_to_server and get_drop_total_amount_on_tile(stack_grid) + remaining_amount > MAX_DROP_TILE_AMOUNT:
+		_create_single_drop(item_type, item_category, clean_drop_id, remaining_amount, item_position, stack_grid, safe_pickup_delay, false)
+		return
 	if get_drop_total_amount_on_tile(stack_grid) >= MAX_DROP_TILE_AMOUNT:
 		return
 
