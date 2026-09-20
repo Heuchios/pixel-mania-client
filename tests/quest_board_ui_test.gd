@@ -1,5 +1,19 @@
 extends SceneTree
 
+class RecordingBoard extends "res://Scripts/ui/quest_board_ui.gd":
+	var captured: Dictionary = {}
+	func _request(action: String, data: Dictionary = {}) -> void:
+		captured = {"action": action, "data": data.duplicate(true)}
+
+func find_button(node: Node, caption: String) -> Button:
+	if node is Button and node.text == caption:
+		return node
+	for child in node.get_children():
+		var found := find_button(child, caption)
+		if found != null:
+			return found
+	return null
+
 func _init() -> void:
 	call_deferred("run")
 
@@ -12,6 +26,7 @@ func run() -> void:
 	var scene = load("res://Scenes/ui/quests/QuestBoardScene.tscn")
 	assert(scene != null)
 	var panel = scene.instantiate()
+	panel.set_script(RecordingBoard)
 	root.add_child(panel)
 	var fixture = JSON.parse_string(FileAccess.get_file_as_string("D:/Pixelmania/PixelMania/PixelManiaServer/test-output/quest_board_snapshot.json"))
 	panel.load_snapshot(fixture)
@@ -23,7 +38,7 @@ func run() -> void:
 		panel._change_tab(tab)
 		await process_frame
 		assert(panel.content.get_child_count() > 0)
-	for tier in ["favor", "trip", "story"]:
+	for tier in ["favor_0", "trip_0", "story"]:
 		var active_fixture = JSON.parse_string(FileAccess.get_file_as_string("D:/Pixelmania/PixelMania/PixelManiaServer/test-output/quest_active_%s.json" % tier))
 		panel.load_snapshot(active_fixture)
 		panel._select_active(tier)
@@ -31,10 +46,20 @@ func run() -> void:
 		assert(panel.selected_tier == tier)
 		assert(panel.content.get_child_count() > 0)
 		panel._clear_answer()
+		if tier != "story":
+			panel._change_tab("today")
+			assert(find_button(panel.content, "NOT COMPLETE").disabled)
+			assert(find_button(panel.content, "CLAIM REWARD") == null)
+			active_fixture.active[tier].solved = true
+			panel.load_snapshot(active_fixture)
+			find_button(panel.content, "CLAIM REWARD").pressed.emit()
+			assert(panel.captured.action == "quest_choose")
+			assert(panel.captured.data.instance_id == active_fixture.active[tier].id)
+			assert(panel.captured.data.tier == tier)
 	var archive_fixture = JSON.parse_string(FileAccess.get_file_as_string("D:/Pixelmania/PixelMania/PixelManiaServer/test-output/quest_archive.json"))
 	panel.load_snapshot(archive_fixture)
 	panel._change_tab("storybook")
-	assert(panel.content.get_child_count() == 25)
+	assert(panel.content.get_child_count() == 26)
 	root.size = Vector2i(640, 360)
 	await create_timer(0.2).timeout
 	panel._fit()

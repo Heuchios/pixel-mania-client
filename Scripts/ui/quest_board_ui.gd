@@ -8,6 +8,7 @@ const CARD_TEXTURE = preload("res://Assets/ui/SHOP/item_card.png")
 const FONT = preload("res://Assets/font/font.ttf")
 const PORTRAITS = preload("res://Assets/quests/dispatch_portraits.png")
 const Decoration = preload("res://Scripts/ui/dispatch_decoration.gd")
+const QuestItems = preload("res://Scripts/item_database.gd")
 const FAMILY_ICONS = {
 	"letters": "res://Assets/ui/icons/shop.png",
 	"building": "res://Assets/ui/icons/shop_cat_stations.png",
@@ -34,6 +35,7 @@ var accepting_tier := ""
 var opened_world := ""
 var header_decoration
 var base_panel_style: StyleBox
+var reset_label: Label
 
 @onready var panel: PanelContainer = $Panel
 @onready var content: VBoxContainer = $Panel/Margin/Layout/Scroll/Content
@@ -58,6 +60,13 @@ func _ready() -> void:
 		_style_button(button)
 		button.pressed.connect(_change_tab.bind(pair[1]))
 	Style.apply_close_button($Panel/Margin/Layout/Header/Close)
+	$Panel/Margin/Layout/Tabs/Today.text = "DAILY QUESTS"
+	reset_label = Label.new()
+	reset_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	reset_label.add_theme_color_override("font_color", DARK)
+	reset_label.add_theme_font_size_override("font_size", 18)
+	$Panel/Margin/Layout.add_child(reset_label)
+	$Panel/Margin/Layout.move_child(reset_label, 2)
 	for label in [title, wallet, status, footer]:
 		label.add_theme_color_override("font_color", DARK)
 	resized.connect(_fit)
@@ -116,8 +125,9 @@ func _process(_delta: float) -> void:
 		_render()
 	if not board.is_empty():
 		var remaining := maxi(0, int(board.get("reset_at", 0)) - Time.get_ticks_msec() - clock_offset)
-		var seconds := int(remaining / 1000)
-		footer.text = "%d / 5 DAYS  |  +100 XP  |  Refresh %02d:%02d  |  Play, grow, explore." % [int(board.get("week_days", 0)), int(seconds / 3600), int(seconds / 60) % 60]
+		var seconds := int(remaining / 1000.0)
+		reset_label.text = "New daily quests in %02dh %02dm" % [int(seconds / 3600.0), int(seconds / 60.0) % 60]
+		footer.text = "%d / 5 DAYS  |  +100 XP WEEKLY BONUS" % int(board.get("week_days", 0))
 		if remaining == 0 and pending_id.is_empty() and last_refresh_day != int(board.get("day", -1)):
 			last_refresh_day = int(board.get("day", -1))
 			_request("quest_board_get")
@@ -222,7 +232,9 @@ func _render() -> void:
 		content.remove_child(child)
 		child.queue_free()
 	wallet.text = "GEMS + XP"
-	title.text = "TODAY'S DISPATCH"
+	title.text = "QUEST JOURNAL"
+	if current_tab == "today" and status.text == "Your story waits for you.":
+		status.text = "Play to complete your quests. Return here to refresh progress and claim."
 	header_decoration.hide()
 	panel.add_theme_stylebox_override("panel", base_panel_style)
 	for cosmetic in board.get("cosmetics", []):
@@ -236,56 +248,139 @@ func _render() -> void:
 		var tab: Button = get_node("Panel/Margin/Layout/Tabs/" + pair[0])
 		tab.add_theme_color_override("font_color", GOLD if current_tab == pair[1] else Color.WHITE)
 	if board.is_empty():
-		_label(_box(content), "The Threadlight Dispatch", GOLD, 32)
-		_label(_box(content), "Small mysteries. Familiar faces. A new story at your Quest Board.")
+		reset_label.text = ""
+		_label(_box(content), "DAILY QUESTS", GOLD, 32)
+		_label(_box(content), "Loading your objectives and rewards...")
 		return
-	if current_tab == "storybook":
-		_render_archive()
+	if not selected_tier.is_empty():
+		_render_active(selected_tier)
 	elif current_tab == "rewards":
 		_render_rewards()
-	elif not selected_tier.is_empty():
-		_render_active(selected_tier)
+	elif current_tab == "storybook":
+		_render_archive()
 	else:
 		_render_today()
 	_fit()
 
 func _render_today() -> void:
-	var split := GridContainer.new()
-	split.columns = 3 if panel.size.x >= 1100 else 1
-	split.add_theme_constant_override("h_separation", 14)
-	split.add_theme_constant_override("v_separation", 14)
-	content.add_child(split)
+	var toolbar := HBoxContainer.new()
+	content.add_child(toolbar)
+	_label(toolbar, "All daily quests are active. Complete each to claim its rewards.", DARK, 18)
+	var refresh := _button(toolbar, "REFRESH", _request.bind("quest_board_get"))
+	refresh.size_flags_horizontal = Control.SIZE_SHRINK_END
+	refresh.custom_minimum_size.x = 165
+	if board.get("daily_mode", "") == "automatic":
+		for daily in board.get("dailies", []):
+			var active: Dictionary = board.get("active", {}).get(daily.slot, {})
+			_render_daily_row(daily.quest, daily.slot, active, bool(daily.claimed))
+		return
 	for tier in ["favor", "trip"]:
-		var column := _box(split)
-		_label(column, "QUICK QUEST" if tier == "favor" else "DAILY CHALLENGE", GOLD, 28)
-		_label(column, "CHOOSE ONE  |  %s" % ("10 GEMS + 50 XP" if tier == "favor" else "25 GEMS + 125 XP"), LAVENDER, 22)
 		if board.get("active", {}).has(tier):
 			var active: Dictionary = board.active[tier]
-			_label(column, str(active.quest.title))
-			_button(column, "CONTINUE LETTER", _select_active.bind(tier), true)
+			_render_daily_row(active.quest, tier, active)
 		elif board.get("done", {}).get(tier, false):
-			_label(column, "Delivered! Fresh letters arrive at the next refresh.", Color("b9f3cf"))
+			_label(_box(content), ("EASY" if tier == "favor" else "CHALLENGE") + "  |  REWARD CLAIMED — new quest at reset", Color("b9f3cf"), 20)
 		else:
 			for quest in board.get("offers", {}).get(tier, []):
-				_render_offer(column, quest, tier)
-			if int(board.get("refresh", {}).get(tier, 0)) == 0:
-				_button(column, "ONE FREE FRESH LETTER", _request.bind("quest_refresh", {"tier": tier}))
-	var story_column := _box(split)
-	_label(story_column, "YOUR STORY WAITS FOR YOU", GOLD, 28)
+				_render_daily_row(quest, tier)
+
+func _render_daily_row(quest: Dictionary, tier: String, active: Dictionary = {}, claimed := false) -> void:
+	var box := _box(content)
+	var row := HBoxContainer.new()
+	row.tooltip_text = str(quest.get("opening", ""))
+	row.add_theme_constant_override("separation", 16)
+	box.add_child(row)
+	var objectives: Array = active.get("objectives", quest.get("objectives", []))
+	var objective: Dictionary = objectives[0] if not objectives.is_empty() else {}
+	var icon := TextureRect.new()
+	icon.custom_minimum_size = Vector2(64, 64)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	icon.texture = _objective_icon(objective)
+	row.add_child(icon)
+	var details := VBoxContainer.new()
+	details.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	details.add_theme_constant_override("separation", 8)
+	row.add_child(details)
+	_label(details, "%s  [%s]" % [str(quest.get("title", "Daily quest")), "EASY" if tier.begins_with("favor") else "CHALLENGE"], Color.WHITE, 22)
+	for i in range(objectives.size()):
+		var target := maxi(1, int(objectives[i].target))
+		var progress: Array = active.get("progress", [])
+		var count := mini(target, int(progress[i])) if i < progress.size() else 0
+		if claimed:
+			count = target
+		_label(details, str(objectives[i].label), LAVENDER, 18)
+		var bar := ProgressBar.new()
+		bar.custom_minimum_size.y = 12
+		bar.max_value = target
+		bar.value = count
+		bar.show_percentage = false
+		var track := StyleBoxFlat.new()
+		track.bg_color = Color("190e21")
+		bar.add_theme_stylebox_override("background", track)
+		var fill := StyleBoxFlat.new()
+		fill.bg_color = Color("72d99e")
+		bar.add_theme_stylebox_override("fill", fill)
+		details.add_child(bar)
+		_label(details, "%d / %d" % [count, target], GOLD, 17)
+	var rewards := VBoxContainer.new()
+	rewards.custom_minimum_size.x = 225 if panel.size.x >= 900 else 150
+	rewards.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(rewards)
+	var reward: Dictionary = active.get("reward", quest.get("reward", {}))
+	_label(rewards, "%d GEMS  +  %d XP" % [int(reward.get("gems", 0)), int(reward.get("xp", 0))], GOLD, 18)
+	if claimed:
+		var complete := _button(rewards, "CLAIMED", close_quest_board)
+		complete.disabled = true
+		complete.add_theme_color_override("font_disabled_color", Color("72d99e"))
+	elif active.is_empty():
+		_button(rewards, "START QUEST", _accept.bind(quest.id, tier), true)
+	elif active.get("solved", false):
+		_button(rewards, "CLAIM REWARD", _active_request.bind("quest_choose", tier, {"choice": str(quest.choices[0].id)}), true)
+	else:
+		var incomplete := _button(rewards, "NOT COMPLETE", close_quest_board)
+		incomplete.disabled = true
+		incomplete.add_theme_stylebox_override("disabled", Style.atlas_style("red_button", Color.WHITE, 3))
+		incomplete.add_theme_color_override("font_disabled_color", Color("f3b5bd"))
+
+func _objective_icon(objective: Dictionary) -> Texture2D:
+	var item_id := str(objective.get("item_type", ""))
+	var action := str(objective.get("action", "plant"))
+	if action == "fish":
+		return load("res://Assets/inventory_icons/fishing_rod.png")
+	if item_id.is_empty():
+		item_id = "grass" if action in ["plant", "harvest", "splice"] else "dirt"
+	item_id = item_id.trim_suffix("_seed")
+	if action != "fish":
+		var item: Dictionary = world.item_database.get(item_id, {}) if world != null else QuestItems.ITEMS.get(item_id, {})
+		var source = item.get("inventory_icon", item.get("texture", null))
+		if source is Texture2D:
+			return source
+		if source is String and ResourceLoader.exists(source):
+			return load(source)
+		if source is Dictionary and source.has("atlas"):
+			var texture := AtlasTexture.new()
+			texture.atlas = load(str(source.atlas))
+			var cell: Array = source.get("cell", [0, 0])
+			var cell_size: Array = source.get("cell_size", [32, 32])
+			texture.region = Rect2(int(cell[0]) * int(cell_size[0]), int(cell[1]) * int(cell_size[1]), int(cell_size[0]), int(cell_size[1]))
+			return texture
+	return load("res://Assets/ui/icons/shop_cat_fishing.png" if action == "fish" else "res://Assets/ui/icons/shop_cat_featured.png")
+
+func _render_story() -> void:
+	var story_column := _box(content)
+	_label(story_column, "YOUR STORY", GOLD, 28)
 	if board.get("active", {}).has("story"):
 		_label(story_column, str(board.active.story.quest.title))
 		_button(story_column, "CONTINUE STORY", _select_active.bind("story"), true)
 	elif board.get("done", {}).get("story", false):
-		_label(story_column, "Today's chapter is delivered. Your next letter will wait for you.")
+		_label(story_column, "Today's chapter is complete. The next chapter arrives at reset.")
 	else:
 		var quest: Dictionary = board.get("story", {})
 		if not quest.is_empty():
-			_label(story_column, "DISPATCH ENCORE" if board.get("encore", false) else "ARC %s  |  CHAPTER %d OF 4" % [quest.get("arc", "A"), int(quest.get("chapter_in_arc", 1))], LAVENDER, 22)
 			_render_offer(story_column, quest, "story")
-	_label(story_column, "THE TOWN THAT MISPLACED TOMORROW", GOLD, 24)
-	_label(story_column, "Letters stamped tomorrow. A paper moth collecting memories. Six neighbors with unfinished stories. Follow the thread, one little adventure at a time.", LAVENDER, 22)
-	_label(story_column, "%s / 24 CHAPTERS COLLECTED" % mini(24, int(board.get("story_next", 1)) - 1), GOLD, 22)
-	_button(story_column, "OPEN MY STORYBOOK", _change_tab.bind("storybook"))
+
 
 func _render_offer(parent: Node, quest: Dictionary, tier: String) -> void:
 	var box := _box(parent)
@@ -308,7 +403,7 @@ func _render_offer(parent: Node, quest: Dictionary, tier: String) -> void:
 	_button(box, "READ LETTER" if tier == "story" else "TAKE THIS LETTER", _accept.bind(quest.id, tier), true)
 
 func _accept(quest_id: String, tier: String) -> void:
-	accepting_tier = tier
+	accepting_tier = tier if tier == "story" else ""
 	_request("quest_accept", {"quest_id": quest_id, "tier": tier})
 
 func _portrait(parent: Node, npc: String) -> void:
@@ -316,7 +411,7 @@ func _portrait(parent: Node, npc: String) -> void:
 	var index := maxi(0, names.find(npc))
 	var atlas := AtlasTexture.new()
 	atlas.atlas = PORTRAITS
-	atlas.region = Rect2((index % 3) * 512, int(index / 3) * 512, 512, 512)
+	atlas.region = Rect2((index % 3) * 512, int(index / 3.0) * 512, 512, 512)
 	var portrait := TextureRect.new()
 	portrait.texture = atlas
 	portrait.custom_minimum_size = Vector2(72, 72)
@@ -358,6 +453,9 @@ func _render_active(tier: String) -> void:
 		_label(column, str(active.quest.callback), GOLD, 22)
 	_label(column, "%d GEMS + %d XP" % [int(active.reward.gems), int(active.reward.get("xp", 0))], GOLD, 22)
 	if active.get("solved", false):
+		if tier != "story":
+			_button(column, "CLAIM REWARD", _active_request.bind("quest_choose", tier, {"choice": str(active.quest.choices[0].id)}), true)
+			return
 		_label(column, "HOW DOES YOUR LETTER END?", Color.WHITE, 28)
 		for choice in active.quest.choices:
 			_button(column, str(choice.label), _active_request.bind("quest_choose", tier, {"choice": choice.id}), true)
@@ -373,10 +471,11 @@ func _render_active(tier: String) -> void:
 			bar.value = count
 			bar.custom_minimum_size.y = 24
 			column.add_child(bar)
-		_label(column, "Only successful gameplay after accepting counts. Harvest mature trees; fishing must land a fish. Return to the board to update progress and claim your reward.", LAVENDER, 22)
+		_label(column, "Daily quests track successful gameplay from the daily reset once you have visited the board. Story quests track from acceptance. Harvest mature trees; fishing must land a fish. Return to refresh progress and claim.", LAVENDER, 22)
 		_button(column, "GO PLAY", close_quest_board, true)
 		_button(column, "REFRESH PROGRESS", _request.bind("quest_board_get"))
-		_button(column, "ABANDON QUEST", _confirm_abandon.bind(tier))
+		if tier == "story":
+			_button(column, "ABANDON QUEST", _confirm_abandon.bind(tier))
 		return
 	_label(column, "1. INSPECT THE CLUES", Color.WHITE, 26)
 	var puzzle: Dictionary = active.puzzle
@@ -390,7 +489,7 @@ func _render_active(tier: String) -> void:
 		grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		column.add_child(grid)
 		for cell in range(25):
-			var tile := _button(grid, "%s%s%s" % [String.chr(65 + cell % 5), int(cell / 5) + 1, " +" if answer.has(cell) else ""], _toggle_cell.bind(cell))
+			var tile := _button(grid, "%s%s%s" % [String.chr(65 + cell % 5), int(cell / 5.0) + 1, " +" if answer.has(cell) else ""], _toggle_cell.bind(cell))
 			tile.custom_minimum_size = Vector2(68, 54)
 			if answer.has(cell):
 				Style.apply_green_button(tile, 24)
@@ -452,6 +551,7 @@ func _confirm_abandon(tier: String) -> void:
 	dialog.popup_centered(Vector2i(480, 180))
 
 func _render_archive() -> void:
+	_render_story()
 	_label(_box(content), "THE TOWN THAT MISPLACED TOMORROW", GOLD, 30)
 	var chapters: Dictionary = board.get("chapters", {})
 	if chapters.is_empty():
