@@ -94,7 +94,7 @@ layout_mode = 0
 offset_left = 34.0
 offset_top = 14.0
 offset_right = 544.0
-offset_bottom = 75.0
+offset_bottom = 60.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -167,15 +167,15 @@ patch_margin_bottom = 28
 
 [node name="ItemTitle" type="Label" parent="VendingPanel/ItemCard" unique_id=876198196]
 layout_mode = 0
-offset_left = 86.0
+offset_left = 20.0
 offset_top = 14.0
-offset_right = 266.0
+offset_right = 338.0
 offset_bottom = 45.0
 theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 20
 text = "ITEM LISTING"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -225,9 +225,9 @@ metadata/pixelmania_font_role = "preserve"
 [node name="Hint" type="Label" parent="VendingPanel/ItemCard" unique_id=672875610]
 layout_mode = 0
 offset_left = 24.0
-offset_top = 236.0
+offset_top = 264.0
 offset_right = 334.0
-offset_bottom = 282.0
+offset_bottom = 312.0
 theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -236,6 +236,7 @@ theme_override_font_sizes/font_size = 14
 text = "Click the slot to choose item from your inventory."
 autowrap_mode = 2
 metadata/pixelmania_font_role = "preserve"
+horizontal_alignment = 1
 
 [node name="PriceCard" type="Control" parent="VendingPanel" unique_id=1714098435]
 anchors_preset = 0
@@ -255,15 +256,15 @@ patch_margin_bottom = 28
 
 [node name="SetupTitle" type="Label" parent="VendingPanel/PriceCard" unique_id=1045407624]
 layout_mode = 0
-offset_left = 120.0
+offset_left = 20.0
 offset_top = 14.0
-offset_right = 300.0
+offset_right = 396.0
 offset_bottom = 45.0
 theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 20
 text = "SALE DETAILS"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -286,9 +287,9 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="StockSpin" type="SpinBox" parent="VendingPanel/PriceCard" unique_id=1125168074]
 layout_mode = 0
-offset_left = 244.0
+offset_left = 205.0
 offset_top = 62.0
-offset_right = 386.0
+offset_right = 390.0
 offset_bottom = 100.0
 min_value = 1.0
 max_value = 1.0
@@ -336,9 +337,9 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceSpin" type="SpinBox" parent="VendingPanel/PriceCard" unique_id=1717215570]
 layout_mode = 0
-offset_left = 244.0
+offset_left = 205.0
 offset_top = 186.0
-offset_right = 386.0
+offset_right = 390.0
 offset_bottom = 224.0
 min_value = 1.0
 max_value = 200.0
@@ -347,9 +348,9 @@ value = 1.0
 [node name="Formula" type="Label" parent="VendingPanel/PriceCard" unique_id=50391249]
 layout_mode = 0
 offset_left = 26.0
-offset_top = 250.0
+offset_top = 238.0
 offset_right = 386.0
-offset_bottom = 292.0
+offset_bottom = 314.0
 theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -590,3 +591,47 @@ popup/item_1/id = 1
 title = "Confirm purchase"
 size = Vector2i(460, 180)
 ok_button_text = "Buy"
+
+[node name="Subtitle" type="Label" parent="VendingPanel"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 72.0
+offset_right = 805.0
+offset_bottom = 100.0
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.23, 0.10, 0.29, 1)
+text = "OWNER / Stock items, set a price, collect earnings"
+
+[node name="SelectItem" type="Button" parent="VendingPanel/ItemCard"]
+layout_mode = 0
+offset_left = 69.0
+offset_top = 216.0
+offset_right = 289.0
+offset_bottom = 254.0
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = ExtResource("13_blue_normal")
+theme_override_styles/hover = ExtResource("15_blue_hover")
+theme_override_styles/pressed = ExtResource("14_blue_pressed")
+text = "CHOOSE ITEM"
+
+[node name="PriceReadout" type="Label" parent="VendingPanel/PriceCard"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 124.0
+offset_right = 386.0
+offset_bottom = 184.0
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.23, 0.10, 0.29, 1)
+text = "PRICE"
+
+[node name="MaxQuantity" type="Button" parent="VendingPanel/PriceCard"]
+layout_mode = 0
+offset_left = 205.0
+offset_top = 188.0
+offset_right = 390.0
+offset_bottom = 226.0
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = ExtResource("13_blue_normal")
+theme_override_styles/hover = ExtResource("15_blue_hover")
+theme_override_styles/pressed = ExtResource("14_blue_pressed")
+text = "MAX STOCK"

@@ -35,6 +35,7 @@ var purchase_confirmation: ConfirmationDialog
 var purchase_quote := {}
 var refreshing_fields := false
 var mutation_pending := false
+var price_draft_key := ""
 
 
 func setup(parent_world, ui_node):
@@ -95,6 +96,9 @@ func bind_scene_ui() -> bool:
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	_connect_button(panel.get_node_or_null("CloseButton"), close_vending)
 	_connect_button(item_slot, _on_item_slot_pressed)
+	item_slot.add_theme_stylebox_override("disabled", item_slot.get_theme_stylebox("normal"))
+	_connect_button(panel.get_node("ItemCard/SelectItem"), _on_item_slot_pressed)
+	_connect_button(panel.get_node("PriceCard/MaxQuantity"), _on_max_quantity_pressed)
 	_connect_button(list_button, _on_list_pressed)
 	_connect_button(buy_button, _on_buy_pressed)
 	_connect_button(collect_button, _on_collect_pressed)
@@ -698,6 +702,7 @@ func open_vending(grid_pos: Vector2i):
 			world.show_notification("Vending UI scene is not ready.")
 		return
 
+	price_draft_key = ""
 	current_grid = grid_pos
 	mutation_pending = false
 	selected_item.clear()
@@ -738,7 +743,9 @@ func update_position():
 	if panel == null:
 		return
 	var screen_size = get_viewport_rect().size
-	panel.position = Vector2((screen_size.x - panel.size.x) / 2.0, max(54.0, (screen_size.y - panel.size.y) / 2.0))
+	var fit_scale = min(1.0, min((screen_size.x - 24.0) / panel.size.x, (screen_size.y - 24.0) / panel.size.y))
+	panel.scale = Vector2.ONE * max(0.1, fit_scale)
+	panel.position = (screen_size - panel.size * panel.scale) / 2.0
 	if log_overlay != null:
 		log_overlay.position = Vector2((panel.size.x - log_overlay.size.x) / 2.0, 92.0)
 
@@ -768,6 +775,7 @@ func send_vend_request(payload: Dictionary) -> bool:
 		return false
 	if str(payload.get("action", "")) != "vend_get_state":
 		mutation_pending = true
+		refresh_buttons(get_listing(), int(current_state.get("pending_wls", 0)), can_manage_current_vend())
 	return true
 
 
@@ -815,8 +823,10 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 	if message != "" and world != null and world.has_method("show_notification"):
 		world.show_notification(message)
 
-	if bool(data.get("ok", false)) and action == "vend_set_listing":
+	if bool(data.get("ok", false)) and action in ["vend_set_listing", "vend_cancel"]:
 		selected_item.clear()
+		if action == "vend_cancel":
+			price_draft_key = ""
 
 	refresh_ui()
 	return true
@@ -827,12 +837,12 @@ func handle_vend_state(data: Dictionary):
 	var y = int(data.get("y", 999999))
 	if x != current_grid.x or y != current_grid.y:
 		return
-	apply_vend_state(data)
+	apply_vend_state(data, false)
 	sync_world_vending_preview()
 	refresh_ui()
 
 
-func apply_vend_state(data: Dictionary):
+func apply_vend_state(data: Dictionary, personalized: bool = true):
 	var normalized_state: Dictionary = {}
 	if data.has("state") and data.get("state") is Dictionary:
 		normalized_state = data.get("state").duplicate(true)
@@ -843,6 +853,11 @@ func apply_vend_state(data: Dictionary):
 		normalized_state["x"] = int(data.get("x", current_grid.x))
 	if not normalized_state.has("y"):
 		normalized_state["y"] = int(data.get("y", current_grid.y))
+	# World broadcasts are serialized without a recipient, so their can_manage
+	# value is not an access decision for this player. Only direct transaction
+	# responses may change the permission established for the open machine.
+	if not personalized:
+		normalized_state["can_manage"] = can_manage_current_vend()
 
 	current_state = normalized_state
 	if current_state.get("listing", {}) == null:
@@ -894,14 +909,17 @@ func refresh_ui():
 	var pending = int(current_state.get("pending_wls", 0))
 	var can_manage = can_manage_current_vend()
 
-	if pending > 0:
-		status_label.text = str(pending) + " WL READY"
-	elif is_current_vend_awaiting_collection():
-		status_label.text = "SOLD"
+	if mutation_pending:
+		status_label.text = "PLEASE WAIT"
 	elif not listing.is_empty():
-		status_label.text = "ITEM LISTED"
+		status_label.text = "RESTOCK NEEDED" if int(listing.get("stock", 0)) < int(listing.get("amount_per_sale", 1)) else "FOR SALE"
+	elif pending > 0:
+		status_label.text = "SOLD OUT"
 	else:
 		status_label.text = "EMPTY"
+	panel.get_node("Subtitle").text = "OWNER / Stock items, set a price, collect earnings" if can_manage else "SHOP / Choose your quantity and review the total"
+	panel.get_node("ItemCard/ItemTitle").text = "YOUR STOCK" if can_manage else "BUY ITEM"
+	panel.get_node("PriceCard/SetupTitle").text = "SET YOUR PRICE" if can_manage else "YOUR PURCHASE"
 
 	refresh_item_slot(listing)
 	refresh_price_controls(listing)
@@ -917,11 +935,18 @@ func refresh_item_slot(listing: Dictionary):
 		display_item = listing
 
 	item_slot.text = ""
+	item_slot.disabled = not can_manage_current_vend() or mutation_pending
+	var select_button = panel.get_node("ItemCard/SelectItem")
+	select_button.visible = can_manage_current_vend()
+	select_button.disabled = mutation_pending
+	select_button.text = "CHOOSE ITEM" if listing.is_empty() else "ADD STOCK"
 	if display_item.is_empty():
 		item_icon.visible = false
 		item_icon.texture = null
+		item_slot.text = "+" if can_manage_current_vend() else "EMPTY"
+		item_slot.add_theme_font_size_override("font_size", 30)
 		item_label.text = "+\nSelect Item"
-		panel.get_node("ItemCard/Hint").text = "Click the slot to choose an item." if can_manage_current_vend() else "This machine is empty."
+		panel.get_node("ItemCard/Hint").text = "Choose an item from your inventory\nto start selling." if can_manage_current_vend() else "No items for sale right now."
 		return
 
 	var item_id = str(display_item.get("item_id", ""))
@@ -931,9 +956,16 @@ func refresh_item_slot(listing: Dictionary):
 	item_icon.texture = texture
 	item_icon.visible = texture != null
 	item_label.text = get_item_name(item_id, category) + "\nx" + str(amount)
-	var hint = get_item_name(item_id, category) + " | " + str(amount) + " items"
-	hint += "\nClick the slot to add stock." if can_manage_current_vend() else "\nChoose a quantity to buy."
+	var stocked = int(listing.get("stock", 0))
+	var hint = get_item_name(item_id, category) + "\n"
+	if can_manage_current_vend():
+		hint += "%d in machine" % stocked
+		if not selected_item.is_empty():
+			hint += " | %d selected" % amount
+	else:
+		hint += "%d available" % stocked
 	panel.get_node("ItemCard/Hint").text = hint
+
 
 
 func refresh_price_controls(listing: Dictionary):
@@ -945,14 +977,22 @@ func refresh_price_controls(listing: Dictionary):
 	per_sale_spin.visible = false
 	panel.get_node("PriceCard/StockLabel").text = "ADD STOCK" if owner else "QUANTITY"
 	panel.get_node("PriceCard/PerSaleLabel").text = "PRICE MODE"
-	panel.get_node("PriceCard/PriceLabel").text = "RATE"
+	panel.get_node("PriceCard/PriceLabel").text = "ITEMS FOR 1 WL" if price_mode.selected == 1 else "WL FOR 1 ITEM"
+	price_mode.visible = owner
+	price_spin.visible = owner
+	panel.get_node("PriceCard/PriceLabel").visible = owner
+	panel.get_node("PriceCard/PerSaleLabel").visible = owner
+	panel.get_node("PriceCard/PriceReadout").visible = not owner
+	panel.get_node("PriceCard/MaxQuantity").visible = not owner and not listing.is_empty()
 	if owner:
 		stock_spin.step = 1
 		stock_spin.min_value = 0
 		stock_spin.max_value = int(selected_item.get("stock", 0))
 		if selected_item.is_empty():
 			stock_spin.value = 0
-		if not listing.is_empty():
+		var key = "%s:%s:%s:%s" % [listing.get("listing_id", ""), listing.get("item_id", ""), listing.get("amount_per_sale", 1), listing.get("price_wls", 1)]
+		if not listing.is_empty() and key != price_draft_key:
+			price_draft_key = key
 			price_mode.select(1 if int(listing.get("amount_per_sale", 1)) > 1 else 0)
 			price_spin.value = int(listing.get("amount_per_sale", 1)) if price_mode.selected == 1 else int(listing.get("price_wls", 1))
 	else:
@@ -971,52 +1011,72 @@ func _on_price_mode_changed(_index: int):
 	refresh_price_summary()
 
 
+func _on_max_quantity_pressed():
+	stock_spin.value = stock_spin.max_value
+	refresh_price_summary()
+
+
 func refresh_price_summary():
 	if panel == null or price_mode == null:
 		return
 	var summary = panel.get_node("PriceCard/Formula")
+	var listing = get_listing()
 	if can_manage_current_vend():
-		summary.text = "%d items per World Lock" % int(price_spin.value) if price_mode.selected == 1 else "%d World Locks per item" % int(price_spin.value)
+		panel.get_node("PriceCard/PriceLabel").text = "ITEMS FOR 1 WL" if price_mode.selected == 1 else "WL FOR 1 ITEM"
+		if listing.is_empty() and selected_item.is_empty():
+			summary.text = "1. Choose an item\n2. Set the stock and price\n3. Start selling"
+		else:
+			var rate = int(price_spin.value)
+			var price_text = "%d items for 1 WL" % rate if price_mode.selected == 1 else "1 item for %d WL" % rate
+			var added = int(stock_spin.value) if not selected_item.is_empty() else 0
+			summary.text = price_text + "\nStock after saving: %d" % (int(listing.get("stock", 0)) + added)
 	else:
-		var listing = get_listing()
 		var bundle = max(1, int(listing.get("amount_per_sale", 1)))
 		var count = int(stock_spin.value) / bundle as int
 		var total = count * int(listing.get("price_wls", 1))
-		summary.text = "%d items for %d WL. Stock: %d" % [int(stock_spin.value), total, int(listing.get("stock", 0))]
-		buy_button.text = "BUY %d FOR %d WL" % [int(stock_spin.value), total]
+		var available = int(listing.get("stock", 0))
+		panel.get_node("PriceCard/PriceReadout").text = "PRICE\n%d items for %d WL" % [bundle, int(listing.get("price_wls", 1))] if not listing.is_empty() else "No active listing"
+		summary.text = "YOU RECEIVE: %d items\nTOTAL: %d WL" % [count * bundle, total]
+		if available < bundle:
+			summary.text = "Waiting for the owner to restock." if not listing.is_empty() else "Check back when this machine is stocked."
+		elif bundle > 1:
+			summary.text += "\nSold in groups of %d." % bundle
+		buy_button.text = "BUY %d FOR %d WL" % [count * bundle, total]
+	if not refreshing_fields:
+		refresh_buttons(listing, int(current_state.get("pending_wls", 0)), can_manage_current_vend())
+
 
 
 func refresh_buttons(listing: Dictionary, pending: int, can_manage: bool):
+	if mutation_pending:
+		status_label.text = "PLEASE WAIT"
 	list_button.visible = can_manage
-	list_button.disabled = selected_item.is_empty() and listing.is_empty()
-	list_button.text = "SAVE" if not listing.is_empty() else "STOCK ITEM"
-	list_button.position = Vector2(50, 467)
-	list_button.size = Vector2(150, 46)
-
-	buy_button.visible = not listing.is_empty() and not can_manage
-	buy_button.disabled = listing.is_empty() or int(listing.get("stock", 0)) < int(listing.get("amount_per_sale", 1))
-	if not listing.is_empty():
-		refresh_price_summary()
-	if buy_button.visible:
-		buy_button.position = Vector2(50, 467)
-		buy_button.size = Vector2(384, 46)
-	else:
-		buy_button.position = Vector2(214, 467)
-		buy_button.size = Vector2(220, 46)
-
+	list_button.disabled = mutation_pending or (selected_item.is_empty() and listing.is_empty()) or (listing.is_empty() and int(stock_spin.value) <= 0)
+	list_button.text = "SAVING..." if mutation_pending else ("SAVE CHANGES" if not listing.is_empty() else "START SELLING")
+	list_button.position = Vector2(40, 467)
+	list_button.size = Vector2(226, 46)
+	buy_button.visible = not can_manage and not listing.is_empty()
+	buy_button.disabled = mutation_pending or listing.is_empty() or int(listing.get("stock", 0)) < int(listing.get("amount_per_sale", 1))
+	buy_button.position = Vector2(440, 467)
+	buy_button.size = Vector2(364, 46)
+	if mutation_pending:
+		buy_button.text = "PLEASE WAIT..."
 	collect_button.visible = can_manage
-	collect_button.disabled = pending <= 0
-	collect_button.position = Vector2(448, 467)
-	collect_button.size = Vector2(122, 46)
-
-	cancel_button.text = "REMOVE"
-	cancel_button.visible = can_manage
-	cancel_button.disabled = listing.is_empty()
-	cancel_button.position = Vector2(690, 467)
-	cancel_button.size = Vector2(116, 46)
-
-	log_button.position = Vector2(584, 467)
-	log_button.size = Vector2(92, 46)
+	collect_button.disabled = mutation_pending or pending <= 0
+	collect_button.text = "COLLECT %d WL" % pending
+	collect_button.position = Vector2(280, 467)
+	collect_button.size = Vector2(216, 46)
+	cancel_button.text = "REMOVE STOCK"
+	cancel_button.visible = can_manage and not listing.is_empty()
+	cancel_button.disabled = mutation_pending
+	cancel_button.position = Vector2(510, 467)
+	cancel_button.size = Vector2(190, 46)
+	log_button.visible = can_manage
+	log_button.text = "SALES"
+	log_button.position = Vector2(714, 467)
+	log_button.size = Vector2(100, 46)
+	panel.get_node("ItemCard/SelectItem").disabled = mutation_pending
+	item_slot.disabled = not can_manage or mutation_pending
 
 
 func refresh_log_text():
