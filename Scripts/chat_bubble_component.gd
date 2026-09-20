@@ -1,7 +1,5 @@
 extends Control
 
-const CHAT_BUBBLE_PANEL_TEXTURE: Texture2D = preload("res://Assets/ui/atlas/textures/inner_panel.tres")
-
 const CHAT_BUBBLE_TIME := 4.0
 const CHAT_BUBBLE_ANCHOR_OFFSET_WORLD_PX := 96.0
 const CHAT_BUBBLE_USERNAME_GAP_SCREEN_PX := 2.0
@@ -12,8 +10,7 @@ const CHAT_BUBBLE_PAD_Y := 8.0
 const CHAT_FONT_PATH := "res://Assets/font/font.ttf"
 const CHAT_BUBBLE_FONT_SIZE := 24
 const CHAT_BUBBLE_LINE_SPACING := 2
-const CHAT_BUBBLE_DEFAULT_TEXT_COLOR := Color(1.0, 1.0, 1.0, 1.0)
-const CHAT_BUBBLE_PANEL_PATCH_MARGIN := 4.0
+const CHAT_BUBBLE_DEFAULT_TEXT_COLOR := Color(0.16, 0.06, 0.2, 1.0)
 const NOTIFICATION_STACK_MAX_ENTRIES := 5
 const NOTIFICATION_STACK_GAP := 2.0
 const NOTIFICATION_ENTRY_LIFETIME_MSEC := 4000
@@ -277,9 +274,9 @@ func _build_bubble_ui():
 	label.add_theme_color_override("font_color", current_text_color)
 	label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 1.0))
 	label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 1.0))
-	label.add_theme_constant_override("outline_size", 3)
-	label.add_theme_constant_override("shadow_offset_x", 1)
-	label.add_theme_constant_override("shadow_offset_y", 1)
+	label.add_theme_constant_override("outline_size", 0)
+	label.add_theme_constant_override("shadow_offset_x", 0)
+	label.add_theme_constant_override("shadow_offset_y", 0)
 	label.modulate = Color.WHITE
 	label.self_modulate = Color.WHITE
 	label.visible = true
@@ -310,10 +307,8 @@ func _build_bubble_ui():
 
 
 func _create_background_style() -> StyleBoxTexture:
-	var panel_style := UIAtlasDB.get_stylebox("inner_panel").duplicate() as StyleBoxTexture
-	for side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
-		panel_style.set_content_margin(side, CHAT_BUBBLE_PANEL_PATCH_MARGIN)
-	return panel_style
+	# Match the pink UI panels, with dark ink for contrast.
+	return UIAtlasDB.get_stylebox("pink_button").duplicate() as StyleBoxTexture
 
 
 func _apply_label_settings():
@@ -327,16 +322,16 @@ func _apply_label_settings():
 	label_settings.font_size = CHAT_BUBBLE_FONT_SIZE
 	label_settings.line_spacing = CHAT_BUBBLE_LINE_SPACING
 	label_settings.font_color = current_text_color
-	label_settings.outline_size = 3
+	label_settings.outline_size = 0
 	label_settings.outline_color = Color(0.0, 0.0, 0.0, 1.0)
-	label_settings.shadow_size = 1
+	label_settings.shadow_size = 0
 	label_settings.shadow_color = Color(0.0, 0.0, 0.0, 1.0)
-	label_settings.shadow_offset = Vector2(1.0, 1.0)
+	label_settings.shadow_offset = Vector2.ZERO
 	label.label_settings = label_settings
 	label.add_theme_color_override("font_color", current_text_color)
 
 
-func show_chat_message(message: String, text_color: Color = CHAT_BUBBLE_DEFAULT_TEXT_COLOR):
+func show_chat_message(message: String, _text_color: Color = CHAT_BUBBLE_DEFAULT_TEXT_COLOR):
 	_configure_root()
 	if background == null or label == null:
 		_build_bubble_ui()
@@ -347,7 +342,7 @@ func show_chat_message(message: String, text_color: Color = CHAT_BUBBLE_DEFAULT_
 
 	clear_notification_entries()
 	bubble_mode = BUBBLE_MODE_CHAT
-	current_text_color = text_color
+	current_text_color = CHAT_BUBBLE_DEFAULT_TEXT_COLOR
 	var wrapped_message = _layout_for_message(clean_message)
 	label.text = wrapped_message
 	_apply_label_settings()
@@ -385,7 +380,7 @@ func show_notification_message(message: String, text_color: Color = CHAT_BUBBLE_
 	if bubble_mode != BUBBLE_MODE_NOTIFICATION:
 		clear_notification_entries()
 	bubble_mode = BUBBLE_MODE_NOTIFICATION
-	current_text_color = text_color
+	current_text_color = CHAT_BUBBLE_DEFAULT_TEXT_COLOR
 	label.visible = false
 
 	var now_msec := Time.get_ticks_msec()
@@ -444,7 +439,7 @@ func has_active_notification_dedupe_key(dedupe_key: String) -> bool:
 	return false
 
 
-func create_notification_label(text_color: Color) -> Label:
+func create_notification_label(_text_color: Color) -> Label:
 	var entry_label := Label.new()
 	entry_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	entry_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -459,12 +454,12 @@ func create_notification_label(text_color: Color) -> Label:
 	var font := get_chat_font()
 	if font != null:
 		entry_label.add_theme_font_override("font", font)
-	entry_label.add_theme_color_override("font_color", text_color)
+	entry_label.add_theme_color_override("font_color", CHAT_BUBBLE_DEFAULT_TEXT_COLOR)
 	entry_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 1.0))
 	entry_label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 1.0))
-	entry_label.add_theme_constant_override("outline_size", 3)
-	entry_label.add_theme_constant_override("shadow_offset_x", 1)
-	entry_label.add_theme_constant_override("shadow_offset_y", 1)
+	entry_label.add_theme_constant_override("outline_size", 0)
+	entry_label.add_theme_constant_override("shadow_offset_x", 0)
+	entry_label.add_theme_constant_override("shadow_offset_y", 0)
 	entry_label.modulate = Color.WHITE
 	entry_label.self_modulate = Color.WHITE
 	return entry_label

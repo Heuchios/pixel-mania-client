@@ -1,5 +1,6 @@
 extends Node
 
+const RodAttachment = preload("res://Scripts/fishing_rod_attachment.gd")
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 const FishingMinigameUI = preload("res://Scripts/ui/fishing_minigame_ui.gd")
 const FishingPullGame = preload("res://Scripts/fishing_pull_game.gd")
@@ -563,20 +564,7 @@ func get_hand_item_sprite_texture(hand_item_sprite):
 
 
 func get_fishing_line_tip_local_position(hand_item_sprite, rod_data: Dictionary, texture_size: Vector2, facing_left: bool) -> Vector2:
-	var has_left_tip := facing_left and rod_data.has("fishing_line_tip_offset_left")
-	var tip_value = rod_data.get("fishing_line_tip_offset_left", Vector2.ZERO) if has_left_tip else rod_data.get("fishing_line_tip_offset", Vector2.ZERO)
-	var tip_position := get_vector2_from_data(tip_value, Vector2.ZERO)
-
-	if texture_size == Vector2.ZERO:
-		return tip_position
-
-	if facing_left and not has_left_tip and is_hand_item_sprite_flipped(hand_item_sprite):
-		tip_position.x = texture_size.x - tip_position.x
-
-	if is_hand_item_sprite_centered(hand_item_sprite):
-		tip_position -= texture_size * 0.5
-
-	return tip_position
+	return RodAttachment.local_tip(hand_item_sprite, rod_data, texture_size, facing_left)
 
 
 func get_texture_right_edge_local_position(hand_item_sprite, texture_size: Vector2) -> Vector2:

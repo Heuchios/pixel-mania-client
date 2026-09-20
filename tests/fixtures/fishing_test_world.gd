@@ -22,6 +22,7 @@ var ui_layer: CanvasLayer
 var blocks := {Vector2i(2, 1): {"type": "water"}}
 var lure_inventory := {"worm_lure": 20}
 var fish_inventory: Dictionary = {}
+var fish_items: Array = ["pond_fish", "crystal_fish"]
 var material_inventory: Dictionary = {}
 var seed_inventory: Dictionary = {}
 var item_database := {
@@ -96,6 +97,7 @@ func is_inventory_open() -> bool: return false
 func is_player_menu_open() -> bool: return menu_open
 func is_game_menu_open() -> bool: return false
 func is_world_menu_open() -> bool: return false
+func is_quest_board_open() -> bool: return false
 func is_crafting_open() -> bool: return false
 func is_furnace_open() -> bool: return false
 func is_sign_open() -> bool: return false

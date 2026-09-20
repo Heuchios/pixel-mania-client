@@ -455,6 +455,8 @@ static func _apply_pink_button_text(node: Node) -> void:
 static func _apply_window_shadow(node: Node) -> void:
 	if not node is Control:
 		return
+	if node.is_queued_for_deletion() or node.get_parent() == null:
+		return
 	var region := ""
 	if node is Panel or node is PanelContainer:
 		region = node.get_theme_stylebox("panel").get_meta("atlas_region", "")

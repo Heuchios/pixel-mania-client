@@ -10,10 +10,11 @@ $env:APPDATA = Join-Path $testRoot 'appdata'
 $env:LOCALAPPDATA = Join-Path $testRoot 'localappdata'
 New-Item -ItemType Directory -Force -Path $env:APPDATA, $env:LOCALAPPDATA | Out-Null
 $files = @(
-    'Scripts/fishing_manager.gd', 'Scripts/fishing_pull_game.gd',
+    'Scripts/fishing_manager.gd', 'Scripts/fishing_pull_game.gd', 'Scripts/fishing_rod_attachment.gd',
     'Scripts/input_manager.gd', 'Scripts/touch_input_guard.gd',
     'Scripts/UIAtlasDB.gd', 'Scripts/atlas_texture_factory.gd',
     'Scripts/ui/fishing_minigame_ui.gd', 'Scripts/ui/fishing_journal_ui.gd',
+    'Scripts/ui/fishing_catch_spotlight.gd',
     'Scripts/ui/pixel_ui_style.gd', 'Scripts/ui/panel_drop_shadow.gd',
     'Scripts/ui/global_font_manager.gd', 'Scenes/fishing_bobber.tscn',
     'Assets/ui/UI_3.0.png', 'Assets/items/lures/worm_lure.png',

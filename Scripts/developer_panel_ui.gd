@@ -9,10 +9,10 @@ const MONITORING_DASHBOARD_PURPOSE: String = "admin_monitoring_dashboard"
 const INVENTORY_LOOKUP_TIMEOUT: float = 16.0
 const MONITORING_DASHBOARD_TIMEOUT: float = 16.0
 const DEBUG_INFO_REFRESH_SECONDS: float = 0.5
-const PANEL_SIZE := Vector2(1040.0, 680.0)
+const PANEL_SIZE := Vector2(1040.0, 744.0)
 const PANEL_INSET := 22.0
-const BODY_Y := 136.0
-const RESULT_Y := 630.0
+const BODY_Y := 200.0
+const RESULT_Y := 702.0
 const BODY_SIZE := Vector2(996.0, 482.0)
 const ITEM_SEARCH_LIST_SIZE := Vector2(672.0, 266.0)
 const ITEM_SEARCH_SCROLL_SIZE := Vector2(648.0, 242.0)
@@ -157,6 +157,7 @@ func build_dev_button():
 	dev_button.z_index = 187
 	dev_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	PixelUIStyle.apply_yellow_button(dev_button, 16)
+	_preserve_text(dev_button, 16)
 	if not dev_button.pressed.is_connected(toggle_panel):
 		dev_button.pressed.connect(toggle_panel)
 
@@ -203,6 +204,7 @@ func build_panel():
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_label_shadow(title, 27)
+	_preserve_text(title, 27)
 	panel.add_child(title)
 
 	status_label = Label.new()
@@ -213,6 +215,7 @@ func build_panel():
 	status_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(status_label, 14)
+	_preserve_text(status_label, 14)
 	panel.add_child(status_label)
 
 	var close_button = Button.new()
@@ -226,6 +229,13 @@ func build_panel():
 
 	build_tabs()
 
+	var content_back := Panel.new()
+	content_back.name = "ContentBack"
+	content_back.position = Vector2(16, BODY_Y - 6)
+	content_back.size = Vector2(PANEL_SIZE.x - 32, BODY_SIZE.y + 12)
+	content_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content_back.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
+	panel.add_child(content_back)
 	body = Control.new()
 	body.name = "Body"
 	body.position = Vector2(PANEL_INSET, BODY_Y)
@@ -240,6 +250,7 @@ func build_panel():
 	result_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	result_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(result_label, 14)
+	_preserve_text(result_label, 14)
 	panel.add_child(result_label)
 
 	build_current_tab()
@@ -260,14 +271,14 @@ func build_tabs():
 
 	tab_buttons.clear()
 	var tab_gap: float = 10.0
-	var tab_width: float = floor((BODY_SIZE.x - tab_gap * float(tabs.size() - 1)) / float(tabs.size()))
+	var tab_width: float = floor((BODY_SIZE.x - tab_gap * 3.0) / 4.0)
 	for i in range(tabs.size()):
 		var tab: Dictionary = tabs[i]
 		var button: Button = Button.new()
 		button.name = "Tab_" + str(tab["id"])
 		button.text = str(tab["label"])
-		button.position = Vector2(PANEL_INSET + float(i) * (tab_width + tab_gap), 88)
-		button.size = Vector2(tab_width, 36)
+		button.position = Vector2(PANEL_INSET + float(i % 4) * (tab_width + tab_gap), 88 + floori(float(i) / 4.0) * 50)
+		button.size = Vector2(tab_width, 42)
 		button.mouse_filter = Control.MOUSE_FILTER_STOP
 		button.pressed.connect(_on_tab_pressed.bind(str(tab["id"])))
 		panel.add_child(button)
@@ -298,6 +309,7 @@ func build_pin_gate():
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_label_shadow(title, 24)
+	_preserve_text(title, 24)
 	pin_gate_panel.add_child(title)
 
 	var message = Label.new()
@@ -309,6 +321,7 @@ func build_pin_gate():
 	message.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	message.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(message, 15)
+	_preserve_text(message, 15)
 	pin_gate_panel.add_child(message)
 
 	pin_input = LineEdit.new()
@@ -318,6 +331,7 @@ func build_pin_gate():
 	pin_input.size = Vector2(316, 40)
 	pin_input.mouse_filter = Control.MOUSE_FILTER_STOP
 	PixelUIStyle.apply_input(pin_input, 17)
+	_preserve_text(pin_input, 17)
 	pin_input.text_submitted.connect(func(_text): submit_developer_pin())
 	pin_gate_panel.add_child(pin_input)
 
@@ -326,6 +340,7 @@ func build_pin_gate():
 	unlock.position = Vector2(62, 178)
 	unlock.size = Vector2(148, 42)
 	PixelUIStyle.apply_yellow_button(unlock, 15)
+	_preserve_text(unlock, 15)
 	unlock.pressed.connect(submit_developer_pin)
 	pin_gate_panel.add_child(unlock)
 
@@ -334,6 +349,7 @@ func build_pin_gate():
 	cancel.position = Vector2(230, 178)
 	cancel.size = Vector2(148, 42)
 	PixelUIStyle.apply_blue_button(cancel, 15)
+	_preserve_text(cancel, 15)
 	cancel.pressed.connect(close_panel)
 	pin_gate_panel.add_child(cancel)
 
@@ -346,7 +362,9 @@ func _on_tab_pressed(tab_id: String):
 
 func update_tab_styles():
 	for tab_id in tab_buttons.keys():
-		PixelUIStyle.apply_tab_button(tab_buttons[tab_id], str(tab_id) == current_tab, 14)
+		var button: Button = tab_buttons[tab_id]
+		PixelUIStyle.apply_atlas_button(button, "green_button" if str(tab_id) == current_tab else "pink_button")
+		_preserve_text(button, 17)
 
 
 func build_current_tab():
@@ -561,6 +579,7 @@ func add_section_title(text: String, pos: Vector2):
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_section_title(label, 24)
+	_preserve_text(label, 24)
 	body.add_child(label)
 
 
@@ -571,6 +590,7 @@ func add_input(placeholder: String, pos: Vector2, control_size: Vector2) -> Line
 	input.size = control_size
 	input.mouse_filter = Control.MOUSE_FILTER_STOP
 	PixelUIStyle.apply_input(input, 17)
+	_preserve_text(input, 17)
 	body.add_child(input)
 	return input
 
@@ -583,8 +603,10 @@ func add_button(text: String, pos: Vector2, control_size: Vector2, callback: Cal
 	button.mouse_filter = Control.MOUSE_FILTER_STOP
 	if yellow:
 		PixelUIStyle.apply_yellow_button(button, 15)
+		_preserve_text(button, 15)
 	else:
 		PixelUIStyle.apply_blue_button(button, 15)
+		_preserve_text(button, 15)
 	button.pressed.connect(callback)
 	body.add_child(button)
 	return button
@@ -606,6 +628,7 @@ func add_hint(text: String, pos: Vector2, control_size: Vector2) -> Label:
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(label, 14)
+	_preserve_text(label, 14)
 	panel_hint.add_child(label)
 	return label
 
@@ -635,6 +658,7 @@ func add_scroll_hint(text: String, pos: Vector2, control_size: Vector2) -> Label
 	label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(label, 14)
+	_preserve_text(label, 14)
 	scroll.add_child(label)
 	debug_info_scroll = scroll
 	return label
@@ -758,6 +782,7 @@ func show_confirm(message: String, command_text: String):
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_label_shadow(label, 18)
+	_preserve_text(label, 18)
 	confirm_panel.add_child(label)
 
 	var confirm = Button.new()
@@ -765,6 +790,7 @@ func show_confirm(message: String, command_text: String):
 	confirm.position = Vector2(34, 104)
 	confirm.size = Vector2(160, 42)
 	PixelUIStyle.apply_yellow_button(confirm, 15)
+	_preserve_text(confirm, 15)
 	confirm.pressed.connect(func(): run_command(command_text))
 	confirm_panel.add_child(confirm)
 
@@ -773,6 +799,7 @@ func show_confirm(message: String, command_text: String):
 	cancel.position = Vector2(230, 104)
 	cancel.size = Vector2(160, 42)
 	PixelUIStyle.apply_blue_button(cancel, 15)
+	_preserve_text(cancel, 15)
 	cancel.pressed.connect(clear_confirm)
 	confirm_panel.add_child(cancel)
 
@@ -961,6 +988,7 @@ func add_item_search_more_row(total_count: int, shown_count: int):
 	more_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	more_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(more_label, 13)
+	_preserve_text(more_label, 13)
 	item_search_list.add_child(more_label)
 
 
@@ -1000,6 +1028,7 @@ func add_item_search_empty(message: String):
 	empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	empty_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(empty_label, 15)
+	_preserve_text(empty_label, 15)
 	item_search_list.add_child(empty_label)
 
 
@@ -1954,8 +1983,10 @@ func add_monitoring_label(parent: Control, text: String, pos: Vector2, label_siz
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if highlighted:
 		PixelUIStyle.apply_label_shadow(label, font_size, PixelUIStyle.GOLD_SOFT)
+		_preserve_text(label, font_size)
 	else:
 		PixelUIStyle.apply_small_label(label, font_size)
+		_preserve_text(label, font_size)
 	parent.add_child(label)
 
 
@@ -2001,6 +2032,7 @@ func add_inventory_lookup_card(entry: Dictionary, card_size: Vector2):
 	name_label.clip_text = true
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(name_label, 13)
+	_preserve_text(name_label, 13)
 	card.add_child(name_label)
 
 	var meta_label = Label.new()
@@ -2010,6 +2042,7 @@ func add_inventory_lookup_card(entry: Dictionary, card_size: Vector2):
 	meta_label.clip_text = true
 	meta_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(meta_label, 10)
+	_preserve_text(meta_label, 10)
 	card.add_child(meta_label)
 
 	var count_label = Label.new()
@@ -2020,6 +2053,7 @@ func add_inventory_lookup_card(entry: Dictionary, card_size: Vector2):
 	count_label.clip_text = true
 	count_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_label_shadow(count_label, 14, PixelUIStyle.GOLD_SOFT)
+	_preserve_text(count_label, 14)
 	card.add_child(count_label)
 
 
@@ -2071,6 +2105,7 @@ func add_item_instance_lookup_card(entry: Dictionary, card_size: Vector2):
 	name_label.clip_text = true
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(name_label, 13)
+	_preserve_text(name_label, 13)
 	card.add_child(name_label)
 
 	var meta_label = Label.new()
@@ -2080,6 +2115,7 @@ func add_item_instance_lookup_card(entry: Dictionary, card_size: Vector2):
 	meta_label.clip_text = true
 	meta_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(meta_label, 10)
+	_preserve_text(meta_label, 10)
 	card.add_child(meta_label)
 
 	var id_label = Label.new()
@@ -2089,6 +2125,7 @@ func add_item_instance_lookup_card(entry: Dictionary, card_size: Vector2):
 	id_label.clip_text = true
 	id_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_label_shadow(id_label, 11, PixelUIStyle.TEXT_SOFT)
+	_preserve_text(id_label, 11)
 	card.add_child(id_label)
 
 	var location_label = Label.new()
@@ -2102,6 +2139,7 @@ func add_item_instance_lookup_card(entry: Dictionary, card_size: Vector2):
 	location_label.clip_text = true
 	location_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(location_label, 10)
+	_preserve_text(location_label, 10)
 	card.add_child(location_label)
 
 	var source_label = Label.new()
@@ -2111,6 +2149,7 @@ func add_item_instance_lookup_card(entry: Dictionary, card_size: Vector2):
 	source_label.clip_text = true
 	source_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(source_label, 10)
+	_preserve_text(source_label, 10)
 	card.add_child(source_label)
 
 	var created_label = Label.new()
@@ -2120,6 +2159,7 @@ func add_item_instance_lookup_card(entry: Dictionary, card_size: Vector2):
 	created_label.clip_text = true
 	created_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(created_label, 9)
+	_preserve_text(created_label, 9)
 	card.add_child(created_label)
 
 
@@ -2301,8 +2341,10 @@ func add_item_history_label(parent: Control, text: String, pos: Vector2, label_s
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if highlighted:
 		PixelUIStyle.apply_label_shadow(label, font_size, PixelUIStyle.GOLD_SOFT)
+		_preserve_text(label, font_size)
 	else:
 		PixelUIStyle.apply_small_label(label, font_size)
+		_preserve_text(label, font_size)
 	parent.add_child(label)
 
 
@@ -2329,6 +2371,7 @@ func add_inventory_lookup_empty(message: String):
 	empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	empty_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(empty_label, 15)
+	_preserve_text(empty_label, 15)
 	inventory_lookup_grid.add_child(empty_label)
 
 
@@ -2355,6 +2398,7 @@ func add_monitoring_empty(message: String):
 	empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	empty_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(empty_label, 15)
+	_preserve_text(empty_label, 15)
 	monitoring_grid.add_child(empty_label)
 
 
@@ -3274,10 +3318,9 @@ func update_layout():
 	if panel == null:
 		return
 	var screen_size = get_viewport_rect().size
-	panel.position = Vector2(
-		(screen_size.x - panel.size.x) / 2.0,
-		max(34.0, (screen_size.y - panel.size.y) / 2.0)
-	)
+	var fit: float = minf(1.0, minf((screen_size.x - 32.0) / PANEL_SIZE.x, (screen_size.y - 32.0) / PANEL_SIZE.y))
+	panel.scale = Vector2.ONE * maxf(0.1, fit)
+	panel.position = (screen_size - panel.size * panel.scale) * 0.5
 	if dev_button != null:
 		dev_button.position = Vector2(12.0, max(12.0, screen_size.y - dev_button.size.y - 12.0))
 
@@ -3413,3 +3456,8 @@ func _on_panel_gui_input(event: InputEvent):
 		get_viewport().set_input_as_handled()
 	if event is InputEventScreenTouch and event.pressed:
 		get_viewport().set_input_as_handled()
+
+
+func _preserve_text(control: Control, font_size: int) -> void:
+	control.set_meta("pixelmania_font_role", "preserve")
+	control.add_theme_font_size_override("font_size", font_size)

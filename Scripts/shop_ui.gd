@@ -223,7 +223,7 @@ var shop_items = [
 		"amount": 1,
 		"price": 100000,
 		"section": "clothes",
-		"description": "A red tractor ride that auto-harvests ready seed-trees.",
+		"description": "Auto-harvests ready trees. Uses 1 gasoline per tree for 15% more blocks and seeds on average.",
 	},
 	{
 		"item_id": "prestige_coloured_block_pack",

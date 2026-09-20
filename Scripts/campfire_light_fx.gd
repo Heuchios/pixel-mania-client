@@ -20,7 +20,10 @@ var _accumulator := 0.0
 func _ready() -> void:
 	warm_light = $WarmLight
 	_phase = randf() * 100.0
-	start() if preview_emitting else stop()
+	if preview_emitting:
+		start()
+	else:
+		stop()
 
 
 func start() -> void:

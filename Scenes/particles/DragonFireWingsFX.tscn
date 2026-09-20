@@ -1,0 +1,98 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/wing_sparkle_particles_fx.gd" id="1"]
+[ext_resource type="Texture2D" path="res://Assets/effects/dragon_wing_flame.svg" id="2"]
+[ext_resource type="Texture2D" path="res://Assets/effects/dragon_wing_ember.svg" id="3"]
+
+[sub_resource type="Gradient" id="Gradient_fire"]
+offsets = PackedFloat32Array(0, 0.15, 0.55, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.95, 1, 0.65, 0.38, 0.8, 0.65, 0.12, 0.04, 0)
+
+[sub_resource type="GradientTexture1D" id="Ramp_fire"]
+gradient = SubResource("Gradient_fire")
+
+[sub_resource type="Curve" id="Curve_shrink"]
+_data = [Vector2(0, 0.45), 0.0, 0.0, 0, 0, Vector2(0.18, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.05), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="Scale_shrink"]
+curve = SubResource("Curve_shrink")
+
+[sub_resource type="ParticleProcessMaterial" id="Fire_trail"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(5, 4, 0)
+direction = Vector3(-1, -0.35, 0)
+spread = 18.0
+initial_velocity_min = 16.0
+initial_velocity_max = 30.0
+gravity = Vector3(0, -16, 0)
+angle_min = -28.0
+angle_max = -8.0
+scale_min = 0.25
+scale_max = 0.55
+scale_curve = SubResource("Scale_shrink")
+color_ramp = SubResource("Ramp_fire")
+
+[sub_resource type="ParticleProcessMaterial" id="Embers"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(5, 5, 0)
+direction = Vector3(0, -1, 0)
+spread = 32.0
+initial_velocity_min = 16.0
+initial_velocity_max = 29.0
+gravity = Vector3(0, -7, 0)
+scale_min = 0.3
+scale_max = 0.65
+scale_curve = SubResource("Scale_shrink")
+color_ramp = SubResource("Ramp_fire")
+
+[node name="DragonFireWingsFX" type="Node2D"]
+z_index = 72
+texture_filter = 1
+script = ExtResource("1")
+preview_mode = 0
+
+[node name="TrailFlameLeft" type="GPUParticles2D" parent="."]
+position = Vector2(-21, 1)
+amount = 15
+texture = ExtResource("2")
+lifetime = 0.5
+emitting = false
+randomness = 0.45
+visibility_rect = Rect2(-60, -65, 120, 100)
+process_material = SubResource("Fire_trail")
+
+
+[node name="TrailEmbersLeft" type="GPUParticles2D" parent="."]
+position = Vector2(-21, 1)
+amount = 7
+texture = ExtResource("3")
+lifetime = 0.7
+emitting = false
+randomness = 0.45
+visibility_rect = Rect2(-60, -65, 120, 100)
+process_material = SubResource("Embers")
+
+
+[node name="TrailFlameRight" type="GPUParticles2D" parent="."]
+position = Vector2(21, 1)
+amount = 15
+texture = ExtResource("2")
+lifetime = 0.5
+emitting = false
+randomness = 0.45
+visibility_rect = Rect2(-60, -65, 120, 100)
+process_material = SubResource("Fire_trail")
+
+
+[node name="TrailEmbersRight" type="GPUParticles2D" parent="."]
+position = Vector2(21, 1)
+amount = 7
+texture = ExtResource("3")
+lifetime = 0.7
+emitting = false
+randomness = 0.45
+visibility_rect = Rect2(-60, -65, 120, 100)
+process_material = SubResource("Embers")

@@ -115,9 +115,11 @@ func bind_scene_ui() -> bool:
 		price_mode.add_theme_stylebox_override(style_name, list_button.get_theme_stylebox(style_name))
 	price_mode.add_theme_stylebox_override("disabled", list_button.get_theme_stylebox("normal"))
 	price_mode.add_theme_color_override("font_disabled_color", Color.WHITE)
-	price_mode.item_selected.connect(_on_price_mode_changed)
+	if not price_mode.item_selected.is_connected(_on_price_mode_changed):
+		price_mode.item_selected.connect(_on_price_mode_changed)
 	purchase_confirmation = get_node("PurchaseConfirmation")
-	purchase_confirmation.confirmed.connect(_confirm_purchase)
+	if not purchase_confirmation.confirmed.is_connected(_confirm_purchase):
+		purchase_confirmation.confirmed.connect(_confirm_purchase)
 	return true
 
 
@@ -970,21 +972,21 @@ func refresh_item_slot(listing: Dictionary):
 
 func refresh_price_controls(listing: Dictionary):
 	refreshing_fields = true
-	var owner = can_manage_current_vend()
-	stock_spin.editable = owner and not selected_item.is_empty() or not owner and not listing.is_empty()
-	price_spin.editable = owner and (not selected_item.is_empty() or not listing.is_empty())
+	var can_manage = can_manage_current_vend()
+	stock_spin.editable = can_manage and not selected_item.is_empty() or not can_manage and not listing.is_empty()
+	price_spin.editable = can_manage and (not selected_item.is_empty() or not listing.is_empty())
 	price_mode.disabled = not price_spin.editable
 	per_sale_spin.visible = false
-	panel.get_node("PriceCard/StockLabel").text = "ADD STOCK" if owner else "QUANTITY"
+	panel.get_node("PriceCard/StockLabel").text = "ADD STOCK" if can_manage else "QUANTITY"
 	panel.get_node("PriceCard/PerSaleLabel").text = "PRICE MODE"
 	panel.get_node("PriceCard/PriceLabel").text = "ITEMS FOR 1 WL" if price_mode.selected == 1 else "WL FOR 1 ITEM"
-	price_mode.visible = owner
-	price_spin.visible = owner
-	panel.get_node("PriceCard/PriceLabel").visible = owner
-	panel.get_node("PriceCard/PerSaleLabel").visible = owner
-	panel.get_node("PriceCard/PriceReadout").visible = not owner
-	panel.get_node("PriceCard/MaxQuantity").visible = not owner and not listing.is_empty()
-	if owner:
+	price_mode.visible = can_manage
+	price_spin.visible = can_manage
+	panel.get_node("PriceCard/PriceLabel").visible = can_manage
+	panel.get_node("PriceCard/PerSaleLabel").visible = can_manage
+	panel.get_node("PriceCard/PriceReadout").visible = not can_manage
+	panel.get_node("PriceCard/MaxQuantity").visible = not can_manage and not listing.is_empty()
+	if can_manage:
 		stock_spin.step = 1
 		stock_spin.min_value = 0
 		stock_spin.max_value = int(selected_item.get("stock", 0))

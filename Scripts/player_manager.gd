@@ -1,5 +1,6 @@
 extends Node
 
+const RodAttachment = preload("res://Scripts/fishing_rod_attachment.gd")
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 const EquipmentManagerScript = preload("res://Scripts/equipment_manager.gd")
 const PlayerAnimationManagerScript = preload("res://Scripts/player_animation_manager.gd")
@@ -2121,6 +2122,13 @@ func get_remote_fishing_line_start_global_position(remote_player):
 			if rod_marker is Node2D:
 				return rod_marker.global_position
 
+	var hand_sprite = remote_player.get_node_or_null("PlayerVisual/HandItem/HandItemAnimated")
+	if hand_sprite is Node2D:
+		var rod_data = get_remote_item_data(rod_id)
+		if rod_data.has("fishing_line_tip_offset"):
+			var facing_left := int(remote_player.get_meta("facing", 1)) < 0
+			return hand_sprite.to_global(RodAttachment.local_tip(hand_sprite, rod_data, RodAttachment.texture_size(hand_sprite), facing_left))
+
 	for marker_path in [
 		"PlayerVisual/HandItem/FishingLineStart",
 		"PlayerVisual/HandItem/HandItemAnimated/FishingLineStart",
@@ -2136,11 +2144,6 @@ func get_remote_fishing_line_start_global_position(remote_player):
 		if found_marker is Node2D:
 			return found_marker.global_position
 
-	var hand_sprite = remote_player.get_node_or_null("PlayerVisual/HandItem/HandItemAnimated")
-	if hand_sprite is Node2D:
-		var rod_data = get_remote_item_data(rod_id)
-		if rod_data.has("fishing_line_tip_offset"):
-			return hand_sprite.to_global(get_remote_vector_from_data(rod_data.get("fishing_line_tip_offset", Vector2.ZERO), Vector2.ZERO))
 
 	return remote_player.global_position + Vector2(10.0 * float(int(remote_player.get_meta("facing", 1))), -10.0)
 

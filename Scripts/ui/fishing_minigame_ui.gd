@@ -11,8 +11,8 @@ const BITE_W := 430.0
 const BITE_H := 206.0
 const REEL_W := 720.0
 const REEL_H := 390.0
-const CATCH_W := 500.0
-const CATCH_H := 410.0
+const CATCH_W := 540.0
+const CATCH_H := 480.0
 const ESCAPE_W := 330.0
 const ESCAPE_H := 72.0
 
@@ -67,7 +67,6 @@ var catch_weight_label: Label = null
 var catch_value_label: Label = null
 var catch_new_badge: Panel = null
 var catch_new_label: Label = null
-var sparkle_root: Control = null
 var catch_timer := 0.0
 
 var escape_panel: Panel = null
@@ -189,12 +188,14 @@ func show_catch_result(fish_data: Dictionary) -> void:
 	var is_new: bool = bool(fish_data.get("is_new", false))
 
 	catch_name_label.text = fish_name
+	catch_name_label.tooltip_text = fish_name
 	catch_rarity_label.text = rarity.capitalize()
 	catch_rarity_label.add_theme_color_override("font_color", rarity_color)
-	catch_weight_label.text = "Amount: " + amount_text
-	catch_value_label.text = "Value: " + value_text + " gems"
-	catch_icon.texture = (icon_value as Texture2D) if icon_value is Texture2D else null
-	catch_icon_back.add_theme_stylebox_override("panel", PixelUIStyle.slot_style(rarity))
+	catch_weight_label.text = "COLLECTED  " + amount_text
+	catch_value_label.text = value_text + " GEMS VALUE"
+	catch_icon.texture = _fish_artwork(icon_value as Texture2D) if icon_value is Texture2D else null
+	catch_icon_back.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
+	catch_icon_back.get_node("Spotlight").accent = rarity_color
 	catch_new_badge.visible = is_new
 
 	var special_text: String = ""
@@ -210,15 +211,8 @@ func show_catch_result(fish_data: Dictionary) -> void:
 	catch_special_label.visible = special_text != ""
 	catch_special_label.add_theme_color_override("font_color", rarity_color)
 
-	catch_card.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.050, 0.120, 0.175, 0.86),
-		rarity_color if special_text != "" else PixelUIStyle.GLASS_BORDER_BRIGHT,
-		4,
-		22,
-		14
-	))
+	catch_card.add_theme_stylebox_override("panel", PixelUIStyle.atlas_style("outer_panel", rarity_color.lightened(0.45), 4))
 
-	_show_sparkles(rarity)
 	_position_catch_card()
 	var fitted_scale := catch_card.scale
 	var final_pos: Vector2 = catch_card.position
@@ -226,7 +220,7 @@ func show_catch_result(fish_data: Dictionary) -> void:
 	catch_card.modulate = Color(1.0, 1.0, 1.0, 0.0)
 	catch_card.scale = fitted_scale * 0.92
 	catch_card.visible = true
-	catch_timer = 4.8 if rarity == "legendary" else 3.9
+	catch_timer = 6.0 if rarity == "legendary" else 4.8
 
 	var tween: Tween = catch_card.create_tween()
 	tween.set_parallel(true)
@@ -344,21 +338,17 @@ func _build_waiting_panel() -> void:
 	waiting_panel.name = "WaitingPanel"
 	waiting_panel.size = Vector2(WAITING_W, WAITING_H)
 	waiting_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	waiting_panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_PANEL_STRONG,
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		3,
-		18,
-		11
-	))
+	waiting_panel.add_theme_stylebox_override("panel", _fishing_panel())
 	add_child(waiting_panel)
+	_add_inner_panel(waiting_panel)
 
 	waiting_title = Label.new()
 	waiting_title.text = "Fishing..."
 	waiting_title.position = Vector2(22, 12)
-	waiting_title.size = Vector2(WAITING_W - 44.0, 32)
+	waiting_title.size = Vector2(WAITING_W - 150.0, 32)
 	waiting_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	PixelUIStyle.apply_label_shadow(waiting_title, 24, PixelUIStyle.GOLD_SOFT)
+	_preserve_text(waiting_title, 24)
 	waiting_panel.add_child(waiting_title)
 
 	var journal_button: Button = Button.new()
@@ -368,6 +358,7 @@ func _build_waiting_panel() -> void:
 	journal_button.size = Vector2(96, 30)
 	journal_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	PixelUIStyle.apply_blue_button(journal_button, 13)
+	_preserve_text(journal_button, 13)
 	journal_button.pressed.connect(_on_journal_pressed)
 	waiting_panel.add_child(journal_button)
 
@@ -376,6 +367,7 @@ func _build_waiting_panel() -> void:
 	waiting_lure.size = Vector2(WAITING_W - 44.0, 24)
 	waiting_lure.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	PixelUIStyle.apply_small_label(waiting_lure, 15)
+	_preserve_text(waiting_lure, 15)
 	waiting_panel.add_child(waiting_lure)
 
 	waiting_status = Label.new()
@@ -383,6 +375,7 @@ func _build_waiting_panel() -> void:
 	waiting_status.size = Vector2(WAITING_W - 44.0, 24)
 	waiting_status.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	PixelUIStyle.apply_label_shadow(waiting_status, 17, PixelUIStyle.TEXT_SOFT)
+	_preserve_text(waiting_status, 17)
 	waiting_panel.add_child(waiting_status)
 
 
@@ -407,6 +400,7 @@ func _build_target_indicator() -> void:
 	target_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	target_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_label_shadow(target_label, 15, PixelUIStyle.GOLD_SOFT)
+	_preserve_text(target_label, 15)
 	target_panel.add_child(target_label)
 
 
@@ -416,14 +410,9 @@ func _build_bite_panel() -> void:
 	bite_panel.size = Vector2(BITE_W, BITE_H)
 	bite_panel.pivot_offset = bite_panel.size * 0.5
 	bite_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	bite_panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.060, 0.135, 0.200, 0.88),
-		PixelUIStyle.ACTION_YELLOW,
-		4,
-		22,
-		15
-	))
+	bite_panel.add_theme_stylebox_override("panel", _fishing_panel())
 	add_child(bite_panel)
+	_add_inner_panel(bite_panel)
 
 	bite_title = Label.new()
 	bite_title.text = "FISH ON!"
@@ -432,6 +421,7 @@ func _build_bite_panel() -> void:
 	bite_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	bite_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	PixelUIStyle.apply_label_shadow(bite_title, 46, PixelUIStyle.GOLD_SOFT)
+	_preserve_text(bite_title, 46)
 	bite_panel.add_child(bite_title)
 
 	bite_hint = Label.new()
@@ -442,6 +432,7 @@ func _build_bite_panel() -> void:
 	bite_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	bite_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	PixelUIStyle.apply_small_label(bite_hint, 15)
+	_preserve_text(bite_hint, 15)
 	bite_panel.add_child(bite_hint)
 
 	var bar_bg: Panel = Panel.new()
@@ -474,6 +465,7 @@ func _build_bite_panel() -> void:
 	hook_button.size = Vector2(200, 48)
 	hook_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	PixelUIStyle.apply_yellow_button(hook_button, 15)
+	_preserve_text(hook_button, 15)
 	hook_button.pressed.connect(_on_reel_pressed)
 	bite_panel.add_child(hook_button)
 
@@ -483,11 +475,13 @@ func _build_reeling_panel() -> void:
 	reeling_panel.name = "ReelingPanel"
 	reeling_panel.size = Vector2(REEL_W, REEL_H)
 	reeling_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	reeling_panel.add_theme_stylebox_override("panel", PixelUIStyle.premium_panel_style())
+	reeling_panel.add_theme_stylebox_override("panel", _fishing_panel())
 	add_child(reeling_panel)
+	_add_inner_panel(reeling_panel)
 
 	reeling_title = _reel_label("ReelingTitle", "REEL IT IN!", Vector2(24, 16), Vector2(672, 42))
 	PixelUIStyle.apply_label_shadow(reeling_title, 36, PixelUIStyle.GOLD_SOFT)
+	_preserve_text(reeling_title, 36)
 	reel_hint = _reel_label("ReelHint", "Tap REEL in the green zone. Click, E or Space.", Vector2(24, 62), Vector2(672, 36))
 	reel_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
@@ -553,6 +547,7 @@ func _build_reeling_panel() -> void:
 	reel_button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 	reel_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	PixelUIStyle.apply_yellow_button(reel_button, 24)
+	_preserve_text(reel_button, 24)
 	reel_button.pressed.connect(_on_reel_pressed)
 	reeling_panel.add_child(reel_button)
 
@@ -577,45 +572,54 @@ func _build_catch_card() -> void:
 	catch_card.pivot_offset = catch_card.size * 0.5
 	catch_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	catch_card.z_index = 240
-	catch_card.add_theme_stylebox_override("panel", PixelUIStyle.premium_panel_style())
+	catch_card.add_theme_stylebox_override("panel", _fishing_panel())
 	add_child(catch_card)
+	_add_inner_panel(catch_card)
 
 	catch_special_label = Label.new()
-	catch_special_label.position = Vector2(24, 14)
+	catch_special_label.position = Vector2(24, 56)
 	catch_special_label.size = Vector2(CATCH_W - 48.0, 34)
 	catch_special_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	catch_special_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	PixelUIStyle.apply_label_shadow(catch_special_label, 24, PixelUIStyle.GOLD_SOFT)
+	_preserve_text(catch_special_label, 24)
 	catch_card.add_child(catch_special_label)
 
 	catch_title_label = Label.new()
 	catch_title_label.text = "FISH CAUGHT"
-	catch_title_label.position = Vector2(24, 48)
+	catch_title_label.position = Vector2(24, 14)
 	catch_title_label.size = Vector2(CATCH_W - 48.0, 42)
 	catch_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	catch_title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	PixelUIStyle.apply_label_shadow(catch_title_label, 32, PixelUIStyle.TEXT_LIGHT)
+	_preserve_text(catch_title_label, 32)
 	catch_card.add_child(catch_title_label)
 
 	catch_icon_back = Panel.new()
-	catch_icon_back.position = Vector2(150, 104)
-	catch_icon_back.size = Vector2(200, 142)
+	catch_icon_back.position = Vector2(30, 96)
+	catch_icon_back.size = Vector2(480, 192)
 	catch_icon_back.pivot_offset = catch_icon_back.size * 0.5
 	catch_icon_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	catch_icon_back.add_theme_stylebox_override("panel", PixelUIStyle.card_style_featured())
 	catch_card.add_child(catch_icon_back)
+	var spotlight := Control.new()
+	spotlight.name = "Spotlight"
+	spotlight.set_script(preload("res://Scripts/ui/fishing_catch_spotlight.gd"))
+	spotlight.size = catch_icon_back.size
+	catch_icon_back.add_child(spotlight)
 
 	catch_icon = TextureRect.new()
-	catch_icon.position = Vector2(174, 122)
-	catch_icon.size = Vector2(152, 104)
+	catch_icon.position = Vector2(186, 111)
+	catch_icon.size = Vector2(168, 156)
+	catch_icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	catch_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	catch_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	catch_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	catch_card.add_child(catch_icon)
 
 	catch_new_badge = Panel.new()
-	catch_new_badge.position = Vector2(328, 98)
-	catch_new_badge.size = Vector2(76, 34)
+	catch_new_badge.position = Vector2(166, 266)
+	catch_new_badge.size = Vector2(208, 28)
 	catch_new_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	catch_new_badge.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
 		PixelUIStyle.ACTION_YELLOW,
@@ -627,74 +631,62 @@ func _build_catch_card() -> void:
 	catch_card.add_child(catch_new_badge)
 
 	catch_new_label = Label.new()
-	catch_new_label.text = "NEW!"
+	catch_new_label.text = "NEW DISCOVERY"
 	catch_new_label.size = catch_new_badge.size
 	catch_new_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	catch_new_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	PixelUIStyle.apply_label_shadow(catch_new_label, 17, Color.WHITE)
+	_preserve_text(catch_new_label, 14)
 	catch_new_badge.add_child(catch_new_label)
 
 	catch_name_label = Label.new()
-	catch_name_label.position = Vector2(32, 258)
-	catch_name_label.size = Vector2(CATCH_W - 64.0, 34)
+	catch_name_label.position = Vector2(24, 308)
+	catch_name_label.size = Vector2(CATCH_W - 48.0, 36)
+	catch_name_label.clip_text = true
+	catch_name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	catch_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	catch_name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	PixelUIStyle.apply_label_shadow(catch_name_label, 24)
+	_preserve_text(catch_name_label, 28)
 	catch_card.add_child(catch_name_label)
 
 	catch_rarity_label = Label.new()
-	catch_rarity_label.position = Vector2(32, 294)
+	catch_rarity_label.position = Vector2(32, 346)
 	catch_rarity_label.size = Vector2(CATCH_W - 64.0, 26)
 	catch_rarity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	catch_rarity_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	PixelUIStyle.apply_small_label(catch_rarity_label, 16)
+	_preserve_text(catch_rarity_label, 16)
 	catch_card.add_child(catch_rarity_label)
 
 	catch_weight_label = Label.new()
-	catch_weight_label.position = Vector2(58, 338)
+	catch_weight_label.position = Vector2(32, 380)
 	catch_weight_label.size = Vector2(180, 26)
 	catch_weight_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	PixelUIStyle.apply_small_label(catch_weight_label, 15)
+	_preserve_text(catch_weight_label, 15)
 	catch_card.add_child(catch_weight_label)
 
 	catch_value_label = Label.new()
-	catch_value_label.position = Vector2(262, 338)
-	catch_value_label.size = Vector2(180, 26)
+	catch_value_label.position = Vector2(272, 380)
+	catch_value_label.size = Vector2(236, 26)
 	catch_value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	catch_value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	PixelUIStyle.apply_small_label(catch_value_label, 15)
+	_preserve_text(catch_value_label, 15)
 	catch_card.add_child(catch_value_label)
 
 	var journal_button: Button = Button.new()
 	journal_button.name = "JournalButton"
-	journal_button.text = "OPEN JOURNAL"
-	journal_button.position = Vector2(165, 370)
-	journal_button.size = Vector2(170, 30)
+	journal_button.text = "VIEW COLLECTION"
+	journal_button.position = Vector2(140, 424)
+	journal_button.size = Vector2(260, 40)
 	journal_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	PixelUIStyle.apply_blue_button(journal_button, 13)
+	_preserve_text(journal_button, 13)
 	journal_button.pressed.connect(_on_journal_pressed)
 	catch_card.add_child(journal_button)
 
-	sparkle_root = Control.new()
-	sparkle_root.name = "Sparkles"
-	sparkle_root.size = catch_card.size
-	sparkle_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	catch_card.add_child(sparkle_root)
-
-	for i in range(14):
-		var sparkle: Panel = Panel.new()
-		sparkle.name = "Sparkle" + str(i)
-		sparkle.size = Vector2(8, 8)
-		sparkle.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		sparkle.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-			Color(1.0, 0.92, 0.28, 0.95),
-			Color(1.0, 1.0, 1.0, 0.85),
-			1,
-			5,
-			0
-		))
-		sparkle.visible = false
-		sparkle_root.add_child(sparkle)
 
 
 func _build_escape_panel() -> void:
@@ -702,25 +694,21 @@ func _build_escape_panel() -> void:
 	escape_panel.name = "FishingEscapePanel"
 	escape_panel.size = Vector2(ESCAPE_W, ESCAPE_H)
 	escape_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	escape_panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.050, 0.120, 0.175, 0.82),
-		PixelUIStyle.GLASS_BORDER,
-		3,
-		16,
-		9
-	))
+	escape_panel.add_theme_stylebox_override("panel", _fishing_panel())
 	add_child(escape_panel)
+	_add_inner_panel(escape_panel)
 
 	escape_label = Label.new()
 	escape_label.size = escape_panel.size
 	escape_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	escape_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	PixelUIStyle.apply_label_shadow(escape_label, 19, PixelUIStyle.TEXT_SOFT)
+	_preserve_text(escape_label, 19)
 	escape_panel.add_child(escape_label)
 
 
 func _position_visible_panels() -> void:
-	var resized := last_viewport_size != get_viewport_rect().size
+	var viewport_resized := last_viewport_size != get_viewport_rect().size
 	last_viewport_size = get_viewport_rect().size
 	if waiting_panel != null and waiting_panel.visible:
 		_position_waiting_panel()
@@ -729,9 +717,9 @@ func _position_visible_panels() -> void:
 		_layout_reeling_panel()
 	if escape_panel != null and escape_panel.visible:
 		_position_escape_panel()
-	if resized and bite_panel != null and bite_panel.visible:
+	if viewport_resized and bite_panel != null and bite_panel.visible:
 		_position_bite_panel()
-	if resized and catch_card != null and catch_card.visible:
+	if viewport_resized and catch_card != null and catch_card.visible:
 		_position_catch_card()
 
 
@@ -746,7 +734,7 @@ func _position_bite_panel() -> void:
 	bite_title.size.x = width - 40.0
 	bite_hint.size = Vector2(width - 48.0, 36)
 	bite_hint.position.y = 74.0
-	var hint_size := 18 if width < BITE_W else 24
+	var hint_size := 14 if width < BITE_W else 17
 	bite_hint.set_meta("pixelmania_font_size", hint_size)
 	bite_hint.add_theme_font_size_override("font_size", hint_size)
 	var bar: Control = bite_panel.get_node("BiteBar")
@@ -940,30 +928,6 @@ func _shake_control(node: Control, strength: float, duration: float) -> void:
 	tween.tween_property(node, "position", start_pos, 0.03)
 
 
-func _show_sparkles(rarity: String) -> void:
-	if sparkle_root == null:
-		return
-	var enabled: bool = rarity == "rare" or rarity == "epic" or rarity == "legendary"
-	for child in sparkle_root.get_children():
-		child.visible = false
-	if not enabled:
-		return
-
-	var accent: Color = get_rarity_color(rarity)
-	for child in sparkle_root.get_children():
-		var sparkle: Panel = child as Panel
-		if sparkle == null:
-			continue
-		sparkle.visible = true
-		sparkle.modulate = accent
-		sparkle.position = Vector2(randf_range(72.0, CATCH_W - 84.0), randf_range(92.0, 252.0))
-		sparkle.scale = Vector2(0.35, 0.35)
-		var tween: Tween = sparkle.create_tween()
-		tween.set_parallel(true)
-		tween.tween_property(sparkle, "scale", Vector2(randf_range(0.9, 1.45), randf_range(0.9, 1.45)), randf_range(0.28, 0.48)).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-		tween.tween_property(sparkle, "modulate:a", 0.0, randf_range(0.42, 0.72)).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-
-
 func _world_to_screen(world_pos: Vector2) -> Vector2:
 	var viewport: Viewport = get_viewport()
 	if viewport == null:
@@ -991,3 +955,42 @@ func get_rarity_color(rarity: String) -> Color:
 			return Color(1.0, 0.66, 0.12, 1.0)
 		_:
 			return Color(0.78, 0.90, 0.96, 1.0)
+
+
+func _preserve_text(control: Control, font_size: int) -> void:
+	control.set_meta("pixelmania_font_role", "preserve")
+	control.add_theme_font_size_override("font_size", font_size)
+
+
+func _fishing_panel() -> StyleBoxTexture:
+	return PixelUIStyle.panel_style()
+
+
+func _add_inner_panel(parent: Panel) -> void:
+	var inner := Panel.new()
+	inner.name = "InnerPanel"
+	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(inner)
+	inner.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	inner.offset_left = 10
+	inner.offset_top = 10
+	inner.offset_right = -10
+	inner.offset_bottom = -10
+	inner.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
+	parent.move_child(inner, 0)
+
+
+func _fish_artwork(texture: Texture2D) -> Texture2D:
+	if texture == null:
+		return null
+	var image := texture.get_image()
+	if image == null:
+		return texture
+	var bounds := image.get_used_rect()
+	if not bounds.has_area():
+		return texture
+	var artwork := AtlasTexture.new()
+	artwork.atlas = texture
+	artwork.region = Rect2(bounds)
+	artwork.filter_clip = true
+	return artwork

@@ -31,71 +31,86 @@ func _process(_delta):
 		update_position()
 
 
+func _label(text: String, font_size: int, color: Color = Color.WHITE) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.set_meta("pixelmania_font_role", "preserve")
+	PixelUIStyle.apply_label_shadow(label, font_size, color)
+	label.add_theme_font_size_override("font_size", font_size)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return label
+
+
 func build_ui():
 	for child in get_children():
 		child.queue_free()
-
 	overlay = ColorRect.new()
-	overlay.color = Color(0, 0, 0, 0.0)
+	overlay.color = Color(0.02, 0.01, 0.03, 0.72)
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(overlay)
-
 	panel = Panel.new()
-	panel.size = Vector2(560, 420)
+	panel.size = Vector2(760, 560)
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_PANEL_STRONG,
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		4, 8, 14
-	))
+	panel.add_theme_stylebox_override("panel", PixelUIStyle.panel_style())
 	add_child(panel)
-
-	title_label = Label.new()
-	title_label.text = "CCTV"
-	title_label.position = Vector2(24, 12)
-	title_label.size = Vector2(360, 44)
-	PixelUIStyle.apply_label_shadow(title_label, 34)
+	var header := Panel.new()
+	header.position = Vector2(20, 20)
+	header.size = Vector2(720, 84)
+	header.add_theme_stylebox_override("panel", PixelUIStyle.header_style())
+	panel.add_child(header)
+	title_label = _label("CCTV ACTIVITY", 28)
+	title_label.position = Vector2(38, 28)
+	title_label.size = Vector2(550, 36)
 	panel.add_child(title_label)
-
+	status_label = _label("", 16, Color(0.78, 0.72, 0.85))
+	status_label.position = Vector2(40, 69)
+	status_label.size = Vector2(580, 24)
+	panel.add_child(status_label)
 	close_button = Button.new()
 	close_button.text = "X"
-	close_button.position = Vector2(panel.size.x - 62, 14)
-	close_button.size = Vector2(42, 38)
-	PixelUIStyle.apply_blue_button(close_button, 18)
+	close_button.position = Vector2(674, 36)
+	close_button.size = Vector2(48, 48)
+	PixelUIStyle.apply_atlas_button(close_button, "red_button")
 	close_button.pressed.connect(close_cctv)
 	panel.add_child(close_button)
-
-	status_label = Label.new()
-	status_label.position = Vector2(28, 58)
-	status_label.size = Vector2(panel.size.x - 56, 26)
-	PixelUIStyle.apply_small_label(status_label, 15)
-	panel.add_child(status_label)
-
+	var list_back := Panel.new()
+	list_back.position = Vector2(20, 120)
+	list_back.size = Vector2(720, 390)
+	list_back.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
+	panel.add_child(list_back)
+	for column in [["TIME", 36, 216], ["PLAYER", 258, 300], ["ACTIVITY", 590, 120]]:
+		var caption := _label(column[0], 15, Color(0.76, 0.69, 0.83))
+		caption.position = Vector2(column[1], 130)
+		caption.size = Vector2(column[2], 28)
+		panel.add_child(caption)
 	entries_scroll = ScrollContainer.new()
-	entries_scroll.position = Vector2(24, 92)
-	entries_scroll.size = Vector2(panel.size.x - 48, panel.size.y - 120)
+	entries_scroll.position = Vector2(32, 170)
+	entries_scroll.size = Vector2(696, 328)
 	entries_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	entries_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-	entries_scroll.mouse_filter = Control.MOUSE_FILTER_STOP
 	panel.add_child(entries_scroll)
-
 	entries_root = VBoxContainer.new()
-	entries_root.custom_minimum_size = Vector2(entries_scroll.size.x - 18, 0)
 	entries_root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	entries_root.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	entries_root.add_theme_constant_override("separation", 8)
+	entries_root.add_theme_constant_override("separation", 6)
 	entries_scroll.add_child(entries_root)
+	var hint := _label("Latest activity first  •  Owner and admin access", 14, Color(0.19, 0.09, 0.24))
+	hint.add_theme_constant_override("shadow_offset_x", 0)
+	hint.add_theme_constant_override("shadow_offset_y", 0)
+	hint.position = Vector2(32, 520)
+	hint.size = Vector2(696, 24)
+	panel.add_child(hint)
 
 
 func update_position():
 	if panel == null:
 		return
 	var screen_size := get_viewport_rect().size
-	panel.position = Vector2(
-		floor((screen_size.x - panel.size.x) * 0.5),
-		floor(max(28.0, (screen_size.y - panel.size.y) * 0.5))
-	)
+	var fit := minf(1.0, minf((screen_size.x - 32) / 760.0, (screen_size.y - 32) / 560.0))
+	panel.scale = Vector2.ONE * maxf(0.1, fit)
+	panel.position = (screen_size - panel.size * panel.scale) * 0.5
 
 
 func open_cctv(grid_pos: Vector2i):
@@ -112,6 +127,7 @@ func open_cctv(grid_pos: Vector2i):
 		overlay.visible = true
 	if panel != null:
 		panel.visible = true
+	update_position()
 	refresh()
 
 
@@ -150,6 +166,7 @@ func refresh():
 	if entries_root == null:
 		return
 	for child in entries_root.get_children():
+		entries_root.remove_child(child)
 		child.queue_free()
 
 	var state := get_current_state()
@@ -172,19 +189,37 @@ func refresh():
 		if not (entry_value is Dictionary):
 			continue
 		var entry: Dictionary = entry_value
-		var row := Label.new()
 		var player_name := str(entry.get("player_name", entry.get("display_name", "Player"))).strip_edges()
 		if player_name == "":
 			player_name = "Player"
 		var event_type := str(entry.get("event_type", entry.get("event", "enter"))).strip_edges().to_lower()
-		var action_text := "exited" if event_type == "leave" else "entered"
-		var time_text := format_timestamp(entry.get("at", ""))
-		row.text = time_text + " - " + player_name + " " + action_text
-		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		row.custom_minimum_size = Vector2(entries_root.custom_minimum_size.x, 0)
+		var leaving := event_type == "leave"
+		var row := PanelContainer.new()
+		row.custom_minimum_size = Vector2(0, 48)
 		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-		PixelUIStyle.apply_small_label(row, 17)
+		var row_style := StyleBoxFlat.new()
+		row_style.bg_color = Color(0.24, 0.13, 0.29) if entries_root.get_child_count() % 2 == 0 else Color(0.20, 0.10, 0.25)
+		row_style.content_margin_left = 8
+		row_style.content_margin_right = 8
+		row.add_theme_stylebox_override("panel", row_style)
+		var columns := HBoxContainer.new()
+		columns.add_theme_constant_override("separation", 12)
+		row.add_child(columns)
+		var timestamp := _label(format_timestamp(entry.get("at", "")), 14, Color(0.76, 0.72, 0.82))
+		timestamp.custom_minimum_size.x = 210
+		timestamp.clip_text = true
+		timestamp.tooltip_text = str(entry.get("at", ""))
+		columns.add_child(timestamp)
+		var player_label := _label(player_name, 18)
+		player_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		player_label.clip_text = true
+		player_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		player_label.tooltip_text = player_name
+		columns.add_child(player_label)
+		var action := _label("EXITED" if leaving else "ENTERED", 15, Color(1.0, 0.69, 0.52) if leaving else Color(0.52, 0.94, 0.65))
+		action.custom_minimum_size.x = 120
+		action.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		columns.add_child(action)
 		entries_root.add_child(row)
 
 	if entries_scroll != null:
@@ -192,14 +227,13 @@ func refresh():
 
 
 func add_empty_row(text: String):
-	var row := Label.new()
-	row.text = text
+	var row := _label(text, 18)
 	row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	if entries_root != null:
-		row.custom_minimum_size = Vector2(entries_root.custom_minimum_size.x, 0)
+		row.custom_minimum_size = Vector2(0, 260)
+	row.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	PixelUIStyle.apply_small_label(row, 17)
 	entries_root.add_child(row)
 
 

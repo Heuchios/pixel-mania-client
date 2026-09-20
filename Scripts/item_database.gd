@@ -11943,8 +11943,8 @@ const ITEMS = {
 		"flap_sprite_offset_left": [0, 0],
 		"back_scale_multiplier": 1.0,
 		"back_flip_with_facing": false,
-		"back_fx_scene": "res://Scenes/particles/WingSparkleParticlesFX.tscn",
-		"back_fx_offset": [0, 8],
+		"back_fx_scene": "res://Scenes/particles/DragonFireWingsFX.tscn",
+		"back_fx_offset": [0, 0],
 		"back_fx_scale": [1.0, 1.0],
 		"back_fx_z_index": 72,
 
@@ -11984,8 +11984,8 @@ const ITEMS = {
 		"flap_sprite_offset_left": [0, 0],
 		"back_scale_multiplier": 1.0,
 		"back_flip_with_facing": false,
-		"back_fx_scene": "res://Scenes/particles/WingSparkleParticlesFX.tscn",
-		"back_fx_offset": [0, 8],
+		"back_fx_scene": "res://Scenes/particles/DragonFireWingsFX.tscn",
+		"back_fx_offset": [0, 0],
 		"back_fx_scale": [1.0, 1.0],
 		"back_fx_z_index": 72,
 
@@ -12025,8 +12025,8 @@ const ITEMS = {
 		"flap_sprite_offset_left": [0, 0],
 		"back_scale_multiplier": 1.0,
 		"back_flip_with_facing": false,
-		"back_fx_scene": "res://Scenes/particles/WingSparkleParticlesFX.tscn",
-		"back_fx_offset": [0, 8],
+		"back_fx_scene": "res://Scenes/particles/DragonFireWingsFX.tscn",
+		"back_fx_offset": [0, 0],
 		"back_fx_scale": [1.0, 1.0],
 		"back_fx_z_index": 72,
 
@@ -13510,7 +13510,7 @@ const ITEMS = {
 		"category": "ride",
 		"display_name": "Red Tractor",
 		"rarity": "epic",
-		"description": "Automatically harvests ready seed-trees when you drive over them.",
+		"description": "Automatically harvests ready seed-trees. Uses 1 gasoline per tree for 15% more block and seed drops on average.",
 		"texture": "res://Assets/clothes/ride/red_tractor_icon.png",
 		"inventory_icon": "res://Assets/clothes/ride/red_tractor_icon.png",
 		"ride_texture": "res://Assets/clothes/ride/red_tractor_1.png",
@@ -13635,7 +13635,7 @@ const ITEMS = {
 		"hand_scale": 1.15,
 		"hand_rotation": -8,
 		"hand_rotation_left": 8,
-		"fishing_line_tip_offset": [50, 38],
+		"fishing_line_tip_offset": [33.5, 31.5],
 		"animation_fps": 6.0,
 		"hand_item_animations": {
 			"idle": {
@@ -13667,7 +13667,7 @@ const ITEMS = {
 		"hand_scale": 1.15,
 		"hand_rotation": -8,
 		"hand_rotation_left": 8,
-		"fishing_line_tip_offset": [50, 38],
+		"fishing_line_tip_offset": [40.5, 35.5],
 		"animation_fps": 6.0,
 		"hand_item_animations": {
 			"idle": {
@@ -13701,7 +13701,7 @@ const ITEMS = {
 		"hand_scale": 1.15,
 		"hand_rotation": -8,
 		"hand_rotation_left": 8,
-		"fishing_line_tip_offset": [50, 38],
+		"fishing_line_tip_offset": [40.5, 35.5],
 		"order": 43
 	},
 "fiberglass_fishing_rod": {
@@ -13720,7 +13720,7 @@ const ITEMS = {
 		"hand_scale": 1.15,
 		"hand_rotation": -8,
 		"hand_rotation_left": 8,
-		"fishing_line_tip_offset": [53, 42],
+		"fishing_line_tip_offset": [44.5, 34.5],
 		"animation_fps": 6.0,
 		"hand_item_animations": {
 			"idle": {
@@ -13752,7 +13752,8 @@ const ITEMS = {
 		"hand_scale": 1.15,
 		"hand_rotation": -8,
 		"hand_rotation_left": 8,
-		"fishing_line_tip_offset": [63, 38],
+		"fishing_line_tip_offset": [48.5, 33.5],
+		"fishing_line_tip_frames": {"idle": [[47.5, 33.5], [48.5, 33.5], [48.5, 33.5]]},
 		"animation_fps": 6.0,
 		"hand_item_animations": {
 			"idle": {
@@ -13784,7 +13785,7 @@ const ITEMS = {
 		"hand_scale": 1.15,
 		"hand_rotation": -8,
 		"hand_rotation_left": 8,
-		"fishing_line_tip_offset": [103, 68],
+		"fishing_line_tip_offset": [47.5, 33.5],
 		"animation_fps": 6.0,
 		"hand_item_animations": {
 			"idle": {
@@ -13820,7 +13821,7 @@ const ITEMS = {
 		"hand_scale": 1.15,
 		"hand_rotation": -8,
 		"hand_rotation_left": 8,
-		"fishing_line_tip_offset": [103, 68],
+		"fishing_line_tip_offset": [47.5, 33.5],
 		"order": 50
 	},
 "neptune_rod": {
@@ -13839,7 +13840,7 @@ const ITEMS = {
 		"hand_scale": 1.15,
 		"hand_rotation": -8,
 		"hand_rotation_left": 8,
-		"fishing_line_tip_offset": [37, 10],
+		"fishing_line_tip_offset": [51.5, 30.5],
 		"animation_fps": 6.0,
 		"hand_item_animations": {
 			"idle": {

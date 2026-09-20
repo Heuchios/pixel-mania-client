@@ -769,17 +769,6 @@ func _apply_rows_style() -> void:
 			continue
 		var entry := effective_entries[i]
 		var highlighted := bool(_resource_value(entry, "highlighted", false))
-		var fill := row_fill_color if i % 2 == 0 else row_alt_fill_color
-		var border := row_border_color
-		var fill_override := _color_from_value(_resource_value(entry, "row_fill_override", Color(0.0, 0.0, 0.0, 0.0)), Color(0.0, 0.0, 0.0, 0.0))
-		var border_override := _color_from_value(_resource_value(entry, "row_border_override", Color(0.0, 0.0, 0.0, 0.0)), Color(0.0, 0.0, 0.0, 0.0))
-		if highlighted:
-			fill = top_rank_fill_color
-			border = top_rank_border_color
-		if fill_override.a > 0.0:
-			fill = fill_override
-		if border_override.a > 0.0:
-			border = border_override
 		var row_style := StyleBoxFlat.new()
 		row_style.bg_color = Color(0.25, 0.13, 0.30) if i % 2 == 0 else Color(0.20, 0.10, 0.25)
 		if highlighted:

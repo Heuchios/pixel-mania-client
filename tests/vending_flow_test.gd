@@ -7,6 +7,10 @@ func run():
 	var ui = load("res://Scenes/ui/vending/VendingMachineGUI.tscn").instantiate()
 	root.add_child(ui)
 	ui.setup(null, null)
+	# Reopening the vending UI must keep each callback connected exactly once.
+	ui.setup(null, null)
+	assert(ui.price_mode.item_selected.get_connections().size() == 1)
+	assert(ui.purchase_confirmation.confirmed.get_connections().size() == 1)
 	ui.visible = true
 	var listing = {"listing_id": "sale1", "item_id": "dirt", "item_category": "block", "stock": 25, "amount_per_sale": 10, "price_wls": 1}
 	ui.apply_vend_state({"listing": listing, "can_manage": false})
