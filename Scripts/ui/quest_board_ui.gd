@@ -46,6 +46,7 @@ var reset_label: Label
 @onready var scroll: ScrollContainer = $Panel/Margin/Layout/Scroll
 
 func _ready() -> void:
+	set_meta("pixelmania_text_shadow", false)
 	theme = Theme.new()
 	theme.default_font = FONT
 	theme.default_font_size = 24
@@ -55,7 +56,7 @@ func _ready() -> void:
 	$Panel/Margin/Layout/Header.add_child(header_decoration)
 	$Panel/Margin/Layout/Header.move_child(header_decoration, 0)
 	$Panel/Margin/Layout/Header/Close.pressed.connect(close_quest_board)
-	for pair in [["Today", "today"], ["Storybook", "storybook"], ["Rewards", "rewards"]]:
+	for pair in [["Today", "today"]]:
 		var button: Button = get_node("Panel/Margin/Layout/Tabs/" + pair[0])
 		_style_button(button)
 		button.pressed.connect(_change_tab.bind(pair[1]))
@@ -65,10 +66,12 @@ func _ready() -> void:
 	reset_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	reset_label.add_theme_color_override("font_color", DARK)
 	reset_label.add_theme_font_size_override("font_size", 18)
+	reset_label.set_meta("pixelmania_font_size", 18)
 	$Panel/Margin/Layout.add_child(reset_label)
 	$Panel/Margin/Layout.move_child(reset_label, 2)
 	for label in [title, wallet, status, footer]:
 		label.add_theme_color_override("font_color", DARK)
+		label.set_meta("pixelmania_font_size", label.get_theme_font_size("font_size"))
 	resized.connect(_fit)
 	_fit()
 	hide()
@@ -81,6 +84,7 @@ func _fit() -> void:
 		return
 	var viewport_size := get_viewport_rect().size
 	title.add_theme_font_size_override("font_size", 24 if viewport_size.x < 950 else 34)
+	title.set_meta("pixelmania_font_size", 24 if viewport_size.x < 950 else 34)
 	title.clip_text = true
 	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	panel.size = Vector2(minf(1160.0, maxf(580.0, viewport_size.x - 32.0)), minf(760.0, maxf(290.0, viewport_size.y - 32.0)))
@@ -172,13 +176,14 @@ func load_snapshot(snapshot: Dictionary) -> void:
 		selected_tier = ""
 	_render()
 
-func _change_tab(tab: String) -> void:
-	current_tab = tab
+func _change_tab(_tab: String) -> void:
+	current_tab = "today"
 	selected_tier = ""
 	scroll.scroll_vertical = 0
 	_render()
 
 func _style_button(button: Button, green := false) -> void:
+	button.set_meta("pixelmania_font_size", 24)
 	if green:
 		Style.apply_green_button(button, 24)
 	else:
@@ -208,6 +213,7 @@ func _label(parent: Node, text: String, color := Color.WHITE, font_size := 24) -
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_font_size_override("font_size", font_size)
+	label.set_meta("pixelmania_font_size", font_size)
 	parent.add_child(label)
 	return label
 
@@ -244,7 +250,7 @@ func _render() -> void:
 			header_decoration.tint = Color(str(cosmetic.color))
 			header_decoration.show()
 			header_decoration.queue_redraw()
-	for pair in [["Today", "today"], ["Storybook", "storybook"], ["Rewards", "rewards"]]:
+	for pair in [["Today", "today"]]:
 		var tab: Button = get_node("Panel/Margin/Layout/Tabs/" + pair[0])
 		tab.add_theme_color_override("font_color", GOLD if current_tab == pair[1] else Color.WHITE)
 	if board.is_empty():
@@ -252,12 +258,8 @@ func _render() -> void:
 		_label(_box(content), "DAILY QUESTS", GOLD, 32)
 		_label(_box(content), "Loading your objectives and rewards...")
 		return
-	if not selected_tier.is_empty():
+	if not selected_tier.is_empty() and selected_tier != "story":
 		_render_active(selected_tier)
-	elif current_tab == "rewards":
-		_render_rewards()
-	elif current_tab == "storybook":
-		_render_archive()
 	else:
 		_render_today()
 	_fit()

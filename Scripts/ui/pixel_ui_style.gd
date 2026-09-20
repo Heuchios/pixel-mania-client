@@ -179,6 +179,18 @@ static func _apply_global_font_size(node: Node, font_size: int) -> void:
 
 
 static func _apply_global_text_shadow(node: Node) -> void:
+	var ancestor := node
+	while ancestor != null:
+		if ancestor.has_meta("pixelmania_text_shadow"):
+			if not bool(ancestor.get_meta("pixelmania_text_shadow")) and node is Control:
+				var text_control := node as Control
+				text_control.add_theme_color_override("font_shadow_color", Color.TRANSPARENT)
+				text_control.add_theme_constant_override("shadow_offset_x", 0)
+				text_control.add_theme_constant_override("shadow_offset_y", 0)
+				text_control.add_theme_constant_override("outline_size", 0)
+				return
+			break
+		ancestor = ancestor.get_parent()
 	if node is Control:
 		var control := node as Control
 		var has_visible_shadow := (

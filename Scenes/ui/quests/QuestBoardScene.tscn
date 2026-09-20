@@ -68,18 +68,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "TODAY"
 
-[node name="Storybook" type="Button" parent="Panel/Margin/Layout/Tabs"]
-custom_minimum_size = Vector2(0, 48)
-layout_mode = 2
-size_flags_horizontal = 3
-text = "STORYBOOK"
-
-[node name="Rewards" type="Button" parent="Panel/Margin/Layout/Tabs"]
-custom_minimum_size = Vector2(0, 48)
-layout_mode = 2
-size_flags_horizontal = 3
-text = "REWARDS"
-
 [node name="Scroll" type="ScrollContainer" parent="Panel/Margin/Layout"]
 layout_mode = 2
 size_flags_vertical = 3

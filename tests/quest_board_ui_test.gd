@@ -34,11 +34,15 @@ func run() -> void:
 	await create_timer(0.5).timeout
 	assert(panel.is_quest_board_open())
 	assert(panel.content.get_child_count() > 0)
+	assert(panel.get_node_or_null("Panel/Margin/Layout/Tabs/Storybook") == null)
+	assert(panel.get_node_or_null("Panel/Margin/Layout/Tabs/Rewards") == null)
+	assert(panel.title.get_theme_color("font_shadow_color").a == 0.0)
+	assert(panel.title.get_theme_constant("outline_size") == 0)
 	for tab in ["storybook", "rewards", "today"]:
 		panel._change_tab(tab)
 		await process_frame
 		assert(panel.content.get_child_count() > 0)
-	for tier in ["favor_0", "trip_0", "story"]:
+	for tier in ["favor_0", "trip_0"]:
 		var active_fixture = JSON.parse_string(FileAccess.get_file_as_string("D:/Pixelmania/PixelMania/PixelManiaServer/test-output/quest_active_%s.json" % tier))
 		panel.load_snapshot(active_fixture)
 		panel._select_active(tier)
@@ -59,7 +63,7 @@ func run() -> void:
 	var archive_fixture = JSON.parse_string(FileAccess.get_file_as_string("D:/Pixelmania/PixelMania/PixelManiaServer/test-output/quest_archive.json"))
 	panel.load_snapshot(archive_fixture)
 	panel._change_tab("storybook")
-	assert(panel.content.get_child_count() == 26)
+	assert(panel.current_tab == "today")
 	root.size = Vector2i(640, 360)
 	await create_timer(0.2).timeout
 	panel._fit()
