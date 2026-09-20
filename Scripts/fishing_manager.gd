@@ -789,6 +789,10 @@ func catch_fish():
 
 	var owned_before: float = _get_owned_fish_weight(pending_fish_id)
 	var catch_weight: float = _normalize_fish_weight(_roll_catch_weight(pending_fish_id))
+	if owned_before + catch_weight > 2000.0:
+		world.show_notification("Not enough room for this catch. Fish stacks hold 2000 kg.")
+		reset_fishing_state(true)
+		return
 	var catch_record: Dictionary = record_fish_catch(pending_fish_id, catch_weight)
 	var was_new: bool = bool(catch_record.get("was_new", owned_before <= 0.0))
 	_add_fish_weight_to_inventory(pending_fish_id, catch_weight)
@@ -808,7 +812,7 @@ func _normalize_fish_weight(weight) -> float:
 
 
 func _fish_weight_to_tenths(weight) -> int:
-	return _fish_inventory_value_to_tenths(weight)
+	return roundi(float(weight) * 10.0)
 
 
 func _fish_inventory_value_to_tenths(value) -> int:
@@ -829,7 +833,7 @@ func _fish_inventory_value_to_tenths(value) -> int:
 
 
 func _fish_tenths_to_weight(tenths: int) -> float:
-	return float(max(0, tenths))
+	return float(max(0, tenths)) / 10.0
 
 
 func _legacy_tenths_to_fish_count(value) -> int:
@@ -852,7 +856,7 @@ func _add_fish_weight_to_inventory(fish_id: String, weight) -> void:
 	if safe_weight <= 0.0:
 		return
 	var current_count: int = _fish_inventory_value_to_tenths(world.fish_inventory.get(fish_id, 0))
-	world.fish_inventory[fish_id] = current_count + 1
+	world.fish_inventory[fish_id] = mini(20000, current_count + _fish_weight_to_tenths(safe_weight))
 	if world.has_method("refresh_ui_after_item_change"):
 		world.refresh_ui_after_item_change(fish_id, "fish")
 
@@ -1179,7 +1183,7 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 			if reward_id != "" and reward_category == "fish":
 				if fish_id == "":
 					fish_id = reward_id
-				var server_weight: float = _normalize_fish_weight(float(data.get("catch_weight", _roll_catch_weight(fish_id))))
+				var server_weight: float = _normalize_fish_weight(float(data.get("catch_weight", 0.0)))
 				caught_fish_id = fish_id
 				var server_owned_before: float = _get_owned_fish_weight(fish_id)
 				var server_record: Dictionary = record_fish_catch(fish_id, server_weight)
@@ -1828,14 +1832,14 @@ func record_fish_catch(fish_id: String, weight: float) -> Dictionary:
 	var rounded_weight: float = snapped(max(0.1, weight), 0.1)
 	var rarity: String = _get_fish_rarity(safe_fish_id)
 	var item_data: Dictionary = _get_fish_item_data(safe_fish_id)
-	var sell_value: int = _get_fish_sell_value(safe_fish_id, item_data)
+	var sell_value: float = _get_fish_sell_value(safe_fish_id, item_data)
 	var species_counts: Dictionary = _get_record_dictionary("total_caught_per_species")
 	var biggest: Dictionary = _get_record_dictionary("biggest_fish_per_species")
 	var discovered: Dictionary = _get_record_dictionary("first_catch_discovered")
 	var best_values: Dictionary = _get_record_dictionary("best_value_per_species")
 	var previous_count: int = max(0, int(species_counts.get(safe_fish_id, 0)))
 	var was_new: bool = previous_count <= 0 and not discovered.has(safe_fish_id)
-	var catch_value: int = _calculate_fish_sale_value(1, sell_value)
+	var catch_value: int = _calculate_fish_sale_value(rounded_weight, sell_value)
 
 	species_counts[safe_fish_id] = previous_count + 1
 	if rounded_weight > float(biggest.get(safe_fish_id, 0.0)):
@@ -2079,8 +2083,8 @@ func _build_catch_result_data(fish_id: String, was_new: bool, _catch_weight: flo
 		"item_category": safe_category,
 		"name": world.get_item_display_name(fish_id, safe_category) if world != null else fish_id,
 		"rarity": rarity,
-		"amount": "x1",
-		"value": _calculate_fish_sale_value(1, sell_value),
+		"amount": _format_fish_weight(_catch_weight) if safe_category == "fish" else "x1",
+		"value": ceili(maxf(0.0, _catch_weight) * sell_value),
 		"value_per_fish": sell_value,
 		"is_new": was_new,
 		"icon": get_reward_texture(fish_id, safe_category)
@@ -2101,18 +2105,12 @@ func _roll_display_weight_for_rarity(rarity: String) -> float:
 			return randf_range(0.6, 2.4)
 
 
-func _roll_catch_weight(fish_id: String) -> float:
-	var item_data: Dictionary = _get_fish_item_data(fish_id)
-	var rarity: String = str(item_data.get("rarity", "common")).to_lower()
-	var min_weight: float = float(item_data.get("min_weight_lb", 0.0))
-	var max_weight: float = float(item_data.get("max_weight_lb", 0.0))
-	if min_weight > 0.0 and max_weight >= min_weight:
-		return snapped(randf_range(min_weight, max_weight), 0.1)
-	return snapped(_roll_display_weight_for_rarity(rarity), 0.1)
+func _roll_catch_weight(_fish_id: String) -> float:
+	return mini(1500, 1 + int(pow(randf(), 3.0) * 1500.0)) / 10.0
 
 
 func _format_fish_weight(weight: float) -> String:
-	return "%.1f lb" % snapped(weight, 0.1)
+	return "%.1f kg" % snapped(weight, 0.1)
 
 
 func _show_catch_notification(fish_id: String, category: String = "fish") -> void:
@@ -2169,9 +2167,9 @@ func _get_fishing_reward_confetti_ui_position() -> Vector2:
 	return Vector2(INF, INF)
 
 
-func _get_fish_sell_value(fish_id: String, item_data: Dictionary) -> int:
+func _get_fish_sell_value(fish_id: String, item_data: Dictionary) -> float:
 	if world != null and world.fish_monger_manager != null and world.fish_monger_manager.has_method("get_fish_sell_value"):
-		return int(world.fish_monger_manager.get_fish_sell_value(fish_id))
+		return float(world.fish_monger_manager.get_fish_sell_value(fish_id))
 	if item_data.has("sell_value"):
 		return max(0, int(item_data.get("sell_value", 0)))
 	if item_data.has("fish_sell_value"):
@@ -2195,10 +2193,10 @@ func _get_fish_sell_value(fish_id: String, item_data: Dictionary) -> int:
 			return 3
 
 
-func _calculate_fish_sale_value(count: int, value_per_fish: int) -> int:
+func _calculate_fish_sale_value(count: float, value_per_fish: float) -> int:
 	if count <= 0 or value_per_fish <= 0:
 		return 0
-	return count * value_per_fish
+	return ceili((roundi(count * 10.0) * roundi(value_per_fish * 100.0)) / 1000.0)
 
 
 func _maybe_broadcast_legendary_catch(fish_id: String):

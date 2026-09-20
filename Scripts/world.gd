@@ -497,6 +497,8 @@ func is_gem_currency(item_type: String, _category: String = "currency") -> bool:
 func get_stack_limit_for_item(item_type: String, category: String = "") -> int:
 	if is_gem_currency(item_type, category):
 		return GEM_CURRENCY_CAP
+	if category == "fish" or str(item_database.get(item_type, {}).get("category", "")) == "fish":
+		return 20000 # Exact tenths of a kilogram: 2000 kg.
 
 	var item_data = null
 	if item_database.has(item_type):

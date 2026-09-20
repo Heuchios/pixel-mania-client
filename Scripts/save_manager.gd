@@ -1847,7 +1847,7 @@ func get_player_save_data() -> Dictionary:
 		"material_inventory": world.material_inventory,
 		"lure_inventory": world.lure_inventory,
 		"fish_inventory": get_fish_inventory_count_save_data(),
-		"fish_inventory_unit": "count",
+		"fish_inventory_unit": "tenths_kg",
 		"fishing_records": world.fishing_manager.get_fishing_records_save_data() if world.fishing_manager != null and world.fishing_manager.has_method("get_fishing_records_save_data") else {},
 		"equipped_tool": str(world.equipped_tool) if world.equipped_tool != null else "",
 		"equipped_back_item": str(world.equipped_back_item) if world.equipped_back_item != null else "",
@@ -1948,6 +1948,12 @@ func get_legacy_player_data_candidates(preferred_player_data: Dictionary = {}) -
 
 
 func merge_legacy_inventory_counts(target_data: Dictionary, source_data: Dictionary) -> void:
+	if str(target_data.get("fish_inventory_unit", "")) != "tenths_kg":
+		var old_fish = target_data.get("fish_inventory", {})
+		if old_fish is Dictionary:
+			for item_id in old_fish:
+				old_fish[item_id] = safe_fish_count_from_save(old_fish[item_id], str(target_data.get("fish_inventory_unit", "")))
+		target_data["fish_inventory_unit"] = "tenths_kg"
 	for inventory_key in PLAYER_INVENTORY_SAVE_KEYS:
 		var source_inventory = source_data.get(inventory_key, {})
 
@@ -2814,21 +2820,8 @@ func get_fish_inventory_count_save_data() -> Dictionary:
 
 
 func safe_fish_count_from_save(raw_value, unit: String = "") -> int:
-	if raw_value is Dictionary:
-		if raw_value.has("count"):
-			return runtime_fish_value_to_count(raw_value.get("count", 0))
-		if raw_value.has("weight_tenths"):
-			return legacy_fish_tenths_to_count(raw_value.get("weight_tenths", 0))
-		if raw_value.has("amount"):
-			raw_value = raw_value.get("amount", 0.0)
-		elif raw_value.has("weight_lb"):
-			raw_value = raw_value.get("weight_lb", 0.0)
-		else:
-			return 0
-
-	if unit == "tenths_lb":
-		return legacy_fish_tenths_to_count(raw_value)
-	return runtime_fish_value_to_count(raw_value)
+	var count: int = runtime_fish_value_to_count(raw_value)
+	return count if unit == "tenths_kg" else count * 10
 
 
 func apply_saved_fish_count_inventory(saved_inventory, _preserve_default_if_missing: bool, unit: String = ""):
@@ -2943,7 +2936,7 @@ func get_current_player_state_dedup_hash() -> int:
 		"material_inventory": world.material_inventory.duplicate(true) if world.material_inventory is Dictionary else {},
 		"lure_inventory": world.lure_inventory.duplicate(true) if world.lure_inventory is Dictionary else {},
 		"fish_inventory": get_fish_inventory_count_save_data(),
-		"fish_inventory_unit": "count",
+		"fish_inventory_unit": "tenths_kg",
 		"fishing_records": world.fishing_manager.get_fishing_records_save_data() if world.fishing_manager != null and world.fishing_manager.has_method("get_fishing_records_save_data") else {}
 	}
 	return hash(normalized_payload)
@@ -3096,7 +3089,7 @@ func save_world():
 		"material_inventory": world.material_inventory,
 		"lure_inventory": world.lure_inventory,
 		"fish_inventory": get_fish_inventory_count_save_data(),
-		"fish_inventory_unit": "count",
+		"fish_inventory_unit": "tenths_kg",
 		"fishing_records": world.fishing_manager.get_fishing_records_save_data() if world.fishing_manager != null and world.fishing_manager.has_method("get_fishing_records_save_data") else {},
 		"equipped_tool": str(world.equipped_tool) if world.equipped_tool != null else "",
 		"equipped_back_item": str(world.equipped_back_item) if world.equipped_back_item != null else "",

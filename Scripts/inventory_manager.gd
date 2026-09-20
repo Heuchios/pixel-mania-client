@@ -2343,7 +2343,7 @@ func remove_fish_weight(item_id: String, weight, show_error: bool = false) -> bo
 	var requested_count: int = fish_inventory_value_to_count(weight)
 	if requested_count <= 0:
 		if show_error and world.has_method("show_notification"):
-			world.show_notification("Choose at least 1 fish.")
+			world.show_notification("Choose at least 0.1 kg.")
 		return false
 	var current_count: int = get_item_weight_tenths(item_id)
 	if current_count < requested_count:
@@ -2360,7 +2360,7 @@ func remove_fish_weight(item_id: String, weight, show_error: bool = false) -> bo
 
 
 func format_fish_weight(amount) -> String:
-	return "x" + format_stack_count(fish_inventory_value_to_count(amount))
+	return "%.1f kg" % (fish_inventory_value_to_count(amount) / 10.0)
 
 
 func format_inventory_amount(item_type: String, category: String, amount = null) -> String:
@@ -2635,7 +2635,7 @@ func update_scene_hotbar_slot_count(slot: Control, item_type: String, category: 
 			count.text = ""
 		elif category == "fish":
 			var fish_count: int = get_item_count(item_type, category)
-			count.text = format_stack_count(fish_count) if fish_count > 0 else ""
+			count.text = format_fish_weight(fish_count) if fish_count > 0 else ""
 		else:
 			var qty: int = get_item_count(item_type, category)
 			count.text = format_stack_count(qty) if qty > 0 else ""
@@ -6121,7 +6121,7 @@ func setup_fish_weight_controls(max_weight: float):
 		context_amount_slider.step = 1
 		context_amount_slider.value = safe_max
 	if context_amount_input != null:
-		context_amount_input.text = str(safe_max)
+		context_amount_input.text = "%.1f" % (safe_max / 10.0)
 	context_amount_updating = false
 
 
@@ -6142,7 +6142,7 @@ func _on_context_amount_text_changed(new_text: String):
 	if is_context_amount_for_fish():
 		if not clean_text.is_valid_float():
 			return
-		var typed_count: int = int(floor(float(clean_text)))
+		var typed_count: int = roundi(float(clean_text) * 10.0)
 		if typed_count <= 0:
 			typed_count = 1
 		set_context_amount_value(float(typed_count), false)
@@ -6167,7 +6167,7 @@ func set_context_amount_value(amount: float, update_text: bool):
 	if context_amount_slider != null:
 		context_amount_slider.value = safe_amount
 	if update_text and context_amount_input != null:
-		context_amount_input.text = str(int(round(safe_amount)))
+		context_amount_input.text = ("%.1f" % (safe_amount / 10.0)) if is_context_amount_for_fish() else str(int(round(safe_amount)))
 	context_amount_updating = false
 
 
@@ -6177,7 +6177,7 @@ func get_context_amount(item_type: String, category: String) -> float:
 	if context_amount_input != null:
 		var clean_text = context_amount_input.text.strip_edges()
 		if category == "fish" and clean_text.is_valid_float():
-			amount = float(int(floor(float(clean_text))))
+			amount = float(roundi(float(clean_text) * 10.0))
 		elif category != "fish":
 			amount = float(int(clean_text))
 	elif context_amount_slider != null:
@@ -6204,7 +6204,7 @@ func drop_inventory_item(item_type: String, category: String, amount: float):
 		var safe_count: float = normalize_fish_weight(amount)
 		if safe_count <= 0.0:
 			if world.has_method("show_notification"):
-				world.show_notification("Choose at least 1 fish.")
+				world.show_notification("Choose at least 0.1 kg.")
 			return
 		if not has_fish_weight(item_type, safe_count):
 			if world.has_method("show_notification"):
@@ -6249,7 +6249,7 @@ func trash_inventory_item(item_type: String, category: String, amount: float):
 		var safe_count: float = normalize_fish_weight(amount)
 		if safe_count <= 0.0:
 			if world.has_method("show_notification"):
-				world.show_notification("Choose at least 1 fish.")
+				world.show_notification("Choose at least 0.1 kg.")
 			return
 		if not has_fish_weight(item_type, safe_count):
 			if world.has_method("show_notification"):

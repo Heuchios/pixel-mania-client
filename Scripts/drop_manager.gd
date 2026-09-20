@@ -244,7 +244,8 @@ func _is_fish_drop_category(category: String) -> bool:
 
 func _safe_drop_amount(value, fallback: float = 0.0, min_value: float = 0.0, max_value: float = MAX_DROP_TILE_AMOUNT, is_weight: bool = false) -> float:
 	if is_weight:
-		return snapped(_safe_float(value, fallback, min_value, max_value), 0.1)
+		var unit_limit: float = 20000.0 if is_equal_approx(max_value, MAX_DROP_TILE_AMOUNT) else max_value
+		return float(_safe_int(value, int(fallback), int(min_value), int(unit_limit)))
 	return float(_safe_int(value, int(round(fallback)), int(round(min_value)), int(round(max_value))))
 
 
@@ -252,11 +253,11 @@ func _weight_to_tenths(weight) -> int:
 	var safe_weight: float = _safe_drop_amount(weight, 0.0, 0.0, float(MAX_DROP_TILE_AMOUNT), true)
 	if safe_weight <= 0.0:
 		return 0
-	return max(0, int(round(safe_weight * 10.0)))
+	return max(0, int(round(safe_weight))) # Drop payloads use the same integer units as inventory.
 
 
 func _tenths_to_weight(tenths: int) -> float:
-	return float(max(0, tenths)) / 10.0
+	return float(max(0, tenths))
 
 
 func _inventory_fish_value_to_tenths(value) -> int:
@@ -2043,7 +2044,7 @@ func create_item_drop(
 
 				var current_amount: float = _safe_drop_amount(existing_stack.get("amount", 0.0), 0.0, 0.0, float(MAX_DROP_TILE_AMOUNT), is_weight_drop)
 				if has_external_drop_id and not sync_to_server:
-					var new_alias_amount: float = _safe_drop_amount(min(MAX_DROP_TILE_AMOUNT, remaining_amount), 0.0, 0.0, float(MAX_DROP_TILE_AMOUNT), is_weight_drop)
+					var new_alias_amount: float = _safe_drop_amount(min(20000 if is_weight_drop else MAX_DROP_TILE_AMOUNT, remaining_amount), 0.0, 0.0, float(MAX_DROP_TILE_AMOUNT), is_weight_drop)
 					if existing_stack_ids.size() > 1:
 						var previous_alias_amount: float = _get_drop_stack_amount_for_id(existing_stack, clean_drop_id)
 						existing_stack["amount"] = _safe_drop_amount(current_amount - previous_alias_amount + new_alias_amount, 0.0, 0.0, float(MAX_DROP_TILE_AMOUNT), is_weight_drop)
@@ -2352,7 +2353,7 @@ func update_drop_count_label(drop_data):
 	var amount: float = _safe_drop_amount(drop_data.get("amount", 0.0), 0.0, 0.0, float(MAX_DROP_TILE_AMOUNT), is_weight)
 	var count_text: String = ""
 	if is_weight and should_show_drop_count_label(drop_data, amount):
-		count_text = format_stack_count(int(round(amount)))
+		count_text = "%.1f kg" % (amount / 10.0)
 	elif should_show_drop_count_label(drop_data, amount):
 		count_text = format_stack_count(int(round(amount)))
 	count_label.text = count_text
@@ -3152,7 +3153,7 @@ func _get_stack_limit_for_drop_item(item_type: String, item_category: String) ->
 	var stack_limit = world.get_stack_limit_for_item(safe_item_type, safe_category) if world.has_method("get_stack_limit_for_item") else MAX_DROP_STACK_SIZE
 	if stack_limit < 1:
 		return 1
-	return min(stack_limit, MAX_DROP_STACK_SIZE)
+	return stack_limit if safe_category == "fish" else min(stack_limit, MAX_DROP_STACK_SIZE)
 
 
 func _get_inventory_stack_limit_for_drop_item(item_type: String, item_category: String) -> int:

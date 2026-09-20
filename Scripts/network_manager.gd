@@ -115,7 +115,7 @@ var WORLD_ROUTE_WS_URLS: Array[String] = [
 ]
 # Keep in sync with export_presets.cfg "version/name" on every release build.
 # The server gates packets against this value via MIN_CLIENT_VERSION.
-const CLIENT_VERSION := "1.2.8"
+const CLIENT_VERSION := "1.2.9"
 const CLIENT_PLATFORM := "godot"
 const DEBUG_SERVER_PACKETS := false
 const DEBUG_ACTION_POSITION_FLOW := false
@@ -285,6 +285,7 @@ const INVENTORY_TRANSACTION_ACTIONS := [
 	"world_lock_get_key",
 	"trash_inventory_item",
 	"fish_monger_sell",
+	"fish_monger_prices",
 	"fish_monger_sell_all",
 	"fishing_start",
 	"fishing_complete",
@@ -3656,7 +3657,7 @@ func send_inventory_transaction_request(transaction_data: Dictionary) -> bool:
 		if str(payload["action"]).begins_with("display_"):
 			payload["amount"] = 1
 		else:
-			payload["amount"] = snapped(_safe_float(payload.get("amount", 0.0), 1.0, 0.1, float(MAX_ITEM_STACK_SIZE)), 0.1)
+			payload["amount"] = snapped(_safe_float(payload.get("amount", 0.0), 1.0, 0.1, float((20000 if str(payload.get("item_category", "")) == "fish" else MAX_ITEM_STACK_SIZE))), 0.1)
 	elif str(payload["action"]).begins_with("donation_box_"):
 		payload["x"] = _safe_int(payload.get("x", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)
 		payload["y"] = _safe_int(payload.get("y", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)
@@ -3665,7 +3666,7 @@ func send_inventory_transaction_request(transaction_data: Dictionary) -> bool:
 			payload["item_id"] = donation_item_id
 			payload["item_type"] = donation_item_id
 			payload["item_category"] = _safe_string(payload.get("item_category", ""), "", MAX_ITEM_CATEGORY_LENGTH)
-			payload["amount"] = _safe_int(payload.get("amount", 0), 1, 1, MAX_ITEM_STACK_SIZE)
+			payload["amount"] = _safe_int(payload.get("amount", 0), 1, 1, (20000 if str(payload.get("item_category", "")) == "fish" else MAX_ITEM_STACK_SIZE))
 			if donation_item_id == "" or payload["item_category"] == "":
 				return false
 		elif payload["action"] == "donation_box_retrieve":
@@ -3685,7 +3686,7 @@ func send_inventory_transaction_request(transaction_data: Dictionary) -> bool:
 	elif payload["action"] == "trash_inventory_item":
 		payload["item_type"] = _safe_string(payload.get("item_type", ""), "", MAX_ITEM_ID_LENGTH)
 		payload["item_category"] = _safe_string(payload.get("item_category", ""), "", MAX_ITEM_CATEGORY_LENGTH)
-		payload["amount"] = _safe_int(payload.get("amount", 0), 1, 1, MAX_ITEM_STACK_SIZE)
+		payload["amount"] = _safe_int(payload.get("amount", 0), 1, 1, (20000 if str(payload.get("item_category", "")) == "fish" else MAX_ITEM_STACK_SIZE))
 		if payload["item_type"] == "" or payload["item_category"] == "":
 			return false
 	elif payload["action"] == "convert_world_lock":
@@ -3705,8 +3706,10 @@ func send_inventory_transaction_request(transaction_data: Dictionary) -> bool:
 		payload["item_category"] = _safe_string(payload.get("item_category", "fish"), "", MAX_ITEM_CATEGORY_LENGTH)
 		if payload["item_category"] == "":
 			return false
-		payload["amount"] = _safe_int(payload.get("amount", 0), 1, 1, MAX_ITEM_STACK_SIZE)
-	elif payload["action"] == "fish_monger_sell_all":
+		payload["weight_kg"] = snappedf(_safe_float(payload.get("weight_kg", 0.0), 0.0, 0.0, 2000.0), 0.1)
+		if payload["weight_kg"] <= 0.0:
+			return false
+	elif payload["action"] == "fish_monger_sell_all" or payload["action"] == "fish_monger_prices":
 		payload["x"] = _safe_int(payload.get("x", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)
 		payload["y"] = _safe_int(payload.get("y", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)
 	elif payload["action"] == "fishing_start":
@@ -3723,7 +3726,7 @@ func send_inventory_transaction_request(transaction_data: Dictionary) -> bool:
 		payload["item_category"] = _safe_string(payload.get("item_category", ""), "", MAX_ITEM_CATEGORY_LENGTH)
 		if payload["item_type"] == "" or payload["item_category"] == "":
 			return false
-		payload["amount"] = _safe_int(payload.get("amount", 0), 1, 1, MAX_ITEM_STACK_SIZE)
+		payload["amount"] = _safe_int(payload.get("amount", 0), 1, 1, (20000 if str(payload.get("item_category", "")) == "fish" else MAX_ITEM_STACK_SIZE))
 		payload["x"] = _safe_float(payload.get("x", 0.0), 0.0, float(-MAX_PLAYER_COORDINATE), float(MAX_PLAYER_COORDINATE))
 		payload["y"] = _safe_float(payload.get("y", 0.0), 0.0, float(-MAX_PLAYER_COORDINATE), float(MAX_PLAYER_COORDINATE))
 		payload["stack_grid_x"] = _safe_int(payload.get("stack_grid_x", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)
@@ -3733,7 +3736,7 @@ func send_inventory_transaction_request(transaction_data: Dictionary) -> bool:
 		payload["item_category"] = _safe_string(payload.get("item_category", ""), "", MAX_ITEM_CATEGORY_LENGTH)
 		if payload["item_id"] == "" or payload["item_category"] == "":
 			return false
-		payload["amount"] = _safe_int(payload.get("amount", 0), 1, 1, MAX_ITEM_STACK_SIZE)
+		payload["amount"] = _safe_int(payload.get("amount", 0), 1, 1, (20000 if str(payload.get("item_category", "")) == "fish" else MAX_ITEM_STACK_SIZE))
 		payload["price"] = _safe_int(payload.get("price", 0), 0, 0, MAX_ITEM_PRICE)
 	elif payload["action"] == "vend_set_listing":
 		payload["item_id"] = _safe_string(payload.get("item_id", ""), "", MAX_ITEM_ID_LENGTH)
@@ -3742,13 +3745,13 @@ func send_inventory_transaction_request(transaction_data: Dictionary) -> bool:
 			return false
 		payload["x"] = _safe_int(payload.get("x", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)
 		payload["y"] = _safe_int(payload.get("y", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)
-		payload["stock"] = _safe_int(payload.get("stock", 0), 1, 1, MAX_ITEM_STACK_SIZE)
-		payload["amount_per_sale"] = _safe_int(payload.get("amount_per_sale", 1), 1, 1, MAX_ITEM_STACK_SIZE)
+		payload["stock"] = _safe_int(payload.get("stock", 0), 1, 1, (20000 if str(payload.get("item_category", "")) == "fish" else MAX_ITEM_STACK_SIZE))
+		payload["amount_per_sale"] = _safe_int(payload.get("amount_per_sale", 1), 1, 1, (20000 if str(payload.get("item_category", "")) == "fish" else MAX_ITEM_STACK_SIZE))
 		payload["price_wls"] = _safe_int(payload.get("price_wls", 0), 0, 0, MAX_ITEM_PRICE)
 	elif payload["action"] == "vend_buy":
 		payload["x"] = _safe_int(payload.get("x", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)
 		payload["y"] = _safe_int(payload.get("y", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)
-		payload["sale_count"] = _safe_int(payload.get("sale_count", 1), 1, 1, MAX_ITEM_STACK_SIZE)
+		payload["sale_count"] = _safe_int(payload.get("sale_count", 1), 1, 1, (20000 if str(payload.get("item_category", "")) == "fish" else MAX_ITEM_STACK_SIZE))
 	elif payload["action"] == "vend_collect" or payload["action"] == "vend_cancel":
 		payload["x"] = _safe_int(payload.get("x", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)
 		payload["y"] = _safe_int(payload.get("y", 0), 0, -MAX_COORDINATE, MAX_COORDINATE)

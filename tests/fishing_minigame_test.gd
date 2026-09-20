@@ -185,10 +185,11 @@ func _test_cast_and_inputs() -> void:
 	manager.update_minigame_visuals()
 	await create_timer(.15).timeout
 	send_click(manager.fishing_ui.reel_button.get_global_rect().get_center())
-	check(manager.state == "idle" and world.fish_inventory.get("pond_fish", 0) == 1, "Native REEL did not award exactly one fish")
+	var landed_units: int = int(world.fish_inventory.get("pond_fish", 0))
+	check(manager.state == "idle" and landed_units >= 1 and landed_units <= 1500, "Native REEL did not award a 0.1–150 kg catch")
 	check(manager.fishing_ui.catch_card.visible, "Local catch card was not shown")
 	manager.catch_fish()
-	check(world.fish_inventory.get("pond_fish", 0) == 1, "Duplicate completion awarded twice")
+	check(world.fish_inventory.get("pond_fish", 0) == landed_units, "Duplicate completion awarded twice")
 	await process_frame
 	begin_local("crystal_fish")
 	await process_frame
@@ -298,7 +299,7 @@ func _test_network_lifecycle() -> void:
 	var before: int = world.fish_inventory.get("pond_fish", 0)
 	manager.handle_inventory_transaction_result(reward)
 	manager.handle_inventory_transaction_result(reward)
-	check(world.fish_inventory.pond_fish == before + 1, "Duplicate reward applied twice")
+	check(world.fish_inventory.pond_fish == before + 10, "Duplicate reward applied twice")
 	check(manager.state == "casting" and manager.fishing_ui.waiting_panel.visible, "Late reward hid the new cast")
 	manager.cancel_fishing()
 	manager.handle_inventory_transaction_result({"action":"fishing_complete", "ok":true, "request_id": manager.catch_request_id})

@@ -358,7 +358,7 @@ func _create_fish_card(entry: Dictionary) -> void:
 func _format_weight(weight: float) -> String:
 	if weight <= 0.0:
 		return "--"
-	return str(snapped(weight, 0.1)) + " lb"
+	return "%.1f kg" % snapped(weight, 0.1)
 
 
 func _rarity_color(rarity: String) -> Color:

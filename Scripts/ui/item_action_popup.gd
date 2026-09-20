@@ -363,7 +363,7 @@ func _update_item_preview(icon_texture: Texture2D) -> void:
 		item_name_label.add_theme_font_size_override("font_size", title_size)
 		item_name_label.set_meta("pixelmania_font_size", title_size)
 	if item_count_label != null:
-		item_count_label.text = str(amount_limit) + " IN INVENTORY"
+		item_count_label.text = _quantity_text(amount_limit) + " IN INVENTORY"
 		item_count_label.visible = true
 	if item_icon_shadow != null:
 		item_icon_shadow.texture = icon_texture
@@ -426,9 +426,9 @@ func _sync_amount_controls() -> void:
 	amount = clampi(amount, MIN_AMOUNT, amount_limit)
 	syncing_amount = true
 	if amount_label != null:
-		amount_label.text = "QUANTITY  / " + str(amount_limit)
+		amount_label.text = "QUANTITY  / " + _quantity_text(amount_limit)
 	if amount_input != null:
-		amount_input.text = str(amount)
+		amount_input.text = ("%.1f" % (amount / 10.0)) if _is_fish() else str(amount)
 		amount_input.caret_column = amount_input.text.length()
 	if amount_slider != null:
 		amount_slider.min_value = float(MIN_AMOUNT)
@@ -444,6 +444,11 @@ func _on_amount_text_changed(new_text: String) -> void:
 		return
 	var clean_text: String = new_text.strip_edges()
 	if clean_text == "":
+		return
+	if _is_fish():
+		if clean_text.is_valid_float() and is_finite(float(clean_text)):
+			amount = clampi(roundi(float(clean_text) * 10.0), MIN_AMOUNT, amount_limit)
+		# Preserve intermediate input such as "5." while the player types.
 		return
 	if not clean_text.is_valid_int():
 		_sync_amount_controls()
@@ -461,6 +466,14 @@ func _on_amount_slider_changed(value: float) -> void:
 		return
 	amount = clampi(int(round(value)), MIN_AMOUNT, amount_limit)
 	_sync_amount_controls()
+
+
+func _is_fish() -> bool:
+	return str(item_data.get("item_category", item_data.get("category", ""))) == "fish"
+
+
+func _quantity_text(units: int) -> String:
+	return ("%.1f kg" % (units / 10.0)) if _is_fish() else str(units)
 
 
 func _payload_with_amount() -> Dictionary:

@@ -239,7 +239,7 @@ func build_fish_monger_preview_panel():
 
 	var stock_caption = Label.new()
 	stock_caption.name = "StockCaption"
-	stock_caption.text = "FISH"
+	stock_caption.text = "KG"
 	stock_caption.position = Vector2(20, 286)
 	stock_caption.size = Vector2(72, 20)
 	stock_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -359,8 +359,8 @@ func update_fish_monger_preview_animation(force_update: bool = false):
 
 
 func update_preview_stats(entries: Array):
-	var total_count := 0
-	var best_value := 0
+	var total_count := 0.0
+	var best_value := 0.0
 	var species_count := 0
 
 	for entry in entries:
@@ -374,13 +374,13 @@ func update_preview_stats(entries: Array):
 		preview_value_label.text = format_gem_amount(get_total_sellable_fish_value_from_entries(entries))
 
 	if preview_count_label != null:
-		preview_count_label.text = str(total_count)
+		preview_count_label.text = "%.1f" % total_count
 
 	if preview_species_label != null:
 		preview_species_label.text = str(species_count)
 
 	if preview_best_rate_label != null:
-		preview_best_rate_label.text = (format_gem_amount(best_value) + " each") if best_value > 0 else "--"
+		preview_best_rate_label.text = (("%.2f" % best_value) + "/kg") if best_value > 0 else "--"
 
 
 func apply_fish_monger_arcade_button_style(button: Button, selected: bool = false, danger: bool = false, font_size: int = 14):
@@ -430,23 +430,23 @@ func get_fish_row_content_width() -> float:
 	return max(1.0, fish_scroll.size.x - FISH_MONGER_SCROLL_GUTTER)
 
 
-func get_fish_count_from_amount(amount: float) -> int:
+func get_fish_count_from_amount(amount: float) -> float:
 	if amount <= 0.0:
 		return 0
 
-	return max(1, int(round(amount)))
+	return snappedf(maxf(0.0, amount), 0.1)
 
 
-func get_fish_count_from_entry(entry: Dictionary) -> int:
+func get_fish_count_from_entry(entry: Dictionary) -> float:
 	return get_fish_count_from_amount(float(entry.get("count", 0.0)))
 
 
-func get_fish_value_from_entry(entry: Dictionary) -> int:
-	return max(0, int(entry.get("sell_value", entry.get("value_per_fish", 0))))
+func get_fish_value_from_entry(entry: Dictionary) -> float:
+	return maxf(0.0, float(entry.get("sell_value", entry.get("value_per_fish", 0))))
 
 
-func format_fish_count(count: int) -> String:
-	return str(max(0, count)) + (" fish" if count != 1 else " fish")
+func format_fish_count(count: float) -> String:
+	return "%.1f kg" % maxf(0.0, count)
 
 
 func get_rarity_accent_color(rarity: String) -> Color:
@@ -535,6 +535,11 @@ func refresh():
 		return
 
 	var saved_scroll = fish_scroll.scroll_vertical if fish_scroll != null else 0
+	var selected_weights: Dictionary = {}
+	for old_row in fish_rows_root.get_children():
+		var old_input = old_row.get_node_or_null("AmountInput")
+		if old_input is LineEdit:
+			selected_weights[str(old_row.name)] = old_input.text
 
 	update_header()
 
@@ -549,7 +554,7 @@ func refresh():
 
 	var pending = is_sale_pending()
 	if sell_all_button != null:
-		sell_all_button.disabled = pending or entries.is_empty()
+		sell_all_button.disabled = pending or entries.is_empty() or get_total_sellable_fish_value_from_entries(entries) <= 0
 		sell_all_button.tooltip_text = "Sell all fish for " + format_gem_amount(get_total_sellable_fish_value_from_entries(entries)) + " gems"
 
 	if empty_label != null:
@@ -572,6 +577,12 @@ func refresh():
 
 	for i in range(entries.size()):
 		create_fish_row(entries[i], Vector2(0, i * (row_height + gap)), row_height, pending)
+		var row = fish_rows_root.get_child(i)
+		if selected_weights.has(str(row.name)):
+			var amount_input: LineEdit = row.get_node("AmountInput")
+			var kept_weight := clamp_sell_amount(parse_amount_text(str(selected_weights[str(row.name)])), get_fish_count_from_entry(entries[i]))
+			amount_input.text = format_fish_count_number(kept_weight)
+			amount_input.text_changed.emit(amount_input.text)
 
 	call_deferred("restore_scroll_position", saved_scroll)
 
@@ -593,7 +604,7 @@ func create_fish_row(entry: Dictionary, row_position: Vector2, row_height: float
 	var item_id = str(entry.get("item_id", ""))
 	var owned_count = get_fish_count_from_entry(entry)
 	var value_per_fish = get_fish_value_from_entry(entry)
-	var default_amount = max(1, owned_count)
+	var default_amount = maxf(0.1, owned_count)
 	var rarity = str(entry.get("rarity", "common"))
 	var row_width = get_fish_row_content_width()
 	var accent_color = get_rarity_accent_color(rarity)
@@ -617,8 +628,10 @@ func create_fish_row(entry: Dictionary, row_position: Vector2, row_height: float
 	name_label.tooltip_text = name_label.text
 	_text(row, "RarityBadge", rarity.capitalize(), Rect2(108, 49, 172, 24), 14, accent_color)
 	_text(row, "Quantity", "Owned: " + format_fish_count(owned_count), Rect2(282, 49, 224, 24), 14, PixelUIStyle.TEXT_SOFT)
-	var price := _text(row, "Price", format_gem_amount(value_per_fish) + " gems each", Rect2(row_width - 232, 18, 212, 26), 16, PixelUIStyle.GOLD_SOFT)
+	var price_text: String = ("%.2f gems/kg" % value_per_fish) if value_per_fish > 0.0 else "Loading price..."
+	var price := _text(row, "Price", price_text, Rect2(row_width - 232, 18, 212, 26), 16, PixelUIStyle.GOLD_SOFT)
 	price.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	price.tooltip_text = "Global market • Range: %.2f–%.2f gems/kg" % [float(entry.get("min_price_kg", 0)), float(entry.get("max_price_kg", 0))]
 	var total_label := _text(row, "Total", "", Rect2(row_width - 262, 51, 242, 26), 15)
 	total_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	var selected_label := _text(row, "SelectedAmount", "", Rect2(20, 106, 200, 28), 13, PixelUIStyle.TEXT_SOFT)
@@ -639,10 +652,10 @@ func create_fish_row(entry: Dictionary, row_position: Vector2, row_height: float
 	row.add_child(amount_input)
 	var plus_button := _button(row, "AmountPlus", "+", Rect2(532, 102, 34, 34))
 	var sell_button := _button(row, "SellButton", "SELL", Rect2(row_width - 166, 96, 146, 42), true)
-	half_button.disabled = pending or owned_count <= 1
+	half_button.disabled = pending or owned_count <= 0.1
 	max_button.disabled = pending or owned_count <= 0
-	minus_button.disabled = pending or owned_count <= 1
-	plus_button.disabled = pending or owned_count <= 1
+	minus_button.disabled = pending or owned_count <= 0.1
+	plus_button.disabled = pending or owned_count <= 0.1
 	sell_button.pressed.connect(_on_sell_pressed.bind(item_id, amount_input, owned_count))
 	amount_input.text_changed.connect(_on_amount_text_changed.bind(amount_input, total_label, sell_button, owned_count, value_per_fish, pending, selected_label, selected_fill))
 	amount_input.text_submitted.connect(_on_amount_text_submitted.bind(amount_input, total_label, sell_button, owned_count, value_per_fish, pending, selected_label, selected_fill))
@@ -674,14 +687,14 @@ func parse_amount_text(raw_text: String) -> float:
 	if clean_text == "" or not clean_text.is_valid_float():
 		return 0.0
 
-	return max(0.0, floor(float(clean_text)))
+	return snappedf(maxf(0.0, float(clean_text)), 0.1) if is_finite(float(clean_text)) else 0.0
 
 
 func clamp_sell_amount(amount: float, owned_count: float) -> float:
-	return float(clampi(int(round(amount)), 1, max(1, int(round(owned_count)))))
+	return snappedf(clampf(amount, 0.1, maxf(0.1, owned_count)), 0.1)
 
 
-func update_amount_summary(amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: int, pending: bool, selected_label: Label = null, selected_fill: Panel = null):
+func update_amount_summary(amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: float, pending: bool, selected_label: Label = null, selected_fill: Panel = null):
 	var amount = parse_amount_text(amount_input.text if amount_input != null else "")
 	if amount > owned_count:
 		amount = owned_count
@@ -691,7 +704,7 @@ func update_amount_summary(amount_input: LineEdit, total_label: Label, sell_butt
 		total_label.text = "Total: " + format_gem_amount(total_gems) + " gems"
 
 	if selected_label != null:
-		selected_label.text = "Selected: " + format_fish_count(int(amount))
+		selected_label.text = "Selected: " + format_fish_count(amount)
 
 	if selected_fill != null:
 		var max_width = float(selected_fill.get_meta("max_width", selected_fill.size.x))
@@ -702,7 +715,7 @@ func update_amount_summary(amount_input: LineEdit, total_label: Label, sell_butt
 		sell_button.disabled = pending or owned_count <= 0.0 or value_per_fish <= 0 or amount <= 0.0 or amount > owned_count or total_gems <= 0
 
 
-func sanitize_amount_input(amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: int, pending: bool, selected_label: Label = null, selected_fill: Panel = null) -> float:
+func sanitize_amount_input(amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: float, pending: bool, selected_label: Label = null, selected_fill: Panel = null) -> float:
 	var amount = clamp_sell_amount(parse_amount_text(amount_input.text if amount_input != null else ""), owned_count)
 	if amount_input != null:
 		amount_input.text = format_fish_count_number(amount)
@@ -719,13 +732,13 @@ func format_gem_amount(amount: int) -> String:
 
 
 func format_fish_count_number(count: float) -> String:
-	return str(max(0, int(round(count))))
+	return "%.1f" % maxf(0.0, count)
 
 
-func calculate_fish_sale_value(count: float, value_per_fish: int) -> int:
+func calculate_fish_sale_value(count: float, value_per_fish: float) -> int:
 	if count <= 0.0 or value_per_fish <= 0:
 		return 0
-	return int(count) * value_per_fish
+	return ceili((roundi(count * 10.0) * roundi(value_per_fish * 100.0)) / 1000.0)
 
 
 func get_total_sellable_fish_value() -> int:
@@ -740,36 +753,36 @@ func get_total_sellable_fish_value_from_entries(entries: Array) -> int:
 	var total_value := 0
 	for entry in entries:
 		if entry is Dictionary:
-			total_value += get_fish_count_from_entry(entry) * get_fish_value_from_entry(entry)
-	return total_value
+			total_value += roundi(get_fish_count_from_entry(entry) * 10.0) * roundi(get_fish_value_from_entry(entry) * 100.0)
+	return ceili(total_value / 1000.0)
 
 
-func _on_amount_text_changed(_new_text: String, amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: int, pending: bool, selected_label: Label = null, selected_fill: Panel = null):
+func _on_amount_text_changed(_new_text: String, amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: float, pending: bool, selected_label: Label = null, selected_fill: Panel = null):
 	update_amount_summary(amount_input, total_label, sell_button, owned_count, value_per_fish, pending, selected_label, selected_fill)
 
 
-func _on_amount_text_submitted(_new_text: String, amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: int, pending: bool, selected_label: Label = null, selected_fill: Panel = null):
+func _on_amount_text_submitted(_new_text: String, amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: float, pending: bool, selected_label: Label = null, selected_fill: Panel = null):
 	sanitize_amount_input(amount_input, total_label, sell_button, owned_count, value_per_fish, pending, selected_label, selected_fill)
 
 
-func _on_amount_focus_exited(amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: int, pending: bool, selected_label: Label = null, selected_fill: Panel = null):
+func _on_amount_focus_exited(amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: float, pending: bool, selected_label: Label = null, selected_fill: Panel = null):
 	sanitize_amount_input(amount_input, total_label, sell_button, owned_count, value_per_fish, pending, selected_label, selected_fill)
 
 
-func _on_amount_step_pressed(amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: int, pending: bool, delta: int, selected_label: Label = null, selected_fill: Panel = null):
+func _on_amount_step_pressed(amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: float, pending: bool, delta: int, selected_label: Label = null, selected_fill: Panel = null):
 	var current_amount = parse_amount_text(amount_input.text if amount_input != null else "")
 	if current_amount <= 0.0:
-		current_amount = min(1.0, owned_count)
+		current_amount = min(0.1, owned_count)
 
-	var next_amount = clamp_sell_amount(current_amount + float(delta), owned_count)
+	var next_amount = clamp_sell_amount(current_amount + float(delta) * 0.1, owned_count)
 	if amount_input != null:
 		amount_input.text = format_fish_count_number(next_amount)
 
 	update_amount_summary(amount_input, total_label, sell_button, owned_count, value_per_fish, pending, selected_label, selected_fill)
 
 
-func _on_amount_quick_pressed(amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: int, pending: bool, fraction: float, selected_label: Label = null, selected_fill: Panel = null):
-	var next_amount = clamp_sell_amount(max(1.0, owned_count * fraction), owned_count)
+func _on_amount_quick_pressed(amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: float, pending: bool, fraction: float, selected_label: Label = null, selected_fill: Panel = null):
+	var next_amount = clamp_sell_amount(max(0.1, owned_count * fraction), owned_count)
 	if amount_input != null:
 		amount_input.text = format_fish_count_number(next_amount)
 
@@ -785,7 +798,7 @@ func _on_sell_pressed(item_id: String, amount_input: LineEdit, owned_count: floa
 		var requested_amount = parse_amount_text(amount_input.text if amount_input != null else "")
 		if requested_amount <= 0.0:
 			if world.has_method("show_notification"):
-				world.show_notification("Choose at least 1 fish to sell.")
+				world.show_notification("Choose at least 0.1 kg to sell.")
 			return
 		var amount = clamp_sell_amount(requested_amount, owned_count)
 		if amount_input != null:

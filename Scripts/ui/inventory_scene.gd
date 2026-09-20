@@ -2400,6 +2400,8 @@ func _slot_count_text(item: Dictionary) -> String:
 	if _is_capacity_slot(item):
 		return ""
 	var count: int = _count_from_value(item.get("count", 0))
+	if str(item.get("category", "")) == "fish":
+		return "%.1f kg" % (count / 10.0)
 	if count <= 1 and not _is_equipment_category(str(item.get("category", ""))):
 		return ""
 	return _compact_count(count)
@@ -2409,6 +2411,8 @@ func _detail_count_text(item: Dictionary) -> String:
 	if _is_capacity_slot(item):
 		return ""
 	var count: int = _count_from_value(item.get("count", 0))
+	if str(item.get("category", "")) == "fish":
+		return "%.1f / 2000 kg" % (count / 10.0)
 	return "x" + str(count)
 
 
