@@ -112,6 +112,8 @@ var _used_for_pool: Array[Button] = []
 var _filter_boxes: Array[CheckBox] = []
 var _visible_recipes: Array = []
 var _window_fit_scale: float = 1.0
+var _open_revision := 0
+var _open_tween: Tween
 
 
 func _ready() -> void:
@@ -196,19 +198,47 @@ func is_open() -> bool:
 # --- Public API -------------------------------------------------------------
 
 func open(tier: int = -1) -> void:
+	_open_revision += 1
+	var revision := _open_revision
+	if _open_tween != null:
+		_open_tween.kill()
+	# Visible containers need a layout pass, but must not flash at their
+	# temporary wrapped-text minimum size while fonts and rows settle.
+	if window != null:
+		window.modulate.a = 0.0
 	refresh_from_world()
 	visible = true
-	_fit_window_to_screen()
 	var target_tier: int = tier if tier >= 0 else (_current_tier if _current_tier >= 0 else start_tier)
 	select_tier(target_tier)
-	if play_open_animation and window != null:
-		_play_open_animation()
+	_settle_open_layout(revision)
+
+
+func _settle_open_layout(revision: int) -> void:
+	var previous_size := Vector2.ZERO
+	var stable_frames := 0
+	for frame in range(8):
+		await get_tree().process_frame
+		if revision != _open_revision or not visible:
+			return
+		_fit_window_to_screen()
+		var current_size := window.size if window != null else Vector2.ZERO
+		stable_frames = stable_frames + 1 if current_size.is_equal_approx(previous_size) else 0
+		previous_size = current_size
+		if stable_frames >= 2:
+			break
+	if window != null:
+		if play_open_animation:
+			_play_open_animation()
+		else:
+			window.modulate.a = 1.0
 
 
 func close() -> void:
+	_open_revision += 1
+	if _open_tween != null:
+		_open_tween.kill()
 	visible = false
 	closed.emit()
-
 
 func set_tier_range(new_first_tier: int, new_tier_count: int) -> void:
 	first_tier = new_first_tier
@@ -747,11 +777,7 @@ func _fit_window_to_screen() -> void:
 
 
 func _play_open_animation() -> void:
-	var target_scale := Vector2.ONE * _window_fit_scale
-	window.pivot_offset = window.size * 0.5
-	window.scale = target_scale * 0.96
-	window.modulate = Color(1.0, 1.0, 1.0, 0.0)
-	var tween := window.create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(window, "scale", target_scale, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.tween_property(window, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	# Fade only: scaling here races screen fitting and mobile UI scaling,
+	# and makes the book visibly grow each time it opens.
+	_open_tween = window.create_tween()
+	_open_tween.tween_property(window, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
