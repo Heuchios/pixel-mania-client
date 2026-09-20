@@ -39,13 +39,29 @@ var _update_check: HTTPRequest
 
 
 func _installed_version() -> String:
+	var package_version := _android_package_version().strip_edges()
+	if _is_release_version(package_version):
+		return package_version
+	# Some AndroidRuntime builds do not expose PackageInfo.versionName as a
+	# readable property. Never compare the string "null" as version zero.
+	var build_version := str(_network.CLIENT_VERSION).strip_edges() if _network != null else ""
+	return build_version if _is_release_version(build_version) else ""
+
+
+func _android_package_version() -> String:
 	if _platform_kind() == "android" and Engine.has_singleton("AndroidRuntime"):
 		var runtime = Engine.get_singleton("AndroidRuntime")
 		var context = runtime.getApplicationContext()
 		var info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0)
 		if info != null:
 			return str(info.versionName)
-	return str(_network.CLIENT_VERSION) if _network != null else ""
+	return ""
+
+
+static func _is_release_version(value: String) -> bool:
+	var pattern := RegEx.new()
+	pattern.compile("^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$")
+	return pattern.search(value) != null
 
 
 func _check_release() -> void:
@@ -68,7 +84,7 @@ func _on_release_checked(result: int, status: int, _headers: PackedStringArray, 
 		return
 	var minimum := str(data.get("min_client_version", ""))
 	var current := _installed_version()
-	if minimum.is_empty() or current.is_empty() or _network._compare_client_versions(current, minimum) >= 0:
+	if not _is_release_version(minimum) or not _is_release_version(current) or _network._compare_client_versions(current, minimum) >= 0:
 		return
 	_network._store_client_update_payload({
 		"client_version": current, "min_client_version": minimum,
