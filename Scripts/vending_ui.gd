@@ -30,6 +30,11 @@ var current_grid := Vector2i.ZERO
 var current_state := {}
 var selected_item := {}
 var scene_ui_ready := false
+var price_mode: OptionButton
+var purchase_confirmation: ConfirmationDialog
+var purchase_quote := {}
+var refreshing_fields := false
+var mutation_pending := false
 
 
 func setup(parent_world, ui_node):
@@ -101,6 +106,14 @@ func bind_scene_ui() -> bool:
 	_connect_spin(price_spin)
 	apply_vending_scrollbar_style(log_overlay.get_node_or_null("LogScroll"))
 	log_overlay.visible = false
+	price_mode = panel.get_node("PriceCard/PriceMode")
+	for style_name in ["normal", "hover", "pressed", "focus"]:
+		price_mode.add_theme_stylebox_override(style_name, list_button.get_theme_stylebox(style_name))
+	price_mode.add_theme_stylebox_override("disabled", list_button.get_theme_stylebox("normal"))
+	price_mode.add_theme_color_override("font_disabled_color", Color.WHITE)
+	price_mode.item_selected.connect(_on_price_mode_changed)
+	purchase_confirmation = get_node("PurchaseConfirmation")
+	purchase_confirmation.confirmed.connect(_confirm_purchase)
 	return true
 
 
@@ -686,6 +699,7 @@ func open_vending(grid_pos: Vector2i):
 		return
 
 	current_grid = grid_pos
+	mutation_pending = false
 	selected_item.clear()
 	current_state = {
 		"x": grid_pos.x,
@@ -709,6 +723,9 @@ func close_vending():
 		world.end_vend_item_select(true)
 	visible = false
 	selected_item.clear()
+	purchase_quote.clear()
+	if purchase_confirmation != null:
+		purchase_confirmation.hide()
 	if log_overlay != null:
 		log_overlay.visible = false
 
@@ -733,6 +750,8 @@ func request_vend_state():
 
 
 func send_vend_request(payload: Dictionary) -> bool:
+	if mutation_pending and str(payload.get("action", "")) != "vend_get_state":
+		return false
 	var network = get_node_or_null("/root/NetworkManager")
 	if network == null or not network.has_method("send_inventory_transaction_request"):
 		if world != null and world.has_method("show_notification"):
@@ -747,6 +766,8 @@ func send_vend_request(payload: Dictionary) -> bool:
 		if world != null and world.has_method("show_notification"):
 			world.show_notification("That vending action could not be completed.")
 		return false
+	if str(payload.get("action", "")) != "vend_get_state":
+		mutation_pending = true
 	return true
 
 
@@ -757,13 +778,10 @@ func add_inventory_item_to_vend(item_type: String, category: String, amount: int
 		if world != null:
 			world.show_notification("Only the vending machine owner can list items.")
 		return false
-	if is_current_vend_awaiting_collection():
+	var listing = get_listing()
+	if not listing.is_empty() and (str(listing.item_id) != item_type or str(listing.item_category) != category):
 		if world != null:
-			world.show_notification("Collect the sold vending machine first.")
-		return false
-	if not get_listing().is_empty():
-		if world != null:
-			world.show_notification("Cancel or collect the current vending machine first.")
+			world.show_notification("Remove the current stock before selecting another item.")
 		return false
 
 	selected_item = {
@@ -783,9 +801,13 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 	var action = str(data.get("action", ""))
 	if not action.begins_with("vend_"):
 		return false
+	if action != "vend_get_state":
+		mutation_pending = false
 
 	var vend_state = data.get("vend_state", {})
 	if vend_state is Dictionary and not vend_state.is_empty():
+		if int(vend_state.get("x", current_grid.x)) != current_grid.x or int(vend_state.get("y", current_grid.y)) != current_grid.y:
+			return true
 		apply_vend_state(vend_state)
 		sync_world_vending_preview()
 
@@ -899,6 +921,7 @@ func refresh_item_slot(listing: Dictionary):
 		item_icon.visible = false
 		item_icon.texture = null
 		item_label.text = "+\nSelect Item"
+		panel.get_node("ItemCard/Hint").text = "Click the slot to choose an item." if can_manage_current_vend() else "This machine is empty."
 		return
 
 	var item_id = str(display_item.get("item_id", ""))
@@ -908,41 +931,72 @@ func refresh_item_slot(listing: Dictionary):
 	item_icon.texture = texture
 	item_icon.visible = texture != null
 	item_label.text = get_item_name(item_id, category) + "\nx" + str(amount)
+	var hint = get_item_name(item_id, category) + " | " + str(amount) + " items"
+	hint += "\nClick the slot to add stock." if can_manage_current_vend() else "\nChoose a quantity to buy."
+	panel.get_node("ItemCard/Hint").text = hint
 
 
 func refresh_price_controls(listing: Dictionary):
-	var editable = can_manage_current_vend() and listing.is_empty() and not is_current_vend_awaiting_collection()
+	refreshing_fields = true
+	var owner = can_manage_current_vend()
+	stock_spin.editable = owner and not selected_item.is_empty() or not owner and not listing.is_empty()
+	price_spin.editable = owner and (not selected_item.is_empty() or not listing.is_empty())
+	price_mode.disabled = not price_spin.editable
+	per_sale_spin.visible = false
+	panel.get_node("PriceCard/StockLabel").text = "ADD STOCK" if owner else "QUANTITY"
+	panel.get_node("PriceCard/PerSaleLabel").text = "PRICE MODE"
+	panel.get_node("PriceCard/PriceLabel").text = "RATE"
+	if owner:
+		stock_spin.step = 1
+		stock_spin.min_value = 0
+		stock_spin.max_value = int(selected_item.get("stock", 0))
+		if selected_item.is_empty():
+			stock_spin.value = 0
+		if not listing.is_empty():
+			price_mode.select(1 if int(listing.get("amount_per_sale", 1)) > 1 else 0)
+			price_spin.value = int(listing.get("amount_per_sale", 1)) if price_mode.selected == 1 else int(listing.get("price_wls", 1))
+	else:
+		var bundle = max(1, int(listing.get("amount_per_sale", 1)))
+		var available = int(listing.get("stock", 0))
+		stock_spin.min_value = bundle
+		stock_spin.step = bundle
+		stock_spin.max_value = max(bundle, (available / bundle as int) * bundle)
+		price_mode.select(1 if bundle > 1 else 0)
+		price_spin.value = bundle if bundle > 1 else int(listing.get("price_wls", 1))
+	refreshing_fields = false
+	refresh_price_summary()
 
-	stock_spin.editable = editable and not selected_item.is_empty()
-	per_sale_spin.editable = editable and not selected_item.is_empty()
-	price_spin.editable = editable and not selected_item.is_empty()
 
-	if selected_item.is_empty() and not listing.is_empty():
-		var stock = max(1, int(listing.get("stock", 1)))
-		stock_spin.max_value = stock
-		stock_spin.value = stock
-		per_sale_spin.max_value = stock
-		per_sale_spin.value = max(1, int(listing.get("amount_per_sale", listing.get("amount_per_sale", 1))))
-		price_spin.value = max(1, int(listing.get("price_wls", 1)))
-	elif not selected_item.is_empty():
-		var selected_stock = max(1, int(selected_item.get("stock", 1)))
-		stock_spin.max_value = selected_stock
-		per_sale_spin.max_value = max(1, int(stock_spin.value))
-		if int(per_sale_spin.value) > int(stock_spin.value):
-			per_sale_spin.value = int(stock_spin.value)
+func _on_price_mode_changed(_index: int):
+	refresh_price_summary()
+
+
+func refresh_price_summary():
+	if panel == null or price_mode == null:
+		return
+	var summary = panel.get_node("PriceCard/Formula")
+	if can_manage_current_vend():
+		summary.text = "%d items per World Lock" % int(price_spin.value) if price_mode.selected == 1 else "%d World Locks per item" % int(price_spin.value)
+	else:
+		var listing = get_listing()
+		var bundle = max(1, int(listing.get("amount_per_sale", 1)))
+		var count = int(stock_spin.value) / bundle as int
+		var total = count * int(listing.get("price_wls", 1))
+		summary.text = "%d items for %d WL. Stock: %d" % [int(stock_spin.value), total, int(listing.get("stock", 0))]
+		buy_button.text = "BUY %d FOR %d WL" % [int(stock_spin.value), total]
 
 
 func refresh_buttons(listing: Dictionary, pending: int, can_manage: bool):
-	var awaiting_collection = is_current_vend_awaiting_collection()
 	list_button.visible = can_manage
-	list_button.disabled = selected_item.is_empty() or not listing.is_empty() or awaiting_collection
+	list_button.disabled = selected_item.is_empty() and listing.is_empty()
+	list_button.text = "SAVE" if not listing.is_empty() else "STOCK ITEM"
 	list_button.position = Vector2(50, 467)
 	list_button.size = Vector2(150, 46)
 
 	buy_button.visible = not listing.is_empty() and not can_manage
-	buy_button.disabled = listing.is_empty()
+	buy_button.disabled = listing.is_empty() or int(listing.get("stock", 0)) < int(listing.get("amount_per_sale", 1))
 	if not listing.is_empty():
-		buy_button.text = "BUY x" + str(int(listing.get("amount_per_sale", 1))) + " - " + str(int(listing.get("price_wls", 1))) + " WL"
+		refresh_price_summary()
 	if buy_button.visible:
 		buy_button.position = Vector2(50, 467)
 		buy_button.size = Vector2(384, 46)
@@ -955,6 +1009,7 @@ func refresh_buttons(listing: Dictionary, pending: int, can_manage: bool):
 	collect_button.position = Vector2(448, 467)
 	collect_button.size = Vector2(122, 46)
 
+	cancel_button.text = "REMOVE"
 	cancel_button.visible = can_manage
 	cancel_button.disabled = listing.is_empty()
 	cancel_button.position = Vector2(690, 467)
@@ -986,10 +1041,8 @@ func refresh_log_text():
 
 
 func _on_price_fields_changed(_value: float):
-	if stock_spin != null and per_sale_spin != null:
-		per_sale_spin.max_value = max(1, int(stock_spin.value))
-		if int(per_sale_spin.value) > int(stock_spin.value):
-			per_sale_spin.value = int(stock_spin.value)
+	if not refreshing_fields:
+		refresh_price_summary()
 
 
 func read_spin_box_int(spin: SpinBox, fallback: int = 1) -> int:
@@ -1013,54 +1066,54 @@ func _on_item_slot_pressed():
 		if world != null:
 			world.show_notification("Only the vending machine owner can list items.")
 		return
-	if is_current_vend_awaiting_collection():
-		if world != null:
-			world.show_notification("Collect the sold vending machine first.")
-		return
-	if not get_listing().is_empty():
-		if world != null:
-			world.show_notification("Cancel or collect the current vending machine first.")
-		return
 	if world != null and world.has_method("begin_vend_item_select"):
 		world.begin_vend_item_select()
 
 
 func _on_list_pressed():
-	if selected_item.is_empty():
-		if world != null:
-			world.show_notification("Select an item first.")
+	var listing = get_listing()
+	var item = selected_item if not selected_item.is_empty() else listing
+	if item.is_empty():
 		return
-	if is_current_vend_awaiting_collection():
-		if world != null:
-			world.show_notification("Collect the sold vending machine first.")
-		return
-	if not get_listing().is_empty():
-		if world != null:
-			world.show_notification("Cancel the current vending listing first.")
-		return
-
-	var stock_value = read_spin_box_int(stock_spin, 1)
-	var per_sale_value = read_spin_box_int(per_sale_spin, 1)
-	var price_value = read_spin_box_int(price_spin, 1)
-	per_sale_value = clamp(per_sale_value, 1, stock_value)
-	per_sale_spin.max_value = stock_value
-	per_sale_spin.value = per_sale_value
-
+	var stock_value = read_spin_box_int(stock_spin, 0) if not selected_item.is_empty() else 0
+	var rate = read_spin_box_int(price_spin, 1)
 	send_vend_request({
 		"action": "vend_set_listing",
-		"item_id": str(selected_item.get("item_id", "")),
-		"item_category": str(selected_item.get("item_category", "")),
+		"item_id": str(item.get("item_id", "")),
+		"item_category": str(item.get("item_category", "")),
 		"stock": stock_value,
-		"amount_per_sale": per_sale_value,
-		"price_wls": price_value
+		"amount_per_sale": rate if price_mode.selected == 1 else 1,
+		"price_wls": 1 if price_mode.selected == 1 else rate
 	})
 
 
 func _on_buy_pressed():
-	send_vend_request({
+	var listing = get_listing()
+	if listing.is_empty():
+		return
+	var bundle = max(1, int(listing.get("amount_per_sale", 1)))
+	var quantity = read_spin_box_int(stock_spin, bundle)
+	var count = quantity / bundle as int
+	if count <= 0 or count * bundle > int(listing.get("stock", 0)):
+		return
+	stock_spin.value = count * bundle
+	refresh_price_summary()
+	purchase_quote = {
 		"action": "vend_buy",
-		"sale_count": 1
-	})
+		"sale_count": count,
+		"expected_listing_id": str(listing.get("listing_id", "")),
+		"expected_item_id": str(listing.get("item_id", "")),
+		"expected_amount_per_sale": bundle,
+		"expected_price_wls": int(listing.get("price_wls", 1))
+	}
+	purchase_confirmation.dialog_text = "Buy %d %s for %d World Locks?" % [count * bundle, get_item_name(str(listing.item_id), str(listing.item_category)), count * int(listing.get("price_wls", 1))]
+	purchase_confirmation.popup_centered(Vector2i(460, 180))
+
+
+func _confirm_purchase():
+	if not purchase_quote.is_empty():
+		send_vend_request(purchase_quote)
+		purchase_quote.clear()
 
 
 func _on_collect_pressed():
