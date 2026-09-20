@@ -1084,6 +1084,9 @@ const ITEMS = {
 "campfire": {
 	"category": "block",
 	"display_name": "Campfire",
+	"light_fx_scene": "res://Scenes/particles/CampfireLightFX.tscn",
+	"light_fx_offset": Vector2(0, -5),
+	"light_fx_show_fixture": false,
 	"seed": "campfire_seed",
 	"hidden": false,
 	"placeable": true,
@@ -3388,17 +3391,40 @@ const ITEMS = {
 		"order": 8
 	},
 "water_bucket": {
-		"category": "block",
-		"display_name": "Water Bucket",
-		"rarity": "common",
-		"block_health": 1,
-		"texture": "res://Assets/blocks/Tier_1/basic blocks/water_bucket.png",
-		"inventory_icon": "res://Assets/blocks/Tier_1/basic blocks/water_bucket.png",
-		"seed": "",
-		"placeable": false,
-		"water_bucket": true,
-		"order": 9
+	"category": "material",
+	"display_name": "Water Bucket",
+	"rarity": "common",
+	"block_health": 1,
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			5,
+			0
+		],
+		"cell_size": [
+			32,
+			32
+		]
 	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			5,
+			0
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"seed": "",
+	"placeable": false,
+	"water_bucket": true,
+	"order": 9,
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false
+},
 "electric_wire": {
 		"category": "block",
 		"display_name": "Electric Wire",
@@ -10566,6 +10592,432 @@ const ITEMS = {
 	# ============================================================
 	# MATERIALS
 	# ============================================================
+"seed_pack": {
+	"category": "material",
+	"display_name": "Seed Pack",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			0,
+			0
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			0,
+			0
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false,
+	"rarity": "common",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false
+},
+"small_gem": {
+	"category": "material",
+	"display_name": "Small Gem",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			1,
+			0
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			1,
+			0
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false,
+	"rarity": "common",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false
+},
+"medium_gem": {
+	"category": "material",
+	"display_name": "Medium Gem",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			2,
+			0
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			2,
+			0
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false,
+	"rarity": "common",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false
+},
+"large_gem": {
+	"category": "material",
+	"display_name": "Large Gem",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			3,
+			0
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			3,
+			0
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false,
+	"rarity": "common",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false
+},
+"huge_gem": {
+	"category": "material",
+	"display_name": "Huge Gem",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			4,
+			0
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			4,
+			0
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false,
+	"rarity": "common",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false
+},
+"fertilizer": {
+	"category": "tool",
+	"display_name": "Fertilizer Spray",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			3,
+			1
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			3,
+			1
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"consumable": true,
+	"item_type": "consumable",
+	"equipable": false,
+	"growth_reduction_seconds": 3600,
+	"description": "Reduces a tree's remaining growth time by 1 hour. Consumed on successful use.",
+	"rarity": "common",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false
+},
+"super_fertilizer": {
+	"category": "tool",
+	"display_name": "Super Fertilizer Spray",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			4,
+			1
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			4,
+			1
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"consumable": true,
+	"item_type": "consumable",
+	"equipable": false,
+	"growth_reduction_seconds": 14400,
+	"description": "Reduces a tree's remaining growth time by 4 hours. Consumed on successful use.",
+	"rarity": "common",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false
+},
+"gasoline": {
+	"category": "material",
+	"display_name": "Gasoline",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			1,
+			2
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			1,
+			2
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false,
+	"rarity": "common",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false
+},
+"assembled_scrap": {
+	"category": "material",
+	"display_name": "Assembled Scrap",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			2,
+			3
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			2,
+			3
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false,
+	"rarity": "common",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false
+},
+"roman_coin": {
+	"category": "material",
+	"display_name": "Roman Coin",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			0,
+			4
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			0,
+			4
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false,
+	"rarity": "common",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false
+},
+"golden_roman_coin": {
+	"category": "material",
+	"display_name": "Golden Roman Coin",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			1,
+			4
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			1,
+			4
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false,
+	"rarity": "common",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false
+},
+"landfill_ticket": {
+	"category": "material",
+	"display_name": "Landfill Ticket",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			2,
+			4
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			2,
+			4
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false,
+	"consume_on_world_entry": "landfill",
+	"description": "Required to enter a Landfill world. One ticket is consumed when you join.",
+	"rarity": "common",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false
+},
 "refined_stone": {
 		"category": "material",
 		"display_name": "Refined Stone",
@@ -10581,68 +11033,253 @@ const ITEMS = {
 		"order": 101
 	},
 "metal_scrap": {
-		"category": "material",
-		"display_name": "Metal Scrap",
-		"rarity": "rare",
-		"texture": "res://Assets/items/materials/metal_scrap.png",
-		"order": 102
+	"category": "material",
+	"display_name": "Scrap",
+	"rarity": "rare",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			1,
+			3
+		],
+		"cell_size": [
+			32,
+			32
+		]
 	},
+	"order": 102,
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			1,
+			3
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false
+},
 "crude_oil": {
-		"category": "material",
-		"display_name": "Crude Oil",
-		"rarity": "uncommon",
-		"texture": "res://Assets/blocks/special_blocks/oil_refinery/crude_oil.png",
-		"inventory_icon": "res://Assets/blocks/special_blocks/oil_refinery/crude_oil.png",
-		"order": 103
+	"category": "material",
+	"display_name": "Crude Oil",
+	"rarity": "uncommon",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			0,
+			2
+		],
+		"cell_size": [
+			32,
+			32
+		]
 	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			0,
+			2
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"order": 103,
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false
+},
 "battery": {
-		"category": "material",
-		"display_name": "Battery",
-		"rarity": "uncommon",
-		"texture": "res://Assets/blocks/electric/battery.png",
-		"inventory_icon": "res://Assets/blocks/electric/battery.png",
-		"order": 104
+	"category": "material",
+	"display_name": "Battery",
+	"rarity": "uncommon",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			0,
+			3
+		],
+		"cell_size": [
+			32,
+			32
+		]
 	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			0,
+			3
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"order": 104,
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false
+},
 "grain": {
-		"category": "material",
-		"display_name": "Grain",
-		"rarity": "common",
-		"texture": "res://Assets/items/materials/grain.png",
-		"inventory_icon": "res://Assets/items/materials/grain.png",
-		"order": 105
+	"category": "material",
+	"display_name": "Grains",
+	"rarity": "common",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			5,
+			1
+		],
+		"cell_size": [
+			32,
+			32
+		]
 	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			5,
+			1
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"order": 105,
+	"consumable": true,
+	"item_type": "material",
+	"equipable": false
+},
 "egg": {
-		"category": "material",
-		"display_name": "Egg",
-		"rarity": "common",
-		"texture": "res://Assets/items/materials/egg.png",
-		"inventory_icon": "res://Assets/items/materials/egg.png",
-		"order": 106
+	"category": "material",
+	"display_name": "Egg",
+	"rarity": "common",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			2,
+			2
+		],
+		"cell_size": [
+			32,
+			32
+		]
 	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			2,
+			2
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"order": 106,
+	"consumable": true,
+	"item_type": "material",
+	"equipable": false
+},
 "golden_egg": {
-		"category": "material",
-		"display_name": "Golden Egg",
-		"rarity": "legendary",
-		"texture": "res://Assets/items/materials/golden_egg.png",
-		"inventory_icon": "res://Assets/items/materials/golden_egg.png",
-		"order": 106
+	"category": "material",
+	"display_name": "Golden Egg",
+	"rarity": "legendary",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			3,
+			2
+		],
+		"cell_size": [
+			32,
+			32
+		]
 	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			3,
+			2
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"order": 106,
+	"consumable": false,
+	"item_type": "material",
+	"equipable": false
+},
 "wheat": {
-		"category": "material",
-		"display_name": "Wheat",
-		"rarity": "common",
-		"texture": "res://Assets/items/materials/wheat.png",
-		"inventory_icon": "res://Assets/items/materials/wheat.png",
-		"order": 107
+	"category": "material",
+	"display_name": "Wheat",
+	"rarity": "common",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			6,
+			1
+		],
+		"cell_size": [
+			32,
+			32
+		]
 	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			6,
+			1
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"order": 107,
+	"consumable": true,
+	"item_type": "material",
+	"equipable": false
+},
 "milk": {
-		"category": "material",
-		"display_name": "Milk",
-		"rarity": "common",
-		"texture": "res://Assets/items/materials/milk.png",
-		"inventory_icon": "res://Assets/items/materials/milk.png",
-		"order": 108
+	"category": "material",
+	"display_name": "Bucket Milk",
+	"rarity": "common",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			4,
+			2
+		],
+		"cell_size": [
+			32,
+			32
+		]
 	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			4,
+			2
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"order": 108,
+	"consumable": true,
+	"item_type": "material",
+	"equipable": false
+},
 "seaweed": {
 		"category": "material",
 		"display_name": "Seaweed",
@@ -14190,68 +14827,153 @@ const ITEMS = {
 	# TOOLS / UTILITY ITEMS
 	# ============================================================
 "entrance_mover": {
-		"category": "tool",
-		"display_name": "Entrance Mover",
-		"rarity": "rare",
-		"texture": "res://Assets/items/special items/entrance mover/entrance_mover.png",
-		"starting_count": 0,
-		"break_power": 1,
-		"effective_break_power": 1,
-		"effective_blocks": [],
-		"equipable": false,
-		"consumable": true,
-		"order": 4
+	"category": "tool",
+	"display_name": "World Entrance Mover",
+	"rarity": "rare",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			0,
+			1
+		],
+		"cell_size": [
+			32,
+			32
+		]
 	},
+	"starting_count": 0,
+	"break_power": 1,
+	"effective_break_power": 1,
+	"effective_blocks": [],
+	"equipable": false,
+	"consumable": true,
+	"order": 4,
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			0,
+			1
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"item_type": "consumable"
+},
 "lock_mover": {
-		"category": "tool",
-		"display_name": "Lock Mover",
-		"rarity": "epic",
-		"texture": "res://Assets/locks/lock_mover.png",
-		"inventory_icon": "res://Assets/locks/lock_mover.png",
-		"starting_count": 0,
-		"break_power": 1,
-		"effective_break_power": 1,
-		"effective_blocks": [],
-		"equipable": false,
-		"consumable": true,
-		"shop_price": 17000,
-		"order": 5
+	"category": "tool",
+	"display_name": "World Lock Mover",
+	"rarity": "epic",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			1,
+			1
+		],
+		"cell_size": [
+			32,
+			32
+		]
 	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			1,
+			1
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"starting_count": 0,
+	"break_power": 1,
+	"effective_break_power": 1,
+	"effective_blocks": [],
+	"equipable": false,
+	"consumable": true,
+	"shop_price": 17000,
+	"order": 5,
+	"item_type": "consumable"
+},
 "door_mover": {
-		"category": "tool",
-		"display_name": "Door Mover",
-		"rarity": "rare",
-		"texture": "res://Assets/inventory_icons/door.png",
-		"inventory_icon": "res://Assets/inventory_icons/door.png",
-		"starting_count": 0,
-		"break_power": 1,
-		"effective_break_power": 1,
-		"effective_blocks": [],
-		"equipable": false,
-		"consumable": true,
-		"shop_price": 500,
-		"order": 6
+	"category": "tool",
+	"display_name": "Door Mover",
+	"rarity": "rare",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			2,
+			1
+		],
+		"cell_size": [
+			32,
+			32
+		]
 	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			2,
+			1
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"starting_count": 0,
+	"break_power": 1,
+	"effective_break_power": 1,
+	"effective_blocks": [],
+	"equipable": false,
+	"consumable": true,
+	"shop_price": 500,
+	"order": 6,
+	"item_type": "consumable"
+},
 "world_lock_key": {
-		"category": "material",
-		"display_name": "World Lock Key",
-		"rarity": "legendary",
-		"texture": "res://Assets/locks/world_lock_key.png",
-		"inventory_icon": "res://Assets/locks/world_lock_key.png",
-		"starting_count": 0,
-		"break_power": 1,
-		"effective_break_power": 1,
-		"effective_blocks": [],
-		"equipable": false,
-		"consumable": false,
-		"tradeable": true,
-		"dropable": false,
-		"vendable": false,
-		"instance_tracked": true,
-		"max_stack": 400,
-		"world_lock_key": true,
-		"order": 6
+	"category": "material",
+	"display_name": "World Key",
+	"rarity": "legendary",
+	"texture": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			6,
+			0
+		],
+		"cell_size": [
+			32,
+			32
+		]
 	},
+	"inventory_icon": {
+		"atlas": "res://Assets/items/material.png",
+		"cell": [
+			6,
+			0
+		],
+		"cell_size": [
+			32,
+			32
+		]
+	},
+	"starting_count": 0,
+	"break_power": 1,
+	"effective_break_power": 1,
+	"effective_blocks": [],
+	"equipable": false,
+	"consumable": false,
+	"tradeable": true,
+	"dropable": false,
+	"vendable": false,
+	"instance_tracked": true,
+	"max_stack": 400,
+	"world_lock_key": true,
+	"order": 6,
+	"item_type": "material"
+},
 "wrench": {
 		"category": "tool",
 		"display_name": "Wrench",
@@ -14579,7 +15301,10 @@ const ITEMS = {
 		"texture": "res://Assets/blocks/tier_3/biohazard_barrel.png",
 		"seed": "biohazard_barrel_seed",
 		"collidable": true,
-		"break_effect_frames": ["res://Assets/blocks/tier_3/biohazard_barrel_1.png", "res://Assets/blocks/tier_3/biohazard_barrel_2.png"],
+		"break_effect_frames": [
+			{"atlas": "res://image.png", "cell": [7, 13], "cell_size": [32, 32]},
+			{"atlas": "res://image.png", "cell": [8, 13], "cell_size": [32, 32]}
+		],
 		"break_effect_frame_seconds": 0.28,
 		"drop_rules": {"seed_chance":0,"gem_range":[0,0],"fixed_drops":[{"item_id":"biohazard_barrel","item_category":"block","amount":1},{"item_id":"gem","item_category":"currency","amount_range":[1,7]},{"item_id":"biohazard_barrel_seed","item_category":"seed","amount":1,"chance":0.2}]},
 		"order": 302

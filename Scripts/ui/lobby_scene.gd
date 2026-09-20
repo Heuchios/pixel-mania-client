@@ -13,32 +13,37 @@ const WORLD_JOIN_SCENE_CHANGE_DRAW_FRAMES := 1
 const LOBBY_HUB_WORLD := "START"
 const PLAYER_MAX_LEVEL := 100
 const WORLD_POPULATION_REFRESH_SECONDS := 5.0
-const ACTIVE_WORLD_LIST_SIDE_MARGIN := 20.0
-const ACTIVE_WORLD_LIST_TOP := 108.0
+const ACTIVE_WORLD_LIST_SIDE_MARGIN := 14.0
+const ACTIVE_WORLD_LIST_TOP := 64.0
 const ACTIVE_WORLD_LIST_BOTTOM_MARGIN := 24.0
-const ACTIVE_WORLD_ROW_HEIGHT := 72.0
-const ACTIVE_WORLD_ROW_SEPARATION := 10
+const ACTIVE_WORLD_ROW_HEIGHT := 52.0
+const ACTIVE_WORLD_ROW_SEPARATION := 12
 
-# The four buttons down the left of the lobby filter the world list. They shipped in
-# LobbyScene.tscn with no [connection] entries and no references in this script, so they
-# latched (toggle_mode is on) and did nothing. WORLD OF THE MONTH is deliberately still not
-# wired -- nothing decides what that world would be yet.
+const WORLD_FILTER_WEEK := "week"
+const WORLD_FILTER_OFFICIAL := "official"
 const WORLD_FILTER_ACTIVE := "active"
 const WORLD_FILTER_FAVORITES := "favorites"
 const WORLD_FILTER_RECENT := "recent"
 const WORLD_FILTER_MINE := "mine"
 const WORLD_FILTER_BUTTON_PATHS := {
+	WORLD_FILTER_WEEK: "LeftButtons/WorldOfWeekButton",
+	WORLD_FILTER_OFFICIAL: "LeftButtons/OfficialButton",
+	WORLD_FILTER_ACTIVE: "LeftButtons/ActiveButton",
 	WORLD_FILTER_FAVORITES: "LeftButtons/FavoritesButton",
 	WORLD_FILTER_RECENT: "LeftButtons/RecentButton",
 	WORLD_FILTER_MINE: "LeftButtons/MyWorldsButton",
 }
 const WORLD_FILTER_TITLES := {
+	WORLD_FILTER_WEEK: "WORLD OF THE WEEK",
+	WORLD_FILTER_OFFICIAL: "PIXELMANIA WORLDS",
 	WORLD_FILTER_ACTIVE: "ACTIVE WORLDS",
 	WORLD_FILTER_FAVORITES: "FAVORITE WORLDS",
 	WORLD_FILTER_RECENT: "RECENTLY JOINED",
 	WORLD_FILTER_MINE: "MY WORLDS",
 }
 const WORLD_FILTER_EMPTY_TEXT := {
+	WORLD_FILTER_WEEK: "WORLD OF THE WEEK WILL BE ANNOUNCED SOON",
+	WORLD_FILTER_OFFICIAL: "NO OFFICIAL WORLDS AVAILABLE",
 	WORLD_FILTER_ACTIVE: "NO ACTIVE WORLDS RIGHT NOW",
 	WORLD_FILTER_FAVORITES: "NO FAVORITES YET - TAP THE HEART ON A WORLD",
 	WORLD_FILTER_RECENT: "NO WORLDS JOINED YET",
@@ -66,19 +71,11 @@ const LOBBY_PARALLAX_LAYERS := [
 # actual join, same as the original lobby_menu.gd implementation did.
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 const LANDFILL_STATUS_REFRESH_SECONDS := 15.0
-# Landfill event card (badge art + "Go Green!" join button), pinned to the TOP-RIGHT corner.
-#
-# Anchored rather than placed at fixed offsets like the rest of this lobby: every other control
-# here hardcodes a position in the design canvas, which only stays correct while the canvas is the
-# size those numbers were written against. Anchoring to the right edge keeps the card in the corner
-# at any window size or stretch scale, so it cannot drift off-screen or collide with the world list.
-const LANDFILL_EVENT_ICON_PATH := "res://Assets/events/landfill/icon.png"
-const LANDFILL_CARD_MARGIN := 28.0
-const LANDFILL_CARD_W := 200.0
-const LANDFILL_ICON_H := 168.0
-const LANDFILL_CARD_BUTTON_H := 46.0
-const LANDFILL_CARD_H := LANDFILL_ICON_H + 8.0 + LANDFILL_CARD_BUTTON_H
+@export_group("Lobby World Directory")
+@export var world_of_the_week := ""
+@export var official_world_names: Array[String] = ["START"]
 
+var lobby_animation_time := 0.0
 var world_input: LineEdit
 var join_button: Button
 var input_status_label: Label
@@ -106,8 +103,7 @@ var landfill_status_timer: Timer
 var landfill_event_active := false
 var landfill_season_key := ""
 var landfill_join_button: Button
-# Container for the event badge + "Go Green!" join button. Toggling this one node's visibility
-# governs the whole card, so the icon and its button can never end up in disagreeing states.
+# The animated event logo is the join button.
 var landfill_event_card: Control
 var landfill_join_in_progress := false
 var landfill_join_request_id := ""
@@ -175,6 +171,13 @@ func _process(delta: float) -> void:
 		return
 	WorldScenePreloader.pump()
 	_update_lobby_parallax_background(delta)
+	_update_lobby_button_animation(delta)
+
+
+func _exit_tree() -> void:
+	if is_instance_valid(active_world_row_template):
+		active_world_row_template.free()
+		active_world_row_template = null
 
 
 func _setup_lobby_parallax_background() -> void:
@@ -317,6 +320,7 @@ func _setup_active_world_list() -> void:
 	active_world_empty_label = Label.new()
 	active_world_empty_label.name = "EmptyState"
 	active_world_empty_label.custom_minimum_size = Vector2(0.0, 96.0)
+	active_world_empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	active_world_empty_label.text = "NO ACTIVE WORLDS RIGHT NOW"
 	active_world_empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	active_world_empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -504,6 +508,15 @@ func _build_world_entries() -> Array[Dictionary]:
 func _get_world_names_for_filter(filter_key: String) -> Array[String]:
 	var names: Array[String] = []
 	match filter_key:
+		WORLD_FILTER_WEEK:
+			var featured := _normalize_world_name(world_of_the_week)
+			if featured != "":
+				names.append(featured)
+		WORLD_FILTER_OFFICIAL:
+			for raw_world in official_world_names:
+				var official := _normalize_world_name(raw_world)
+				if official != "" and not names.has(official):
+					names.append(official)
 		WORLD_FILTER_FAVORITES:
 			names.assign(favorite_world_names)
 		WORLD_FILTER_RECENT:
@@ -549,7 +562,7 @@ func _add_active_world_row(world_name: String, player_count: int) -> void:
 
 	var name_label := _get_world_row_label(row, ["StartName", "Name"])
 	if name_label != null:
-		name_label.text = world_name
+		name_label.text = world_name + " [" + str(player_count) + "]"
 	var meta_label := _get_world_row_label(row, ["StartMeta", "Meta"])
 	if meta_label != null:
 		var source_label := "OFFICIAL"
@@ -564,7 +577,7 @@ func _add_active_world_row(world_name: String, player_count: int) -> void:
 			badge_label.text = "OFFICIAL HUB"
 		else:
 			badge_label.text = str(WORLD_FILTER_ROW_BADGES.get(active_world_filter, "ACTIVE WORLD"))
-		badge_label.visible = true
+		badge_label.visible = false
 
 	var favorite_toggle := row.get_node_or_null("FavoriteToggle") as Button
 	if favorite_toggle != null:
@@ -625,13 +638,12 @@ func _get_player_count_text(count: int) -> String:
 
 
 func _on_world_filter_pressed(filter_key: String) -> void:
-	# Pressing the tab you are already on drops back to the default live list, so the left
-	# column never becomes a trap you cannot leave.
-	var next_filter := WORLD_FILTER_ACTIVE if active_world_filter == filter_key else filter_key
-	_set_world_filter(next_filter)
+	_set_world_filter(filter_key)
 
 
 func _set_world_filter(filter_key: String) -> void:
+	if not WORLD_FILTER_TITLES.has(filter_key):
+		return
 	active_world_filter = filter_key
 	_sync_world_filter_buttons()
 	_update_worlds_title()
@@ -641,6 +653,8 @@ func _set_world_filter(filter_key: String) -> void:
 	# say), so clear the signature or the rebuild would be skipped and the old rows would stay.
 	active_world_list_signature = ""
 	_refresh_world_rows()
+	if active_world_scroll != null:
+		active_world_scroll.scroll_vertical = 0
 
 
 func _sync_world_filter_buttons() -> void:
@@ -742,8 +756,22 @@ func _on_favorite_toggled(is_favorite: bool, world_name: String) -> void:
 func _apply_favorite_toggle_visual(toggle: Button) -> void:
 	if toggle == null:
 		return
-	# Matches the dimmed alpha LobbyScene.tscn authors on the unfavourited heart.
-	toggle.modulate = Color(1.0, 1.0, 1.0, 1.0 if toggle.button_pressed else 0.42)
+	toggle.icon = UIAtlasDB.get_texture("favorite_on" if toggle.button_pressed else "favorite_off")
+	toggle.modulate = Color.WHITE
+	toggle.tooltip_text = "Remove favorite" if toggle.button_pressed else "Add favorite"
+
+
+func _update_lobby_button_animation(delta: float) -> void:
+	lobby_animation_time += delta
+	if active_world_rows != null:
+		for row in active_world_rows.get_children():
+			var entry := _get_world_row_join_button(row)
+			if entry != null:
+				var frame := int(lobby_animation_time / 0.14) % 3 if entry.is_hovered() or entry.has_focus() else 0
+				entry.icon = UIAtlasDB.get_texture("exit_bubble_" + str(frame + 1))
+	if landfill_join_button != null and landfill_event_card.visible:
+		landfill_join_button.icon = UIAtlasDB.get_texture("landfill_" + str(int(lobby_animation_time / 0.22) % 4 + 1))
+
 
 
 func _connect_owned_worlds_feed() -> void:
@@ -1311,65 +1339,51 @@ func _get_network_session_username() -> String:
 # ---------------------------------------------------------------------------
 
 func _add_landfill_buttons() -> void:
-	# The event is presented as an icon card on the right margin -- the badge art carries the
-	# branding the old wide yellow "JOIN THE LANDFILL RACE" bar was doing in words, and the green
-	# "Go Green!" button underneath is the single join entry point. Deliberately ONE way in: two
-	# controls firing the same request invites a double-join race between them.
 	landfill_event_card = Control.new()
 	landfill_event_card.name = "LandfillEventCard"
-	# PRESET_TOP_RIGHT makes both horizontal anchors the right edge, so the offsets below are
-	# measured leftward from that edge and the card stays glued to the corner.
-	landfill_event_card.set_anchors_preset(Control.PRESET_TOP_RIGHT, false)
-	landfill_event_card.offset_left = -(LANDFILL_CARD_W + LANDFILL_CARD_MARGIN)
-	landfill_event_card.offset_right = -LANDFILL_CARD_MARGIN
-	landfill_event_card.offset_top = LANDFILL_CARD_MARGIN
-	landfill_event_card.offset_bottom = LANDFILL_CARD_MARGIN + LANDFILL_CARD_H
+	landfill_event_card.position = Vector2(1400, 360)
+	landfill_event_card.size = Vector2(420, 340)
 	landfill_event_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	# Gated on the event window exactly like the old join button was, so players are never shown a
-	# join control that would only refuse them.
 	landfill_event_card.visible = landfill_event_active
 	add_child(landfill_event_card)
 
-	var icon_texture: Texture2D = null
-	if ResourceLoader.exists(LANDFILL_EVENT_ICON_PATH):
-		icon_texture = load(LANDFILL_EVENT_ICON_PATH) as Texture2D
-
-	if icon_texture != null:
-		var icon_rect := TextureRect.new()
-		icon_rect.name = "EventIcon"
-		icon_rect.texture = icon_texture
-		icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icon_rect.position = Vector2.ZERO
-		icon_rect.size = Vector2(LANDFILL_CARD_W, LANDFILL_ICON_H)
-		icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		landfill_event_card.add_child(icon_rect)
-	else:
-		# Missing art must not cost the player the ability to join, so fall back to a text badge
-		# rather than leaving an invisible gap above the button.
-		var fallback := Label.new()
-		fallback.name = "EventIconFallback"
-		fallback.text = "LANDFILL EVENT"
-		fallback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		fallback.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		fallback.position = Vector2.ZERO
-		fallback.size = Vector2(LANDFILL_CARD_W, LANDFILL_ICON_H)
-		fallback.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		PixelUIStyle.apply_label_shadow(fallback, 18, PixelUIStyle.GOLD_SOFT)
-		landfill_event_card.add_child(fallback)
+	var heading := Label.new()
+	heading.text = "GREEN CAMPAIGN"
+	heading.position = Vector2.ZERO
+	heading.size = Vector2(420, 42)
+	heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	PixelUIStyle.apply_label_shadow(heading, 30, Color(0.1, 1.0, 0.0))
+	landfill_event_card.add_child(heading)
+	var subtitle := Label.new()
+	subtitle.text = "IS NOW LIVE"
+	subtitle.position = Vector2(0, 42)
+	subtitle.size = Vector2(420, 28)
+	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	PixelUIStyle.apply_label_shadow(subtitle, 18, Color.WHITE)
+	landfill_event_card.add_child(subtitle)
 
 	landfill_join_button = Button.new()
 	landfill_join_button.name = "LandfillJoinButton"
-	landfill_join_button.text = "Go Green!"
-	landfill_join_button.position = Vector2(0.0, LANDFILL_ICON_H + 8.0)
-	landfill_join_button.size = Vector2(LANDFILL_CARD_W, LANDFILL_CARD_BUTTON_H)
+	landfill_join_button.position = Vector2(114, 82)
+	landfill_join_button.size = Vector2(192, 192)
+	landfill_join_button.icon = UIAtlasDB.get_texture("landfill_1")
+	landfill_join_button.expand_icon = true
+	landfill_join_button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	landfill_join_button.tooltip_text = "Join the Landfill Race"
-	# Parented to the card, so toggling the card's visibility governs the button too and the two
-	# can never disagree about whether the event is joinable.
-	landfill_join_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	PixelUIStyle.apply_green_button(landfill_join_button, 20)
+	for state in ["normal", "hover", "pressed", "disabled"]:
+		landfill_join_button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
 	landfill_join_button.pressed.connect(_on_landfill_join_pressed)
 	landfill_event_card.add_child(landfill_join_button)
+	var hint := Label.new()
+	hint.text = "Tap to join"
+	hint.position = Vector2(0, 284)
+	hint.size = Vector2(420, 28)
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	PixelUIStyle.apply_label_shadow(hint, 18, Color.WHITE)
+	landfill_event_card.add_child(hint)
 
 
 func _connect_landfill_feed() -> void:

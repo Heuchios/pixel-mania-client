@@ -396,6 +396,8 @@ static func apply_ui_chrome_to_node(node: Node) -> void:
 static func _apply_category_selection_style(node: Node) -> void:
 	if not node is Button or not node.toggle_mode or node is CheckBox or node is CheckButton:
 		return
+	if node.get_meta("preserve_selected_style", false):
+		return
 	var normal := node.get_theme_stylebox("normal") as StyleBoxTexture
 	if normal == null or normal.get_meta("atlas_region", "") not in ["pink_button", "blue_button", "green_button", "red_button"]:
 		return
@@ -426,6 +428,8 @@ static func _apply_pink_button_text(node: Node) -> void:
 	node.add_theme_constant_override("shadow_offset_y", 0)
 	if node is Button:
 		for state in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
+			if node.get_meta("preserve_selected_style", false) and state in ["font_pressed_color", "font_hover_pressed_color"]:
+				continue
 			node.add_theme_color_override(state, ink)
 	elif node is Label:
 		node.add_theme_color_override("font_color", ink)

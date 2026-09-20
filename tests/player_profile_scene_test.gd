@@ -38,6 +38,8 @@ class FakeWorld extends Node:
 	var equipped_hat_item := ""
 	var equipped_hair_item := ""
 	var equipped_eyewear_item := ""
+	var equipped_beard_item := ""
+	var equipped_body_accessory_item := ""
 	var equipped_shirt_item := ""
 	var equipped_pants_item := ""
 	var item_database := {}

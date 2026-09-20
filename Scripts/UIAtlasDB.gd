@@ -104,6 +104,17 @@ const REGIONS := {
 	"right_arrow": {"cell": Vector2i(5, 4)},
 	"skull_icon": {"cell": Vector2i(6, 4)},
 	"gems_icon": {"cell": Vector2i(7, 4)},
+	"lobby_week": {"cell": Vector2i(0, 5)},
+	"lobby_official": {"cell": Vector2i(1, 5)},
+	"lobby_active": {"cell": Vector2i(2, 5)},
+	"lobby_owned": {"cell": Vector2i(4, 5)},
+	"lobby_history": {"cell": Vector2i(5, 5)},
+	"favorite_on": {"cell": Vector2i(0, 8)},
+	"favorite_off": {"cell": Vector2i(1, 8)},
+	"landfill_1": {"cell": Vector2i(0, 9), "size_in_atlas": Vector2i(2, 2)},
+	"landfill_2": {"cell": Vector2i(2, 9), "size_in_atlas": Vector2i(2, 2)},
+	"landfill_3": {"cell": Vector2i(4, 9), "size_in_atlas": Vector2i(2, 2)},
+	"landfill_4": {"cell": Vector2i(6, 9), "size_in_atlas": Vector2i(2, 2)},
 }
 
 # Default 9-slice texture_margins (px) for get_stylebox(), keyed by region

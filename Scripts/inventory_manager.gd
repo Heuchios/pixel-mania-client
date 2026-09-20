@@ -3777,7 +3777,7 @@ func _build_item_action_payload(item_type: String, category: String, base_item: 
 	payload["item_type"] = item_type
 	payload["category"] = category
 	payload["item_category"] = category
-	payload["type_label"] = category
+	payload["type_label"] = "Material / Consumable" if category == "material" and bool(database_entry.get("consumable", false)) else ("Consumable" if bool(database_entry.get("consumable", false)) else category)
 	payload["display_name"] = get_item_display_name(item_type, category)
 	payload["count"] = maxi(1, available_count)
 	payload["available_count"] = maxi(1, available_count)

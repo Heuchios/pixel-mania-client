@@ -405,7 +405,7 @@ func get_current_block_hit_source_tool() -> String:
 	if world == null:
 		return ""
 	var equipped = world.get("equipped_tool")
-	if equipped != null and ["neptune_trident", "ant_sword", "phoenix_sword", "fire_staff", "wizards_staff"].has(str(equipped).strip_edges().to_lower()):
+	if equipped != null and ["neptune_trident", "ant_sword", "phoenix_sword", "fire_staff", "wizards_staff", "blood_battleaxe"].has(str(equipped).strip_edges().to_lower()):
 		return str(equipped).strip_edges()
 	if str(world.get("selected_item_category")) == "tool":
 		var selected_tool := str(world.get("selected_item_type")).strip_edges()
@@ -11489,6 +11489,15 @@ func setup_block_animation(block, block_type: String, visual: Sprite2D):
 	var frames: Array[Texture2D] = []
 	for frame_path in frame_paths:
 		var texture = AtlasTextureFactory.load_texture(frame_path)
+		# Atlas metadata stores coordinates, not texture paths. Blocks with lights
+		# keep a live Sprite2D, so they must resolve those frames outside TileMap.
+		if texture == null and is_animation_atlas_frame_spec(frame_path):
+			texture = get_block_atlas_cell_texture({
+				"has_atlas_coords": true,
+				"atlas_coords": parse_block_vector2i(frame_path, Vector2i.ZERO),
+				"atlas_item_id": int(item_data.get("atlas_item_id", 0)),
+				"source_id": int(item_data.get("atlas_source_id", item_data.get("source_id", 0)))
+			})
 		if texture != null:
 			frames.append(texture)
 

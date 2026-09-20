@@ -4331,6 +4331,10 @@ func _get_local_fishing_reward_confetti_ui_position() -> Vector2:
 
 
 func spawn_neptune_trident_block_hit_particles(grid_pos: Vector2i, _block_type: String = "", _layer: String = "foreground", source_tool: String = ""):
+	if is_blood_battleaxe_source_tool(source_tool):
+		spawn_blood_battleaxe_throw_particles(get_block_center_world_position(grid_pos))
+		return
+
 	if is_ant_sword_source_tool(source_tool):
 		spawn_ant_sword_slash_particles(get_block_center_world_position(grid_pos))
 		return
@@ -4355,6 +4359,9 @@ func spawn_neptune_trident_block_hit_particles(grid_pos: Vector2i, _block_type: 
 
 
 func spawn_hand_item_swing_particles(target_world_position: Vector2 = Vector2(INF, INF), source_tool: String = "") -> bool:
+	if is_blood_battleaxe_source_tool(source_tool):
+		return spawn_blood_battleaxe_throw_particles(target_world_position)
+
 	if is_ant_sword_source_tool(source_tool):
 		return spawn_ant_sword_slash_particles(target_world_position)
 
@@ -4424,6 +4431,16 @@ func spawn_ant_sword_actor_swing_particles(actor: Node2D, facing_direction: int 
 
 
 func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type: String = "", _layer: String = "foreground", source_tool: String = "", source_data: Dictionary = {}):
+	if is_blood_battleaxe_source_tool(source_tool, false):
+		var axe_target := get_block_center_world_position(grid_pos)
+		var axe_actor = get_network_actor_node(source_data)
+		var axe_now := Time.get_ticks_msec()
+		if is_instance_valid(axe_actor) and axe_actor.has_meta("last_battleaxe_throw_fx_msec"):
+			if axe_now - int(axe_actor.get_meta("last_battleaxe_throw_fx_msec")) < 140:
+				return
+		if spawn_blood_battleaxe_throw_at(get_network_actor_weapon_edge_world_position(source_data, axe_target), axe_target, get_network_actor_facing(source_data)) and is_instance_valid(axe_actor):
+			axe_actor.set_meta("last_battleaxe_throw_fx_msec", axe_now)
+		return
 	if is_ant_sword_source_tool(source_tool, false):
 		var ant_target_position := get_block_center_world_position(grid_pos)
 		var ant_actor_facing := get_network_actor_facing(source_data)
@@ -4553,6 +4570,40 @@ func spawn_phoenix_sword_fire_hit_particles(target_world_position: Vector2 = Vec
 		target_position = get_local_hand_item_swing_target_position()
 
 	return spawn_sword_fire_hit_fx_at(target_position, player_facing_direction)
+
+
+func is_blood_battleaxe_source_tool(source_tool: String = "", allow_equipped_fallback: bool = true) -> bool:
+	var clean_tool := source_tool.strip_edges().to_lower()
+	if clean_tool == "blood_battleaxe":
+		return true
+	if not allow_equipped_fallback:
+		return false
+	return str(equipped_tool).strip_edges().to_lower() == "blood_battleaxe" or (clean_tool == "" and selected_item_category == "tool" and selected_item_type == "blood_battleaxe")
+
+
+func spawn_blood_battleaxe_throw_particles(target_world_position: Vector2 = Vector2(INF, INF)) -> bool:
+	if player == null:
+		return false
+	var target := target_world_position
+	if not target.is_finite():
+		target = get_local_hand_item_swing_target_position()
+	var start := get_local_weapon_edge_world_position(target)
+	if start.distance_squared_to(target) < 16.0:
+		target = start + Vector2.RIGHT * float(player_facing_direction) * HAND_ITEM_SWING_RANGE_PIXELS
+	return spawn_blood_battleaxe_throw_at(start, target, player_facing_direction)
+
+
+func spawn_blood_battleaxe_throw_at(start: Vector2, target: Vector2, facing: int = 1) -> bool:
+	if not start.is_finite() or not target.is_finite():
+		return false
+	var axe_texture: Texture2D = get_inventory_icon_texture("blood_battleaxe", "tool")
+	if axe_texture == null:
+		return false
+	var effect := preload("res://Scripts/item_throw_fx.gd").new()
+	effect.item_texture = axe_texture
+	add_child(effect)
+	effect.launch_to(start, target, facing)
+	return true
 
 
 func get_fire_projectile_fx_scene() -> PackedScene:

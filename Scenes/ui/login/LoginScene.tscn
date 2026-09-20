@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cvjfqv4kccwo0" path="res://Assets/background/space_theme/star_2.png" id="3_ox2yu"]
 [ext_resource type="Texture2D" uid="uid://dsnopy0fnnne2" path="res://Assets/background/space_theme/star_3.png" id="4_ui2s7"]
 [ext_resource type="Texture2D" uid="uid://bd6iwmw6k8s4x" path="res://Assets/background/space_theme/star_4.png" id="5_fk7no"]
-[ext_resource type="Texture2D" uid="uid://dnuvhhyohskng" path="res://Assets/ui/logo/Logo_6.png" id="9_logo"]
+[ext_resource type="Texture2D" path="res://Assets/ui/logo/library_logo_artwork.tres" id="9_logo"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/input_field.tres" id="9_ox2yu"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inner_panel.tres" id="10_panel_grid"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/toggle_on.tres" id="11_ox2yu"]
@@ -26,10 +26,6 @@
 [ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/pink_button_1b992e4807.tres" id="atlas_StyleBoxTexture_yellow_pressed"]
 [ext_resource type="StyleBox" uid="uid://bumlm4ombqyip" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_0"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/outer_panel.tres" id="panel_role_1"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_logo"]
-atlas = ExtResource("9_logo")
-region = Rect2(54, 144, 406, 222)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_input"]
 
@@ -182,23 +178,24 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -427.0
-offset_top = -116.0
-offset_right = -47.0
-offset_bottom = 353.0
+offset_left = -516.0
+offset_top = -166.0
+offset_right = -36.0
+offset_bottom = 346.0
 grow_horizontal = 2
 grow_vertical = 2
+z_index = 1
 
 [node name="Skin" type="NinePatchRect" parent="NewsPanel" unique_id=501000002]
-modulate = Color(1, 1, 1, 0.46)
+modulate = Color(1, 1, 1, 1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 9.0
-offset_top = 44.0
-offset_right = -3.0
-offset_bottom = -4.0
+offset_left = 0.0
+offset_top = 70.0
+offset_right = 0.0
+offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("10_panel_grid")
@@ -206,29 +203,32 @@ patch_margin_left = 1
 patch_margin_top = 1
 patch_margin_right = 1
 patch_margin_bottom = 1
+mouse_filter = 2
 
 [node name="TitleLabel" type="Label" parent="NewsPanel" unique_id=501000003]
 z_index = 1
 layout_mode = 0
-offset_left = 10.0
-offset_right = 376.0
-offset_bottom = 38.0
+offset_left = 0.0
+offset_right = 480.0
+offset_bottom = 46.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = ExtResource("panel_role_0")
 text = " NEWS"
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
+offset_top = 0.0
+mouse_filter = 2
 
 [node name="NewsScroll" type="ScrollContainer" parent="NewsPanel" unique_id=501000004]
 layout_mode = 0
-offset_left = 10.0
-offset_top = 50.0
-offset_right = 367.0
-offset_bottom = 461.0
+offset_left = 16.0
+offset_top = 86.0
+offset_right = 464.0
+offset_bottom = 496.0
 horizontal_scroll_mode = 0
 
 [node name="NewsList" type="VBoxContainer" parent="NewsPanel/NewsScroll" unique_id=501000005]
@@ -239,19 +239,20 @@ theme_override_constants/separation = 12
 
 [node name="EmptyNewsLabel" type="Label" parent="NewsPanel" unique_id=501000006]
 layout_mode = 0
-offset_left = 25.0
-offset_top = 210.0
-offset_right = 365.0
-offset_bottom = 270.0
+offset_left = 16.0
+offset_top = 244.0
+offset_right = 464.0
+offset_bottom = 308.0
 theme_override_colors/font_color = Color(0.82, 0.9, 1, 0.86)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 20
 text = "Loading news..."
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
+mouse_filter = 2
 
 [node name="LoginPanel" type="Control" parent="." unique_id=1108261510]
 layout_mode = 1
@@ -260,10 +261,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -260.0
-offset_top = -296.0
-offset_right = 260.0
-offset_bottom = 300.0
+offset_left = -540.0
+offset_top = -190.0
+offset_right = 540.0
+offset_bottom = 370.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -282,50 +283,68 @@ patch_margin_right = 1
 patch_margin_bottom = 1
 
 [node name="PanelSkin" type="NinePatchRect" parent="LoginPanel" unique_id=1392536024]
-modulate = Color(1, 1, 1, 0.46)
+modulate = Color(1, 1, 1, 1)
 layout_mode = 0
-offset_left = -175.0
-offset_top = 169.0
-offset_right = 712.0
-offset_bottom = 654.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1080.0
+offset_bottom = 560.0
 texture = ExtResource("panel_role_1")
 patch_margin_left = 1
 patch_margin_top = 1
 patch_margin_right = 1
 patch_margin_bottom = 1
+mouse_filter = 2
 
 [node name="Logo" type="TextureRect" parent="LoginPanel" unique_id=1052561195]
 layout_mode = 0
-offset_left = 70.0
-offset_top = -62.0
-offset_right = 476.0
-offset_bottom = 132.0
+offset_left = 280.0
+offset_top = -310.0
+offset_right = 800.0
+offset_bottom = -26.0
 mouse_filter = 2
-texture = SubResource("AtlasTexture_logo")
+texture = ExtResource("9_logo")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="Form" type="Control" parent="LoginPanel" unique_id=1446275344]
 anchors_preset = 0
-offset_left = 25.0
-offset_top = 158.0
-offset_right = 495.0
-offset_bottom = 520.0
+offset_left = 528.0
+offset_top = 24.0
+offset_right = 1056.0
+offset_bottom = 536.0
+
+[node name="TitleLabel" type="Label" parent="LoginPanel/Form"]
+layout_mode = 0
+offset_right = 528.0
+offset_bottom = 46.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = ExtResource("panel_role_0")
+text = " SIGN IN"
+vertical_alignment = 1
+metadata/pixelmania_font_role = "preserve"
 
 [node name="UsernameField" type="Control" parent="LoginPanel/Form" unique_id=1293270972]
 anchors_preset = 0
-offset_right = 470.0
-offset_bottom = 52.0
+offset_right = 528.0
+offset_bottom = 132.0
+offset_left = 0.0
+offset_top = 70.0
 
 [node name="Skin" type="NinePatchRect" parent="LoginPanel/Form/UsernameField" unique_id=1393739010]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 195.0
-offset_top = 37.0
-offset_right = 195.0
-offset_bottom = 37.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("9_ox2yu")
@@ -333,39 +352,41 @@ patch_margin_left = 3
 patch_margin_top = 3
 patch_margin_right = 3
 patch_margin_bottom = 3
+mouse_filter = 2
 
 [node name="UsernameInput" type="LineEdit" parent="LoginPanel/Form/UsernameField" unique_id=1515237665]
 layout_mode = 0
-offset_left = 208.0
-offset_top = 42.0
-offset_right = 648.0
-offset_bottom = 81.0
+offset_left = 16.0
+offset_top = 8.0
+offset_right = 512.0
+offset_bottom = 54.0
 theme_override_colors/font_color = Color(0.94, 0.98, 1, 1)
 theme_override_colors/font_placeholder_color = Color(0.76, 0.9, 1, 0.72)
 theme_override_colors/caret_color = Color(1, 0.88, 0.25, 1)
 theme_override_colors/selection_color = Color(0.2, 0.48, 0.82, 0.58)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxEmpty_input")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_input")
 placeholder_text = "Username"
-alignment = 1
+alignment = 0
 metadata/pixelmania_font_role = "preserve"
 
 [node name="EmailField" type="Control" parent="LoginPanel/Form" unique_id=695579086]
 anchors_preset = 0
-offset_top = 70.0
-offset_right = 470.0
-offset_bottom = 122.0
+offset_top = 150.0
+offset_right = 528.0
+offset_bottom = 212.0
+offset_left = 0.0
 
 [node name="Skin" type="NinePatchRect" parent="LoginPanel/Form/EmailField" unique_id=2016371821]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 194.0
-offset_top = 36.0
-offset_right = 194.0
-offset_bottom = 36.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("9_ox2yu")
@@ -373,39 +394,41 @@ patch_margin_left = 3
 patch_margin_top = 3
 patch_margin_right = 3
 patch_margin_bottom = 3
+mouse_filter = 2
 
 [node name="EmailInput" type="LineEdit" parent="LoginPanel/Form/EmailField" unique_id=1653240688]
 layout_mode = 0
-offset_left = 210.0
-offset_top = 41.0
-offset_right = 650.0
-offset_bottom = 80.0
+offset_left = 16.0
+offset_top = 8.0
+offset_right = 512.0
+offset_bottom = 54.0
 theme_override_colors/font_color = Color(0.94, 0.98, 1, 1)
 theme_override_colors/font_placeholder_color = Color(0.76, 0.9, 1, 0.72)
 theme_override_colors/caret_color = Color(1, 0.88, 0.25, 1)
 theme_override_colors/selection_color = Color(0.2, 0.48, 0.82, 0.58)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxEmpty_input")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_input")
 placeholder_text = "Email"
-alignment = 1
+alignment = 0
 metadata/pixelmania_font_role = "preserve"
 
 [node name="PasswordField" type="Control" parent="LoginPanel/Form" unique_id=2024647496]
 anchors_preset = 0
-offset_top = 140.0
-offset_right = 470.0
-offset_bottom = 192.0
+offset_top = 230.0
+offset_right = 528.0
+offset_bottom = 292.0
+offset_left = 0.0
 
 [node name="Skin" type="NinePatchRect" parent="LoginPanel/Form/PasswordField" unique_id=1693178192]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 195.0
-offset_top = 35.0
-offset_right = 195.0
-offset_bottom = 35.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("9_ox2yu")
@@ -413,35 +436,37 @@ patch_margin_left = 3
 patch_margin_top = 3
 patch_margin_right = 3
 patch_margin_bottom = 3
+mouse_filter = 2
 
 [node name="PasswordInput" type="LineEdit" parent="LoginPanel/Form/PasswordField" unique_id=2117580023]
 layout_mode = 0
-offset_left = 209.0
-offset_top = 40.0
-offset_right = 649.0
-offset_bottom = 79.0
+offset_left = 16.0
+offset_top = 8.0
+offset_right = 512.0
+offset_bottom = 54.0
 theme_override_colors/font_color = Color(0.94, 0.98, 1, 1)
 theme_override_colors/font_placeholder_color = Color(0.76, 0.9, 1, 0.72)
 theme_override_colors/caret_color = Color(1, 0.88, 0.25, 1)
 theme_override_colors/selection_color = Color(0.2, 0.48, 0.82, 0.58)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxEmpty_input")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_input")
 placeholder_text = "Password"
-alignment = 1
+alignment = 0
 secret = true
 metadata/pixelmania_font_role = "preserve"
 
 [node name="RememberPasswordCheck" type="CheckBox" parent="LoginPanel/Form" unique_id=1460154231]
 layout_mode = 0
-offset_left = 199.0
-offset_top = 260.0
-offset_right = 441.0
-offset_bottom = 291.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
+offset_left = 4.0
+offset_top = 310.0
+offset_right = 524.0
+offset_bottom = 346.0
+theme_override_colors/font_color = Color(0.2, 0.098, 0.227, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.098, 0.227, 1)
+theme_override_colors/font_hover_color = Color(0.32, 0.16, 0.38, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.32, 0.16, 0.38, 1)
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxEmpty_focus")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_focus")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_focus")
@@ -459,10 +484,10 @@ metadata/pixelmania_font_role = "preserve"
 [node name="ResetEmailButton" type="Button" parent="LoginPanel/Form" unique_id=415525335]
 custom_minimum_size = Vector2(228, 58)
 layout_mode = 0
-offset_left = 194.0
-offset_top = 325.0
-offset_right = 422.0
-offset_bottom = 383.0
+offset_left = 0.0
+offset_top = 368.0
+offset_right = 252.0
+offset_bottom = 432.0
 focus_mode = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
@@ -479,10 +504,10 @@ metadata/pixelmania_font_role = "preserve"
 [node name="ResetPasswordButton" type="Button" parent="LoginPanel/Form" unique_id=172932406]
 custom_minimum_size = Vector2(228, 58)
 layout_mode = 0
-offset_left = 194.0
-offset_top = 400.0
-offset_right = 422.0
-offset_bottom = 458.0
+offset_left = 0.0
+offset_top = 446.0
+offset_right = 252.0
+offset_bottom = 510.0
 focus_mode = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
@@ -498,10 +523,10 @@ metadata/pixelmania_font_role = "preserve"
 [node name="RegisterButton" type="Button" parent="LoginPanel/Form" unique_id=1603973115]
 custom_minimum_size = Vector2(228, 58)
 layout_mode = 0
-offset_left = 438.0
-offset_top = 400.0
-offset_right = 666.0
-offset_bottom = 458.0
+offset_left = 276.0
+offset_top = 446.0
+offset_right = 528.0
+offset_bottom = 510.0
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
@@ -517,10 +542,10 @@ metadata/pixelmania_font_role = "preserve"
 [node name="SignOnButton" type="Button" parent="LoginPanel/Form" unique_id=238767931]
 custom_minimum_size = Vector2(228, 58)
 layout_mode = 0
-offset_left = 438.0
-offset_top = 325.0
-offset_right = 666.0
-offset_bottom = 383.0
+offset_left = 276.0
+offset_top = 368.0
+offset_right = 528.0
+offset_bottom = 432.0
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
@@ -535,18 +560,19 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="MessageLabel" type="Label" parent="LoginPanel/Form" unique_id=740303062]
 layout_mode = 0
-offset_left = 23.0
-offset_top = 511.0
-offset_right = 493.0
-offset_bottom = 537.0
+offset_left = -528.0
+offset_top = 554.0
+offset_right = 552.0
+offset_bottom = 610.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 18
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
+autowrap_mode = 2
 
 [node name="ExitButton" type="Button" parent="LoginPanel/Form" unique_id=593956664]
 visible = false

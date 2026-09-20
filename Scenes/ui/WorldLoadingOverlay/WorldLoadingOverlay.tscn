@@ -5,14 +5,10 @@
 [ext_resource type="Texture2D" uid="uid://cvjfqv4kccwo0" path="res://Assets/background/space_theme/star_2.png" id="2_bg_far"]
 [ext_resource type="Texture2D" uid="uid://dsnopy0fnnne2" path="res://Assets/background/space_theme/star_3.png" id="3_bg_mid"]
 [ext_resource type="Texture2D" uid="uid://bd6iwmw6k8s4x" path="res://Assets/background/space_theme/star_4.png" id="4_bg_front"]
-[ext_resource type="Texture2D" uid="uid://dnuvhhyohskng" path="res://Assets/ui/logo/Logo_6.png" id="5_logo"]
+[ext_resource type="Texture2D" path="res://Assets/ui/logo/library_logo_artwork.tres" id="5_logo"]
 [ext_resource type="FontFile" uid="uid://e0ivgh0c6uck" path="res://Assets/font/font.ttf" id="6_font"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/fill_bar_background.tres" id="7_bar_empty"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/fill_bar_progress.tres" id="8_bar_full"]
-[sub_resource type="AtlasTexture" id="AtlasTexture_logo"]
-atlas = ExtResource("5_logo")
-region = Rect2(54, 144, 406, 222)
-
 [node name="WorldLoadingOverlay" type="Node2D" unique_id=2067188574]
 texture_filter = 1
 
@@ -129,10 +125,10 @@ theme_override_constants/separation = 10
 alignment = 1
 
 [node name="Logo" type="TextureRect" parent="LoadingCanvas/Root/Center/Box" unique_id=1605238068]
-custom_minimum_size = Vector2(620, 300)
+custom_minimum_size = Vector2(620, 340)
 layout_mode = 2
 mouse_filter = 2
-texture = SubResource("AtlasTexture_logo")
+texture = ExtResource("5_logo")
 expand_mode = 1
 stretch_mode = 5
 

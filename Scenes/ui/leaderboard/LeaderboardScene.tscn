@@ -196,12 +196,13 @@ theme_override_styles/panel = ExtResource("panel_role_0")
 
 [node name="HeaderPanel" type="Panel" parent="CenterContainer/LeaderboardWindow" unique_id=737226377]
 layout_mode = 0
-offset_left = 222.0
-offset_top = 28.0
-offset_right = 988.0
-offset_bottom = 154.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_1")
+
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 1008.0
+offset_bottom = 154.0
 
 [node name="HeaderBackground" type="TextureRect" parent="CenterContainer/LeaderboardWindow/HeaderPanel" unique_id=340727283]
 texture_filter = 1
@@ -215,6 +216,8 @@ texture = ExtResource("6_ah8f3")
 expand_mode = 1
 stretch_mode = 6
 
+visible = false
+
 [node name="HeaderWash" type="ColorRect" parent="CenterContainer/LeaderboardWindow/HeaderPanel" unique_id=630828849]
 layout_mode = 0
 offset_left = 6.0
@@ -224,12 +227,10 @@ offset_bottom = 120.0
 mouse_filter = 2
 color = Color(0, 0, 0, 0.22)
 
+visible = false
+
 [node name="TitleLabel" type="Label" parent="CenterContainer/LeaderboardWindow/HeaderPanel" unique_id=2028346714]
 layout_mode = 0
-offset_left = 56.0
-offset_top = -5.0
-offset_right = 710.0
-offset_bottom = 63.0
 theme_override_colors/font_color = Color(0.42, 0.86, 0.22, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -242,14 +243,20 @@ vertical_alignment = 1
 clip_text = true
 metadata/pixelmania_font_role = "preserve"
 
+offset_left = 24.0
+offset_top = 12.0
+offset_right = 814.0
+offset_bottom = 54.0
+
 [node name="BadgeBack" type="Panel" parent="CenterContainer/LeaderboardWindow/HeaderPanel" unique_id=1662832151]
 layout_mode = 0
-offset_left = 173.0
-offset_top = 67.0
-offset_right = 593.0
-offset_bottom = 101.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_3cei8")
+
+offset_left = 24.0
+offset_top = 58.0
+offset_right = 434.0
+offset_bottom = 86.0
 
 [node name="BadgeLabel" type="Label" parent="CenterContainer/LeaderboardWindow/HeaderPanel/BadgeBack" unique_id=300797747]
 layout_mode = 1
@@ -272,10 +279,6 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="SubtitleLabel" type="Label" parent="CenterContainer/LeaderboardWindow/HeaderPanel" unique_id=185028086]
 layout_mode = 0
-offset_left = 32.0
-offset_top = 100.0
-offset_right = 734.0
-offset_bottom = 124.0
 theme_override_colors/font_color = Color(0.94, 0.96, 0.94, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -288,12 +291,13 @@ vertical_alignment = 1
 clip_text = true
 metadata/pixelmania_font_role = "preserve"
 
+offset_left = 24.0
+offset_top = 94.0
+offset_right = 924.0
+offset_bottom = 122.0
+
 [node name="CloseButton" type="Button" parent="CenterContainer/LeaderboardWindow" unique_id=606305024]
 layout_mode = 0
-offset_left = 966.0
-offset_top = 11.0
-offset_right = 1020.0
-offset_bottom = 65.0
 focus_mode = 0
 theme_override_colors/font_color = Color(0.94, 0.96, 0.94, 1)
 theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
@@ -306,13 +310,19 @@ text = "X"
 expand_icon = true
 metadata/pixelmania_font_role = "preserve"
 
+offset_left = 936.0
+offset_top = 38.0
+offset_right = 984.0
+offset_bottom = 86.0
+
 [node name="SideColumn" type="Control" parent="CenterContainer/LeaderboardWindow" unique_id=632287203]
 anchors_preset = 0
-offset_left = 36.0
-offset_top = 36.0
-offset_right = 194.0
-offset_bottom = 640.0
 mouse_filter = 2
+
+offset_left = 24.0
+offset_top = 172.0
+offset_right = 204.0
+offset_bottom = 662.0
 
 [node name="ChampionBadge" type="Panel" parent="CenterContainer/LeaderboardWindow/SideColumn" unique_id=184145019]
 layout_mode = 0
@@ -320,6 +330,8 @@ offset_right = 158.0
 offset_bottom = 82.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_2")
+
+visible = false
 
 [node name="TrophyBack" type="Panel" parent="CenterContainer/LeaderboardWindow/SideColumn/ChampionBadge" unique_id=896817125]
 layout_mode = 0
@@ -361,14 +373,15 @@ vertical_alignment = 1
 
 [node name="Tabs" type="VBoxContainer" parent="CenterContainer/LeaderboardWindow/SideColumn" unique_id=1110524309]
 layout_mode = 0
-offset_top = 104.0
-offset_right = 158.0
-offset_bottom = 276.0
 mouse_filter = 2
 theme_override_constants/separation = 14
 
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 180.0
+offset_bottom = 184.0
+
 [node name="TabLandfill" type="Button" parent="CenterContainer/LeaderboardWindow/SideColumn/Tabs" unique_id=283686528]
-custom_minimum_size = Vector2(158, 48)
 layout_mode = 2
 tooltip_text = "Landfill event ranking"
 focus_mode = 0
@@ -387,8 +400,9 @@ expand_icon = true
 metadata/_pixelmania_leaderboard_tab_connected = true
 metadata/pixelmania_font_role = "preserve"
 
+custom_minimum_size = Vector2(180, 52)
+
 [node name="TabWeekly" type="Button" parent="CenterContainer/LeaderboardWindow/SideColumn/Tabs" unique_id=1360477789]
-custom_minimum_size = Vector2(158, 48)
 layout_mode = 2
 tooltip_text = "Weekly ranking"
 focus_mode = 0
@@ -405,8 +419,9 @@ expand_icon = true
 metadata/_pixelmania_leaderboard_tab_connected = true
 metadata/pixelmania_font_role = "preserve"
 
+custom_minimum_size = Vector2(180, 52)
+
 [node name="TabGlobal" type="Button" parent="CenterContainer/LeaderboardWindow/SideColumn/Tabs" unique_id=1129960264]
-custom_minimum_size = Vector2(158, 48)
 layout_mode = 2
 tooltip_text = "Global ranking"
 focus_mode = 0
@@ -423,13 +438,17 @@ expand_icon = true
 metadata/_pixelmania_leaderboard_tab_connected = true
 metadata/pixelmania_font_role = "preserve"
 
+custom_minimum_size = Vector2(180, 52)
+
 [node name="SideArtPanel" type="Panel" parent="CenterContainer/LeaderboardWindow/SideColumn" unique_id=719025053]
 layout_mode = 0
-offset_top = 300.0
-offset_right = 158.0
-offset_bottom = 604.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_wvkrj")
+
+offset_left = 0.0
+offset_top = 214.0
+offset_right = 180.0
+offset_bottom = 490.0
 
 [node name="SideTexture" type="TextureRect" parent="CenterContainer/LeaderboardWindow/SideColumn/SideArtPanel" unique_id=1256135584]
 modulate = Color(0.62, 0.62, 0.62, 0.55)
@@ -444,6 +463,8 @@ texture = ExtResource("6_ah8f3")
 expand_mode = 1
 stretch_mode = 6
 
+visible = false
+
 [node name="SideArtWash" type="ColorRect" parent="CenterContainer/LeaderboardWindow/SideColumn/SideArtPanel" unique_id=992458873]
 layout_mode = 0
 offset_left = 6.0
@@ -453,28 +474,30 @@ offset_bottom = 298.0
 mouse_filter = 2
 color = Color(0, 0, 0, 0.42)
 
+visible = false
+
 [node name="TablePanel" type="Panel" parent="CenterContainer/LeaderboardWindow" unique_id=363662352]
 layout_mode = 0
-offset_left = 222.0
-offset_top = 168.0
-offset_right = 988.0
-offset_bottom = 582.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_w76dv")
 
+offset_left = 222.0
+offset_top = 172.0
+offset_right = 1008.0
+offset_bottom = 570.0
+
 [node name="HeaderRow" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel" unique_id=2094612365]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 758.0
-offset_bottom = 40.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_3")
 
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 774.0
+offset_bottom = 44.0
+
 [node name="RankHeader" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/HeaderRow" unique_id=316741667]
 layout_mode = 0
-offset_right = 108.0
-offset_bottom = 32.0
 theme_override_colors/font_color = Color(0.55, 0.88, 0.25, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -486,11 +509,13 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 100.0
+offset_bottom = 36.0
+
 [node name="PlayerHeader" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/HeaderRow" unique_id=1301625634]
 layout_mode = 0
-offset_left = 108.0
-offset_right = 554.0
-offset_bottom = 32.0
 theme_override_colors/font_color = Color(0.55, 0.88, 0.25, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -502,11 +527,13 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
+offset_left = 150.0
+offset_top = 0.0
+offset_right = 516.0
+offset_bottom = 36.0
+
 [node name="PointsHeader" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/HeaderRow" unique_id=1773473952]
 layout_mode = 0
-offset_left = 554.0
-offset_right = 736.0
-offset_bottom = 32.0
 theme_override_colors/font_color = Color(0.55, 0.88, 0.25, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -518,21 +545,29 @@ horizontal_alignment = 2
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
+offset_left = 526.0
+offset_top = 0.0
+offset_right = 736.0
+offset_bottom = 36.0
+
 [node name="RowsClip" type="ScrollContainer" parent="CenterContainer/LeaderboardWindow/TablePanel" unique_id=617676988]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 44.0
-offset_right = 758.0
-offset_bottom = 400.0
 theme_override_styles/panel = ExtResource("panel_role_4")
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 
+offset_left = 12.0
+offset_top = 50.0
+offset_right = 774.0
+offset_bottom = 386.0
+
 [node name="RowsRoot" type="VBoxContainer" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip" unique_id=278507753]
-custom_minimum_size = Vector2(750, 356)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 4
+
+custom_minimum_size = Vector2(0, 336)
+size_flags_horizontal = 3
 
 [node name="LeaderboardRow1" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot" unique_id=892327300]
 custom_minimum_size = Vector2(750, 46)
@@ -1857,12 +1892,13 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="SummaryPanel" type="Panel" parent="CenterContainer/LeaderboardWindow" unique_id=1876890488]
 layout_mode = 0
-offset_left = 222.0
-offset_top = 596.0
-offset_right = 988.0
-offset_bottom = 672.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_12")
+
+offset_left = 222.0
+offset_top = 586.0
+offset_right = 1008.0
+offset_bottom = 664.0
 
 [node name="YourRankStat" type="Control" parent="CenterContainer/LeaderboardWindow/SummaryPanel" unique_id=824283013]
 anchors_preset = 0
@@ -1886,6 +1922,8 @@ text = "YOUR RANK"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
+
+clip_text = true
 
 [node name="Value" type="Label" parent="CenterContainer/LeaderboardWindow/SummaryPanel/YourRankStat" unique_id=813797094]
 layout_mode = 0
@@ -1934,6 +1972,8 @@ text = "YOUR POINTS"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
+
+clip_text = true
 
 [node name="Value" type="Label" parent="CenterContainer/LeaderboardWindow/SummaryPanel/YourPointsStat" unique_id=745135304]
 layout_mode = 0
@@ -1995,6 +2035,8 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
+clip_text = true
+
 [node name="Value" type="Label" parent="CenterContainer/LeaderboardWindow/SummaryPanel/EventEndsStat" unique_id=867948418]
 layout_mode = 0
 offset_top = 25.0
@@ -2013,10 +2055,6 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="RewardsButton" type="Button" parent="CenterContainer/LeaderboardWindow/SummaryPanel" unique_id=1050216962]
 layout_mode = 0
-offset_left = 596.0
-offset_top = 12.0
-offset_right = 754.0
-offset_bottom = 64.0
 focus_mode = 0
 theme_override_colors/font_color = Color(0.94, 0.96, 0.94, 1)
 theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
@@ -2028,4 +2066,29 @@ theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_36mnd")
 text = "REWARDS"
 icon = ExtResource("17_4jh6o")
 expand_icon = true
+metadata/pixelmania_font_role = "preserve"
+
+offset_left = 606.0
+offset_top = 14.0
+offset_right = 770.0
+offset_bottom = 64.0
+
+[node name="Guide" type="Label" parent="CenterContainer/LeaderboardWindow/SideColumn/SideArtPanel"]
+offset_left = 14.0
+offset_top = 18.0
+offset_right = 166.0
+offset_bottom = 196.0
+text = "Earn points to climb the rankings.
+
+More boards coming soon."
+autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
+theme_override_font_sizes/font_size = 14
+
+[node name="FindMeButton" type="Button" parent="CenterContainer/LeaderboardWindow/SideColumn/SideArtPanel"]
+offset_left = 12.0
+offset_top = 214.0
+offset_right = 168.0
+offset_bottom = 260.0
+text = "FIND ME"
 metadata/pixelmania_font_role = "preserve"

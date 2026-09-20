@@ -2,7 +2,7 @@ extends Control
 
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 
-const WINDOW_SIZE := Vector2(1000.0, 660.0)
+const WINDOW_SIZE := Vector2(1080.0, 700.0)
 const ACCESS_LOOKUP_TIMEOUT_MS := 15000
 const WORLD_LOCK_ROLE_OPTIONS := ["ADMIN", "BUILDER", "VISITOR"]
 const DEFAULT_WORLD_LOCK_ROLE := "BUILDER"
@@ -190,53 +190,69 @@ func _layout_simple_panel() -> void:
 		panel.texture = UIAtlasDB.get_texture("inner_panel")
 	window.size = WINDOW_SIZE
 	window.position = (get_viewport_rect().size - WINDOW_SIZE) * 0.5
-	_place("WindowSkin", Rect2(0, 0, 1000, 660))
-	_place("HeaderSkin", Rect2(16, 16, 968, 64))
+	_place("WindowSkin", Rect2(0, 0, 1080, 700))
+	_place("HeaderSkin", Rect2(24, 24, 1032, 56))
 	window.get_node("HeaderSkin").show()
-	_place("TitleLabel", Rect2(32, 22, 450, 48))
-	_place("GetKeyButton", Rect2(624, 24, 150, 48))
-	_place("LockBadge", Rect2(786, 24, 132, 48))
+	_place("TitleLabel", Rect2(24, 24, 608, 56))
+	_place("GetKeyButton", Rect2(672, 28, 160, 48))
+	_place("LockBadge", Rect2(848, 28, 136, 48))
+	_place("CloseButton", Rect2(1008, 28, 48, 48))
 	lock_badge.icon = null
-	_place("InfoCard", Rect2(16, 92, 968, 64))
-	_place("WorldLabel", Rect2(32, 100, 450, 44))
-	_place("OwnerLabel", Rect2(500, 100, 450, 44))
+	_place("InfoCard", Rect2(24, 104, 1032, 60))
+	_place("WorldLabel", Rect2(40, 112, 480, 44))
+	_place("OwnerLabel", Rect2(552, 112, 488, 44))
 	for path in ["LockSlot", "LockIcon", "LockIconShadow", "LockedLabel", "StatusLabel", "PositionLabel"]:
 		window.get_node(path).hide()
-	_place("AccessTitle", Rect2(24, 170, 570, 40))
+	_place("AccessTitle", Rect2(24, 188, 584, 40))
 	access_title.text = "PLAYER ACCESS"
-	_place("ActionsTitle", Rect2(634, 170, 342, 40))
+	_place("ActionsTitle", Rect2(632, 188, 424, 40))
 	actions_title.text = "PERMISSIONS"
-	_place("AccessCard", Rect2(16, 216, 590, 428))
-	_place("AccessCard/AccessScroll", Rect2(12, 12, 566, 404))
-	_place("AccessCard/EmptyAccessLabel", Rect2(24, 28, 542, 100))
+	_place("AccessCard", Rect2(24, 244, 584, 432))
+	_place("AccessCard/AccessScroll", Rect2(16, 16, 552, 400))
+	_place("AccessCard/EmptyAccessLabel", Rect2(24, 144, 536, 112))
 	empty_access_label.text = "No players have access yet.\nAdd someone using their username."
 	empty_access_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_place("ActionsCard", Rect2(622, 216, 362, 428))
-	_place("ActionsCard/AddPlayerLabel", Rect2(16, 12, 330, 30))
+	_place("ActionsCard", Rect2(632, 244, 424, 432))
+	_place("ActionsCard/AddPlayerLabel", Rect2(20, 16, 384, 28))
 	add_label.text = "ADD A PLAYER"
-	_place("ActionsCard/UsernameField", Rect2(16, 48, 330, 44))
-	_place("ActionsCard/UsernameField/UsernameSkin", Rect2(0, 0, 330, 44))
-	_place("ActionsCard/UsernameField/UsernameInput", Rect2(8, 2, 314, 40))
-	_place("ActionsCard/RolePicker", Rect2(16, 104, 160, 44))
-	_place("ActionsCard/AddAccessButton", Rect2(188, 104, 158, 44))
+	_place("ActionsCard/UsernameField", Rect2(20, 56, 384, 52))
+	_place("ActionsCard/UsernameField/UsernameSkin", Rect2(0, 0, 384, 52))
+	_place("ActionsCard/UsernameField/UsernameInput", Rect2(12, 4, 360, 44))
+	_place("ActionsCard/RolePicker", Rect2(20, 120, 184, 48))
+	_place("ActionsCard/AddAccessButton", Rect2(220, 120, 184, 48))
 	add_button.text = "ADD"
-	_place("ActionsCard/PublicBuildButton", Rect2(16, 184, 330, 48))
+	_place("ActionsCard/PublicBuildButton", Rect2(20, 192, 384, 52))
 	public_button.tooltip_text = "Allow everyone to build. Turning this off limits building to players with permission."
-	_place("ActionsCard/LimitLabel", Rect2(16, 258, 330, 32))
+	_place("ActionsCard/LimitLabel", Rect2(20, 268, 384, 28))
 	slot_limit_label.text = "BUILDER SLOTS"
 	slot_limit_input.text = "0"
-	PixelUIStyle.apply_input(slot_limit_input)
-	_place("ActionsCard/LimitField", Rect2(16, 300, 160, 44))
-	_place("ActionsCard/LimitField/LimitSkin", Rect2(0, 0, 160, 44))
-	_place("ActionsCard/LimitField/LimitInput", Rect2(8, 2, 144, 40))
-	_place("ActionsCard/SetLimitButton", Rect2(188, 300, 158, 44))
+	apply_world_lock_input_style(slot_limit_input, 20)
+	_place("ActionsCard/LimitField", Rect2(20, 308, 160, 48))
+	_place("ActionsCard/LimitField/LimitSkin", Rect2(0, 0, 160, 48))
+	_place("ActionsCard/LimitField/LimitInput", Rect2(8, 4, 144, 40))
+	_place("ActionsCard/SetLimitButton", Rect2(196, 308, 208, 48))
 	set_slot_limit_button.text = "SAVE LIMIT"
 	for path in ["ActionsCard/LimitLabel", "ActionsCard/LimitField", "ActionsCard/LimitField/LimitSkin", "ActionsCard/LimitField/LimitInput", "ActionsCard/SetLimitButton"]:
 		window.get_node(path).show()
-	_place("ActionsCard/HintLabel", Rect2(16, 360, 330, 56))
+	_place("ActionsCard/HintLabel", Rect2(20, 372, 384, 40))
 	hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint_label.text = "Only the owner can edit access."
 	add_role_picker.tooltip_text = "Choose the access role for this player."
+	for label in [title_label, access_title, actions_title, world_label, owner_label, slot_limit_label, add_label, hint_label, empty_access_label]:
+		label.set_meta("pixelmania_font_role", "preserve")
+		label.add_theme_font_size_override("font_size", 20)
+	title_label.add_theme_font_size_override("font_size", 32)
+	access_title.add_theme_font_size_override("font_size", 24)
+	actions_title.add_theme_font_size_override("font_size", 24)
+	hint_label.add_theme_font_size_override("font_size", 18)
+	for label in [access_title, actions_title]:
+		label.text = " " + label.text
+	add_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	add_input.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	for field in [add_input, slot_limit_input]:
+		field.set_meta("pixelmania_font_role", "preserve")
+		field.add_theme_font_size_override("font_size", 20)
+	member_list_root.add_theme_constant_override("separation", 12)
 
 
 func _fit_window_to_viewport() -> void:
@@ -261,7 +277,7 @@ func _fit_window_to_viewport() -> void:
 func _fit_compact_lock(viewport_size: Vector2) -> bool:
 	if window == null:
 		return false
-	if viewport_size.x >= 1024 and viewport_size.y >= 684:
+	if viewport_size.x >= WINDOW_SIZE.x + 24 and viewport_size.y >= WINDOW_SIZE.y + 24:
 		if _compact_scroll != null and _compact_scroll.visible:
 			for control in _desktop_positions:
 				var saved: Rect2 = _desktop_positions[control]
@@ -271,6 +287,8 @@ func _fit_compact_lock(viewport_size: Vector2) -> bool:
 				control.size = saved.size
 			_compact_scroll.hide()
 			lock_badge.show()
+			title_label.add_theme_font_size_override("font_size", 32)
+			_fit_action_controls(public_button.get_parent(), 424.0)
 		return false
 	if _compact_scroll == null:
 		_compact_scroll = ScrollContainer.new()
@@ -281,7 +299,7 @@ func _fit_compact_lock(viewport_size: Vector2) -> bool:
 		_compact_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_compact_body.custom_minimum_size.y = 892
 		_compact_scroll.add_child(_compact_body)
-		for control in [window, window.get_node("WindowSkin"), window.get_node("HeaderSkin"), title_label, get_key_button, world_label, owner_label, access_title, actions_title, window.get_node("InfoCard"), access_scroll.get_parent(), public_button.get_parent(), access_scroll]:
+		for control in [window, window.get_node("WindowSkin"), window.get_node("HeaderSkin"), title_label, get_key_button, close_button, world_label, owner_label, access_title, actions_title, window.get_node("InfoCard"), access_scroll.get_parent(), public_button.get_parent(), access_scroll]:
 			_desktop_positions[control] = control.get_rect()
 	var extent := Vector2(maxf(380, viewport_size.x - 24), maxf(280, viewport_size.y - 24))
 	window.size = extent
@@ -289,8 +307,12 @@ func _fit_compact_lock(viewport_size: Vector2) -> bool:
 	window.scale = Vector2.ONE
 	window.get_node("WindowSkin").size = extent
 	window.get_node("HeaderSkin").size = Vector2(extent.x - 32, 64)
-	title_label.size.x = maxf(200, extent.x - 248)
-	get_key_button.position = Vector2(extent.x - 230, 24)
+	title_label.size.x = maxf(100, extent.x - 252)
+	title_label.clip_text = true
+	title_label.add_theme_font_size_override("font_size", 24)
+	get_key_button.position = Vector2(extent.x - 204, 28)
+	get_key_button.size = Vector2(120, 48)
+	close_button.position = Vector2(extent.x - 64, 28)
 	lock_badge.hide()
 	_compact_scroll.show()
 	_compact_scroll.position = Vector2(16, 88)
@@ -319,7 +341,27 @@ func _fit_compact_lock(viewport_size: Vector2) -> bool:
 	var actions_card := public_button.get_parent() as Control
 	actions_card.position = Vector2(0, 432)
 	actions_card.size = Vector2(width, 428)
+	_fit_action_controls(actions_card, width)
 	return true
+
+
+func _fit_action_controls(card: Control, width: float) -> void:
+	var ratio := (width - 40.0) / 384.0
+	for child in card.get_children():
+		if not child is Control:
+			continue
+		if not child.has_meta("desktop_action_rect"):
+			child.set_meta("desktop_action_rect", child.get_rect())
+		var rect: Rect2 = child.get_meta("desktop_action_rect")
+		child.position.x = 20.0 + (rect.position.x - 20.0) * ratio
+		child.size.x = rect.size.x * ratio
+	for field_name in ["UsernameField", "LimitField"]:
+		var field := card.get_node(field_name) as Control
+		for child in field.get_children():
+			if child is NinePatchRect:
+				child.size.x = field.size.x
+			elif child is LineEdit:
+				child.size.x = field.size.x - child.position.x * 2.0
 
 
 func _process_access_lookup_timeout() -> void:
@@ -566,7 +608,7 @@ func create_member_row(player_name: String) -> void:
 		return
 
 	var row_panel := PanelContainer.new()
-	row_panel.custom_minimum_size = Vector2(0, 52)
+	row_panel.custom_minimum_size = Vector2(0, 64)
 	row_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row_panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
 		Color(0.045, 0.050, 0.068, 0.96),
@@ -594,7 +636,9 @@ func create_member_row(player_name: String) -> void:
 	name_label.clip_text = true
 	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	name_label.tooltip_text = player_name
-	PixelUIStyle.apply_label_shadow(name_label, 16)
+	PixelUIStyle.apply_label_shadow(name_label, 20)
+	name_label.set_meta("pixelmania_font_role", "preserve")
+	name_label.add_theme_font_size_override("font_size", 20)
 	row.add_child(name_label)
 
 	var role_label := Label.new()
@@ -1266,6 +1310,8 @@ func apply_world_lock_arcade_button_style(button: Button, selected: bool = false
 	if button == null:
 		return
 	PixelUIStyle.apply_button_text(button, font_size)
+	button.set_meta("pixelmania_font_role", "preserve")
+	button.add_theme_font_size_override("font_size", 20)
 	# Always use the same green button kit WorldLockGUI.tscn authors for its own buttons
 	# (GetKeyButton, PublicBuildButton, SetLimitButton, AddAccessButton), so every button in
 	# this menu -- scene-authored or dynamically created (member rows, confirm popup) --

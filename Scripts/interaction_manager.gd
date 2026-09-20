@@ -125,6 +125,16 @@ func use_selected_item_at_mouse():
 		world.use_selected_lure_at_mouse()
 		return
 
+	if world.selected_item_type in ["fertilizer", "super_fertilizer"]:
+		var target_grid: Vector2i = world.get_mouse_grid_position()
+		if not world.has_planted_seed(target_grid):
+			world.show_notification("Use fertilizer on a growing tree.")
+			return
+		var network = world.get_node_or_null("/root/NetworkManager")
+		if network != null:
+			network.send_inventory_transaction_request({"action": "seed_fertilize", "item_id": world.selected_item_type, "x": target_grid.x, "y": target_grid.y})
+		return
+
 	if world.selected_item_category == "tool" and world.selected_item_type == "entrance_mover":
 		world.use_entrance_mover_at_mouse()
 		return

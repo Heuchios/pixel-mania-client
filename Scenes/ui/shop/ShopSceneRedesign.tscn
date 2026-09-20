@@ -1,30 +1,5 @@
 [gd_scene format=3 uid="uid://bkle0krhyvh8f"]
 
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/outer_panel_26aea83603.tres" id="panel_role_0"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_1"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_2"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_3"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/outer_panel_26aea83603.tres" id="panel_role_4"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/outer_panel_26aea83603.tres" id="panel_role_5"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_6"]
-
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_f72e84db31.tres" id="atlas_StyleBoxTexture_yu48v"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_1b992e4807.tres" id="atlas_StyleBoxTexture_vxp5j"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_c4d4758782.tres" id="atlas_StyleBoxTexture_xcl1w"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_f72e84db31.tres" id="atlas_StyleBoxTexture_j8fpb"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_1b992e4807.tres" id="atlas_StyleBoxTexture_emwry"]
-[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/close_button.tres" id="atlas_AtlasTexture_close_icon"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_c4d4758782.tres" id="atlas_StyleBoxTexture_7tttd"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="atlas_StyleBoxTexture_card_n"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_5d538f161d.tres" id="atlas_StyleBoxTexture_card_p"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_925ba36f5d.tres" id="atlas_StyleBoxTexture_card_h"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_f72e84db31.tres" id="atlas_StyleBoxTexture_law6v"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_f72e84db31.tres" id="atlas_StyleBoxTexture_reward_buyagain_n"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_1b992e4807.tres" id="atlas_StyleBoxTexture_reward_buyagain_p"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/green_button_c4d4758782.tres" id="atlas_StyleBoxTexture_reward_buyagain_h"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_f72e84db31.tres" id="atlas_StyleBoxTexture_reward_close_n"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_1b992e4807.tres" id="atlas_StyleBoxTexture_reward_close_p"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_c4d4758782.tres" id="atlas_StyleBoxTexture_reward_close_h"]
 [ext_resource type="Script" uid="uid://bfqcxahibecdq" path="res://Scripts/ui/shop_scene_redesign.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://b7b05hpgn3dhg" path="res://Assets/currency/gem.png" id="6_p7yut"]
 [ext_resource type="Texture2D" uid="uid://chjnc1wbfw1yx" path="res://Assets/ui/SHOP/card.png" id="14_htq3s"]
@@ -37,19 +12,27 @@
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/wrench_icon_button.tres" id="29_icontools"]
 [ext_resource type="Texture2D" uid="uid://451ldf6md7t8" path="res://Assets/ui/icons/shop_cat_fishing.png" id="30_iconfishing"]
 [ext_resource type="FontFile" uid="uid://e0ivgh0c6uck" path="res://Assets/font/font.ttf" id="31_font"]
-[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/scroll_bar.tres" id="32_scrolltrack"]
-[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/scroll_handle.tres" id="33_scrollhandle"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/shop_tab_button.tres" id="atlas_StyleBoxTexture_sidebar_n"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/shop_tab_selected.tres" id="atlas_StyleBoxTexture_sidebar_p"]
-
-
-
-
+[ext_resource type="Texture2D" uid="uid://dd1kv16odpmq0" path="res://Assets/ui/atlas/textures/scroll_bar.tres" id="32_scrolltrack"]
+[ext_resource type="Texture2D" uid="uid://mwe77pdj03hy" path="res://Assets/ui/atlas/textures/scroll_handle.tres" id="33_scrollhandle"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/close_button.tres" id="atlas_AtlasTexture_close_icon"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/red_button_c4d4758782.tres" id="atlas_StyleBoxTexture_7tttd"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/inner_panel_925ba36f5d.tres" id="atlas_StyleBoxTexture_card_h"]
+[ext_resource type="StyleBox" uid="uid://bumlm4ombqyip" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="atlas_StyleBoxTexture_card_n"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/inner_panel_5d538f161d.tres" id="atlas_StyleBoxTexture_card_p"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/red_button_1b992e4807.tres" id="atlas_StyleBoxTexture_emwry"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/red_button_f72e84db31.tres" id="atlas_StyleBoxTexture_j8fpb"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/green_button_c4d4758782.tres" id="atlas_StyleBoxTexture_reward_buyagain_h"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/green_button_f72e84db31.tres" id="atlas_StyleBoxTexture_reward_buyagain_n"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/green_button_1b992e4807.tres" id="atlas_StyleBoxTexture_reward_buyagain_p"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/blue_button_c4d4758782.tres" id="atlas_StyleBoxTexture_reward_close_h"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/blue_button_f72e84db31.tres" id="atlas_StyleBoxTexture_reward_close_n"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/blue_button_1b992e4807.tres" id="atlas_StyleBoxTexture_reward_close_p"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/shop_tab_button.tres" id="atlas_StyleBoxTexture_sidebar_n"]
+[ext_resource type="StyleBox" path="res://Assets/ui/atlas/styles/shop_tab_selected.tres" id="atlas_StyleBoxTexture_sidebar_p"]
+[ext_resource type="StyleBox" uid="uid://coetf2alh4wvu" path="res://Assets/ui/atlas/styles/outer_panel_26aea83603.tres" id="panel_role_5"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m2lqv"]
 texture = ExtResource("6_p7yut")
-
-
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_sidebar"]
 
@@ -72,6 +55,7 @@ shadow_offset = Vector2(0, 5)
 texture = ExtResource("14_htq3s")
 
 [node name="ShopBazaarRoot" type="Control" unique_id=1412000854]
+texture_filter = 1
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -79,7 +63,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
-texture_filter = 1
 
 [node name="BackgroundDim" type="TextureRect" parent="." unique_id=1694777638]
 layout_mode = 0
@@ -102,7 +85,7 @@ offset_right = 550.0
 offset_bottom = 350.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = ExtResource("panel_role_0")
+theme_override_styles/panel = ExtResource("panel_role_5")
 
 [node name="Margin" type="MarginContainer" parent="ShopWindow" unique_id=1789822930]
 layout_mode = 1
@@ -121,7 +104,7 @@ layout_mode = 2
 theme_override_constants/separation = 12
 
 [node name="Header" type="HBoxContainer" parent="ShopWindow/Margin/Layout" unique_id=445287825]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_constants/separation = 16
 
@@ -131,14 +114,13 @@ custom_maximum_size = Vector2(-1, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 offset_transform_enabled = true
-offset_transform_position = Vector2(1, -5)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 35
-theme_override_styles/normal = ExtResource("panel_role_1")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_card_n")
 text = "  SHOP"
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
@@ -147,7 +129,7 @@ metadata/pixelmania_font_role = "preserve"
 custom_minimum_size = Vector2(200, 50)
 custom_maximum_size = Vector2(-1, 50)
 layout_mode = 2
-theme_override_styles/panel = ExtResource("panel_role_2")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxTexture_card_n")
 
 [node name="BalanceLabel" type="Label" parent="ShopWindow/Margin/Layout/Header/BalanceChip" unique_id=740391464]
 layout_mode = 0
@@ -182,7 +164,7 @@ horizontal_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
 [node name="GetGemsButton" type="Button" parent="ShopWindow/Margin/Layout/Header" unique_id=1699330621]
-custom_minimum_size = Vector2(160, 44)
+custom_minimum_size = Vector2(160, 50)
 custom_maximum_size = Vector2(-1, 50)
 layout_mode = 2
 focus_mode = 0
@@ -190,15 +172,14 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 25
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_yu48v")
-theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_vxp5j")
-theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_xcl1w")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_reward_buyagain_p")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_reward_buyagain_h")
 text = " GET GEMS"
 icon = ExtResource("6_p7yut")
 metadata/pixelmania_font_role = "preserve"
 
 [node name="CloseButton" type="Button" parent="ShopWindow/Margin/Layout/Header" unique_id=20379623]
-metadata/close_button_align_top = true
 custom_minimum_size = Vector2(44, 44)
 custom_maximum_size = Vector2(40, 40)
 layout_mode = 2
@@ -207,8 +188,8 @@ theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_emwry")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_7tttd")
 icon = ExtResource("atlas_AtlasTexture_close_icon")
 icon_alignment = 1
-vertical_icon_alignment = 1
 expand_icon = true
+metadata/close_button_align_top = true
 
 [node name="Body" type="HBoxContainer" parent="ShopWindow/Margin/Layout" unique_id=1548490165]
 layout_mode = 2
@@ -218,7 +199,7 @@ theme_override_constants/separation = 16
 [node name="Sidebar" type="VBoxContainer" parent="ShopWindow/Margin/Layout/Body" unique_id=435181059]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 6
 
 [node name="Btn_all" type="Button" parent="ShopWindow/Margin/Layout/Body/Sidebar" unique_id=-1294967294]
 custom_minimum_size = Vector2(100, 40)
@@ -227,17 +208,20 @@ layout_mode = 2
 tooltip_text = "Featured"
 focus_mode = 0
 mouse_default_cursor_shape = 2
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_sidebar_n")
 theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_sidebar_p")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_sidebar_n")
+theme_override_styles/hover_pressed = ExtResource("atlas_StyleBoxTexture_sidebar_p")
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_sidebar")
 text = "FEATURED"
 expand_icon = true
 metadata/pixelmania_font_role = "preserve"
-theme_override_colors/font_pressed_color = Color(0.16, 0.06, 0.2, 1)
+metadata/preserve_selected_style = true
 
 [node name="Btn_gem_store" type="Button" parent="ShopWindow/Margin/Layout/Body/Sidebar" unique_id=-1294967293]
 custom_minimum_size = Vector2(56, 56)
@@ -246,14 +230,17 @@ layout_mode = 2
 tooltip_text = "Gem Store"
 focus_mode = 0
 mouse_default_cursor_shape = 2
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_sidebar_n")
 theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_sidebar_p")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_sidebar_n")
+theme_override_styles/hover_pressed = ExtResource("atlas_StyleBoxTexture_sidebar_p")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_sidebar")
 text = "GEMS"
 expand_icon = true
-theme_override_colors/font_pressed_color = Color(0.16, 0.06, 0.2, 1)
+metadata/preserve_selected_style = true
 
 [node name="Btn_locks" type="Button" parent="ShopWindow/Margin/Layout/Body/Sidebar" unique_id=-1294967292]
 custom_minimum_size = Vector2(56, 56)
@@ -262,14 +249,17 @@ layout_mode = 2
 tooltip_text = "Locks"
 focus_mode = 0
 mouse_default_cursor_shape = 2
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_sidebar_n")
 theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_sidebar_p")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_sidebar_n")
+theme_override_styles/hover_pressed = ExtResource("atlas_StyleBoxTexture_sidebar_p")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_sidebar")
 text = "LOCKS"
 expand_icon = true
-theme_override_colors/font_pressed_color = Color(0.16, 0.06, 0.2, 1)
+metadata/preserve_selected_style = true
 
 [node name="Btn_stations_special" type="Button" parent="ShopWindow/Margin/Layout/Body/Sidebar" unique_id=-1294967291]
 custom_minimum_size = Vector2(56, 56)
@@ -278,14 +268,17 @@ layout_mode = 2
 tooltip_text = "Stations & Special"
 focus_mode = 0
 mouse_default_cursor_shape = 2
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_sidebar_n")
 theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_sidebar_p")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_sidebar_n")
+theme_override_styles/hover_pressed = ExtResource("atlas_StyleBoxTexture_sidebar_p")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_sidebar")
 text = "SPECIAL"
 expand_icon = true
-theme_override_colors/font_pressed_color = Color(0.16, 0.06, 0.2, 1)
+metadata/preserve_selected_style = true
 
 [node name="Btn_clothes" type="Button" parent="ShopWindow/Margin/Layout/Body/Sidebar" unique_id=-1294967290]
 custom_minimum_size = Vector2(56, 56)
@@ -294,14 +287,17 @@ layout_mode = 2
 tooltip_text = "Clothes"
 focus_mode = 0
 mouse_default_cursor_shape = 2
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_sidebar_n")
 theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_sidebar_p")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_sidebar_n")
+theme_override_styles/hover_pressed = ExtResource("atlas_StyleBoxTexture_sidebar_p")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_sidebar")
 text = "CLOTHES"
 expand_icon = true
-theme_override_colors/font_pressed_color = Color(0.16, 0.06, 0.2, 1)
+metadata/preserve_selected_style = true
 
 [node name="Btn_tools" type="Button" parent="ShopWindow/Margin/Layout/Body/Sidebar" unique_id=-1294967289]
 custom_minimum_size = Vector2(56, 56)
@@ -310,14 +306,17 @@ layout_mode = 2
 tooltip_text = "Tools"
 focus_mode = 0
 mouse_default_cursor_shape = 2
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_sidebar_n")
 theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_sidebar_p")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_sidebar_n")
+theme_override_styles/hover_pressed = ExtResource("atlas_StyleBoxTexture_sidebar_p")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_sidebar")
 text = "TOOLS"
 expand_icon = true
-theme_override_colors/font_pressed_color = Color(0.16, 0.06, 0.2, 1)
+metadata/preserve_selected_style = true
 
 [node name="Btn_fishing" type="Button" parent="ShopWindow/Margin/Layout/Body/Sidebar" unique_id=-1294967288]
 custom_minimum_size = Vector2(56, 56)
@@ -326,14 +325,17 @@ layout_mode = 2
 tooltip_text = "Fishing"
 focus_mode = 0
 mouse_default_cursor_shape = 2
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_sidebar_n")
 theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_sidebar_p")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_sidebar_n")
+theme_override_styles/hover_pressed = ExtResource("atlas_StyleBoxTexture_sidebar_p")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_sidebar")
 text = "FISHING"
 expand_icon = true
-theme_override_colors/font_pressed_color = Color(0.16, 0.06, 0.2, 1)
+metadata/preserve_selected_style = true
 
 [node name="MainPane" type="VBoxContainer" parent="ShopWindow/Margin/Layout/Body" unique_id=1814118680]
 layout_mode = 2
@@ -351,7 +353,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 22
-theme_override_styles/normal = ExtResource("panel_role_3")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_card_n")
 text = " FEATURED"
 vertical_alignment = 1
 autowrap_trim_flags = 64
@@ -434,9 +436,8 @@ theme_override_font_sizes/font_size = 24
 text = "99,000 GEMS"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_all/Card_all_0" unique_id=1978187850]
 layout_mode = 1
@@ -456,9 +457,8 @@ theme_override_font_sizes/font_size = 24
 text = "DELUXE EDITION"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_all/Card_all_0" unique_id=-1294967280]
 layout_mode = 1
@@ -475,7 +475,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "$49.99"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -539,9 +539,8 @@ theme_override_font_sizes/font_size = 24
 text = "World Lock"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_all/Card_all_1" unique_id=-294967294]
 layout_mode = 1
@@ -560,9 +559,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_all/Card_all_1" unique_id=-1294967273]
 layout_mode = 1
@@ -579,7 +577,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "3,500"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -643,9 +641,8 @@ theme_override_font_sizes/font_size = 24
 text = "Fish Monger"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_all/Card_all_2" unique_id=-294967293]
 layout_mode = 1
@@ -664,9 +661,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_all/Card_all_2" unique_id=-1294967266]
 layout_mode = 1
@@ -683,7 +679,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "15,000"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -747,9 +743,8 @@ theme_override_font_sizes/font_size = 24
 text = "Wizard Robe"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_all/Card_all_3" unique_id=-294967292]
 layout_mode = 1
@@ -768,9 +763,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_all/Card_all_3" unique_id=-1294967259]
 layout_mode = 1
@@ -787,7 +781,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "2,400"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -851,9 +845,8 @@ theme_override_font_sizes/font_size = 24
 text = "Grappling Hook"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_all/Card_all_4" unique_id=-294967291]
 layout_mode = 1
@@ -872,9 +865,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_all/Card_all_4" unique_id=-1294967252]
 layout_mode = 1
@@ -891,7 +883,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "1,800"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -955,9 +947,8 @@ theme_override_font_sizes/font_size = 24
 text = "Leviathan Rod"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_all/Card_all_5" unique_id=-294967290]
 layout_mode = 1
@@ -976,9 +967,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_all/Card_all_5" unique_id=-1294967245]
 layout_mode = 1
@@ -995,7 +985,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "4,800"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -1067,9 +1057,8 @@ theme_override_font_sizes/font_size = 24
 text = "Pocket Pouch"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_gem_store/Card_gem_store_0" unique_id=-294967289]
 layout_mode = 1
@@ -1088,9 +1077,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_gem_store/Card_gem_store_0" unique_id=-1294967237]
 layout_mode = 1
@@ -1107,7 +1095,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "$0.99"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -1171,9 +1159,8 @@ theme_override_font_sizes/font_size = 24
 text = "Traveler's Sack"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_gem_store/Card_gem_store_1" unique_id=-294967288]
 layout_mode = 1
@@ -1192,9 +1179,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_gem_store/Card_gem_store_1" unique_id=-1294967230]
 layout_mode = 1
@@ -1211,7 +1197,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "$4.99"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -1275,9 +1261,8 @@ theme_override_font_sizes/font_size = 24
 text = "Merchant's Chest"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_gem_store/Card_gem_store_2" unique_id=-294967287]
 layout_mode = 1
@@ -1296,9 +1281,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_gem_store/Card_gem_store_2" unique_id=-1294967223]
 layout_mode = 1
@@ -1315,7 +1299,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "$9.99"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -1379,9 +1363,8 @@ theme_override_font_sizes/font_size = 24
 text = "Noble Vault"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_gem_store/Card_gem_store_3" unique_id=-294967286]
 layout_mode = 1
@@ -1400,9 +1383,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_gem_store/Card_gem_store_3" unique_id=-1294967216]
 layout_mode = 1
@@ -1419,7 +1401,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "$19.99"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -1483,9 +1465,8 @@ theme_override_font_sizes/font_size = 24
 text = "Mountain of Gems"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_gem_store/Card_gem_store_4" unique_id=-294967285]
 layout_mode = 1
@@ -1504,9 +1485,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_gem_store/Card_gem_store_4" unique_id=-1294967209]
 layout_mode = 1
@@ -1523,7 +1503,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "$49.99"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -1595,9 +1575,8 @@ theme_override_font_sizes/font_size = 24
 text = "Small Lock"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_locks/Card_locks_0" unique_id=-294967284]
 layout_mode = 1
@@ -1616,9 +1595,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_locks/Card_locks_0" unique_id=-1294967201]
 layout_mode = 1
@@ -1635,7 +1613,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "500"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -1699,9 +1677,8 @@ theme_override_font_sizes/font_size = 24
 text = "Medium Lock"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_locks/Card_locks_1" unique_id=-294967283]
 layout_mode = 1
@@ -1720,9 +1697,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_locks/Card_locks_1" unique_id=-1294967194]
 layout_mode = 1
@@ -1739,7 +1715,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "1,000"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -1803,9 +1779,8 @@ theme_override_font_sizes/font_size = 24
 text = "Big Lock"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_locks/Card_locks_2" unique_id=-294967282]
 layout_mode = 1
@@ -1824,9 +1799,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_locks/Card_locks_2" unique_id=-1294967187]
 layout_mode = 1
@@ -1843,7 +1817,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "2,000"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -1907,9 +1881,8 @@ theme_override_font_sizes/font_size = 24
 text = "Royal Lock"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_locks/Card_locks_3" unique_id=-294967281]
 layout_mode = 1
@@ -1928,9 +1901,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_locks/Card_locks_3" unique_id=-1294967180]
 layout_mode = 1
@@ -1947,7 +1919,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "6,000"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -2011,9 +1983,8 @@ theme_override_font_sizes/font_size = 24
 text = "World Lock"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_locks/Card_locks_4" unique_id=-294967280]
 layout_mode = 1
@@ -2032,9 +2003,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_locks/Card_locks_4" unique_id=-1294967173]
 layout_mode = 1
@@ -2051,7 +2021,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "3,500"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -2123,9 +2093,8 @@ theme_override_font_sizes/font_size = 24
 text = "Crafting Station"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_stations_special/Card_stations_special_0" unique_id=-294967279]
 layout_mode = 1
@@ -2144,9 +2113,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_stations_special/Card_stations_special_0" unique_id=-1294967165]
 layout_mode = 1
@@ -2163,7 +2131,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "80"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -2227,9 +2195,8 @@ theme_override_font_sizes/font_size = 24
 text = "Cooking Station"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_stations_special/Card_stations_special_1" unique_id=-294967278]
 layout_mode = 1
@@ -2248,9 +2215,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_stations_special/Card_stations_special_1" unique_id=-1294967158]
 layout_mode = 1
@@ -2267,7 +2233,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "350"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -2331,9 +2297,8 @@ theme_override_font_sizes/font_size = 24
 text = "Vending Machine"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_stations_special/Card_stations_special_2" unique_id=-294967277]
 layout_mode = 1
@@ -2352,9 +2317,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_stations_special/Card_stations_special_2" unique_id=-1294967151]
 layout_mode = 1
@@ -2371,7 +2335,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "1,200"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -2435,9 +2399,8 @@ theme_override_font_sizes/font_size = 24
 text = "Safe"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_stations_special/Card_stations_special_3" unique_id=-294967276]
 layout_mode = 1
@@ -2456,9 +2419,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_stations_special/Card_stations_special_3" unique_id=-1294967144]
 layout_mode = 1
@@ -2475,7 +2437,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "7,500"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -2539,9 +2501,8 @@ theme_override_font_sizes/font_size = 24
 text = "Fish Monger"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_stations_special/Card_stations_special_4" unique_id=-294967275]
 layout_mode = 1
@@ -2560,9 +2521,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_stations_special/Card_stations_special_4" unique_id=-1294967137]
 layout_mode = 1
@@ -2579,7 +2539,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "15,000"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -2651,9 +2611,8 @@ theme_override_font_sizes/font_size = 24
 text = "Straw Hat"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_clothes/Card_clothes_0" unique_id=-294967274]
 layout_mode = 1
@@ -2672,9 +2631,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_clothes/Card_clothes_0" unique_id=-1294967129]
 layout_mode = 1
@@ -2691,7 +2649,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "250"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -2755,9 +2713,8 @@ theme_override_font_sizes/font_size = 24
 text = "Pixel Scarf"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_clothes/Card_clothes_1" unique_id=-294967273]
 layout_mode = 1
@@ -2776,9 +2733,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_clothes/Card_clothes_1" unique_id=-1294967122]
 layout_mode = 1
@@ -2795,7 +2751,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "400"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -2859,9 +2815,8 @@ theme_override_font_sizes/font_size = 24
 text = "Explorer Boots"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_clothes/Card_clothes_2" unique_id=-294967272]
 layout_mode = 1
@@ -2880,9 +2835,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_clothes/Card_clothes_2" unique_id=-1294967115]
 layout_mode = 1
@@ -2899,7 +2853,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "700"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -2963,9 +2917,8 @@ theme_override_font_sizes/font_size = 24
 text = "Lantern Charm"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_clothes/Card_clothes_3" unique_id=-294967271]
 layout_mode = 1
@@ -2984,9 +2937,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_clothes/Card_clothes_3" unique_id=-1294967108]
 layout_mode = 1
@@ -3003,7 +2955,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "600"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -3067,9 +3019,8 @@ theme_override_font_sizes/font_size = 24
 text = "Wizard Robe"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_clothes/Card_clothes_4" unique_id=-294967270]
 layout_mode = 1
@@ -3088,9 +3039,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_clothes/Card_clothes_4" unique_id=-1294967101]
 layout_mode = 1
@@ -3107,7 +3057,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "2,400"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -3179,9 +3129,8 @@ theme_override_font_sizes/font_size = 24
 text = "Trusty Wrench"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_tools/Card_tools_0" unique_id=-294967269]
 layout_mode = 1
@@ -3200,9 +3149,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_tools/Card_tools_0" unique_id=-1294967093]
 layout_mode = 1
@@ -3219,7 +3167,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "150"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -3283,9 +3231,8 @@ theme_override_font_sizes/font_size = 24
 text = "Pickaxe"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_tools/Card_tools_1" unique_id=-294967268]
 layout_mode = 1
@@ -3304,9 +3251,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_tools/Card_tools_1" unique_id=-1294967086]
 layout_mode = 1
@@ -3323,7 +3269,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "300"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -3387,9 +3333,8 @@ theme_override_font_sizes/font_size = 24
 text = "Paint Bucket"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_tools/Card_tools_2" unique_id=-294967267]
 layout_mode = 1
@@ -3408,9 +3353,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_tools/Card_tools_2" unique_id=-1294967079]
 layout_mode = 1
@@ -3427,7 +3371,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "450"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -3491,9 +3435,8 @@ theme_override_font_sizes/font_size = 24
 text = "Grappling Hook"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_tools/Card_tools_3" unique_id=-294967266]
 layout_mode = 1
@@ -3512,9 +3455,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_tools/Card_tools_3" unique_id=-1294967072]
 layout_mode = 1
@@ -3531,7 +3473,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "1,800"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -3603,9 +3545,8 @@ theme_override_font_sizes/font_size = 24
 text = "Bamboo Rod"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_fishing/Card_fishing_0" unique_id=-294967265]
 layout_mode = 1
@@ -3624,9 +3565,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_fishing/Card_fishing_0" unique_id=-1294967064]
 layout_mode = 1
@@ -3643,7 +3583,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "300"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -3707,9 +3647,8 @@ theme_override_font_sizes/font_size = 24
 text = "Neon Bobber"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_fishing/Card_fishing_1" unique_id=-294967264]
 layout_mode = 1
@@ -3728,9 +3667,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_fishing/Card_fishing_1" unique_id=-1294967057]
 layout_mode = 1
@@ -3747,7 +3685,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "450"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -3811,9 +3749,8 @@ theme_override_font_sizes/font_size = 24
 text = "Lucky Charm Bait"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_fishing/Card_fishing_2" unique_id=-294967263]
 layout_mode = 1
@@ -3832,9 +3769,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_fishing/Card_fishing_2" unique_id=-1294967050]
 layout_mode = 1
@@ -3851,7 +3787,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "650"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -3915,9 +3851,8 @@ theme_override_font_sizes/font_size = 24
 text = "Golden Hook"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_fishing/Card_fishing_3" unique_id=-294967262]
 layout_mode = 1
@@ -3936,9 +3871,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_fishing/Card_fishing_3" unique_id=-1294967043]
 layout_mode = 1
@@ -3955,7 +3889,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "2,200"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -4019,9 +3953,8 @@ theme_override_font_sizes/font_size = 24
 text = "Leviathan Rod"
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="NameLabel2" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_fishing/Card_fishing_4" unique_id=-294967261]
 layout_mode = 1
@@ -4040,9 +3973,8 @@ theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
-clip_text = false
-metadata/pixelmania_font_role = "preserve"
 autowrap_mode = 2
+metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceLabel" type="Label" parent="ShopWindow/Margin/Layout/Body/MainPane/ItemScrollRow/ItemScroll/Grid_fishing/Card_fishing_4" unique_id=-1294967036]
 layout_mode = 1
@@ -4059,7 +3991,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_law6v")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
 text = "4,800"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -4137,7 +4069,7 @@ offset_right = 210.0
 offset_bottom = 235.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = ExtResource("panel_role_4")
+theme_override_styles/panel = ExtResource("panel_role_5")
 
 [node name="Margin" type="MarginContainer" parent="DetailOverlay/DetailCard" unique_id=-1294967035]
 layout_mode = 1
@@ -4174,7 +4106,6 @@ theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_emwry")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_7tttd")
 icon = ExtResource("atlas_AtlasTexture_close_icon")
 icon_alignment = 1
-vertical_icon_alignment = 1
 expand_icon = true
 
 [node name="DetailIconSpacer" type="Control" parent="DetailOverlay/DetailCard/Margin/Column" unique_id=-1294968028]
@@ -4223,9 +4154,9 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_yu48v")
-theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_vxp5j")
-theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_xcl1w")
+theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_buyagain_n")
+theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_reward_buyagain_p")
+theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_reward_buyagain_h")
 text = "BUY  $49.99"
 metadata/pixelmania_font_role = "preserve"
 
@@ -4335,7 +4266,7 @@ offset_top = 14.0
 offset_right = 676.0
 offset_bottom = 76.0
 mouse_filter = 2
-theme_override_styles/panel = ExtResource("panel_role_6")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxTexture_card_n")
 
 [node name="Title" type="Label" parent="PurchaseRewardOverlay/RewardCard" unique_id=-1310000017]
 layout_mode = 1

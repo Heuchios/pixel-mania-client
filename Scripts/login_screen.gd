@@ -534,7 +534,8 @@ func _create_news_entry_row(entry: Dictionary) -> void:
 		header.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 1))
 		header.add_theme_constant_override("shadow_offset_x", 2)
 		header.add_theme_constant_override("shadow_offset_y", 2)
-		header.add_theme_font_size_override("font_size", 15)
+		header.add_theme_font_size_override("font_size", 20)
+		header.set_meta("pixelmania_font_role", "preserve")
 		row.add_child(header)
 
 	if body_text != "":
@@ -545,7 +546,8 @@ func _create_news_entry_row(entry: Dictionary) -> void:
 		body_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 1))
 		body_label.add_theme_constant_override("shadow_offset_x", 1)
 		body_label.add_theme_constant_override("shadow_offset_y", 1)
-		body_label.add_theme_font_size_override("font_size", 13)
+		body_label.add_theme_font_size_override("font_size", 18)
+		body_label.set_meta("pixelmania_font_role", "preserve")
 		row.add_child(body_label)
 
 	var spacer := Control.new()

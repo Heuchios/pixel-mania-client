@@ -1,7 +1,7 @@
 extends "res://Scripts/player_menu_ui.gd"
 
 const EquipmentManagerScript = preload("res://Scripts/equipment_manager.gd")
-const PROFILE_BASE_SIZE := Vector2(1060.0, 620.0)
+const PROFILE_BASE_SIZE := Vector2(1060.0, 680.0)
 const PROFILE_SCREEN_MARGIN := Vector2(32.0, 32.0)
 const MIN_PROFILE_SCALE := 0.42
 const MAX_PROFILE_BIO_LENGTH := 160
@@ -17,7 +17,7 @@ var worlds_value_label: Label = null
 var friends_value_label: Label = null
 var total_xp_value_label: Label = null
 var bio_label: Label = null
-var xp_fill: NinePatchRect = null
+var xp_fill: ColorRect = null
 var portrait_texture: TextureRect = null
 var portrait_placeholder_label: Label = null
 var portrait_viewport: SubViewport = null
@@ -72,7 +72,7 @@ func build_menu():
 	friends_value_label = get_node_or_null("%FriendsValueLabel") as Label
 	total_xp_value_label = get_node_or_null("%AchievementsValueLabel") as Label
 	bio_label = get_node_or_null("%BioLabel") as Label
-	xp_fill = get_node_or_null("%XpFill") as NinePatchRect
+	xp_fill = get_node_or_null("%XpFill") as ColorRect
 	portrait_texture = get_node_or_null("%PortraitTexture") as TextureRect
 	portrait_viewport = get_node_or_null("%PortraitViewport") as SubViewport
 	portrait_preview_root = get_node_or_null("%PortraitPreviewRoot") as Node2D
@@ -88,7 +88,7 @@ func build_menu():
 	bio_cancel_button = get_node_or_null("%BioCancelButton") as Button
 	bio_character_count_label = get_node_or_null("%BioCharacterCountLabel") as Label
 
-	_set_caption("CenterContainer/ProfileWindow/StatsPanel/WorldsCell/Caption", "CURRENT WORLD")
+	_set_caption("CenterContainer/ProfileWindow/StatsPanel/WorldsCell/Caption", "WORLD")
 	_set_caption("CenterContainer/ProfileWindow/StatsPanel/AchievementsCell/Caption", "TOTAL XP")
 	_configure_xp_fill()
 	_configure_portrait_preview()
@@ -194,11 +194,7 @@ func update_position():
 		layout_root.pivot_offset = layout_root.size * 0.5
 		layout_root.scale = Vector2.ONE * profile_scale
 
-	if locked_worlds_panel != null:
-		locked_worlds_panel.position = Vector2(
-			(screen_size.x - locked_worlds_panel.size.x) * 0.5,
-			(screen_size.y - locked_worlds_panel.size.y) * 0.5
-		)
+	position_locked_worlds_panel(screen_size)
 
 
 func update_menu_info():
@@ -255,6 +251,9 @@ func update_menu_info():
 		xp_label.text = _format_xp_text(xp_value, xp_needed) if has_progression else "-- / --"
 	if xp_fill != null:
 		xp_fill.anchor_right = _get_xp_ratio(xp_value, xp_needed) if has_progression else 0.0
+	var next_level_label := get_node_or_null("%NextLevelLabel") as Label
+	if next_level_label != null:
+		next_level_label.text = "%s XP TO LEVEL %d" % [maxi(0, xp_needed - xp_value), level + 1] if has_progression else "PROGRESS UNAVAILABLE"
 	if account_id_value_label != null:
 		account_id_value_label.text = _get_profile_id_text()
 	if player_age_value_label != null:
@@ -270,14 +269,17 @@ func update_menu_info():
 		portrait_placeholder_label.visible = portrait_preview_visual == null or not is_instance_valid(portrait_preview_visual)
 		portrait_placeholder_label.text = profile_name.substr(0, 1).to_upper()
 	if showcase_badge_label != null:
-		showcase_badge_label.text = player_title.to_upper()
+		showcase_badge_label.text = format_profile_item_name(_get_portrait_equipment_item(equipment_data, "hat", "head")).to_upper()
 		showcase_badge_label.clip_text = true
 	if showcase_item_label != null:
 		showcase_item_label.text = format_profile_item_name(str(equipment_data.get("hand", ""))).to_upper()
 		showcase_item_label.clip_text = true
 	if showcase_world_label != null:
-		showcase_world_label.text = current_world.to_upper() if current_world != "" else "NO WORLD"
+		showcase_world_label.text = format_profile_item_name(str(equipment_data.get("back", ""))).to_upper()
 		showcase_world_label.clip_text = true
+	for detail in [worlds_value_label, showcase_badge_label, showcase_item_label, showcase_world_label]:
+		if detail != null:
+			detail.tooltip_text = detail.text
 
 
 func _get_profile_world_name() -> String:
@@ -970,7 +972,7 @@ func _layout_action_buttons(buttons: Array[Button]) -> void:
 		if skin == null:
 			continue
 		skin.position = Vector2(x, 6.0)
-		skin.size = Vector2(widths[index], 38.0)
+		skin.size = Vector2(widths[index], 48.0)
 		x += widths[index] + gap
 
 

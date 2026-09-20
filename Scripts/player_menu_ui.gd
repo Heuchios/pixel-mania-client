@@ -5,9 +5,9 @@ const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 const PROFILE_W := 760.0
 const PROFILE_H := 500.0
 const PROFILE_HEADER_H := 78.0
-const LOCKED_WORLDS_W := 650.0
-const LOCKED_WORLDS_H := 430.0
-const LOCKED_WORLD_ROW_H := 74.0
+const LOCKED_WORLDS_W := 820.0
+const LOCKED_WORLDS_H := 600.0
+const LOCKED_WORLD_ROW_H := 90.0
 const REMOTE_PROFILE_LOOKUP_TIMEOUT := 5.0
 
 var world = null
@@ -416,147 +416,94 @@ func create_action_buttons():
 	update_action_buttons()
 
 
+func _worlds_label(label_name: String, text: String, position_value: Vector2, size_value: Vector2, font_size: int, parent: Node) -> Label:
+	var label := Label.new()
+	label.name = label_name
+	label.text = text
+	label.position = position_value
+	label.size = size_value
+	label.set_meta("pixelmania_font_role", "preserve")
+	PixelUIStyle.apply_label_shadow(label, font_size)
+	label.add_theme_font_size_override("font_size", font_size)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(label)
+	return label
+
+
 func create_locked_worlds_panel():
 	locked_worlds_blocker = ColorRect.new()
 	locked_worlds_blocker.name = "LockedWorldsBlocker"
-	locked_worlds_blocker.color = Color(0.0, 0.0, 0.0, 0.36)
+	locked_worlds_blocker.color = Color(0.025, 0.01, 0.04, 0.78)
 	locked_worlds_blocker.mouse_filter = Control.MOUSE_FILTER_STOP
 	locked_worlds_blocker.set_anchors_preset(Control.PRESET_FULL_RECT)
-	locked_worlds_blocker.visible = false
+	locked_worlds_blocker.hide()
 	locked_worlds_blocker.gui_input.connect(_on_locked_worlds_blocker_gui_input)
 	add_child(locked_worlds_blocker)
-
 	locked_worlds_panel = Control.new()
 	locked_worlds_panel.name = "LockedWorldsPanel"
 	locked_worlds_panel.size = Vector2(LOCKED_WORLDS_W, LOCKED_WORLDS_H)
 	locked_worlds_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	locked_worlds_panel.visible = false
+	locked_worlds_panel.hide()
 	locked_worlds_panel.gui_input.connect(_on_panel_gui_input)
 	add_child(locked_worlds_panel)
-
-	var shadow = Panel.new()
-	shadow.name = "Shadow"
-	shadow.position = Vector2(8, 8)
-	shadow.size = locked_worlds_panel.size
-	shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	shadow.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.0, 0.0, 0.0, 0.34),
-		Color(0.0, 0.0, 0.0, 0.0),
-		0,
-		20,
-		0
-	))
-	locked_worlds_panel.add_child(shadow)
-
-	var panel_back = Panel.new()
-	panel_back.name = "PanelBack"
-	panel_back.position = Vector2.ZERO
-	panel_back.size = locked_worlds_panel.size
-	panel_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_PANEL_STRONG,
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		3,
-		20,
-		12
-	))
-	locked_worlds_panel.add_child(panel_back)
-
-	var header = Panel.new()
-	header.name = "Header"
-	header.position = Vector2.ZERO
-	header.size = Vector2(LOCKED_WORLDS_W, PROFILE_HEADER_H)
+	var background := Panel.new()
+	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	background.add_theme_stylebox_override("panel", PixelUIStyle.panel_style())
+	locked_worlds_panel.add_child(background)
+	var header := Panel.new()
+	header.position = Vector2(20, 20)
+	header.size = Vector2(780, 84)
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	header.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_HEADER,
-		PixelUIStyle.GLASS_BORDER,
-		0,
-		20,
-		8
-	))
+	header.add_theme_stylebox_override("panel", PixelUIStyle.header_style())
 	locked_worlds_panel.add_child(header)
-
-	var top_line = ColorRect.new()
-	top_line.name = "TopLine"
-	top_line.position = Vector2(0, PROFILE_HEADER_H - 5.0)
-	top_line.size = Vector2(LOCKED_WORLDS_W, 4)
-	top_line.color = Color(0.42, 0.78, 1.0, 0.46)
-	top_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	locked_worlds_panel.add_child(top_line)
-
-	var title = Label.new()
-	title.name = "Title"
-	title.text = "LOCKED WORLDS"
-	title.position = Vector2(30, 8)
-	title.size = Vector2(410, 48)
-	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.clip_text = true
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(title, 38)
-	locked_worlds_panel.add_child(title)
-
-	var subtitle = Label.new()
-	subtitle.name = "Subtitle"
-	subtitle.text = "YOUR ACTIVE LOCKS"
-	subtitle.position = Vector2(36, 56)
-	subtitle.size = Vector2(260, 22)
-	subtitle.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	subtitle.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(subtitle, 13)
-	locked_worlds_panel.add_child(subtitle)
-
-	var close_button = Button.new()
+	_worlds_label("Title", "MY WORLDS", Vector2(38, 27), Vector2(620, 36), 28, locked_worlds_panel)
+	_worlds_label("Subtitle", "Worlds you own", Vector2(40, 66), Vector2(620, 24), 16, locked_worlds_panel)
+	var close_button := Button.new()
 	close_button.name = "CloseButton"
 	close_button.text = "X"
-	close_button.position = Vector2(LOCKED_WORLDS_W - 76, 14)
-	close_button.size = Vector2(48, 46)
-	close_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	close_button.position = Vector2(730, 36)
+	close_button.size = Vector2(50, 48)
 	apply_profile_arcade_button_style(close_button, false, true, 22)
 	close_button.pressed.connect(close_locked_worlds_panel)
 	locked_worlds_panel.add_child(close_button)
-
-	var list_back = Panel.new()
-	list_back.name = "ListBack"
-	list_back.position = Vector2(28, 100)
-	list_back.size = Vector2(LOCKED_WORLDS_W - 56, LOCKED_WORLDS_H - 126)
+	var list_back := Panel.new()
+	list_back.position = Vector2(20, 120)
+	list_back.size = Vector2(780, 420)
 	list_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	list_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_SECTION,
-		PixelUIStyle.GLASS_BORDER,
-		3,
-		12,
-		5
-	))
+	list_back.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
 	locked_worlds_panel.add_child(list_back)
-
-	var scroll = ScrollContainer.new()
+	var scroll := ScrollContainer.new()
 	scroll.name = "LockedWorldsScroll"
-	scroll.position = Vector2(36, 108)
-	scroll.size = Vector2(LOCKED_WORLDS_W - 72, LOCKED_WORLDS_H - 142)
+	scroll.position = Vector2(32, 132)
+	scroll.size = Vector2(756, 396)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-	scroll.mouse_filter = Control.MOUSE_FILTER_STOP
 	locked_worlds_panel.add_child(scroll)
-
 	locked_worlds_rows_root = Control.new()
 	locked_worlds_rows_root.name = "LockedWorldsRows"
-	locked_worlds_rows_root.size = scroll.size
-	locked_worlds_rows_root.custom_minimum_size = scroll.size
+	locked_worlds_rows_root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	locked_worlds_rows_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	scroll.add_child(locked_worlds_rows_root)
-
-	locked_worlds_empty_label = Label.new()
-	locked_worlds_empty_label.name = "EmptyLabel"
-	locked_worlds_empty_label.text = "No currently locked worlds owned by this profile."
-	locked_worlds_empty_label.position = Vector2(52, 230)
-	locked_worlds_empty_label.size = Vector2(LOCKED_WORLDS_W - 104, 42)
+	locked_worlds_empty_label = _worlds_label("EmptyLabel", "You don't own any locked worlds yet.", Vector2(50, 280), Vector2(720, 80), 18, locked_worlds_panel)
 	locked_worlds_empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	locked_worlds_empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	locked_worlds_empty_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(locked_worlds_empty_label, 18, PixelUIStyle.TEXT_SOFT)
-	locked_worlds_panel.add_child(locked_worlds_empty_label)
-
+	locked_worlds_empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_worlds_label("WorldCount", "YOUR WORLDS", Vector2(32, 550), Vector2(300, 28), 16, locked_worlds_panel)
+	var hint := _worlds_label("FooterHint", "Select ENTER to travel", Vector2(340, 550), Vector2(448, 28), 16, locked_worlds_panel)
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	for footer_label in [locked_worlds_panel.get_node("WorldCount"), hint]:
+		footer_label.add_theme_color_override("font_color", Color(0.19, 0.09, 0.24))
+		footer_label.add_theme_constant_override("shadow_offset_x", 0)
+		footer_label.add_theme_constant_override("shadow_offset_y", 0)
 	call_deferred("apply_locked_worlds_scrollbar_style")
+
+
+func position_locked_worlds_panel(screen_size: Vector2) -> void:
+	if locked_worlds_panel == null:
+		return
+	var fit := minf(1.0, minf((screen_size.x - 32.0) / LOCKED_WORLDS_W, (screen_size.y - 32.0) / LOCKED_WORLDS_H))
+	locked_worlds_panel.scale = Vector2.ONE * maxf(0.1, fit)
+	locked_worlds_panel.position = (screen_size - locked_worlds_panel.size * locked_worlds_panel.scale) * 0.5
 
 
 func make_action_button(button_text: String, button_position: Vector2, yellow: bool = false, button_size: Vector2 = Vector2(104, 30)) -> Button:
@@ -619,13 +566,7 @@ func update_position():
 		clamp((screen_size.y - panel.size.y) / 2.0, 46.0, max_y)
 	)
 
-	if locked_worlds_panel != null:
-		var locked_max_x = max(12.0, screen_size.x - locked_worlds_panel.size.x - 12.0)
-		var locked_max_y = max(46.0, screen_size.y - locked_worlds_panel.size.y - 24.0)
-		locked_worlds_panel.position = Vector2(
-			clamp((screen_size.x - locked_worlds_panel.size.x) / 2.0, 12.0, locked_max_x),
-			clamp((screen_size.y - locked_worlds_panel.size.y) / 2.0, 46.0, locked_max_y)
-		)
+	position_locked_worlds_panel(screen_size)
 
 
 func update_menu_info():
@@ -981,7 +922,7 @@ func open_locked_worlds_panel():
 	if locked_worlds_blocker != null:
 		locked_worlds_blocker.visible = true
 	locked_worlds_panel.visible = true
-	PixelUIStyle.play_panel_open(locked_worlds_panel, Vector2(0.96, 0.96), 0.16)
+	position_locked_worlds_panel(get_viewport_rect().size)
 
 
 func close_locked_worlds_panel():
@@ -1048,6 +989,9 @@ func refresh_locked_worlds_list():
 		child.queue_free()
 
 	var entries = get_owned_locked_world_entries()
+	var count_label = locked_worlds_panel.get_node_or_null("WorldCount")
+	if count_label != null:
+		count_label.text = "%d WORLD%s" % [entries.size(), "" if entries.size() == 1 else "S"]
 
 	if locked_worlds_empty_label != null:
 		locked_worlds_empty_label.visible = entries.is_empty()
@@ -1056,9 +1000,9 @@ func refresh_locked_worlds_list():
 		elif locked_worlds_error != "":
 			locked_worlds_empty_label.text = locked_worlds_error
 		else:
-			locked_worlds_empty_label.text = "No currently locked worlds owned by this profile."
+			locked_worlds_empty_label.text = "You don't own any locked worlds yet."
 
-	var scroll_size = Vector2(LOCKED_WORLDS_W - 72, LOCKED_WORLDS_H - 142)
+	var scroll_size = Vector2(0, 396)
 	if entries.is_empty():
 		locked_worlds_rows_root.custom_minimum_size = scroll_size
 		locked_worlds_rows_root.size = scroll_size
@@ -1275,56 +1219,36 @@ func saved_world_has_lock_at_position(world_data: Dictionary, lock_x: int, lock_
 
 
 func create_locked_world_row(entry: Dictionary, row_position: Vector2):
-	var row_width = LOCKED_WORLDS_W - 88
-
-	var row = Panel.new()
+	var row_width := LOCKED_WORLDS_W - 96.0
+	var row := Panel.new()
 	row.name = "LockedWorld_" + str(entry.get("world_name", "WORLD"))
 	row.position = row_position
 	row.size = Vector2(row_width, LOCKED_WORLD_ROW_H)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.026, 0.058, 0.100, 0.92),
-		Color(0.18, 0.45, 0.72, 0.55),
-		3,
-		12,
-		5
-	))
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.235, 0.12, 0.28)
+	style.border_color = Color(0.46, 0.29, 0.52)
+	style.set_border_width_all(1)
+	row.add_theme_stylebox_override("panel", style)
 	locked_worlds_rows_root.add_child(row)
-
-	var world_name = str(entry.get("world_name", "WORLD"))
-	var title = Label.new()
-	title.name = "WorldName"
-	title.text = world_name
-	title.position = Vector2(16, 10)
-	title.size = Vector2(row_width - 184, 28)
-	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	var world_name := str(entry.get("world_name", "WORLD"))
+	var title := _worlds_label("WorldName", world_name, Vector2(18, 9), Vector2(row_width - 192, 30), 22, row)
 	title.clip_text = true
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(title, 21)
-	row.add_child(title)
-
-	var lock_pos = get_lock_position_text_from_entry(entry)
-	var build_text = "PUBLIC BUILD ON" if bool(entry.get("public_build", false)) else "OWNER ACCESS"
-	var detail = "Lock: " + lock_pos + "  |  " + build_text + "  |  Access: " + str(int(entry.get("access_count", 0)))
-	var detail_label = Label.new()
-	detail_label.name = "WorldDetail"
-	detail_label.text = detail
-	detail_label.position = Vector2(18, 42)
-	detail_label.size = Vector2(row_width - 190, 22)
-	detail_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	detail_label.clip_text = true
-	detail_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(detail_label, 13)
-	row.add_child(detail_label)
-
-	var status_button = Button.new()
+	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title.tooltip_text = world_name
+	var build_text := "PUBLIC BUILD" if bool(entry.get("public_build", false)) else "RESTRICTED BUILD"
+	var detail := "%s  |  %d WITH ACCESS" % [build_text, int(entry.get("access_count", 0))]
+	_worlds_label("WorldDetail", detail, Vector2(18, 41), Vector2(row_width - 192, 24), 14, row)
+	_worlds_label("LockPosition", "Lock at " + get_lock_position_text_from_entry(entry), Vector2(18, 66), Vector2(row_width - 192, 20), 13, row)
+	var status_button := Button.new()
 	status_button.name = "WorldOpenButton"
 	status_button.text = "CURRENT" if bool(entry.get("current", false)) else "ENTER"
-	status_button.position = Vector2(row_width - 132, 18)
-	status_button.size = Vector2(110, 38)
-	status_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	status_button.position = Vector2(row_width - 152, 23)
+	status_button.size = Vector2(132, 48)
 	status_button.disabled = bool(entry.get("current", false))
-	apply_profile_arcade_button_style(status_button, true, false, 14)
+	status_button.set_meta("pixelmania_font_role", "preserve")
+	apply_profile_arcade_button_style(status_button, true, false, 18)
+	status_button.add_theme_font_size_override("font_size", 18)
 	status_button.pressed.connect(_on_locked_world_enter_pressed.bind(world_name))
 	row.add_child(status_button)
 

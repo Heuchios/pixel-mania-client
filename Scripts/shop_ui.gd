@@ -253,6 +253,20 @@ var shop_items = [
 		"description": "Move a door and keep its settings."
 	},
 	{
+		"item_id": "fertilizer",
+		"amount": 1,
+		"price": 500,
+		"section": "tools",
+		"description": "Reduces a tree's remaining growth time by 1 hour. Consumed on use."
+	},
+	{
+		"item_id": "super_fertilizer",
+		"amount": 1,
+		"price": 2100,
+		"section": "tools",
+		"description": "Reduces a tree's remaining growth time by 4 hours. Consumed on use."
+	},
+	{
 		"item_id": "electric_tool",
 		"amount": 1,
 		"price": 5000,

@@ -40,14 +40,24 @@
 [ext_resource type="Texture2D" uid="uid://d1iyedaf3iij2" path="res://Assets/ui/backgrounds/mountain_background.png" id="1_background"]
 [ext_resource type="FontFile" uid="uid://e0ivgh0c6uck" path="res://Assets/font/font.ttf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://j4ejipojb8m2" path="res://Assets/player/body/player_idle.png" id="3_player"]
-[ext_resource type="Texture2D" uid="uid://dnuvhhyohskng" path="res://Assets/ui/logo/Logo_6.png" id="4_nkht7"]
+[ext_resource type="Texture2D" path="res://Assets/ui/logo/library_logo_artwork.tres" id="4_nkht7"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inv_slot_normal.tres" id="6_kueqq"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inv_slot_normal.tres" id="14_slot_legendary"]
 [ext_resource type="Script" uid="uid://b8vyed8xbki4t" path="res://Scripts/ui/lobby_scene.gd" id="15_layout_controls"]
 [ext_resource type="Texture2D" uid="uid://cydy6p7ge7fpc" path="res://Assets/ui/unfav.png" id="25_6jbpl"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ox2yu"]
-texture = ExtResource("4_nkht7")
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/lobby_week.tres" id="lobby_lobby_week"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/lobby_official.tres" id="lobby_lobby_official"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/lobby_active.tres" id="lobby_lobby_active"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/lobby_owned.tres" id="lobby_lobby_owned"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/lobby_history.tres" id="lobby_lobby_history"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/favorite_on.tres" id="lobby_favorite_on"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/favorite_off.tres" id="lobby_favorite_off"]
+[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/exit_bubble_1.tres" id="lobby_exit_bubble_1"]
+
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/pink_button_normal.tres" id="lobby_tab_normal"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/pink_button_hover.tres" id="lobby_tab_hover"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/pink_button_pressed.tres" id="lobby_tab_pressed"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_join"]
 
@@ -117,21 +127,16 @@ grow_horizontal = 2
 mouse_filter = 2
 color = Color(1, 0.760784, 0.117647, 0.62)
 
-[node name="Logo" type="Label" parent="." unique_id=1745514632]
+[node name="Logo" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = 787.0
-offset_top = 60.0
-offset_right = 1172.0
-offset_bottom = 380.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 54
-theme_override_styles/normal = SubResource("StyleBoxTexture_ox2yu")
-vertical_alignment = 1
-metadata/pixelmania_font_role = "preserve"
+offset_left = 720.0
+offset_top = 8.0
+offset_right = 1200.0
+offset_bottom = 270.0
+mouse_filter = 2
+texture = ExtResource("4_nkht7")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="LogoSub" type="Label" parent="." unique_id=1834075553]
 visible = false
@@ -450,92 +455,139 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="LeftButtons" type="Control" parent="." unique_id=1846220317]
 anchors_preset = 0
-offset_left = 320.0
-offset_top = 472.0
-offset_right = 600.0
-offset_bottom = 1003.0
+offset_left = 588.0
+offset_top = 372.0
+offset_right = 640.0
+offset_bottom = 744.0
 
 [node name="FavoritesButton" type="Button" parent="LeftButtons" unique_id=419470658]
-custom_minimum_size = Vector2(280, 84)
+custom_minimum_size = Vector2(52, 52)
 layout_mode = 0
-offset_right = 280.0
-offset_bottom = 84.0
-focus_mode = 0
+offset_right = 52.0
+offset_bottom = 352.0
+focus_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.09803922, 0.22745098, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_ceovm")
-theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_co2tl")
-theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_8foql")
+theme_override_styles/normal = ExtResource("lobby_tab_normal")
+theme_override_styles/pressed = ExtResource("lobby_tab_pressed")
+theme_override_styles/hover = ExtResource("lobby_tab_hover")
 toggle_mode = true
-text = "FAVORITE
-WORLDS"
+text = ""
 expand_icon = true
 metadata/pixelmania_font_role = "preserve"
+offset_left = 0.0
+offset_top = 300.0
+tooltip_text = "Favorite worlds"
+icon = ExtResource("lobby_favorite_on")
+icon_alignment = 1
 
 [node name="RecentButton" type="Button" parent="LeftButtons" unique_id=379730288]
-custom_minimum_size = Vector2(280, 84)
+custom_minimum_size = Vector2(52, 52)
 layout_mode = 0
-offset_top = 98.0
-offset_right = 280.0
-offset_bottom = 182.0
-focus_mode = 0
+offset_top = 240.0
+offset_right = 52.0
+offset_bottom = 292.0
+focus_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.09803922, 0.22745098, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_e18rx")
-theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_a2vh5")
-theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_xeshw")
+theme_override_styles/normal = ExtResource("lobby_tab_normal")
+theme_override_styles/pressed = ExtResource("lobby_tab_pressed")
+theme_override_styles/hover = ExtResource("lobby_tab_hover")
 toggle_mode = true
-text = "RECENTLY
-JOINED"
+text = ""
 expand_icon = true
 metadata/pixelmania_font_role = "preserve"
+offset_left = 0.0
+tooltip_text = "Recently joined"
+icon = ExtResource("lobby_lobby_history")
+icon_alignment = 1
 
-[node name="WorldOfMonthButton" type="Button" parent="LeftButtons" unique_id=1711208579]
-custom_minimum_size = Vector2(280, 84)
+[node name="WorldOfWeekButton" type="Button" parent="LeftButtons" unique_id=1711208579]
+custom_minimum_size = Vector2(52, 52)
 layout_mode = 0
-offset_top = 196.0
-offset_right = 280.0
-offset_bottom = 280.0
-focus_mode = 0
+offset_top = 0.0
+offset_right = 52.0
+offset_bottom = 52.0
+focus_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.09803922, 0.22745098, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_4b60h")
-theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_kxsfy")
-theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_xwdoc")
+theme_override_styles/normal = ExtResource("lobby_tab_normal")
+theme_override_styles/pressed = ExtResource("lobby_tab_pressed")
+theme_override_styles/hover = ExtResource("lobby_tab_hover")
 toggle_mode = true
-text = "WORLD OF
-THE MONTH"
+text = ""
 expand_icon = true
 metadata/pixelmania_font_role = "preserve"
+offset_left = 0.0
+tooltip_text = "World of the Week"
+icon = ExtResource("lobby_lobby_week")
+icon_alignment = 1
 
 [node name="MyWorldsButton" type="Button" parent="LeftButtons" unique_id=839657400]
-custom_minimum_size = Vector2(280, 84)
+custom_minimum_size = Vector2(52, 52)
 layout_mode = 0
-offset_top = 294.0
-offset_right = 280.0
-offset_bottom = 378.0
-focus_mode = 0
+offset_top = 180.0
+offset_right = 52.0
+offset_bottom = 232.0
+focus_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.09803922, 0.22745098, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_ryrd5")
-theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_s8ouv")
-theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_2dl4o")
+theme_override_styles/normal = ExtResource("lobby_tab_normal")
+theme_override_styles/pressed = ExtResource("lobby_tab_pressed")
+theme_override_styles/hover = ExtResource("lobby_tab_hover")
 toggle_mode = true
-text = "MY
-WORLDS"
+text = ""
 expand_icon = true
 metadata/pixelmania_font_role = "preserve"
+offset_left = 0.0
+tooltip_text = "My owned worlds"
+icon = ExtResource("lobby_lobby_owned")
+icon_alignment = 1
+
+[node name="OfficialButton" type="Button" parent="LeftButtons"]
+offset_left = 0.0
+offset_top = 60.0
+offset_right = 52.0
+offset_bottom = 112.0
+custom_minimum_size = Vector2(52, 52)
+text = ""
+tooltip_text = "PixelMania worlds"
+icon = ExtResource("lobby_lobby_official")
+icon_alignment = 1
+expand_icon = true
+toggle_mode = true
+focus_mode = 2
+theme_override_styles/normal = ExtResource("lobby_tab_normal")
+theme_override_styles/hover = ExtResource("lobby_tab_hover")
+theme_override_styles/pressed = ExtResource("lobby_tab_pressed")
+
+[node name="ActiveButton" type="Button" parent="LeftButtons"]
+offset_left = 0.0
+offset_top = 120.0
+offset_right = 52.0
+offset_bottom = 172.0
+custom_minimum_size = Vector2(52, 52)
+text = ""
+tooltip_text = "Active worlds"
+icon = ExtResource("lobby_lobby_active")
+icon_alignment = 1
+expand_icon = true
+toggle_mode = true
+focus_mode = 2
+theme_override_styles/normal = ExtResource("lobby_tab_normal")
+theme_override_styles/hover = ExtResource("lobby_tab_hover")
+theme_override_styles/pressed = ExtResource("lobby_tab_pressed")
 
 [node name="WorldsPanel" type="NinePatchRect" parent="." unique_id=1702774396]
 layout_mode = 0
-offset_left = 616.0
-offset_top = 472.0
-offset_right = 1402.0
-offset_bottom = 1003.0
+offset_left = 648.0
+offset_top = 372.0
+offset_right = 1272.0
+offset_bottom = 792.0
 texture = ExtResource("panel_role_0")
 patch_margin_left = 1
 patch_margin_top = 1
@@ -544,10 +596,10 @@ patch_margin_bottom = 1
 
 [node name="WorldsHeader" type="NinePatchRect" parent="WorldsPanel" unique_id=694937360]
 layout_mode = 0
-offset_left = 20.0
-offset_top = 18.0
-offset_right = 766.0
-offset_bottom = 96.0
+offset_left = 14.0
+offset_top = 4.0
+offset_right = 610.0
+offset_bottom = 56.0
 patch_margin_left = 26
 patch_margin_top = 24
 patch_margin_right = 26
@@ -555,16 +607,16 @@ patch_margin_bottom = 24
 
 [node name="WorldsTitle" type="Label" parent="WorldsPanel/WorldsHeader" unique_id=65762868]
 layout_mode = 0
-offset_left = 14.0
-offset_top = 8.0
-offset_right = 420.0
-offset_bottom = 66.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 590.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(0.2, 0.098, 0.227, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 34
+theme_override_font_sizes/font_size = 24
 text = "ACTIVE WORLDS"
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
@@ -590,10 +642,10 @@ metadata/pixelmania_font_role = "preserve"
 [node name="WorldStart" type="Button" parent="WorldsPanel" unique_id=240492253]
 custom_minimum_size = Vector2(744, 72)
 layout_mode = 0
-offset_left = 20.0
-offset_top = 108.0
-offset_right = 764.0
-offset_bottom = 180.0
+offset_left = 14.0
+offset_top = 64.0
+offset_right = 610.0
+offset_bottom = 116.0
 focus_mode = 0
 mouse_filter = 2
 theme_override_styles/normal = ExtResource("panel_role_1")
@@ -614,22 +666,25 @@ theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_mqkg4")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
+visible = false
 
 [node name="StartName" type="Label" parent="WorldsPanel/WorldStart" unique_id=209462149]
 layout_mode = 0
-offset_left = 72.0
-offset_top = 8.0
-offset_right = 250.0
-offset_bottom = 36.0
+offset_left = 8.0
+offset_top = 0.0
+offset_right = 476.0
+offset_bottom = 52.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 24
-text = "START"
+theme_override_font_sizes/font_size = 22
+text = "START [0]"
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
+mouse_filter = 2
+clip_text = true
 
 [node name="StartMeta" type="Label" parent="WorldsPanel/WorldStart" unique_id=166715640]
 layout_mode = 0
@@ -646,6 +701,7 @@ theme_override_font_sizes/font_size = 13
 text = "OFFICIAL | OPEN | 0 players"
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
+visible = false
 
 [node name="OfficialBadge" type="Label" parent="WorldsPanel/WorldStart" unique_id=1905817647]
 layout_mode = 0
@@ -662,6 +718,7 @@ theme_override_font_sizes/font_size = 12
 text = "OFFICIAL HUB"
 horizontal_alignment = 1
 metadata/pixelmania_font_role = "preserve"
+visible = false
 
 [node name="StartPlayers" type="Label" parent="WorldsPanel/WorldStart" unique_id=1189554715]
 visible = false
@@ -683,33 +740,39 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="StartJoin" type="Button" parent="WorldsPanel/WorldStart" unique_id=1578419956]
 layout_mode = 0
-offset_left = 672.0
-offset_right = 744.0
-offset_bottom = 72.0
-focus_mode = 0
+offset_left = 538.0
+offset_right = 586.0
+offset_bottom = 50.0
+focus_mode = 2
 theme_override_colors/font_color = Color(1, 0.956863, 0.25098, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.88, 0.16, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 0.52, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_vwihr")
-theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_6jbpl")
-theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_mg45h")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_join")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_join")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_join")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_join")
 icon_alignment = 1
 expand_icon = true
 metadata/pixelmania_font_role = "preserve"
+offset_top = 2.0
+custom_minimum_size = Vector2(48, 48)
+icon = ExtResource("lobby_exit_bubble_1")
+modulate = Color(1, 1, 1, 1)
+theme_override_constants/h_separation = 0
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_join")
 
 [node name="FavoriteToggle" type="Button" parent="WorldsPanel/WorldStart" unique_id=1532306287]
-modulate = Color(1, 1, 1, 0.42)
+modulate = Color(1, 1, 1, 1)
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 0
-offset_left = 604.0
-offset_top = 12.0
-offset_right = 652.0
-offset_bottom = 60.0
+offset_left = 480.0
+offset_top = 2.0
+offset_right = 528.0
+offset_bottom = 50.0
 tooltip_text = "Favorite"
-focus_mode = 0
+focus_mode = 2
 theme_override_colors/font_color = Color(0.870588, 0.960784, 1, 0.35)
 theme_override_colors/font_pressed_color = Color(1, 0.890196, 0.188235, 1)
 theme_override_colors/font_hover_color = Color(1, 0.956863, 0.6, 0.85)
@@ -721,11 +784,12 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_join")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_join")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_join")
 toggle_mode = true
-icon = ExtResource("25_6jbpl")
+icon = ExtResource("lobby_favorite_off")
 flat = true
 icon_alignment = 1
 expand_icon = true
 metadata/pixelmania_font_role = "preserve"
+theme_override_constants/h_separation = 0
 
 [node name="WorldRows" type="Control" parent="WorldsPanel" unique_id=524144701]
 anchors_preset = 0
@@ -987,10 +1051,10 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="JoinPanel" type="NinePatchRect" parent="." unique_id=1186213477]
 layout_mode = 0
-offset_left = 616.0
-offset_top = 379.0
-offset_right = 1402.0
-offset_bottom = 462.0
+offset_left = 648.0
+offset_top = 286.0
+offset_right = 1272.0
+offset_bottom = 360.0
 texture = ExtResource("panel_role_2")
 patch_margin_left = 1
 patch_margin_top = 1
@@ -1015,49 +1079,49 @@ text = "ACTIVE WORLDS"
 metadata/pixelmania_font_role = "preserve"
 
 [node name="WorldInputLabel" type="Label" parent="JoinPanel" unique_id=738811975]
-visible = false
+visible = true
 layout_mode = 0
-offset_left = 28.0
-offset_top = 27.0
-offset_right = 327.0
-offset_bottom = 67.0
+offset_left = 0.0
+offset_top = -42.0
+offset_right = 624.0
+offset_bottom = -8.0
 theme_override_colors/font_color = Color(0.870588, 0.960784, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 16
-text = "ENTER WORLD NAME"
+text = ""
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
 [node name="WorldInput" type="LineEdit" parent="JoinPanel" unique_id=339740]
 layout_mode = 0
-offset_left = 16.0
-offset_top = 14.0
-offset_right = 565.0
-offset_bottom = 68.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 464.0
+offset_bottom = 64.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_placeholder_color = Color(0.870588, 0.960784, 1, 0.5)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_nkht7")
 theme_override_styles/focus = SubResource("StyleBoxTexture_input")
-text = "ENTER WORLD NAME..."
-placeholder_text = "ENTER WORLD NAME..."
-alignment = 1
+text = ""
+placeholder_text = "Enter world name..."
+alignment = 0
 metadata/pixelmania_font_role = "preserve"
 
 [node name="JoinButton" type="Button" parent="JoinPanel" unique_id=2029794244]
 layout_mode = 0
-offset_left = 573.0
-offset_top = 13.0
-offset_right = 765.0
-offset_bottom = 68.0
+offset_left = 474.0
+offset_top = 10.0
+offset_right = 614.0
+offset_bottom = 64.0
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 26
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_drop_normal")
 theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_w816g")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_i8c6c")

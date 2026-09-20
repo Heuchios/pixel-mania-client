@@ -278,6 +278,7 @@ const INVENTORY_TRANSACTION_ACTIONS := [
 	"donation_box_retrieve",
 	"donation_box_retrieve_all",
 	"seed_splice",
+	"seed_fertilize",
 	"seed_place",
 	"seed_harvest",
 	"convert_world_lock",
@@ -1063,6 +1064,29 @@ func clear_world_route_redirect_state(clear_attempts: bool = false) -> void:
 	world_route_redirect_action = ""
 	if clear_attempts:
 		world_route_redirect_attempts.clear()
+
+
+func handle_landfill_instance_redirect(data: Dictionary) -> bool:
+	var from_world := _safe_world_name(str(data.get("world", "")))
+	var target_world := _safe_world_name(str(data.get("target_world", "")))
+	var request_id := _get_message_join_request_id(data)
+	if request_id == "" or request_id != active_join_request_id:
+		return false
+	if from_world != active_join_world_name or not from_world.begins_with("LANDFILL_"):
+		return false
+	if not target_world.begins_with("LANDFILL_") or target_world == from_world:
+		return false
+	# The server continues this same request with a fresh snapshot. Switch the world fence
+	# before its join acknowledgement arrives; old-world packets remain stale.
+	pending_server_world_state.clear()
+	pending_world_state_stream.clear()
+	_reset_world_entry_session()
+	active_join_world_name = target_world
+	active_join_request_pending = true
+	current_world_name = target_world
+	pending_join_world_name = target_world
+	sync_active_world_name_from_server(target_world)
+	return true
 
 
 func handle_world_route_redirect(data: Dictionary) -> bool:
@@ -4659,6 +4683,8 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 				)
 		"account_session_replaced":
 			handle_account_session_replaced(data)
+		"landfill_instance_redirect":
+			handle_landfill_instance_redirect(data)
 		"join_world_ok":
 			if not _is_message_for_active_join_request(data):
 				debug_action_position_flow("ignored stale join_world_ok request", {

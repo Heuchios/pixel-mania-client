@@ -376,19 +376,19 @@ const DEFAULT_HEADER_TEXTURE_PATH := "res://Assets/background/landfill/bg_4.png"
 		_queue_refresh()
 
 @export_category("Typography")
-@export_range(18, 72, 1) var title_font_size: int = 52:
+@export_range(18, 72, 1) var title_font_size: int = 32:
 	set(value):
 		if title_font_size == value:
 			return
 		title_font_size = value
 		_queue_refresh()
-@export_range(12, 40, 1) var badge_font_size: int = 23:
+@export_range(12, 40, 1) var badge_font_size: int = 18:
 	set(value):
 		if badge_font_size == value:
 			return
 		badge_font_size = value
 		_queue_refresh()
-@export_range(10, 32, 1) var subtitle_font_size: int = 19:
+@export_range(10, 32, 1) var subtitle_font_size: int = 16:
 	set(value):
 		if subtitle_font_size == value:
 			return
@@ -494,8 +494,10 @@ func apply_exported_content() -> void:
 		rewards_button.text = rewards_button_text
 		rewards_button.icon = reward_icon_texture
 
-	_apply_texture_if_present(header_background, _resolve_header_texture())
-	_apply_texture_if_present(side_texture, _resolve_header_texture())
+	if header_background != null:
+		header_background.hide()
+	if side_texture != null:
+		side_texture.hide()
 	_apply_tabs_content()
 	_apply_rows_content()
 
@@ -516,9 +518,9 @@ func apply_exported_styles() -> void:
 	_style_panel("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow", Color(0.085, 0.110, 0.105, 0.96), Color(0.22, 0.28, 0.27, 0.96), 2, 4, 0)
 	_style_panel("CenterContainer/LeaderboardWindow/SummaryPanel", Color(0.045, 0.058, 0.058, 0.96), Color(0.18, 0.21, 0.20, 1.0), 4, 6, 4)
 
-	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/TitleLabel", title_font_size, title_color, HORIZONTAL_ALIGNMENT_CENTER)
-	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/BadgeBack/BadgeLabel", badge_font_size, badge_color, HORIZONTAL_ALIGNMENT_CENTER)
-	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/SubtitleLabel", subtitle_font_size, body_text_color, HORIZONTAL_ALIGNMENT_CENTER)
+	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/TitleLabel", title_font_size, title_color, HORIZONTAL_ALIGNMENT_LEFT)
+	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/BadgeBack/BadgeLabel", badge_font_size, badge_color, HORIZONTAL_ALIGNMENT_LEFT)
+	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/SubtitleLabel", subtitle_font_size, body_text_color, HORIZONTAL_ALIGNMENT_LEFT)
 	_style_label("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow/RankHeader", header_font_size, header_text_color, HORIZONTAL_ALIGNMENT_CENTER)
 	_style_label("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow/PlayerHeader", header_font_size, header_text_color, HORIZONTAL_ALIGNMENT_CENTER)
 	_style_label("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow/PointsHeader", header_font_size, header_text_color, HORIZONTAL_ALIGNMENT_RIGHT)
@@ -540,6 +542,21 @@ func apply_exported_styles() -> void:
 		_apply_flat_button_style(rewards_button, button_green_color, Color(0.04, 0.24, 0.04, 1.0), 18)
 
 	_apply_tabs_style()
+	for index in range(_get_tab_buttons().size()):
+		var tab_button := _get_tab_buttons()[index]
+		PixelUIStyle.apply_atlas_button(tab_button, "green_button" if index == selected_tab_index else "pink_button")
+		tab_button.add_theme_font_size_override("font_size", 17)
+		tab_button.add_theme_color_override("font_color", Color(0.18, 0.08, 0.23))
+		tab_button.add_theme_color_override("font_hover_color", Color(0.3, 0.13, 0.38))
+		tab_button.add_theme_constant_override("icon_max_width", 30)
+	_style_label("CenterContainer/LeaderboardWindow/SideColumn/SideArtPanel/Guide", 14, body_text_color, HORIZONTAL_ALIGNMENT_LEFT)
+	var find_button := get_node_or_null("CenterContainer/LeaderboardWindow/SideColumn/SideArtPanel/FindMeButton") as Button
+	if find_button != null:
+		_apply_flat_button_style(find_button, Color(0.2, 0.5, 1), Color.BLACK, 16)
+		find_button.disabled = not _has_personal_row()
+		find_button.tooltip_text = "Jump to your ranking" if not find_button.disabled else "Your row is not in the loaded rankings; check your summary below."
+		if not find_button.pressed.is_connected(_find_personal_row):
+			find_button.pressed.connect(_find_personal_row)
 	_apply_rows_style()
 
 
@@ -763,7 +780,11 @@ func _apply_rows_style() -> void:
 			fill = fill_override
 		if border_override.a > 0.0:
 			border = border_override
-		row.add_theme_stylebox_override("panel", _style(fill, border, 2, 4, 1))
+		var row_style := StyleBoxFlat.new()
+		row_style.bg_color = Color(0.25, 0.13, 0.30) if i % 2 == 0 else Color(0.20, 0.10, 0.25)
+		if highlighted:
+			row_style.bg_color = Color(0.32, 0.23, 0.18)
+		row.add_theme_stylebox_override("panel", row_style)
 		_style_row_labels(row, entry)
 
 
@@ -810,8 +831,8 @@ func _apply_entry_to_row(row: Panel, entry: Resource, visual_index: int) -> void
 func _style_row_labels(row: Panel, entry: Resource) -> void:
 	var rank := int(_child_label_text(row, "RankNumber", "0"))
 	var rank_color := _rank_color(rank)
-	var name_color := _color_from_value(_resource_value(entry, "name_color_override", body_text_color), body_text_color)
-	var points_color := _color_from_value(_resource_value(entry, "points_color_override", body_text_color), body_text_color)
+	var name_color := Color(0.94, 0.91, 0.98)
+	var points_color := Color(0.94, 0.91, 0.98)
 	if bool(_resource_value(entry, "highlighted", false)):
 		points_color = badge_color
 
@@ -1038,7 +1059,9 @@ func _style_label(path: NodePath, font_size: int, color: Color, align: Horizonta
 	if label == null:
 		return
 	label.horizontal_alignment = align
+	label.set_meta("pixelmania_font_role", "preserve")
 	PixelUIStyle.apply_label_shadow(label, font_size, color)
+	label.add_theme_font_size_override("font_size", font_size)
 
 
 func _style_child_label(parent: Node, path: NodePath, font_size: int, color: Color, align: HorizontalAlignment) -> void:
@@ -1046,7 +1069,9 @@ func _style_child_label(parent: Node, path: NodePath, font_size: int, color: Col
 	if label == null:
 		return
 	label.horizontal_alignment = align
+	label.set_meta("pixelmania_font_role", "preserve")
 	PixelUIStyle.apply_label_shadow(label, font_size, color)
+	label.add_theme_font_size_override("font_size", font_size)
 
 
 func _style_panel(path: NodePath, fill: Color, border: Color, border_width: int = 3, radius: int = 6, shadow_size: int = 4) -> void:
@@ -1063,7 +1088,9 @@ func _style(fill: Color, _border: Color, border_width: int = 3, _radius: int = 6
 
 
 func _apply_flat_button_style(button: Button, fill: Color, _border: Color, font_size: int) -> void:
+	button.set_meta("pixelmania_font_role", "preserve")
 	PixelUIStyle.apply_button_text(button, font_size, body_text_color)
+	button.add_theme_font_size_override("font_size", font_size)
 	var region := "blue_button"
 	if fill.r > fill.g * 1.5: region = "red_button"
 	elif fill.g > fill.b * 1.5: region = "green_button"
@@ -1157,3 +1184,22 @@ func _on_close_pressed() -> void:
 	close_pressed.emit()
 	if close_button_hides_scene:
 		visible = false
+
+
+func _find_personal_row() -> void:
+	for row in _get_row_nodes():
+		if row.visible and _child_label_text(row, "RankNumber", "") == summary_rank_value:
+			rows_clip.ensure_control_visible(row)
+			return
+	var find_button := get_node_or_null("CenterContainer/LeaderboardWindow/SideColumn/SideArtPanel/FindMeButton") as Button
+	if find_button != null:
+		find_button.tooltip_text = "Your rank is shown below; your row is outside the loaded rankings."
+
+
+func _has_personal_row() -> bool:
+	if summary_rank_value.to_int() <= 0:
+		return false
+	for row in _get_row_nodes():
+		if row.visible and _child_label_text(row, "RankNumber", "") == summary_rank_value:
+			return true
+	return false

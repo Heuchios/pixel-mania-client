@@ -2,15 +2,14 @@ extends Control
 
 ## Growtopia-style Shop layout - the live, wired-up Shop scene.
 ##
-## EVERYTHING VISUAL LIVES IN THE SCENE, NOT IN THIS SCRIPT.
+## Visual assets live in the scene; responsive card geometry is fitted below.
 ## Every panel, button, icon, item card, and piece of text - the sidebar
 ## buttons, all item cards across every category tab, the detail popup's
 ## own layout - is a real, authored node sitting in ShopSceneRedesign.tscn.
 ## Open the scene in the Godot editor (no need to press Play) and you will
 ## see all of it: select any node in the Scene panel and the Inspector
 ## lets you swap its texture, edit its text, tweak its color, resize it,
-## etc. This script never builds or styles any of that, so nothing you
-## change in the editor gets overwritten or reset when you press Play.
+## etc. Runtime layout adjusts card geometry to the available viewport.
 ##
 ## This script owns the handful of things that can't be static data: which
 ## category tab is currently showing, opening/closing the detail popup for
@@ -154,7 +153,7 @@ func _ready() -> void:
 	sidebar.reparent(category_scroll)
 	sidebar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	for button in _sidebar_buttons:
-		button.custom_minimum_size = Vector2(124, 44)
+		button.custom_minimum_size = Vector2(140, 48)
 		button.custom_maximum_size = Vector2(-1, -1)
 	category_title_label.custom_minimum_size = Vector2(0, 40)
 
@@ -222,7 +221,7 @@ func _on_sidebar_button_toggled(toggled_on: bool, index: int) -> void:
 	category_title_label.text = _sidebar_buttons[index].tooltip_text.to_upper()
 	for i in range(_category_grids.size()):
 		_category_grids[i].visible = (i == index)
-	call_deferred("_align_category_header")
+	call_deferred("_reflow_product_grid")
 
 	# A newly-selected tab almost certainly has a different scrollable range
 	# than the one just left (more/fewer rows), so start it scrolled to the
@@ -273,6 +272,7 @@ func ensure_grid_card_count(category_key: String, count: int) -> Array:
 	for i in range(cards.size()):
 		cards[i].visible = i < count
 
+	_reflow_product_grid.call_deferred()
 	return cards
 
 
@@ -295,7 +295,17 @@ func reset_to_default_view() -> void:
 
 
 func _wire_card_interactions(card: Button) -> void:
-	card.custom_minimum_size.y = 250
+	if not card.pressed.is_connected(_on_item_card_pressed):
+		card.pressed.connect(_on_item_card_pressed.bind(card))
+	_wire_hover_lift(card)
+
+
+func _layout_product_card(card: Button, dimensions: Vector2) -> void:
+	# Expanded widths must not become a minimum that prevents later reflow.
+	card.custom_minimum_size = Vector2(minf(210.0, dimensions.x), dimensions.y)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var secondary := card.get_node_or_null("NameLabel2") as Label
+	var has_secondary := secondary != null and not secondary.text.is_empty()
 	for label_name in ["NameLabel", "NameLabel2"]:
 		var label := card.get_node_or_null(label_name) as Label
 		if label != null:
@@ -303,19 +313,25 @@ func _wire_card_interactions(card: Button) -> void:
 			label.clip_text = false
 			label.offset_top = 8 if label_name == "NameLabel" else 56
 			label.offset_bottom = 56 if label_name == "NameLabel" else 104
-	var art := card.get_node_or_null("IconSlot") as Control
+	var art := card.get_node_or_null("IconSlot") as TextureRect
 	if art != null:
-		art.offset_bottom = 214
-		var icon := art.get_node_or_null("Icon") as Control
+		art.offset_bottom = dimensions.y - 44.0
+		var icon := art.get_node_or_null("Icon") as TextureRect
 		if icon != null:
-			icon.offset_top = 104
+			# Reserve the second title only for packs and Featured categories.
+			var art_top := 104.0 if has_secondary else 56.0
+			var art_bottom := dimensions.y - 52.0
+			var icon_size := minf(dimensions.x * 0.56, art_bottom - art_top)
+			icon.set_anchors_preset(Control.PRESET_TOP_LEFT)
+			icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			icon.position = Vector2(floorf((dimensions.x - 8.0 - icon_size) / 2.0), floorf((art_top + art_bottom - icon_size) / 2.0) - 4.0)
+			icon.size = Vector2(icon_size, icon_size)
+			icon.modulate = Color.WHITE
 	var price := card.get_node_or_null("PriceLabel") as Control
 	if price != null:
-		price.offset_top = 216
-		price.offset_bottom = 246
-	if not card.pressed.is_connected(_on_item_card_pressed):
-		card.pressed.connect(_on_item_card_pressed.bind(card))
-	_wire_hover_lift(card)
+		price.offset_top = dimensions.y - 40.0
+		price.offset_bottom = dimensions.y - 4.0
 
 
 # ------------------------------------------------------ item scroll slider ----
@@ -573,41 +589,41 @@ func _fit_shop_window() -> void:
 func _reflow_product_grid() -> void:
 	if item_scroll == null or item_scroll.size.x <= 0.0:
 		return
+	# A disabled horizontal scrollbar includes the old grid minimum. Measure
+	# the window budget too, so four desktop columns can shrink to one.
+	var margins := $ShopWindow/Margin as MarginContainer
+	var body := $ShopWindow/Margin/Layout/Body as HBoxContainer
+	var row := item_scroll.get_parent() as HBoxContainer
+	var content_width := shop_window.size.x - margins.get_theme_constant("margin_left") - margins.get_theme_constant("margin_right")
+	content_width -= sidebar.get_parent().size.x + body.get_theme_constant("separation")
+	content_width -= item_scroll_slider.size.x + row.get_theme_constant("separation")
+	content_width = maxf(200.0, minf(item_scroll.size.x, content_width))
 	# Measure the actual content viewport, including the space reserved for
 	# the scrollbar. A small width adjustment fits four readable cards.
 	for grid in _category_grids:
 		var gap := float(grid.get_theme_constant("h_separation"))
-		var columns := clampi(int((item_scroll.size.x + gap) / (200.0 + gap)), 1, 4)
-		var card_width := minf(210.0, floorf((item_scroll.size.x - gap * (columns - 1)) / columns))
+		var columns := clampi(int((content_width + gap) / (200.0 + gap)), 1, 4)
+		var card_width := floorf((content_width - gap * (columns - 1)) / columns)
+		var row_gap := float(grid.get_theme_constant("v_separation"))
+		# Fit two complete rows when space permits; keep short screens scrollable.
+		var card_height := clampf(floorf((item_scroll.size.y - row_gap) / 2.0), 230.0, 250.0)
 		for card in grid.get_children():
-			if card is Control:
-				card.custom_minimum_size.x = card_width
+			if card is Button:
+				_layout_product_card(card, Vector2(card_width, card_height))
 		grid.columns = columns
 	call_deferred("_align_category_header")
 
 
 func _align_category_header() -> void:
-	for grid in _category_grids:
-		if not grid.visible:
-			continue
-		var row_end := 0.0
-		var count := 0
-		for card in grid.get_children():
-			if card is Control and card.visible:
-				row_end = maxf(row_end, card.position.x + card.size.x)
-				count += 1
-				if count >= grid.columns:
-					break
-		if row_end > 0.0:
-			category_title_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-			category_title_label.custom_minimum_size.x = row_end
-			category_title_label.custom_maximum_size.x = row_end
-			var header_style := category_title_label.get_theme_stylebox("normal").duplicate() as StyleBox
-			header_style.content_margin_left = 12.0
-			header_style.content_margin_right = 12.0
-			category_title_label.add_theme_stylebox_override("normal", header_style)
-		return
-
+	# Follow the pane width without feeding a previous grid width back into
+	# the window minimum during a desktop-to-phone resize.
+	category_title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	category_title_label.custom_minimum_size.x = 0
+	category_title_label.custom_maximum_size.x = -1
+	var header_style := category_title_label.get_theme_stylebox("normal").duplicate() as StyleBox
+	header_style.content_margin_left = 12.0
+	header_style.content_margin_right = 12.0
+	category_title_label.add_theme_stylebox_override("normal", header_style)
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not is_visible_in_tree() or not event.is_action_pressed("ui_cancel"):
