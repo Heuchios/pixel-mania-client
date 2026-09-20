@@ -819,6 +819,9 @@ func collect_item_search_matches(query: String) -> Array:
 			continue
 
 		var item_data: Dictionary = raw_item_data
+		# Compatibility IDs resolve to their canonical item; don't offer duplicate grants.
+		if bool(item_data.get("legacy_item_id", false)):
+			continue
 		if bool(item_data.get("admin_grantable", true)) == false:
 			continue
 

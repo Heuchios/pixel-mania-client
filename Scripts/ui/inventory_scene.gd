@@ -576,7 +576,9 @@ func _build_world_inventory_item(source: Object, item_id: String, category: Stri
 	elif database_entry.has("texture"):
 		payload["texture"] = database_entry["texture"]
 
-	if source.has_method("get_inventory_icon_texture"):
+	# Seed slots already render the box and preview as separate textures. Asking
+	# for the generic icon here composites atlas pixels on the CPU, then discards it.
+	if not _is_seed_item(payload) and source.has_method("get_inventory_icon_texture"):
 		var icon_texture: Variant = source.call("get_inventory_icon_texture", item_id, category)
 		if icon_texture is Texture2D:
 			payload["texture"] = icon_texture
@@ -674,7 +676,8 @@ func _append_world_inventory(output: Array, source: Object, property_name: Strin
 		elif database_entry.has("texture"):
 			payload["texture"] = database_entry["texture"]
 
-		if source.has_method("get_inventory_icon_texture"):
+		# Keep seed previews on the existing layered rendering path; no CPU image copy.
+		if not _is_seed_item(payload) and source.has_method("get_inventory_icon_texture"):
 			var icon_texture: Variant = source.call("get_inventory_icon_texture", item_id, category)
 			if icon_texture is Texture2D:
 				payload["texture"] = icon_texture

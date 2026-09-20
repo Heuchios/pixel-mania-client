@@ -13801,6 +13801,8 @@ const ITEMS = {
 	},
 "platinum_prestige_rod": {
 		"category": "tool",
+		"hidden": true,
+		"admin_grantable": false,
 		"display_name": "Golden Fishing Rod",
 		"rarity": "legendary",
 		"texture": "golden_fishing_rod_1",
