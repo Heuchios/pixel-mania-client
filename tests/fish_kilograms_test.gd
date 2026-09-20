@@ -4,6 +4,7 @@ const Monger = preload("res://Scripts/fish_monger_manager.gd")
 const MongerUI = preload("res://Scripts/ui/fish_monger_ui.gd")
 const InventoryUI = preload("res://Scripts/ui/inventory_scene.gd")
 const Fishing = preload("res://Scripts/fishing_manager.gd")
+const Species = preload("res://Scripts/fish_species.gd")
 
 var failures: Array[String] = []
 
@@ -28,6 +29,14 @@ func run_checks():
 	check(inventory._slot_count_text({"category": "fish", "count": 57}) == "5.7 kg", "inventory stack shows kg")
 	check(inventory._detail_count_text({"category": "fish", "count": 20000}) == "2000.0 / 2000 kg", "maximum stack displays")
 	var fishing = Fishing.new()
+	check(Species.merge_inventory({"pond_fish_small": 13, "pond_fish_med": 24, "pond_fish_large": 57}) == {"pond_fish_large": 94}, "species consolidation preserves decimal weight")
+	var records := {"total_caught_per_species": {"pond_fish_small": 2, "pond_fish_med": 3}, "biggest_fish_per_species": {"pond_fish_small": 1.3, "pond_fish_med": 2.4}}
+	Species.merge_records(records)
+	check(records.total_caught_per_species.pond_fish_large == 5, "journal counts merge")
+	check(is_equal_approx(records.biggest_fish_per_species.pond_fish_large, 2.4), "journal best weight preserved")
+	check(is_equal_approx(fishing._server_catch_weight({"catch_weight": 5.7}, "pond_fish_large"), 5.7), "server decimal weight reaches catch card")
+	check(is_equal_approx(fishing._server_catch_weight({"fish_inventory_unit": "tenths_kg", "rewards": [{"item_id": "pond_fish_large", "amount": 57}]}, "pond_fish_large"), 5.7), "reward fallback preserves authoritative decimal weight")
+	check(is_equal_approx(fishing._get_fish_sell_value("pond_fish_large", {"fish_base_price_kg": 2.25}), 2.25), "catch estimate retains decimal price without monger open")
 	var save_script = load("res://Scripts/save_manager.gd")
 	var saves = save_script.new()
 	var world_script = load("res://Scripts/world.gd")

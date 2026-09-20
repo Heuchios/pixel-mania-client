@@ -7,6 +7,9 @@ var pending_transaction := false
 var market_prices: Dictionary = {}
 var price_request_pending := false
 var refresh_seconds := 0.0
+var price_wait_seconds := 0.0
+var price_status := "Loading price..."
+var price_error := ""
 
 func setup(world_ref):
 	world = world_ref
@@ -14,6 +17,13 @@ func setup(world_ref):
 func _process(delta: float):
 	if world == null or world.fish_monger_ui == null or not world.fish_monger_ui.visible:
 		return
+	if price_request_pending:
+		price_wait_seconds += delta
+		if price_wait_seconds >= 10.0:
+			price_request_pending = false
+			price_status = "Retrying prices..."
+			price_error = "The market did not respond. Reconnecting to prices."
+			refresh_ui()
 	refresh_seconds += delta
 	if refresh_seconds >= 15.0 and not pending_transaction:
 		refresh_seconds = 0.0
@@ -40,11 +50,18 @@ func has_server_inventory_authority() -> bool:
 	return network != null and network.is_connected_to_server() and network.has_active_session()
 
 func request_prices():
-	if price_request_pending or not has_server_inventory_authority():
+	if price_request_pending:
+		return
+	if not has_server_inventory_authority():
+		price_status = "Connect for prices"
+		refresh_ui()
 		return
 	price_request_pending = true
+	price_wait_seconds = 0.0
 	if not _send({"action": "fish_monger_prices"}):
 		price_request_pending = false
+		price_status = "Price unavailable"
+		refresh_ui()
 
 func _send(payload: Dictionary) -> bool:
 	var network = get_network_manager()
@@ -54,7 +71,7 @@ func _send(payload: Dictionary) -> bool:
 	return bool(network.send_inventory_transaction_request(payload))
 
 func is_valid_fish_item(item_id: String) -> bool:
-	return world != null and world.item_database.has(item_id) and str(world.item_database[item_id].get("category", "")) == "fish"
+	return world != null and world.item_database.has(item_id) and str(world.item_database[item_id].get("category", "")) == "fish" and not bool(world.item_database[item_id].get("hidden", false))
 
 func get_fish_sell_value(item_id: String) -> float:
 	return float(market_prices.get(item_id, {}).get("price_cents", 0)) / 100.0
@@ -78,6 +95,7 @@ func get_sellable_fish_entries() -> Array:
 		var rate: float = get_fish_sell_value(item_id)
 		var price: Dictionary = market_prices.get(item_id, {})
 		entries.append({"item_id": item_id, "display_name": world.get_item_display_name(item_id, "fish"),
+			"price_status": price_status, "price_error": price_error,
 			"rarity": world.item_database[item_id].get("rarity", "common"), "count": get_fish_count(item_id),
 			"sell_value": rate, "value_per_fish": rate, "price_per_kg": rate,
 			"min_price_kg": float(price.get("min_price_cents", 0)) / 100.0,
@@ -146,6 +164,14 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 		pending_transaction = false
 	if data.get("fish_market") is Dictionary:
 		market_prices = data.fish_market
+		price_status = "Loading price..."
+		price_error = ""
+	elif action == "fish_monger_prices":
+		price_status = "Price unavailable"
+		price_error = str(data.get("message", "Reconnect to the updated staging server."))
+		if price_error.is_empty():
+			price_error = "No market prices received. Reconnect to the updated staging server."
+		world.show_notification(price_error)
 	if action != "fish_monger_prices":
 		world.show_notification(str(data.get("message", "Sale finished.")))
 		request_prices()

@@ -21,7 +21,7 @@ func run():
 	var world := World.new()
 	viewport.add_child(world)
 	for i in range(2):
-		world.fish_monger_manager.entries.append({"item_id":"fish_"+str(i), "display_name":"Small Pond Fish" if i%2==0 else "Crystal Fish", "count":5.7 if i==0 else 148.6, "sell_value":2 if i%2==0 else 225.75, "min_price_kg":1.0 if i==0 else 112.875, "max_price_kg":4.0 if i==0 else 451.5, "rarity":"common" if i%2==0 else "legendary", "texture":load("res://Assets/items/fish/pond_fish_small.png" if i%2==0 else "res://Assets/items/fish/crystal_fish.png")})
+		world.fish_monger_manager.entries.append({"item_id":"fish_"+str(i), "display_name":"Pond Fish" if i%2==0 else "Crystal Fish", "count":5.7 if i==0 else 148.6, "sell_value":2 if i%2==0 else 225.75, "min_price_kg":1.0 if i==0 else 112.875, "max_price_kg":4.0 if i==0 else 451.5, "rarity":"common" if i%2==0 else "legendary", "texture":load("res://Assets/items/fish/pond_fish_large.png" if i%2==0 else "res://Assets/items/fish/crystal_fish.png")})
 	var ui := UI.new()
 	viewport.add_child(ui)
 	ui.setup(world, viewport)

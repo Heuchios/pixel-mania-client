@@ -4,7 +4,6 @@ const TestWorld = preload("res://tests/fixtures/fishing_test_world.gd")
 const FishingManager = preload("res://Scripts/fishing_manager.gd")
 
 func _init() -> void:
-	root.hide()
 	call_deferred("_run")
 
 func _run() -> void:
@@ -36,7 +35,13 @@ func _run() -> void:
 	viewport.size = Vector2i(320, 720)
 	await capture(viewport, output, "reeling-narrow")
 	viewport.size = Vector2i(1280, 720)
-	ui.show_catch_result({"name": "Pond Fish", "rarity": "common", "amount": "x1", "value": "3", "icon": world.fish_textures.pond_fish})
+	world.item_database["pond_fish_large"] = {"display_name": "Pond Fish", "category": "fish", "rarity": "common", "fish_base_price_kg": 2.25}
+	world.fish_textures["pond_fish_large"] = load("res://Assets/items/fish/pond_fish_large.png")
+	var catch_data: Dictionary = manager._build_catch_result_data("pond_fish_large", true, 5.7)
+	assert(catch_data.amount == "5.7 kg")
+	assert(catch_data.name == "Pond Fish")
+	assert(catch_data.value == 13)
+	ui.show_catch_result(catch_data)
 	await capture(viewport, output, "catch")
 	viewport.queue_free()
 	await process_frame

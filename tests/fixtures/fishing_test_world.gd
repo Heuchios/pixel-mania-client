@@ -75,7 +75,7 @@ func use_selected_item_at_mouse() -> void:
 	fishing_manager.use_fishing_rod_at_mouse()
 
 func get_mouse_grid_position() -> Vector2i: return target
-func get_item_display_name(item: String, _category: String) -> String: return item.capitalize().replace("_", " ")
+func get_item_display_name(item: String, _category: String) -> String: return str(item_database.get(item, {}).get("display_name", item.capitalize().replace("_", " ")))
 func get_inventory_icon_texture(item: String, _category: String): return fish_textures.get(item)
 func should_use_server_authoritative_world_actions() -> bool: return authoritative
 func show_notification(text: String) -> void: notifications.append(text)

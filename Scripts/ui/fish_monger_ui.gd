@@ -628,10 +628,12 @@ func create_fish_row(entry: Dictionary, row_position: Vector2, row_height: float
 	name_label.tooltip_text = name_label.text
 	_text(row, "RarityBadge", rarity.capitalize(), Rect2(108, 49, 172, 24), 14, accent_color)
 	_text(row, "Quantity", "Owned: " + format_fish_count(owned_count), Rect2(282, 49, 224, 24), 14, PixelUIStyle.TEXT_SOFT)
-	var price_text: String = ("%.2f gems/kg" % value_per_fish) if value_per_fish > 0.0 else "Loading price..."
+	var price_text: String = ("%.2f gems/kg" % value_per_fish) if value_per_fish > 0.0 else str(entry.get("price_status", "Loading price..."))
 	var price := _text(row, "Price", price_text, Rect2(row_width - 232, 18, 212, 26), 16, PixelUIStyle.GOLD_SOFT)
 	price.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	price.tooltip_text = "Global market • Range: %.2f–%.2f gems/kg" % [float(entry.get("min_price_kg", 0)), float(entry.get("max_price_kg", 0))]
+	if value_per_fish <= 0.0:
+		price.tooltip_text = str(entry.get("price_error", "Waiting for the market."))
 	var total_label := _text(row, "Total", "", Rect2(row_width - 262, 51, 242, 26), 15)
 	total_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	var selected_label := _text(row, "SelectedAmount", "", Rect2(20, 106, 200, 28), 13, PixelUIStyle.TEXT_SOFT)

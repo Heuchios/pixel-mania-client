@@ -1,6 +1,7 @@
 extends Node
 
 const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
+const FishSpecies = preload("res://Scripts/fish_species.gd")
 
 var world = null
 
@@ -2836,7 +2837,8 @@ func apply_saved_fish_count_inventory(saved_inventory, _preserve_default_if_miss
 			continue
 		var safe_count: int = safe_fish_count_from_save(saved_inventory.get(item_name, 0.0), unit)
 		if safe_count > 0:
-			world.fish_inventory[clean_item_name] = safe_count
+			clean_item_name = FishSpecies.canonical_id(clean_item_name)
+			world.fish_inventory[clean_item_name] = int(world.fish_inventory.get(clean_item_name, 0)) + safe_count
 
 
 func get_player_data_dedup_hash(player_data: Dictionary) -> int:

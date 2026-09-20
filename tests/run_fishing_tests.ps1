@@ -11,6 +11,7 @@ $env:LOCALAPPDATA = Join-Path $testRoot 'localappdata'
 New-Item -ItemType Directory -Force -Path $env:APPDATA, $env:LOCALAPPDATA | Out-Null
 $files = @(
     'Scripts/fishing_manager.gd', 'Scripts/fishing_pull_game.gd', 'Scripts/fishing_rod_attachment.gd',
+    'Scripts/fish_species.gd',
     'Scripts/input_manager.gd', 'Scripts/touch_input_guard.gd',
     'Scripts/UIAtlasDB.gd', 'Scripts/atlas_texture_factory.gd',
     'Scripts/ui/fishing_minigame_ui.gd', 'Scripts/ui/fishing_journal_ui.gd',
@@ -19,6 +20,7 @@ $files = @(
     'Scripts/ui/global_font_manager.gd', 'Scenes/fishing_bobber.tscn',
     'Assets/ui/UI_3.0.png', 'Assets/items/lures/worm_lure.png',
     'Assets/items/fish/pond_fish_small.png', 'Assets/items/fish/crystal_fish.png',
+    'Assets/items/fish/pond_fish_large.png',
     'Assets/font/font.ttf', 'tests/fishing_minigame_test.gd',
     'tests/fixtures/fishing_test_world.gd', 'tests/mobile_single_tap_input_test.gd',
     'tests/fishing_ui_preview.gd'

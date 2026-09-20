@@ -1,6 +1,7 @@
 extends Node
 
 const RodAttachment = preload("res://Scripts/fishing_rod_attachment.gd")
+const FishSpecies = preload("res://Scripts/fish_species.gd")
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 const FishingMinigameUI = preload("res://Scripts/ui/fishing_minigame_ui.gd")
 const FishingPullGame = preload("res://Scripts/fishing_pull_game.gd")
@@ -1183,7 +1184,9 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 			if reward_id != "" and reward_category == "fish":
 				if fish_id == "":
 					fish_id = reward_id
-				var server_weight: float = _normalize_fish_weight(float(data.get("catch_weight", 0.0)))
+				var server_weight: float = _server_catch_weight(data, fish_id)
+				if data.get("fish_market") is Dictionary and world.fish_monger_manager != null:
+					world.fish_monger_manager.market_prices.merge(data.fish_market, true)
 				caught_fish_id = fish_id
 				var server_owned_before: float = _get_owned_fish_weight(fish_id)
 				var server_record: Dictionary = record_fish_catch(fish_id, server_weight)
@@ -1375,38 +1378,20 @@ func get_fishing_rarity_weights(lure_id: String) -> Dictionary:
 func get_fishing_rarity_pools() -> Dictionary:
 	return {
 		"common": [
-			{"fish_id": "pond_fish_small"},
-			{"fish_id": "pond_fish_med"},
 			{"fish_id": "pond_fish_large"},
-			{"fish_id": "cat_fish_small"},
-			{"fish_id": "cat_fish_med"},
 			{"fish_id": "cat_fish_large"},
-			{"fish_id": "sea_horse_small"},
-			{"fish_id": "sea_horse_med"},
 			{"fish_id": "sea_horse_large"}
 		],
 		"uncommon": [
-			{"fish_id": "bone_fish_small"},
-			{"fish_id": "bone_fish_med"},
 			{"fish_id": "bone_fish_large"},
-			{"fish_id": "stingray_small"},
-			{"fish_id": "stingray_med"},
 			{"fish_id": "stingray_large"}
 		],
 		"rare": [
-			{"fish_id": "lava_fish_small"},
-			{"fish_id": "lava_fish_med"},
 			{"fish_id": "lava_fish_large"},
-			{"fish_id": "alien_fish_small"},
-			{"fish_id": "alien_fish_med"},
 			{"fish_id": "alien_fish_large"}
 		],
 		"epic": [
-			{"fish_id": "barracuda_small"},
-			{"fish_id": "barracuda_med"},
 			{"fish_id": "barracuda_large"},
-			{"fish_id": "shark_small"},
-			{"fish_id": "shark_med"},
 			{"fish_id": "shark_large"}
 		],
 		"legendary": [
@@ -1790,6 +1775,7 @@ func ensure_fishing_records() -> void:
 	if not (fishing_records.get("rarest_catch", {}) is Dictionary):
 		fishing_records["rarest_catch"] = {}
 
+	FishSpecies.merge_records(fishing_records)
 	fishing_records["version"] = FISHING_RECORDS_VERSION
 	fishing_records["total_fish_caught"] = max(0, int(fishing_records.get("total_fish_caught", 0)))
 	fishing_records["total_fishing_xp"] = max(0, int(fishing_records.get("total_fishing_xp", 0)))
@@ -1993,12 +1979,12 @@ func _get_all_fish_ids() -> Array:
 		return fish_ids
 	for fish_id_value in world.fish_items:
 		var fish_id: String = str(fish_id_value)
-		if fish_id != "" and not fish_ids.has(fish_id):
+		if fish_id != "" and not bool(_get_fish_item_data(fish_id).get("hidden", false)) and not fish_ids.has(fish_id):
 			fish_ids.append(fish_id)
 	for item_id_value in world.item_database.keys():
 		var item_id: String = str(item_id_value)
 		var item_data: Dictionary = _get_fish_item_data(item_id)
-		if str(item_data.get("category", "")) == "fish" and not fish_ids.has(item_id):
+		if str(item_data.get("category", "")) == "fish" and not bool(item_data.get("hidden", false)) and not fish_ids.has(item_id):
 			fish_ids.append(item_id)
 	fish_ids.sort_custom(Callable(self, "_sort_fish_ids_by_order"))
 	return fish_ids
@@ -2076,7 +2062,7 @@ func _build_catch_result_data(fish_id: String, was_new: bool, _catch_weight: flo
 
 	var safe_category := normalize_reward_category(category)
 	var rarity: String = str(item_data.get("rarity", "common")).to_lower()
-	var sell_value: int = _get_fish_sell_value(fish_id, item_data) if safe_category == "fish" else 0
+	var sell_value: float = _get_fish_sell_value(fish_id, item_data) if safe_category == "fish" else 0.0
 	return {
 		"fish_id": fish_id,
 		"item_id": fish_id,
@@ -2084,7 +2070,7 @@ func _build_catch_result_data(fish_id: String, was_new: bool, _catch_weight: flo
 		"name": world.get_item_display_name(fish_id, safe_category) if world != null else fish_id,
 		"rarity": rarity,
 		"amount": _format_fish_weight(_catch_weight) if safe_category == "fish" else "x1",
-		"value": ceili(maxf(0.0, _catch_weight) * sell_value),
+		"value": _calculate_fish_sale_value(maxf(0.0, _catch_weight), sell_value),
 		"value_per_fish": sell_value,
 		"is_new": was_new,
 		"icon": get_reward_texture(fish_id, safe_category)
@@ -2107,6 +2093,21 @@ func _roll_display_weight_for_rarity(rarity: String) -> float:
 
 func _roll_catch_weight(_fish_id: String) -> float:
 	return mini(1500, 1 + int(pow(randf(), 3.0) * 1500.0)) / 10.0
+
+
+func _server_catch_weight(data: Dictionary, fish_id: String) -> float:
+	var reported: float = float(data.get("catch_weight", data.get("catch_weight_kg", 0.0)))
+	if is_finite(reported) and reported >= 0.1 and reported <= 150.0:
+		return _normalize_fish_weight(reported)
+	# The authoritative reward/delta also carries the landed weight. Never invent one.
+	for reward in data.get("rewards", []):
+		if reward is Dictionary and str(reward.get("item_id", "")) == fish_id:
+			var amount: float = float(reward.get("amount", 0))
+			return _normalize_fish_weight(amount / 10.0 if str(data.get("fish_inventory_unit", "")) == "tenths_kg" else amount)
+	for delta in data.get("inventory_deltas", []):
+		if delta is Dictionary and str(delta.get("item_type", "")) == fish_id:
+			return _normalize_fish_weight(float(delta.get("delta", 0)) / 10.0)
+	return 0.0
 
 
 func _format_fish_weight(weight: float) -> String:
@@ -2169,7 +2170,11 @@ func _get_fishing_reward_confetti_ui_position() -> Vector2:
 
 func _get_fish_sell_value(fish_id: String, item_data: Dictionary) -> float:
 	if world != null and world.fish_monger_manager != null and world.fish_monger_manager.has_method("get_fish_sell_value"):
-		return float(world.fish_monger_manager.get_fish_sell_value(fish_id))
+		var live_price: float = float(world.fish_monger_manager.get_fish_sell_value(fish_id))
+		if live_price > 0.0:
+			return live_price
+	if item_data.has("fish_base_price_kg"):
+		return maxf(0.0, float(item_data.fish_base_price_kg))
 	if item_data.has("sell_value"):
 		return max(0, int(item_data.get("sell_value", 0)))
 	if item_data.has("fish_sell_value"):
