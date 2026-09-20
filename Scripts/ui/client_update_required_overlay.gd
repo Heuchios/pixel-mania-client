@@ -22,7 +22,7 @@ const PLAY_STORE_WEB_URL := "https://play.google.com/store/apps/details?id=" + A
 # Set once the App Store listing exists; until then iOS falls through to the
 # server's update_url and then the website.
 const IOS_APP_STORE_ID := ""
-const DESKTOP_DOWNLOAD_URL := "https://pixelmaniagame.com/#downloads"
+const DESKTOP_DOWNLOAD_URL := "https://api.pixelmaniagame.com/downloads/PixelManiaLauncher.exe"
 const FALLBACK_UPDATE_URL := "https://pixelmaniagame.com"
 
 var root_control: Control = null
@@ -34,6 +34,47 @@ var exit_button: Button = null
 var hint_label: Label = null
 var active_payload: Dictionary = {}
 var _network = null
+var _store_open_attempted := false
+var _update_check: HTTPRequest
+
+
+func _installed_version() -> String:
+	if _platform_kind() == "android" and Engine.has_singleton("AndroidRuntime"):
+		var runtime = Engine.get_singleton("AndroidRuntime")
+		var context = runtime.getApplicationContext()
+		var info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0)
+		if info != null:
+			return str(info.versionName)
+	return str(_network.CLIENT_VERSION) if _network != null else ""
+
+
+func _check_release() -> void:
+	if _platform_kind() != "android" or OS.has_feature("editor"):
+		return
+	_update_check = HTTPRequest.new()
+	_update_check.timeout = 15.0
+	_update_check.body_size_limit = 65536
+	_update_check.max_redirects = 0
+	add_child(_update_check)
+	_update_check.request_completed.connect(_on_release_checked)
+	_update_check.request(str(_network.active_api_base).trim_suffix("/") + "/client/android-manifest")
+
+
+func _on_release_checked(result: int, status: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+	if result != HTTPRequest.RESULT_SUCCESS or status != 200:
+		return # The existing server version gate still enforces compatibility.
+	var data: Variant = JSON.parse_string(body.get_string_from_utf8())
+	if not data is Dictionary or not bool(data.get("published", false)):
+		return
+	var minimum := str(data.get("min_client_version", ""))
+	var current := _installed_version()
+	if minimum.is_empty() or current.is_empty() or _network._compare_client_versions(current, minimum) >= 0:
+		return
+	_network._store_client_update_payload({
+		"client_version": current, "min_client_version": minimum,
+		"update_url": PLAY_STORE_WEB_URL,
+		"message": "A new PixelMania update is ready on Google Play. Update to keep playing."
+	})
 
 
 func _ready() -> void:
@@ -54,6 +95,7 @@ func _ready() -> void:
 		var latched: Dictionary = _network.get_client_update_payload()
 		if not latched.is_empty():
 			_on_client_update_required(latched)
+	call_deferred("_check_release")
 
 
 func _on_client_update_required(payload: Dictionary) -> void:
@@ -63,6 +105,9 @@ func _on_client_update_required(payload: Dictionary) -> void:
 	visible = true
 	if root_control != null:
 		root_control.visible = true
+	if _platform_kind() == "android" and not _store_open_attempted:
+		_store_open_attempted = true
+		call_deferred("_on_update_pressed")
 
 
 func is_gate_visible() -> bool:
@@ -200,11 +245,11 @@ func _refresh_text() -> void:
 			"ios":
 				update_button.text = "UPDATE ON THE APP STORE"
 			_:
-				update_button.text = "DOWNLOAD LATEST VERSION"
+				update_button.text = "OPEN LAUNCHER" if not _launcher_path().is_empty() else "GET PC LAUNCHER"
 
 	if instruction_label != null:
 		if platform == "desktop":
-			instruction_label.text = "Desktop builds do not update themselves. Download the latest PixelMania installer and run it over your current install."
+			instruction_label.text = "Open the PixelMania Launcher to download the update, then press Play. Your account and progress are kept."
 			instruction_label.visible = true
 		else:
 			instruction_label.text = ""
@@ -232,12 +277,9 @@ func _build_update_urls() -> Array[String]:
 
 	match _platform_kind():
 		"android":
-			if server_url.begins_with("market://"):
-				urls.append(server_url)
 			urls.append(PLAY_STORE_APP_URL)
-			if server_url != "" and server_url.contains("play.google.com"):
-				urls.append(server_url)
 			urls.append(PLAY_STORE_WEB_URL)
+			return urls
 		"ios":
 			var ios_id := str(IOS_APP_STORE_ID).strip_edges()
 			if ios_id != "":
@@ -255,11 +297,16 @@ func _build_update_urls() -> Array[String]:
 
 
 func _on_update_pressed() -> void:
+	if _platform_kind() == "desktop":
+		var launcher := _launcher_path()
+		if not launcher.is_empty() and OS.create_process(launcher, []) > 0:
+			get_tree().quit()
+			return
 	var opened := false
 	var attempted := PackedStringArray()
 	for url in _build_update_urls():
 		attempted.append(str(url))
-		if OS.shell_open(str(url)) == OK:
+		if _open_update_url(str(url)) == OK:
 			opened = true
 			break
 
@@ -284,3 +331,17 @@ func _on_update_pressed() -> void:
 
 func _on_exit_pressed() -> void:
 	get_tree().quit()
+
+
+func _open_update_url(url: String) -> Error:
+	return OS.shell_open(url)
+
+
+func _launcher_path() -> String:
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--pixelmania-launcher="):
+			var path := argument.trim_prefix("--pixelmania-launcher=")
+			if path.is_absolute_path() and path.get_file().to_lower() == "pixelmanialauncher.exe" and FileAccess.file_exists(path):
+				return path
+	var adjacent := OS.get_executable_path().get_base_dir().path_join("PixelManiaLauncher.exe")
+	return adjacent if FileAccess.file_exists(adjacent) else ""

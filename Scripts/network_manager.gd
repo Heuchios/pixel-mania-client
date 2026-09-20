@@ -115,7 +115,7 @@ var WORLD_ROUTE_WS_URLS: Array[String] = [
 ]
 # Keep in sync with export_presets.cfg "version/name" on every release build.
 # The server gates packets against this value via MIN_CLIENT_VERSION.
-const CLIENT_VERSION := "1.1.2"
+const CLIENT_VERSION := "1.2.1"
 const CLIENT_PLATFORM := "godot"
 const DEBUG_SERVER_PACKETS := false
 const DEBUG_ACTION_POSITION_FLOW := false
