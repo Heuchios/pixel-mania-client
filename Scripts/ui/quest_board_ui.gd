@@ -159,6 +159,14 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 		return true
 	pending_id = ""
 	status.text = str(data.get("message", "Please try again."))
+	if bool(data.get("ok", false)) and str(data.get("action", "")) == "quest_choose":
+		var gems_earned := 0
+		var receipt_xp := 0
+		for receipt in data.get("quest_receipts", []):
+			gems_earned += int(receipt.get("gems", 0))
+			receipt_xp += int(receipt.get("xp", 0))
+		var xp_earned := int(data.get("progression", {}).get("xp_gained", receipt_xp))
+		status.text = "Reward claimed: +%d gems  +%d XP" % [gems_earned, xp_earned]
 	if bool(data.get("ok", false)) and not accepting_tier.is_empty():
 		selected_tier = accepting_tier
 	accepting_tier = ""
@@ -238,6 +246,8 @@ func _render() -> void:
 		content.remove_child(child)
 		child.queue_free()
 	wallet.text = "GEMS + XP"
+	if world != null and world.has_method("get_currency_display_text"):
+		wallet.text = world.get_currency_display_text("gem") + " GEMS"
 	title.text = "QUEST JOURNAL"
 	if current_tab == "today" and status.text == "Your story waits for you.":
 		status.text = "Play to complete your quests. Return here to refresh progress and claim."

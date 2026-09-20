@@ -34,6 +34,9 @@ func run() -> void:
 	await create_timer(0.5).timeout
 	assert(panel.is_quest_board_open())
 	assert(panel.content.get_child_count() > 0)
+	panel.pending_id = "reward-confirmation"
+	panel.handle_inventory_transaction_result({"ok":true,"action":"quest_choose","request_id":"reward-confirmation","quest_receipts":[{"gems":10,"xp":50}],"progression":{"xp_gained":50},"quest_board":fixture})
+	assert(panel.status.text == "Reward claimed: +10 gems  +50 XP")
 	assert(panel.get_node_or_null("Panel/Margin/Layout/Tabs/Storybook") == null)
 	assert(panel.get_node_or_null("Panel/Margin/Layout/Tabs/Rewards") == null)
 	assert(panel.title.get_theme_color("font_shadow_color").a == 0.0)
