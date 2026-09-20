@@ -135,6 +135,7 @@ func _style_scene() -> void:
 		progress_bar.min_value = 0
 		progress_bar.max_value = DEFAULT_MAX_WATTS
 		progress_bar.value = 0
+		PixelUIStyle.apply_progress_bar(progress_bar)
 		progress_bar.add_theme_stylebox_override("background", PixelUIStyle.style_box(
 			Color(0.04, 0.10, 0.14, 0.72),
 			Color(0.16, 0.34, 0.46, 0.86),

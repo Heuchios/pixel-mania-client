@@ -426,6 +426,7 @@ func _make_meter(text: String) -> Control:
 	fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	holder.add_child(fill)
 	profile_xp_fill = fill
+	PixelUIStyle.apply_progress_bar(holder, fill, 4)
 
 	var spark := ColorRect.new()
 	spark.name = "MeterSpark"
@@ -435,6 +436,7 @@ func _make_meter(text: String) -> Control:
 	spark.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	holder.add_child(spark)
 	profile_xp_spark = spark
+	spark.self_modulate.a = 0.0
 
 	var label := Label.new()
 	label.name = "MeterLabel"

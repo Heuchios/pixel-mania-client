@@ -455,6 +455,7 @@ func _build_bite_panel() -> void:
 	bite_bar_fill.color = PixelUIStyle.ACTION_YELLOW
 	bite_bar_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	bite_panel.add_child(bite_bar_fill)
+	PixelUIStyle.apply_progress_bar(bar_bg, bite_bar_fill, 1)
 
 	var hook_button: Button = Button.new()
 	hook_button.name = "HookButton"

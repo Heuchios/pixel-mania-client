@@ -3,8 +3,8 @@ extends Control
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 
-const FISH_MONGER_W := 840.0
-const FISH_MONGER_H := 560.0
+const FISH_MONGER_W := 1040.0
+const FISH_MONGER_H := 660.0
 const FISH_MONGER_HEADER_H := 78.0
 const FISH_MONGER_SCROLL_GUTTER := 24.0
 const FISH_MONGER_PREVIEW_W := 210.0
@@ -56,221 +56,89 @@ func _process(_delta):
 	update_fish_monger_preview_animation()
 
 
+func _text(parent: Control, node_name: String, text: String, rect: Rect2, font_size: int = 16, color: Color = Color.WHITE) -> Label:
+	var label := Label.new()
+	label.name = node_name
+	label.text = text
+	label.position = rect.position
+	label.size = rect.size
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	PixelUIStyle.apply_label_shadow(label, font_size, color)
+	_preserve_text(label, font_size)
+	parent.add_child(label)
+	return label
+
+func _preserve_text(control: Control, font_size: int):
+	control.set_meta("pixelmania_font_role", "preserve")
+	control.add_theme_font_size_override("font_size", font_size)
+
+func _surface(parent: Control, node_name: String, rect: Rect2, outer: bool = false) -> Panel:
+	var surface := Panel.new()
+	surface.name = node_name
+	surface.position = rect.position
+	surface.size = rect.size
+	surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	surface.add_theme_stylebox_override("panel", PixelUIStyle.panel_style() if outer else PixelUIStyle.section_style())
+	parent.add_child(surface)
+	return surface
+
+func _button(parent: Control, node_name: String, text: String, rect: Rect2, primary: bool = false) -> Button:
+	var button := Button.new()
+	button.name = node_name
+	button.text = text
+	button.position = rect.position
+	button.size = rect.size
+	if primary:
+		PixelUIStyle.apply_green_button(button, 16)
+	else:
+		PixelUIStyle.apply_blue_button(button, 16)
+	_preserve_text(button, 16)
+	parent.add_child(button)
+	return button
+
 func build_ui():
 	for child in get_children():
 		child.queue_free()
-
 	panel = Control.new()
 	panel.name = "FishMongerPanel"
 	panel.size = Vector2(FISH_MONGER_W, FISH_MONGER_H)
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(panel)
-
-	var shadow = Panel.new()
-	shadow.name = "Shadow"
-	shadow.position = Vector2(8, 8)
-	shadow.size = panel.size
-	shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	shadow.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.0, 0.0, 0.0, 0.34),
-		Color(0.0, 0.0, 0.0, 0.0),
-		0,
-		22,
-		0
-	))
-	panel.add_child(shadow)
-
-	var panel_back = Panel.new()
-	panel_back.name = "PanelBack"
-	panel_back.position = Vector2.ZERO
-	panel_back.size = panel.size
-	panel_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_PANEL_STRONG,
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		3,
-		22,
-		12
-	))
-	panel.add_child(panel_back)
-
-	build_fish_monger_preview_panel()
-
-	var top_bar = Panel.new()
-	top_bar.name = "TopBar"
-	top_bar.position = Vector2.ZERO
-	top_bar.size = Vector2(FISH_MONGER_W, FISH_MONGER_HEADER_H)
-	top_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	top_bar.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_HEADER,
-		PixelUIStyle.GLASS_BORDER,
-		0,
-		22,
-		8
-	))
-	panel.add_child(top_bar)
-
-	var top_line = ColorRect.new()
-	top_line.name = "TopLine"
-	top_line.position = Vector2(0, FISH_MONGER_HEADER_H - 5.0)
-	top_line.size = Vector2(FISH_MONGER_W, 4)
-	top_line.color = Color(0.42, 0.78, 1.0, 0.46)
-	top_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_child(top_line)
-
-	var title = Label.new()
-	title.name = "Title"
-	title.text = "FISH MONGER"
-	title.position = Vector2(34, 8)
-	title.size = Vector2(390, 50)
-	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.clip_text = true
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(title, 44)
-	panel.add_child(title)
-
-	var subtitle = Label.new()
-	subtitle.name = "Subtitle"
-	subtitle.text = "SELL FISH"
-	subtitle.position = Vector2(40, 58)
-	subtitle.size = Vector2(360, 22)
-	subtitle.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	subtitle.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(subtitle, 14)
-	panel.add_child(subtitle)
-
-	var gem_chip = Panel.new()
-	gem_chip.name = "GemChip"
-	gem_chip.position = Vector2(FISH_MONGER_W - 346, 17)
-	gem_chip.size = Vector2(250, 44)
-	gem_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	gem_chip.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.10, 0.24, 0.34, 0.58),
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		3,
-		14,
-		7
-	))
-	panel.add_child(gem_chip)
-
-	var gem_icon = TextureRect.new()
-	gem_icon.name = "GemIcon"
-	gem_icon.position = Vector2(14, 9)
-	gem_icon.size = Vector2(26, 26)
-	gem_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	gem_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if world != null and world.currency_textures.has("gem"):
-		gem_icon.texture = world.currency_textures["gem"]
-	gem_chip.add_child(gem_icon)
-
-	gem_label = Label.new()
-	gem_label.name = "GemLabel"
-	gem_label.position = Vector2(46, 7)
-	gem_label.size = Vector2(192, 30)
+	_surface(panel, "PanelBack", Rect2(0, 0, 1040, 660), true)
+	_surface(panel, "TopBar", Rect2(16, 16, 1008, 72))
+	_text(panel, "Title", "FISH MONGER", Rect2(32, 22, 440, 34), 28)
+	_text(panel, "Subtitle", "Turn your catch into gems", Rect2(32, 57, 440, 22), 14, PixelUIStyle.TEXT_SOFT)
+	_text(panel, "BalanceCaption", "YOUR GEMS", Rect2(680, 26, 240, 20), 12, PixelUIStyle.TEXT_SOFT)
+	gem_label = _text(panel, "GemLabel", "", Rect2(680, 46, 240, 28), 20, PixelUIStyle.GOLD_SOFT)
 	gem_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	gem_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	gem_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(gem_label, 18, PixelUIStyle.GOLD_SOFT)
-	gem_chip.add_child(gem_label)
-
-	var close_button = Button.new()
-	close_button.name = "CloseButton"
-	close_button.size = Vector2(52, 48)
-	close_button.position = Vector2(FISH_MONGER_W - 84, 14)
-	close_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	apply_fish_monger_arcade_button_style(close_button, false, true, 24)
-	close_button.text = "X"
+	panel.get_node("BalanceCaption").horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	var close_button := _button(panel, "CloseButton", "", Rect2(960, 28, 48, 48))
+	PixelUIStyle.apply_close_button(close_button)
 	close_button.pressed.connect(close_fish_monger)
-	panel.add_child(close_button)
-
-	var info_card = Panel.new()
-	info_card.name = "InfoCard"
-	info_card.position = Vector2(32, 96)
-	info_card.size = Vector2(FISH_MONGER_W - 64, 58)
-	info_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	info_card.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.18, 0.32, 0.43, 0.42),
-		Color(0.72, 0.92, 1.0, 0.46),
-		3,
-		12,
-		5
-	))
-	panel.add_child(info_card)
-
-	var info = Label.new()
-	info.name = "Info"
-	info.text = "Choose how many fish to sell. Gems are paid per fish"
-	info.position = Vector2(52, 103)
-	info.size = Vector2(520, 26)
-	info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	info.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(info, 15)
-	panel.add_child(info)
-
-	total_value_label = Label.new()
-	total_value_label.name = "TotalValue"
-	total_value_label.position = Vector2(52, 128)
-	total_value_label.size = Vector2(520, 22)
-	total_value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	total_value_label.clip_text = true
-	total_value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(total_value_label, 15, PixelUIStyle.GOLD_SOFT)
-	panel.add_child(total_value_label)
-
-	sell_all_button = Button.new()
-	sell_all_button.name = "SellAllButton"
-	sell_all_button.text = "SELL ALL"
-	sell_all_button.position = Vector2(FISH_MONGER_W - 214, 105)
-	sell_all_button.size = Vector2(156, 40)
-	sell_all_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	apply_fish_monger_arcade_button_style(sell_all_button, true, false, 15)
+	build_fish_monger_preview_panel()
+	_surface(panel, "InfoCard", Rect2(228, 100, 796, 72))
+	_text(panel, "Info", "YOUR CATCH", Rect2(244, 108, 500, 24), 20)
+	total_value_label = _text(panel, "TotalValue", "", Rect2(244, 138, 540, 24), 15, PixelUIStyle.GOLD_SOFT)
+	sell_all_button = _button(panel, "SellAllButton", "SELL ALL", Rect2(840, 115, 168, 42), true)
 	sell_all_button.pressed.connect(_on_sell_all_pressed)
-	panel.add_child(sell_all_button)
-
-	var scroll_back = Panel.new()
-	scroll_back.name = "ScrollBack"
-	scroll_back.position = Vector2(32, 168)
-	scroll_back.size = Vector2(FISH_MONGER_W - 64, 350)
-	scroll_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	scroll_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_SECTION,
-		PixelUIStyle.GLASS_BORDER,
-		3,
-		12,
-		5
-	))
-	panel.add_child(scroll_back)
-
+	_surface(panel, "ScrollBack", Rect2(228, 184, 796, 424))
 	fish_scroll = ScrollContainer.new()
 	fish_scroll.name = "FishScroll"
-	fish_scroll.position = Vector2(40, 176)
-	fish_scroll.size = Vector2(FISH_MONGER_W - 80, 334)
+	fish_scroll.position = Vector2(238, 194)
+	fish_scroll.size = Vector2(776, 404)
 	fish_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	fish_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-	fish_scroll.mouse_filter = Control.MOUSE_FILTER_STOP
 	fish_scroll.clip_contents = true
 	panel.add_child(fish_scroll)
-
 	fish_rows_root = Control.new()
 	fish_rows_root.name = "FishRows"
-	fish_rows_root.position = Vector2.ZERO
-	fish_rows_root.size = Vector2(get_fish_row_content_width(), fish_scroll.size.y)
-	fish_rows_root.custom_minimum_size = fish_rows_root.size
+	fish_rows_root.custom_minimum_size = Vector2(get_fish_row_content_width(), 404)
 	fish_rows_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	fish_rows_root.clip_contents = true
 	fish_scroll.add_child(fish_rows_root)
-
-	empty_label = Label.new()
-	empty_label.name = "EmptyState"
-	empty_label.text = "You don't have any fish to sell yet. Go fishing!"
-	empty_label.position = Vector2(52, 304)
-	empty_label.size = Vector2(FISH_MONGER_W - 104, 42)
+	empty_label = _text(panel, "EmptyState", "No fish to sell yet.\nCast a line and bring back your catch!", Rect2(248, 322, 748, 100), 18, PixelUIStyle.TEXT_SOFT)
 	empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	empty_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(empty_label, 20, PixelUIStyle.TEXT_SOFT)
-	panel.add_child(empty_label)
-
+	_text(panel, "Hint", "Choose a quantity, then sell for the total shown.", Rect2(244, 615, 764, 28), 14, PixelUIStyle.TEXT_SOFT)
 	call_deferred("apply_fish_monger_scrollbar_style")
 	update_panel_position()
 
@@ -281,17 +149,11 @@ func build_fish_monger_preview_panel():
 
 	preview_panel = Panel.new()
 	preview_panel.name = "FishMongerPreviewPanel"
-	preview_panel.position = Vector2(-FISH_MONGER_PREVIEW_W + FISH_MONGER_PREVIEW_OVERLAP, FISH_MONGER_PREVIEW_Y)
-	preview_panel.size = Vector2(FISH_MONGER_PREVIEW_W, FISH_MONGER_PREVIEW_H)
+	preview_panel.position = Vector2(16, 100)
+	preview_panel.size = Vector2(200, 544)
 	preview_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	preview_panel.z_index = 0
-	preview_panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.045, 0.115, 0.165, 0.72),
-		Color(0.32, 0.68, 0.92, 0.64),
-		3,
-		18,
-		10
-	))
+	preview_panel.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
 	panel.add_child(preview_panel)
 
 	var tab_glow = ColorRect.new()
@@ -301,6 +163,7 @@ func build_fish_monger_preview_panel():
 	tab_glow.color = Color(0.42, 0.78, 1.0, 0.30)
 	tab_glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	preview_panel.add_child(tab_glow)
+	tab_glow.hide()
 
 	var title = Label.new()
 	title.name = "PreviewTitle"
@@ -311,6 +174,7 @@ func build_fish_monger_preview_panel():
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_section_title(title, 21)
+	_preserve_text(title, 21)
 	preview_panel.add_child(title)
 
 	var preview_back = Panel.new()
@@ -318,13 +182,7 @@ func build_fish_monger_preview_panel():
 	preview_back.position = Vector2(20, 50)
 	preview_back.size = Vector2(156, 156)
 	preview_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	preview_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.13, 0.26, 0.35, 0.48),
-		Color(0.68, 0.90, 1.0, 0.36),
-		2,
-		18,
-		4
-	))
+	preview_back.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
 	preview_panel.add_child(preview_back)
 
 	fish_monger_preview_shadow = ColorRect.new()
@@ -365,6 +223,7 @@ func build_fish_monger_preview_panel():
 	value_caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	value_caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(value_caption, 12)
+	_preserve_text(value_caption, 12)
 	preview_panel.add_child(value_caption)
 
 	preview_value_label = Label.new()
@@ -375,6 +234,7 @@ func build_fish_monger_preview_panel():
 	preview_value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	preview_value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_label_shadow(preview_value_label, 21, PixelUIStyle.GOLD_SOFT)
+	_preserve_text(preview_value_label, 21)
 	preview_panel.add_child(preview_value_label)
 
 	var stock_caption = Label.new()
@@ -386,6 +246,7 @@ func build_fish_monger_preview_panel():
 	stock_caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	stock_caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(stock_caption, 12)
+	_preserve_text(stock_caption, 12)
 	preview_panel.add_child(stock_caption)
 
 	preview_count_label = Label.new()
@@ -396,6 +257,7 @@ func build_fish_monger_preview_panel():
 	preview_count_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	preview_count_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_label_shadow(preview_count_label, 16)
+	_preserve_text(preview_count_label, 16)
 	preview_panel.add_child(preview_count_label)
 
 	var species_caption = Label.new()
@@ -407,6 +269,7 @@ func build_fish_monger_preview_panel():
 	species_caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	species_caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(species_caption, 12)
+	_preserve_text(species_caption, 12)
 	preview_panel.add_child(species_caption)
 
 	preview_species_label = Label.new()
@@ -417,6 +280,7 @@ func build_fish_monger_preview_panel():
 	preview_species_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	preview_species_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_label_shadow(preview_species_label, 16)
+	_preserve_text(preview_species_label, 16)
 	preview_panel.add_child(preview_species_label)
 
 	var rate_caption = Label.new()
@@ -428,6 +292,7 @@ func build_fish_monger_preview_panel():
 	rate_caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	rate_caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(rate_caption, 12)
+	_preserve_text(rate_caption, 12)
 	preview_panel.add_child(rate_caption)
 
 	preview_best_rate_label = Label.new()
@@ -438,8 +303,10 @@ func build_fish_monger_preview_panel():
 	preview_best_rate_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	preview_best_rate_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_label_shadow(preview_best_rate_label, 16, PixelUIStyle.ACCENT_CYAN)
+	_preserve_text(preview_best_rate_label, 16)
 	preview_panel.add_child(preview_best_rate_label)
 
+	_text(preview_panel, "BuyerHint", "All fish welcome.\nPaid in gems.", Rect2(16, 446, 172, 58), 13, PixelUIStyle.TEXT_SOFT)
 	load_fish_monger_preview_frames()
 	update_fish_monger_preview_animation(true)
 	update_preview_stats([])
@@ -543,16 +410,17 @@ func apply_fish_monger_input_style(line_edit: LineEdit, font_size: int = 17):
 func apply_fish_monger_scrollbar_style():
 	if fish_scroll == null:
 		return
-
 	var scrollbar = fish_scroll.get_v_scroll_bar()
-	if scrollbar == null:
-		return
-
-	scrollbar.custom_minimum_size = Vector2(12, scrollbar.custom_minimum_size.y)
-	scrollbar.add_theme_stylebox_override("scroll", PixelUIStyle.style_box(Color(0.82, 0.94, 1.0, 0.10), Color(0.38, 0.72, 1.0, 0.24), 2, 8, 0))
-	scrollbar.add_theme_stylebox_override("grabber", PixelUIStyle.style_box(Color(0.28, 0.62, 0.92, 0.74), Color(0.72, 0.96, 1.0, 0.56), 2, 8, 4))
-	scrollbar.add_theme_stylebox_override("grabber_highlight", PixelUIStyle.style_box(Color(0.38, 0.76, 1.0, 0.88), Color(0.86, 1.0, 1.0, 0.82), 2, 8, 6))
-	scrollbar.add_theme_stylebox_override("grabber_pressed", PixelUIStyle.style_box(Color(1.0, 0.66, 0.12, 0.90), Color(1.0, 0.92, 0.40, 0.84), 2, 8, 6))
+	scrollbar.custom_minimum_size.x = 12
+	var track := StyleBoxFlat.new()
+	track.bg_color = Color("24102e")
+	scrollbar.add_theme_stylebox_override("scroll", track)
+	for state in ["grabber", "grabber_highlight", "grabber_pressed"]:
+		var thumb := StyleBoxFlat.new()
+		thumb.bg_color = Color("e7caee") if state == "grabber" else Color.WHITE
+		thumb.content_margin_left = 6
+		thumb.content_margin_right = 6
+		scrollbar.add_theme_stylebox_override(state, thumb)
 
 
 func get_fish_row_content_width() -> float:
@@ -629,8 +497,6 @@ func open_fish_monger(grid_pos: Vector2i):
 	update_panel_position()
 	refresh()
 
-	if panel != null:
-		PixelUIStyle.play_panel_open(panel)
 
 
 func close_fish_monger():
@@ -646,18 +512,11 @@ func is_fish_monger_open() -> bool:
 func update_panel_position():
 	if panel == null:
 		return
-
 	var screen_size = get_viewport_rect().size
 	last_panel_viewport_size = screen_size
-	var left_extension = FISH_MONGER_PREVIEW_W - FISH_MONGER_PREVIEW_OVERLAP
-	var combined_width = panel.size.x + left_extension
-	var min_x = 12.0 + left_extension
-	var max_x = max(min_x, screen_size.x - panel.size.x - 12.0)
-	var max_y = max(40.0, screen_size.y - panel.size.y - 24.0)
-	panel.position = Vector2(
-		clamp(((screen_size.x - combined_width) / 2.0) + left_extension, min_x, max_x),
-		clamp((screen_size.y - panel.size.y) / 2.0, 40.0, max_y)
-	)
+	var fit = min(1.0, min((screen_size.x - 24.0) / FISH_MONGER_W, (screen_size.y - 24.0) / FISH_MONGER_H))
+	panel.scale = Vector2.ONE * max(0.1, fit)
+	panel.position = (screen_size - panel.size * panel.scale) * 0.5
 
 
 func update_header():
@@ -680,6 +539,7 @@ func refresh():
 	update_header()
 
 	for child in fish_rows_root.get_children():
+		fish_rows_root.remove_child(child)
 		child.queue_free()
 
 	var entries: Array = []
@@ -701,7 +561,7 @@ func refresh():
 		call_deferred("restore_scroll_position", saved_scroll)
 		return
 
-	var row_height = 112.0
+	var row_height = 152.0
 	var gap = 12.0
 	var content_width = get_fish_row_content_width()
 	fish_rows_root.custom_minimum_size = Vector2(
@@ -735,269 +595,55 @@ func create_fish_row(entry: Dictionary, row_position: Vector2, row_height: float
 	var value_per_fish = get_fish_value_from_entry(entry)
 	var default_amount = max(1, owned_count)
 	var rarity = str(entry.get("rarity", "common"))
-	var row_width = max(700.0, get_fish_row_content_width())
+	var row_width = get_fish_row_content_width()
 	var accent_color = get_rarity_accent_color(rarity)
-	var sell_button_w = 92.0
-	var sell_button_x = row_width - sell_button_w - 12.0
-	var amount_minus_x = sell_button_x - 146.0
-	var amount_input_x = amount_minus_x + 34.0
-	var amount_plus_x = amount_input_x + 58.0
-	var quick_button_x = amount_minus_x
-	var price_x = amount_minus_x - 148.0
-	var name_width = clamp(price_x - 112.0, 160.0, 248.0)
-
-	var row = Panel.new()
-	row.name = "FishRow_" + item_id
-	row.position = row_position
-	row.size = Vector2(row_width, row_height)
-	row.mouse_filter = Control.MOUSE_FILTER_PASS
-	row.clip_contents = true
-	row.pivot_offset = row.size * 0.5
-	row.set_meta("base_position", row_position)
-	row.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		get_rarity_row_fill(rarity),
-		Color(accent_color.r, accent_color.g, accent_color.b, 0.42),
-		3,
-		14,
-		5
-	))
-	row.mouse_entered.connect(_on_fish_row_hovered.bind(row, true))
-	row.mouse_exited.connect(_on_fish_row_hovered.bind(row, false))
-	fish_rows_root.add_child(row)
-
-	var accent_strip = ColorRect.new()
-	accent_strip.name = "RarityAccent"
-	accent_strip.position = Vector2(0, 0)
-	accent_strip.size = Vector2(6, row_height)
-	accent_strip.color = Color(accent_color.r, accent_color.g, accent_color.b, 0.72)
-	accent_strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_child(accent_strip)
-
-	var sheen = ColorRect.new()
-	sheen.name = "TopSheen"
-	sheen.position = Vector2(6, 0)
-	sheen.size = Vector2(row_width - 6, 3)
-	sheen.color = Color(1.0, 1.0, 1.0, 0.10)
-	sheen.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_child(sheen)
-
-	var icon_back = Panel.new()
-	icon_back.name = "IconBack"
-	icon_back.position = Vector2(14, 20)
-	icon_back.size = Vector2(68, 68)
-	icon_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon_back.add_theme_stylebox_override("panel", PixelUIStyle.slot_style(rarity))
-	row.add_child(icon_back)
-
-	var icon = TextureRect.new()
+	var row := _surface(fish_rows_root, "FishRow_" + item_id, Rect2(row_position, Vector2(row_width, row_height)), true)
+	_surface(row, "InnerPanel", Rect2(5, 5, row_width - 10, row_height - 10))
+	var icon_back := _surface(row, "IconBack", Rect2(16, 18, 76, 76), true)
+	icon_back.self_modulate = Color.WHITE.lerp(accent_color, 0.25)
+	var icon := TextureRect.new()
 	icon.name = "Icon"
-	icon.position = Vector2(22, 28)
-	icon.size = Vector2(52, 52)
+	icon.position = Vector2(24, 26)
+	icon.size = Vector2(60, 60)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon.texture = entry.get("texture", null)
-	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon.texture = _fish_artwork(entry.get("texture", null))
 	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(icon)
-
-	var name_label = Label.new()
-	name_label.name = "Name"
-	name_label.text = str(entry.get("display_name", item_id.capitalize()))
-	name_label.position = Vector2(98, 10)
-	name_label.size = Vector2(name_width, 28)
-	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	var name_label := _text(row, "Name", str(entry.get("display_name", item_id.capitalize())), Rect2(108, 16, 398, 30), 20)
 	name_label.clip_text = true
-	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(name_label, 19)
-	row.add_child(name_label)
-
-	var rarity_badge = Label.new()
-	rarity_badge.name = "RarityBadge"
-	rarity_badge.text = rarity.capitalize()
-	rarity_badge.position = Vector2(98, 40)
-	rarity_badge.size = Vector2(86, 22)
-	rarity_badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	rarity_badge.clip_text = true
-	rarity_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(rarity_badge, 13, accent_color)
-	row.add_child(rarity_badge)
-
-	var qty_label = Label.new()
-	qty_label.name = "Quantity"
-	qty_label.text = "Owned: " + format_fish_count(owned_count)
-	qty_label.position = Vector2(190, 40)
-	qty_label.size = Vector2(138, 22)
-	qty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	qty_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(qty_label, 14)
-	row.add_child(qty_label)
-
-	var selected_back = Panel.new()
-	selected_back.name = "SelectedBack"
-	selected_back.position = Vector2(98, 72)
-	selected_back.size = Vector2(232, 12)
-	selected_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	selected_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.02, 0.06, 0.09, 0.56),
-		Color(0.34, 0.62, 0.82, 0.28),
-		1,
-		7,
-		0
-	))
-	row.add_child(selected_back)
-
-	var selected_clip = Control.new()
-	selected_clip.name = "SelectedClip"
-	selected_clip.position = selected_back.position
-	selected_clip.size = selected_back.size
-	selected_clip.clip_contents = true
-	selected_clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_child(selected_clip)
-
-	var selected_fill = Panel.new()
-	selected_fill.name = "SelectedFill"
-	selected_fill.position = Vector2.ZERO
-	selected_fill.size = selected_back.size
-	selected_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	selected_fill.set_meta("max_width", selected_back.size.x)
-	selected_fill.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(accent_color.r, accent_color.g, accent_color.b, 0.58),
-		Color(accent_color.r, accent_color.g, accent_color.b, 0.0),
-		0,
-		7,
-		0
-	))
-	selected_clip.add_child(selected_fill)
-
-	var selected_label = Label.new()
-	selected_label.name = "SelectedAmount"
-	selected_label.position = Vector2(98, 86)
-	selected_label.size = Vector2(232, 18)
-	selected_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	selected_label.clip_text = true
-	selected_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(selected_label, 12)
-	row.add_child(selected_label)
-
-	var price_back = Panel.new()
-	price_back.name = "PriceBack"
-	price_back.position = Vector2(price_x, 12)
-	price_back.size = Vector2(136, 30)
-	price_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	price_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.06, 0.18, 0.25, 0.58),
-		Color(1.0, 0.82, 0.20, 0.42),
-		2,
-		10,
-		2
-	))
-	row.add_child(price_back)
-
-	var price_label = Label.new()
-	price_label.name = "Price"
-	price_label.text = format_gem_amount(value_per_fish) + " gems each"
-	price_label.position = Vector2(price_x + 8, 15)
-	price_label.size = Vector2(120, 24)
-	price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	price_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	price_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(price_label, 15, PixelUIStyle.GOLD_SOFT)
-	row.add_child(price_label)
-
-	var total_back = Panel.new()
-	total_back.name = "TotalBack"
-	total_back.position = Vector2(price_x, 50)
-	total_back.size = Vector2(136, 30)
-	total_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	total_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.08, 0.24, 0.20, 0.48),
-		Color(0.36, 0.94, 0.58, 0.36),
-		2,
-		10,
-		2
-	))
-	row.add_child(total_back)
-
-	var total_label = Label.new()
-	total_label.name = "Total"
-	total_label.text = "Total: " + format_gem_amount(calculate_fish_sale_value(default_amount, value_per_fish)) + " gems"
-	total_label.position = Vector2(price_x + 8, 54)
-	total_label.size = Vector2(120, 22)
+	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	name_label.tooltip_text = name_label.text
+	_text(row, "RarityBadge", rarity.capitalize(), Rect2(108, 49, 172, 24), 14, accent_color)
+	_text(row, "Quantity", "Owned: " + format_fish_count(owned_count), Rect2(282, 49, 224, 24), 14, PixelUIStyle.TEXT_SOFT)
+	var price := _text(row, "Price", format_gem_amount(value_per_fish) + " gems each", Rect2(row_width - 232, 18, 212, 26), 16, PixelUIStyle.GOLD_SOFT)
+	price.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	var total_label := _text(row, "Total", "", Rect2(row_width - 262, 51, 242, 26), 15)
 	total_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	total_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	total_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(total_label, 13)
-	row.add_child(total_label)
-
-	var quick_button_y := 13.0
-	var quick_button_h := 28.0
-	var half_button = Button.new()
-	half_button.name = "HalfButton"
-	half_button.text = "HALF"
-	half_button.position = Vector2(quick_button_x, quick_button_y)
-	half_button.size = Vector2(54, quick_button_h)
-	half_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	half_button.disabled = pending or owned_count <= 1
-	apply_fish_monger_arcade_button_style(half_button, false, false, 12)
-	row.add_child(half_button)
-
-	var max_button = Button.new()
-	max_button.name = "MaxButton"
-	max_button.text = "MAX"
-	max_button.position = Vector2(quick_button_x + 60.0, quick_button_y)
-	max_button.size = Vector2(54, quick_button_h)
-	max_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	max_button.disabled = pending or owned_count <= 0
-	apply_fish_monger_arcade_button_style(max_button, false, false, 12)
-	row.add_child(max_button)
-
-	var amount_control_y := 52.0
-	var amount_control_height := 36.0
-
-	var minus_button = Button.new()
-	minus_button.name = "AmountMinus"
-	minus_button.text = "-"
-	minus_button.position = Vector2(amount_minus_x, amount_control_y)
-	minus_button.size = Vector2(30, amount_control_height)
-	minus_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	minus_button.disabled = pending or owned_count <= 1
-	apply_fish_monger_arcade_button_style(minus_button, false, false, 18)
-	row.add_child(minus_button)
-
-	var amount_input = LineEdit.new()
+	var selected_label := _text(row, "SelectedAmount", "", Rect2(20, 106, 200, 28), 13, PixelUIStyle.TEXT_SOFT)
+	var selected_fill: Panel = null
+	var half_button := _button(row, "HalfButton", "HALF", Rect2(232, 102, 66, 34))
+	var max_button := _button(row, "MaxButton", "MAX", Rect2(304, 102, 66, 34))
+	var minus_button := _button(row, "AmountMinus", "-", Rect2(386, 102, 34, 34))
+	var amount_input := LineEdit.new()
 	amount_input.name = "AmountInput"
 	amount_input.text = format_fish_count_number(default_amount)
-	amount_input.placeholder_text = "1"
-	amount_input.position = Vector2(amount_input_x, amount_control_y)
-	amount_input.size = Vector2(54, amount_control_height)
+	amount_input.position = Vector2(426, 102)
+	amount_input.size = Vector2(100, 34)
 	amount_input.max_length = 8
 	amount_input.alignment = HORIZONTAL_ALIGNMENT_CENTER
-	amount_input.mouse_filter = Control.MOUSE_FILTER_STOP
+	PixelUIStyle.apply_input(amount_input, 16)
+	_preserve_text(amount_input, 16)
 	amount_input.editable = not pending and owned_count > 0
-	apply_fish_monger_input_style(amount_input, 17)
 	row.add_child(amount_input)
-
-	var plus_button = Button.new()
-	plus_button.name = "AmountPlus"
-	plus_button.text = "+"
-	plus_button.position = Vector2(amount_plus_x, amount_control_y)
-	plus_button.size = Vector2(30, amount_control_height)
-	plus_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	var plus_button := _button(row, "AmountPlus", "+", Rect2(532, 102, 34, 34))
+	var sell_button := _button(row, "SellButton", "SELL", Rect2(row_width - 166, 96, 146, 42), true)
+	half_button.disabled = pending or owned_count <= 1
+	max_button.disabled = pending or owned_count <= 0
+	minus_button.disabled = pending or owned_count <= 1
 	plus_button.disabled = pending or owned_count <= 1
-	apply_fish_monger_arcade_button_style(plus_button, false, false, 18)
-	row.add_child(plus_button)
-
-	var sell_button = Button.new()
-	sell_button.name = "SellButton"
-	sell_button.text = "SELL"
-	sell_button.position = Vector2(sell_button_x, 34)
-	sell_button.size = Vector2(sell_button_w, 48)
-	sell_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	sell_button.disabled = pending or owned_count <= 0 or value_per_fish <= 0
-	apply_fish_monger_arcade_button_style(sell_button, true, false, 17)
 	sell_button.pressed.connect(_on_sell_pressed.bind(item_id, amount_input, owned_count))
-	row.add_child(sell_button)
-
 	amount_input.text_changed.connect(_on_amount_text_changed.bind(amount_input, total_label, sell_button, owned_count, value_per_fish, pending, selected_label, selected_fill))
 	amount_input.text_submitted.connect(_on_amount_text_submitted.bind(amount_input, total_label, sell_button, owned_count, value_per_fish, pending, selected_label, selected_fill))
 	amount_input.focus_exited.connect(_on_amount_focus_exited.bind(amount_input, total_label, sell_button, owned_count, value_per_fish, pending, selected_label, selected_fill))
@@ -1006,6 +652,21 @@ func create_fish_row(entry: Dictionary, row_position: Vector2, row_height: float
 	half_button.pressed.connect(_on_amount_quick_pressed.bind(amount_input, total_label, sell_button, owned_count, value_per_fish, pending, 0.5, selected_label, selected_fill))
 	max_button.pressed.connect(_on_amount_quick_pressed.bind(amount_input, total_label, sell_button, owned_count, value_per_fish, pending, 1.0, selected_label, selected_fill))
 	update_amount_summary(amount_input, total_label, sell_button, owned_count, value_per_fish, pending, selected_label, selected_fill)
+
+
+func _fish_artwork(texture: Texture2D) -> Texture2D:
+	if texture == null:
+		return null
+	var image = texture.get_image()
+	if image == null:
+		return texture
+	var region = image.get_used_rect()
+	if not region.has_area():
+		return texture
+	var cropped := AtlasTexture.new()
+	cropped.atlas = texture
+	cropped.region = region
+	return cropped
 
 
 func parse_amount_text(raw_text: String) -> float:

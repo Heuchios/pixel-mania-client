@@ -93,6 +93,13 @@ var shop_last_purchase_context = {}
 
 var shop_items = [
 	{
+		"item_id": "wooden_fishing_rod",
+		"amount": 1,
+		"price": 10,
+		"section": "special",
+		"description": "A beginner fishing rod. Equip it to start fishing.",
+	},
+	{
 		"item_id": "small_lock",
 		"amount": 1,
 		"price": 500,

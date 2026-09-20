@@ -271,6 +271,10 @@ func _bind_scene_nodes() -> void:
 	profile_level_label = get_node_or_null("ProfilePanel/LevelText") as Label
 	profile_xp_label = get_node_or_null("ProfilePanel/XpText") as Label
 	profile_xp_fill = get_node_or_null("ProfilePanel/XpFill") as ColorRect
+	if profile_xp_fill != null:
+		var track = get_node_or_null("ProfilePanel/XpBack")
+		if track != null:
+			PixelUIStyle.apply_progress_bar(track, profile_xp_fill, profile_xp_fill.position.x - track.position.x)
 	profile_gems_label = get_node_or_null("ProfilePanel/GemsRow/GemLabel") as Label
 	profile_total_xp_label = get_node_or_null("ProfilePanel/XpRow/TotalXpLabel") as Label
 

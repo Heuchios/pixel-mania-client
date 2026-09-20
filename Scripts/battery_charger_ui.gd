@@ -95,6 +95,8 @@ func bind_scene_ui() -> bool:
 	input_battery_icon = panel.get_node_or_null("BatteryCard/InputBatterySlot/InputBatteryIcon") as TextureRect
 	output_battery_icon = panel.get_node_or_null("BatteryCard/OutputBatterySlot/OutputBatteryIcon") as TextureRect
 	charge_fill = panel.get_node_or_null("ChargeCard/ChargeMeterBack/ChargeFill") as ColorRect
+	if charge_fill != null:
+		PixelUIStyle.apply_progress_bar(charge_fill.get_parent(), charge_fill, 4)
 
 	if overlay != null:
 		overlay.mouse_filter = Control.MOUSE_FILTER_STOP

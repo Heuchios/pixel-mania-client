@@ -18,6 +18,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+MobileUIScale="*res://Scripts/ui/mobile_ui_scale.gd"
+
 
 
 MovementMode="*res://Scripts/networking/movement_mode.gd"

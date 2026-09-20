@@ -9,6 +9,7 @@
 [ext_resource type="FontFile" uid="uid://e0ivgh0c6uck" path="res://Assets/font/font.ttf" id="6_font"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/fill_bar_background.tres" id="7_bar_empty"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/fill_bar_progress.tres" id="8_bar_full"]
+[ext_resource type="Script" path="res://Scripts/ui/atlas_loading_progress.gd" id="9_progress"]
 [node name="WorldLoadingOverlay" type="Node2D" unique_id=2067188574]
 texture_filter = 1
 
@@ -177,6 +178,7 @@ vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
 [node name="ProgressBar" type="TextureProgressBar" parent="LoadingCanvas/Root/Center/Box" unique_id=1208102426]
+script = ExtResource("9_progress")
 texture_filter = 1
 custom_minimum_size = Vector2(620, 20)
 layout_mode = 2

@@ -525,3 +525,7 @@ static func apply_atlas_button(button: Button, region: String = "blue_button") -
 	var focus := atlas_style("inner_panel", Color(1.6, 1.6, 1.6))
 	focus.draw_center = false
 	button.add_theme_stylebox_override("focus", focus)
+
+
+static func apply_progress_bar(track: Control, fill: Control = null, inset: float = 0.0) -> void:
+	preload("res://Scripts/ui/atlas_progress_visual.gd").bind(track, fill, inset)

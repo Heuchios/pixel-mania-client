@@ -1063,6 +1063,7 @@ func make_level_up_overlay(level_before: int, level_after: int, levels_gained: i
 		0
 	))
 	card.add_child(fill)
+	PixelUIStyle.apply_progress_bar(track, fill)
 
 	var xp_label := Label.new()
 	xp_label.name = "XpLabel"
@@ -1546,7 +1547,7 @@ func make_toast(message: String, details: Dictionary) -> Panel:
 	progress_track.anchor_right = 0.0
 	progress_track.anchor_bottom = 1.0
 	progress_track.offset_left = TOAST_PROGRESS_INSET
-	progress_track.offset_top = -11
+	progress_track.offset_top = -17
 	progress_track.offset_right = TOAST_WIDTH - TOAST_PROGRESS_INSET
 	progress_track.offset_bottom = -7
 	progress_track.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1566,7 +1567,7 @@ func make_toast(message: String, details: Dictionary) -> Panel:
 	progress.anchor_right = 0.0
 	progress.anchor_bottom = 1.0
 	progress.offset_left = TOAST_PROGRESS_INSET
-	progress.offset_top = -11
+	progress.offset_top = -17
 	progress.offset_right = TOAST_WIDTH - TOAST_PROGRESS_INSET
 	progress.offset_bottom = -7
 	progress.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1578,6 +1579,7 @@ func make_toast(message: String, details: Dictionary) -> Panel:
 		0
 	))
 	panel.add_child(progress)
+	PixelUIStyle.apply_progress_bar(progress_track, progress)
 
 	var margin: MarginContainer = MarginContainer.new()
 	margin.name = "Margin"

@@ -16,7 +16,7 @@ const RESULT_Y := 702.0
 const BODY_SIZE := Vector2(996.0, 482.0)
 const ITEM_SEARCH_LIST_SIZE := Vector2(672.0, 266.0)
 const ITEM_SEARCH_SCROLL_SIZE := Vector2(648.0, 242.0)
-const ITEM_SEARCH_ROW_HEIGHT := 58.0
+const ITEM_SEARCH_ROW_HEIGHT := 68.0
 const ITEM_SEARCH_RESULT_LIMIT := 60
 const INVENTORY_LIST_SIZE := Vector2(960.0, 314.0)
 const INVENTORY_SCROLL_SIZE := Vector2(936.0, 290.0)
@@ -62,6 +62,8 @@ var amount_input = null
 var world_input = null
 var x_input = null
 var y_input = null
+var item_search_summary: Label
+var selected_search_item := ""
 var item_search_input = null
 var item_search_scroll = null
 var item_search_list = null
@@ -420,11 +422,22 @@ func build_items_tab():
 	add_button("Give Gems", Vector2(366, 112), Vector2(156, 42), func(): run_gem_command("give"), true)
 	add_button("Remove Gems", Vector2(538, 112), Vector2(170, 42), func(): run_gem_command("remove"), false)
 
-	item_search_input = add_input("Search item IDs", Vector2(8, 190), Vector2(280, 38))
+	item_search_input = add_input("Search by item name or ID...", Vector2(8, 176), Vector2(710, 38))
 	item_search_input.text_submitted.connect(func(_submitted_text): search_items())
-	add_button("Search", Vector2(8, 240), Vector2(130, 38), search_items, false)
-	build_item_search_results_panel(Vector2(306, 190), ITEM_SEARCH_LIST_SIZE)
-	add_item_search_empty("Search by item ID or display name.")
+	item_search_input.text_changed.connect(func(_text): search_items())
+	add_button("Search", Vector2(730, 176), Vector2(116, 38), search_items, false)
+	add_button("Clear", Vector2(858, 176), Vector2(120, 38), func():
+		item_search_input.clear()
+		search_items(), false)
+	item_search_summary = Label.new()
+	item_search_summary.position = Vector2(14, 220)
+	item_search_summary.size = Vector2(956, 24)
+	PixelUIStyle.apply_small_label(item_search_summary, 13)
+	_preserve_text(item_search_summary, 13)
+	body.add_child(item_search_summary)
+	build_item_search_results_panel(Vector2(8, 250), Vector2(970, 224))
+	add_item_search_empty("Type an item name or ID to browse the catalog.")
+
 
 
 func build_inventory_lookup_tab():
@@ -443,7 +456,7 @@ func build_inventory_lookup_tab():
 	list_panel.position = Vector2(8, 160)
 	list_panel.size = INVENTORY_LIST_SIZE
 	list_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	list_panel.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
+	list_panel.add_theme_stylebox_override("panel", PixelUIStyle.panel_style())
 	body.add_child(list_panel)
 
 	inventory_lookup_scroll = ScrollContainer.new()
@@ -819,6 +832,7 @@ func search_items():
 		add_item_search_empty("Search by item ID or display name.")
 		return
 
+	item_search_scroll.scroll_vertical = 0
 	var matches = collect_item_search_matches(query)
 	if matches.is_empty():
 		add_item_search_empty("No matching items.")
@@ -852,7 +866,7 @@ func collect_item_search_matches(query: String) -> Array:
 		if bool(item_data.get("admin_grantable", true)) == false:
 			continue
 
-		var display_name = str(item_data.get("display_name", item_id)).strip_edges()
+		var display_name = str(item_data.get("display_name", item_data.get("name", item_id))).strip_edges()
 		if display_name == "":
 			display_name = item_id
 
@@ -914,6 +928,7 @@ func render_item_search_results(entries: Array):
 	if not is_item_search_ui_ready():
 		return
 
+	item_search_summary.text = "%d matches  |  Select an item to fill the Item ID field" % entries.size()
 	var row_width = get_item_search_list_width()
 	var shown_count = mini(entries.size(), ITEM_SEARCH_RESULT_LIMIT)
 	for index in range(shown_count):
@@ -939,7 +954,14 @@ func add_item_search_row(entry: Dictionary, row_size: Vector2):
 	row.clip_contents = true
 	row.mouse_filter = Control.MOUSE_FILTER_STOP
 	row.tooltip_text = str(entry.get("display_name", entry.get("item_id", ""))) + " | " + str(entry.get("item_id", ""))
-	row.add_theme_stylebox_override("panel", PixelUIStyle.slot_style(str(entry.get("rarity", "common"))))
+	row.add_theme_stylebox_override("panel", PixelUIStyle.panel_style())
+	var inner := Panel.new()
+	inner.position = Vector2(4, 4)
+	inner.size = row_size - Vector2(8, 8)
+	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inner.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
+	row.add_child(inner)
+	row.set_meta("item_id", str(entry.get("item_id", "")))
 	item_search_list.add_child(row)
 
 	var row_entry = entry.duplicate(true)
@@ -949,19 +971,15 @@ func add_item_search_row(entry: Dictionary, row_size: Vector2):
 	)
 
 	var icon_frame = Panel.new()
-	icon_frame.position = Vector2(8, 6)
-	icon_frame.size = Vector2(46, 46)
+	icon_frame.position = Vector2(10, 8)
+	icon_frame.size = Vector2(52, 52)
 	icon_frame.clip_contents = true
 	icon_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon_frame.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.02, 0.08, 0.12, 0.22),
-		Color(0.82, 0.94, 1.0, 0.18),
-		1, 7, 0
-	))
+	icon_frame.add_theme_stylebox_override("panel", PixelUIStyle.slot_style(str(entry.get("rarity", "common")) ))
 	row.add_child(icon_frame)
 
 	var icon = TextureRect.new()
-	icon.position = Vector2(3, 3)
+	icon.position = Vector2(6, 6)
 	icon.size = Vector2(40, 40)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -971,9 +989,26 @@ func add_item_search_row(entry: Dictionary, row_size: Vector2):
 		icon.texture = item_texture
 	icon_frame.add_child(icon)
 
-	add_item_history_label(row, str(entry.get("display_name", entry.get("item_id", ""))), Vector2(66, 7), Vector2(row_size.x - 226.0, 20), 13, true)
-	add_item_history_label(row, str(entry.get("category_label", "Item")) + " | " + str(entry.get("item_id", "")), Vector2(66, 29), Vector2(row_size.x - 226.0, 17), 10)
-	add_item_history_label(row, format_item_instance_detail_value(str(entry.get("rarity", "common")), "Common"), Vector2(row_size.x - 148.0, 20), Vector2(132, 17), 10)
+	add_item_history_label(row, str(entry.get("display_name", entry.get("item_id", ""))), Vector2(76, 10), Vector2(row_size.x - 330, 24), 18, true)
+	add_item_history_label(row, str(entry.get("category_label", "Item")) + "  |  " + str(entry.get("item_id", "")), Vector2(76, 38), Vector2(row_size.x - 330, 20), 13)
+	add_item_history_label(row, format_item_instance_detail_value(str(entry.get("rarity", "common")), "Common"), Vector2(row_size.x - 242, 24), Vector2(120, 24), 14)
+	var select := Button.new()
+	select.name = "SelectItem"
+	select.position = Vector2(row_size.x - 118, 15)
+	select.size = Vector2(108, 38)
+	select.pressed.connect(select_item_search_result.bind(row_entry))
+	row.add_child(select)
+	_update_item_selection(row)
+
+
+func _update_item_selection(row: Control):
+	var button = row.get_node_or_null("SelectItem") as Button
+	if button == null: return
+	var selected = str(row.get_meta("item_id", "")) == selected_search_item
+	button.text = "SELECTED" if selected else "SELECT"
+	PixelUIStyle.apply_green_button(button, 13) if selected else PixelUIStyle.apply_blue_button(button, 13)
+	_preserve_text(button, 13)
+
 
 
 func add_item_search_more_row(total_count: int, shown_count: int):
@@ -1001,6 +1036,9 @@ func select_item_search_result(entry: Dictionary):
 		item_input.text = selected_item_id
 		item_input.caret_column = selected_item_id.length()
 
+	selected_search_item = selected_item_id
+	for row in item_search_list.get_children():
+		_update_item_selection(row)
 	set_result("Selected " + str(entry.get("display_name", selected_item_id)) + " (" + selected_item_id + ").")
 
 
@@ -1008,10 +1046,13 @@ func clear_item_search_results():
 	if not is_item_search_ui_ready():
 		return
 	for child in item_search_list.get_children():
+		item_search_list.remove_child(child)
 		child.queue_free()
 
 
 func add_item_search_empty(message: String):
+	if is_instance_valid(item_search_summary):
+		item_search_summary.text = "ITEM CATALOG  |  Search by name or ID"
 	clear_item_search_results()
 	if not is_item_search_ui_ready():
 		return

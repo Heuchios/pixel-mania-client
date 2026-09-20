@@ -91,6 +91,8 @@ func build_menu():
 	_set_caption("CenterContainer/ProfileWindow/StatsPanel/WorldsCell/Caption", "WORLD")
 	_set_caption("CenterContainer/ProfileWindow/StatsPanel/AchievementsCell/Caption", "TOTAL XP")
 	_configure_xp_fill()
+	if xp_fill != null:
+		PixelUIStyle.apply_progress_bar(xp_fill.get_parent(), xp_fill)
 	_configure_portrait_preview()
 	_connect_profile_buttons()
 

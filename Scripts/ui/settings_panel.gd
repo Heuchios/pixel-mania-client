@@ -25,6 +25,10 @@ const DEFAULT_CHAT_CONTENT_FILTER_ENABLED := true
 @onready var mobile_controls_row: Control = get_node_or_null("Window/MobileControlsRow") as Control
 @onready var customize_mobile_controls_button: Button = get_node_or_null("Window/MobileControlsRow/CustomizeButton") as Button
 
+var ui_scale_row: Control
+var ui_scale_slider: HSlider
+var ui_scale_value: Label
+
 var world_ref: Node = null
 var mobile_controls_ref: Node = null
 
@@ -33,10 +37,12 @@ func _ready() -> void:
 	_fit_window_to_viewport()
 	if close_button != null and not close_button.pressed.is_connected(close_settings):
 		close_button.pressed.connect(close_settings)
+	_setup_ui_scale_row()
 	_setup_full_screen_toggle()
 	_setup_sfx_slider()
 	_setup_chat_filter_toggle()
 	_setup_mobile_controls_row()
+	_fit_window_to_viewport()
 
 
 func setup(world_node: Node) -> void:
@@ -364,12 +370,13 @@ func _fit_window_to_viewport() -> void:
 		return
 	# The authored skin extended far beyond the actual settings rows, forcing
 	# phone layouts to shrink text to half size just to fit empty space.
-	window.size = WINDOW_VISUAL_SIZE
+	var visual_size := Vector2(560, 350) if _is_mobile_platform() else WINDOW_VISUAL_SIZE
+	window.size = visual_size
 	window.get_node("SettingsScrollSlider").hide()
-	window.position = (get_viewport_rect().size - WINDOW_VISUAL_SIZE) * 0.5
+	window.position = (get_viewport_rect().size - visual_size) * 0.5
 	var skin := window.get_node("WindowSkin") as Control
 	skin.position = Vector2.ZERO
-	skin.size = WINDOW_VISUAL_SIZE
+	skin.size = visual_size
 	var header := window.get_node("HeaderSkin") as Control
 	header.position = Vector2(12, 12)
 	header.size = Vector2(536, 52)
@@ -379,8 +386,8 @@ func _fit_window_to_viewport() -> void:
 	close_button.position = Vector2(500, 16)
 	close_button.size = Vector2(44, 44)
 	var row_y := 78.0
-	for row in [full_screen_row, window.get_node("SfxRow"), chat_filter_row, mobile_controls_row]:
-		if row != null:
+	for row in [full_screen_row, window.get_node("SfxRow"), chat_filter_row, mobile_controls_row, ui_scale_row]:
+		if row != null and row.visible:
 			row.position = Vector2(24, row_y)
 			row.size = Vector2(512, 44)
 			row_y += 50.0
@@ -390,8 +397,62 @@ func _fit_window_to_viewport() -> void:
 		max(viewport_size.x - 32.0, 1.0),
 		max(viewport_size.y - 32.0, 1.0)
 	)
-	var width_scale: float = available_size.x / WINDOW_VISUAL_SIZE.x
-	var height_scale: float = available_size.y / WINDOW_VISUAL_SIZE.y
+	var width_scale: float = available_size.x / visual_size.x
+	var height_scale: float = available_size.y / visual_size.y
 	var scale_amount: float = minf(1.0, minf(width_scale, height_scale))
 	window.scale = Vector2.ONE * scale_amount
-	window.pivot_offset = WINDOW_VISUAL_SIZE * 0.5
+	window.pivot_offset = visual_size * 0.5
+
+
+func _setup_ui_scale_row() -> void:
+	if not _is_mobile_platform() or ui_scale_row != null:
+		return
+	var manager := get_node_or_null("/root/MobileUIScale")
+	if manager == null:
+		return
+	ui_scale_row = Control.new()
+	ui_scale_row.name = "UIScaleRow"
+	window.add_child(ui_scale_row)
+	var label := Label.new()
+	label.text = "UI Scale"
+	label.set_meta("pixelmania_font_role", "preserve")
+	label.position = Vector2(0, 6)
+	label.add_theme_font_size_override("font_size", 20)
+	ui_scale_row.add_child(label)
+	ui_scale_slider = HSlider.new()
+	ui_scale_slider.position = Vector2(130, 4)
+	ui_scale_slider.size = Vector2(200, 40)
+	ui_scale_slider.min_value = 75
+	ui_scale_slider.max_value = 125
+	ui_scale_slider.step = 5
+	ui_scale_slider.value = manager.ui_scale * 100.0
+	ui_scale_row.add_child(ui_scale_slider)
+	ui_scale_value = Label.new()
+	ui_scale_value.set_meta("pixelmania_font_role", "preserve")
+	ui_scale_value.position = Vector2(338, 6)
+	ui_scale_value.add_theme_font_size_override("font_size", 18)
+	ui_scale_value.text = "%d%%" % ui_scale_slider.value
+	ui_scale_row.add_child(ui_scale_value)
+	var reset := Button.new()
+	reset.text = "Default"
+	reset.set_meta("pixelmania_font_role", "preserve")
+	reset.position = Vector2(420, 2)
+	reset.size = Vector2(92, 40)
+	reset.add_theme_font_size_override("font_size", 16)
+	ui_scale_row.add_child(reset)
+	ui_scale_slider.value_changed.connect(func(value: float):
+		ui_scale_value.text = "%d%%" % value
+	)
+	# Apply on release so changing scale does not move the slider under a finger.
+	ui_scale_slider.drag_ended.connect(func(_changed: bool):
+		manager.set_ui_scale(ui_scale_slider.value / 100.0)
+	)
+	ui_scale_slider.gui_input.connect(func(event: InputEvent):
+		if event is InputEventKey and event.is_released():
+			manager.set_ui_scale(ui_scale_slider.value / 100.0)
+	)
+	reset.pressed.connect(func():
+		ui_scale_slider.set_value_no_signal(100)
+		ui_scale_value.text = "100%"
+		manager.set_ui_scale(1.0)
+	)

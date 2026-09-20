@@ -324,7 +324,7 @@ func _render_daily_row(quest: Dictionary, tier: String, active: Dictionary = {},
 			count = target
 		_label(details, str(objectives[i].label), LAVENDER, 18)
 		var bar := ProgressBar.new()
-		bar.custom_minimum_size.y = 12
+		bar.custom_minimum_size.y = 20
 		bar.max_value = target
 		bar.value = count
 		bar.show_percentage = false
@@ -335,6 +335,7 @@ func _render_daily_row(quest: Dictionary, tier: String, active: Dictionary = {},
 		fill.bg_color = Color("72d99e")
 		bar.add_theme_stylebox_override("fill", fill)
 		details.add_child(bar)
+		Style.apply_progress_bar(bar)
 		_label(details, "%d / %d" % [count, target], GOLD, 17)
 	var rewards := VBoxContainer.new()
 	rewards.custom_minimum_size.x = 225 if panel.size.x >= 900 else 150
@@ -483,6 +484,8 @@ func _render_active(tier: String) -> void:
 			bar.value = count
 			bar.custom_minimum_size.y = 24
 			column.add_child(bar)
+			bar.show_percentage = false
+			Style.apply_progress_bar(bar)
 		_label(column, "Daily quests track successful gameplay from the daily reset once you have visited the board. Story quests track from acceptance. Harvest mature trees; fishing must land a fish. Return to refresh progress and claim.", LAVENDER, 22)
 		_button(column, "GO PLAY", close_quest_board, true)
 		_button(column, "REFRESH PROGRESS", _request.bind("quest_board_get"))

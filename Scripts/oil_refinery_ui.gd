@@ -98,6 +98,8 @@ func bind_scene_ui() -> bool:
 	add_battery_button = panel.get_node_or_null("PowerCoreCard/AddBatteryButton") as Button
 	runtime_value_label = panel.get_node_or_null("RuntimeCard/RuntimeValueLabel") as Label
 	runtime_fill = panel.get_node_or_null("RuntimeCard/RuntimeMeterBack/RuntimeFill") as ColorRect
+	if runtime_fill != null:
+		PixelUIStyle.apply_progress_bar(runtime_fill.get_parent(), runtime_fill, 4)
 	power_value_label = panel.get_node_or_null("InputCard/PowerValueLabel") as Label
 	battery_value_label = panel.get_node_or_null("InputCard/BatteryValueLabel") as Label
 	metal_pad_value_label = panel.get_node_or_null("InputCard/MetalPadValueLabel") as Label
@@ -107,6 +109,8 @@ func bind_scene_ui() -> bool:
 	output_count_label = panel.get_node_or_null("OutputCard/OutputCountLabel") as Label
 	collect_button = panel.get_node_or_null("OutputCard/CollectButton") as Button
 	output_fill = panel.get_node_or_null("ProductionCard/OutputMeterBack/OutputFill") as ColorRect
+	if output_fill != null:
+		PixelUIStyle.apply_progress_bar(output_fill.get_parent(), output_fill, 4)
 	footer_label = panel.get_node_or_null("ProductionCard/FooterLabel") as Label
 
 	if overlay != null:
