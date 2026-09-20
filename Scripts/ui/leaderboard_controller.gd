@@ -163,16 +163,10 @@ func _build_scene() -> void:
 	# add_child() is what runs the scene's _ready(), and _ready() is where it re-applies the
 	# @export styles/content over the nodes. Setting these afterwards is too late.
 
-	# THE reason the in-game panel didn't match the editor. leaderboard_scene.gd separates two
-	# passes: apply_exported_content() fills the authored nodes with data (needed -- it is what
-	# puts real players in the rows), and apply_exported_styles() repaints every panel, row and
-	# label from the script's @export colors. That style pass overwrites styling hand-edited on
-	# the child nodes in the editor -- e.g. it forces ChampionBadge/TrophyBack/Cup to a flat
-	# orange panel -- which is why the editor (showing saved node edits) and the game (showing
-	# the repaint) looked different. The scene's own editor_note says exactly this: turn these
-	# off when you want direct node edits to stay untouched. So: styles OFF, content ON.
+	# Use the same data-driven styling as the scene preview, including tab states
+	# and typography. Content still comes exclusively from the server.
 	if "apply_exported_styles_on_ready" in scene_instance:
-		scene_instance.set("apply_exported_styles_on_ready", false)
+		scene_instance.set("apply_exported_styles_on_ready", true)
 	if "apply_exported_content_on_ready" in scene_instance:
 		scene_instance.set("apply_exported_content_on_ready", true)
 

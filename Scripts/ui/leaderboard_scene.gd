@@ -450,10 +450,10 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_apply_window_size()
 	_connect_static_buttons()
-	if apply_exported_styles_on_ready:
-		apply_exported_styles()
 	if apply_exported_content_on_ready:
 		apply_exported_content()
+	if apply_exported_styles_on_ready:
+		apply_exported_styles()
 	_style_scrollbar()
 	_update_visibility_flags()
 	_update_window_scale()
@@ -466,10 +466,10 @@ func _notification(what: int) -> void:
 
 func refresh_preview() -> void:
 	_apply_window_size()
-	if apply_exported_styles_on_ready:
-		apply_exported_styles()
 	if apply_exported_content_on_ready:
 		apply_exported_content()
+	if apply_exported_styles_on_ready:
+		apply_exported_styles()
 	_style_scrollbar()
 	_update_visibility_flags()
 	_update_window_scale()
@@ -644,7 +644,7 @@ func select_tab(index: int) -> void:
 	# clicked a tab, in-editor styling be damned. Gate it the same way _ready()/refresh_preview()
 	# already do.
 	if apply_exported_styles_on_ready:
-		_apply_tabs_style()
+		apply_exported_styles()
 
 
 func _apply_window_size() -> void:
@@ -1173,7 +1173,7 @@ func _on_tab_button_pressed(index: int) -> void:
 	# Same reasoning as select_tab() above -- don't repaint hand-styled tab buttons on click when
 	# the scene was told to leave styling alone.
 	if apply_exported_styles_on_ready:
-		_apply_tabs_style()
+		apply_exported_styles()
 
 
 func _on_rewards_pressed() -> void:
