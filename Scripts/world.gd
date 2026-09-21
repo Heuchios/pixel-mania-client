@@ -1556,11 +1556,11 @@ func setup_item_database():
 				back_textures[item_id] = back_texture
 			elif item_id == "legendary_wings":
 				var fallback_back_paths = [
-					"res://Assets/player/back_item/legendary_wings/legendary_wings_idle1.png",
-					"res://Assets/player/back_item/legendary_wings/legendary_wings_idle2.png",
-					"res://Assets/player/back_item/legendary_wings/legendary_wings_jump1.png",
-					"res://Assets/player/back_item/legendary_wings/legendary_wings_jump2.png",
-					"res://Assets/player/back_item/legendary_wings/legendary_wings_jump3.png"
+					"res://Assets/player/back_item/dev_wings/dev_wings_idle1.png",
+					"res://Assets/player/back_item/dev_wings/dev_wings_idle2.png",
+					"res://Assets/player/back_item/dev_wings/dev_wings_jump1.png",
+					"res://Assets/player/back_item/dev_wings/dev_wings_jump2.png",
+					"res://Assets/player/back_item/dev_wings/dev_wings_jump3.png"
 				]
 
 				for fallback_path in fallback_back_paths:

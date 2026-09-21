@@ -108,7 +108,7 @@ const COLLISION_TRACE_EDITOR_AUTO_ENABLE := true
 # Back item jump rules:
 # - No back item = normal single jump
 # - Any normal back item = 2 total jumps
-# - Legendary Wings = infinite jumps
+# - Dev Wings = infinite jumps (legacy saved item ID: legendary_wings)
 const LEGENDARY_WINGS_ID = "legendary_wings"
 const WORLD_COLLISION_LAYER_MASK := 1
 const PLAYER_COLLISION_LAYER_MASK := 2

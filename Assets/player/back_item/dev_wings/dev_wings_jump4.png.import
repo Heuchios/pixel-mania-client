@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hqnefu4e8vgy"
-path="res://.godot/imported/legendary_wings_jump2.png-728819a065a83d2f27b01fd14f1ba701.ctex"
+uid="uid://b3ckhbh1l617h"
+path="res://.godot/imported/dev_wings_jump4.png-ed540fa30289820d109fd435af29c8d6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/player/back_item/legendary_wings/legendary_wings_jump2.png"
-dest_files=["res://.godot/imported/legendary_wings_jump2.png-728819a065a83d2f27b01fd14f1ba701.ctex"]
+source_file="res://Assets/player/back_item/dev_wings/dev_wings_jump4.png"
+dest_files=["res://.godot/imported/dev_wings_jump4.png-ed540fa30289820d109fd435af29c8d6.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bpmlegidle1aa"
-path="res://.godot/imported/legendary_wings_idle1.png-d5aa2a0178d999d440f3c23f7ecf197c.ctex"
+uid="uid://ddaf3gbvqiv2a"
+path="res://.godot/imported/dev_wings_idle2.png-4cbf40953eab474cd3963cbde5897c0d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/player/back_item/legendary_wings/legendary_wings_idle1.png"
-dest_files=["res://.godot/imported/legendary_wings_idle1.png-d5aa2a0178d999d440f3c23f7ecf197c.ctex"]
+source_file="res://Assets/player/back_item/dev_wings/dev_wings_idle2.png"
+dest_files=["res://.godot/imported/dev_wings_idle2.png-4cbf40953eab474cd3963cbde5897c0d.ctex"]
 
 [params]
 

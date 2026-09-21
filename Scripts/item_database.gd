@@ -11413,19 +11413,21 @@ const ITEMS = {
 	# ============================================================
 "legendary_wings": {
 		"category": "back",
-		"display_name": "Legendary Wings",
+		"display_name": "Dev Wings",
 		"rarity": "legendary",
-		"texture": "res://Assets/player/back_item/legendary_wings/legendary_wings_idle1.png",
+		"texture": "res://Assets/player/back_item/dev_wings/dev_wings_idle1.png",
+		"inventory_icon": "res://Assets/player/back_item/dev_wings/dev_wings_preview.png",
 		"starting_count": 0,
 		"equipable": true,
 
 		"equipment_slot": "back",
 		"back_mode": "default_slot",
-		"sprite_folder": "res://Assets/player/back_item/legendary_wings/",
-		"idle_sprite": "legendary_wings_idle1.png",
-		"idle_frames": ["legendary_wings_idle1.png", "legendary_wings_idle2.png"],
-		"flap_frames": ["legendary_wings_jump1.png", "legendary_wings_jump2.png", "legendary_wings_jump3.png"],
-		"flap_frame_durations": [1.0, 1.0, 1.0],
+		"sprite_folder": "res://Assets/player/back_item/dev_wings/",
+		"idle_sprite": "dev_wings_idle1.png",
+		"idle_frames": ["dev_wings_idle1.png", "dev_wings_idle2.png", "dev_wings_idle3.png", "dev_wings_idle4.png"],
+		"jump_frames": ["dev_wings_jump1.png", "dev_wings_jump2.png", "dev_wings_jump3.png", "dev_wings_jump4.png", "dev_wings_jump3.png", "dev_wings_jump2.png", "dev_wings_jump1.png"],
+		"flap_frames": ["dev_wings_jump1.png", "dev_wings_jump2.png", "dev_wings_jump3.png", "dev_wings_jump4.png", "dev_wings_jump3.png", "dev_wings_jump2.png", "dev_wings_jump1.png"],
+		"flap_frame_durations": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
 		"flap_animation": true,
 		"flap_animation_loop": false,
 		"flap_pose_hold_time": 0.75,
@@ -12188,6 +12190,22 @@ const ITEMS = {
 		"slot_scale": 1.0,
 		"slot_z_index": 3,
 		"order": 209
+	},
+
+"police_hat": {
+		"category": "hat",
+		"display_name": "Police Hat",
+		"rarity": "common",
+		"texture": "police_hat",
+		"inventory_icon": "police_hat_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"order": 212
 	},
 
 "blue_baseball_cap": {
@@ -13234,6 +13252,28 @@ const ITEMS = {
 		"order": 218
 	},
 
+"police_shirt": {
+		"category": "shirt",
+		"display_name": "Police Shirt",
+		"rarity": "common",
+		"texture": "police_shirt_body",
+		"shirt_body_texture": "police_shirt_body",
+		"inventory_icon": "police_shirt_icon",
+		"arm_texture": "police_shirt_arm",
+		"left_arm_texture": "police_shirt_arm_left",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [0, 0],
+		"right_arm_offset": [-7, -5],
+		"left_arm_offset": [6, -5],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"arm_z_index": 1,
+		"order": 221
+	},
+
 "black_suit": {
 		"category": "shirt",
 		"display_name": "Black Suit",
@@ -13332,6 +13372,22 @@ const ITEMS = {
 		"slot_z_index": 1,
 		"arm_z_index": 1,
 		"order": 904
+	},
+
+"police_pants": {
+		"category": "pants",
+		"display_name": "Police Pants",
+		"rarity": "common",
+		"texture": "police_pants",
+		"inventory_icon": "police_pants_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "pants",
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 1,
+		"order": 236
 	},
 
 "basic_black_pants": {

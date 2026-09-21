@@ -1400,11 +1400,11 @@ func load_back_item_visual_data(back_item: String):
 
 	# Helpful fallback for the current project folder.
 	if back_item == "legendary_wings":
-		idle_candidates.append("res://Assets/player/back_item/legendary_wings/legendary_wings_idle1.png")
-		idle_candidates.append("res://Assets/player/back_item/legendary_wings/legendary_wings_idle2.png")
-		idle_candidates.append("res://Assets/player/back_item/legendary_wings/legendary_wings_jump1.png")
-		idle_candidates.append("res://Assets/player/back_item/legendary_wings/legendary_wings_jump2.png")
-		idle_candidates.append("res://Assets/player/back_item/legendary_wings/legendary_wings_jump3.png")
+		idle_candidates.append("res://Assets/player/back_item/dev_wings/dev_wings_idle1.png")
+		idle_candidates.append("res://Assets/player/back_item/dev_wings/dev_wings_idle2.png")
+		idle_candidates.append("res://Assets/player/back_item/dev_wings/dev_wings_jump1.png")
+		idle_candidates.append("res://Assets/player/back_item/dev_wings/dev_wings_jump2.png")
+		idle_candidates.append("res://Assets/player/back_item/dev_wings/dev_wings_jump3.png")
 
 	back_idle_texture = load_first_existing_texture(idle_candidates)
 
