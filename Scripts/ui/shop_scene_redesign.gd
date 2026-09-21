@@ -1,5 +1,7 @@
 extends Control
 
+const ScrollTouchGuard = preload("res://Scripts/touch_input_guard.gd")
+
 ## Growtopia-style Shop layout - the live, wired-up Shop scene.
 ##
 ## Visual assets live in the scene; responsive card geometry is fitted below.
@@ -431,6 +433,8 @@ func _set_item_scroll_from_handle_top(handle_top: float) -> void:
 
 
 func _handle_item_scroll_pointer_event(event: InputEvent, center_handle_on_press: bool) -> void:
+	if ScrollTouchGuard.is_emulated_mouse_from_touch(event):
+		return
 	if _item_scroll_maximum() <= 0.5:
 		return
 
@@ -457,6 +461,8 @@ func _handle_item_scroll_pointer_event(event: InputEvent, center_handle_on_press
 
 	if event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
+		if _item_scroll_handle_dragging and touch.index != _item_scroll_handle_touch_index:
+			return
 		if touch.pressed:
 			_item_scroll_handle_dragging = true
 			_item_scroll_handle_touch_index = touch.index
@@ -478,11 +484,13 @@ func _handle_item_scroll_pointer_event(event: InputEvent, center_handle_on_press
 
 
 func _on_item_scroll_track_gui_input(event: InputEvent) -> void:
-	_handle_item_scroll_pointer_event(event, true)
+	# gui_input positions are local; the shared handler expects viewport coordinates.
+	_handle_item_scroll_pointer_event(event.xformed_by(item_scroll_track.get_global_transform_with_canvas()), true)
 
 
 func _on_item_scroll_handle_gui_input(event: InputEvent) -> void:
-	_handle_item_scroll_pointer_event(event, false)
+	# gui_input positions are local; the shared handler expects viewport coordinates.
+	_handle_item_scroll_pointer_event(event.xformed_by(item_scroll_handle.get_global_transform_with_canvas()), false)
 
 
 func _on_item_scroll_changed(_value: float) -> void:

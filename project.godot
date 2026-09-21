@@ -18,6 +18,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+MobileScrollPolicy="*res://Scripts/ui/mobile_scroll_policy.gd"
+
 MobileUIScale="*res://Scripts/ui/mobile_ui_scale.gd"
 
 

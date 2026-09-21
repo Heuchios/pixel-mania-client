@@ -1,6 +1,8 @@
 extends Control
 class_name InventoryScene
 
+const ScrollTouchGuard = preload("res://Scripts/touch_input_guard.gd")
+
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 const ColourCycleModulation = preload("res://Scripts/colour_cycle_modulation.gd")
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
@@ -1590,6 +1592,8 @@ func _selected_payload_with_amount() -> Dictionary:
 
 
 func _setup_inventory_scroll_slider() -> void:
+	if inventory_scroll != null:
+		inventory_scroll.set_meta("custom_touch_scroll", true)
 	if inventory_scroll == null or inventory_scroll_slider == null or inventory_scroll_track == null or inventory_scroll_handle == null:
 		return
 
@@ -1725,6 +1729,8 @@ func _set_inventory_scroll_from_handle_top(handle_top: float) -> void:
 
 
 func _handle_inventory_scroll_pointer_event(event: InputEvent, center_handle_on_press: bool) -> void:
+	if ScrollTouchGuard.is_emulated_mouse_from_touch(event):
+		return
 	if _inventory_scroll_maximum() <= 0.5 or inventory_scroll_handle == null:
 		return
 
@@ -1752,6 +1758,8 @@ func _handle_inventory_scroll_pointer_event(event: InputEvent, center_handle_on_
 
 	if event is InputEventScreenTouch:
 		var touch: InputEventScreenTouch = event as InputEventScreenTouch
+		if inventory_scroll_handle_dragging and touch.index != inventory_scroll_handle_touch_index:
+			return
 		if touch.pressed:
 			_clear_inventory_scroll_touch()
 			inventory_scroll_handle_dragging = true
@@ -1774,11 +1782,13 @@ func _handle_inventory_scroll_pointer_event(event: InputEvent, center_handle_on_
 
 
 func _on_inventory_scroll_track_gui_input(event: InputEvent) -> void:
-	_handle_inventory_scroll_pointer_event(event, true)
+	# gui_input positions are local; the shared handler expects viewport coordinates.
+	_handle_inventory_scroll_pointer_event(event.xformed_by(inventory_scroll_track.get_global_transform_with_canvas()), true)
 
 
 func _on_inventory_scroll_handle_gui_input(event: InputEvent) -> void:
-	_handle_inventory_scroll_pointer_event(event, false)
+	# gui_input positions are local; the shared handler expects viewport coordinates.
+	_handle_inventory_scroll_pointer_event(event.xformed_by(inventory_scroll_handle.get_global_transform_with_canvas()), false)
 
 
 func _on_inventory_scroll_changed(_value: float) -> void:
