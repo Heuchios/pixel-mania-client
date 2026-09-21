@@ -987,15 +987,17 @@ func request_inventory_hud_refresh(force: bool = false, refresh_hotbar: bool = t
 func process_queued_inventory_hud_refresh() -> void:
 	if not inventory_hud_refresh_queued:
 		return
+	# The six-slot hotbar should reflect inventory changes on the next frame.
+	# Keep the heavier/shared HUD refresh throttle for the remaining work.
+	if inventory_hud_refresh_needs_hotbar:
+		inventory_hud_refresh_needs_hotbar = false
+		refresh_hotbar_live()
 	var now_ms: int = Time.get_ticks_msec()
 	if not inventory_hud_refresh_force and inventory_last_hud_refresh_ms > 0 and now_ms - inventory_last_hud_refresh_ms < PICKUP_HUD_REFRESH_INTERVAL_MS:
 		return
 	inventory_hud_refresh_queued = false
 	inventory_hud_refresh_force = false
 	inventory_last_hud_refresh_ms = now_ms
-	if inventory_hud_refresh_needs_hotbar:
-		refresh_hotbar_live()
-	inventory_hud_refresh_needs_hotbar = false
 	if inventory_hud_refresh_needs_gem_counter:
 		update_gem_counter()
 	inventory_hud_refresh_needs_gem_counter = false
@@ -2661,7 +2663,7 @@ func refresh_hotbar_live() -> void:
 		if str(slot.get_meta("item_type", "")) != item_type or str(slot.get_meta("category", "")) != category:
 			update_hotbar()
 			return
-		if category != "tool" and get_item_count(item_type, category) <= 0:
+		if not is_reserved_hotbar_tool(item_type, category) and get_item_count(item_type, category) <= 0:
 			update_hotbar()
 			return
 		var is_selected: bool = world.selected_item_category == category and world.selected_item_type == item_type
@@ -6930,6 +6932,9 @@ func should_inventory_item_be_visible(item_type: String, category: String) -> bo
 
 
 func refresh_inventory_item_live(item_type: String, category: String) -> void:
+	# HUD updates must not depend on whether the inventory drawer exists, is
+	# open, or has suspended its own layout refresh during a bulk operation.
+	request_inventory_hud_refresh(false, is_hotbar_item_changed(item_type, category), category == "currency" or item_type == "gem")
 	if inventory_window_refresh_suspended:
 		inventory_window_refresh_pending = true
 		return
