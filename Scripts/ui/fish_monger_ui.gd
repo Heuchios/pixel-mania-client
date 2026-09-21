@@ -138,7 +138,7 @@ func build_ui():
 	fish_scroll.add_child(fish_rows_root)
 	empty_label = _text(panel, "EmptyState", "No fish to sell yet.\nCast a line and bring back your catch!", Rect2(248, 322, 748, 100), 18, PixelUIStyle.TEXT_SOFT)
 	empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_text(panel, "Hint", "Choose a quantity, then sell for the total shown.", Rect2(244, 615, 764, 28), 14, PixelUIStyle.TEXT_SOFT)
+	_text(panel, "Hint", "Estimates shown. Sales use the current market price.", Rect2(244, 615, 764, 28), 14, PixelUIStyle.TEXT_SOFT)
 	call_deferred("apply_fish_monger_scrollbar_style")
 	update_panel_position()
 
@@ -527,7 +527,7 @@ func update_header():
 		gem_label.text = world.get_currency_display_text("gem")
 
 	if total_value_label != null:
-		total_value_label.text = "Total fish value: " + format_gem_amount(get_total_sellable_fish_value()) + " gems"
+		total_value_label.text = "Estimated value: " + format_gem_amount(get_total_sellable_fish_value()) + " gems"
 
 
 func refresh():
@@ -554,8 +554,8 @@ func refresh():
 
 	var pending = is_sale_pending()
 	if sell_all_button != null:
-		sell_all_button.disabled = pending or entries.is_empty() or get_total_sellable_fish_value_from_entries(entries) <= 0
-		sell_all_button.tooltip_text = "Sell all fish for " + format_gem_amount(get_total_sellable_fish_value_from_entries(entries)) + " gems"
+		sell_all_button.disabled = pending or entries.is_empty()
+		sell_all_button.tooltip_text = "Sell all fish at the current market price. Estimate: " + format_gem_amount(get_total_sellable_fish_value_from_entries(entries)) + " gems"
 
 	if empty_label != null:
 		empty_label.visible = entries.is_empty()
@@ -703,7 +703,7 @@ func update_amount_summary(amount_input: LineEdit, total_label: Label, sell_butt
 	var total_gems: int = calculate_fish_sale_value(amount, value_per_fish)
 
 	if total_label != null:
-		total_label.text = "Total: " + format_gem_amount(total_gems) + " gems"
+		total_label.text = ("Est: " + format_gem_amount(total_gems) + " gems") if value_per_fish > 0.0 else "Current price at sale"
 
 	if selected_label != null:
 		selected_label.text = "Selected: " + format_fish_count(amount)
@@ -714,7 +714,7 @@ func update_amount_summary(amount_input: LineEdit, total_label: Label, sell_butt
 		selected_fill.size = Vector2(max(1.0, max_width * fill_ratio), selected_fill.size.y)
 
 	if sell_button != null:
-		sell_button.disabled = pending or owned_count <= 0.0 or value_per_fish <= 0 or amount <= 0.0 or amount > owned_count or total_gems <= 0
+		sell_button.disabled = pending or owned_count <= 0.0 or amount <= 0.0 or amount > owned_count
 
 
 func sanitize_amount_input(amount_input: LineEdit, total_label: Label, sell_button: Button, owned_count: float, value_per_fish: float, pending: bool, selected_label: Label = null, selected_fill: Panel = null) -> float:

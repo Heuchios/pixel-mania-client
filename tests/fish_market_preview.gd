@@ -45,6 +45,12 @@ func run():
 	row.get_node("AmountInput").text = "1.7"
 	ui.refresh()
 	assert(ui.fish_rows_root.get_child(0).get_node("AmountInput").text == "1.7")
+	world.fish_monger_manager.entries[0]["sell_value"] = 0
+	ui.refresh()
+	assert(not ui.fish_rows_root.get_child(0).get_node("SellButton").disabled)
+	assert(not ui.sell_all_button.disabled)
+	world.fish_monger_manager.entries[0]["sell_value"] = 2
+	ui.refresh()
 	viewport.size = Vector2i(800,600)
 	await create_timer(0.3).timeout
 	assert(ui.panel.position.x >= 0 and ui.panel.position.y >= 0)

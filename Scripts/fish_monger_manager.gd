@@ -115,12 +115,6 @@ func get_total_sellable_fish_value() -> int:
 		numerator += get_fish_inventory_count(item_id) * int(market_prices.get(item_id, {}).get("price_cents", 0))
 	return ceili(numerator / 1000.0)
 
-func _expected_prices() -> Dictionary:
-	var prices: Dictionary = {}
-	for item_id in market_prices:
-		prices[item_id] = int(market_prices[item_id].get("price_cents", 0))
-	return prices
-
 func sell_fish(item_id: String, weight: float) -> bool:
 	if pending_transaction or not is_valid_fish_item(item_id):
 		return false
@@ -135,12 +129,11 @@ func sell_all_fish() -> bool:
 func _request_sale(payload: Dictionary) -> bool:
 	if pending_transaction:
 		return false
-	if not has_server_inventory_authority() or market_prices.is_empty():
-		world.show_notification("Connect to the fish market and wait for prices.")
+	if not has_server_inventory_authority():
+		world.show_notification("Connect to the fish market to sell.")
 		request_prices()
 		return false
 	pending_transaction = true
-	payload.expected_prices = _expected_prices()
 	var sent: bool = _send(payload)
 	if not sent:
 		pending_transaction = false
