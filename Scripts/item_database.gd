@@ -12097,6 +12097,33 @@ const ITEMS = {
 		"order": 210
 	},
 
+"flaming_skull": {
+		"category": "hat",
+		"display_name": "Flaming Skull",
+		"rarity": "epic",
+		"texture": "flaming_skull_1",
+		"inventory_icon": "flaming_skull_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"animation_fps": 5.0,
+		"hat_animations": {
+			"idle": {
+				"frames": ["flaming_skull_1", "flaming_skull_2", "flaming_skull_3", "flaming_skull_4"],
+				"fps": 5.0,
+				"loop": true
+			}
+		},
+		"order": 211
+	},
+
 "octopus_hat": {
 		"category": "hat",
 		"display_name": "Octopus Hat",

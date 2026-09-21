@@ -6,6 +6,11 @@
   "offset": [0, 0],
   "filter_clip": true,
   "frames": {
+	"flaming_skull_icon": [1568, 128, 32, 32],
+	"flaming_skull_1": [1600, 128, 32, 32],
+	"flaming_skull_2": [1632, 128, 32, 32],
+	"flaming_skull_3": [1664, 128, 32, 32],
+	"flaming_skull_4": [1696, 128, 32, 32],
 	"octopus_hat_icon": [544, 672, 32, 32],
 	"octopus_hat_1": [544, 672, 32, 32],
 	"octopus_hat_2": [576, 672, 32, 32],
