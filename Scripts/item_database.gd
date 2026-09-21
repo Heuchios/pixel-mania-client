@@ -12097,6 +12097,35 @@ const ITEMS = {
 		"order": 210
 	},
 
+"octopus_hat": {
+		"category": "hat",
+		"display_name": "Octopus Hat",
+		"description": "A lively octopus caught while fishing. A 0.1% catch chance with any rod and lure.",
+		"rarity": "legendary",
+		"texture": "octopus_hat_1",
+		"inventory_icon": "octopus_hat_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"fishing_reward": true,
+		"slot_offset": [0, 0],
+		"slot_scale": 1.0,
+		"slot_z_index": 3,
+		"animation_fps": 5.0,
+		"hat_animations": {
+			"idle": {
+				"frames": ["octopus_hat_1", "octopus_hat_2", "octopus_hat_3", "octopus_hat_4", "octopus_hat_5"],
+				"fps": 5.0,
+				"loop": true
+			}
+		},
+		"order": 210
+	},
+
 "neptune_crown": {
 		"category": "hat",
 		"display_name": "Neptune Crown",

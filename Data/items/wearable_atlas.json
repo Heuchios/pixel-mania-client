@@ -6,6 +6,12 @@
   "offset": [0, 0],
   "filter_clip": true,
   "frames": {
+	"octopus_hat_icon": [544, 672, 32, 32],
+	"octopus_hat_1": [544, 672, 32, 32],
+	"octopus_hat_2": [576, 672, 32, 32],
+	"octopus_hat_3": [608, 672, 32, 32],
+	"octopus_hat_4": [640, 672, 32, 32],
+	"octopus_hat_5": [672, 672, 32, 32],
 	"basic_blue_shirt_body": [32, 0, 32, 32],
 	"basic_blue_shirt_icon": [0, 0, 32, 32],
 	"basic_blue_shirt_arm": [160, 0, 32, 32],
