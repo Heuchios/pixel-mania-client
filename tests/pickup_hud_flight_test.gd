@@ -13,8 +13,8 @@ class WorldFixture extends BaseFixture.WorldFixture:
 	var block_textures: Dictionary = {}
 	var hotbar_items: Array = []
 	var hotbar_item_categories: Array = []
-	func play_drop_pickup_hud_flight(origin: Vector2, id: String, category: String) -> bool:
-		return inventory_manager.play_pickup_flight(origin, id, category)
+	func play_drop_pickup_hud_flight(origin: Vector2, id: String, category: String, texture: Texture2D = null) -> bool:
+		return inventory_manager.play_pickup_flight(origin, id, category, texture)
 
 func _initialize():
 	call_deferred("run")
@@ -56,6 +56,11 @@ func run():
 	var drops = load("res://Scripts/drop_manager.gd").new()
 	world.add_child(drops)
 	drops.world = world
+	for variant in [[1, 1], [6, 2], [16, 3], [26, 4]]:
+		var texture: AtlasTexture = drops._get_gem_drop_variant_texture_for_amount(variant[0])
+		assert(texture.atlas.resource_path == "res://Assets/items/material.png")
+		assert(texture.region == Rect2(variant[1] * 32, 0, 32, 32))
+		assert(not texture.get_image().is_invisible())
 	var pending := Node2D.new()
 	world.add_child(pending)
 	pending.position = Vector2(320, 280)
@@ -69,10 +74,11 @@ func run():
 	hidden_drop.modulate.a = 0.1
 	hidden_drop.scale = Vector2(0.15, 0.15)
 	root.canvas_transform = Transform2D(0.0, Vector2(-40, -25))
-	drops.finish_drop_pickup_vacuum_node({"node": hidden_drop, "item_type": "gem", "item_category": "currency", "pickup_vacuum_start_position": Vector2(320, 280)})
+	drops.finish_drop_pickup_vacuum_node({"node": hidden_drop, "item_type": "gem", "item_category": "currency", "amount": 20, "pickup_vacuum_start_position": Vector2(320, 280)})
 	assert(manager.pickup_flights.size() == 1)
 	var flight = manager.pickup_flights[0]
 	assert(flight.target == gem)
+	assert(flight.icon.texture is AtlasTexture and flight.icon.texture.region == Rect2(96, 0, 32, 32), "Gem flight must use the atlas denomination, not the legacy counter icon")
 	assert(flight.start_screen == Vector2(280, 255))
 	assert(flight.icon.visible and flight.icon.modulate.a == 1.0)
 	assert(flight.z_index > 80, "Pickup draws above the gem HUD")

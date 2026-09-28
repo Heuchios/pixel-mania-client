@@ -3164,12 +3164,17 @@ func control_screen_center(control_node) -> Vector2:
 	return screen_center
 
 
-func play_pickup_flight(origin_world: Vector2, item_type: String, category: String) -> bool:
+func play_pickup_flight(origin_world: Vector2, item_type: String, category: String, pickup_texture: Texture2D = null) -> bool:
 	var destination := get_pickup_target_control(item_type, category)
 	var hud = get_hud_layer()
 	if destination == null or hud == null:
 		return false
-	var texture: Texture2D = world.get_inventory_icon_texture(item_type, category)
+	var texture: Texture2D = pickup_texture
+	if texture == null:
+		if is_gem_pickup_target(item_type, category):
+			texture = AtlasTextureFactory.load_texture({"atlas": "res://Assets/items/material.png", "cell": [1, 0], "cell_size": [32, 32]})
+		else:
+			texture = world.get_inventory_icon_texture(item_type, category)
 	if texture == null:
 		return false
 	pickup_flights = pickup_flights.filter(func(flight): return is_instance_valid(flight) and not flight.is_queued_for_deletion())

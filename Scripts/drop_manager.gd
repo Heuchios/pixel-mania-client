@@ -51,11 +51,11 @@ const GEM_DROP_VISUAL_STACK_SIZE := 40
 const GEM_DROP_SMALL_MAX := 5
 const GEM_DROP_MEDIUM_MAX := 15
 const GEM_DROP_LARGE_MAX := 25
-const GEM_DROP_VARIANT_TEXTURE_PATHS := {
-	"small": "res://Assets/currency/small_gem.png",
-	"medium": "res://Assets/currency/medium_gem.png",
-	"large": "res://Assets/currency/large_gem.png",
-	"huge": "res://Assets/currency/huge_gem.png"
+const GEM_DROP_VARIANT_ATLAS_CELLS := {
+	"small": [1, 0],
+	"medium": [2, 0],
+	"large": [3, 0],
+	"huge": [4, 0]
 }
 const GEM_DROP_BASE_OFFSETS := [
 	Vector2.ZERO,
@@ -1729,10 +1729,11 @@ func _get_gem_drop_variant_texture_for_amount(amount: int) -> Texture2D:
 		if cached is Texture2D:
 			return cached
 
-	var variant_path := str(GEM_DROP_VARIANT_TEXTURE_PATHS.get(variant_key, ""))
-	var loaded_texture: Texture2D = null
-	if variant_path != "":
-		loaded_texture = load(variant_path) as Texture2D
+	var loaded_texture: Texture2D = AtlasTextureFactory.load_texture({
+		"atlas": "res://Assets/items/material.png",
+		"cell": GEM_DROP_VARIANT_ATLAS_CELLS[variant_key],
+		"cell_size": [32, 32]
+	})
 	if loaded_texture != null:
 		gem_drop_variant_textures[variant_key] = loaded_texture
 		return loaded_texture
@@ -3071,10 +3072,16 @@ func finish_drop_pickup_vacuum_node(drop_data: Dictionary, target_position: Vect
 	tween.tween_callback(_finish_drop_pickup_vacuum.bind(drop_node, item_type, item_category, inventory_feedback))
 
 
-func play_confirmed_pickup_hud_flight(drop_data: Dictionary) -> bool:
+func play_confirmed_pickup_hud_flight(drop_data: Dictionary, picked_amount: float = -1.0) -> bool:
 	if world == null or not world.has_method("play_drop_pickup_hud_flight"):
 		return false
-	return world.play_drop_pickup_hud_flight(get_drop_world_position_for_pickup(drop_data), str(drop_data.get("item_type", "")), str(drop_data.get("item_category", "")))
+	var item_type := str(drop_data.get("item_type", ""))
+	var category := str(drop_data.get("item_category", ""))
+	var texture: Texture2D = null
+	if _is_gem_drop_item(item_type, category):
+		var amount := picked_amount if picked_amount >= 0.0 else float(drop_data.get("amount", 1.0))
+		texture = _get_gem_drop_variant_texture_for_amount(int(amount))
+	return world.play_drop_pickup_hud_flight(get_drop_world_position_for_pickup(drop_data), item_type, category, texture)
 
 
 func _animate_confirmed_pickup(progress: float, drop_node: Node2D, start: Vector2, target: Vector2, start_scale: Vector2, start_alpha: float, start_rotation: float) -> void:
@@ -4177,7 +4184,7 @@ func remove_drop_by_id(drop_id: String, finish_vacuum: bool = false, force_entir
 				unregister_drop_id(indexed_drop, clean_id)
 				if finish_vacuum:
 					if can_play_drop_pickup_finish_visual():
-						play_confirmed_pickup_hud_flight(indexed_drop)
+						play_confirmed_pickup_hud_flight(indexed_drop, alias_amount)
 					restore_drop_pickup_visual(indexed_drop)
 				update_drop_count_label(indexed_drop)
 				return true
@@ -4750,7 +4757,7 @@ func apply_network_item_drop_update(data: Dictionary):
 		return
 
 	if is_local_pickup_response and amount < previous_amount and can_play_drop_pickup_finish_visual():
-		play_confirmed_pickup_hud_flight(drop_data)
+		play_confirmed_pickup_hud_flight(drop_data, previous_amount - amount)
 	drop_data["amount"] = amount
 	if is_stacked_alias_update:
 		if alias_remote_amount <= 0:
