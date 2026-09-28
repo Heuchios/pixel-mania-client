@@ -278,11 +278,16 @@ func is_moderator_account_active() -> bool:
 
 
 func is_player_command(command: String) -> bool:
-	return ["where", "warp", "trade", "bc", "player", "profile", "pull"].has(command)
+	return ["where", "warp", "trade", "bc", "player", "profile", "pull", "honors", "top"].has(command)
 
 
 func execute_player_command(command: String, parts: Array):
 	match command:
+		"honors", "top":
+			var network = get_node_or_null("/root/NetworkManager")
+			if network == null or not network.send_chat_message("/" + " ".join(parts)):
+				respond("Connect to the server to view World Honors.")
+
 		"where":
 			command_where()
 
@@ -942,6 +947,7 @@ func build_give_world_command_text(give_world_data: Dictionary) -> String:
 
 func show_player_help():
 	respond("Player commands: /help, /where, /warp world_name, /player username, /trade player_name, /pull username, /bc message")
+	respond("World Honors: /honors [today|yesterday|overall] (or /top)")
 
 
 func show_moderator_help():
