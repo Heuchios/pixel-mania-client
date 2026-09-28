@@ -8,6 +8,7 @@ var ui = null
 var remote_state: Dictionary = {}
 var request_sequence := 0
 var frames := SpriteFrames.new()
+var seen_collection_effects: Dictionary = {}
 
 func setup(owner_world):
 	world = owner_world
@@ -19,6 +20,7 @@ func setup(owner_world):
 		frames.add_frame("on", Factory.load_texture({"atlas": "res://image.png", "cell": [x, 14], "cell_size": [32, 32]}))
 
 func reset():
+	seen_collection_effects.clear()
 	states.clear()
 	remote_state.clear()
 	for grid in visuals.keys():
@@ -41,11 +43,48 @@ func apply_state(data: Dictionary):
 		return
 	var grid := Vector2i(int(data.get("x", 0)), int(data.get("y", 0)))
 	states[grid] = data.duplicate(true)
+	states[grid].erase("collection_fx")
 	if not remote_state.is_empty() and remote_state.get("machine_id") == data.get("machine_id"):
-		remote_state = data.duplicate(true)
+		remote_state = states[grid].duplicate(true)
 	refresh_visual(grid)
+	play_collection_effect(grid, data)
 	if is_instance_valid(ui) and ui.visible and ui.current_grid == grid:
 		ui.apply_state(data, false)
+
+func play_collection_effect(grid: Vector2i, data: Dictionary):
+	var effect = data.get("collection_fx", null)
+	if not effect is Dictionary or not is_instance_valid(world.drop_manager):
+		return
+	var event_id := str(effect.get("event_id", ""))
+	if event_id == "" or seen_collection_effects.has(event_id):
+		return
+	seen_collection_effects[event_id] = true
+	if seen_collection_effects.size() > 512:
+		seen_collection_effects.erase(seen_collection_effects.keys()[0])
+	var machine: AnimatedSprite2D = visuals.get(grid)
+	if not is_instance_valid(machine) or int(effect.get("amount", 0)) <= 0:
+		return
+	var origin := Vector2(float(effect.get("x", NAN)), float(effect.get("y", NAN)))
+	if not origin.is_finite():
+		return
+	var id := str(data.get("item_id", ""))
+	var category := str(data.get("item_category", "block"))
+	var texture: Texture2D = world.get_inventory_icon_texture(id, category)
+	if texture == null:
+		return
+	# Cosmetic only: stock is already committed; no collectible drop is created.
+	var item := Sprite2D.new()
+	item.texture = texture
+	item.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	item.z_index = 40
+	var metrics: Dictionary = world.vending_preview_manager.get_texture_visible_metrics(texture)
+	var size: Vector2 = metrics.get("size", texture.get_size())
+	item.offset = metrics.get("offset", Vector2.ZERO)
+	item.scale = Vector2.ONE * (20.0 / maxf(1.0, maxf(size.x, size.y)))
+	machine.add_child(item)
+	item.global_position = world.to_global(origin)
+	var target: Vector2 = machine.get_node("SelectedItem").global_position
+	world.drop_manager.finish_drop_pickup_vacuum_node({"node": item, "item_type": id, "item_category": category}, target, false)
 
 func refresh_visual(grid: Vector2i):
 	if not world.blocks.has(grid) or str(world.blocks[grid].get("type", "")) != "magnet_machine":

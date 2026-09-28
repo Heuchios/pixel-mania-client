@@ -8,8 +8,8 @@ const DROP_PICKUP_SCAN_INTERVAL := 1.0 / 30.0
 const DROP_MAX_PICKUPS_PER_SCAN := 80
 const DROP_PICKUP_REQUEST_TIMEOUT := 3.0
 const DROP_PICKUP_REQUEST_MATCH_WINDOW_SECONDS := 2.0
-const DROP_PICKUP_VACUUM_DURATION := 1.20
-const DROP_PICKUP_VACUUM_FINISH_DURATION := 0.18
+const DROP_PICKUP_VACUUM_DURATION := 1.80
+const DROP_PICKUP_VACUUM_FINISH_DURATION := 0.90
 const DROP_PICKUP_VACUUM_ARC_HEIGHT := 24.0
 const DROP_PICKUP_VACUUM_TARGET_OFFSET := Vector2(0.0, -12.0)
 const DROP_PICKUP_VACUUM_START_POP_SCALE := 1.12
@@ -3047,7 +3047,7 @@ func can_update_drop_pickup_vacuum_visual() -> bool:
 	return true
 
 
-func finish_drop_pickup_vacuum_node(drop_data: Dictionary, target_position: Vector2 = Vector2(1.0e20, 1.0e20)) -> void:
+func finish_drop_pickup_vacuum_node(drop_data: Dictionary, target_position: Vector2 = Vector2(1.0e20, 1.0e20), inventory_feedback: bool = true) -> void:
 	var drop_node = drop_data.get("node", null)
 	if not is_instance_valid(drop_node):
 		return
@@ -3069,15 +3069,20 @@ func finish_drop_pickup_vacuum_node(drop_data: Dictionary, target_position: Vect
 	if resolved_category != "":
 		item_category = resolved_category
 	var tween = drop_node.create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(drop_node, "global_position", final_target, DROP_PICKUP_VACUUM_FINISH_DURATION).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(drop_node, "scale", Vector2(0.30, 0.30), DROP_PICKUP_VACUUM_FINISH_DURATION).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(drop_node, "modulate:a", 0.0, DROP_PICKUP_VACUUM_FINISH_DURATION).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-	tween.chain().tween_callback(Callable(self, "_finish_drop_pickup_vacuum").bind(drop_node, item_type, item_category))
+	tween.tween_method(_animate_confirmed_pickup.bind(drop_node, drop_node.global_position, final_target, drop_node.scale, drop_node.modulate.a, drop_node.rotation), 0.0, 1.0, DROP_PICKUP_VACUUM_FINISH_DURATION)
+	tween.tween_callback(_finish_drop_pickup_vacuum.bind(drop_node, item_type, item_category, inventory_feedback))
 
 
-func _finish_drop_pickup_vacuum(drop_node, item_type: String, item_category: String) -> void:
-	if world != null and world.has_method("play_drop_pickup_target_feedback"):
+func _animate_confirmed_pickup(progress: float, drop_node: Node2D, start: Vector2, target: Vector2, start_scale: Vector2, start_alpha: float, start_rotation: float) -> void:
+	var eased := (1.0 - cos(progress * PI)) * 0.5
+	drop_node.global_position = start.lerp(target, eased) + Vector2(0, -sin(progress * PI) * DROP_PICKUP_VACUUM_ARC_HEIGHT)
+	drop_node.scale = start_scale * lerpf(1.0, 0.15, eased)
+	drop_node.modulate.a = start_alpha * (1.0 - progress * progress)
+	drop_node.rotation = start_rotation + deg_to_rad(DROP_PICKUP_VACUUM_SPIN_DEGREES) * eased
+
+
+func _finish_drop_pickup_vacuum(drop_node, item_type: String, item_category: String, inventory_feedback: bool = true) -> void:
+	if inventory_feedback and world != null and world.has_method("play_drop_pickup_target_feedback"):
 		world.play_drop_pickup_target_feedback(item_type, item_category)
 	if is_instance_valid(drop_node):
 		drop_node.queue_free()
