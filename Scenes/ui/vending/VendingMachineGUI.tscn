@@ -49,8 +49,12 @@ color = Color(0, 0, 0, 0.32)
 
 [node name="VendingPanel" type="Control" parent="." unique_id=816415001]
 anchors_preset = 0
-offset_right = 860.0
-offset_bottom = 560.0
+offset_right = 920.0
+offset_bottom = 650.0
+
+offset_left = 0.0
+
+offset_top = 0.0
 
 [node name="Shadow" type="NinePatchRect" parent="VendingPanel" unique_id=46079545]
 visible = false
@@ -68,47 +72,53 @@ patch_margin_bottom = 1
 
 [node name="PanelBack" type="NinePatchRect" parent="VendingPanel" unique_id=825121441]
 layout_mode = 0
-offset_right = 860.0
-offset_bottom = 560.0
+offset_right = 920.0
+offset_bottom = 650.0
 texture = ExtResource("3_81mko")
 patch_margin_left = 1
 patch_margin_top = 1
 patch_margin_right = 1
 patch_margin_bottom = 1
 
+offset_left = 0.0
+
+offset_top = 0.0
+
 [node name="TopBar" type="NinePatchRect" parent="VendingPanel" unique_id=1530077589]
-visible = false
+visible = true
 layout_mode = 0
-offset_left = 16.0
-offset_top = 12.0
-offset_right = 844.0
-offset_bottom = 88.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 900.0
+offset_bottom = 102.0
 texture = ExtResource("3_panel_inner")
 patch_margin_left = 1
 patch_margin_top = 1
 patch_margin_right = 1
 patch_margin_bottom = 1
 
+mouse_filter = 2
+
 [node name="Title" type="Label" parent="VendingPanel" unique_id=1348267238]
 layout_mode = 0
-offset_left = 34.0
-offset_top = 14.0
-offset_right = 544.0
-offset_bottom = 60.0
+offset_left = 36.0
+offset_top = 26.0
+offset_right = 566.0
+offset_bottom = 62.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 44
+theme_override_font_sizes/font_size = 26
 text = "VENDING MACHINE"
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
 [node name="StatusBack" type="NinePatchRect" parent="VendingPanel" unique_id=966520367]
 layout_mode = 0
-offset_left = 558.0
-offset_top = 18.0
-offset_right = 764.0
+offset_left = 640.0
+offset_top = 30.0
+offset_right = 820.0
 offset_bottom = 62.0
 texture = ExtResource("5_0ig1y")
 patch_margin_left = 3
@@ -118,25 +128,29 @@ patch_margin_bottom = 3
 
 [node name="Status" type="Label" parent="VendingPanel/StatusBack" unique_id=678808480]
 layout_mode = 0
-offset_right = 206.0
-offset_bottom = 41.0
+offset_right = 180.0
+offset_bottom = 32.0
 theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = ExtResource("6_status_style")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
+offset_left = 0.0
+
+offset_top = 0.0
+
 [node name="CloseButton" type="Button" parent="VendingPanel" unique_id=2017596064]
 custom_minimum_size = Vector2(48, 44)
 layout_mode = 0
-offset_left = 822.0
-offset_top = -24.0
-offset_right = 882.0
-offset_bottom = 36.0
+offset_left = 840.0
+offset_top = 28.0
+offset_right = 884.0
+offset_bottom = 72.0
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
@@ -151,26 +165,34 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="ItemCard" type="Control" parent="VendingPanel" unique_id=652172147]
 anchors_preset = 0
-offset_left = 30.0
-offset_top = 106.0
-offset_right = 388.0
-offset_bottom = 428.0
+offset_left = 20.0
+offset_top = 118.0
+offset_right = 350.0
+offset_bottom = 508.0
 
 [node name="ItemCardSkin" type="NinePatchRect" parent="VendingPanel/ItemCard" unique_id=432543719]
 layout_mode = 0
-offset_right = 358.0
-offset_bottom = 322.0
-patch_margin_left = 28
-patch_margin_top = 28
-patch_margin_right = 28
-patch_margin_bottom = 28
+offset_right = 330.0
+offset_bottom = 390.0
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
+
+offset_left = 0.0
+
+offset_top = 0.0
+
+texture = ExtResource("3_panel_inner")
+
+mouse_filter = 2
 
 [node name="ItemTitle" type="Label" parent="VendingPanel/ItemCard" unique_id=876198196]
 layout_mode = 0
-offset_left = 20.0
-offset_top = 14.0
-offset_right = 338.0
-offset_bottom = 45.0
+offset_left = 18.0
+offset_top = 16.0
+offset_right = 312.0
+offset_bottom = 46.0
 theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -185,10 +207,10 @@ metadata/pixelmania_font_role = "preserve"
 custom_minimum_size = Vector2(146, 122)
 clip_contents = true
 layout_mode = 0
-offset_left = 106.0
-offset_top = 59.0
-offset_right = 252.0
-offset_bottom = 205.0
+offset_left = 92.0
+offset_top = 58.0
+offset_right = 238.0
+offset_bottom = 204.0
 focus_mode = 0
 theme_override_styles/normal = ExtResource("11_slot_normal")
 theme_override_styles/pressed = ExtResource("11_slot_normal")
@@ -197,10 +219,10 @@ theme_override_styles/focus = ExtResource("10_focus_empty")
 
 [node name="Icon" type="TextureRect" parent="VendingPanel/ItemCard/ItemSlot" unique_id=1932345823]
 layout_mode = 0
-offset_left = 26.0
-offset_top = 29.0
-offset_right = 108.0
-offset_bottom = 111.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 126.0
+offset_bottom = 126.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
@@ -224,58 +246,104 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="Hint" type="Label" parent="VendingPanel/ItemCard" unique_id=672875610]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 264.0
-offset_right = 334.0
-offset_bottom = 312.0
+offset_left = 18.0
+offset_top = 220.0
+offset_right = 312.0
+offset_bottom = 318.0
 theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 16
 text = "Click the slot to choose item from your inventory."
 autowrap_mode = 2
 metadata/pixelmania_font_role = "preserve"
 horizontal_alignment = 1
 
+text_overrun_behavior = 3
+max_lines_visible = 4
+
 [node name="PriceCard" type="Control" parent="VendingPanel" unique_id=1714098435]
 anchors_preset = 0
-offset_left = 414.0
-offset_top = 106.0
-offset_right = 830.0
-offset_bottom = 428.0
+offset_left = 366.0
+offset_top = 118.0
+offset_right = 900.0
+offset_bottom = 508.0
 
 [node name="PriceCardSkin" type="NinePatchRect" parent="VendingPanel/PriceCard" unique_id=1587718735]
 layout_mode = 0
-offset_right = 416.0
-offset_bottom = 322.0
-patch_margin_left = 28
-patch_margin_top = 28
-patch_margin_right = 28
-patch_margin_bottom = 28
+offset_right = 534.0
+offset_bottom = 390.0
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
+
+offset_left = 0.0
+
+offset_top = 0.0
+
+texture = ExtResource("3_panel_inner")
+
+mouse_filter = 2
+
+[node name="SummaryFrame" type="NinePatchRect" parent="VendingPanel/PriceCard"]
+mouse_filter = 2
+offset_left = 20.0
+offset_top = 246.0
+offset_right = 514.0
+offset_bottom = 374.0
+texture = ExtResource("3_81mko")
+patch_margin_left = 1
+patch_margin_right = 1
+patch_margin_top = 1
+patch_margin_bottom = 1
+
+[node name="SummaryInset" type="NinePatchRect" parent="VendingPanel/PriceCard"]
+mouse_filter = 2
+offset_left = 23.0
+offset_top = 249.0
+offset_right = 511.0
+offset_bottom = 371.0
+texture = ExtResource("3_panel_inner")
+patch_margin_left = 1
+patch_margin_right = 1
+patch_margin_top = 1
+patch_margin_bottom = 1
+
+[node name="SummaryTitle" type="Label" parent="VendingPanel/PriceCard"]
+offset_left = 36.0
+offset_top = 260.0
+offset_right = 498.0
+offset_bottom = 284.0
+text = "SALE SUMMARY"
+metadata/pixelmania_font_size = 14
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SetupTitle" type="Label" parent="VendingPanel/PriceCard" unique_id=1045407624]
 layout_mode = 0
 offset_left = 20.0
-offset_top = 14.0
-offset_right = 396.0
-offset_bottom = 45.0
+offset_top = 16.0
+offset_right = 514.0
+offset_bottom = 46.0
 theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 20
 text = "SALE DETAILS"
-horizontal_alignment = 1
+horizontal_alignment = 0
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
 [node name="StockLabel" type="Label" parent="VendingPanel/PriceCard" unique_id=1825131492]
 layout_mode = 0
-offset_left = 26.0
-offset_top = 66.0
-offset_right = 216.0
-offset_bottom = 98.0
+offset_left = 20.0
+offset_top = 64.0
+offset_right = 258.0
+offset_bottom = 104.0
 theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -287,20 +355,20 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="StockSpin" type="SpinBox" parent="VendingPanel/PriceCard" unique_id=1125168074]
 layout_mode = 0
-offset_left = 205.0
-offset_top = 62.0
-offset_right = 390.0
-offset_bottom = 100.0
+offset_left = 270.0
+offset_top = 64.0
+offset_right = 514.0
+offset_bottom = 104.0
 min_value = 1.0
 max_value = 1.0
 value = 1.0
 
 [node name="PerSaleLabel" type="Label" parent="VendingPanel/PriceCard" unique_id=1576520946]
 layout_mode = 0
-offset_left = 26.0
-offset_top = 128.0
-offset_right = 216.0
-offset_bottom = 160.0
+offset_left = 20.0
+offset_top = 124.0
+offset_right = 258.0
+offset_bottom = 164.0
 theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -322,10 +390,10 @@ value = 1.0
 
 [node name="PriceLabel" type="Label" parent="VendingPanel/PriceCard" unique_id=1556772239]
 layout_mode = 0
-offset_left = 26.0
-offset_top = 190.0
-offset_right = 216.0
-offset_bottom = 222.0
+offset_left = 20.0
+offset_top = 184.0
+offset_right = 258.0
+offset_bottom = 224.0
 theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -337,9 +405,9 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceSpin" type="SpinBox" parent="VendingPanel/PriceCard" unique_id=1717215570]
 layout_mode = 0
-offset_left = 205.0
-offset_top = 186.0
-offset_right = 390.0
+offset_left = 270.0
+offset_top = 184.0
+offset_right = 514.0
 offset_bottom = 224.0
 min_value = 1.0
 max_value = 200.0
@@ -347,43 +415,45 @@ value = 1.0
 
 [node name="Formula" type="Label" parent="VendingPanel/PriceCard" unique_id=50391249]
 layout_mode = 0
-offset_left = 26.0
-offset_top = 238.0
-offset_right = 386.0
-offset_bottom = 314.0
+offset_left = 36.0
+offset_top = 290.0
+offset_right = 498.0
+offset_bottom = 362.0
 theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 16
 text = "Example: 10 Dirt for 1 World Lock."
 autowrap_mode = 2
 metadata/pixelmania_font_role = "preserve"
 
 [node name="ActionBack" type="NinePatchRect" parent="VendingPanel" unique_id=936782811]
-visible = false
+visible = true
 layout_mode = 0
-offset_left = 30.0
-offset_top = 452.0
-offset_right = 830.0
-offset_bottom = 528.0
+offset_left = 20.0
+offset_top = 524.0
+offset_right = 900.0
+offset_bottom = 630.0
 texture = ExtResource("3_panel_inner")
 patch_margin_left = 1
 patch_margin_top = 1
 patch_margin_right = 1
 patch_margin_bottom = 1
 
+mouse_filter = 2
+
 [node name="ListButton" type="Button" parent="VendingPanel" unique_id=64417382]
-custom_minimum_size = Vector2(150, 46)
+custom_minimum_size = Vector2(230, 40)
 layout_mode = 0
-offset_left = 50.0
-offset_top = 467.0
-offset_right = 200.0
-offset_bottom = 513.0
+offset_left = 652.0
+offset_top = 574.0
+offset_right = 882.0
+offset_bottom = 614.0
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = ExtResource("13_blue_normal")
 theme_override_styles/pressed = ExtResource("14_blue_pressed")
 theme_override_styles/hover = ExtResource("15_blue_hover")
@@ -393,16 +463,16 @@ text = "LIST ITEM"
 metadata/pixelmania_font_role = "preserve"
 
 [node name="BuyButton" type="Button" parent="VendingPanel" unique_id=1132375868]
-custom_minimum_size = Vector2(150, 46)
+custom_minimum_size = Vector2(372, 40)
 layout_mode = 0
-offset_left = 214.0
-offset_top = 467.0
-offset_right = 434.0
-offset_bottom = 513.0
+offset_left = 510.0
+offset_top = 574.0
+offset_right = 882.0
+offset_bottom = 614.0
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = ExtResource("13_blue_normal")
 theme_override_styles/pressed = ExtResource("14_blue_pressed")
 theme_override_styles/hover = ExtResource("15_blue_hover")
@@ -412,16 +482,16 @@ text = "BUY"
 metadata/pixelmania_font_role = "preserve"
 
 [node name="CollectButton" type="Button" parent="VendingPanel" unique_id=1300413087]
-custom_minimum_size = Vector2(122, 46)
+custom_minimum_size = Vector2(236, 40)
 layout_mode = 0
-offset_left = 448.0
-offset_top = 467.0
-offset_right = 570.0
-offset_bottom = 513.0
+offset_left = 36.0
+offset_top = 574.0
+offset_right = 272.0
+offset_bottom = 614.0
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = ExtResource("13_blue_normal")
 theme_override_styles/pressed = ExtResource("14_blue_pressed")
 theme_override_styles/hover = ExtResource("15_blue_hover")
@@ -431,15 +501,15 @@ text = "COLLECT"
 metadata/pixelmania_font_role = "preserve"
 
 [node name="LogButton" type="Button" parent="VendingPanel" unique_id=267774638]
-custom_minimum_size = Vector2(92, 46)
+custom_minimum_size = Vector2(140, 40)
 layout_mode = 0
-offset_left = 584.0
-offset_top = 467.0
-offset_right = 676.0
-offset_bottom = 513.0
+offset_left = 286.0
+offset_top = 574.0
+offset_right = 426.0
+offset_bottom = 614.0
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = ExtResource("16_button_normal")
 theme_override_styles/pressed = ExtResource("17_button_pressed")
 theme_override_styles/hover = ExtResource("18_button_hover")
@@ -448,16 +518,16 @@ text = "LOG"
 metadata/pixelmania_font_role = "preserve"
 
 [node name="CancelListingButton" type="Button" parent="VendingPanel" unique_id=827162718]
-custom_minimum_size = Vector2(116, 46)
+custom_minimum_size = Vector2(198, 40)
 layout_mode = 0
-offset_left = 690.0
-offset_top = 467.0
-offset_right = 806.0
-offset_bottom = 513.0
+offset_left = 440.0
+offset_top = 574.0
+offset_right = 638.0
+offset_bottom = 614.0
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_disabled_color = Color(0.68, 0.74, 0.8, 0.7)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = ExtResource("19_drop_normal")
 theme_override_styles/pressed = ExtResource("20_drop_pressed")
 theme_override_styles/hover = ExtResource("21_drop_hover")
@@ -575,10 +645,10 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="PriceMode" type="OptionButton" parent="VendingPanel/PriceCard"]
 layout_mode = 0
-offset_left = 205.0
+offset_left = 270.0
 offset_top = 124.0
-offset_right = 390.0
-offset_bottom = 162.0
+offset_right = 514.0
+offset_bottom = 164.0
 theme_override_font_sizes/font_size = 15
 item_count = 2
 selected = 0
@@ -594,20 +664,22 @@ ok_button_text = "Buy"
 
 [node name="Subtitle" type="Label" parent="VendingPanel"]
 layout_mode = 0
-offset_left = 40.0
-offset_top = 72.0
-offset_right = 805.0
-offset_bottom = 100.0
-theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.23, 0.10, 0.29, 1)
+offset_left = 36.0
+offset_top = 65.0
+offset_right = 736.0
+offset_bottom = 88.0
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.75, 0.85, 0.94, 1)
 text = "OWNER / Stock items, set a price, collect earnings"
+
+metadata/pixelmania_font_role = "preserve"
 
 [node name="SelectItem" type="Button" parent="VendingPanel/ItemCard"]
 layout_mode = 0
-offset_left = 69.0
-offset_top = 216.0
-offset_right = 289.0
-offset_bottom = 254.0
+offset_left = 36.0
+offset_top = 332.0
+offset_right = 294.0
+offset_bottom = 374.0
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = ExtResource("13_blue_normal")
 theme_override_styles/hover = ExtResource("15_blue_hover")
@@ -616,22 +688,34 @@ text = "CHOOSE ITEM"
 
 [node name="PriceReadout" type="Label" parent="VendingPanel/PriceCard"]
 layout_mode = 0
-offset_left = 26.0
-offset_top = 124.0
-offset_right = 386.0
-offset_bottom = 184.0
-theme_override_font_sizes/font_size = 18
-theme_override_colors/font_color = Color(0.23, 0.10, 0.29, 1)
+offset_left = 20.0
+offset_top = 118.0
+offset_right = 514.0
+offset_bottom = 180.0
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
 text = "PRICE"
+
+metadata/pixelmania_font_role = "preserve"
 
 [node name="MaxQuantity" type="Button" parent="VendingPanel/PriceCard"]
 layout_mode = 0
-offset_left = 205.0
-offset_top = 188.0
-offset_right = 390.0
-offset_bottom = 226.0
+offset_left = 270.0
+offset_top = 184.0
+offset_right = 514.0
+offset_bottom = 224.0
 theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = ExtResource("13_blue_normal")
 theme_override_styles/hover = ExtResource("15_blue_hover")
 theme_override_styles/pressed = ExtResource("14_blue_pressed")
 text = "MAX STOCK"
+
+[node name="ActionHint" type="Label" parent="VendingPanel"]
+offset_left = 36.0
+offset_top = 539.0
+offset_right = 884.0
+offset_bottom = 563.0
+text = "EARNINGS"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
+metadata/pixelmania_font_role = "preserve"

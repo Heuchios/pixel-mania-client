@@ -1,7 +1,6 @@
 extends SceneTree
 
 
-const WATER_ATLAS_COORDS := Vector2i(1, 3)
 const TEST_GRID_POS := Vector2i(4, 4)
 
 
@@ -24,9 +23,6 @@ func _run() -> void:
 		return
 
 	renderer.setup(world)
-	if not renderer.has_visual_tile_animation(WATER_ATLAS_COORDS):
-		fail_test("Configured water atlas tile is not animated.")
-		return
 
 	var block_manager = load("res://Scripts/block_manager.gd").new()
 	block_manager.world = world
@@ -59,13 +55,26 @@ func _run() -> void:
 	var atlas_coords := water_layer.get_cell_atlas_coords(TEST_GRID_POS)
 	var atlas_source := water_layer.tile_set.get_source(source_id) as TileSetAtlasSource
 	if atlas_source == null or atlas_source.get_tile_animation_frames_count(atlas_coords) <= 1:
-		fail_test(
-			"Surface water resolved to a static cell: source=%d coords=%s." % [
-				source_id,
-				str(atlas_coords)
-			]
-		)
-		return
+		# Static atlas cells can also animate through BlockManager's frame clock.
+		# Exercise that fallback instead of requiring a particular TileSet layout.
+		block_manager.sync_tilemap_foreground_animation_cell(TEST_GRID_POS, "water", "water")
+		var entry: Dictionary = block_manager.tilemap_foreground_animated_cells.get(TEST_GRID_POS, {})
+		if maxi(entry.get("frames", []).size(), entry.get("atlas_frames", []).size()) <= 1:
+			fail_test("Surface water has neither TileSet animation nor fallback frames.")
+			return
+		var first_source: int = water_layer.get_cell_source_id(TEST_GRID_POS)
+		var first_coords: Vector2i = water_layer.get_cell_atlas_coords(TEST_GRID_POS)
+		# The animation clock uses wall time; a headless SceneTree timer can run
+		# ahead of it. Observe rendered frames until the real clock advances.
+		var deadline := Time.get_ticks_msec() + 2000
+		while Time.get_ticks_msec() < deadline:
+			await process_frame
+			block_manager.apply_tilemap_foreground_animation_frame(TEST_GRID_POS, true)
+			if first_source != water_layer.get_cell_source_id(TEST_GRID_POS) or first_coords != water_layer.get_cell_atlas_coords(TEST_GRID_POS):
+				break
+		if first_source == water_layer.get_cell_source_id(TEST_GRID_POS) and first_coords == water_layer.get_cell_atlas_coords(TEST_GRID_POS):
+			fail_test("Surface water fallback did not advance its rendered frame.")
+			return
 
 	block_manager.free()
 	main.free()

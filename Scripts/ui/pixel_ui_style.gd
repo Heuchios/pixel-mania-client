@@ -23,6 +23,7 @@ const ACCENT_CYAN := Color(0.18, 0.84, 1.0, 1.0)
 const GOLD_SOFT := Color(1.0, 0.88, 0.25, 1.0)
 const OK_GREEN := Color(0.30, 0.95, 0.42, 1.0)
 const WARNING_RED := Color(1.0, 0.28, 0.22, 1.0)
+const GREEN_BUTTON_INK := Color(0.12, 0.56, 0.21, 1.0)
 const TEXT_LIGHT := Color.WHITE
 const TEXT_SOFT := Color(0.86, 0.96, 1.0, 1.0)
 const GAME_FONT_PATH := "res://Assets/font/font.ttf"
@@ -375,6 +376,7 @@ static func apply_ui_chrome_to_node(node: Node) -> void:
 	_apply_window_shadow(node)
 	_apply_pink_button_text(node)
 	_apply_category_selection_style(node)
+	_apply_green_button_text(node)
 	if node is Button and ("close" in String(node.name).to_lower() or node.get_meta("standard_close_button", false) or node.text.strip_edges() in ["X", "×", "✕", "Close", "CLOSE"]):
 		apply_close_button(node)
 		var parent := node.get_parent() as Control
@@ -515,7 +517,7 @@ static func atlas_style(region: String, tint: Color = Color.WHITE, padding: floa
 
 static func apply_atlas_button(button: Button, region: String = "blue_button") -> void:
 	button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	var text_color := Color(0.16, 0.06, 0.2) if region == "pink_button" else TEXT_LIGHT
+	var text_color := Color(0.16, 0.06, 0.2) if region == "pink_button" else (GREEN_BUTTON_INK if region == "green_button" else TEXT_LIGHT)
 	for state in ["font_color", "font_hover_color", "font_pressed_color"]:
 		button.add_theme_color_override(state, text_color)
 	button.add_theme_stylebox_override("normal", atlas_style(region))
@@ -525,7 +527,47 @@ static func apply_atlas_button(button: Button, region: String = "blue_button") -
 	var focus := atlas_style("inner_panel", Color(1.6, 1.6, 1.6))
 	focus.draw_center = false
 	button.add_theme_stylebox_override("focus", focus)
+	_apply_green_button_text(button)
+	for child in button.get_children():
+		_apply_green_button_text(child)
 
 
 static func apply_progress_bar(track: Control, fill: Control = null, inset: float = 0.0) -> void:
 	preload("res://Scripts/ui/atlas_progress_visual.gd").bind(track, fill, inset)
+
+
+static func _apply_green_button_text(node: Node) -> void:
+	var button := node as Button
+	if node is Label:
+		var ancestor := node.get_parent()
+		while ancestor != null and not ancestor is Button:
+			if ancestor is Panel and ancestor.get_theme_stylebox("panel").get_meta("atlas_region", "") == "green_button":
+				_set_green_label_ink(node)
+				return
+			ancestor = ancestor.get_parent()
+		button = ancestor as Button
+	if button == null: return
+	var normal_green: bool = button.get_theme_stylebox("normal").get_meta("atlas_region", "") == "green_button"
+	if node is Label:
+		if normal_green: _set_green_label_ink(node)
+		return
+	for pair in [["normal", "font_color"], ["hover", "font_hover_color"], ["pressed", "font_pressed_color"], ["hover_pressed", "font_hover_pressed_color"], ["disabled", "font_disabled_color"]]:
+		var region: String = button.get_theme_stylebox(pair[0]).get_meta("atlas_region", "")
+		if region == "green_button" or (region.is_empty() and normal_green):
+			button.add_theme_color_override(pair[1], GREEN_BUTTON_INK)
+	if normal_green:
+		button.add_theme_color_override("font_focus_color", GREEN_BUTTON_INK)
+		button.add_theme_color_override("font_shadow_color", Color.TRANSPARENT)
+		button.add_theme_constant_override("shadow_offset_x", 0)
+		button.add_theme_constant_override("shadow_offset_y", 0)
+
+static func _set_green_label_ink(label: Label) -> void:
+	label.add_theme_color_override("font_color", GREEN_BUTTON_INK)
+	label.add_theme_color_override("font_shadow_color", Color.TRANSPARENT)
+	label.add_theme_constant_override("shadow_offset_x", 0)
+	label.add_theme_constant_override("shadow_offset_y", 0)
+	if label.label_settings != null:
+		var settings := _ensure_owned_label_settings(label)
+		settings.font_color = GREEN_BUTTON_INK
+		settings.shadow_color = Color.TRANSPARENT
+		settings.shadow_offset = Vector2.ZERO

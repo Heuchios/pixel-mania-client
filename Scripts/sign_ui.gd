@@ -20,8 +20,8 @@ func setup(parent_world, ui_node):
 
 
 func _process(_delta):
-	update_panel_position()
-	update_char_count()
+	if is_sign_open():
+		update_panel_position()
 
 
 func setup_panel():
@@ -35,7 +35,7 @@ func setup_panel():
 		panel.name = "SignPanel"
 		ui_layer_ref.add_child(panel)
 
-	panel.size = Vector2(620, 370)
+	panel.size = Vector2(680, 468)
 	panel.z_index = 130
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 
@@ -43,6 +43,7 @@ func setup_panel():
 		panel.color = Color(1, 1, 1, 0)
 
 	for child in panel.get_children():
+		panel.remove_child(child)
 		child.queue_free()
 
 	var panel_back = Panel.new()
@@ -55,8 +56,8 @@ func setup_panel():
 
 	var top_bar = Panel.new()
 	top_bar.name = "TopBar"
-	top_bar.position = Vector2(14, 14)
-	top_bar.size = Vector2(592, 56)
+	top_bar.position = Vector2(16, 16)
+	top_bar.size = Vector2(648, 64)
 	top_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	top_bar.add_theme_stylebox_override("panel", PixelUIStyle.header_style())
 	panel.add_child(top_bar)
@@ -64,7 +65,7 @@ func setup_panel():
 	var title = Label.new()
 	title.name = "Title"
 	title.text = "EDIT SIGN"
-	title.position = Vector2(34, 25)
+	title.position = Vector2(34, 30)
 	title.size = Vector2(300, 34)
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -74,7 +75,7 @@ func setup_panel():
 	var close_button = Button.new()
 	close_button.name = "CloseButton"
 	close_button.text = "X"
-	close_button.position = Vector2(552, 24)
+	close_button.position = Vector2(616, 26)
 	close_button.size = Vector2(42, 36)
 	close_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	PixelUIStyle.apply_close_button(close_button)
@@ -83,17 +84,18 @@ func setup_panel():
 
 	var info_card = Panel.new()
 	info_card.name = "InfoCard"
-	info_card.position = Vector2(26, 84)
-	info_card.size = Vector2(568, 44)
+	info_card.position = Vector2(16, 94)
+	info_card.size = Vector2(648, 52)
 	info_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	info_card.add_theme_stylebox_override("panel", PixelUIStyle.card_style())
 	panel.add_child(info_card)
 
 	var info_label = Label.new()
 	info_label.name = "Info"
-	info_label.text = "Write the message players will see when standing on this sign."
-	info_label.position = Vector2(42, 94)
-	info_label.size = Vector2(536, 24)
+	info_label.text = "Write a message for players who stand on this sign."
+	info_label.position = Vector2(34, 100)
+	info_label.size = Vector2(612, 40)
+	info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	info_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(info_label, 15)
@@ -101,27 +103,45 @@ func setup_panel():
 
 	var input_back = Panel.new()
 	input_back.name = "InputBack"
-	input_back.position = Vector2(26, 144)
-	input_back.size = Vector2(568, 132)
+	input_back.position = Vector2(16, 160)
+	input_back.size = Vector2(648, 220)
 	input_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	input_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(PixelUIStyle.GLASS_SECTION, PixelUIStyle.GLASS_BORDER, 4, 14, 5))
+	input_back.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
 	panel.add_child(input_back)
+
+	var message_label := Label.new()
+	message_label.name = "MessageLabel"
+	message_label.text = "SIGN MESSAGE"
+	message_label.position = Vector2(32, 172)
+	message_label.size = Vector2(616, 24)
+	PixelUIStyle.apply_small_label(message_label, 14)
+	message_label.set_meta("pixelmania_font_size", 14)
+	panel.add_child(message_label)
+
+	var footer := Panel.new()
+	footer.name = "Footer"
+	footer.position = Vector2(16, 394)
+	footer.size = Vector2(648, 58)
+	footer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	footer.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
+	panel.add_child(footer)
 
 	sign_text_edit = TextEdit.new()
 	sign_text_edit.name = "SignText"
-	sign_text_edit.position = Vector2(42, 158)
-	sign_text_edit.size = Vector2(536, 102)
+	sign_text_edit.position = Vector2(32, 200)
+	sign_text_edit.size = Vector2(616, 164)
 	sign_text_edit.placeholder_text = "Write sign text..."
 	sign_text_edit.mouse_filter = Control.MOUSE_FILTER_STOP
 	sign_text_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 	sign_text_edit.scroll_fit_content_height = false
 	apply_text_edit_style(sign_text_edit)
+	sign_text_edit.text_changed.connect(update_char_count)
 	panel.add_child(sign_text_edit)
 
 	char_count_label = Label.new()
 	char_count_label.name = "CharCount"
-	char_count_label.position = Vector2(42, 282)
-	char_count_label.size = Vector2(250, 22)
+	char_count_label.position = Vector2(32, 410)
+	char_count_label.size = Vector2(260, 24)
 	char_count_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(char_count_label, 13)
 	panel.add_child(char_count_label)
@@ -129,7 +149,7 @@ func setup_panel():
 	var cancel_button = Button.new()
 	cancel_button.name = "CancelButton"
 	cancel_button.text = "CANCEL"
-	cancel_button.position = Vector2(316, 306)
+	cancel_button.position = Vector2(380, 402)
 	cancel_button.size = Vector2(126, 42)
 	cancel_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	PixelUIStyle.apply_blue_button(cancel_button, 16)
@@ -139,10 +159,10 @@ func setup_panel():
 	var save_button = Button.new()
 	save_button.name = "SaveButton"
 	save_button.text = "SAVE"
-	save_button.position = Vector2(458, 306)
+	save_button.position = Vector2(522, 402)
 	save_button.size = Vector2(126, 42)
 	save_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	PixelUIStyle.apply_yellow_button(save_button, 16)
+	PixelUIStyle.apply_atlas_button(save_button, "green_button")
 	save_button.pressed.connect(save_sign_text)
 	panel.add_child(save_button)
 
@@ -160,8 +180,19 @@ func apply_text_edit_style(text_edit: TextEdit):
 	text_edit.add_theme_color_override("caret_color", Color(1.0, 0.84, 0.22, 1.0))
 	text_edit.add_theme_color_override("selection_color", Color(0.18, 0.45, 0.85, 0.55))
 
-	var normal_style = PixelUIStyle.style_box(PixelUIStyle.GLASS_INPUT, PixelUIStyle.GLASS_BORDER, 3, 10, 4)
-	var focus_style = PixelUIStyle.style_box(PixelUIStyle.GLASS_INPUT_FOCUS, Color(0.85, 0.96, 1.0, 0.94), 3, 10, 6)
+	text_edit.set_meta("pixelmania_font_size", 17)
+	var normal_style := StyleBoxFlat.new()
+	normal_style.bg_color = Color("1c0b24")
+	normal_style.border_color = Color("92659e")
+	normal_style.set_border_width_all(2)
+	normal_style.content_margin_left = 12
+	normal_style.content_margin_right = 12
+	normal_style.content_margin_top = 10
+	normal_style.content_margin_bottom = 10
+	var focus_style := StyleBoxFlat.new()
+	focus_style.bg_color = Color.TRANSPARENT
+	focus_style.border_color = Color("e7c9ef")
+	focus_style.set_border_width_all(2)
 
 	text_edit.add_theme_stylebox_override("normal", normal_style)
 	text_edit.add_theme_stylebox_override("focus", focus_style)
@@ -170,6 +201,7 @@ func apply_text_edit_style(text_edit: TextEdit):
 
 func open_sign(grid_pos: Vector2i, current_text: String):
 	sign_grid_pos = grid_pos
+	update_panel_position()
 
 	if panel != null:
 		panel.visible = true
@@ -209,7 +241,9 @@ func update_panel_position():
 		return
 
 	var screen_size = get_viewport_rect().size
-	panel.position = Vector2((screen_size.x - panel.size.x) / 2.0, max(50.0, (screen_size.y - panel.size.y) / 2.0))
+	var fit_scale: float = minf(1.0, minf((screen_size.x - 24.0) / panel.size.x, (screen_size.y - 24.0) / panel.size.y))
+	panel.scale = Vector2.ONE * maxf(0.1, fit_scale)
+	panel.position = (screen_size - panel.size * panel.scale) / 2.0
 
 
 func update_char_count():

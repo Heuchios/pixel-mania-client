@@ -5,6 +5,7 @@ const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 const WorldTileMapRenderer = preload("res://Scripts/world_tilemap_renderer.gd")
 const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
 const ColourCycleModulation = preload("res://Scripts/colour_cycle_modulation.gd")
+const LavaVisual = preload("res://Scripts/lava_visual.gd")
 
 const TILEMAP_ENV_DISABLED_VALUES := ["0", "false", "no", "off"]
 const DEFAULT_BACKGROUND_TILEMAP_ONLY_ENABLED := true
@@ -10446,6 +10447,7 @@ func set_block_texture(block, block_type: String, grid_pos: Vector2i = NO_VARIAN
 		if springboard_frames.size() > 0:
 			visual.texture = springboard_frames[0]
 
+	LavaVisual.apply(visual, visual_block_type == "lava" and not background)
 	if not using_variant_texture and not is_triggered_springboard_animation_block(visual_block_type) and not is_server_triggered_animation_block(visual_block_type):
 		setup_block_animation(block, visual_block_type, visual)
 

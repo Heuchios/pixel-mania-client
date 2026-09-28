@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dcj67i7so4mjm"]
 
 [ext_resource type="Script" uid="uid://dk87xwb626w6e" path="res://Scripts/login_screen.gd" id="1_login_script"]
+[ext_resource type="Script" path="res://Scripts/ui/server_status_dot.gd" id="status_dot_script"]
 [ext_resource type="Texture2D" uid="uid://c4k867krp3wli" path="res://Assets/background/space_theme/star_1.png" id="2_0axv6"]
 [ext_resource type="Texture2D" uid="uid://cvjfqv4kccwo0" path="res://Assets/background/space_theme/star_2.png" id="3_ox2yu"]
 [ext_resource type="Texture2D" uid="uid://dsnopy0fnnne2" path="res://Assets/background/space_theme/star_3.png" id="4_ui2s7"]
@@ -151,10 +152,11 @@ patch_margin_bottom = 18
 
 [node name="StatusDot" type="Panel" parent="ServerStatusPill" unique_id=1835935128]
 layout_mode = 0
-offset_left = 17.0
+offset_left = 12.0
 offset_top = 8.0
-offset_right = 27.0
+offset_right = 32.0
 offset_bottom = 28.0
+script = ExtResource("status_dot_script")
 
 [node name="StatusLabel" type="Label" parent="ServerStatusPill" unique_id=2130629432]
 layout_mode = 0

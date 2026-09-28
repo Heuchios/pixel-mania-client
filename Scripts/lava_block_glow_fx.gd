@@ -17,9 +17,9 @@ extends Node2D
 
 @export var preview_emitting := true
 @export var show_fixture := true  # unused; kept for light_fx_scene API compatibility
-@export var light_color := Color(1.0, 0.4, 0.08, 1.0)
-@export var light_energy := 1.15
-@export var flicker_strength := 0.16
+@export var light_color := Color(1.0, 0.48, 0.12, 1.0)
+@export var light_energy := 0.8
+@export var flicker_strength := 0.10
 @export var flicker_speed := 3.1
 @export var ember_enabled := true
 
@@ -31,7 +31,8 @@ const EFFECT_Z_INDEX := 4070
 const FLICKER_UPDATE_INTERVAL := 0.05
 # Generous enough that a light never pops in at the screen edge -- the glow texture reaches
 # well past the tile it sits on.
-const OFFSCREEN_MARGIN_PX := 96.0
+const LIGHT_RADIUS := 80.0
+const LIGHT_TEXTURE_SCALE := 0.625
 
 var glow_light: PointLight2D = null
 var ember_particles: GPUParticles2D = null
@@ -57,13 +58,13 @@ func _ready() -> void:
 
 func start() -> void:
 	preview_emitting = true
+	set_process(true)
 	apply_light_settings()
-	if ember_enabled and ember_particles != null and is_instance_valid(ember_particles):
-		ember_particles.emitting = true
 
 
 func stop() -> void:
 	preview_emitting = false
+	set_process(false)
 	if glow_light != null and is_instance_valid(glow_light):
 		glow_light.enabled = false
 	if ember_particles != null and is_instance_valid(ember_particles):
@@ -71,32 +72,30 @@ func stop() -> void:
 
 
 func restart() -> void:
-	apply_light_settings()
-	if ember_particles != null and is_instance_valid(ember_particles):
-		ember_particles.emitting = false
+	if is_instance_valid(ember_particles):
 		ember_particles.restart()
-		if ember_enabled:
-			ember_particles.emitting = true
+	start()
 
 
 func apply_light_settings() -> void:
 	if glow_light == null or not is_instance_valid(glow_light):
 		return
 
-	glow_light.enabled = preview_emitting
+	glow_light.enabled = preview_emitting and is_on_screen()
 	glow_light.color = light_color
 	glow_light.energy = light_energy
+	glow_light.texture_scale = LIGHT_TEXTURE_SCALE
 	# No shadows: lava tiles can be numerous, so this stays a flat additive
 	# glow rather than a per-tile shadow-casting light.
 	glow_light.shadow_enabled = false
+	if is_instance_valid(ember_particles):
+		ember_particles.emitting = glow_light.enabled and ember_enabled
 
 
 func is_on_screen() -> bool:
-	var viewport := get_viewport()
-	if viewport == null:
-		return true
-	var visible_rect := viewport.get_visible_rect().grow(OFFSCREEN_MARGIN_PX)
-	return visible_rect.has_point(get_global_transform_with_canvas().origin)
+	var transform_with_canvas := get_global_transform_with_canvas()
+	var screen_radius := LIGHT_RADIUS * maxf(transform_with_canvas.x.length(), transform_with_canvas.y.length())
+	return get_viewport_rect().grow(screen_radius + 16.0).has_point(transform_with_canvas.origin)
 
 
 func _process(delta: float) -> void:
@@ -110,12 +109,15 @@ func _process(delta: float) -> void:
 	var elapsed := flicker_accumulator
 	flicker_accumulator = 0.0
 
-	# Off screen there is nothing to flicker. Skipping the energy write keeps offscreen lava
-	# off the renderer's dirty list entirely; the phase resumes where it left off on return,
-	# which is invisible because it was never being watched.
-	if not is_on_screen():
+	# Match campfire culling, including zoom: stop both lighting and new embers.
+	glow_light.enabled = is_on_screen()
+	if is_instance_valid(ember_particles):
+		ember_particles.emitting = glow_light.enabled and ember_enabled
+	if not glow_light.enabled:
 		return
 
-	flicker_phase = wrapf(flicker_phase + elapsed * flicker_speed, 0.0, TAU)
-	var flicker := 1.0 + sin(flicker_phase) * flicker_strength + sin(flicker_phase * 2.3 + 1.7) * flicker_strength * 0.4
-	glow_light.energy = maxf(0.0, light_energy * flicker)
+	# Keep phase continuous: wrapping a non-integer harmonic makes a visible pop.
+	flicker_phase += elapsed * flicker_speed
+	var flicker := sin(flicker_phase) * 0.65 + sin(flicker_phase * 2.3 + 1.7) * 0.25 + sin(flicker_phase * 3.7) * 0.10
+	glow_light.energy = maxf(0.0, light_energy * (1.0 + flicker * flicker_strength))
+	glow_light.texture_scale = LIGHT_TEXTURE_SCALE * (1.0 + flicker * 0.025)

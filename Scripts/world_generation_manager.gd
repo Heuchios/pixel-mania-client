@@ -31,12 +31,8 @@ const SURFACE_DECORATION_NOISE_SCALE_Y = 2.9
 # Tree tuning.
 const TREE_MIN_HEIGHT = 5
 const TREE_MAX_HEIGHT = 8
-const TREE_BRANCH_CHANCE = 0.18
 const TREE_VINE_CHANCE = 0.06
 const TREE_VINE_MAX_LENGTH = 4
-const TREE_SPACING_FRACTION = 0.03
-const TREE_SURFACE_NOISE_THRESHOLD = 0.30
-const TREE_RANDOM_PLACEMENT_CHANCE = 0.45
 
 # Ponds are carved into the dirt layer instead of replacing the grass surface.
 const POND_EDGE_DEPTH = 2
@@ -739,29 +735,14 @@ func generate_trees():
 	if world == null:
 		return
 
-	var last_tree_x = -999
-
-	for x in range(4, world.WORLD_WIDTH - 4):
-		if is_spawn_safe_column(x):
+	var next_tree_x := 5
+	for x in range(5, world.WORLD_WIDTH - 5):
+		if x < next_tree_x or is_spawn_safe_column(x):
 			continue
-		
-		var minimum_tree_spacing = max(world.TREE_MIN_SPACING - 3, 3)
-
-		if x - last_tree_x < minimum_tree_spacing:
+		if cell_noise(x, get_surface_y_at_x(x), 7001) > 0.42 or generation_rng.randf() >= 0.65:
 			continue
-
-		var terrain_roll = cell_noise(x, get_surface_y_at_x(x), 7001)
-		if terrain_roll > TREE_SURFACE_NOISE_THRESHOLD:
-			continue
-
-		var density_roll = cell_noise(x * 2, get_surface_y_at_x(x), 7002)
-
-		if density_roll < TREE_SPACING_FRACTION:
-			continue
-
-		if generation_rng.randf() < TREE_RANDOM_PLACEMENT_CHANCE:
-			create_tree(x)
-			last_tree_x = x
+		if create_tree(x):
+			next_tree_x = x + generation_rng.randi_range(8, 12)
 
 
 func generate_surface_decorations():
@@ -823,116 +804,51 @@ func get_surface_decoration_type(x: int, surface_y: int) -> String:
 	return "grass"
 
 
-func create_tree(x: int):
-	if world == null:
-		return
+func create_tree(x: int) -> bool:
+	if world == null or x < 5 or x >= world.WORLD_WIDTH - 5:
+		return false
+	var surface_y := get_surface_y_at_x(x)
+	var ground_pos := Vector2i(x, surface_y)
+	var ground_type := str(world.blocks.get(ground_pos, {}).get("type", ""))
+	if not ground_type in ["grass", "dirt", "sand", "stone", "rose", "tulip", "sunflower"]:
+		return false
+	if abs(get_surface_y_at_x(x - 1) - surface_y) > 1 or abs(get_surface_y_at_x(x + 1) - surface_y) > 1:
+		return false
 
-	if x <= 1 or x >= world.WORLD_WIDTH - 2:
-		return
-
-	var surface_y = get_surface_y_at_x(x)
-	var base_y = surface_y - 1
-
-	# Trees now spawn on a dirt block, not a grass block.
-	# Since the natural surface is grass, turn the tree's center footing into dirt
-	# before placing the trunk.
-	var ground_pos = Vector2i(x, surface_y)
-	if not world.blocks.has(ground_pos):
-		return
-
-	var ground_type = str(world.blocks[ground_pos].get("type", ""))
-	if not (ground_type in ["grass", "dirt", "sand", "stone", "rose", "tulip"]):
-		return
-
-	# Skip very steep spots.
-	if abs(get_surface_y_at_x(x - 1) - surface_y) > 1:
-		return
-
-	if abs(get_surface_y_at_x(x + 1) - surface_y) > 1:
-		return
-
+	var height := generation_rng.randi_range(TREE_MIN_HEIGHT, TREE_MAX_HEIGHT)
+	var top_y := surface_y - height
+	var profiles := [[1, 2, 3, 3, 2], [1, 3, 4, 4, 3, 1], [1, 2, 3, 3, 2, 1]]
+	var profile: Array = profiles[generation_rng.randi_range(0, profiles.size() - 1)]
+	var planned: Dictionary = {}
+	for y in range(surface_y - 1, top_y - 1, -1):
+		planned[Vector2i(x, y)] = "wood"
+	for row in profile.size():
+		var y := top_y - 3 + row
+		var radius: int = profile[row]
+		var left := radius - (1 if radius > 1 and cell_noise(x, y, 7401) > 0.72 else 0)
+		var right := radius - (1 if radius > 1 and cell_noise(x, y, 7402) > 0.72 else 0)
+		for dx in range(-left, right + 1):
+			var cell := Vector2i(x + dx, y)
+			if not planned.has(cell):
+				planned[cell] = "leaf"
+	# Validate before placing anything; blocked crowns must not leave stumps,
+	# clip into a hillside, or overwrite an earlier tree.
+	for cell: Vector2i in planned:
+		if cell.x < 0 or cell.x >= world.WORLD_WIDTH or cell.y < 0 or cell.y >= world.WORLD_HEIGHT:
+			return false
+		if is_spawn_safe_column(cell.x) or abs(cell.x - int(world.WORLD_WIDTH * 0.5)) <= 3:
+			return false
+		if world.blocks.has(cell):
+			return false
+		if planned[cell] == "leaf":
+			for offset in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+				if world.blocks.has(cell + offset):
+					return false
 	world.replace_block_without_drop(ground_pos, "dirt")
 	clear_generated_background_block(ground_pos)
-
-	var trunk_height = generation_rng.randi_range(TREE_MIN_HEIGHT, TREE_MAX_HEIGHT)
-	var trunk_tilt = 0
-	var leaf_positions = []
-
-	if cell_noise(x, surface_y, 7101) > 0.9:
-		var tilt_noise = cell_noise(x + 10, surface_y, 7102)
-
-		if tilt_noise < 0.33:
-			trunk_tilt = -1
-		elif tilt_noise > 0.66:
-			trunk_tilt = 1
-
-	var trunk_positions = []
-
-	for i in range(trunk_height):
-		var trunk_pos = Vector2i(x + trunk_tilt * int(floor(float(i) / 2.0)), base_y - i)
-		world.create_block(trunk_pos, "wood")
-		trunk_positions.append(trunk_pos)
-
-	var leaf_core_y = base_y - trunk_height
-	var leaf_spread_x = 2
-
-	if trunk_height >= 6:
-		leaf_spread_x = 3
-
-	if trunk_height >= 7:
-		leaf_spread_x = 4
-
-	# Fuller canopy with slight top/side irregularity.
-	# Fuller canopy with a taller, denser top and natural irregular edges.
-	for dy in range(-4, 2):
-		var row_span = leaf_spread_x
-
-		if dy >= -1:
-			row_span = max(2, leaf_spread_x - 1)
-		elif dy <= -3:
-			row_span = max(3, leaf_spread_x + 1)
-		else:
-			row_span = leaf_spread_x + 1
-
-		row_span = int(row_span + round((cell_noise(x, leaf_core_y + dy, 7401) - 0.5) * 1.2))
-		row_span = clamp(row_span, 2, leaf_spread_x + 2)
-
-		for dx in range(-row_span, row_span + 1):
-			var leaf_pos = Vector2i(trunk_positions[trunk_positions.size() - 1].x + dx, leaf_core_y + dy)
-			var dist = abs(dx) + abs(dy)
-
-			if dist > 8:
-				continue
-
-			var leaf_noise = cell_noise(leaf_pos.x, leaf_pos.y, 7400)
-			var is_edge = abs(dx) == row_span or dist >= 5
-
-			# Keep the top dense and full, but carve natural-looking edge breaks.
-			if dy < -1 and dist <= 2 and leaf_noise < 0.03:
-				continue
-			elif is_edge and leaf_noise < 0.28:
-				continue
-			elif dist > 4 and leaf_noise < 0.16:
-				continue
-			elif dist > 5 and leaf_noise < 0.35:
-				continue
-
-			world.create_block(leaf_pos, "leaf")
-			leaf_positions.append(leaf_pos)
-
-	# Keep branches straight up for a clean vertical form.
-	if generation_rng.randf() < TREE_BRANCH_CHANCE:
-		var branch_start_y = leaf_core_y + 2 + generation_rng.randi_range(0, 1)
-		var branch_length = generation_rng.randi_range(1, 2)
-
-		for i in range(branch_length):
-			var branch_pos = Vector2i(trunk_positions[trunk_positions.size() - 1].x, branch_start_y - i)
-			if branch_pos.y < 0 or world.blocks.has(branch_pos):
-				break
-
-			world.create_block(branch_pos, "wood")
-
-	create_tree_vines(leaf_positions)
+	for cell: Vector2i in planned:
+		world.create_block(cell, planned[cell])
+	return true
 
 
 func create_tree_vines(vine_anchors: Array):

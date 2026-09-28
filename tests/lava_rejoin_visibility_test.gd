@@ -1,7 +1,7 @@
 extends SceneTree
 
 const TEST_GRID_POS := Vector2i(4, 4)
-const LAVA_TEXTURE_PATH := "res://Assets/blocks/Tier_1/basic blocks/lava_block.png"
+const LAVA_TEXTURE := {"atlas": "res://image.png", "cell": [0, 3], "cell_size": [32, 32]}
 
 
 class MockWorld:
@@ -25,7 +25,7 @@ func _run() -> void:
 	root.add_child(world)
 	world.item_database["lava"] = {
 		"category": "block",
-		"texture": LAVA_TEXTURE_PATH,
+		"texture": LAVA_TEXTURE,
 		"atlas_coords": Vector2i(0, 3),
 		"lava_rebound": true,
 		"light_fx_scene": "res://Scenes/particles/LavaBlockGlowParticlesFX.tscn"
@@ -42,7 +42,7 @@ func _run() -> void:
 	block_manager.world = world
 	block_manager.tilemap_renderer = renderer
 
-	var lava_texture := load(LAVA_TEXTURE_PATH) as Texture2D
+	var lava_texture := load("res://Scripts/atlas_texture_factory.gd").load_texture(LAVA_TEXTURE) as Texture2D
 	assert(lava_texture != null, "Could not load lava texture.")
 
 	var lava_node := Node2D.new()

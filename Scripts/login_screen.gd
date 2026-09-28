@@ -404,18 +404,6 @@ func _bind_scene_background_layers() -> void:
 	_update_background_parallax(0.0)
 
 
-func _status_dot_style(color: Color) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = color
-	style.border_color = color.darkened(0.35)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(6)
-	style.shadow_color = Color(0, 0, 0, 0.45)
-	style.shadow_size = 5
-	style.shadow_offset = Vector2(0, 2)
-	return style
-
-
 func _update_server_status_indicator(is_online: bool) -> void:
 	if server_status_label == null or server_status_dot == null:
 		return
@@ -423,7 +411,7 @@ func _update_server_status_indicator(is_online: bool) -> void:
 	var color := Color(0.36, 1.0, 0.24) if is_online else Color(1.0, 0.20, 0.20)
 	server_status_label.text = "Server Online" if is_online else "Server Offline"
 	server_status_label.add_theme_color_override("font_color", color)
-	server_status_dot.add_theme_stylebox_override("panel", _status_dot_style(color))
+	server_status_dot.set_online(is_online)
 
 
 # ---- News panel ----

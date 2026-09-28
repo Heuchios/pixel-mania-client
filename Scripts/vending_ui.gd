@@ -919,9 +919,9 @@ func refresh_ui():
 		status_label.text = "SOLD OUT"
 	else:
 		status_label.text = "EMPTY"
-	panel.get_node("Subtitle").text = "OWNER / Stock items, set a price, collect earnings" if can_manage else "SHOP / Choose your quantity and review the total"
+	panel.get_node("Subtitle").text = "OWNER / Manage stock and pricing" if can_manage else "SHOP / Choose your quantity"
 	panel.get_node("ItemCard/ItemTitle").text = "YOUR STOCK" if can_manage else "BUY ITEM"
-	panel.get_node("PriceCard/SetupTitle").text = "SET YOUR PRICE" if can_manage else "YOUR PURCHASE"
+	panel.get_node("PriceCard/SetupTitle").text = "PRICING & STOCK" if can_manage else "YOUR PURCHASE"
 
 	refresh_item_slot(listing)
 	refresh_price_controls(listing)
@@ -943,6 +943,7 @@ func refresh_item_slot(listing: Dictionary):
 	select_button.disabled = mutation_pending
 	select_button.text = "CHOOSE ITEM" if listing.is_empty() else "ADD STOCK"
 	if display_item.is_empty():
+		panel.get_node("ItemCard/Hint").tooltip_text = ""
 		item_icon.visible = false
 		item_icon.texture = null
 		item_slot.text = "+" if can_manage_current_vend() else "EMPTY"
@@ -967,6 +968,7 @@ func refresh_item_slot(listing: Dictionary):
 	else:
 		hint += "%d available" % stocked
 	panel.get_node("ItemCard/Hint").text = hint
+	panel.get_node("ItemCard/Hint").tooltip_text = hint
 
 
 
@@ -1037,8 +1039,8 @@ func refresh_price_summary():
 		var count = int(stock_spin.value) / bundle as int
 		var total = count * int(listing.get("price_wls", 1))
 		var available = int(listing.get("stock", 0))
-		panel.get_node("PriceCard/PriceReadout").text = "PRICE\n%d items for %d WL" % [bundle, int(listing.get("price_wls", 1))] if not listing.is_empty() else "No active listing"
-		summary.text = "YOU RECEIVE: %d items\nTOTAL: %d WL" % [count * bundle, total]
+		panel.get_node("PriceCard/PriceReadout").text = "PRICE\n%d %s for %d WL" % [bundle, "item" if bundle == 1 else "items", int(listing.get("price_wls", 1))] if not listing.is_empty() else "No active listing"
+		summary.text = "YOU RECEIVE: %d %s\nTOTAL: %d WL" % [count * bundle, "item" if count * bundle == 1 else "items", total]
 		if available < bundle:
 			summary.text = "Waiting for the owner to restock." if not listing.is_empty() else "Check back when this machine is stocked."
 		elif bundle > 1:
@@ -1052,31 +1054,22 @@ func refresh_price_summary():
 func refresh_buttons(listing: Dictionary, pending: int, can_manage: bool):
 	if mutation_pending:
 		status_label.text = "PLEASE WAIT"
+	panel.get_node("ActionHint").text = "EARNINGS / %d WL READY TO COLLECT" % pending if can_manage else "Pay with World Locks. Review the total before confirming."
 	list_button.visible = can_manage
 	list_button.disabled = mutation_pending or (selected_item.is_empty() and listing.is_empty()) or (listing.is_empty() and int(stock_spin.value) <= 0)
 	list_button.text = "SAVING..." if mutation_pending else ("SAVE CHANGES" if not listing.is_empty() else "START SELLING")
-	list_button.position = Vector2(40, 467)
-	list_button.size = Vector2(226, 46)
 	buy_button.visible = not can_manage and not listing.is_empty()
 	buy_button.disabled = mutation_pending or listing.is_empty() or int(listing.get("stock", 0)) < int(listing.get("amount_per_sale", 1))
-	buy_button.position = Vector2(440, 467)
-	buy_button.size = Vector2(364, 46)
 	if mutation_pending:
 		buy_button.text = "PLEASE WAIT..."
 	collect_button.visible = can_manage
 	collect_button.disabled = mutation_pending or pending <= 0
 	collect_button.text = "COLLECT %d WL" % pending
-	collect_button.position = Vector2(280, 467)
-	collect_button.size = Vector2(216, 46)
 	cancel_button.text = "REMOVE STOCK"
 	cancel_button.visible = can_manage and not listing.is_empty()
 	cancel_button.disabled = mutation_pending
-	cancel_button.position = Vector2(510, 467)
-	cancel_button.size = Vector2(190, 46)
 	log_button.visible = can_manage
 	log_button.text = "SALES"
-	log_button.position = Vector2(714, 467)
-	log_button.size = Vector2(100, 46)
 	panel.get_node("ItemCard/SelectItem").disabled = mutation_pending
 	item_slot.disabled = not can_manage or mutation_pending
 

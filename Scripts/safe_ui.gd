@@ -4,8 +4,8 @@ const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 
 const MAX_SAFE_SLOTS := 10
 const SAFE_HEADER_HEIGHT := 78.0
-const SAFE_SLOT_COLUMNS := 5
-const SLOT_SIZE := Vector2(190, 126)
+const SAFE_SLOT_COLUMNS := 3
+const SLOT_SIZE := Vector2(290, 160)
 const SLOT_GAP := Vector2(16, 16)
 const SAFE_PANEL_RADIUS := 18
 const SAFE_SCROLLBAR_GUTTER := 32.0
@@ -19,6 +19,9 @@ var panel = null
 var status_label = null
 var slots_scroll = null
 var slots_root = null
+var withdraw_shade: ColorRect
+var withdraw_identity := {}
+var deposit_button: Button
 var withdraw_popup = null
 var withdraw_amount_input = null
 var withdraw_amount_slider = null
@@ -92,34 +95,24 @@ func fit_safe_text(value: String, max_chars: int) -> String:
 func apply_safe_arcade_button_style(button: Button, selected: bool = false, danger: bool = false, font_size: int = 14):
 	if button == null:
 		return
-	PixelUIStyle.apply_button_text(button, font_size)
 	if danger:
-		button.add_theme_stylebox_override("normal", PixelUIStyle.style_box(Color(0.66, 0.10, 0.16, 0.92), Color(1.0, 0.34, 0.38, 0.54), 3, 12, 6))
-		button.add_theme_stylebox_override("hover", PixelUIStyle.style_box(Color(0.86, 0.16, 0.24, 0.98), Color(1.0, 0.52, 0.54, 0.82), 3, 12, 7))
-		button.add_theme_stylebox_override("pressed", PixelUIStyle.style_box(Color(0.42, 0.04, 0.10, 0.96), Color(0.48, 0.06, 0.10, 0.90), 3, 12, 4))
-		button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-		return
-	if selected:
-		PixelUIStyle.apply_yellow_button(button, font_size)
-		button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-		return
-	PixelUIStyle.apply_blue_button(button, font_size)
-	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+		PixelUIStyle.apply_close_button(button)
+	elif selected:
+		PixelUIStyle.apply_green_button(button, font_size)
+	else:
+		PixelUIStyle.apply_blue_button(button, font_size)
+	_preserve(button, font_size)
+
 
 
 func apply_safe_slot_style(button: Button, is_filled: bool):
 	if button == null:
 		return
-	var fill = Color(0.18, 0.32, 0.43, 0.42)
-	var border = Color(0.72, 0.92, 1.0, 0.46)
-	if not is_filled:
-		fill = Color(0.12, 0.24, 0.34, 0.30)
-		border = Color(0.42, 0.78, 1.0, 0.44)
-	button.add_theme_stylebox_override("normal", PixelUIStyle.style_box(fill, border, 4, 8, 7))
-	button.add_theme_stylebox_override("hover", PixelUIStyle.style_box(Color(fill.r + 0.05, fill.g + 0.06, fill.b + 0.07, min(fill.a + 0.18, 0.78)), Color(0.60, 0.92, 1.0, 0.74), 4, 8, 9))
-	button.add_theme_stylebox_override("pressed", PixelUIStyle.style_box(Color(0.08, 0.18, 0.27, 0.62), Color(0.20, 0.52, 0.86, 0.80), 4, 8, 4))
+	for state in ["normal", "hover", "pressed", "disabled"]:
+		button.add_theme_stylebox_override(state, PixelUIStyle.panel_style())
 	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-	button.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 0.0))
+	button.self_modulate = Color.WHITE if is_filled else Color(0.78, 0.78, 0.78)
+
 
 
 func apply_safe_scrollbar_style():
@@ -142,224 +135,110 @@ func get_safe_columns() -> int:
 	return clamp(int(floor((available_width + SLOT_GAP.x) / (SLOT_SIZE.x + SLOT_GAP.x))), 2, SAFE_SLOT_COLUMNS)
 
 
+func _preserve(control: Control, font_size: int):
+	control.set_meta("pixelmania_font_role", "preserve")
+	control.add_theme_font_size_override("font_size", font_size)
+
+func _surface(parent: Control, node_name: String, rect: Rect2, outer: bool = false) -> Panel:
+	var surface := Panel.new()
+	surface.name = node_name
+	surface.position = rect.position
+	surface.size = rect.size
+	surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	surface.add_theme_stylebox_override("panel", PixelUIStyle.panel_style() if outer else PixelUIStyle.section_style())
+	parent.add_child(surface)
+	return surface
+
 func build_ui():
-	visible = false
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for child in get_children():
 		child.queue_free()
-	withdraw_popup = null
-	withdraw_amount_input = null
-	withdraw_amount_slider = null
-
-	var screen_size = get_safe_viewport_size()
-	var panel_size = Vector2(
-		min(1100.0, max(620.0, screen_size.x - 80.0)),
-		min(560.0, max(430.0, screen_size.y - 96.0))
-	)
-	var margin_x = 34.0
-	var content_width = max(420.0, panel_size.x - margin_x * 2.0)
-	var grid_y = SAFE_HEADER_HEIGHT + 72.0
-	if panel_size.y < 520.0:
-		grid_y = SAFE_HEADER_HEIGHT + 42.0
-	var storage_height = max(258.0, panel_size.y - grid_y - 30.0)
-
 	overlay = ColorRect.new()
 	overlay.name = "SafeOverlay"
-	overlay.color = Color(0.0, 0.0, 0.0, 0.0)
-	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	overlay.color = Color(0, 0, 0, 0.35)
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(overlay)
-
-	panel_shadow = Panel.new()
-	panel_shadow.name = "SafePanelShadow"
-	panel_shadow.position = Vector2.ZERO
-	panel_shadow.size = panel_size
-	panel_shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel_shadow.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.0, 0.0, 0.0, 0.0),
-		Color(0.0, 0.0, 0.0, 0.0),
-		0, SAFE_PANEL_RADIUS, 22
-	))
-	add_child(panel_shadow)
-
 	panel = Control.new()
 	panel.name = "SafePanel"
-	panel.position = Vector2.ZERO
-	panel.size = panel_size
-	panel.clip_contents = true
+	panel.size = Vector2(1000, 650)
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(panel)
-
-	var panel_back = Panel.new()
-	panel_back.name = "PanelBack"
-	panel_back.position = Vector2.ZERO
-	panel_back.size = panel.size
-	panel_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_PANEL_STRONG,
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		4, SAFE_PANEL_RADIUS, 16
-	))
-	panel.add_child(panel_back)
-
-	var panel_gloss = Panel.new()
-	panel_gloss.name = "PanelGloss"
-	panel_gloss.position = Vector2(8, 8)
-	panel_gloss.size = Vector2(panel_size.x - 16.0, 54)
-	panel_gloss.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel_gloss.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(1.0, 1.0, 1.0, 0.035),
-		Color(1.0, 1.0, 1.0, 0.0),
-		0, SAFE_PANEL_RADIUS - 4, 0
-	))
-	panel.add_child(panel_gloss)
-
-	var top_bar = Panel.new()
-	top_bar.name = "TopBar"
-	top_bar.position = Vector2.ZERO
-	top_bar.size = Vector2(panel_size.x, SAFE_HEADER_HEIGHT)
-	top_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	top_bar.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_HEADER,
-		PixelUIStyle.GLASS_BORDER,
-		0, SAFE_PANEL_RADIUS, 8
-	))
-	panel.add_child(top_bar)
-
-	var top_line = ColorRect.new()
-	top_line.name = "TopLine"
-	top_line.position = Vector2(0, SAFE_HEADER_HEIGHT - 5.0)
-	top_line.size = Vector2(panel_size.x, 4)
-	top_line.color = Color(0.42, 0.78, 1.0, 0.46)
-	top_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_child(top_line)
-
-	var title = Label.new()
-	title.name = "Title"
-	title.text = "SAFE"
-	title.position = Vector2(margin_x, 6)
-	title.size = Vector2(min(420.0, panel_size.x * 0.42), 66)
-	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(title, 56 if panel_size.x >= 1000.0 else 42)
+	_surface(panel, "PanelBack", Rect2(0, 0, 1000, 650), true)
+	_surface(panel, "TopBar", Rect2(16, 16, 968, 78))
+	var title := Label.new()
+	title.text = "SAFE STORAGE"
+	title.position = Vector2(32, 25)
+	title.size = Vector2(480, 36)
+	PixelUIStyle.apply_label_shadow(title, 30)
+	_preserve(title, 30)
+	_preserve(title, 30)
 	panel.add_child(title)
-
-	var title_sub = Label.new()
-	title_sub.name = "TitleSub"
-	title_sub.text = "OWNER STORAGE"
-	title_sub.position = Vector2(margin_x + 6.0, 60)
-	title_sub.size = Vector2(240, 22)
-	title_sub.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(title_sub, 14)
-	panel.add_child(title_sub)
-
-	var close_button = Button.new()
-	close_button.name = "CloseButton"
-	close_button.text = "X"
-	close_button.size = Vector2(52, 48)
-	close_button.position = Vector2(panel_size.x - margin_x - close_button.size.x, 14)
-	close_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	apply_safe_arcade_button_style(close_button, false, true, 24)
-	close_button.pressed.connect(close_safe)
-	panel.add_child(close_button)
-
-	var chip_width = 276.0 if panel_size.x >= 960.0 else 236.0
-	var status_chip = Panel.new()
-	status_chip.name = "StatusChip"
-	status_chip.position = Vector2(close_button.position.x - chip_width - 14.0, 14)
-	status_chip.size = Vector2(chip_width, 48)
-	status_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	status_chip.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.10, 0.24, 0.34, 0.58),
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		3, 14, 8
-	))
-	panel.add_child(status_chip)
-
+	var subtitle := Label.new()
+	subtitle.text = "Store items here. Withdraw them when you need them."
+	subtitle.position = Vector2(34, 63)
+	PixelUIStyle.apply_small_label(subtitle, 14)
+	_preserve(subtitle, 14)
+	_preserve(subtitle, 14)
+	panel.add_child(subtitle)
+	var close := Button.new()
+	close.name = "CloseButton"
+	close.position = Vector2(922, 30)
+	close.size = Vector2(48, 48)
+	PixelUIStyle.apply_close_button(close)
+	close.pressed.connect(close_safe)
+	panel.add_child(close)
 	status_label = Label.new()
 	status_label.name = "Status"
-	status_label.position = status_chip.position + Vector2(18, 7)
-	status_label.size = Vector2(chip_width - 36.0, 28)
-	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	status_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(status_label, 18, Color(1.0, 1.0, 1.0, 1.0))
+	status_label.position = Vector2(32, 111)
+	status_label.size = Vector2(620, 38)
+	PixelUIStyle.apply_label_shadow(status_label, 20)
+	_preserve(status_label, 20)
+	_preserve(status_label, 20)
 	panel.add_child(status_label)
-
-	var card = Panel.new()
-	card.name = "SafeCard"
-	card.position = Vector2(margin_x, grid_y)
-	card.size = Vector2(content_width, storage_height)
-	card.clip_contents = true
-	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	card.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_SECTION,
-		PixelUIStyle.GLASS_BORDER,
-		3, 14, 10
-	))
-	panel.add_child(card)
-
-	var card_title = Label.new()
-	card_title.name = "CardTitle"
-	card_title.text = "* STORAGE"
-	card_title.position = Vector2(18, 10)
-	card_title.size = Vector2(260, 30)
-	card_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(card_title, 24)
-	card.add_child(card_title)
-
-	var hint = Label.new()
-	hint.name = "Hint"
-	hint.text = "Choose an empty slot to add items, or choose a stored item to withdraw it."
-	hint.position = Vector2(286, 13)
-	hint.size = Vector2(max(120.0, card.size.x - 304.0), 24)
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(hint, 13)
-	card.add_child(hint)
-
-	var divider = ColorRect.new()
-	divider.name = "Divider"
-	divider.position = Vector2(18, 46)
-	divider.size = Vector2(card.size.x - 36.0, 3)
-	divider.color = Color(0.42, 0.82, 1.0, 0.34)
-	divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	card.add_child(divider)
-
+	deposit_button = Button.new()
+	deposit_button.name = "DepositButton"
+	deposit_button.text = "DEPOSIT ITEMS"
+	deposit_button.position = Vector2(752, 110)
+	deposit_button.size = Vector2(216, 42)
+	PixelUIStyle.apply_green_button(deposit_button, 17)
+	_preserve(deposit_button, 17)
+	deposit_button.pressed.connect(_begin_deposit)
+	panel.add_child(deposit_button)
+	_surface(panel, "StoragePanel", Rect2(16, 164, 968, 430))
 	slots_scroll = ScrollContainer.new()
 	slots_scroll.name = "SafeScroll"
-	slots_scroll.position = Vector2(18, 62)
-	slots_scroll.size = Vector2(card.size.x - 36.0 - SAFE_SCROLLBAR_GUTTER, card.size.y - 88.0)
-	slots_scroll.mouse_filter = Control.MOUSE_FILTER_STOP
-	slots_scroll.clip_contents = true
+	slots_scroll.position = Vector2(30, 178)
+	slots_scroll.size = Vector2(940, 402)
 	slots_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	slots_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-	slots_scroll.clip_contents = true
-	card.add_child(slots_scroll)
-
+	panel.add_child(slots_scroll)
 	slots_root = Control.new()
 	slots_root.name = "SlotsRoot"
-	slots_root.position = Vector2.ZERO
-	slots_root.size = slots_scroll.size
-	slots_root.custom_minimum_size = slots_scroll.size
-	slots_root.clip_contents = true
+	slots_root.custom_minimum_size = Vector2(920, 402)
 	slots_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	slots_scroll.add_child(slots_root)
-	apply_safe_scrollbar_style()
+	var hint := Label.new()
+	hint.text = "Select a stored item to choose how much to withdraw."
+	hint.position = Vector2(32, 610)
+	hint.size = Vector2(930, 24)
+	PixelUIStyle.apply_small_label(hint, 15)
+	_preserve(hint, 15)
+	_preserve(hint, 15)
+	panel.add_child(hint)
+	update_position()
 
+func _begin_deposit():
+	if not can_manage_current_safe(): return
+	hide_withdraw_popup()
+	if world != null and world.has_method("begin_safe_item_select"):
+		world.begin_safe_item_select()
 
 func update_position():
-	if panel == null:
-		return
+	if panel == null: return
 	var screen_size = get_safe_viewport_size()
-	var panel_position = Vector2(
-		floor((screen_size.x - panel.size.x) * 0.5),
-		floor(max(40.0, (screen_size.y - panel.size.y) * 0.5))
-	)
-	panel.position = panel_position
-	if panel_shadow != null:
-		panel_shadow.position = panel_position
+	var fit = maxf(0.1, minf(1.0, minf((screen_size.x - 24) / panel.size.x, (screen_size.y - 24) / panel.size.y)))
+	panel.scale = Vector2.ONE * fit
+	panel.position = (screen_size - panel.size * fit) * 0.5
 
 
 func open_safe(grid_pos: Vector2i):
@@ -529,6 +408,8 @@ func refresh_ui():
 	if slots.size() >= max_slots:
 		shown_slots = max_slots
 
+	if deposit_button != null:
+		deposit_button.disabled = not can_manage_current_safe()
 	if status_label != null:
 		if can_manage_current_safe():
 			status_label.text = str(slots.size()) + " / " + str(max_slots) + " SLOTS USED"
@@ -574,13 +455,8 @@ func make_slot_button(slot_index: int, slot_data: Dictionary) -> Button:
 	var is_filled = not slot_data.is_empty()
 	apply_safe_slot_style(button, is_filled)
 
-	var card_shine = ColorRect.new()
-	card_shine.name = "CardShine"
-	card_shine.position = Vector2(5, 5)
-	card_shine.size = Vector2(button.size.x - 10.0, 2)
-	card_shine.color = Color(1.0, 1.0, 1.0, 0.10)
-	card_shine.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	button.add_child(card_shine)
+	button.disabled = not can_manage_current_safe()
+	_surface(button, "InnerPanel", Rect2(5, 5, SLOT_SIZE.x - 10, SLOT_SIZE.y - 10))
 
 	if is_filled:
 		var item_id = str(slot_data.get("item_id", ""))
@@ -592,11 +468,7 @@ func make_slot_button(slot_index: int, slot_data: Dictionary) -> Button:
 		icon_back.position = Vector2(14, 16)
 		icon_back.size = Vector2(72, 72)
 		icon_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		icon_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-			Color(0.18, 0.32, 0.43, 0.42),
-			Color(0.72, 0.92, 1.0, 0.46),
-			2, 6, 2
-		))
+		icon_back.add_theme_stylebox_override("panel", PixelUIStyle.slot_style("common"))
 		button.add_child(icon_back)
 
 		var icon = TextureRect.new()
@@ -607,43 +479,50 @@ func make_slot_button(slot_index: int, slot_data: Dictionary) -> Button:
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		if world != null and world.has_method("get_item_texture"):
-			icon.texture = world.get_item_texture(item_id, category)
+			icon.texture = _item_icon(item_id, category)
 		button.add_child(icon)
 
 		var name_label = Label.new()
 		name_label.name = "Name"
-		name_label.text = fit_safe_text(item_name, 12)
+		name_label.text = item_name
+		button.tooltip_text = item_name
+		name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		name_label.max_lines_visible = 2
+		name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		name_label.position = Vector2(96, 20)
-		name_label.size = Vector2(button.size.x - 108.0, 26)
+		name_label.size = Vector2(button.size.x - 108.0, 42)
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		name_label.clip_text = true
 		name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		PixelUIStyle.apply_label_shadow(name_label, 15)
+		_preserve(name_label, 15)
 		button.add_child(name_label)
 
 		var meta_label = Label.new()
 		meta_label.name = "Meta"
 		meta_label.text = fit_safe_text(category.capitalize(), 10)
-		meta_label.position = Vector2(98, 48)
+		meta_label.position = Vector2(98, 64)
 		meta_label.size = Vector2(button.size.x - 110.0, 20)
 		meta_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		meta_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		meta_label.clip_text = true
 		meta_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		PixelUIStyle.apply_small_label(meta_label, 12)
+		_preserve(meta_label, 12)
 		meta_label.add_theme_color_override("font_color", Color(0.55, 1.0, 0.55, 1.0))
 		button.add_child(meta_label)
 
 		var amount_label = Label.new()
 		amount_label.name = "Amount"
 		amount_label.text = "x" + format_safe_number(int(slot_data.get("amount", 1)))
-		amount_label.position = Vector2(96, 70)
+		amount_label.position = Vector2(96, 87)
 		amount_label.size = Vector2(button.size.x - 108.0, 24)
 		amount_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		amount_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		amount_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		PixelUIStyle.apply_label_shadow(amount_label, 17)
+		_preserve(amount_label, 17)
 		button.add_child(amount_label)
 
 		var action_bar = Panel.new()
@@ -667,6 +546,7 @@ func make_slot_button(slot_index: int, slot_data: Dictionary) -> Button:
 		action_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		PixelUIStyle.apply_label_shadow(action_label, 14)
+		_preserve(action_label, 14)
 		button.add_child(action_label)
 	else:
 		var plus_label = Label.new()
@@ -678,6 +558,7 @@ func make_slot_button(slot_index: int, slot_data: Dictionary) -> Button:
 		plus_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		plus_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		PixelUIStyle.apply_label_shadow(plus_label, 38)
+		_preserve(plus_label, 38)
 		plus_label.add_theme_color_override("font_color", Color(0.75, 0.95, 1.0, 0.95))
 		button.add_child(plus_label)
 
@@ -690,6 +571,7 @@ func make_slot_button(slot_index: int, slot_data: Dictionary) -> Button:
 		add_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		add_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		PixelUIStyle.apply_small_label(add_label, 14)
+		_preserve(add_label, 14)
 		button.add_child(add_label)
 
 		var action_bar = Panel.new()
@@ -713,12 +595,17 @@ func make_slot_button(slot_index: int, slot_data: Dictionary) -> Button:
 		action_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		PixelUIStyle.apply_label_shadow(action_label, 14)
+		_preserve(action_label, 14)
 		button.add_child(action_label)
 
 	return button
 
 
 func hide_withdraw_popup():
+	withdraw_identity.clear()
+	if is_instance_valid(withdraw_shade):
+		withdraw_shade.queue_free()
+	withdraw_shade = null
 	withdraw_slot_index = -1
 	withdraw_max_amount = 1
 	withdraw_amount_updating = false
@@ -734,7 +621,14 @@ func show_withdraw_popup(slot_index: int, slot_data: Dictionary):
 	withdraw_slot_index = slot_index
 	withdraw_max_amount = max(1, int(slot_data.get("amount", 1)))
 
-	var popup_size = Vector2(430, 294)
+	withdraw_identity = slot_data.duplicate(true)
+	withdraw_shade = ColorRect.new()
+	withdraw_shade.color = Color(0, 0, 0, 0.65)
+	withdraw_shade.size = panel.size
+	withdraw_shade.z_index = 39
+	withdraw_shade.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.add_child(withdraw_shade)
+	var popup_size = Vector2(480, 364)
 	if panel != null:
 		popup_size.x = min(popup_size.x, panel.size.x - 54.0)
 	withdraw_popup = Panel.new()
@@ -743,23 +637,16 @@ func show_withdraw_popup(slot_index: int, slot_data: Dictionary):
 	withdraw_popup.position = (panel.size - popup_size) * 0.5 if panel != null else Vector2(220, 150)
 	withdraw_popup.z_index = 40
 	withdraw_popup.mouse_filter = Control.MOUSE_FILTER_STOP
-	withdraw_popup.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_PANEL_STRONG,
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		3, 12, 10
-	))
+	withdraw_popup.add_theme_stylebox_override("panel", PixelUIStyle.panel_style())
 	panel.add_child(withdraw_popup)
+	_surface(withdraw_popup, "PopupInner", Rect2(12, 68, popup_size.x - 24, popup_size.y - 80))
 
 	var header = Panel.new()
 	header.name = "PopupHeader"
-	header.position = Vector2.ZERO
-	header.size = Vector2(popup_size.x, 56)
+	header.position = Vector2(12, 12)
+	header.size = Vector2(popup_size.x - 24, 48)
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	header.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_HEADER,
-		PixelUIStyle.GLASS_BORDER,
-		0, 0, 8
-	))
+	header.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
 	withdraw_popup.add_child(header)
 
 	var title = Label.new()
@@ -770,6 +657,7 @@ func show_withdraw_popup(slot_index: int, slot_data: Dictionary):
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_label_shadow(title, 30)
+	_preserve(title, 30)
 	withdraw_popup.add_child(title)
 
 	var close_button = Button.new()
@@ -793,11 +681,7 @@ func show_withdraw_popup(slot_index: int, slot_data: Dictionary):
 	icon_back.position = Vector2(28, 78)
 	icon_back.size = Vector2(82, 82)
 	icon_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.18, 0.32, 0.43, 0.42),
-		Color(0.72, 0.92, 1.0, 0.46),
-		3, 8, 4
-	))
+	icon_back.add_theme_stylebox_override("panel", PixelUIStyle.slot_style("common"))
 	withdraw_popup.add_child(icon_back)
 
 	var icon = TextureRect.new()
@@ -808,7 +692,7 @@ func show_withdraw_popup(slot_index: int, slot_data: Dictionary):
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if world != null and world.has_method("get_item_texture"):
-		icon.texture = world.get_item_texture(item_id, category)
+		icon.texture = _item_icon(item_id, category)
 	withdraw_popup.add_child(icon)
 
 	var item_label = Label.new()
@@ -820,6 +704,7 @@ func show_withdraw_popup(slot_index: int, slot_data: Dictionary):
 	item_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	item_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_label_shadow(item_label, 19)
+	_preserve(item_label, 19)
 	withdraw_popup.add_child(item_label)
 
 	var available_label = Label.new()
@@ -829,6 +714,7 @@ func show_withdraw_popup(slot_index: int, slot_data: Dictionary):
 	available_label.size = Vector2(popup_size.x - 154.0, 24)
 	available_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(available_label, 13)
+	_preserve(available_label, 13)
 	available_label.add_theme_color_override("font_color", Color(0.72, 0.92, 1.0, 1.0))
 	withdraw_popup.add_child(available_label)
 
@@ -840,6 +726,7 @@ func show_withdraw_popup(slot_index: int, slot_data: Dictionary):
 	amount_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	amount_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	PixelUIStyle.apply_small_label(amount_label, 13)
+	_preserve(amount_label, 13)
 	withdraw_popup.add_child(amount_label)
 
 	withdraw_amount_input = LineEdit.new()
@@ -850,6 +737,7 @@ func show_withdraw_popup(slot_index: int, slot_data: Dictionary):
 	withdraw_amount_input.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	withdraw_amount_input.mouse_filter = Control.MOUSE_FILTER_STOP
 	PixelUIStyle.apply_input(withdraw_amount_input, 16)
+	_preserve(withdraw_amount_input, 16)
 	withdraw_amount_input.text_changed.connect(_on_withdraw_amount_text_changed)
 	withdraw_popup.add_child(withdraw_amount_input)
 
@@ -865,6 +753,16 @@ func show_withdraw_popup(slot_index: int, slot_data: Dictionary):
 	withdraw_amount_slider.value_changed.connect(_on_withdraw_amount_slider_changed)
 	withdraw_popup.add_child(withdraw_amount_slider)
 
+	for entry in [["HALF", int(ceil(withdraw_max_amount * 0.5))], ["MAX", withdraw_max_amount]]:
+		var quick := Button.new()
+		quick.text = entry[0]
+		quick.name = entry[0]
+		quick.position = Vector2(128 if entry[0] == "HALF" else 272, 262)
+		quick.size = Vector2(130, 34)
+		PixelUIStyle.apply_blue_button(quick, 14)
+		_preserve(quick, 14)
+		quick.pressed.connect(set_withdraw_amount_value.bind(entry[1], true))
+		withdraw_popup.add_child(quick)
 	var withdraw_button = Button.new()
 	withdraw_button.name = "ConfirmWithdraw"
 	withdraw_button.text = "WITHDRAW"
@@ -917,14 +815,17 @@ func set_withdraw_amount_value(amount: int, update_text: bool):
 
 func get_withdraw_amount() -> int:
 	if withdraw_amount_input == null:
-		return withdraw_max_amount
+		return 0
 	var text_value = withdraw_amount_input.text.strip_edges()
 	if text_value == "" or not text_value.is_valid_int():
-		return withdraw_max_amount
-	return clamp(int(text_value), 1, withdraw_max_amount)
+		return 0
+	return clamp(int(text_value), 0, withdraw_max_amount)
 
 
 func _confirm_safe_withdraw():
+	if not can_manage_current_safe():
+		hide_withdraw_popup()
+		return
 	var slots = get_slots()
 	if withdraw_slot_index < 0 or withdraw_slot_index >= slots.size():
 		hide_withdraw_popup()
@@ -938,7 +839,14 @@ func _confirm_safe_withdraw():
 	if item_id == "":
 		hide_withdraw_popup()
 		return
-	var amount = get_withdraw_amount()
+	if item_id != str(withdraw_identity.get("item_id", "")) or category != str(withdraw_identity.get("item_category", "")):
+		hide_withdraw_popup()
+		return
+	var amount = mini(get_withdraw_amount(), int(slot.get("amount", 0)))
+	if amount <= 0:
+		if world != null and world.has_method("show_notification"):
+			world.show_notification("Enter a valid quantity to withdraw.")
+		return
 	if send_safe_request({
 		"action": "safe_withdraw",
 		"slot_index": withdraw_slot_index,
@@ -971,3 +879,10 @@ func _on_slot_pressed(slot_index: int):
 
 	if world != null and world.has_method("begin_safe_item_select"):
 		world.begin_safe_item_select()
+
+
+func _item_icon(item_id: String, category: String) -> Texture2D:
+	if world != null and world.has_method("get_inventory_icon_texture"):
+		var texture = world.get_inventory_icon_texture(item_id, category)
+		if texture != null: return texture
+	return world.get_item_texture(item_id, category) if world != null and world.has_method("get_item_texture") else null

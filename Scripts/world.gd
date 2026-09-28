@@ -7888,10 +7888,10 @@ func apply_server_player_position_correction(data: Dictionary):
 	set_meta("server_position_correction_total_distance_px", float(get_meta("server_position_correction_total_distance_px", 0.0)) + correction_distance)
 	if should_snap:
 		set_meta("server_position_correction_snap_count", int(get_meta("server_position_correction_snap_count", 0)) + 1)
-	if MovementMode.has_method("has_launch_arg") and bool(MovementMode.has_launch_arg("--movement-sync-debug")):
+	if (OS.has_feature("editor") and correction_count <= 240) or (MovementMode.has_method("has_launch_arg") and bool(MovementMode.has_launch_arg("--movement-sync-debug"))):
 		var pre_correction_velocity: Vector2 = player.velocity if player is CharacterBody2D else Vector2.ZERO
 		var pre_correction_on_floor: bool = bool(player.is_on_floor()) if player is CharacterBody2D else false
-		print("[MovementSync][Local] correction=%d distance_px=%.2f snap=%s predicted=(%.2f, %.2f) authoritative=(%.2f, %.2f) velocity=(%.2f, %.2f) on_floor=%s accepted_sequence=%d rejected_sequence=%d" % [
+		print("[MovementSync][Local] correction=%d distance_px=%.2f snap=%s predicted=(%.2f, %.2f) authoritative=(%.2f, %.2f) velocity=(%.2f, %.2f) on_floor=%s accepted_sequence=%d rejected_sequence=%d reason=%s" % [
 			correction_count,
 			correction_distance,
 			str(should_snap),
@@ -7903,7 +7903,8 @@ func apply_server_player_position_correction(data: Dictionary):
 			pre_correction_velocity.y,
 			str(pre_correction_on_floor),
 			int(data.get("accepted_sequence", 0)),
-			int(data.get("rejected_sequence", 0))
+			int(data.get("rejected_sequence", 0)),
+			str(data.get("correction_reason", data.get("reason", "unknown")))
 		])
 
 	if server_position_correction_tween != null and server_position_correction_tween.is_valid():

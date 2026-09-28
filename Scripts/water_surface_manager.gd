@@ -27,20 +27,15 @@ const SAMPLES_PER_TILE_MAX := 8
 ## coupling is derived from it using the actual spring spacing, so dropping
 ## samples_per_tile for mobile changes only how finely the surface is sampled,
 ## not how the water behaves.
-@export var stiffness: float = 1.0
-@export var damping: float = 0.0
+@export var stiffness: float = 12.0
+@export var damping: float = 0.9
 @export var ripple_speed: float = 105.0
 @export var smoothing: float = 0.12
 @export var propagation_passes: int = 2
-@export var max_splash_impulse: float = 605.0
+@export var max_splash_impulse: float = 180.0
 
-## Amplitude the surface keeps forever, in world pixels. With damping at zero
-## the surface is lossless, which is what makes it look alive — but lossless
-## also means energy only accumulates, and a busy public world would drive the
-## waves up without limit. Below calm_amplitude there is no damping at all;
-## above it the excess bleeds off. Evaluated per spring, so one violent crest
-## does not flatten the gentle ripples at the far end of a lake.
-@export var calm_amplitude: float = 10.0
+## Small ripples settle naturally; stronger splashes lose their excess energy.
+@export var calm_amplitude: float = 3.0
 @export var overdrive_damping: float = 6.0
 
 ## Ceiling on simulated springs. Bands past the budget still render, they just
@@ -289,7 +284,7 @@ func _rescan() -> void:
 	if not (blocks is Dictionary):
 		return
 
-	# Collect surface cells and hash them in the same pass, so an unchanged
+	# Collect column tops and hash the water shape, so an unchanged
 	# scene costs one cheap sweep of the visible area and nothing else.
 	var surface_cells: Dictionary = {}
 	var signature: int = 17
@@ -298,10 +293,13 @@ func _rescan() -> void:
 			var cell := Vector2i(grid_x, grid_y)
 			if not _is_water_cell(blocks, cell):
 				continue
+			# Include submerged cells too: changing a shelf/floor must rebuild the mesh.
+			signature = (signature * 31 + grid_x * 92837111 + grid_y * 689287499) & 0x3FFFFFFF
 			if _is_water_cell(blocks, Vector2i(grid_x, grid_y - 1)):
 				continue
-			surface_cells[cell] = true
-			signature = (signature * 31 + grid_x * 92837111 + grid_y * 689287499) & 0x3FFFFFFF
+			var exposed: bool = not blocks.has(cell + Vector2i.UP)
+			surface_cells[cell] = exposed
+			signature = (signature * 31 + int(exposed) + int(_column_bottom_y(blocks, cell))) & 0x3FFFFFFF
 
 	if signature == _last_signature and rect == _last_scan_rect:
 		return
@@ -321,20 +319,8 @@ func _is_water_cell(blocks: Dictionary, cell: Vector2i) -> bool:
 # Bands
 # ---------------------------------------------------------------------------
 
-## A chain may drift at most this many tile-rows from its own top-to-bottom
-## before it is cut into a fresh band. _linked_neighbour lets the chain step
-## one row per tile so a gently sloped beach stays one continuous wave, but
-## nothing stops that from repeating tile after tile — a near-vertical run of
-## water (a waterfall down a cliff face, a long diagonal channel) satisfies the
-## same one-row-per-tile rule and was getting stitched into a single enormous
-## band. Simulating that as one spring chain is physically nonsensical (real
-## water at wildly different heights isn't one free surface), and in practice
-## it let the low-frequency wave mode balloon far past any block boundary —
-## reported as the water surface floating above the terrain, arcing across the
-## whole screen. Capped here instead of by damping harder, so calm, gently
-## sloped shorelines keep exactly the "living water" look already tuned.
-const MAX_BAND_ROW_SPAN_TILES := 4
-
+## Only horizontal, equally exposed cells share a wave. Steps and ceilings
+## are fixed boundaries, even when their submerged water bodies are connected.
 func _rebuild_bands(blocks: Dictionary, surface_cells: Dictionary) -> void:
 	var previous_bands := bands
 	bands = []
@@ -363,45 +349,21 @@ func _rebuild_bands(blocks: Dictionary, surface_cells: Dictionary) -> void:
 			bands.append(band)
 
 
-## Walks surface cells rightward from `start`, appending one or more chains to
-## `chains`. A chain is closed off — and a fresh one begun at the very next
-## cell — as soon as continuing would stretch it past MAX_BAND_ROW_SPAN_TILES
-## of total vertical rise. `_is_shore_end()` still checks the real world data,
-## so a cut made here for span reasons (rather than a true wall) correctly
-## comes out unpinned, same as an end that is merely clipped by the camera.
 func _walk_chain_from(surface_cells: Dictionary, start: Vector2i, visited: Dictionary, chains: Array) -> void:
 	var chain: Array = []
-	var min_row := start.y
-	var max_row := start.y
 	var cursor = start
-
 	while cursor != null and not visited.has(cursor):
 		visited[cursor] = true
 		chain.append(cursor)
-		min_row = mini(min_row, cursor.y)
-		max_row = maxi(max_row, cursor.y)
-
-		var next = _linked_neighbour(surface_cells, cursor, 1)
-		if next != null and not visited.has(next):
-			var span := maxi(max_row, next.y) - mini(min_row, next.y)
-			if span > MAX_BAND_ROW_SPAN_TILES:
-				next = null
-
-		cursor = next
-
+		cursor = _linked_neighbour(surface_cells, cursor, 1)
 	if not chain.is_empty():
 		chains.append(chain)
 
 
-## Next surface cell in the given x direction, allowing a one-tile step so a
-## sloped shoreline stays one continuous wave instead of shattering into a band
-## per row. Same row wins, then up, then down.
 func _linked_neighbour(surface_cells: Dictionary, grid_pos: Vector2i, direction: int):
-	var next_x := grid_pos.x + direction
-	for delta_y in [0, -1, 1]:
-		var candidate := Vector2i(next_x, grid_pos.y + delta_y)
-		if surface_cells.has(candidate):
-			return candidate
+	var candidate := grid_pos + Vector2i(direction, 0)
+	if surface_cells.has(candidate) and surface_cells[candidate] == surface_cells[grid_pos]:
+		return candidate
 	return null
 
 
@@ -416,6 +378,7 @@ func _build_band(blocks: Dictionary, chain: Array) -> Band:
 
 	band.x_start = float(first.x) * block_size - block_size * 0.5
 	band.x_end = float(last.x) * block_size + block_size * 0.5
+	band.exposed_surface = not blocks.has(first + Vector2i.UP)
 	band.shore_at_start = _is_shore_end(blocks, first, -1)
 	band.shore_at_end = _is_shore_end(blocks, last, 1)
 	band.spacing = block_size / float(clampi(_samples_per_tile, SAMPLES_PER_TILE_MIN, SAMPLES_PER_TILE_MAX))
@@ -449,10 +412,9 @@ func _build_band(blocks: Dictionary, chain: Array) -> Band:
 ## are clipped to the camera scan rect, so a cut-off end must NOT be pinned or
 ## the water would go still at a seam that slides around with the view.
 func _is_shore_end(blocks: Dictionary, cell: Vector2i, direction: int) -> bool:
-	for delta_y in [-1, 0, 1]:
-		if _is_water_cell(blocks, Vector2i(cell.x + direction, cell.y + delta_y)):
-			return false
-	return true
+	var neighbour := cell + Vector2i(direction, 0)
+	return not _is_water_cell(blocks, neighbour) or blocks.has(neighbour + Vector2i.UP)
+
 
 
 func _column_bottom_y(blocks: Dictionary, grid_pos: Vector2i) -> float:
@@ -473,14 +435,16 @@ func _column_bottom_y(blocks: Dictionary, grid_pos: Vector2i) -> float:
 func _inherit_motion(band: Band, previous_bands: Array) -> void:
 	if previous_bands.is_empty():
 		return
-	var tolerance := _block_size() * 1.5
+	var tolerance := 0.5
+	if not band.exposed_surface:
+		return
 	for i in band.spring_count():
 		var world_x := band.world_x_at(i)
 		var resting_y := band.base_y[i]
 		var best = null
 		var best_distance := tolerance
 		for previous in previous_bands:
-			if previous.spring_count() == 0 or not previous.contains_world_x(world_x):
+			if not previous.exposed_surface or previous.spring_count() == 0 or not previous.contains_world_x(world_x):
 				continue
 			var distance := absf(previous.base_y_at_world_x(world_x) - resting_y)
 			if distance < best_distance:
@@ -490,6 +454,7 @@ func _inherit_motion(band: Band, previous_bands: Array) -> void:
 			continue
 		band.offsets[i] = best.offset_at_world_x(world_x)
 		band.velocities[i] = best.velocity_at_world_x(world_x)
+	band._pin_shorelines()
 
 
 # ---------------------------------------------------------------------------
@@ -499,6 +464,8 @@ func _inherit_motion(band: Band, previous_bands: Array) -> void:
 func _simulate(delta: float) -> void:
 	var used := 0
 	for band in bands:
+		if not band.exposed_surface:
+			continue
 		if band.x_end < _view_rect.position.x or band.x_start > _view_rect.end.x:
 			continue
 		var count: int = band.spring_count()
@@ -518,7 +485,7 @@ func surface_y_at(world_x: float, near_y: float = INF) -> float:
 	var best := INF
 	var best_distance := INF
 	for band in bands:
-		if not band.contains_world_x(world_x):
+		if not band.exposed_surface or not band.contains_world_x(world_x):
 			continue
 		var candidate: float = band.surface_y_at_world_x(world_x)
 		if candidate == INF:
@@ -541,7 +508,7 @@ func disturb(world_x: float, impulse: float, near_y: float = INF, radius_springs
 	var target = null
 	var best_distance := INF
 	for band in bands:
-		if not band.contains_world_x(world_x):
+		if not band.exposed_surface or not band.contains_world_x(world_x):
 			continue
 		if near_y == INF:
 			target = band
@@ -603,20 +570,7 @@ func _rebuild_mesh() -> void:
 			var left_top_y: float = band.surface_y_at_index(i)
 			var right_top_y: float = band.surface_y_at_index(i + 1)
 
-			# base_y only changes between neighbouring springs where the chain
-			# crosses onto a different tile row — an underwater shelf, or the
-			# shore meeting a wall. Springs sit a fraction of a tile apart, so
-			# interpolating that jump the normal way draws a steep diagonal
-			# ramp across a sliver of a tile instead of the crisp vertical
-			# face a blocky ledge should have. Hold each half of the segment
-			# flat and let them meet at a vertical step instead, so it reads
-			# as an edge like the terrain it borders.
-			if absf(band.base_y[i + 1] - band.base_y[i]) > 1.0:
-				var mid_x: float = (left_x + right_x) * 0.5
-				surface_open = _emit_water_segment(left_x, mid_x, left_top_y, left_top_y, segment_floor, tile, left_bound, right_bound, surface_open)
-				surface_open = _emit_water_segment(mid_x, right_x, right_top_y, right_top_y, segment_floor, tile, left_bound, right_bound, surface_open)
-			else:
-				surface_open = _emit_water_segment(left_x, right_x, left_top_y, right_top_y, segment_floor, tile, left_bound, right_bound, surface_open)
+			surface_open = _emit_water_segment(left_x, right_x, left_top_y, right_top_y, segment_floor, tile, left_bound, right_bound, surface_open, band.base_y[i], band.exposed_surface)
 
 	if surface_open:
 		_immediate_mesh.surface_end()
@@ -627,7 +581,7 @@ func _rebuild_mesh() -> void:
 ## slope a rippling wave produces — down to the shared floor_y. Returns whether
 ## the mesh surface is open, threaded through instead of a member variable so
 ## _rebuild_mesh can call this repeatedly per segment.
-func _emit_water_segment(x0: float, x1: float, y0: float, y1: float, floor_y: float, tile: float, left_bound: float, right_bound: float, surface_open: bool) -> bool:
+func _emit_water_segment(x0: float, x1: float, y0: float, y1: float, floor_y: float, tile: float, left_bound: float, right_bound: float, surface_open: bool, resting_y: float, exposed: bool) -> bool:
 	if x1 < left_bound or x0 > right_bound:
 		return surface_open
 
@@ -647,29 +601,22 @@ func _emit_water_segment(x0: float, x1: float, y0: float, y1: float, floor_y: fl
 	var bottom_left := Vector2(x0, floor_y)
 	var bottom_right := Vector2(x1, floor_y)
 
-	_emit_vertex(top_left, 0.0, depth0, tile)
-	_emit_vertex(top_right, 0.0, depth1, tile)
-	_emit_vertex(bottom_right, depth1, depth1, tile)
-	_emit_vertex(top_left, 0.0, depth0, tile)
-	_emit_vertex(bottom_right, depth1, depth1, tile)
-	_emit_vertex(bottom_left, depth0, depth0, tile)
-
+	# UV.x follows the surface only for the crest; UV.y stays anchored in world
+	# space so depth shading cannot pump the whole body with every ripple.
+	_immediate_mesh.surface_set_color(Color(1.0 if exposed else 0.0, 1.0, 1.0, 1.0))
+	_emit_vertex(top_left, 0.0, (y0 - resting_y) / tile)
+	_emit_vertex(top_right, 0.0, (y1 - resting_y) / tile)
+	_emit_vertex(bottom_right, depth1, (floor_y - resting_y) / tile)
+	_emit_vertex(top_left, 0.0, (y0 - resting_y) / tile)
+	_emit_vertex(bottom_right, depth1, (floor_y - resting_y) / tile)
+	_emit_vertex(bottom_left, depth0, (floor_y - resting_y) / tile)
 	return surface_open
 
 
-## UV carries the geometry data the shader needs:
-##   x = depth of THIS vertex below the surface, in tiles (0 at the surface)
-##   y = total depth of the water column here, in tiles
-##
-## Deliberately UV and not COLOR. Mesh vertex colours are RGBA8, so a depth in
-## tiles passed through COLOR is clamped to 1.0 — every pool deeper than one
-## tile reported a depth of exactly one tile, which made the waterline four
-## times too thick and flattened every depth-driven effect. UV is float.
-##
-## The shader reads world position from VERTEX instead, which is valid only
-## because this node sits at the origin with no scale or rotation.
-func _emit_vertex(point: Vector2, vertex_depth: float, column_depth: float, _tile: float) -> void:
-	_immediate_mesh.surface_set_uv(Vector2(vertex_depth, column_depth))
+## Float UV stores moving surface depth and fixed body depth. COLOR.r marks
+## exposed surfaces; ceilings render body colour without an underwater crest.
+func _emit_vertex(point: Vector2, surface_depth: float, body_depth: float) -> void:
+	_immediate_mesh.surface_set_uv(Vector2(surface_depth, body_depth))
 	_immediate_mesh.surface_add_vertex_2d(point)
 
 
@@ -710,9 +657,10 @@ class Band extends RefCounted:
 	## Hard bounds on the visual state, in world pixels and px/s. The stability
 	## bounds above are the real fix; this is the backstop that stops one bad
 	## frame becoming a permanently broken surface.
-	const MAX_OFFSET := 96.0
+	const MAX_OFFSET := 12.0
 	const MAX_VELOCITY := 2400.0
 
+	var exposed_surface := true
 	var x_start: float = 0.0
 	var x_end: float = 0.0
 	var spacing: float = 8.0
@@ -743,7 +691,7 @@ class Band extends RefCounted:
 		return x_start + float(index) * spacing
 
 	func surface_y_at_index(index: int) -> float:
-		return base_y[index] + offsets[index]
+		return base_y[index] + (offsets[index] if exposed_surface else 0.0)
 
 	func index_at_world_x(world_x: float) -> int:
 		if spring_count() <= 0:
@@ -782,7 +730,7 @@ class Band extends RefCounted:
 	## Kick a spring. Negative velocity throws the surface upward.
 	func disturb(world_x: float, impulse: float, radius_springs: int = 2) -> void:
 		var count := spring_count()
-		if count <= 0:
+		if count <= 0 or not exposed_surface:
 			return
 		var centre := index_at_world_x(world_x)
 		if centre < 0:
@@ -791,6 +739,8 @@ class Band extends RefCounted:
 		for offset_index in range(-radius, radius + 1):
 			var index := centre + offset_index
 			if index < 0 or index >= count:
+				continue
+			if (shore_at_start and index == 0) or (shore_at_end and index == count - 1):
 				continue
 			var falloff := 1.0
 			if radius > 0:
@@ -806,7 +756,7 @@ class Band extends RefCounted:
 	##   lossless surface still cannot accumulate energy without bound.
 	func simulate(delta: float, stiffness: float, damping: float, wave_speed: float, smoothing: float, passes: int, calm_amplitude: float = 0.0, overdrive_damping: float = 0.0) -> void:
 		var count := spring_count()
-		if count <= 0 or delta <= 0.0:
+		if count <= 0 or delta <= 0.0 or not exposed_surface:
 			return
 
 		var ceiling_active := calm_amplitude > 0.0 and overdrive_damping > 0.0
@@ -863,8 +813,8 @@ class Band extends RefCounted:
 	## supposed to be containing it. Real water does that. In blocky pixel art it
 	## reads as the water climbing out of its own container.
 	##
-	## Applied after volume conservation, which would otherwise lift the pinned
-	## springs straight back off the resting line.
+	## Also applied after motion inheritance so a newly placed wall is fixed
+	## immediately, before the next physics tick.
 	func _pin_shorelines() -> void:
 		var count := offsets.size()
 		if count <= 0:
@@ -891,23 +841,24 @@ class Band extends RefCounted:
 	## displacement and zero net momentum. A standing wave already has both, so
 	## the look is untouched.
 	func _conserve_volume() -> void:
-		var count := offsets.size()
+		var first := 1 if shore_at_start else 0
+		var end := offsets.size() - (1 if shore_at_end else 0)
+		var count := end - first
 		if count <= 0:
 			return
 		var mean_offset := 0.0
 		var mean_velocity := 0.0
-		for i in count:
+		for i in range(first, end):
 			mean_offset += offsets[i]
 			mean_velocity += velocities[i]
 		mean_offset /= float(count)
 		mean_velocity /= float(count)
-		if is_zero_approx(mean_offset) and is_zero_approx(mean_velocity):
-			return
-		for i in count:
+		for i in range(first, end):
 			offsets[i] -= mean_offset
 			velocities[i] -= mean_velocity
 
 	func _clamp_to_sane_range() -> void:
+		var peak := 0.0
 		for i in offsets.size():
 			var offset := offsets[i]
 			var velocity := velocities[i]
@@ -915,5 +866,11 @@ class Band extends RefCounted:
 				offsets[i] = 0.0
 				velocities[i] = 0.0
 				continue
-			offsets[i] = clampf(offset, -MAX_OFFSET, MAX_OFFSET)
+			peak = maxf(peak, absf(offset))
 			velocities[i] = clampf(velocity, -MAX_VELOCITY, MAX_VELOCITY)
+		# Scale the wave uniformly so the safety limit preserves zero volume.
+		if peak > MAX_OFFSET:
+			var scale_factor := MAX_OFFSET / peak
+			for i in offsets.size():
+				offsets[i] *= scale_factor
+				velocities[i] *= scale_factor

@@ -17,7 +17,8 @@ render_mode blend_mix, unshaded;
 //
 // Fed by Scripts/water_surface_manager.gd, which packs geometry into the mesh:
 //   UV.x = this vertex's depth below the water surface, in 32px tiles
-//   UV.y = total depth of the water column here, in tiles
+//   UV.y = fixed depth below the resting surface, in tiles
+//   COLOR.r = 1 for an exposed surface, 0 beneath solid cover
 //   world position comes from VERTEX, which is local space == world space
 //   because the mesh node sits at the origin unscaled.
 //
@@ -64,7 +65,7 @@ uniform float depth_falloff : hint_range(0.0, 3.0) = 0.45;
 uniform float depth_opacity_gain : hint_range(0.0, 1.0) = 0.18;
 
 group_uniforms refraction;
-uniform float refraction_strength : hint_range(0.0, 12.0) = 2.0;
+uniform float refraction_strength : hint_range(0.0, 12.0) = 1.25;
 uniform float refraction_scale : hint_range(0.1, 8.0) = 1.6;
 uniform float refraction_depth_fade : hint_range(0.0, 4.0) = 0.6;
 
@@ -94,6 +95,7 @@ uniform float colour_steps : hint_range(0.0, 32.0) = 6.0;
 
 varying vec2 v_world_px;
 varying vec2 v_depth_data;
+varying float v_exposed;
 
 const float TILE = 32.0;
 
@@ -123,11 +125,12 @@ float wave_field(vec2 p, float t) {
 void vertex() {
 	v_world_px = VERTEX;
 	v_depth_data = UV;
+	v_exposed = COLOR.r;
 }
 
 void fragment() {
 	float depth_tiles = max(v_depth_data.x, 0.0);
-	float column_tiles = max(v_depth_data.y, 0.0);
+	float body_depth_tiles = max(v_depth_data.y, 0.0);
 	float t = TIME * wave_speed;
 
 	vec2 world_px = v_world_px;
@@ -143,7 +146,7 @@ void fragment() {
 	// the rippling waterline rather than by position in the tile, so it rides
 	// the wave instead of staying pinned to the grid.
 	vec4 art = texture(body_tex, p);
-	if (crest_frames_blend > 0.001 && depth_px < TILE) {
+	if (v_exposed > 0.5 && crest_frames_blend > 0.001 && depth_px < TILE) {
 		vec4 crest = texture(surface_tex, vec2(u, depth_px / TILE));
 		art = mix(art, crest, crest_frames_blend);
 	}
@@ -151,12 +154,13 @@ void fragment() {
 
 	// A solid waterline so the top edge still reads as an edge when the crest
 	// frames are off. Uses the art's own crest colour.
-	if (edge_line_px > 0.001 && depth_px < edge_line_px && art.a > 0.0001) {
+	if (v_exposed > 0.5 && edge_line_px > 0.001 && depth_px < edge_line_px && art.a > 0.0001) {
 		art = vec4(edge_colour.rgb, max(art.a, edge_colour.a));
 	}
 
 	// ---- refraction of whatever sits behind the water ---------------------
-	float refraction_fade = 1.0 - exp(-depth_tiles * refraction_depth_fade);
+	float refraction_fade = (1.0 - exp(-body_depth_tiles * 4.0))
+		* exp(-body_depth_tiles * refraction_depth_fade);
 	vec2 screen_offset = vec2(
 		wave_field(p * refraction_scale, t),
 		wave_field(p.yx * refraction_scale, t * 0.8)
@@ -164,12 +168,12 @@ void fragment() {
 	screen_offset *= refraction_strength * refraction_fade * SCREEN_PIXEL_SIZE;
 	if (grid > 0.001) {
 		vec2 pixel_step = SCREEN_PIXEL_SIZE * grid;
-		screen_offset = floor(screen_offset / pixel_step) * pixel_step;
+		screen_offset = floor(screen_offset / pixel_step + vec2(0.5)) * pixel_step;
 	}
 	vec3 behind = texture(screen_tex, SCREEN_UV + screen_offset).rgb;
 
 	// ---- optional depth grading on top of the sprite colour ---------------
-	float tint = quantise_scalar(1.0 - exp(-depth_tiles * depth_falloff), colour_steps);
+	float tint = quantise_scalar(1.0 - exp(-body_depth_tiles * depth_falloff), colour_steps);
 	vec3 water_rgb = mix(art.rgb, deep_colour.rgb, tint * depth_tint_strength);
 	float alpha = clamp(art.a + tint * depth_opacity_gain * step(0.001, art.a), 0.0, 1.0);
 
@@ -178,26 +182,23 @@ void fragment() {
 	// ---- caustics ---------------------------------------------------------
 	if (caustic_strength > 0.001) {
 		float caustic = max(wave_field(p * caustic_scale + vec2(0.0, t * 0.4), t * 1.3), 0.0);
-		caustic = pow(caustic, 3.0) * exp(-depth_tiles * caustic_depth_fade);
+		caustic = pow(caustic, 3.0) * exp(-body_depth_tiles * caustic_depth_fade);
 		caustic = quantise_scalar(caustic, colour_steps) * step(0.001, art.a);
 		rgb += caustic_colour.rgb * caustic * caustic_strength;
 	}
 
 	// ---- optional extra foam ----------------------------------------------
-	if (foam_strength > 0.001) {
+	if (v_exposed > 0.5 && foam_strength > 0.001) {
 		float wobble = wave_field(p * 2.6, t * 1.9) * foam_wobble;
 		float foam = step(depth_px, foam_thickness + wobble) * step(0.0, depth_px);
 		rgb = mix(rgb, foam_colour.rgb, foam * foam_strength * foam_colour.a);
 		alpha = max(alpha, foam * foam_strength);
 	}
 
-	// A puddle a couple of pixels deep should not read as a solid slab.
-	float thinness = clamp(column_tiles * 4.0, 0.0, 1.0);
-
 	// `rgb` is already composited against what is behind the water, so the
 	// sprite's translucency is already baked into it. The output alpha is only
 	// a mask: where the art is fully transparent — the rows above the crest —
 	// write nothing at all, so the refraction offset does not smear a visible
 	// band into the air above the waterline.
-	COLOR = vec4(rgb, step(0.0005, alpha) * thinness);
+	COLOR = vec4(rgb, step(0.0005, alpha));
 }

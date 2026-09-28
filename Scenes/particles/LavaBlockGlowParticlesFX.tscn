@@ -1,8 +1,19 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://Scripts/lava_block_glow_fx.gd" id="1_lava_fx"]
-[ext_resource type="Texture2D" path="res://Assets/effects/lava_glow.svg" id="2_glow"]
 [ext_resource type="Texture2D" path="res://Assets/effects/lava_ember.svg" id="3_ember"]
+
+[sub_resource type="Gradient" id="LavaFalloff"]
+offsets = PackedFloat32Array(0, 0.18, 0.45, 0.72, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.85, 1, 1, 1, 0.42, 1, 1, 1, 0.12, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="LavaGlow"]
+gradient = SubResource("LavaFalloff")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_lava_additive"]
 blend_mode = 1
@@ -32,14 +43,13 @@ hue_variation_max = 0.05
 z_index = 4070
 z_as_relative = false
 script = ExtResource("1_lava_fx")
-light_energy = 1.15
-flicker_strength = 0.16
 
 [node name="LavaGlowLight" type="PointLight2D" parent="."]
-color = Color(1, 0.4, 0.08, 1)
-energy = 1.15
-texture = ExtResource("2_glow")
-texture_scale = 1.0
+texture_filter = 2
+color = Color(1, 0.48, 0.12, 1)
+energy = 0.8
+texture = SubResource("LavaGlow")
+texture_scale = 0.625
 shadow_enabled = false
 
 [node name="EmberMotes" type="GPUParticles2D" parent="."]
