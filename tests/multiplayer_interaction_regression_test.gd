@@ -21,6 +21,7 @@ class AnimationProbe extends Node:
 
 class EquipmentProbe extends Node:
 	var forced := ""
+	var forced_back_animation_state := ""
 	func set_forced_animation_state(value: String): forced = value
 	func update_wearable_animation_state(_delta: float): pass
 	func update_back_item_animation(_delta: float): pass
@@ -87,7 +88,7 @@ func run():
 	remote.set_meta("network_velocity_y", -300.0)
 	remote.set_meta("remote_action_animation_until_msec", Time.get_ticks_msec() + 500)
 	manager.update_remote_shared_player_animation(remote, 0.0)
-	check(animator.forced == "punch" and equipment.forced == "jump", "Wing flap continues during airborne weapon swings")
+	check(animator.forced == "punch" and equipment.forced == "punch" and equipment.forced_back_animation_state == "jump", "Wings follow jumping while clothing and body play weapon swings")
 	check(remote.get_meta("punch_animation_name") == "sword", "Remote weapon selects its own animation")
 	remote.set_meta("remote_action_animation_until_msec", 0)
 	manager.update_remote_shared_player_animation(remote, 0.0)
@@ -114,6 +115,9 @@ func run():
 	var wing_manager = load("res://Scripts/equipment_manager.gd").new()
 	wing_manager.equipped_back_item = "dev_wings"
 	wing_manager.back_item_data = {"flap_animation":true}
+	wing_manager.set_forced_animation_state("punch")
+	wing_manager.forced_back_animation_state = "jump"
+	check(wing_manager.get_current_wearable_animation_name() == "punch" and wing_manager.get_current_back_item_animation_name() == "jump", "Back and clothing states stay independent")
 	var wing := AnimatedSprite2D.new()
 	wing.sprite_frames = SpriteFrames.new()
 	wing.sprite_frames.add_animation("jump")

@@ -4156,7 +4156,8 @@ func update_remote_shared_player_animation(remote_player, delta: float) -> bool:
 		if animation_state in ["punch", "place_animation", "hurt"]:
 			wearable_state = get_remote_locomotion_animation(remote_player)
 		if equipment_manager.has_method("set_forced_animation_state"):
-			equipment_manager.set_forced_animation_state(wearable_state)
+			equipment_manager.set_forced_animation_state(animation_state)
+		equipment_manager.set("forced_back_animation_state", wearable_state)
 		if equipment_manager.has_method("update_wearable_animation_state"):
 			equipment_manager.update_wearable_animation_state(delta)
 		if equipment_manager.has_method("update_back_item_animation"):

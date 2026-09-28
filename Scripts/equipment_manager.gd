@@ -42,6 +42,7 @@ var wearable_part_editor_positions = {}
 var wearable_part_editor_scales = {}
 var wearable_part_item_ids = {}
 var wearable_animation_state = ""
+var forced_back_animation_state := ""
 
 var back_socket = null
 var back_sprite = null
@@ -1709,7 +1710,7 @@ func clear_back_item_fx():
 
 
 func get_current_back_item_animation_name(delta: float = 0.0) -> String:
-	var animation_name = get_current_wearable_animation_name()
+	var animation_name = forced_back_animation_state if forced_back_animation_state != "" else get_current_wearable_animation_name()
 	if animation_name == "fall" and back_jump_frames == back_fall_frames and back_jump_frames.size() > 1:
 		animation_name = "jump"
 
