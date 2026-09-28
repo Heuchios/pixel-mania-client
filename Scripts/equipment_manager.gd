@@ -1141,6 +1141,7 @@ func update_equipped_pants_visual(pants_item, facing_direction: int):
 		if raw_data is Dictionary:
 			item_data = raw_data
 
+	configure_pants_attachment(item_data)
 	var pants_texture = null
 	if world != null and world.pants_textures.has(pants_item):
 		pants_texture = world.pants_textures[pants_item]
@@ -1189,6 +1190,25 @@ func update_equipped_pants_visual(pants_item, facing_direction: int):
 			right_pants_node.position = get_vector_from_data(item_data.get("right_pants_offset", [DEFAULT_RIGHT_PANTS_OFFSET.x, DEFAULT_RIGHT_PANTS_OFFSET.y]), DEFAULT_RIGHT_PANTS_OFFSET)
 	else:
 		hide_wearable_part("pants_right_item")
+
+
+func configure_pants_attachment(item_data: Dictionary) -> void:
+	# Attach split pants legs to their animated feet so walking/jumping moves
+	# the cloth with the corresponding leg. Keep the middle at its editor anchor.
+	var follow_feet := bool(item_data.get("pants_follow_feet", false))
+	var middle = get_wearable_part("pants")
+	if middle != null:
+		if not middle.has_meta("pants_editor_z_index"):
+			middle.set_meta("pants_editor_z_index", middle.z_index)
+		middle.z_index = int(item_data.get("slot_z_index", 1)) if follow_feet else int(middle.get_meta("pants_editor_z_index"))
+	for side in ["left", "right"]:
+		var part = get_wearable_part("pants_%s_item" % side)
+		var parent_path := "PlayerVisual/%sFoot" % side.capitalize() if follow_feet else "PlayerVisual/Bottom"
+		var attachment = player.get_node_or_null(parent_path)
+		if part != null and attachment != null:
+			if part.get_parent() != attachment:
+				part.reparent(attachment, false)
+			part.z_index = 1 if follow_feet else 0
 
 
 func update_equipped_shoes_visual(shoes_item, facing_direction: int):

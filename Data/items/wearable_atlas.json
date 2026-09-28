@@ -23,6 +23,8 @@
 	"basic_blue_shirt_arm_left": [192, 0, 32, 32],
 	"basic_black_pants_icon": [224, 0, 32, 32],
 	"basic_black_pants": [256, 0, 32, 32],
+	"basic_black_pants_left_leg": [288, 0, 32, 32],
+	"basic_black_pants_right_leg": [320, 0, 32, 32],
 	"basic_light_gray_pants_icon": [224, 32, 32, 32],
 	"basic_light_gray_pants": [256, 32, 32, 32],
 	"basic_navy_pants_icon": [224, 64, 32, 32],

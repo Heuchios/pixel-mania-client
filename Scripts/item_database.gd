@@ -13336,10 +13336,15 @@ const ITEMS = {
 
 "basic_black_pants": {
 		"category": "pants",
-		"display_name": "Black Pants",
+		"display_name": "Black Shorts",
 		"rarity": "common",
 		"texture": "basic_black_pants",
 		"inventory_icon": "basic_black_pants_icon",
+		"left_pants_texture": "basic_black_pants_left_leg",
+		"right_pants_texture": "basic_black_pants_right_leg",
+		"pants_follow_feet": true,
+		"left_pants_offset": [0, 11],
+		"right_pants_offset": [0, 11],
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "pants",
