@@ -100,6 +100,8 @@ func select_item(item_type: String, category: String):
 	world.selected_item_type = item_type
 	world.selected_item_category = category
 	world.update_all_ui()
+	if world.equipment_manager != null:
+		world.equipment_manager.update_selected_hand_preview()
 
 
 func get_selected_item_text() -> String:

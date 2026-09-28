@@ -684,7 +684,7 @@ func update_movement_animation_player(animation_name: String):
 	elif animation_name == "jump":
 		target_animation = "jump"
 	elif animation_name == "fall":
-		target_animation = "jump"
+		target_animation = "fall"
 	elif animation_name == "place_animation":
 		target_animation = "place_animation"
 	elif animation_name == "punch":
@@ -716,16 +716,31 @@ func update_movement_animation_player(animation_name: String):
 			reset_current_movement_animation_player()
 			return
 
+		if actual_animation == "fall" and current_movement_animation != "fall":
+			preload("res://Scripts/airborne_pose_transition.gd").prepare(player, target_player, current_movement_animation == "jump")
 		if current_movement_animation_player != null and current_movement_animation_player != target_player:
 			reset_current_movement_animation_player()
 
-		stop_other_movement_animation_players(target_player)
+		# Restore locomotion offsets before switching to an action on the same
+		# AnimationPlayer, which may not key body or raised-arm positions.
+		if current_movement_animation in ["walk", "jump", "fall"] and actual_animation != current_movement_animation:
+			reset_current_movement_animation_player()
+		# Stopped idle/jump players still write their RESET tracks when stopped
+		# again. Only reset competing players when the active state changes.
+		if current_movement_animation != actual_animation or current_movement_animation_player != target_player:
+			stop_other_movement_animation_players(target_player)
 		current_movement_animation_player = target_player
 		if current_movement_animation != actual_animation:
 			current_movement_animation = actual_animation
 			target_player.play(actual_animation)
+			if actual_animation == "fall":
+				target_player.advance(0.0)
 		elif not target_player.is_playing():
-			target_player.play(actual_animation)
+			if actual_animation in ["jump", "fall"]:
+				# Hold the airborne pose after its short entry animation finishes.
+				target_player.seek(target_player.get_animation(actual_animation).length, true)
+			else:
+				target_player.play(actual_animation)
 		return
 
 	reset_current_movement_animation_player()
@@ -814,9 +829,18 @@ func stop_movement_animation_player(animation_player):
 	if animation_player.is_playing() and NON_MOVEMENT_OVERLAY_ANIMATIONS.has(animation_to_reset):
 		return
 
+	# Placement can be played directly before the next manager update. Reset
+	# the outgoing locomotion pose, not the newly started action's first key.
+	if current_movement_animation_player == animation_player and current_movement_animation in ["walk", "jump", "fall"]:
+		animation_to_reset = current_movement_animation
 	if animation_to_reset == "" and current_movement_animation_player == animation_player:
 		animation_to_reset = current_movement_animation
 
+	if animation_to_reset in ["walk", "jump", "fall"] and animation_player.has_animation("RESET"):
+		animation_player.play("RESET")
+		animation_player.advance(0.0)
+		animation_player.stop()
+		return
 	animation_player.stop()
 	if animation_to_reset != "" and animation_player.has_animation(animation_to_reset):
 		animation_player.seek(0.0, true)

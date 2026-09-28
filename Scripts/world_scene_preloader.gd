@@ -86,15 +86,7 @@ const ALWAYS_WARM_VISUAL_PATHS := [
 	"res://Assets/seed_tree_sprites/bg_tree_stage2.png",
 	"res://Assets/seed_tree_sprites/bg_tree_mature.png",
 	"res://Assets/blocks/Tier_1/basic blocks/bedrock_block.png",
-	"res://Assets/player/back_item/dev_wings/dev_wings_idle1.png",
-	"res://Assets/player/back_item/dev_wings/dev_wings_idle2.png",
-	"res://Assets/player/back_item/dev_wings/dev_wings_idle3.png",
-	"res://Assets/player/back_item/dev_wings/dev_wings_idle4.png",
-	"res://Assets/player/back_item/dev_wings/dev_wings_jump1.png",
-	"res://Assets/player/back_item/dev_wings/dev_wings_jump2.png",
-	"res://Assets/player/back_item/dev_wings/dev_wings_jump3.png",
-	"res://Assets/player/back_item/dev_wings/dev_wings_jump4.png",
-	"res://Assets/player/back_item/dev_wings/dev_wings_preview.png"
+	"res://Assets/items/back_item.png"
 ]
 
 static var _request_started := false

@@ -728,18 +728,29 @@ func update_body_animation() -> void:
 	var target_animation := "idle"
 	if is_punching and movement_animation_player != null and movement_animation_player.has_animation("punch"):
 		target_animation = "punch"
+	elif int(get_meta("place_animation_until_msec", 0)) > Time.get_ticks_msec():
+		target_animation = "place_animation"
 	elif movement_state == "run":
 		target_animation = "walk"
-	elif movement_state == "jump" or movement_state == "fall":
+	elif movement_state == "jump":
 		target_animation = "jump"
+	elif movement_state == "fall":
+		target_animation = "fall"
 
 	if current_visual_animation == target_animation:
 		return
 
+	if target_animation == "fall":
+		preload("res://Scripts/airborne_pose_transition.gd").prepare(self, movement_animation_player, current_visual_animation == "jump")
 	reset_visual_pose()
 	match target_animation:
 		"walk":
 			play_animation_if_available(movement_animation_player, "walk")
+		"fall":
+			play_animation_if_available(movement_animation_player, "fall")
+			movement_animation_player.advance(0.0)
+		"place_animation":
+			play_animation_if_available(movement_animation_player, "place_animation")
 		"punch":
 			play_animation_if_available(movement_animation_player, "punch")
 		"jump":

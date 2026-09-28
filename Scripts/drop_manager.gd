@@ -1681,8 +1681,6 @@ func _get_drop_visual_scale(item_category: String, item_type: String) -> Vector2
 		"currency", "material", "lure", "fish", "hat", "hair", "eyewear", "shirt", "pants", "shoes", "ride":
 			return Vector2(0.62, 0.62)
 		"back":
-			if item_type == "legendary_wings":
-				return Vector2(0.05, 0.05)
 			return Vector2(0.62, 0.62)
 		_:
 			return Vector2(0.5, 0.5)

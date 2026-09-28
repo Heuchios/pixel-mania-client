@@ -24,6 +24,8 @@ var right_hand_item_animated = null
 var left_sleeve_animated = null
 var left_hand_item_animated = null
 var hand_item_animated = null
+var selected_hand_preview: Sprite2D = null
+var selected_hand_preview_key := ""
 var body_accessory_item_animated = null
 var shirt_item_animated = null
 var pants_item_animated = null
@@ -125,6 +127,8 @@ var back_item_fx_scene_cache: Dictionary = {}
 var back_item_fx = null
 
 func setup(parent_world, player_node, enable_profile_equipment_saving: bool = true):
+	if player != player_node:
+		clear_player_references()
 	world = parent_world
 	player = player_node
 	if player == null or not is_instance_valid(player):
@@ -161,9 +165,63 @@ func _process(delta):
 
 	update_back_item_animation(delta)
 	update_wearable_animation_state(delta)
+	update_selected_hand_preview()
+
+
+# Presentation only: never change equipment, inventory, or the saved hand slot.
+func update_selected_hand_preview():
+	if world == null or player == null or not is_instance_valid(player):
+		return
+	# Remote avatars have their own equipment managers, sharing this world.
+	if player != world.player:
+		return
+	var item_id := str(world.selected_item_type)
+	var category := str(world.selected_item_category)
+	var preview_key := ""
+	if category in ["block", "seed"] and world.get_item_count(item_id, category) > 0:
+		preview_key = category + ":" + item_id
+	if preview_key == "":
+		if selected_hand_preview_key != "":
+			selected_hand_preview_key = ""
+			if is_instance_valid(selected_hand_preview):
+				selected_hand_preview.hide()
+			update_equipped_tool_visual(str(world.equipped_tool), int(world.player_facing_direction))
+		return
+	if not is_instance_valid(selected_hand_preview):
+		var socket = player.get_node_or_null("PlayerVisual/HandItem")
+		if socket == null:
+			return
+		selected_hand_preview = Sprite2D.new()
+		selected_hand_preview.name = "SelectedPlaceablePreview"
+		selected_hand_preview.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		# The hand's resting grip; the parent carries the shoulder-pivot animation.
+		selected_hand_preview.position = Vector2(-5, 9)
+		socket.add_child(selected_hand_preview)
+		selected_hand_preview_key = ""
+	if preview_key != selected_hand_preview_key:
+		var texture = world.get_inventory_icon_texture(item_id, category)
+		if texture == null:
+			var textures = world.block_textures if category == "block" else world.seed_textures
+			texture = textures.get(item_id)
+		if texture == null:
+			selected_hand_preview.hide()
+			selected_hand_preview_key = ""
+			update_equipped_tool_visual(str(world.equipped_tool), int(world.player_facing_direction))
+			return
+		selected_hand_preview.texture = texture
+		var extent: float = maxf(texture.get_width(), texture.get_height())
+		selected_hand_preview.scale = Vector2.ONE * ((9.0 if category == "block" else 7.0) / maxf(extent, 1.0))
+		selected_hand_preview_key = preview_key
+	selected_hand_preview.show()
+	if is_instance_valid(hand_item_animated):
+		hand_item_animated.hide()
 
 
 func clear_player_references():
+	if is_instance_valid(selected_hand_preview):
+		selected_hand_preview.queue_free()
+	selected_hand_preview = null
+	selected_hand_preview_key = ""
 	player = null
 	player_visual = null
 	head_animated = null
@@ -788,6 +846,8 @@ func update_equipped_tool_visual(equipped_tool: String, facing_direction: int):
 		return
 
 	apply_hand_item_transform(equipped_tool, texture, item_data, facing_direction)
+	if selected_hand_preview_key != "" and is_instance_valid(selected_hand_preview) and selected_hand_preview.visible:
+		hand_item_animated.hide()
 
 
 func get_safe_back_socket_editor_position() -> Vector2:
@@ -1397,14 +1457,6 @@ func load_back_item_visual_data(back_item: String):
 
 	if back_item_data.has("texture"):
 		idle_candidates.append(back_item_data.get("texture"))
-
-	# Helpful fallback for the current project folder.
-	if back_item == "legendary_wings":
-		idle_candidates.append("res://Assets/player/back_item/dev_wings/dev_wings_idle1.png")
-		idle_candidates.append("res://Assets/player/back_item/dev_wings/dev_wings_idle2.png")
-		idle_candidates.append("res://Assets/player/back_item/dev_wings/dev_wings_jump1.png")
-		idle_candidates.append("res://Assets/player/back_item/dev_wings/dev_wings_jump2.png")
-		idle_candidates.append("res://Assets/player/back_item/dev_wings/dev_wings_jump3.png")
 
 	back_idle_texture = load_first_existing_texture(idle_candidates)
 

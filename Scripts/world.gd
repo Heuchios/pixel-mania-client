@@ -1554,19 +1554,6 @@ func setup_item_database():
 
 			if back_texture != null:
 				back_textures[item_id] = back_texture
-			elif item_id == "legendary_wings":
-				var fallback_back_paths = [
-					"res://Assets/player/back_item/dev_wings/dev_wings_idle1.png",
-					"res://Assets/player/back_item/dev_wings/dev_wings_idle2.png",
-					"res://Assets/player/back_item/dev_wings/dev_wings_jump1.png",
-					"res://Assets/player/back_item/dev_wings/dev_wings_jump2.png",
-					"res://Assets/player/back_item/dev_wings/dev_wings_jump3.png"
-				]
-
-				for fallback_path in fallback_back_paths:
-					if ResourceLoader.exists(fallback_path):
-						back_textures[item_id] = load_texture_spec(fallback_path)
-						break
 
 		elif category == "hat":
 			hat_inventory[item_id] = int(item_data.get("starting_count", 0))
