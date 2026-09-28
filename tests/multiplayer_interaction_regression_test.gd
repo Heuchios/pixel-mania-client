@@ -12,6 +12,7 @@ class FakeWorld extends Node:
 	var applying_network_world_update := false
 	var save_manager = null
 	var input_manager = null
+	var ui_layer = null
 	var item_database := {"test_sword": {"punch_animation": "sword"}}
 
 class AnimationProbe extends Node:
@@ -144,6 +145,28 @@ func run():
 	check(guard.is_blocked(world), "Completion event cannot leak into the new HUD")
 	world.set_meta("world_transition_ui_resume_msec", Time.get_ticks_msec() - 1)
 	check(not guard.is_blocked(world), "Fresh HUD input resumes after transition")
+	var save = load("res://Scripts/save_manager.gd").new()
+	save.world = world
+	world.ui_layer = Control.new()
+	world.add_child(world.ui_layer)
+	var shop_scene := Control.new()
+	shop_scene.name = "ShopUIScene"
+	shop_scene.visible = false
+	world.ui_layer.add_child(shop_scene)
+	var closed_dialog := Control.new()
+	closed_dialog.name = "FutureDialog"
+	closed_dialog.visible = false
+	world.ui_layer.add_child(closed_dialog)
+	var hud := Button.new()
+	hud.name = "ShopButton"
+	world.ui_layer.add_child(hud)
+	save.set_gameplay_ui_visible(true)
+	check(not shop_scene.visible and not closed_dialog.visible and hud.visible, "Joining must not force open shop or unknown closed UI")
+	save.set_gameplay_ui_visible(false)
+	save.set_gameplay_ui_visible(false)
+	save.set_gameplay_ui_visible(true)
+	check(not shop_scene.visible and not closed_dialog.visible and hud.visible, "Repeated hide/show restores HUD without opening popups")
+	save.free()
 	shop.shop_panel.free()
 	shop.free()
 	world.free()

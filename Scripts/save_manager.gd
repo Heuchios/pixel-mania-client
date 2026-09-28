@@ -676,7 +676,7 @@ func is_popup_ui_node_name(node_name: String) -> bool:
 	if node_name == "SignPanel":
 		return true
 
-	if node_name == "ShopPanel":
+	if node_name == "ShopPanel" or node_name == "ShopUIScene":
 		return true
 
 	if node_name == "ChatPanel":
@@ -741,6 +741,8 @@ func set_gameplay_ui_visible(active: bool):
 	var loading_active: bool = is_world_entry_loading_active()
 
 	for child in world.ui_layer.get_children():
+		if not (child is CanvasItem):
+			continue
 		# Keep the world menu controller alive, but do not force its overlay visible.
 		if child.name == "WorldMenuUI":
 			child.visible = true
@@ -767,8 +769,12 @@ func set_gameplay_ui_visible(active: bool):
 			if is_popup_ui_node_name(str(child.name)):
 				child.visible = false
 			else:
-				child.visible = true
+				# Restore HUD visibility without opening newly created/closed UI.
+				child.visible = bool(child.get_meta("gameplay_ui_previous_visibility", child.visible))
+			child.remove_meta("gameplay_ui_previous_visibility")
 		else:
+			if not child.has_meta("gameplay_ui_previous_visibility"):
+				child.set_meta("gameplay_ui_previous_visibility", child.visible)
 			child.visible = false
 
 
