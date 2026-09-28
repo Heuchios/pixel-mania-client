@@ -666,6 +666,8 @@ func can_current_player_break_block(block_type: String) -> bool:
 func can_current_player_interact_with_block(block_type: String) -> bool:
 	if not _is_local_player_session_match():
 		return false
+	if block_type == "magnet_machine":
+		return is_locked
 
 	if world != null and world.has_method("is_wooden_entrance_block") and world.is_wooden_entrance_block(block_type):
 		return can_current_player_toggle_wooden_entrance()
@@ -1014,7 +1016,7 @@ func has_world_lock_break_blockers() -> bool:
 			continue
 
 		var block_type := str(block_data.get("type", ""))
-		if is_safe_block(block_type) or is_vending_machine_block(block_type) or is_fish_monger_block(block_type) or is_display_block(block_type):
+		if is_safe_block(block_type) or is_vending_machine_block(block_type) or is_fish_monger_block(block_type) or is_display_block(block_type) or block_type == "magnet_machine":
 			return true
 
 	return false
@@ -1801,6 +1803,8 @@ func can_current_player_break_block_at(block_type: String = "", grid_pos: Vector
 
 
 func can_current_player_interact_with_block_at(block_type: String, grid_pos: Vector2i) -> bool:
+	if block_type == "magnet_machine":
+		return can_current_player_interact_with_block(block_type)
 	# Reading personal Dispatch letters does not edit the board owner's world.
 	if block_type == "quest_board":
 		return true

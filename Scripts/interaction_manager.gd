@@ -44,6 +44,8 @@ func setup(world_ref):
 
 
 func use_selected_item_at_mouse():
+	if world.is_magnet_machine_open():
+		return
 	if world.has_method("is_quest_board_open") and world.is_quest_board_open():
 		return
 	if world.is_chat_input_focused():
@@ -119,6 +121,10 @@ func use_selected_item_at_mouse():
 
 	if world.selected_item_category == "tool" and world.has_method("is_fishing_rod_item") and bool(world.is_fishing_rod_item(world.selected_item_type)):
 		world.use_fishing_rod_at_mouse()
+		return
+
+	if world.selected_item_type == "magnet_machine_remote":
+		world.get_magnet_machine_manager().place(world.get_mouse_grid_position())
 		return
 
 	if world.selected_item_category == "lure":
@@ -369,6 +375,10 @@ func interact_with_grid(grid_pos: Vector2i):
 
 	if is_punch_toggle_machine_block(block_type):
 		world.show_notification("Punch " + get_block_display_name(block_type) + " to turn it on or off.")
+		return
+
+	if block_type == "magnet_machine":
+		world.get_magnet_machine_manager().open(grid_pos)
 		return
 
 	if is_vending_machine_block(block_type):
@@ -668,6 +678,8 @@ func is_interactable_block(block_type: String) -> bool:
 	if is_anti_gravity_block(clean_type):
 		return true
 	if is_theme_machine_block(clean_type):
+		return true
+	if clean_type == "magnet_machine":
 		return true
 	if is_vending_machine_block(clean_type):
 		return true

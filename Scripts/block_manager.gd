@@ -12615,6 +12615,10 @@ func hit_block_grid(grid_pos: Vector2i, force_punch_action: bool = false):
 		if try_harvest_tackle_box(grid_pos):
 			return
 
+	if str(block_type) == "magnet_machine":
+		world.get_magnet_machine_manager().request("magnet_toggle", grid_pos)
+		return
+
 	if is_door_block_type(str(block_type)) and is_player_standing_on_grid(grid_pos):
 		world.show_notification("Step off the door to break it.")
 		return

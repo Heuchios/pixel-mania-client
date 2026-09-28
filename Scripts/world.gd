@@ -422,6 +422,7 @@ var recipe_book_ui = null
 var friends_ui = null
 var developer_panel_ui = null
 var trade_ui = null
+var magnet_machine_manager = null
 var vending_ui = null
 var safe_ui = null
 var donation_box_ui = null
@@ -8068,6 +8069,8 @@ func handle_inventory_transaction_result(data: Dictionary):
 	if mailbox_ui != null and mailbox_ui.has_method("handle_inventory_transaction_result"):
 		handled = handled or bool(mailbox_ui.handle_inventory_transaction_result(transaction_data))
 
+	if str(transaction_data.get("action", "")).begins_with("magnet_"):
+		handled = get_magnet_machine_manager().handle_result(transaction_data) or handled
 	if vending_ui != null and vending_ui.has_method("handle_inventory_transaction_result"):
 		handled = handled or bool(vending_ui.handle_inventory_transaction_result(transaction_data))
 
@@ -8268,6 +8271,8 @@ func is_major_ui_open() -> bool:
 		return true
 	if has_method("is_trade_open") and is_trade_open():
 		return true
+	if is_magnet_machine_open():
+		return true
 	if has_method("is_vending_open") and is_vending_open():
 		return true
 	if has_method("is_safe_open") and is_safe_open():
@@ -8336,6 +8341,8 @@ func is_movement_blocking_ui_open() -> bool:
 		return true
 	if has_method("is_trade_open") and is_trade_open():
 		return true
+	if is_magnet_machine_open():
+		return true
 	if has_method("is_vending_open") and is_vending_open():
 		return true
 	if has_method("is_safe_open") and is_safe_open():
@@ -8397,6 +8404,8 @@ func is_gameplay_hud_blocked() -> bool:
 	if is_world_menu_open():
 		return true
 	if has_method("is_trade_open") and is_trade_open():
+		return true
+	if is_magnet_machine_open():
 		return true
 	if has_method("is_vending_open") and is_vending_open():
 		return true
@@ -8543,6 +8552,20 @@ func setup_trade_ui():
 		return gameplay_ui_manager.setup_trade_ui()
 
 	return
+
+func get_magnet_machine_manager():
+	if magnet_machine_manager == null:
+		magnet_machine_manager = preload("res://Scripts/magnet_machine_manager.gd").new()
+		add_child(magnet_machine_manager)
+		magnet_machine_manager.setup(self)
+	return magnet_machine_manager
+
+func is_magnet_machine_open() -> bool:
+	return magnet_machine_manager != null and is_instance_valid(magnet_machine_manager.ui) and magnet_machine_manager.ui.visible
+
+func close_magnet_machine_ui():
+	if is_magnet_machine_open():
+		magnet_machine_manager.ui.hide()
 
 func setup_vending_ui():
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("setup_vending_ui"):

@@ -2438,6 +2438,11 @@ func do_jump():
 	velocity.y = jump_velocity
 	variable_jump_release_velocity = jump_velocity * JUMP_RELEASE_VELOCITY_FACTOR
 	variable_jump_active = true
+	var world = get_world_controller()
+	if world != null:
+		var equipment_manager = world.get("equipment_manager")
+		if equipment_manager != null and equipment_manager.has_method("restart_back_item_jump_animation"):
+			equipment_manager.restart_back_item_jump_animation()
 	if is_in_water_for_jump_sound():
 		play_water_jump_sound()
 	else:

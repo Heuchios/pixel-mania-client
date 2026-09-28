@@ -1278,6 +1278,8 @@ func apply_network_world_state(data: Dictionary):
 		return
 
 	notify_world_collision_snapshot_rebuilding("world-state-rebuild-start")
+	if world.magnet_machine_manager != null:
+		world.magnet_machine_manager.reset()
 	world.vending_states.clear()
 	world.safe_states.clear()
 	world.donation_box_states.clear()
@@ -1982,6 +1984,8 @@ func _apply_network_block_update(data: Dictionary):
 			if world.block_manager != null and world.block_manager.has_method("remove_background_block_without_drop"):
 				world.block_manager.remove_background_block_without_drop(grid_pos)
 		else:
+			if world.magnet_machine_manager != null:
+				world.magnet_machine_manager.remove(grid_pos)
 			world.vending_states.erase(grid_pos)
 			world.safe_states.erase(grid_pos)
 			world.donation_box_states.erase(grid_pos)
@@ -2283,6 +2287,9 @@ func apply_network_world_interaction_update(data: Dictionary):
 		var state = data.get("state", {})
 		if state is Dictionary and world.world_lock_manager != null and world.world_lock_manager.has_method("load_area_locks_save_data"):
 			world.world_lock_manager.load_area_locks_save_data(state.get("area_locks", []))
+
+	elif action == "magnet_state":
+		world.get_magnet_machine_manager().apply_state(data)
 
 	elif action == "vend_state":
 		var vend_grid_pos = _safe_grid_position(data.get("x", 0), data.get("y", 0))

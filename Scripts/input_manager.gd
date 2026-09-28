@@ -150,6 +150,7 @@ func _any_ui_blocking() -> bool:
 	if world.has_method("is_area_lock_ui_open") and world.is_area_lock_ui_open():   return true
 	if world.has_method("is_door_editor_open") and world.is_door_editor_open(): return true
 	if world.has_method("is_trade_open") and world.is_trade_open(): return true
+	if world.is_magnet_machine_open(): return true
 	if world.has_method("is_vending_open") and world.is_vending_open(): return true
 	if world.has_method("is_safe_open") and world.is_safe_open(): return true
 	if world.has_method("is_mailbox_open") and world.is_mailbox_open(): return true
@@ -206,6 +207,7 @@ func _non_chat_ui_blocking() -> bool:
 	if world.has_method("is_area_lock_ui_open") and world.is_area_lock_ui_open():   return true
 	if world.has_method("is_door_editor_open") and world.is_door_editor_open(): return true
 	if world.has_method("is_trade_open") and world.is_trade_open(): return true
+	if world.is_magnet_machine_open(): return true
 	if world.has_method("is_vending_open") and world.is_vending_open(): return true
 	if world.has_method("is_safe_open") and world.is_safe_open(): return true
 	if world.has_method("is_mailbox_open") and world.is_mailbox_open(): return true
@@ -316,6 +318,8 @@ func handle_back_request() -> bool:
 		world.close_password_door_entry()
 	elif world.has_method("is_theme_machine_confirm_open") and world.is_theme_machine_confirm_open():
 		world.close_theme_machine_confirm()
+	elif world.is_magnet_machine_open():
+		world.close_magnet_machine_ui()
 	elif world.has_method("is_vending_open") and world.is_vending_open():
 		world.close_vending_ui()
 	elif world.has_method("is_safe_open") and world.is_safe_open():

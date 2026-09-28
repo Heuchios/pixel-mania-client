@@ -1551,6 +1551,22 @@ func build_back_item_sprite_frames():
 	return sprite_frames
 
 
+func restart_back_item_jump_animation() -> void:
+	if equipped_back_item == "" or not bool(back_item_data.get("flap_animation", false)):
+		return
+	var part = get_wearable_part("back")
+	if not (part is AnimatedSprite2D) or not part.visible or part.sprite_frames == null:
+		return
+	if not part.sprite_frames.has_animation("jump"):
+		return
+	# Air jumps can keep the same animation name, including after a non-looping
+	# flap has finished. Restart only on an accepted jump, never on each update.
+	part.stop()
+	part.play("jump")
+	part.set_frame_and_progress(0, 0.0)
+	back_flap_pose_hold_timer = float(back_item_data.get("flap_pose_hold_time", 0.0))
+
+
 func update_back_item_animation(delta):
 	if equipped_back_item == "":
 		clear_back_item_fx()

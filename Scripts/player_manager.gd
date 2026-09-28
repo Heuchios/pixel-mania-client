@@ -154,9 +154,9 @@ func perform_back_item_air_jump():
 	elif world.has_method("play_sound_jump"):
 		world.play_sound_jump(world.player.global_position)
 
-	# Force the wings to start flapping immediately.
-	if world.equipment_manager != null and world.equipment_manager.has_method("update_back_item_animation"):
-		world.equipment_manager.update_back_item_animation(0.2)
+	# An extra jump may leave the movement state unchanged; explicitly restart it.
+	if world.equipment_manager != null and world.equipment_manager.has_method("restart_back_item_jump_animation"):
+		world.equipment_manager.restart_back_item_jump_animation()
 
 func get_allowed_back_item_air_jumps() -> int:
 	if world.equipped_back_item == "":
