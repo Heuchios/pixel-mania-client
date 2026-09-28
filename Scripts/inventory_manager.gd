@@ -9,6 +9,8 @@ const INVENTORY_UPGRADE_CONFIRM_SCENE = preload("res://Scenes/ui/inventory/Inven
 const ITEM_ACTION_POPUP_SCENE = preload("res://Scenes/ui/inventory/ItemActionPopup.tscn")
 const ColourCycleModulation = preload("res://Scripts/colour_cycle_modulation.gd")
 const SelectedSlotFrameClock = preload("res://Scripts/ui/selected_slot_frame_clock.gd")
+const PickupFlight = preload("res://Scripts/ui/pickup_flight.gd")
+var pickup_flights: Array[Node] = []
 const HOTBAR_SLOT_COUNT = 6
 const HOTBAR_HEIGHT = 104.0
 const HOTBAR_SLOT_SIZE = 96
@@ -3157,10 +3159,30 @@ func update_gem_counter():
 func control_screen_center(control_node) -> Vector2:
 	var screen_center: Vector2 = PICKUP_TARGET_INVALID_SCREEN_POSITION
 	if control_node != null and is_instance_valid(control_node) and control_node is Control:
-		var rect: Rect2 = control_node.get_global_rect()
-		if rect.size.x > 0.0 and rect.size.y > 0.0:
-			screen_center = rect.position + rect.size * 0.5
+		if control_node.size.x > 0.0 and control_node.size.y > 0.0:
+			screen_center = control_node.get_global_transform_with_canvas() * (control_node.size * 0.5)
 	return screen_center
+
+
+func play_pickup_flight(origin_world: Vector2, item_type: String, category: String) -> bool:
+	var destination := get_pickup_target_control(item_type, category)
+	var hud = get_hud_layer()
+	if destination == null or hud == null:
+		return false
+	var texture: Texture2D = world.get_inventory_icon_texture(item_type, category)
+	if texture == null:
+		return false
+	pickup_flights = pickup_flights.filter(func(flight): return is_instance_valid(flight) and not flight.is_queued_for_deletion())
+	# Bound mass-pickup drawing without delaying inventory or machine state.
+	if pickup_flights.size() >= 24:
+		return true
+	var metrics: Dictionary = world.vending_preview_manager.get_texture_visible_metrics(texture)
+	var origin_screen: Vector2 = world.get_viewport().get_canvas_transform() * origin_world
+	var flight = PickupFlight.new()
+	hud.add_child(flight)
+	flight.setup(texture, metrics, origin_screen, destination, is_gem_pickup_target(item_type, category), world, play_pickup_target_feedback.bind(item_type, category))
+	pickup_flights.append(flight)
+	return true
 
 
 func is_gem_pickup_target(item_type: String, category: String) -> bool:

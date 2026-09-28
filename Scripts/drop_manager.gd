@@ -14,8 +14,6 @@ const DROP_PICKUP_VACUUM_ARC_HEIGHT := 24.0
 const DROP_PICKUP_VACUUM_TARGET_OFFSET := Vector2(0.0, -12.0)
 const DROP_PICKUP_VACUUM_START_POP_SCALE := 1.12
 const DROP_PICKUP_VACUUM_SPIN_DEGREES := 170.0
-const DROP_PICKUP_REQUEST_ALPHA := 0.48
-const DROP_PICKUP_REQUEST_SCALE := Vector2(0.36, 0.36)
 const DROP_MAX_SERVER_PICKUPS_IN_FLIGHT := 4
 const DROP_MAX_SERVER_PICKUP_QUEUE := 256
 # Keep client pickup pressure below the backend's 12/sec pickup guard.
@@ -2981,7 +2979,7 @@ func is_queued_drop_pickup_still_reachable(drop_data: Dictionary) -> bool:
 	return world.player.global_position.distance_squared_to(drop_position) <= pickup_range_sq
 
 
-func animate_drop_pickup_vacuum(drop_data: Dictionary, target_position: Vector2, delta: float) -> void:
+func animate_drop_pickup_vacuum(drop_data: Dictionary, _target_position: Vector2, delta: float) -> void:
 	var drop_node = drop_data.get("node", null)
 	if not is_instance_valid(drop_node):
 		return
@@ -2992,24 +2990,20 @@ func animate_drop_pickup_vacuum(drop_data: Dictionary, target_position: Vector2,
 	var elapsed: float = _safe_float(drop_data.get("pickup_vacuum_elapsed", 0.0), 0.0, 0.0, DROP_PICKUP_REQUEST_TIMEOUT * 2.0) + delta
 	drop_data["pickup_vacuum_elapsed"] = elapsed
 
-	var progress: float = clampf(elapsed / maxf(DROP_PICKUP_VACUUM_DURATION, 0.01), 0.0, 1.0)
-	var eased_progress: float = (1.0 - cos(progress * PI)) * 0.5
-
+	# Keep the pending item readable at its source. The HUD flight begins only
+	# after confirmation, so latency cannot shrink it away or restart its journey.
+	var pulse: float = sin(elapsed / DROP_PICKUP_VACUUM_DURATION * TAU)
 	var start_position_value = drop_data.get("pickup_vacuum_start_position", drop_node.global_position)
 	var start_position: Vector2 = start_position_value if start_position_value is Vector2 else drop_node.global_position
-	var arc_offset := Vector2(0.0, -sin(progress * PI) * DROP_PICKUP_VACUUM_ARC_HEIGHT)
-	drop_node.global_position = start_position.lerp(target_position, eased_progress) + arc_offset
+	drop_node.global_position = start_position + Vector2(0.0, -absf(pulse) * 3.0)
 
 	var start_scale_value = drop_data.get("pickup_vacuum_start_scale", Vector2.ONE)
 	var start_scale: Vector2 = start_scale_value if start_scale_value is Vector2 else Vector2.ONE
-	drop_node.scale = start_scale.lerp(DROP_PICKUP_REQUEST_SCALE, eased_progress)
-
-	var start_alpha: float = _safe_float(drop_data.get("pickup_vacuum_start_alpha", 1.0), 1.0, 0.0, 1.0)
-	drop_node.modulate.a = lerpf(start_alpha, DROP_PICKUP_REQUEST_ALPHA, eased_progress)
+	drop_node.scale = start_scale * (DROP_PICKUP_VACUUM_START_POP_SCALE + pulse * 0.04)
+	drop_node.modulate.a = 1.0
 
 	var start_rotation: float = _safe_float(drop_data.get("pickup_vacuum_start_rotation", drop_node.rotation), drop_node.rotation, -TAU * 32.0, TAU * 32.0)
-	var spin_direction: float = -1.0 if _safe_float(drop_data.get("pickup_vacuum_spin_direction", 1.0), 1.0, -1.0, 1.0) < 0.0 else 1.0
-	drop_node.rotation = start_rotation + deg_to_rad(DROP_PICKUP_VACUUM_SPIN_DEGREES) * spin_direction * eased_progress
+	drop_node.rotation = start_rotation
 	update_drop_count_screen_position(drop_data)
 
 
@@ -3058,6 +3052,10 @@ func finish_drop_pickup_vacuum_node(drop_data: Dictionary, target_position: Vect
 	if not can_play_drop_pickup_finish_visual():
 		drop_node.queue_free()
 		return
+	if inventory_feedback and play_confirmed_pickup_hud_flight(drop_data):
+		drop_node.queue_free()
+		return
+	drop_node.visible = true
 
 	var final_target: Vector2 = target_position
 	if abs(final_target.x) >= 9.9e19 or abs(final_target.y) >= 9.9e19 or not is_finite(final_target.x) or not is_finite(final_target.y):
@@ -3071,6 +3069,12 @@ func finish_drop_pickup_vacuum_node(drop_data: Dictionary, target_position: Vect
 	var tween = drop_node.create_tween()
 	tween.tween_method(_animate_confirmed_pickup.bind(drop_node, drop_node.global_position, final_target, drop_node.scale, drop_node.modulate.a, drop_node.rotation), 0.0, 1.0, DROP_PICKUP_VACUUM_FINISH_DURATION)
 	tween.tween_callback(_finish_drop_pickup_vacuum.bind(drop_node, item_type, item_category, inventory_feedback))
+
+
+func play_confirmed_pickup_hud_flight(drop_data: Dictionary) -> bool:
+	if world == null or not world.has_method("play_drop_pickup_hud_flight"):
+		return false
+	return world.play_drop_pickup_hud_flight(get_drop_world_position_for_pickup(drop_data), str(drop_data.get("item_type", "")), str(drop_data.get("item_category", "")))
 
 
 func _animate_confirmed_pickup(progress: float, drop_node: Node2D, start: Vector2, target: Vector2, start_scale: Vector2, start_alpha: float, start_rotation: float) -> void:
@@ -4172,6 +4176,8 @@ func remove_drop_by_id(drop_id: String, finish_vacuum: bool = false, force_entir
 				indexed_drop["amount"] = remaining_amount
 				unregister_drop_id(indexed_drop, clean_id)
 				if finish_vacuum:
+					if can_play_drop_pickup_finish_visual():
+						play_confirmed_pickup_hud_flight(indexed_drop)
 					restore_drop_pickup_visual(indexed_drop)
 				update_drop_count_label(indexed_drop)
 				return true
@@ -4743,6 +4749,8 @@ func apply_network_item_drop_update(data: Dictionary):
 		process_queued_drop_pickups()
 		return
 
+	if is_local_pickup_response and amount < previous_amount and can_play_drop_pickup_finish_visual():
+		play_confirmed_pickup_hud_flight(drop_data)
 	drop_data["amount"] = amount
 	if is_stacked_alias_update:
 		if alias_remote_amount <= 0:

@@ -7152,6 +7152,10 @@ func play_drop_pickup_target_feedback(item_type: String, category: String) -> vo
 		inventory_manager.play_pickup_target_feedback(item_type, category)
 
 
+func play_drop_pickup_hud_flight(origin: Vector2, item_type: String, category: String) -> bool:
+	return inventory_manager != null and inventory_manager.play_pickup_flight(origin, item_type, category)
+
+
 func is_vending_machine_block_type(block_type: String) -> bool:
 	if vending_preview_manager != null and vending_preview_manager.has_method("is_vending_machine_block_type"):
 		return bool(vending_preview_manager.is_vending_machine_block_type(block_type))
