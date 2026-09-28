@@ -17,6 +17,9 @@ const EXPECTED_ITEMS := {
 	"basic_brown_pants": {"icon_cell": Vector2i(7, 3), "pants_cell": Vector2i(8, 3)},
 	"basic_green_pants": {"icon_cell": Vector2i(7, 4), "pants_cell": Vector2i(8, 4)},
 	"basic_pink_pants": {"icon_cell": Vector2i(7, 5), "pants_cell": Vector2i(8, 5)},
+	"black_dress_pants": {"icon_cell": Vector2i(7, 7), "pants_cell": Vector2i(8, 7)},
+	"blue_dress_pants": {"icon_cell": Vector2i(7, 8), "pants_cell": Vector2i(8, 8)},
+	"police_pants": {"icon_cell": Vector2i(7, 12), "pants_cell": Vector2i(8, 12)},
 }
 
 
@@ -42,13 +45,18 @@ func _run() -> void:
 		_expect((texture as AtlasTexture).region == _atlas_region(expected["pants_cell"]), "%s body must use atlas cell (%d, %d)." % [item_id, expected["pants_cell"].x, expected["pants_cell"].y])
 		_expect((inventory_icon as AtlasTexture).region == _atlas_region(expected["icon_cell"]), "%s icon must use atlas cell (%d, %d)." % [item_id, expected["icon_cell"].x, expected["icon_cell"].y])
 
-	var shorts: Dictionary = item_database_node.get_item_data("basic_black_pants")
-	_expect(shorts.display_name == "Black Shorts", "The existing item must be renamed Black Shorts.")
-	for side in ["left", "right"]:
-		var leg = ATLAS_TEXTURE_FACTORY.load_texture(shorts["%s_pants_texture" % side])
-		_expect(leg is AtlasTexture, "Each leg must resolve to an atlas frame.")
-		_expect(leg.region == _atlas_region(Vector2i(9 if side == "left" else 10, 0)), "Leg atlas cell mismatch.")
-	_test_equipped_parts(item_database_node)
+	_expect(not item_database_script.ITEMS.has("purple_pants"), "Purple Pants must be removed from the catalog.")
+	_expect(item_database_node.get_item_data("basic_black_pants").display_name == "Black Shorts", "Black Shorts name changed.")
+	_expect(item_database_node.get_item_data("basic_light_gray_pants").display_name == "White Shorts", "White Shorts rename missing.")
+	_expect(item_database_node.get_item_data("basic_navy_pants").display_name == "Blue Pants", "Blue Pants rename missing.")
+	for item_id in EXPECTED_ITEMS:
+		var pants: Dictionary = item_database_node.get_item_data(item_id)
+		for side in ["left", "right"]:
+			var leg = ATLAS_TEXTURE_FACTORY.load_texture(pants["%s_pants_texture" % side])
+			_expect(leg is AtlasTexture, "%s leg must resolve to an atlas frame." % item_id)
+			_expect(leg.region == _atlas_region(Vector2i(9 if side == "left" else 10, EXPECTED_ITEMS[item_id].pants_cell.y)), "%s leg atlas cell mismatch." % item_id)
+			_expect(not leg.get_image().is_invisible(), "%s leg artwork must not be empty." % item_id)
+		_test_equipped_parts(item_database_node, item_id)
 	if failed:
 		item_database_node.free()
 		quit(1)
@@ -58,7 +66,7 @@ func _run() -> void:
 	quit(0)
 
 
-func _test_equipped_parts(database: Node) -> void:
+func _test_equipped_parts(database: Node, selected_item: String) -> void:
 	var scene = load("res://Scenes/main.tscn").instantiate()
 	var actor := Node2D.new()
 	var visual = scene.get_node("Player/PlayerVisual").duplicate()
@@ -66,7 +74,7 @@ func _test_equipped_parts(database: Node) -> void:
 	actor.add_child(visual)
 	root.add_child(actor)
 	var world := WorldFixture.new()
-	for item_id in ["basic_black_pants", "basic_navy_pants"]:
+	for item_id in EXPECTED_ITEMS:
 		world.item_database[item_id] = database.get_item_data(item_id)
 	# Exercise the legacy split layout with available textures; Void Pants' old
 	# separate-leg source files are absent from this checkout.
@@ -74,6 +82,10 @@ func _test_equipped_parts(database: Node) -> void:
 	for key in ["pants_follow_feet", "left_pants_offset", "right_pants_offset"]:
 		legacy.erase(key)
 	world.item_database["legacy_split_pants"] = legacy
+	var single: Dictionary = legacy.duplicate(true)
+	single.erase("left_pants_texture")
+	single.erase("right_pants_texture")
+	world.item_database["legacy_single_pants"] = single
 	var manager = EQUIPMENT.new()
 	manager.player = actor
 	manager.world = world
@@ -82,7 +94,7 @@ func _test_equipped_parts(database: Node) -> void:
 	var original_middle_z: int = manager.get_wearable_part("pants").z_index
 	for facing in [1, -1]:
 		visual.scale.x = facing
-		manager.update_equipped_pants_visual("basic_black_pants", facing)
+		manager.update_equipped_pants_visual(selected_item, facing)
 		_expect(manager.get_wearable_part("pants").z_index > visual.get_node("Bottom/BaseBottomAnimated").z_index, "Shorts must render above the base underwear.")
 		for key in ["pants", "pants_left_item", "pants_right_item"]:
 			var part = manager.get_wearable_part(key)
@@ -96,7 +108,7 @@ func _test_equipped_parts(database: Node) -> void:
 			_expect(part.global_position.is_equal_approx(foot.to_global(original_middle_position)) and is_equal_approx(part.global_rotation, foot.global_rotation), "The leg must inherit foot movement and facing.")
 			foot.position = Vector2.ZERO
 			foot.rotation = 0.0
-	manager.update_equipped_pants_visual("basic_navy_pants", 1)
+	manager.update_equipped_pants_visual("legacy_single_pants", 1)
 	_expect(manager.get_wearable_part("pants").z_index == original_middle_z, "Legacy pants keep their editor draw order.")
 	_expect(manager.get_wearable_part("pants").position == original_middle_position, "Legacy pants alignment must be restored.")
 	for key in ["pants_left_item", "pants_right_item"]:
@@ -104,7 +116,7 @@ func _test_equipped_parts(database: Node) -> void:
 		_expect(manager.get_wearable_part(key).get_parent() == visual.get_node("Bottom"), "Legacy split pants retain their attachment.")
 	manager.update_equipped_pants_visual("legacy_split_pants", 1)
 	_expect(manager.get_wearable_part("pants_left_item").position == manager.DEFAULT_LEFT_PANTS_OFFSET, "Existing split pants keep their offsets.")
-	manager.update_equipped_pants_visual("basic_black_pants", 1)
+	manager.update_equipped_pants_visual(selected_item, 1)
 	manager.update_equipped_pants_visual("", 1)
 	for key in ["pants", "pants_left_item", "pants_right_item"]:
 		_expect(not manager.get_wearable_part(key).visible, "Unequip must hide all three shorts pieces.")

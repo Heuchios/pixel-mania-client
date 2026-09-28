@@ -2611,6 +2611,5 @@ func _make_preview_items() -> Array:
 		{"id": "crystal_fish", "display_name": "Crystal Fish", "category": "fish", "count": 2, "rarity": "legendary", "icon_path": "res://Assets/inventory_icons/crystal_fish.png", "description": "A rare catch with a crystalline glow."},
 		{"id": "evilangel_wings", "display_name": "Evil Angel Wings", "category": "back", "count": 1, "rarity": "legendary", "icon_path": "res://Assets/inventory_icons/evilangel_wings.png", "description": "A dramatic back item for character fashion."},
 		{"id": "purple_shirt", "display_name": "Purple Shirt", "category": "shirt", "count": 1, "rarity": "uncommon", "icon_path": "res://Assets/inventory_icons/purple_shirt.png", "description": "A wearable shirt cosmetic."},
-		{"id": "purple_pants", "display_name": "Purple Pants", "category": "pants", "count": 1, "rarity": "uncommon", "icon_path": "res://Assets/inventory_icons/purple_pants.png", "description": "A wearable pants cosmetic."},
 		{"id": "gem", "display_name": "Gem", "category": "currency", "count": 1280, "rarity": "currency", "icon_path": "res://Assets/inventory_icons/gem.png", "description": "Premium currency used across shops and rewards."}
 	]
