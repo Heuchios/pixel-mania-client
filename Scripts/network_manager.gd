@@ -4018,6 +4018,8 @@ func _build_player_position_payload(position: Vector2, safe_facing: int, clean_w
 		"world": clean_world,
 		"allow_join": bool(allow_join),
 		"animation_state": animation_state,
+		"jump_visual_sequence": int(motion_state.get("jump_visual_sequence", 0)),
+		"punch_visual_sequence": int(motion_state.get("punch_visual_sequence", 0)),
 		"velocity_x": float(motion_state.get("velocity_x", 0.0)),
 		"velocity_y": float(motion_state.get("velocity_y", 0.0)),
 		"on_floor": bool(motion_state.get("on_floor", true)),
@@ -7312,6 +7314,9 @@ func get_player_motion_state() -> Dictionary:
 	}
 	var used_animation_manager_state := false
 	var player_node = get_world_player_node()
+	if player_node != null:
+		result["jump_visual_sequence"] = int(player_node.get_meta("jump_visual_sequence", 0))
+		result["punch_visual_sequence"] = int(player_node.get_meta("punch_visual_sequence", 0))
 	if player_node is CharacterBody2D:
 		result["velocity_x"] = float(player_node.velocity.x)
 		result["velocity_y"] = float(player_node.velocity.y)

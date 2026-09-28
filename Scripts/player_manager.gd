@@ -659,6 +659,7 @@ func play_player_punch_animation():
 		return
 
 	# Visual-only punch state rides the normal movement sync; avoid a forced packet flush here.
+	world.player.set_meta("punch_visual_sequence", (int(world.player.get_meta("punch_visual_sequence", 0)) % 2147483646) + 1)
 	var punch_animation_name = get_current_player_punch_animation_name()
 	world.player.set_meta("punch_animation_name", punch_animation_name)
 	world.player.set_meta("face_punch_until_msec", Time.get_ticks_msec() + PUNCH_FACE_EXPRESSION_TIME_MSEC)
@@ -2244,7 +2245,7 @@ func update_multiplayer_movement(delta: float, from_physics_step: bool = false):
 	if network.has_method("get_player_animation_state"):
 		if current_animation_state == "":
 			current_animation_state = str(network.get_player_animation_state())
-	var animation_changed = current_animation_state != "" and current_animation_state != last_sent_network_animation_state
+	var animation_changed = (current_animation_state != "" and current_animation_state != last_sent_network_animation_state) or get_local_action_visual_key() != str(world.player.get_meta("last_sent_action_visual_key", ""))
 	var current_lava_fire_state := bool(current_motion_state.get("in_lava_fire", false))
 	var lava_fire_changed: bool = current_lava_fire_state != last_sent_network_lava_fire_state
 	var current_facing: int = -1 if int(world.player_facing_direction) < 0 else 1
@@ -2260,6 +2261,7 @@ func update_multiplayer_movement(delta: float, from_physics_step: bool = false):
 	var sent := bool(network.send_player_position(current_position, current_facing, world.current_world_name, true))
 
 	if sent:
+		world.player.set_meta("last_sent_action_visual_key", get_local_action_visual_key())
 		network_position_timer = get_network_position_send_interval()
 		network_heartbeat_timer = get_network_position_heartbeat_interval()
 		last_sent_network_position = current_position
@@ -2268,6 +2270,10 @@ func update_multiplayer_movement(delta: float, from_physics_step: bool = false):
 		last_sent_network_facing = current_facing
 		last_sent_network_fishing_key = current_fishing_key
 		last_sent_network_damage_key = current_damage_key
+
+
+func get_local_action_visual_key() -> String:
+	return "%d:%d" % [int(world.player.get_meta("jump_visual_sequence", 0)), int(world.player.get_meta("punch_visual_sequence", 0))]
 
 
 func flush_multiplayer_position(allow_join: bool = false, bypass_rate_limit: bool = false) -> bool:
@@ -2665,6 +2671,11 @@ func handle_network_player_position(player_data: Dictionary):
 	var speed_hint: float = abs(snapshot_velocity.x) if has_network_velocity else target_speed_hint
 	var vertical_hint: float = float(next_target_position.y - old_target.y) / max(NETWORK_POSITION_SEND_INTERVAL, 0.001)
 	var animation_state = clean_remote_animation_state(str(player_data.get("animation_state", "")))
+	var jump_restarted := consume_remote_action_sequence(remote_player, player_data, "jump_visual_sequence", had_position)
+	var punch_restarted := consume_remote_action_sequence(remote_player, player_data, "punch_visual_sequence", had_position)
+	if animation_state in ["punch", "place_animation"] and (punch_restarted or animation_state != str(remote_player.get_meta("network_animation_state", ""))):
+		remote_player.set_meta("remote_snapshot_action_until_msec", Time.get_ticks_msec() + PLAYER_PUNCH_REQUEST_COOLDOWN_MSEC)
+	remote_player.set_meta("network_animation_state", animation_state)
 	var now_msec := int(Time.get_ticks_msec())
 	var previous_animation_state_from_meta = str(remote_player.get_meta("animation_state", "idle"))
 	var hurt_animation_until := int(remote_player.get_meta("remote_hurt_animation_until_msec", 0))
@@ -2851,8 +2862,14 @@ func handle_network_player_position(player_data: Dictionary):
 	if remote_visual_active:
 		update_remote_player_name(remote_player, remote_name)
 		update_remote_player_facing(remote_player)
-		update_remote_shared_player_animation(remote_player, 0.0)
 		update_remote_equipment_visuals(remote_player)
+		if jump_restarted:
+			var remote_equipment = get_remote_equipment_manager(remote_player)
+			if remote_equipment != null:
+				remote_equipment.restart_back_item_jump_animation()
+		if punch_restarted:
+			apply_remote_player_action_animation(remote_id, "punch", safe_facing)
+		update_remote_shared_player_animation(remote_player, 0.0)
 		update_remote_fishing_visual(remote_player, 0.0)
 		queue_remote_visual_stabilization(remote_player)
 		remote_player.set_meta("pending_visual_refresh", false)
@@ -3381,6 +3398,15 @@ func resolve_remote_attacker_id_from_punch_payload(data: Dictionary) -> String:
 	return ""
 
 
+func consume_remote_action_sequence(remote_player: Node, data: Dictionary, key: String, had_position: bool) -> bool:
+	if not data.has(key):
+		return false
+	var sequence := _safe_int(data[key], 0, 0, 2147483647)
+	var previous := int(remote_player.get_meta(key, sequence))
+	remote_player.set_meta(key, sequence)
+	return had_position and sequence > 0 and sequence != previous
+
+
 func apply_remote_player_action_animation(remote_id: String, animation_state: String, facing: int, duration_msec: int = PLAYER_PUNCH_REQUEST_COOLDOWN_MSEC) -> void:
 	var remote_player = remote_players.get(remote_id, null)
 	if remote_player == null or not is_instance_valid(remote_player):
@@ -3403,6 +3429,13 @@ func apply_remote_player_action_animation(remote_id: String, animation_state: St
 		remote_player.set_meta("animation_phase", 0.0)
 		maybe_spawn_remote_ant_sword_punch_slash(remote_player, previous_remote_animation_state, animation_state)
 	update_remote_shared_player_animation(remote_player, 0.0)
+	# A second swing can arrive while the prior swing is still the current state.
+	# Deduplicate the matching movement/event delivery, not distinct player actions.
+	if Time.get_ticks_msec() - int(remote_player.get_meta("last_action_restart_msec", -1000)) >= 80:
+		var manager = get_remote_animation_manager(remote_player)
+		if manager != null and manager.has_method("restart_current_action_animation"):
+			manager.restart_current_action_animation()
+		remote_player.set_meta("last_action_restart_msec", Time.get_ticks_msec())
 	update_remote_player_facing(remote_player)
 
 
@@ -4104,6 +4137,10 @@ func update_remote_shared_player_animation(remote_player, delta: float) -> bool:
 	var animation_state = clean_remote_animation_state(str(remote_player.get_meta("animation_state", "idle")))
 	if animation_state == "":
 		animation_state = "idle"
+	if animation_state in ["punch", "place_animation"]:
+		var action_until := maxi(int(remote_player.get_meta("remote_action_animation_until_msec", 0)), int(remote_player.get_meta("remote_snapshot_action_until_msec", 0)))
+		if Time.get_ticks_msec() >= action_until:
+			animation_state = get_remote_locomotion_animation(remote_player)
 	remote_player.set_meta("animation_state", animation_state)
 	remote_player.set_meta("punch_animation_name", get_remote_player_punch_animation_name(remote_player))
 
@@ -4114,8 +4151,12 @@ func update_remote_shared_player_animation(remote_player, delta: float) -> bool:
 
 	var equipment_manager = get_remote_equipment_manager(remote_player)
 	if equipment_manager != null:
+		# Wings follow locomotion even while the body is punching or taking damage.
+		var wearable_state = animation_state
+		if animation_state in ["punch", "place_animation", "hurt"]:
+			wearable_state = get_remote_locomotion_animation(remote_player)
 		if equipment_manager.has_method("set_forced_animation_state"):
-			equipment_manager.set_forced_animation_state(animation_state)
+			equipment_manager.set_forced_animation_state(wearable_state)
 		if equipment_manager.has_method("update_wearable_animation_state"):
 			equipment_manager.update_wearable_animation_state(delta)
 		if equipment_manager.has_method("update_back_item_animation"):
@@ -4124,6 +4165,12 @@ func update_remote_shared_player_animation(remote_player, delta: float) -> bool:
 	var speed = float(remote_player.get_meta("remote_speed", 0.0))
 	remote_player.set_meta("remote_speed", lerp(speed, 0.0, clamp(delta * 8.0, 0.0, 1.0)))
 	return true
+
+
+func get_remote_locomotion_animation(remote_player: Node) -> String:
+	if not bool(remote_player.get_meta("network_on_floor", true)):
+		return "fall" if float(remote_player.get_meta("network_velocity_y", 0.0)) > 8.0 else "jump"
+	return "walk" if absf(float(remote_player.get_meta("network_velocity_x", 0.0))) > REMOTE_WALK_SPEED_THRESHOLD else "idle"
 
 
 func get_remote_player_punch_animation_name(remote_player) -> String:

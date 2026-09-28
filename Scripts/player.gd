@@ -2432,6 +2432,7 @@ func try_jump() -> bool:
 
 
 func do_jump():
+	set_meta("jump_visual_sequence", (int(get_meta("jump_visual_sequence", 0)) % 2147483646) + 1)
 	var jump_velocity := JUMP_VELOCITY * get_jump_velocity_multiplier()
 	if is_world_anti_gravity_enabled():
 		jump_velocity *= ANTI_GRAVITY_JUMP_MULTIPLIER

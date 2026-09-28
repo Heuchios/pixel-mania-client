@@ -1865,6 +1865,8 @@ func refresh_shop_affordability(gems: int = -1) -> void:
 
 
 func open_shop():
+	if preload("res://Scripts/world_transition_ui_guard.gd").is_blocked(world):
+		return
 	if shop_panel == null:
 		return
 

@@ -1958,6 +1958,8 @@ func _apply_network_block_update(data: Dictionary):
 			if str(hit_item.get("animation_trigger", "")) == "on_punch":
 				world.block_manager.play_server_triggered_block_animation(grid_pos, block_type)
 		if not is_local_confirmed_update:
+			if world.has_method("play_remote_player_break_animation"):
+				world.play_remote_player_break_animation(data)
 			spawn_network_block_hit_particles(layer, grid_pos, block_type, source_tool, data)
 			play_confirmed_block_punch_sound(grid_pos)
 

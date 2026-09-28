@@ -746,6 +746,13 @@ func update_movement_animation_player(animation_name: String):
 	reset_current_movement_animation_player()
 
 
+func restart_current_action_animation() -> void:
+	if current_movement_animation_player == null or current_movement_animation == "":
+		return
+	current_movement_animation_player.play(current_movement_animation)
+	current_movement_animation_player.seek(0.0, true)
+
+
 func get_active_punch_animation_name() -> String:
 	if player == null:
 		return "punch"

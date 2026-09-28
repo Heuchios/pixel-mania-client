@@ -1778,11 +1778,9 @@ func can_current_player_build_in_area_lock(area_lock: Dictionary) -> bool:
 
 
 func can_current_player_build_at(grid_pos: Vector2i) -> bool:
-	if is_locked and not can_current_player_build():
-		return false
 	var area_lock: Dictionary = get_area_lock_covering_position(grid_pos)
 	if area_lock.is_empty():
-		return true
+		return not is_locked or can_current_player_build()
 	return can_current_player_build_in_area_lock(area_lock)
 
 
@@ -1894,7 +1892,7 @@ func set_area_lock_public_build(lock_id: String, enabled: bool) -> bool:
 		if str(area_lock.get("lock_id", "")) == lock_id and can_current_player_manage_area_lock(area_lock):
 			area_lock["public_build"] = enabled
 			area_locks[i] = area_lock
-			send_network_area_lock_state()
+			send_network_area_lock_state(lock_id)
 			request_save()
 			refresh_area_lock_highlight_overlay()
 			refresh_area_lock_block_visuals()
@@ -1912,7 +1910,7 @@ func set_area_lock_ignore_empty_space(lock_id: String, enabled: bool) -> bool:
 			else:
 				area_lock["locked_positions"] = []
 			area_locks[i] = area_lock
-			send_network_area_lock_state()
+			send_network_area_lock_state(lock_id)
 			request_save()
 			refresh_area_lock_highlight_overlay()
 			refresh_area_lock_block_visuals()
@@ -1939,7 +1937,7 @@ func add_area_lock_access_name(lock_id: String, raw_name, raw_role := ROLE_BUILD
 		area_lock["allowed_players"] = allowed
 		area_lock["player_roles"] = roles
 		area_locks[i] = area_lock
-		send_network_area_lock_state()
+		send_network_area_lock_state(lock_id)
 		request_save()
 		refresh_area_lock_highlight_overlay()
 		refresh_area_lock_block_visuals()
@@ -1960,7 +1958,7 @@ func remove_area_lock_access_name(lock_id: String, raw_name) -> bool:
 		area_lock["allowed_players"] = allowed
 		area_lock["player_roles"] = roles
 		area_locks[i] = area_lock
-		send_network_area_lock_state()
+		send_network_area_lock_state(lock_id)
 		request_save()
 		refresh_area_lock_highlight_overlay()
 		refresh_area_lock_block_visuals()
@@ -1981,7 +1979,7 @@ func set_area_lock_player_role(lock_id: String, raw_name, raw_role) -> bool:
 		roles[target_name] = normalize_role(str(raw_role))
 		area_lock["player_roles"] = roles
 		area_locks[i] = area_lock
-		send_network_area_lock_state()
+		send_network_area_lock_state(lock_id)
 		request_save()
 		refresh_area_lock_highlight_overlay()
 		refresh_area_lock_block_visuals()
@@ -2190,7 +2188,7 @@ func send_network_world_lock_state():
 		network.send_world_interaction_update(payload, world.current_world_name)
 
 
-func send_network_area_lock_state():
+func send_network_area_lock_state(lock_id: String = ""):
 	if world == null:
 		return
 
@@ -2204,9 +2202,18 @@ func send_network_area_lock_state():
 		if requester == "":
 			requester = get_current_player_name()
 
+		# Updates are patches: never submit another owner's lock alongside ours.
+		var changed_locks: Array = []
+		for area_lock in get_area_locks_save_data():
+			if lock_id != "" and str(area_lock.get("lock_id", "")) != lock_id:
+				continue
+			if can_current_player_manage_area_lock(area_lock):
+				changed_locks.append(area_lock)
+		if changed_locks.is_empty():
+			return
 		var payload = {
 			"action": "area_lock_state",
-			"state": {"area_locks": get_area_locks_save_data()},
+			"state": {"area_locks": changed_locks},
 			"requested_by": requester,
 			"owner_verified": _is_local_owner_session_verified(),
 			"strict_mode": _is_strict_security_mode()

@@ -611,6 +611,7 @@ func _get_overlay_tree_summary() -> String:
 
 
 func begin_smooth_world_load(world_name: String, wait_for_server_state: bool = true):
+	preload("res://Scripts/world_transition_ui_guard.gd").begin(world)
 	setup_overlay()
 
 	var clean_world_name := world_name.strip_edges().to_upper()
@@ -1149,6 +1150,7 @@ func _fade_out_loading_overlay(operation_id: int) -> void:
 
 
 func cancel_smooth_world_load():
+	preload("res://Scripts/world_transition_ui_guard.gd").finish(world)
 	loading_operation_id += 1
 	active_loading_world_name = ""
 	waiting_for_server_state = false
@@ -1573,6 +1575,7 @@ func _cleanup_failed_world_entry(reason: String, message: String) -> void:
 func _finalize_loading_operation(operation_id: int, debug_message: String) -> void:
 	if operation_id != loading_operation_id:
 		return
+	preload("res://Scripts/world_transition_ui_guard.gd").finish(world)
 
 	_set_overlay_visible(false)
 

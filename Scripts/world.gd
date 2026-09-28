@@ -2540,6 +2540,9 @@ func update_fast_block_place_hold(delta: float) -> void:
 
 
 func _input(event):
+	if preload("res://Scripts/world_transition_ui_guard.gd").is_blocked(self):
+		get_viewport().set_input_as_handled()
+		return
 	if is_item_action_popup_event(event):
 		return
 	update_fast_block_place_hold_input(event)
@@ -2565,6 +2568,9 @@ func handle_mobile_back_request() -> bool:
 
 
 func _unhandled_input(event):
+	if preload("res://Scripts/world_transition_ui_guard.gd").is_blocked(self):
+		get_viewport().set_input_as_handled()
+		return
 	if is_item_action_popup_event(event):
 		get_viewport().set_input_as_handled()
 		return

@@ -184,11 +184,15 @@ func _process(delta):
 
 
 func _input(event):
+	if preload("res://Scripts/world_transition_ui_guard.gd").is_blocked(world):
+		return
 	if handle_global_chat_handle_touch_input(event):
 		get_viewport().set_input_as_handled()
 
 
 func _unhandled_input(event):
+	if preload("res://Scripts/world_transition_ui_guard.gd").is_blocked(world):
+		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER:
 			if is_chat_input_focused():

@@ -773,6 +773,9 @@ func set_gameplay_ui_visible(active: bool):
 
 
 func close_all_gameplay_popups():
+	for method in ["close_world_lock_ui", "close_mailbox_ui", "close_bulletin_board_ui", "close_display_ui", "close_cctv_ui", "close_magnet_machine_ui", "close_oil_refinery_ui", "close_battery_charger_ui", "close_generator_ui", "close_donation_box_ui", "close_quest_board", "close_settings_panel", "close_recipe_book", "close_friends_panel", "close_developer_panel", "close_notification_panel", "close_theme_machine_confirm", "close_password_door_entry"]:
+		if world.has_method(method):
+			world.call(method)
 	if world.has_method("close_leaderboard_ui"):
 		world.close_leaderboard_ui()
 	world.close_chat_panel()

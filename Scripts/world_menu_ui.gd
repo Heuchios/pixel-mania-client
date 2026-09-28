@@ -641,6 +641,7 @@ func _on_enter_world_pressed():
 
 
 func enter_world_from_input():
+	get_viewport().set_input_as_handled()
 	if world == null or world_name_input == null:
 		return
 
