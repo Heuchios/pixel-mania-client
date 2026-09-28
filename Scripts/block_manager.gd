@@ -12625,6 +12625,16 @@ func hit_block_grid(grid_pos: Vector2i, force_punch_action: bool = false):
 		world.show_notification("Step off the door to break it.")
 		return
 
+	# A protected lock may have decayed. Let the server verify account activity;
+	# never remove it or award its item locally based on a client-side timer.
+	if (is_world_lock_block_type(str(block_type)) or is_area_lock_block_type(str(block_type))) and should_use_server_authoritative_world_actions():
+		if not world.can_reach_grid(grid_pos) or not try_consume_block_break_input_cadence():
+			return
+		if send_network_block_update("hit", "foreground", grid_pos, str(block_type), {"source_tool": get_current_block_hit_source_tool()}):
+			spawn_block_hit_particles(grid_pos, str(block_type), "foreground")
+			play_block_hit_sound(grid_pos)
+		return
+
 	if world.has_method("can_current_player_break_block_at") and not world.can_current_player_break_block_at(str(block_type), grid_pos):
 		if is_world_lock_block_type(str(block_type)):
 			if world.world_lock_manager != null and world.world_lock_manager.has_method("has_world_lock_break_blockers") and world.world_lock_manager.has_world_lock_break_blockers():
