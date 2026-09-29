@@ -5,7 +5,7 @@ var test_username := "OWNER"
 func get_current_player_name() -> String:
 	return test_username
 func _get_active_session_username() -> String:
-	return "owner"
+	return test_username
 func _get_active_account_id() -> String:
 	return ""
 func _get_active_player_profile_id() -> String:

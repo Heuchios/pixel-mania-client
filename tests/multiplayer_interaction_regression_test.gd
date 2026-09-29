@@ -8,6 +8,7 @@ class FakeNetwork extends Node:
 		sent.append(payload.duplicate(true))
 
 class FakeWorld extends Node:
+	var blocks := {Vector2i(90, 60): {"type": "world_lock"}}
 	var current_world_name := "TEST"
 	var applying_network_world_update := false
 	var save_manager = null
@@ -62,9 +63,30 @@ func run():
 	check(locks.remove_area_lock_access_name("mine", "friend"), "Owner can remove builder")
 	check(network.sent.back().state.area_locks[0].allowed_players.is_empty(), "Removal reaches server")
 	locks.is_locked = true
+	locks.owner_name = "WORLDOWNER"
+	locks.lock_grid_pos = Vector2i(90, 60)
 	locks.test_username = "VISITOR"
 	check(locks.can_current_player_build_at(Vector2i(5, 6)), "Public area is usable inside a private world")
 	check(not locks.can_current_player_build_at(Vector2i(95, 65)), "Area grant cannot unlock the rest of the world")
+	# Exercise the same permission entry points as normal placement and punching.
+	for block_type in ["dirt", "stone", "wooden_block"]:
+		check(locks.can_current_player_place_block_at(block_type, Vector2i(5, 6)), "Public area permits normal placement: " + block_type)
+		check(locks.can_current_player_break_block_at(block_type, Vector2i(5, 6)), "Public area permits normal punching: " + block_type)
+		check(not locks.can_current_player_place_block_at(block_type, Vector2i(95, 65)), "Placement outside public area stays denied")
+		check(not locks.can_current_player_break_block_at(block_type, Vector2i(95, 65)), "Punching outside public area stays denied")
+	check(not locks.can_current_player_place_block("dirt") and not locks.can_current_player_break_block("dirt"), "Area access does not grant world-wide build permission")
+	for block_type in ["safe", "donation_box", "display_box", "display_case", "vending_machine", "fish_monger", "world_lock", "super_world_lock", "big_lock"]:
+		check(not locks.can_current_player_place_block_at(block_type, Vector2i(5, 5)), "Public area preserves special placement restrictions: " + block_type)
+		check(not locks.can_current_player_break_block_at(block_type, Vector2i(5, 5)), "Public area preserves special break restrictions: " + block_type)
+	locks.test_username = "OWNER"
+	check(locks.set_area_lock_public_build("mine", false), "Owner can disable public access")
+	check(locks.add_area_lock_access_name("mine", "friend", "builder", true), "Owner grants private area builder access")
+	locks.test_username = "FRIEND"
+	check(locks.can_current_player_place_block_at("dirt", Vector2i(5, 6)), "Named area builder can place inside a private world")
+	check(locks.can_current_player_break_block_at("dirt", Vector2i(5, 6)), "Named area builder can punch inside a private world")
+	locks.test_username = "VISITOR"
+	check(not locks.can_current_player_place_block_at("dirt", Vector2i(5, 6)), "Private area denies visitor placement")
+	check(not locks.can_current_player_break_block_at("dirt", Vector2i(5, 6)), "Private area denies visitor punching")
 	locks.free()
 	network.free()
 	original_network.name = "NetworkManager"

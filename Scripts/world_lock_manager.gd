@@ -600,7 +600,7 @@ func can_current_player_toggle_door_lock() -> bool:
 	return _can_toggle_wooden_entrance_with_role(get_player_access_role(get_current_player_name()))
 
 
-func can_current_player_place_block(block_type: String) -> bool:
+func can_current_player_place_block(block_type: String, grid_pos: Variant = null) -> bool:
 	if not _is_local_player_session_match():
 		return false
 
@@ -626,10 +626,12 @@ func can_current_player_place_block(block_type: String) -> bool:
 	if not is_locked:
 		return true
 
-	return can_current_player_build()
+	# Normal block actions use the target area's grant, not world-wide access.
+	# The special block restrictions above still apply inside public areas.
+	return can_current_player_build_at(grid_pos) if grid_pos is Vector2i else can_current_player_build()
 
 
-func can_current_player_break_block(block_type: String) -> bool:
+func can_current_player_break_block(block_type: String, grid_pos: Variant = null) -> bool:
 	if not _is_local_player_session_match():
 		return false
 
@@ -660,7 +662,7 @@ func can_current_player_break_block(block_type: String) -> bool:
 	if not is_locked:
 		return true
 
-	return can_current_player_build()
+	return can_current_player_build_at(grid_pos) if grid_pos is Vector2i else can_current_player_build()
 
 
 func can_current_player_interact_with_block(block_type: String) -> bool:
@@ -1785,7 +1787,7 @@ func can_current_player_build_at(grid_pos: Vector2i) -> bool:
 
 
 func can_current_player_place_block_at(block_type: String, grid_pos: Vector2i) -> bool:
-	if not can_current_player_place_block(block_type):
+	if not can_current_player_place_block(block_type, grid_pos):
 		return false
 	if is_area_lock_block_type(block_type) and not is_area_lock_area_available(grid_pos, block_type):
 		return false
@@ -1795,7 +1797,7 @@ func can_current_player_place_block_at(block_type: String, grid_pos: Vector2i) -
 func can_current_player_break_block_at(block_type: String = "", grid_pos: Vector2i = Vector2i.ZERO) -> bool:
 	if is_area_lock_block_type(block_type):
 		return can_current_player_manage_area_lock(get_area_lock_for_lock_position(grid_pos))
-	if not can_current_player_break_block(block_type):
+	if not can_current_player_break_block(block_type, grid_pos):
 		return false
 	return can_current_player_build_at(grid_pos)
 
