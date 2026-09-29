@@ -12274,13 +12274,13 @@ func prepare_mouse_punch_facing() -> bool:
 func is_water_bucket_selected() -> bool:
 	if world == null:
 		return false
-	return str(world.get("selected_item_type")).strip_edges().to_lower() == WATER_BUCKET_ITEM_TYPE and str(world.get("selected_item_category")).strip_edges().to_lower() == "block"
+	return str(world.get("selected_item_type")).strip_edges().to_lower() == WATER_BUCKET_ITEM_TYPE and str(world.get("selected_item_category")).strip_edges().to_lower() == "material"
 
 
 func get_water_bucket_inventory_count() -> int:
-	if world == null or not ("inventory" in world):
+	if world == null or not ("material_inventory" in world):
 		return 0
-	var count_value: Variant = world.inventory.get(WATER_BUCKET_ITEM_TYPE, 0)
+	var count_value: Variant = world.material_inventory.get(WATER_BUCKET_ITEM_TYPE, 0)
 	return maxi(0, int(count_value))
 
 
@@ -12288,16 +12288,16 @@ func refresh_water_bucket_inventory_ui() -> void:
 	if world == null:
 		return
 	if world.has_method("refresh_ui_after_item_change"):
-		world.refresh_ui_after_item_change(WATER_BUCKET_ITEM_TYPE, "block")
+		world.refresh_ui_after_item_change(WATER_BUCKET_ITEM_TYPE, "material")
 	else:
 		world.update_all_ui()
 
 
 func adjust_water_bucket_inventory(delta: int) -> void:
-	if world == null or not ("inventory" in world):
+	if world == null or not ("material_inventory" in world):
 		return
 	var next_count: int = maxi(0, get_water_bucket_inventory_count() + delta)
-	world.inventory[WATER_BUCKET_ITEM_TYPE] = next_count
+	world.material_inventory[WATER_BUCKET_ITEM_TYPE] = next_count
 	refresh_water_bucket_inventory_ui()
 
 

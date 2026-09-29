@@ -173,20 +173,20 @@ func _process(delta):
 func update_selected_hand_preview():
 	if world == null or player == null or not is_instance_valid(player):
 		return
-	# Remote avatars have their own equipment managers, sharing this world.
-	if player != world.player:
-		return
-	var item_id := str(world.selected_item_type)
-	var category := str(world.selected_item_category)
+	var is_local: bool = player == world.player
+	var item_id := str(world.selected_item_type) if is_local else str(player.get_meta("selected_hand_item", ""))
+	var category := str(world.selected_item_category) if is_local else str(player.get_meta("selected_hand_category", ""))
+	var equipped_hand := str(world.equipped_tool) if is_local else str(player.get_meta("equipment_slots", {}).get("hand", ""))
+	var facing := int(world.player_facing_direction) if is_local else int(player.get_meta("facing", 1))
 	var preview_key := ""
-	if category in ["block", "seed"] and world.get_item_count(item_id, category) > 0:
+	if category in ["block", "seed"] and world.item_database.has(item_id) and (not is_local or world.get_item_count(item_id, category) > 0):
 		preview_key = category + ":" + item_id
 	if preview_key == "":
 		if selected_hand_preview_key != "":
 			selected_hand_preview_key = ""
 			if is_instance_valid(selected_hand_preview):
 				selected_hand_preview.hide()
-			update_equipped_tool_visual(str(world.equipped_tool), int(world.player_facing_direction))
+			update_equipped_tool_visual(equipped_hand, facing)
 		return
 	if not is_instance_valid(selected_hand_preview):
 		var socket = player.get_node_or_null("PlayerVisual/HandItem")
@@ -207,7 +207,7 @@ func update_selected_hand_preview():
 		if texture == null:
 			selected_hand_preview.hide()
 			selected_hand_preview_key = ""
-			update_equipped_tool_visual(str(world.equipped_tool), int(world.player_facing_direction))
+			update_equipped_tool_visual(equipped_hand, facing)
 			return
 		selected_hand_preview.texture = texture
 		var extent: float = maxf(texture.get_width(), texture.get_height())

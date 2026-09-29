@@ -131,6 +131,10 @@ func use_selected_item_at_mouse():
 		world.use_selected_lure_at_mouse()
 		return
 
+	if world.block_manager != null and world.block_manager.is_water_bucket_selected():
+		world.block_manager.try_use_water_bucket_at_mouse()
+		return
+
 	if world.selected_item_type in ["fertilizer", "super_fertilizer"]:
 		var target_grid: Vector2i = world.get_mouse_grid_position()
 		if not world.has_planted_seed(target_grid):

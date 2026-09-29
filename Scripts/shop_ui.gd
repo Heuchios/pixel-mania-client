@@ -33,6 +33,7 @@ const GEM_PACK_CARDS := [
 # matches "mountain" below) rather than a regular item. Edit this array to
 # change what's featured - no scene editing needed.
 const FEATURED_PICKS := [
+	{"type": "item", "id": "appreciation_wings"},
 	{"type": "gem_pack", "id": "mountain"},
 	{"type": "item", "id": "world_lock"},
 	{"type": "item", "id": "fish_monger"},
@@ -92,6 +93,11 @@ var shop_last_purchase_context = {}
 
 
 var shop_items = [
+	{
+		"item_id": "appreciation_wings", "amount": 1, "price": 0, "section": "clothes",
+		"description": "A thank-you gift for playing PixelMania. Claim one free pair per account.",
+		"once_per_account": true,
+	},
 	{
 		"item_id": "wooden_fishing_rod",
 		"amount": 1,
@@ -763,7 +769,7 @@ func bind_item_card(card: Button, item: Dictionary, category_key: String) -> voi
 
 	var price_label = card.get_node_or_null("PriceLabel")
 	if price_label != null:
-		price_label.text = format_shop_price(price) + " GEMS"
+		price_label.text = "FREE" if price == 0 else format_shop_price(price) + " GEMS"
 
 	shop_card_by_key[item_id] = card
 
@@ -926,6 +932,8 @@ func is_shop_item_valid(item: Dictionary) -> bool:
 		return false
 
 	var item_id = str(item.get("item_id", ""))
+	if bool(item.get("once_per_account", false)) and item_id in world.get_meta("shop_claims", []):
+		return false
 
 	if item_id == "":
 		return false
@@ -1001,7 +1009,7 @@ func get_shop_item_entry(item_id: String) -> Dictionary:
 	for item in shop_items:
 		if not (item is Dictionary):
 			continue
-		if str(item.get("item_id", "")) == item_id:
+		if str(item.get("item_id", "")) == item_id and is_shop_item_valid(item):
 			return item
 	return {}
 
@@ -1076,6 +1084,9 @@ func buy_item(item_id: String, amount: int, price: int):
 		notify("Connection required.")
 		return
 
+	if bool(item_entry.get("once_per_account", false)):
+		notify("Connect to the server to claim this gift.")
+		return
 	var gems = int(world.currency_inventory.get("gem", 0))
 
 	if gems < canonical_price:
@@ -1190,6 +1201,9 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 
 	var message = str(data.get("message", "Shop transaction finished."))
 	var is_success = bool(data.get("ok", false))
+	if data.get("shop_claims") is Array:
+		world.set_meta("shop_claims", data.shop_claims.duplicate())
+		populate_all_shop_grids()
 
 	if is_success:
 		var purchase_item_id = str(data.get("item_id", shop_last_purchase_context.get("item_id", "")))
@@ -1875,6 +1889,7 @@ func open_shop():
 			world.close_inventory_window()
 
 	shop_panel.visible = true
+	populate_all_shop_grids()
 
 	# Every time the shop opens: back to the Featured tab, detail popup
 	# closed, product list scrolled to the top - a reopened shop should never

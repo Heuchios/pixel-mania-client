@@ -4746,7 +4746,7 @@ func apply_network_item_drop_update(data: Dictionary):
 		})
 
 	if amount <= 0:
-		var should_finish_vacuum: bool = bool(drop_data.get("pickup_requested", false)) or bool(drop_data.get("pickup_in_progress", false)) or bool(drop_data.get("pickup_request_sent", false)) or is_local_pickup_response
+		var should_finish_vacuum: bool = is_local_pickup_response
 		var removed_id_lookup: Dictionary = {}
 		removed_id_lookup[drop_id] = true
 		var force_entire_stack := should_force_remove_entire_drop_stack(drop_data, removed_id_lookup)
@@ -4865,6 +4865,10 @@ func apply_network_bulk_drop_pickup_result(data: Dictionary) -> bool:
 				update_payload["type"] = "world_item_drop_update"
 			if not update_payload.has("world") and data.has("world"):
 				update_payload["world"] = data.get("world")
+			# Partial bulk results must retain the collector's identity too.
+			for key in ["requested_by", "picker_id", "player_id", "actor_id", "pickup_player_id", "picked_by_id", "requested_by_name", "player_name", "picker_name", "username", "account_username"]:
+				if not update_payload.has(key) and data.has(key):
+					update_payload[key] = data[key]
 			update_payload["_server_inventory_update_applied"] = did_apply_player_state
 			update_payload["_apply_pickup_inventory"] = should_apply_pickup_inventory
 			apply_network_item_drop_update(update_payload)
@@ -4894,7 +4898,7 @@ func apply_network_bulk_drop_pickup_result(data: Dictionary) -> bool:
 	for clean_id in removed_ids:
 		var removed_drop_data: Dictionary = get_drop_by_id(clean_id)
 		var force_entire_stack := should_force_remove_entire_drop_stack(removed_drop_data, seen_removed_ids)
-		remove_drop_by_id(clean_id, true, force_entire_stack)
+		remove_drop_by_id(clean_id, _is_drop_pickup_response_for_local_client(removed_drop_data, data), force_entire_stack)
 
 	# Clear pickup flags from any remaining visual stack aliases that were part of
 	# this same bulk request. If all aliases were removed, these lookups are empty.
@@ -4966,7 +4970,7 @@ func apply_network_item_drop_remove(data: Dictionary):
 		if added_amount > 0.0:
 			refresh_pickup_inventory_ui(previous_type, previous_category)
 
-	var should_finish_vacuum: bool = bool(drop_data.get("pickup_requested", false)) or bool(drop_data.get("pickup_in_progress", false)) or bool(drop_data.get("pickup_request_sent", false)) or is_local_pickup_remove_response
+	var should_finish_vacuum: bool = is_local_pickup_remove_response
 	_clear_drop_pickup_flags(drop_data)
 	var removed_id_lookup: Dictionary = {}
 	removed_id_lookup[drop_id] = true

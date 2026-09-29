@@ -11,7 +11,7 @@ class TestWorld extends Node:
 	var tool_textures := {}
 	var block_textures := {}
 	var seed_textures := {}
-	var item_database := {}
+	var item_database := {"dirt": {"category": "block"}, "dirt_seed": {"category": "seed"}}
 	func get_item_count(id, _category):
 		return counts.get(id, 0)
 	func get_inventory_icon_texture(_id, _category):
@@ -87,6 +87,19 @@ func run():
 	world.add_child(world.player)
 	manager.update_selected_hand_preview()
 	assert(not first_preview.visible, "Remote avatars must not inherit local selection")
+	actor.set_meta("selected_hand_item", "dirt_seed")
+	actor.set_meta("selected_hand_category", "seed")
+	actor.set_meta("equipment_slots", {"hand": "pickaxe"})
+	actor.set_meta("facing", -1)
+	world.counts["dirt_seed"] = 0
+	manager.update_selected_hand_preview()
+	assert(first_preview.visible and not tool.visible, "Remote selection uses the remote snapshot, not local inventory")
+	assert(is_equal_approx(first_preview.scale.x, 7.0 / 32.0))
+	actor.set_meta("selected_hand_item", "")
+	actor.set_meta("selected_hand_category", "")
+	manager.update_selected_hand_preview()
+	assert(not first_preview.visible and tool.visible)
+	assert(manager.wearable_part_item_ids["hand_item"] == "pickaxe", "Clearing remote preview restores that player's equipped tool")
 	assert(world.counts["dirt"] == 2)
 	world.free()
 	print("SELECTED_HAND_PREVIEW_PASS")

@@ -4117,6 +4117,8 @@ func _build_player_position_payload(position: Vector2, safe_facing: int, clean_w
 		"animation_state": animation_state,
 		"jump_visual_sequence": int(motion_state.get("jump_visual_sequence", 0)),
 		"punch_visual_sequence": int(motion_state.get("punch_visual_sequence", 0)),
+		"selected_hand_item": str(motion_state.get("selected_hand_item", "")),
+		"selected_hand_category": str(motion_state.get("selected_hand_category", "")),
 		"velocity_x": float(motion_state.get("velocity_x", 0.0)),
 		"velocity_y": float(motion_state.get("velocity_y", 0.0)),
 		"on_floor": bool(motion_state.get("on_floor", true)),
@@ -7447,6 +7449,11 @@ func get_player_motion_state() -> Dictionary:
 	var world_node = get_world_node()
 	if world_node != null:
 		var animation_manager = world_node.get("player_animation_manager")
+		var selected_id := str(world_node.get("selected_item_type"))
+		var selected_category := str(world_node.get("selected_item_category"))
+		if selected_category in ["block", "seed"] and world_node.get_item_count(selected_id, selected_category) > 0:
+			result["selected_hand_item"] = selected_id
+			result["selected_hand_category"] = selected_category
 		if animation_manager != null and animation_manager.has_method("get_player_animation_name"):
 			var manager_state = str(animation_manager.get_player_animation_name()).strip_edges().to_lower()
 			if ["idle", "walk", "jump", "fall", "punch", "hurt", "dead", "dead_spirit"].has(manager_state):

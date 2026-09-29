@@ -2257,6 +2257,7 @@ func has_useful_player_data(data: Dictionary) -> bool:
 
 
 func reset_player_data_to_defaults():
+	world.set_meta("shop_claims", [])
 	world.selected_item_type = "punch"
 	world.selected_item_category = "tool"
 	world.primary_hotbar_tool = "punch"
@@ -2403,6 +2404,7 @@ func apply_player_data(data: Dictionary, skip_hotbar_render: bool = false):
 	apply_saved_inventory_counts(world.ride_inventory, data.get("ride_inventory", {}), true)
 	apply_saved_inventory_counts(world.currency_inventory, data.get("currency_inventory", {}), not data.has("currency_inventory"))
 	apply_saved_inventory_counts(world.material_inventory, data.get("material_inventory", {}), true)
+	world.set_meta("shop_claims", data.get("shop_claims", []).duplicate() if data.get("shop_claims") is Array else [])
 	apply_saved_inventory_counts(world.lure_inventory, data.get("lure_inventory", {}), true)
 	apply_saved_fish_count_inventory(data.get("fish_inventory", {}), true, str(data.get("fish_inventory_unit", "")))
 	world.normalize_hotbar()
@@ -2892,6 +2894,7 @@ func get_player_data_dedup_hash(player_data: Dictionary) -> int:
 		"ride_inventory": player_data.get("ride_inventory", {}) if player_data.get("ride_inventory", null) is Dictionary else {},
 		"currency_inventory": player_data.get("currency_inventory", {}) if player_data.get("currency_inventory", null) is Dictionary else {},
 		"material_inventory": player_data.get("material_inventory", {}) if player_data.get("material_inventory", null) is Dictionary else {},
+		"shop_claims": player_data.get("shop_claims", []) if player_data.get("shop_claims") is Array else [],
 		"lure_inventory": player_data.get("lure_inventory", {}) if player_data.get("lure_inventory", null) is Dictionary else {},
 		"fish_inventory": player_data.get("fish_inventory", {}) if player_data.get("fish_inventory", null) is Dictionary else {},
 		"fish_inventory_unit": _safe_string(player_data.get("fish_inventory_unit", ""), "", MAX_INVENTORY_STRING_LEN),
@@ -2945,6 +2948,7 @@ func get_current_player_state_dedup_hash() -> int:
 		"ride_inventory": world.ride_inventory.duplicate(true) if world.ride_inventory is Dictionary else {},
 		"currency_inventory": world.currency_inventory.duplicate(true) if world.currency_inventory is Dictionary else {},
 		"material_inventory": world.material_inventory.duplicate(true) if world.material_inventory is Dictionary else {},
+		"shop_claims": world.get_meta("shop_claims", []).duplicate(),
 		"lure_inventory": world.lure_inventory.duplicate(true) if world.lure_inventory is Dictionary else {},
 		"fish_inventory": get_fish_inventory_count_save_data(),
 		"fish_inventory_unit": "tenths_kg",
@@ -3312,6 +3316,7 @@ func load_world():
 	apply_saved_inventory_counts(world.ride_inventory, data.get("ride_inventory", {}), true)
 	apply_saved_inventory_counts(world.currency_inventory, data.get("currency_inventory", {}), not data.has("currency_inventory"))
 	apply_saved_inventory_counts(world.material_inventory, data.get("material_inventory", {}), true)
+	world.set_meta("shop_claims", data.get("shop_claims", []).duplicate() if data.get("shop_claims") is Array else [])
 	apply_saved_inventory_counts(world.lure_inventory, data.get("lure_inventory", {}), true)
 	apply_saved_fish_count_inventory(data.get("fish_inventory", {}), true, str(data.get("fish_inventory_unit", "")))
 	world.normalize_hotbar()

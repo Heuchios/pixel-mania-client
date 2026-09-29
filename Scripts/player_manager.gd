@@ -2273,7 +2273,10 @@ func update_multiplayer_movement(delta: float, from_physics_step: bool = false):
 
 
 func get_local_action_visual_key() -> String:
-	return "%d:%d" % [int(world.player.get_meta("jump_visual_sequence", 0)), int(world.player.get_meta("punch_visual_sequence", 0))]
+	var selection := ""
+	if world.selected_item_category in ["block", "seed"] and world.get_item_count(world.selected_item_type, world.selected_item_category) > 0:
+		selection = str(world.selected_item_category) + ":" + str(world.selected_item_type)
+	return "%d:%d:%s" % [int(world.player.get_meta("jump_visual_sequence", 0)), int(world.player.get_meta("punch_visual_sequence", 0)), selection]
 
 
 func flush_multiplayer_position(allow_join: bool = false, bypass_rate_limit: bool = false) -> bool:
@@ -2666,6 +2669,9 @@ func handle_network_player_position(player_data: Dictionary):
 	var vertical_hint: float = float(next_target_position.y - old_target.y) / max(NETWORK_POSITION_SEND_INTERVAL, 0.001)
 	var animation_state = clean_remote_animation_state(str(player_data.get("animation_state", "")))
 	var jump_restarted := consume_remote_action_sequence(remote_player, player_data, "jump_visual_sequence", had_position)
+	if player_data.has("selected_hand_item"):
+		remote_player.set_meta("selected_hand_item", str(player_data.get("selected_hand_item", "")))
+		remote_player.set_meta("selected_hand_category", str(player_data.get("selected_hand_category", "")))
 	var punch_restarted := consume_remote_action_sequence(remote_player, player_data, "punch_visual_sequence", had_position)
 	if animation_state in ["punch", "place_animation"] and (punch_restarted or animation_state != str(remote_player.get_meta("network_animation_state", ""))):
 		remote_player.set_meta("remote_snapshot_action_until_msec", Time.get_ticks_msec() + PLAYER_PUNCH_REQUEST_COOLDOWN_MSEC)
@@ -4156,6 +4162,8 @@ func update_remote_shared_player_animation(remote_player, delta: float) -> bool:
 			equipment_manager.update_wearable_animation_state(delta)
 		if equipment_manager.has_method("update_back_item_animation"):
 			equipment_manager.update_back_item_animation(delta)
+		if equipment_manager.has_method("update_selected_hand_preview"):
+			equipment_manager.update_selected_hand_preview()
 
 	var speed = float(remote_player.get_meta("remote_speed", 0.0))
 	remote_player.set_meta("remote_speed", lerp(speed, 0.0, clamp(delta * 8.0, 0.0, 1.0)))
