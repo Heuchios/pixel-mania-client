@@ -98,6 +98,7 @@ var chat_button_icon_base_position := Vector2.ZERO
 var chat_button_shadow_base_position := Vector2(5, 7)
 
 var chat_messages = []
+var _entry_honors_by_key: Dictionary = {}
 var chat_panel_amount = 0.0
 var chat_panel_target = 0.0
 
@@ -1839,6 +1840,46 @@ func get_active_chat_input() -> LineEdit:
 
 func add_chat_message(sender: String, message: String, metadata: Dictionary = {}):
 	metadata = metadata.duplicate(true)
+	# Older servers send honors separately. Merge either arrival order into the
+	# same entry row, scoped to the join session so revisits retain their history.
+	var entry_key := str(metadata.get("world_entry_key", ""))
+	if entry_key != "" and is_system_chat_message(sender, metadata):
+		var world_name := str(metadata.get("world", ""))
+		var honors_prefix := "World Honors for %s: " % world_name
+		var is_legacy_honors := message.begins_with(honors_prefix) or message.begins_with("World Honors for %s are temporarily unavailable" % world_name)
+		var is_entry := message.contains(" entered, " + world_name) and message.contains("This world is ")
+		if is_legacy_honors:
+			var summary := "temporarily unavailable"
+			if message.begins_with(honors_prefix):
+				summary = message.trim_prefix(honors_prefix).trim_suffix(". Use /honors for rankings.")
+				var rank_pattern := RegEx.create_from_string("(Today|Yesterday|Overall) #(\\d+)")
+				var ranks: PackedStringArray = []
+				for rank in rank_pattern.search_all(summary):
+					ranks.append("#%s %s" % [rank.get_string(2), rank.get_string(1).to_lower()])
+				if not ranks.is_empty():
+					summary = ", ".join(ranks)
+			if _entry_honors_by_key.size() >= MAX_CHAT_MESSAGES:
+				_entry_honors_by_key.erase(_entry_honors_by_key.keys()[0])
+			_entry_honors_by_key[entry_key] = summary
+			for entry in chat_messages:
+				var previous := get_chat_message_metadata(entry)
+				if str(previous.get("world_entry_key", "")) == entry_key and bool(previous.get("world_entry", false)):
+					entry["message"] = _with_entry_honors(str(entry["message"]), summary)
+					refresh_chat_messages()
+					break
+			return
+		if is_entry:
+			metadata["world_entry"] = true
+			if _entry_honors_by_key.has(entry_key):
+				message = _with_entry_honors(message, str(_entry_honors_by_key[entry_key]))
+			for entry in chat_messages:
+				var previous := get_chat_message_metadata(entry)
+				if str(previous.get("world_entry_key", "")) == entry_key and bool(previous.get("world_entry", false)):
+					# An old local fallback must not overwrite a full server notice.
+					if not str(entry["message"]).contains("(Honors:") or message.contains("(Honors:"):
+						entry["message"] = message
+					refresh_chat_messages()
+					return
 	metadata["display_time"] = Time.get_time_string_from_system()
 	metadata["username_color"] = get_chat_username_color(sender)
 	metadata["staff_tag"] = get_chat_staff_tag(sender, metadata)
@@ -1850,6 +1891,56 @@ func add_chat_message(sender: String, message: String, metadata: Dictionary = {}
 	while chat_messages.size() > MAX_CHAT_MESSAGES:
 		chat_messages.pop_front()
 	refresh_chat_messages()
+
+
+func _with_entry_honors(message: String, summary: String) -> String:
+	if message.contains("(Honors:"):
+		return message
+	var split := message.find(". This world is ")
+	if split < 0:
+		return message
+	return message.left(split) + " (Honors: " + summary + ")" + message.substr(split)
+
+
+func get_world_entry_color_runs(message: String) -> Array:
+	var pattern := RegEx.create_from_string("^(.*?) entered, ([A-Z0-9_]+)( \\[[^\\]]*\\])?( \\(Honors: [^)]*\\))?\\. (This world is (?:locked by ([^,.]+)|locked|unlocked))([,.] )(\\d+)( others? here\\.)$")
+	var entry := pattern.search(message)
+	if entry == null:
+		return []
+	var normal := Color("c5e5f3")
+	var runs: Array = []
+	runs.append({"text": entry.get_string(1), "color": Color("ffd568")})
+	runs.append({"text": " entered, ", "color": normal})
+	runs.append({"text": entry.get_string(2), "color": Color("ffffff")})
+	if entry.get_string(3) != "":
+		runs.append({"text": entry.get_string(3), "color": Color("8aef67")})
+	var honors := entry.get_string(4)
+	var rank_pattern := RegEx.create_from_string("#\\d+ (?:today|yesterday|overall)")
+	var cursor := 0
+	for rank in rank_pattern.search_all(honors):
+		runs.append({"text": honors.substr(cursor, rank.get_start() - cursor), "color": normal})
+		var color := Color("ffba62") if rank.get_string().ends_with("today") else Color("e9a0fa")
+		if rank.get_string().ends_with("overall"):
+			color = Color("79e3ed")
+		runs.append({"text": rank.get_string(), "color": color})
+		cursor = rank.get_end()
+	runs.append({"text": honors.substr(cursor) + ". ", "color": normal})
+	var owner := entry.get_string(6)
+	if owner != "":
+		runs.append({"text": "This world is locked by ", "color": normal})
+		runs.append({"text": owner, "color": Color("ffd568")})
+	else:
+		runs.append({"text": entry.get_string(5), "color": normal})
+	runs.append({"text": entry.get_string(7), "color": normal})
+	runs.append({"text": entry.get_string(8), "color": Color("79e3ed")})
+	runs.append({"text": entry.get_string(9), "color": normal})
+	return runs
+
+
+func append_world_entry_runs(label: RichTextLabel, runs: Array) -> void:
+	append_chat_run(label, "System: ", Color("c5e5f3"))
+	for run in runs:
+		append_chat_run(label, str(run["text"]), run["color"])
 
 
 func get_chat_message_metadata(data: Dictionary) -> Dictionary:
@@ -1989,6 +2080,23 @@ func refresh_chat_messages(force_scroll_to_bottom: bool = false):
 		var is_broadcast: bool = is_broadcast_chat_message(metadata)
 		var full_text = format_chat_message_line(sender, message, metadata)
 		var label_width = max(1.0, usable_width - CHAT_MESSAGE_PAD_X * 2.0)
+		var entry_runs := get_world_entry_color_runs(get_display_chat_text(message, metadata)) if is_system_chat_message(sender, metadata) else []
+		if not entry_runs.is_empty():
+			var entry_label := RichTextLabel.new()
+			entry_label.name = "MessageRow"
+			apply_chat_font_to_control(entry_label)
+			entry_label.add_theme_font_size_override("normal_font_size", CHAT_MESSAGE_FONT_SIZE)
+			entry_label.bbcode_enabled = false
+			entry_label.fit_content = true
+			entry_label.scroll_active = false
+			entry_label.custom_minimum_size.x = label_width
+			entry_label.size.x = label_width
+			entry_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			append_chat_run(entry_label, "[" + str(metadata.get("display_time", "")) + "] ", Color(0.8, 0.8, 0.8))
+			append_world_entry_runs(entry_label, entry_runs)
+			chat_messages_root.add_child(entry_label)
+			total_height += maxf(CHAT_MESSAGE_MIN_ROW_HEIGHT, entry_label.get_content_height()) + 5.0
+			continue
 		var label = Label.new()
 		label.name = "MessageLabel"
 		label.add_theme_font_size_override("font_size", CHAT_MESSAGE_FONT_SIZE)
@@ -2067,12 +2175,11 @@ func refresh_authored_chat_messages(
 		label.size = Vector2(usable_width, 0)
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		append_chat_run(label, "[" + str(metadata.get("display_time", "")) + "] ", Color(0.8, 0.8, 0.8))
-		if bool(metadata.get("server_announcement", false)):
+		var entry_runs := get_world_entry_color_runs(get_display_chat_text(message, metadata)) if is_system_chat_message(sender, metadata) else []
+		if not entry_runs.is_empty():
+			append_world_entry_runs(label, entry_runs)
+		elif bool(metadata.get("server_announcement", false)):
 			append_chat_run(label, "SERVER: ", Color(1.0, 0.2, 0.2))
-		elif metadata.has("presence"):
-			append_chat_run(label, "<", Color(0.85, 0.65, 1.0))
-			append_chat_run(label, sender + str(metadata.get("staff_tag", "")), metadata.get("username_color", Color.WHITE))
-			append_chat_run(label, " " + str(metadata.presence) + ", " + str(metadata.others) + " others here>", Color(0.85, 0.65, 1.0))
 		elif is_broadcast:
 			append_chat_run(label, "** from (", Color(0.85, 0.65, 1.0))
 			append_chat_run(label, sender + str(metadata.get("staff_tag", "")), Color(0.35, 1.0, 0.15))
@@ -2083,7 +2190,8 @@ func refresh_authored_chat_messages(
 			append_chat_run(label, "System: ", CHAT_SYSTEM_COLOR)
 		else:
 			append_chat_run(label, "<" + sender + ">" + str(metadata.get("staff_tag", "")) + " ", metadata.get("username_color", Color.WHITE))
-		append_chat_run(label, get_display_chat_text(message, metadata), CHAT_SYSTEM_COLOR if is_system_chat_message(sender, metadata) and not is_broadcast else Color.WHITE)
+		if entry_runs.is_empty():
+			append_chat_run(label, get_display_chat_text(message, metadata), CHAT_SYSTEM_COLOR if is_system_chat_message(sender, metadata) and not is_broadcast else Color.WHITE)
 		var row_height: float = label.get_content_height()
 		label.mouse_filter = Control.MOUSE_FILTER_STOP if is_broadcast and source_world != "" else Control.MOUSE_FILTER_IGNORE
 
@@ -2357,6 +2465,8 @@ func get_chat_username_color(sender: String) -> Color:
 
 
 func get_chat_staff_tag(sender: String, metadata: Dictionary) -> String:
+	if is_system_chat_message(sender, metadata):
+		return ""
 	var role := str(metadata.get("account_role", "")).to_lower()
 	var network = get_node_or_null("/root/NetworkManager")
 	if network != null and (str(metadata.get("player_id", "")) == network.player_id or sender.to_lower() == str(network.player_name).to_lower()):

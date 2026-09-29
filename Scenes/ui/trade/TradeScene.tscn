@@ -54,42 +54,52 @@ color = Color(0, 0, 0, 0.18)
 
 [node name="TradePanel" type="Control" parent="." unique_id=279979634]
 anchors_preset = 0
-offset_right = 920.0
-offset_bottom = 560.0
+offset_right = 920
+offset_bottom = 600
+
+offset_left = 0
+
+offset_top = 0
 
 [node name="PanelBack" type="Panel" parent="TradePanel" unique_id=620329535]
 layout_mode = 0
-offset_right = 920.0
-offset_bottom = 560.0
+offset_right = 920
+offset_bottom = 600
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_0")
 
+offset_left = 0
+
+offset_top = 0
+
 [node name="TopBar" type="Panel" parent="TradePanel" unique_id=1857777419]
 layout_mode = 0
-offset_left = 32.0
-offset_top = 16.0
-offset_right = 887.0
-offset_bottom = 74.0
+offset_left = 20
+offset_top = 20
+offset_right = 900
+offset_bottom = 104
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_1")
 
 [node name="Title" type="Label" parent="TradePanel" unique_id=1118346310]
 layout_mode = 0
-offset_left = 38.0
-offset_top = 28.0
-offset_right = 398.0
-offset_bottom = 62.0
+offset_left = 36
+offset_top = 28
+offset_right = 796
+offset_bottom = 60
 text = "PLAYER TRADE"
 vertical_alignment = 1
 
 [node name="StatusLabel" type="Label" parent="TradePanel" unique_id=565000591]
 layout_mode = 0
-offset_left = 360.0
-offset_top = 30.0
-offset_right = 790.0
-offset_bottom = 58.0
-horizontal_alignment = 2
+offset_left = 36
+offset_top = 67
+offset_right = 836
+offset_bottom = 93
+horizontal_alignment = 0
 vertical_alignment = 1
+
+clip_text = true
 
 [node name="CloseButton" type="Button" parent="TradePanel" unique_id=1523133307]
 layout_mode = 0
@@ -104,45 +114,51 @@ text = "X"
 
 [node name="LocalColumn" type="Panel" parent="TradePanel" unique_id=1720451380]
 layout_mode = 0
-offset_left = 32.0
-offset_top = 98.0
-offset_right = 432.0
-offset_bottom = 458.0
+offset_left = 20
+offset_top = 120
+offset_right = 452
+offset_bottom = 502
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_2")
 
 [node name="NameLabel" type="Label" parent="TradePanel/LocalColumn" unique_id=1685267533]
 layout_mode = 0
-offset_left = 16.0
-offset_top = 12.0
-offset_right = 316.0
-offset_bottom = 40.0
+offset_left = 18
+offset_top = 14
+offset_right = 290
+offset_bottom = 44
 text = "YOU"
 vertical_alignment = 1
+
+text_overrun_behavior = 3
+
+clip_text = true
 
 [node name="AcceptCheck" type="Label" parent="TradePanel/LocalColumn" unique_id=1391412258]
 visible = false
 layout_mode = 0
-offset_left = 342.0
-offset_top = 12.0
-offset_right = 378.0
-offset_bottom = 40.0
-text = "âœ“"
+offset_left = 290
+offset_top = 17
+offset_right = 414
+offset_bottom = 41
+text = "ACCEPTED"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+metadata/pixelmania_font_size = 14
+
 [node name="SlotGrid" type="GridContainer" parent="TradePanel/LocalColumn" unique_id=1325176749]
 layout_mode = 0
-offset_left = 20.0
-offset_top = 58.0
-offset_right = 380.0
-offset_bottom = 336.0
+offset_left = 18
+offset_top = 84
+offset_right = 414
+offset_bottom = 360
 theme_override_constants/h_separation = 12
 theme_override_constants/v_separation = 12
 columns = 3
 
 [node name="LocalSlot0" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=2033100807]
-custom_minimum_size = Vector2(112, 84)
+custom_minimum_size = Vector2(124, 132)
 layout_mode = 2
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_o1aky")
 clip_text = true
@@ -150,36 +166,42 @@ clip_text = true
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot0" unique_id=989296262]
 visible = false
 layout_mode = 0
-offset_left = 22.0
-offset_top = 8.0
-offset_right = 90.0
-offset_bottom = 76.0
+offset_left = 37
+offset_top = 12
+offset_right = 87
+offset_bottom = 62
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ItemLabel" type="Label" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot0" unique_id=763996222]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 40.0
-offset_right = 107.0
-offset_bottom = 78.0
+offset_left = 8
+offset_top = 72
+offset_right = 116
+offset_bottom = 124
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 clip_text = true
 
+metadata/pixelmania_font_size = 14
+
+text_overrun_behavior = 3
+
 [node name="ClearButton" type="Button" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot0" unique_id=1499422449]
 visible = false
 layout_mode = 0
-offset_left = 84.0
-offset_top = 5.0
-offset_right = 106.0
-offset_bottom = 27.0
-text = "X"
+offset_left = 96
+offset_top = 6
+offset_right = 118
+offset_bottom = 28
+text = "-"
+
+metadata/pixelmania_font_size = 14
 
 [node name="LocalSlot1" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=618994782]
-custom_minimum_size = Vector2(112, 84)
+custom_minimum_size = Vector2(124, 132)
 layout_mode = 2
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_kwxat")
 clip_text = true
@@ -187,36 +209,42 @@ clip_text = true
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot1" unique_id=1202020303]
 visible = false
 layout_mode = 0
-offset_left = 37.0
-offset_top = 7.0
-offset_right = 75.0
-offset_bottom = 41.0
+offset_left = 37
+offset_top = 12
+offset_right = 87
+offset_bottom = 62
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ItemLabel" type="Label" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot1" unique_id=1523770803]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 40.0
-offset_right = 107.0
-offset_bottom = 78.0
+offset_left = 8
+offset_top = 72
+offset_right = 116
+offset_bottom = 124
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 clip_text = true
 
+metadata/pixelmania_font_size = 14
+
+text_overrun_behavior = 3
+
 [node name="ClearButton" type="Button" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot1" unique_id=1749953293]
 visible = false
 layout_mode = 0
-offset_left = 84.0
-offset_top = 5.0
-offset_right = 106.0
-offset_bottom = 27.0
-text = "X"
+offset_left = 96
+offset_top = 6
+offset_right = 118
+offset_bottom = 28
+text = "-"
+
+metadata/pixelmania_font_size = 14
 
 [node name="LocalSlot2" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=994786805]
-custom_minimum_size = Vector2(112, 84)
+custom_minimum_size = Vector2(124, 132)
 layout_mode = 2
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_aa8k8")
 clip_text = true
@@ -224,36 +252,42 @@ clip_text = true
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot2" unique_id=1719651470]
 visible = false
 layout_mode = 0
-offset_left = 37.0
-offset_top = 7.0
-offset_right = 75.0
-offset_bottom = 41.0
+offset_left = 37
+offset_top = 12
+offset_right = 87
+offset_bottom = 62
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ItemLabel" type="Label" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot2" unique_id=1223876436]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 40.0
-offset_right = 107.0
-offset_bottom = 78.0
+offset_left = 8
+offset_top = 72
+offset_right = 116
+offset_bottom = 124
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 clip_text = true
 
+metadata/pixelmania_font_size = 14
+
+text_overrun_behavior = 3
+
 [node name="ClearButton" type="Button" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot2" unique_id=961326454]
 visible = false
 layout_mode = 0
-offset_left = 84.0
-offset_top = 5.0
-offset_right = 106.0
-offset_bottom = 27.0
-text = "X"
+offset_left = 96
+offset_top = 6
+offset_right = 118
+offset_bottom = 28
+text = "-"
+
+metadata/pixelmania_font_size = 14
 
 [node name="LocalSlot3" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=310058068]
-custom_minimum_size = Vector2(112, 84)
+custom_minimum_size = Vector2(124, 132)
 layout_mode = 2
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_kqrg6")
 clip_text = true
@@ -261,36 +295,42 @@ clip_text = true
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot3" unique_id=1564669938]
 visible = false
 layout_mode = 0
-offset_left = 37.0
-offset_top = 7.0
-offset_right = 75.0
-offset_bottom = 41.0
+offset_left = 37
+offset_top = 12
+offset_right = 87
+offset_bottom = 62
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ItemLabel" type="Label" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot3" unique_id=1053417891]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 40.0
-offset_right = 107.0
-offset_bottom = 78.0
+offset_left = 8
+offset_top = 72
+offset_right = 116
+offset_bottom = 124
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 clip_text = true
 
+metadata/pixelmania_font_size = 14
+
+text_overrun_behavior = 3
+
 [node name="ClearButton" type="Button" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot3" unique_id=1238395571]
 visible = false
 layout_mode = 0
-offset_left = 84.0
-offset_top = 5.0
-offset_right = 106.0
-offset_bottom = 27.0
-text = "X"
+offset_left = 96
+offset_top = 6
+offset_right = 118
+offset_bottom = 28
+text = "-"
+
+metadata/pixelmania_font_size = 14
 
 [node name="LocalSlot4" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=1723621507]
-custom_minimum_size = Vector2(112, 84)
+custom_minimum_size = Vector2(124, 132)
 layout_mode = 2
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_nwwfm")
 clip_text = true
@@ -298,36 +338,42 @@ clip_text = true
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot4" unique_id=1546450820]
 visible = false
 layout_mode = 0
-offset_left = 37.0
-offset_top = 7.0
-offset_right = 75.0
-offset_bottom = 41.0
+offset_left = 37
+offset_top = 12
+offset_right = 87
+offset_bottom = 62
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ItemLabel" type="Label" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot4" unique_id=21854223]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 40.0
-offset_right = 107.0
-offset_bottom = 78.0
+offset_left = 8
+offset_top = 72
+offset_right = 116
+offset_bottom = 124
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 clip_text = true
 
+metadata/pixelmania_font_size = 14
+
+text_overrun_behavior = 3
+
 [node name="ClearButton" type="Button" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot4" unique_id=680695613]
 visible = false
 layout_mode = 0
-offset_left = 84.0
-offset_top = 5.0
-offset_right = 106.0
-offset_bottom = 27.0
-text = "X"
+offset_left = 96
+offset_top = 6
+offset_right = 118
+offset_bottom = 28
+text = "-"
+
+metadata/pixelmania_font_size = 14
 
 [node name="LocalSlot5" type="Button" parent="TradePanel/LocalColumn/SlotGrid" unique_id=616722240]
-custom_minimum_size = Vector2(112, 84)
+custom_minimum_size = Vector2(124, 132)
 layout_mode = 2
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_s8vy0")
 clip_text = true
@@ -335,75 +381,87 @@ clip_text = true
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot5" unique_id=841800072]
 visible = false
 layout_mode = 0
-offset_left = 37.0
-offset_top = 7.0
-offset_right = 75.0
-offset_bottom = 41.0
+offset_left = 37
+offset_top = 12
+offset_right = 87
+offset_bottom = 62
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ItemLabel" type="Label" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot5" unique_id=1039209550]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 40.0
-offset_right = 107.0
-offset_bottom = 78.0
+offset_left = 8
+offset_top = 72
+offset_right = 116
+offset_bottom = 124
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 clip_text = true
 
+metadata/pixelmania_font_size = 14
+
+text_overrun_behavior = 3
+
 [node name="ClearButton" type="Button" parent="TradePanel/LocalColumn/SlotGrid/LocalSlot5" unique_id=926172487]
 visible = false
 layout_mode = 0
-offset_left = 84.0
-offset_top = 5.0
-offset_right = 106.0
-offset_bottom = 27.0
-text = "X"
+offset_left = 96
+offset_top = 6
+offset_right = 118
+offset_bottom = 28
+text = "-"
+
+metadata/pixelmania_font_size = 14
 
 [node name="RemoteColumn" type="Panel" parent="TradePanel" unique_id=247457701]
 layout_mode = 0
-offset_left = 488.0
-offset_top = 98.0
-offset_right = 888.0
-offset_bottom = 458.0
+offset_left = 468
+offset_top = 120
+offset_right = 900
+offset_bottom = 502
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_3")
 
 [node name="NameLabel" type="Label" parent="TradePanel/RemoteColumn" unique_id=2090499338]
 layout_mode = 0
-offset_left = 16.0
-offset_top = 12.0
-offset_right = 316.0
-offset_bottom = 40.0
+offset_left = 18
+offset_top = 14
+offset_right = 290
+offset_bottom = 44
 text = "OTHER PLAYER"
 vertical_alignment = 1
+
+text_overrun_behavior = 3
+
+clip_text = true
 
 [node name="AcceptCheck" type="Label" parent="TradePanel/RemoteColumn" unique_id=1023284550]
 visible = false
 layout_mode = 0
-offset_left = 342.0
-offset_top = 12.0
-offset_right = 378.0
-offset_bottom = 40.0
-text = "âœ“"
+offset_left = 290
+offset_top = 17
+offset_right = 414
+offset_bottom = 41
+text = "ACCEPTED"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+metadata/pixelmania_font_size = 14
+
 [node name="SlotGrid" type="GridContainer" parent="TradePanel/RemoteColumn" unique_id=1552638732]
 layout_mode = 0
-offset_left = 20.0
-offset_top = 58.0
-offset_right = 380.0
-offset_bottom = 336.0
+offset_left = 18
+offset_top = 84
+offset_right = 414
+offset_bottom = 360
 theme_override_constants/h_separation = 12
 theme_override_constants/v_separation = 12
 columns = 3
 
 [node name="RemoteSlot0" type="Button" parent="TradePanel/RemoteColumn/SlotGrid" unique_id=483987365]
-custom_minimum_size = Vector2(112, 84)
+custom_minimum_size = Vector2(124, 132)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_jut3y")
@@ -412,27 +470,31 @@ clip_text = true
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot0" unique_id=1607252548]
 visible = false
 layout_mode = 0
-offset_left = 37.0
-offset_top = 7.0
-offset_right = 75.0
-offset_bottom = 41.0
+offset_left = 37
+offset_top = 12
+offset_right = 87
+offset_bottom = 62
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ItemLabel" type="Label" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot0" unique_id=340122919]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 40.0
-offset_right = 107.0
-offset_bottom = 78.0
+offset_left = 8
+offset_top = 72
+offset_right = 116
+offset_bottom = 124
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 clip_text = true
 
+metadata/pixelmania_font_size = 14
+
+text_overrun_behavior = 3
+
 [node name="RemoteSlot1" type="Button" parent="TradePanel/RemoteColumn/SlotGrid" unique_id=1217531989]
-custom_minimum_size = Vector2(112, 84)
+custom_minimum_size = Vector2(124, 132)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_v2nl5")
@@ -441,27 +503,31 @@ clip_text = true
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot1" unique_id=776364436]
 visible = false
 layout_mode = 0
-offset_left = 37.0
-offset_top = 7.0
-offset_right = 75.0
-offset_bottom = 41.0
+offset_left = 37
+offset_top = 12
+offset_right = 87
+offset_bottom = 62
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ItemLabel" type="Label" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot1" unique_id=154804975]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 40.0
-offset_right = 107.0
-offset_bottom = 78.0
+offset_left = 8
+offset_top = 72
+offset_right = 116
+offset_bottom = 124
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 clip_text = true
 
+metadata/pixelmania_font_size = 14
+
+text_overrun_behavior = 3
+
 [node name="RemoteSlot2" type="Button" parent="TradePanel/RemoteColumn/SlotGrid" unique_id=1758411135]
-custom_minimum_size = Vector2(112, 84)
+custom_minimum_size = Vector2(124, 132)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_dmskm")
@@ -470,27 +536,31 @@ clip_text = true
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot2" unique_id=2090944386]
 visible = false
 layout_mode = 0
-offset_left = 37.0
-offset_top = 7.0
-offset_right = 75.0
-offset_bottom = 41.0
+offset_left = 37
+offset_top = 12
+offset_right = 87
+offset_bottom = 62
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ItemLabel" type="Label" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot2" unique_id=17792078]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 40.0
-offset_right = 107.0
-offset_bottom = 78.0
+offset_left = 8
+offset_top = 72
+offset_right = 116
+offset_bottom = 124
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 clip_text = true
 
+metadata/pixelmania_font_size = 14
+
+text_overrun_behavior = 3
+
 [node name="RemoteSlot3" type="Button" parent="TradePanel/RemoteColumn/SlotGrid" unique_id=1833809957]
-custom_minimum_size = Vector2(112, 84)
+custom_minimum_size = Vector2(124, 132)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_xdkp6")
@@ -499,27 +569,31 @@ clip_text = true
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot3" unique_id=1024587645]
 visible = false
 layout_mode = 0
-offset_left = 37.0
-offset_top = 7.0
-offset_right = 75.0
-offset_bottom = 41.0
+offset_left = 37
+offset_top = 12
+offset_right = 87
+offset_bottom = 62
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ItemLabel" type="Label" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot3" unique_id=558614013]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 40.0
-offset_right = 107.0
-offset_bottom = 78.0
+offset_left = 8
+offset_top = 72
+offset_right = 116
+offset_bottom = 124
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 clip_text = true
 
+metadata/pixelmania_font_size = 14
+
+text_overrun_behavior = 3
+
 [node name="RemoteSlot4" type="Button" parent="TradePanel/RemoteColumn/SlotGrid" unique_id=663173028]
-custom_minimum_size = Vector2(112, 84)
+custom_minimum_size = Vector2(124, 132)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_54nrm")
@@ -528,27 +602,31 @@ clip_text = true
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot4" unique_id=2065963766]
 visible = false
 layout_mode = 0
-offset_left = 37.0
-offset_top = 7.0
-offset_right = 75.0
-offset_bottom = 41.0
+offset_left = 37
+offset_top = 12
+offset_right = 87
+offset_bottom = 62
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ItemLabel" type="Label" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot4" unique_id=532611366]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 40.0
-offset_right = 107.0
-offset_bottom = 78.0
+offset_left = 8
+offset_top = 72
+offset_right = 116
+offset_bottom = 124
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 clip_text = true
 
+metadata/pixelmania_font_size = 14
+
+text_overrun_behavior = 3
+
 [node name="RemoteSlot5" type="Button" parent="TradePanel/RemoteColumn/SlotGrid" unique_id=242484017]
-custom_minimum_size = Vector2(112, 84)
+custom_minimum_size = Vector2(124, 132)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_55jeb")
@@ -557,31 +635,52 @@ clip_text = true
 [node name="ItemIcon" type="TextureRect" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot5" unique_id=417885449]
 visible = false
 layout_mode = 0
-offset_left = 37.0
-offset_top = 7.0
-offset_right = 75.0
-offset_bottom = 41.0
+offset_left = 37
+offset_top = 12
+offset_right = 87
+offset_bottom = 62
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ItemLabel" type="Label" parent="TradePanel/RemoteColumn/SlotGrid/RemoteSlot5" unique_id=338128246]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 40.0
-offset_right = 107.0
-offset_bottom = 78.0
+offset_left = 8
+offset_top = 72
+offset_right = 116
+offset_bottom = 124
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 clip_text = true
 
+metadata/pixelmania_font_size = 14
+
+text_overrun_behavior = 3
+
+[node name="Footer" type="Panel" parent="TradePanel"]
+offset_left = 20.0
+offset_top = 518.0
+offset_right = 900.0
+offset_bottom = 584.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("panel_role_1")
+
+[node name="TradeHint" type="Label" parent="TradePanel"]
+offset_left = 36.0
+offset_top = 538.0
+offset_right = 500.0
+offset_bottom = 576.0
+text = "Check both offers before accepting."
+autowrap_mode = 2
+metadata/pixelmania_font_size = 14
+
 [node name="AcceptButton" type="Button" parent="TradePanel" unique_id=753143866]
 layout_mode = 0
-offset_left = 520.0
-offset_top = 488.0
-offset_right = 700.0
-offset_bottom = 534.0
+offset_left = 676
+offset_top = 536
+offset_right = 884
+offset_bottom = 580
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_hdf80")
 theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_jwpg7")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_k2e45")
@@ -589,10 +688,10 @@ text = "Accept"
 
 [node name="CancelButton" type="Button" parent="TradePanel" unique_id=577891716]
 layout_mode = 0
-offset_left = 718.0
-offset_top = 488.0
-offset_right = 888.0
-offset_bottom = 534.0
+offset_left = 520
+offset_top = 536
+offset_right = 662
+offset_bottom = 580
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_536cc")
 theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_aqgau")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_8cuat")
@@ -724,6 +823,14 @@ offset_right = 640.0
 offset_bottom = 430.0
 theme_override_styles/panel = ExtResource("panel_role_6")
 
+[node name="Header" type="Panel" parent="FinalConfirmOverlay/FinalPanel"]
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 624.0
+offset_bottom = 60.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("panel_role_1")
+
 [node name="Title" type="Label" parent="FinalConfirmOverlay/FinalPanel" unique_id=2081089363]
 layout_mode = 0
 offset_left = 24.0
@@ -732,13 +839,26 @@ offset_right = 524.0
 offset_bottom = 52.0
 text = "FINAL CONFIRMATION"
 
-[node name="FinalSummaryLabel" type="Label" parent="FinalConfirmOverlay/FinalPanel" unique_id=1139247278]
-layout_mode = 0
+[node name="SummaryBack" type="Panel" parent="FinalConfirmOverlay/FinalPanel"]
+offset_left = 16.0
+offset_top = 66.0
+offset_right = 624.0
+offset_bottom = 340.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("panel_role_1")
+
+[node name="SummaryScroll" type="ScrollContainer" parent="FinalConfirmOverlay/FinalPanel"]
 offset_left = 28.0
-offset_top = 70.0
+offset_top = 78.0
 offset_right = 612.0
-offset_bottom = 330.0
-autowrap_mode = 3
+offset_bottom = 328.0
+horizontal_scroll_mode = 0
+
+[node name="FinalSummaryLabel" type="Label" parent="FinalConfirmOverlay/FinalPanel/SummaryScroll"]
+custom_minimum_size = Vector2(558, 0)
+size_flags_horizontal = 3
+autowrap_mode = 2
+metadata/pixelmania_font_size = 17
 
 [node name="FinalConfirmButton" type="Button" parent="FinalConfirmOverlay/FinalPanel" unique_id=610815498]
 layout_mode = 0
@@ -755,3 +875,19 @@ offset_top = 356.0
 offset_right = 612.0
 offset_bottom = 400.0
 text = "Cancel"
+
+[node name="OfferHint" type="Label" parent="TradePanel/LocalColumn"]
+offset_left = 18.0
+offset_top = 48.0
+offset_right = 414.0
+offset_bottom = 72.0
+text = "YOUR OFFER / Click a slot to add"
+metadata/pixelmania_font_size = 14
+
+[node name="OfferHint" type="Label" parent="TradePanel/RemoteColumn"]
+offset_left = 18.0
+offset_top = 48.0
+offset_right = 414.0
+offset_bottom = 72.0
+text = "THEIR OFFER / Items you receive"
+metadata/pixelmania_font_size = 14

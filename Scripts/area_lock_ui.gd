@@ -54,7 +54,48 @@ func apply_pixel_style() -> void:
 	PixelUIStyle.apply_blue_button(add_button)
 	PixelUIStyle.apply_close_button(close_button)
 	PixelUIStyle.apply_input(player_input)
-	# Keep the authored atlas panel; legacy styling replaced it at runtime.
+	panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	panel.size = Vector2(740, 650)
+	var content = $Panel/VBox
+	content.offset_left = 32
+	content.offset_right = -32
+	content.offset_top = 28
+	content.offset_bottom = -28
+	content.add_theme_constant_override("separation", 14)
+	var inner := Panel.new()
+	inner.name = "InnerPanel"
+	inner.position = Vector2(16, 16)
+	inner.size = panel.size - Vector2(32, 32)
+	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inner.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
+	panel.add_child(inner)
+	panel.move_child(inner, 0)
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	info_label.set_meta("pixelmania_font_size", 18)
+	info_label.custom_minimum_size.y = 110
+	info_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	var info_style := StyleBoxFlat.new()
+	info_style.bg_color = Color("24112d")
+	info_style.border_color = Color("92659e")
+	info_style.set_border_width_all(2)
+	info_style.content_margin_left = 16
+	info_style.content_margin_right = 16
+	info_style.content_margin_top = 12
+	info_style.content_margin_bottom = 12
+	$Panel/VBox/InfoPanel.add_theme_stylebox_override("panel", info_style)
+	$Panel/VBox/AccessScroll.add_theme_stylebox_override("panel", info_style.duplicate())
+	for toggle in [public_build_check, ignore_empty_space_check]:
+		PixelUIStyle.apply_atlas_button(toggle, "blue_button")
+		toggle.custom_minimum_size.y = 44
+		toggle.set_meta("pixelmania_font_size", 18)
+	$Panel/VBox/AddRow.custom_minimum_size.y = 44
+	role_option.custom_minimum_size.x = 150
+	PixelUIStyle.apply_atlas_button(role_option, "blue_button")
+	add_button.custom_minimum_size.x = 100
+	PixelUIStyle.apply_atlas_button(add_button, "green_button")
+	$Panel/VBox/AccessScroll.custom_minimum_size.y = 100
+	status_label.set_meta("pixelmania_font_size", 15)
+	_fit_panel()
 
 
 func setup(world, manager) -> void:
@@ -166,10 +207,13 @@ func _render_access_list(area_lock: Dictionary, can_manage: bool) -> void:
 		return
 	for entry in entries:
 		var row: HBoxContainer = HBoxContainer.new()
-		row.add_theme_constant_override("separation", 8)
+		row.add_theme_constant_override("separation", 14)
+		row.custom_minimum_size.y = 42
 		var name_label: Label = Label.new()
 		name_label.text = str(entry.get("name", ""))
 		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		name_label.clip_text = true
 		var role_label: Label = Label.new()
 		role_label.text = str(entry.get("role", "builder")).capitalize()
 		var remove_button: Button = Button.new()
@@ -254,16 +298,12 @@ func _show_public_build_confirmation(enabled: bool) -> void:
 
 	var confirm_panel = Panel.new()
 	confirm_panel.name = "PublicBuildConfirmPanel"
-	confirm_panel.size = Vector2(420, 180)
+	confirm_panel.size = Vector2(560, 280)
 	confirm_panel.position = (panel.size - confirm_panel.size) * 0.5
 	confirm_panel.z_index = 21
 	confirm_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	confirm_panel.clip_contents = true
-	confirm_panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_PANEL_STRONG,
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		4, 12, 12
-	))
+	_style_confirmation(confirm_panel)
 	panel.add_child(confirm_panel)
 	public_build_confirm_panel = confirm_panel
 
@@ -271,23 +311,24 @@ func _show_public_build_confirmation(enabled: bool) -> void:
 	var action_label: String = "Make this area lock public for everyone?" if enabled else "Restrict this area lock to trusted players?"
 	var label = Label.new()
 	label.text = "%s\nThis will switch this area lock to %s." % [action_label, mode_label]
-	label.position = Vector2(18, 18)
-	label.size = Vector2(384, 102)
+	label.position = Vector2(32, 28)
+	label.size = Vector2(496, 148)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.clip_text = true
-	PixelUIStyle.apply_label_shadow(label, 13)
+	label.set_meta("pixelmania_font_size", 18)
+	PixelUIStyle.apply_label_shadow(label, 18)
 	confirm_panel.add_child(label)
 
 	var confirm = Button.new()
 	confirm.name = "ConfirmPublicBuildButton"
 	confirm.text = "CONFIRM"
-	confirm.position = Vector2(20, 132)
-	confirm.size = Vector2(180, 38)
+	confirm.position = Vector2(292, 214)
+	confirm.size = Vector2(240, 44)
 	confirm.mouse_filter = Control.MOUSE_FILTER_STOP
-	PixelUIStyle.apply_yellow_button(confirm, 13)
+	PixelUIStyle.apply_atlas_button(confirm, "green_button")
 	confirm.pressed.connect(func():
 		clear_public_build_confirmation()
 		_apply_public_build_state(enabled)
@@ -297,10 +338,10 @@ func _show_public_build_confirmation(enabled: bool) -> void:
 	var cancel = Button.new()
 	cancel.name = "CancelPublicBuildButton"
 	cancel.text = "CANCEL"
-	cancel.position = Vector2(220, 132)
-	cancel.size = Vector2(180, 38)
+	cancel.position = Vector2(28, 214)
+	cancel.size = Vector2(240, 44)
 	cancel.mouse_filter = Control.MOUSE_FILTER_STOP
-	PixelUIStyle.apply_yellow_button(cancel, 13)
+	PixelUIStyle.apply_atlas_button(cancel, "blue_button")
 	cancel.pressed.connect(func():
 		clear_public_build_confirmation()
 		_revert_public_build_checkbox()
@@ -339,38 +380,35 @@ func _show_remove_access_confirmation(player_name: String, role_text: String) ->
 
 	var confirm_panel = Panel.new()
 	confirm_panel.name = "AccessRemoveConfirmPanel"
-	confirm_panel.size = Vector2(420, 180)
+	confirm_panel.size = Vector2(560, 280)
 	confirm_panel.position = (panel.size - confirm_panel.size) * 0.5
 	confirm_panel.z_index = 21
 	confirm_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	confirm_panel.clip_contents = true
-	confirm_panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_PANEL_STRONG,
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		4, 12, 12
-	))
+	_style_confirmation(confirm_panel)
 	panel.add_child(confirm_panel)
 	access_remove_confirm_panel = confirm_panel
 
 	var label = Label.new()
 	label.text = "Remove %s (%s) from trusted access?\nThis change cannot be undone." % [str(player_name), str(role_text).capitalize()]
-	label.position = Vector2(18, 18)
-	label.size = Vector2(384, 102)
+	label.position = Vector2(32, 28)
+	label.size = Vector2(496, 148)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.clip_text = true
-	PixelUIStyle.apply_label_shadow(label, 13)
+	label.set_meta("pixelmania_font_size", 18)
+	PixelUIStyle.apply_label_shadow(label, 18)
 	confirm_panel.add_child(label)
 
 	var confirm = Button.new()
 	confirm.name = "ConfirmRemoveAccessButton"
 	confirm.text = "CONFIRM"
-	confirm.position = Vector2(20, 132)
-	confirm.size = Vector2(180, 38)
+	confirm.position = Vector2(292, 214)
+	confirm.size = Vector2(240, 44)
 	confirm.mouse_filter = Control.MOUSE_FILTER_STOP
-	PixelUIStyle.apply_yellow_button(confirm, 13)
+	PixelUIStyle.apply_atlas_button(confirm, "green_button")
 	confirm.pressed.connect(func():
 		clear_access_remove_confirmation()
 		_apply_remove_access(pending_remove_access_name)
@@ -380,10 +418,10 @@ func _show_remove_access_confirmation(player_name: String, role_text: String) ->
 	var cancel = Button.new()
 	cancel.name = "CancelRemoveAccessButton"
 	cancel.text = "CANCEL"
-	cancel.position = Vector2(220, 132)
-	cancel.size = Vector2(180, 38)
+	cancel.position = Vector2(28, 214)
+	cancel.size = Vector2(240, 44)
 	cancel.mouse_filter = Control.MOUSE_FILTER_STOP
-	PixelUIStyle.apply_yellow_button(cancel, 13)
+	PixelUIStyle.apply_atlas_button(cancel, "blue_button")
 	cancel.pressed.connect(func():
 		clear_access_remove_confirmation()
 	)
@@ -437,38 +475,35 @@ func _show_ignore_empty_space_confirmation() -> void:
 
 	var confirm_panel = Panel.new()
 	confirm_panel.name = "IgnoreEmptySpaceConfirmPanel"
-	confirm_panel.size = Vector2(420, 188)
+	confirm_panel.size = Vector2(560, 280)
 	confirm_panel.position = (panel.size - confirm_panel.size) * 0.5
 	confirm_panel.z_index = 21
 	confirm_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	confirm_panel.clip_contents = true
-	confirm_panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_PANEL_STRONG,
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		4, 12, 12
-	))
+	_style_confirmation(confirm_panel)
 	panel.add_child(confirm_panel)
 	ignore_empty_space_confirm_panel = confirm_panel
 
 	var label = Label.new()
 	label.text = "Enable Ignore Empty Air?\nThis will only protect blocks connected to the lock.\nEmpty-air gaps will stay unprotected."
-	label.position = Vector2(18, 18)
-	label.size = Vector2(384, 100)
+	label.position = Vector2(32, 28)
+	label.size = Vector2(496, 148)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.clip_text = true
-	PixelUIStyle.apply_label_shadow(label, 13)
+	label.set_meta("pixelmania_font_size", 18)
+	PixelUIStyle.apply_label_shadow(label, 18)
 	confirm_panel.add_child(label)
 
 	var confirm = Button.new()
 	confirm.name = "ConfirmIgnoreEmptySpaceButton"
 	confirm.text = "CONFIRM"
-	confirm.position = Vector2(20, 132)
-	confirm.size = Vector2(180, 38)
+	confirm.position = Vector2(292, 214)
+	confirm.size = Vector2(240, 44)
 	confirm.mouse_filter = Control.MOUSE_FILTER_STOP
-	PixelUIStyle.apply_yellow_button(confirm, 13)
+	PixelUIStyle.apply_atlas_button(confirm, "green_button")
 	confirm.pressed.connect(func():
 		clear_ignore_empty_space_confirmation()
 		_apply_ignore_empty_space_state(true)
@@ -478,10 +513,10 @@ func _show_ignore_empty_space_confirmation() -> void:
 	var cancel = Button.new()
 	cancel.name = "CancelIgnoreEmptySpaceButton"
 	cancel.text = "CANCEL"
-	cancel.position = Vector2(220, 132)
-	cancel.size = Vector2(180, 38)
+	cancel.position = Vector2(28, 214)
+	cancel.size = Vector2(240, 44)
 	cancel.mouse_filter = Control.MOUSE_FILTER_STOP
-	PixelUIStyle.apply_yellow_button(cancel, 13)
+	PixelUIStyle.apply_atlas_button(cancel, "blue_button")
 	cancel.pressed.connect(func():
 		clear_ignore_empty_space_confirmation()
 		_revert_ignore_empty_space_checkbox()
@@ -584,39 +619,36 @@ func _show_add_access_confirmation(player_name: String, role: String, verified: 
 
 	var confirm_panel = Panel.new()
 	confirm_panel.name = "AccessConfirmPanel"
-	confirm_panel.size = Vector2(420, 180)
+	confirm_panel.size = Vector2(560, 280)
 	confirm_panel.position = (panel.size - confirm_panel.size) * 0.5
 	confirm_panel.z_index = 21
 	confirm_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	confirm_panel.clip_contents = true
-	confirm_panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_PANEL_STRONG,
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		4, 12, 12
-	))
+	_style_confirmation(confirm_panel)
 	panel.add_child(confirm_panel)
 	access_confirm_panel = confirm_panel
 
 	var role_text: String = str(role).capitalize()
 	var label = Label.new()
 	label.text = "Grant %s access as %s for this area lock?" % [str(player_name), role_text]
-	label.position = Vector2(18, 18)
-	label.size = Vector2(384, 102)
+	label.position = Vector2(32, 28)
+	label.size = Vector2(496, 148)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.clip_text = true
-	PixelUIStyle.apply_label_shadow(label, 13)
+	label.set_meta("pixelmania_font_size", 18)
+	PixelUIStyle.apply_label_shadow(label, 18)
 	confirm_panel.add_child(label)
 
 	var confirm = Button.new()
 	confirm.name = "ConfirmAddAccessButton"
 	confirm.text = "CONFIRM"
-	confirm.position = Vector2(20, 132)
-	confirm.size = Vector2(180, 38)
+	confirm.position = Vector2(292, 214)
+	confirm.size = Vector2(240, 44)
 	confirm.mouse_filter = Control.MOUSE_FILTER_STOP
-	PixelUIStyle.apply_yellow_button(confirm, 13)
+	PixelUIStyle.apply_atlas_button(confirm, "green_button")
 	confirm.pressed.connect(func():
 		clear_access_confirmation()
 		_apply_add_access(pending_access_name, pending_access_role, pending_access_verified)
@@ -626,10 +658,10 @@ func _show_add_access_confirmation(player_name: String, role: String, verified: 
 	var cancel = Button.new()
 	cancel.name = "CancelAddAccessButton"
 	cancel.text = "CANCEL"
-	cancel.position = Vector2(220, 132)
-	cancel.size = Vector2(180, 38)
+	cancel.position = Vector2(28, 214)
+	cancel.size = Vector2(240, 44)
 	cancel.mouse_filter = Control.MOUSE_FILTER_STOP
-	PixelUIStyle.apply_yellow_button(cancel, 13)
+	PixelUIStyle.apply_atlas_button(cancel, "blue_button")
 	cancel.pressed.connect(func():
 		clear_access_confirmation()
 	)
@@ -654,3 +686,25 @@ func clear_public_build_confirmation() -> void:
 	if public_build_confirm_panel != null and is_instance_valid(public_build_confirm_panel):
 		public_build_confirm_panel.queue_free()
 		public_build_confirm_panel = null
+
+
+func _process(_delta: float) -> void:
+	if visible:
+		_fit_panel()
+
+
+func _fit_panel() -> void:
+	var screen := get_viewport_rect().size
+	var factor := minf(1.0, minf((screen.x - 24) / panel.size.x, (screen.y - 24) / panel.size.y))
+	panel.scale = Vector2.ONE * maxf(0.1, factor)
+	panel.position = (screen - panel.size * panel.scale) * 0.5
+
+
+func _style_confirmation(card: Panel) -> void:
+	card.add_theme_stylebox_override("panel", PixelUIStyle.panel_style())
+	var inner := Panel.new()
+	inner.position = Vector2(16, 16)
+	inner.size = Vector2(528, 172)
+	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inner.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
+	card.add_child(inner)

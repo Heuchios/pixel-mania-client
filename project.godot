@@ -19,11 +19,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 MobileScrollPolicy="*res://Scripts/ui/mobile_scroll_policy.gd"
-
 MobileUIScale="*res://Scripts/ui/mobile_ui_scale.gd"
-
-
-
 MovementMode="*res://Scripts/networking/movement_mode.gd"
 GlobalFontManager="*res://Scripts/ui/global_font_manager.gd"
 NetworkManager="*uid://b235pvewnt643"
@@ -49,13 +45,8 @@ BillingClient="*res://Scripts/billing_client.gd"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/size/mode=3
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
-
-[editor]
-
-run/main_run_args=""
 
 [editor_plugins]
 

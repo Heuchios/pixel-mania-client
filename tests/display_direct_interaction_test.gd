@@ -66,15 +66,6 @@ class MockWorld:
 		display_ui_open_count += 1
 
 
-class TestBlockManager:
-	extends "res://Scripts/block_manager.gd"
-
-	var test_network = null
-
-	func get_network_manager():
-		return test_network
-
-
 func _init() -> void:
 	call_deferred("_run")
 
@@ -96,7 +87,9 @@ func _run() -> void:
 	world.blocks[hanger_grid] = {"type": "fish_hanger"}
 	world.blocks[dirt_grid] = {"type": "dirt"}
 
-	var block_manager := TestBlockManager.new()
+	# Load after autoloads exist; early --script inheritance cannot resolve the
+	# production block manager's MovementMode singleton in Godot 4.7.
+	var block_manager = load("res://tests/fixtures/display_direct_block_fixture.gd").new()
 	block_manager.process_mode = Node.PROCESS_MODE_DISABLED
 	block_manager.world = world
 	block_manager.test_network = network

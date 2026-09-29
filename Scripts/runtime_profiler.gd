@@ -10,6 +10,7 @@ static var last_ping_usec: int = 0
 static var spike_window_usec: int = 0
 static var emitted_spikes: int = 0
 static var suppressed_spikes: int = 0
+static var network_health: Dictionary = {}
 const SAMPLE_LIMIT := 512
 const PENDING_LIMIT := 512
 const METRIC_LIMIT := 128
@@ -64,8 +65,8 @@ static func sent(data: Dictionary, bytes: int) -> void:
 	var kind := str(data.get("type", ""))
 	if kind == "player_position":
 		count("movement_tx")
-	var seed_transaction := kind == "inventory_transaction_request" and str(data.get("action", "")).begins_with("seed_")
-	if kind != "world_block_update" and kind != "client_ping" and not seed_transaction:
+	var profiled_transaction := kind == "inventory_transaction_request" and (str(data.get("action", "")).begins_with("seed_") or str(data.get("action", "")).begins_with("display_"))
+	if kind != "world_block_update" and kind != "client_ping" and not profiled_transaction:
 		return
 	var request_id := str(data.get("request_id", ""))
 	if request_id == "" or pending.has(request_id):
@@ -86,6 +87,11 @@ static func received(data: Dictionary, bytes: int, parse_usec: int) -> void:
 		return
 	count("rx_messages")
 	count("rx_bytes", bytes)
+	if str(data.get("type", "")) == "player_position_batch":
+		count("movement_snapshot_batches_rx")
+		var rows = data.get("player_rows", data.get("players", []))
+		if rows is Array:
+			count("movement_snapshots_rx", rows.size())
 	observe("json_parse_ms", float(parse_usec) / 1000.0)
 	if str(data.get("type", "")) == "world_block_reconcile":
 		count("block_reconciliations")
@@ -118,6 +124,7 @@ static func frame(delta: float, queued_packets: int, queued_tiles: int) -> void:
 		return
 	var summary := {"window_seconds": float(now - window_started_usec) / 1000000.0, "metrics": {}, "counts": counters.duplicate(), "nodes": Performance.get_monitor(Performance.OBJECT_NODE_COUNT), "objects": Performance.get_monitor(Performance.OBJECT_COUNT), "static_memory_bytes": Performance.get_monitor(Performance.MEMORY_STATIC), "draw_calls": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), "pending_operations": pending.size()}
 	summary["at_unix_ms"] = int(Time.get_unix_time_from_system() * 1000.0)
+	summary["network"] = network_health.duplicate()
 	summary["monotonic_ms"] = now / 1000.0
 	summary["suppressed_spikes"] = suppressed_spikes
 	summary["orphan_nodes"] = Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)

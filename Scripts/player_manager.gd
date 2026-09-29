@@ -1007,13 +1007,13 @@ var last_sent_network_damage_key := ""
 var last_player_punch_request_msec := 0
 var remote_action_sequences := {}
 var remote_action_server_times := {}
-const NETWORK_POSITION_SEND_INTERVAL := 0.016
+const NETWORK_POSITION_SEND_INTERVAL := 1.0 / 30.0
 const NETWORK_POSITION_SEND_INTERVAL_MAX_SECONDS := 0.2
 const NETWORK_POSITION_HEARTBEAT_INTERVAL := 0.1
 const NETWORK_POSITION_HEARTBEAT_NO_OTHER_MULTIPLIER := 10.0
 const NETWORK_POSITION_HEARTBEAT_FEW_OTHER_MULTIPLIER := 5.0
 const NETWORK_POSITION_HEARTBEAT_CROWDED_OTHER_MULTIPLIER := 2.0
-const NETWORK_POSITION_HEARTBEAT_MAX_SECONDS := 1.5
+const NETWORK_POSITION_HEARTBEAT_MAX_SECONDS := 10.0
 const NETWORK_POSITION_MIN_DISTANCE := 0.35
 const NETWORK_POSITION_FLUSH_MIN_DISTANCE := 0.35
 const REMOTE_NAME_LABEL_WIDTH := 300.0
@@ -2433,14 +2433,8 @@ func get_network_position_send_interval() -> float:
 		if world_name == "":
 			world_name = "START"
 
-	if network != null and network.has_method("get_server_guided_position_broadcast_ms"):
-		var broadcast_ms := float(network.get_server_guided_position_broadcast_ms(world_name))
-		if broadcast_ms > 0.0:
-			return clamp(
-				broadcast_ms / 1000.0,
-				float(NETWORK_POSITION_SEND_INTERVAL),
-				float(NETWORK_POSITION_SEND_INTERVAL_MAX_SECONDS)
-			)
+	if network != null and network.has_method("get_server_guided_player_position_rate_per_second"):
+		return 1.0 / float(maxi(1, int(network.get_server_guided_player_position_rate_per_second(world_name))))
 
 	return NETWORK_POSITION_SEND_INTERVAL
 

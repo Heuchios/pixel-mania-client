@@ -15,6 +15,7 @@ const DELAY_INCREASE_WEIGHT := 0.35
 const DELAY_DECREASE_WEIGHT := 0.05
 const MIN_SERVER_INTERVAL_MS := 1.0
 const MAX_SERVER_INTERVAL_MS := 250.0
+const CLOCK_SLEW_RATIO := 0.10
 
 var snapshots: Array[Dictionary] = []
 var last_sequence := 0
@@ -27,6 +28,7 @@ var rejected_snapshot_count := 0
 var accepted_snapshot_count := 0
 var timeline_reset_count := 0
 var last_render_time_ms := -1.0
+var last_sample_receive_time_ms := -1
 
 
 func _is_remote_movement_sequence_newer(new_sequence: int, previous_sequence: int) -> bool:
@@ -58,6 +60,7 @@ func reset(server_time_ms: int, receive_time_ms: int, sequence: int, position: V
 	jitter_ewma_ms = 0.0
 	interpolation_delay_ms = DEFAULT_INTERPOLATION_DELAY_MS
 	last_render_time_ms = float(safe_server_time) - interpolation_delay_ms
+	last_sample_receive_time_ms = safe_receive_time
 	timeline_reset_count += 1
 
 
@@ -128,8 +131,16 @@ func sample(receive_time_ms: int) -> Dictionary:
 
 	var estimated_server_now := last_server_time_ms + maxi(0, receive_time_ms - last_receive_time_ms)
 	var proposed_render_time_ms := float(estimated_server_now) - interpolation_delay_ms
-	var render_time_ms := proposed_render_time_ms if last_render_time_ms < 0.0 else maxf(last_render_time_ms, proposed_render_time_ms)
+	var render_time_ms := proposed_render_time_ms
+	if last_render_time_ms >= 0.0 and last_sample_receive_time_ms >= 0:
+		var elapsed_ms := float(maxi(0, receive_time_ms - last_sample_receive_time_ms))
+		var advancing_time := last_render_time_ms + elapsed_ms
+		# Arrival jitter and adaptive buffer changes adjust playback speed gently,
+		# instead of freezing then jumping the presentation clock at every packet.
+		var slew := elapsed_ms * CLOCK_SLEW_RATIO
+		render_time_ms = advancing_time + clampf(proposed_render_time_ms - advancing_time, -slew, slew)
 	last_render_time_ms = render_time_ms
+	last_sample_receive_time_ms = maxi(receive_time_ms, last_sample_receive_time_ms)
 
 	while snapshots.size() >= 3 and float(snapshots[1].get("server_time_ms", 0)) <= render_time_ms:
 		snapshots.pop_front()

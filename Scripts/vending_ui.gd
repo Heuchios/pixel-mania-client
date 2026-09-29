@@ -31,7 +31,7 @@ var current_state := {}
 var selected_item := {}
 var scene_ui_ready := false
 var price_mode: OptionButton
-var purchase_confirmation: ConfirmationDialog
+var purchase_confirmation
 var purchase_quote := {}
 var refreshing_fields := false
 var mutation_pending := false

@@ -500,10 +500,22 @@ func _block_update_targets_local_player_for_instant_death(data: Dictionary) -> b
 	return single_username != "" and single_username == local_username
 
 
+var _handled_snow_freeze_deaths: Dictionary = {}
+
+
 func _apply_block_update_instant_death_if_targeted(data: Dictionary, already_targeted: bool = false) -> void:
 	if not already_targeted and not _block_update_targets_local_player_for_instant_death(data):
 		return
 	if world != null and world.has_method("damage_player"):
+		if str(data.get("kill_reason", "")) == "snow_storm_freeze":
+			var event_id := str(data.get("kill_event_id", ""))
+			if event_id != "":
+				var event_key := str(data.get("world", "")).to_upper() + ":" + event_id
+				if _handled_snow_freeze_deaths.has(event_key):
+					return
+				_handled_snow_freeze_deaths[event_key] = true
+				if _handled_snow_freeze_deaths.size() > 32:
+					_handled_snow_freeze_deaths.erase(_handled_snow_freeze_deaths.keys()[0])
 		world.damage_player(999999)
 
 

@@ -1,0 +1,2837 @@
+{
+  "scope": "Active dispatcher routes, client receive cases, measured messages, multiplexed inventory actions; remaining literal object tags indexed separately",
+  "evidence": [
+    "D:\\Pixelmania\\network-audit-20260928\\baseline-network\\results.json",
+    "D:\\Pixelmania\\network-audit-20260928\\game-rendered\\summary.json",
+    "D:\\Pixelmania\\network-audit-20260928\\load50-after\\results.json"
+  ],
+  "rows": [
+    {
+      "name": "account_email_change_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:1947"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "account_login",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:1886"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "account_password_reset_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:1934"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "account_register",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:1872"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "account_state_save",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2026",
+        "measured proxy/stress fixture"
+      ],
+      "count": 3,
+      "bytes": 705,
+      "max_bytes": 239,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": 235
+    },
+    {
+      "name": "account_token_login",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:1903",
+        "client/Scripts/network_manager.gd:1919",
+        "measured proxy/stress fixture"
+      ],
+      "count": 1,
+      "bytes": 216,
+      "max_bytes": 216,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": 216
+    },
+    {
+      "name": "battery_charger_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3224"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "broadcast",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2839"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "chat",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2808"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "client_ping",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:880",
+        "measured proxy/stress fixture"
+      ],
+      "count": 10,
+      "bytes": 1036,
+      "max_bytes": 104,
+      "frequency": "one probe per 5s; one outstanding",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "matched request_id; 30s deadline",
+      "optimization": "intentional keepalive; do not batch behind bulk traffic",
+      "average_payload_bytes": 103.6
+    },
+    {
+      "name": "custom_trusted_player_state",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "inactive alternate-mode routes",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "mode/ticket/server validation; outside active WebSocket movement",
+      "optimization": "no parallel replication in current default mode",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "custom_trusted_player_state_clear",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:4340"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "inactive alternate-mode routes",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "mode/ticket/server validation; outside active WebSocket movement",
+      "optimization": "no parallel replication in current default mode",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "dev_backend_login",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:1968",
+        "measured proxy/stress fixture"
+      ],
+      "count": 2,
+      "bytes": 377,
+      "max_bytes": 190,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": 188.5
+    },
+    {
+      "name": "developer_command_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "developer_pin_unlock",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3891"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "door_enter",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3465"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "electrical_layer_update",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3048"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "friend_list_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2039"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "friend_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2053"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "friend_response",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2068"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "iap_create_stripe_checkout_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2222"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "iap_submit_google_play_purchase_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2234"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "inventory_transaction_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "measured proxy/stress fixture"
+      ],
+      "count": 4,
+      "bytes": 1776,
+      "max_bytes": 445,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": 444
+    },
+    {
+      "name": "inventory_upgrade_purchase",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2206"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "join_world",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2683",
+        "measured proxy/stress fixture"
+      ],
+      "count": 3,
+      "bytes": 805,
+      "max_bytes": 271,
+      "frequency": "entry/recovery; ready/restart retries only",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered chunks, request/session IDs and revision-checked ready/active",
+      "optimization": "bounded stream; full snapshot only for initialization/recovery",
+      "average_payload_bytes": 268.3
+    },
+    {
+      "name": "landfill_claim_prize_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2635"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "landfill_join_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2584"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "landfill_leaderboard_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2619"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "landfill_race_state_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2603"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "landfill_status_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2568"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "leave_world",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2791"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "login",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:1799",
+        "measured proxy/stress fixture"
+      ],
+      "count": 3,
+      "bytes": 536,
+      "max_bytes": 296,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": 178.7
+    },
+    {
+      "name": "netfox_spawn_ticket_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:1496"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "inactive alternate-mode routes",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "mode/ticket/server validation; outside active WebSocket movement",
+      "optimization": "no parallel replication in current default mode",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "netfox_trusted_player_state",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "inactive alternate-mode routes",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "mode/ticket/server validation; outside active WebSocket movement",
+      "optimization": "no parallel replication in current default mode",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "oil_refinery_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3188"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "owned_locked_worlds_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2543"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "player_position",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:4110",
+        "measured proxy/stress fixture"
+      ],
+      "count": 37,
+      "bytes": 21885,
+      "max_bytes": 1165,
+      "frequency": "change driven; client ≤30Hz small world / ≤20Hz crowded; server batches ≥16ms; idle guidance",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "sequence/timestamp freshness; correction on rejection, no normal per-input ACK",
+      "optimization": "coalesce newest unsent movement; unchanged presence suppressed; full appearance on change/resync",
+      "average_payload_bytes": 591.5
+    },
+    {
+      "name": "player_profile_update",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2161"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "player_punch",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3961"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "player_state_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2090"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "player_state_save",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "pull_player_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2857"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "request_link_electric_poles",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3141"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "request_link_generator_pad",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3095"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "request_link_generator_pole",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3118"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "request_open_generator",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3075"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "request_wire_visibility_refresh",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3165"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "trade_cancel",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3941"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "trade_confirm",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3933"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "trade_final_confirm",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3937"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "trade_offer_update",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3923"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "trade_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3899"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "trade_response",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3907",
+        "client/Scripts/network_manager.gd:3915"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_block_reconcile_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3021"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_block_update",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2944",
+        "measured proxy/stress fixture"
+      ],
+      "count": 6,
+      "bytes": 2648,
+      "max_bytes": 450,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": 441.3
+    },
+    {
+      "name": "world_entry_ready",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:6089",
+        "client/Scripts/network_manager.gd:6161",
+        "measured proxy/stress fixture"
+      ],
+      "count": 3,
+      "bytes": 947,
+      "max_bytes": 319,
+      "frequency": "entry/recovery; ready/restart retries only",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered chunks, request/session IDs and revision-checked ready/active",
+      "optimization": "bounded stream; full snapshot only for initialization/recovery",
+      "average_payload_bytes": 315.7
+    },
+    {
+      "name": "world_interaction_update",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "measured proxy/stress fixture"
+      ],
+      "count": 1,
+      "bytes": 811,
+      "max_bytes": 811,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": 811
+    },
+    {
+      "name": "world_item_drop_create",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_item_drop_pickup",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3509",
+        "client/Scripts/network_manager.gd:3619"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_item_drop_update",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:5250"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_population_request",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:2527"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "presence/interest boundary changes; explicit request",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered lifecycle; no separate application ACK",
+      "optimization": "interest management and population guidance; never periodic full-world state",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_seed_update",
+      "direction": "C→S",
+      "sources": [
+        "server/src/server_phase7_dispatcher.ts",
+        "client/Scripts/network_manager.gd:3255"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "account_auth_error",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4788",
+        "server/src/server.ts:4921"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "account_auth_ok",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4786",
+        "server/src/server.ts:4935",
+        "server/src/server.ts:4962",
+        "server/src/server.ts:4977",
+        "measured proxy/stress fixture"
+      ],
+      "count": 63,
+      "bytes": 52065,
+      "max_bytes": 838,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": 826.4
+    },
+    {
+      "name": "account_session_replaced",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4803",
+        "server/src/server.ts:4701"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "action_rejected",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5064",
+        "server/src/server.ts:15291",
+        "measured proxy/stress fixture"
+      ],
+      "count": 15,
+      "bytes": 2941,
+      "max_bytes": 197,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": 196.1
+    },
+    {
+      "name": "auth_required",
+      "direction": "S→C",
+      "sources": [
+        "server/src/server.ts; client authentication/developer-pin pre-dispatch",
+        "server/src/server.ts:5038"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "broadcast",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5074",
+        "server/src/server_phase9_remaining_routes.ts:248",
+        "server/src/server_phase9_remaining_routes.ts:257",
+        "server/src/server_phase9_remaining_routes.ts:295"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "chat",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5074",
+        "server/src/server.ts:5300",
+        "server/src/server.ts:5310",
+        "server/src/server.ts:12748",
+        "server/src/server.ts:21916",
+        "server/src/server.ts:23413",
+        "server/src/server.ts:23523",
+        "server/src/server.ts:23634",
+        "server/src/server.ts:23643",
+        "server/src/server.ts:35368",
+        "server/src/server_phase8_world_action_routes.ts:926",
+        "server/src/server_phase9_remaining_routes.ts:240",
+        "server/src/server_phase9_remaining_routes.ts:245",
+        "server/src/server_phase9_remaining_routes.ts:278",
+        "server/src/server_punishment_helpers.ts:211",
+        "measured proxy/stress fixture"
+      ],
+      "count": 1338,
+      "bytes": 161307,
+      "max_bytes": 213,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": 120.6
+    },
+    {
+      "name": "client_pong",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4776",
+        "server/src/server.ts:2388",
+        "measured proxy/stress fixture"
+      ],
+      "count": 320,
+      "bytes": 17511,
+      "max_bytes": 55,
+      "frequency": "one probe per 5s; one outstanding",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "matched request_id; 30s deadline",
+      "optimization": "intentional keepalive; do not batch behind bulk traffic",
+      "average_payload_bytes": 54.7
+    },
+    {
+      "name": "client_update_required",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4782",
+        "server/src/server.ts:4468"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "connected",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4771",
+        "server/src/server.ts:3275",
+        "measured proxy/stress fixture"
+      ],
+      "count": 63,
+      "bytes": 4473,
+      "max_bytes": 71,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": 71
+    },
+    {
+      "name": "developer_command_approved",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5108",
+        "server/src/server.ts:20516"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "developer_command_denied",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5112",
+        "server/src/server.ts:20506"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "developer_command_verified",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5108"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "developer_item_grant",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5116"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "developer_pin_unlock_result",
+      "direction": "S→C",
+      "sources": [
+        "server/src/server.ts; client authentication/developer-pin pre-dispatch",
+        "server/src/server.ts:22918",
+        "server/src/server.ts:22934",
+        "server/src/server.ts:22962",
+        "server/src/server.ts:22990"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "door_enter_ok",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4855",
+        "server/src/server.ts:19111"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "drop_removed",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5003"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "drop_spawned",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4973",
+        "server/src/server.ts:17322",
+        "server/src/server_drop_contracts.ts:108",
+        "measured proxy/stress fixture"
+      ],
+      "count": 304,
+      "bytes": 77546,
+      "max_bytes": 262,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": 255.1
+    },
+    {
+      "name": "drop_updated",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4978"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "electrical_layer_update",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4937",
+        "server/src/server.ts:25090",
+        "server/src/server_phase8_world_action_routes.ts:1095",
+        "server/src/server_world_state_helpers.ts:867"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "event_ended",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4957",
+        "server/src/server.ts:31686"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "event_started",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4955",
+        "server/src/server.ts:31615"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "event_system_message",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4959",
+        "server/src/server.ts:31697"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "event_tile_updates",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4961",
+        "server/src/server.ts:31659",
+        "server/src/server.ts:31762",
+        "server/src/server.ts:32575"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "fishing_reward_fx",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5062",
+        "server/src/server.ts:13323"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "friend_error",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5126",
+        "server/src/server_friend_routes.ts:142"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "friend_request_accepted",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5126",
+        "server/src/server_friend_routes.ts:205",
+        "server/src/server_friend_routes.ts:216"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "friend_request_declined",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5126"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "friend_request_received",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5126",
+        "server/src/server_friend_routes.ts:243"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "friend_request_sent",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5126",
+        "server/src/server_friend_routes.ts:174",
+        "server/src/server_friend_routes.ts:186",
+        "server/src/server_friend_routes.ts:231"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "friend_response_result",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5126",
+        "server/src/server_friend_routes.ts:280"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "friend_state",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5126",
+        "server/src/server_friend_routes.ts:115",
+        "server/src/server_friend_routes.ts:126",
+        "measured proxy/stress fixture"
+      ],
+      "count": 63,
+      "bytes": 8950,
+      "max_bytes": 147,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": 142.1
+    },
+    {
+      "name": "generator_data_update",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4941",
+        "server/src/server.ts:25112"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "generator_generation_pulse",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4945",
+        "server/src/server.ts:27194"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "iap_checkout_session_result",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5058"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "iap_purchase_result",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5060"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "inventory_grant",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5116"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "inventory_transaction_result",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5056",
+        "server/src/server_inventory_contracts.ts:326",
+        "measured proxy/stress fixture"
+      ],
+      "count": 28,
+      "bytes": 11485,
+      "max_bytes": 702,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": 410.2
+    },
+    {
+      "name": "item_grant",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5116"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "join_world_ok",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4807",
+        "server/src/server.ts:19134",
+        "server/src/server_phase8_player_session_routes.ts:792",
+        "measured proxy/stress fixture"
+      ],
+      "count": 63,
+      "bytes": 115733,
+      "max_bytes": 1884,
+      "frequency": "entry/recovery; ready/restart retries only",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered chunks, request/session IDs and revision-checked ready/active",
+      "optimization": "bounded stream; full snapshot only for initialization/recovery",
+      "average_payload_bytes": 1837
+    },
+    {
+      "name": "landfill_claim_result",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5052",
+        "server/src/server_landfill_event.ts:1432",
+        "server/src/server_landfill_event.ts:1437"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "landfill_instance_redirect",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4805",
+        "server/src/server_phase8_player_session_routes.ts:614"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "landfill_join_result",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5048",
+        "server/src/server_landfill_event.ts:1349"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "landfill_leaderboard",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5050",
+        "server/src/server_landfill_event.ts:1365"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "landfill_race_results",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5044",
+        "server/src/server_landfill_event.ts:1217"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "landfill_race_state",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5042",
+        "server/src/server_landfill_event.ts:1129"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "landfill_status",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5046",
+        "server/src/server_landfill_event.ts:1333"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "login_ok",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4780",
+        "server/src/server_phase9_remaining_routes.ts:87",
+        "measured proxy/stress fixture"
+      ],
+      "count": 3,
+      "bytes": 338,
+      "max_bytes": 118,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": 112.7
+    },
+    {
+      "name": "netfox_spawn_ticket",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4852",
+        "server/src/server.ts:3963",
+        "server/src/server.ts:3974"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "inactive alternate-mode routes",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "mode/ticket/server validation; outside active WebSocket movement",
+      "optimization": "no parallel replication in current default mode",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "owned_locked_worlds_result",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5040",
+        "server/src/server.ts:7498",
+        "server/src/server.ts:7510"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "player_joined",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5084",
+        "measured proxy/stress fixture"
+      ],
+      "count": 1272,
+      "bytes": 1397463,
+      "max_bytes": 1104,
+      "frequency": "presence/interest boundary changes; explicit request",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered lifecycle; no separate application ACK",
+      "optimization": "interest management and population guidance; never periodic full-world state",
+      "average_payload_bytes": 1098.6
+    },
+    {
+      "name": "player_left",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5100",
+        "measured proxy/stress fixture"
+      ],
+      "count": 3,
+      "bytes": 3329,
+      "max_bytes": 1127,
+      "frequency": "presence/interest boundary changes; explicit request",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered lifecycle; no separate application ACK",
+      "optimization": "interest management and population guidance; never periodic full-world state",
+      "average_payload_bytes": 1109.7
+    },
+    {
+      "name": "player_position",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5084",
+        "measured proxy/stress fixture"
+      ],
+      "count": 1272,
+      "bytes": 1398457,
+      "max_bytes": 1131,
+      "frequency": "change driven; client ≤30Hz small world / ≤20Hz crowded; server batches ≥16ms; idle guidance",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "sequence/timestamp freshness; correction on rejection, no normal per-input ACK",
+      "optimization": "coalesce newest unsent movement; unchanged presence suppressed; full appearance on change/resync",
+      "average_payload_bytes": 1099.4
+    },
+    {
+      "name": "player_position_batch",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5082",
+        "server/src/server.ts:35155",
+        "server/src/server_socket_delivery_helpers.ts:435",
+        "measured proxy/stress fixture"
+      ],
+      "count": 34798,
+      "bytes": 425687255,
+      "max_bytes": 19156,
+      "frequency": "change driven; client ≤30Hz small world / ≤20Hz crowded; server batches ≥16ms; idle guidance",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "sequence/timestamp freshness; correction on rejection, no normal per-input ACK",
+      "optimization": "coalesce newest unsent movement; unchanged presence suppressed; full appearance on change/resync",
+      "average_payload_bytes": 12233.1
+    },
+    {
+      "name": "player_pulled",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5080",
+        "server/src/server.ts:22882"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "player_punch_knockback",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5094",
+        "server/src/server.ts:19746"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "player_state",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5013",
+        "server/src/server.ts:5047",
+        "server/src/server.ts:22718",
+        "server/src/server_admin_lookup_routes.ts:108",
+        "server/src/server_admin_lookup_routes.ts:122",
+        "server/src/server_admin_lookup_routes.ts:143",
+        "server/src/server_admin_lookup_routes.ts:165",
+        "server/src/server_admin_lookup_routes.ts:180",
+        "server/src/server_admin_lookup_routes.ts:384",
+        "server/src/server_admin_lookup_routes.ts:497",
+        "server/src/server_admin_lookup_routes.ts:630",
+        "server/src/server_admin_lookup_routes.ts:767",
+        "server/src/server_admin_lookup_routes.ts:892",
+        "server/src/server_phase8_player_session_routes.ts:437",
+        "server/src/server_phase8_player_session_routes.ts:490",
+        "measured proxy/stress fixture"
+      ],
+      "count": 60,
+      "bytes": 108206,
+      "max_bytes": 1804,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": 1803.4
+    },
+    {
+      "name": "pull_player_result",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5078",
+        "server/src/server.ts:22897"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "rate_limited",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5070",
+        "server/src/server_message_router_helpers.ts:332"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "refresh_wire_visibility",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4949",
+        "server/src/server.ts:24971",
+        "measured proxy/stress fixture"
+      ],
+      "count": 2,
+      "bytes": 434,
+      "max_bytes": 217,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": 217
+    },
+    {
+      "name": "trade_canceled",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5120",
+        "server/src/server.ts:5724"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "trade_completed",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5120",
+        "server/src/server.ts:6435",
+        "server/src/server.ts:6443"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "trade_error",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5120",
+        "server/src/server.ts:4327",
+        "server/src/server.ts:5289"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "trade_request_received",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5120",
+        "server/src/server_trade_routes.ts:131"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "trade_request_sent",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5120",
+        "server/src/server_trade_routes.ts:141"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "trade_state",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5120",
+        "server/src/server.ts:5676"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "user/session action; state saves use change detection",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered authenticated request/result; transaction identity/locks; never replay blindly",
+      "optimization": "retain reliable results and atomic deltas; combine only within the existing transaction",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_block_reconcile",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4932",
+        "server/src/server.ts:30342",
+        "measured proxy/stress fixture"
+      ],
+      "count": 30,
+      "bytes": 54545,
+      "max_bytes": 1835,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": 1818.2
+    },
+    {
+      "name": "world_block_update",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4919",
+        "server/src/server.ts:7706",
+        "server/src/server.ts:24055",
+        "server/src/server.ts:25878",
+        "server/src/server.ts:25942",
+        "server/src/server.ts:26006",
+        "server/src/server.ts:27497",
+        "server/src/server.ts:27518",
+        "server/src/server.ts:27535",
+        "server/src/server.ts:27553",
+        "server/src/server.ts:27841",
+        "server/src/server.ts:27859",
+        "server/src/server.ts:28242",
+        "server/src/server.ts:28258",
+        "server/src/server.ts:31639",
+        "server/src/server.ts:32919",
+        "server/src/server.ts:32970",
+        "server/src/server.ts:33010",
+        "server/src/server.ts:33109",
+        "server/src/server.ts:33123",
+        "server/src/server.ts:33136",
+        "server/src/server.ts:33209",
+        "server/src/server.ts:33218",
+        "server/src/server_world_state_helpers.ts:1845",
+        "measured proxy/stress fixture"
+      ],
+      "count": 46,
+      "bytes": 25801,
+      "max_bytes": 711,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": 560.9
+    },
+    {
+      "name": "world_drop_create",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4973"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_drop_pickup",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4987"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_drop_remove",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5003"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_drop_update",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4978"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_entry_active",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4871",
+        "server/src/server_phase8_player_session_routes.ts:338",
+        "server/src/server_phase8_player_session_routes.ts:976",
+        "measured proxy/stress fixture"
+      ],
+      "count": 63,
+      "bytes": 14861,
+      "max_bytes": 249,
+      "frequency": "entry/recovery; ready/restart retries only",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered chunks, request/session IDs and revision-checked ready/active",
+      "optimization": "bounded stream; full snapshot only for initialization/recovery",
+      "average_payload_bytes": 235.9
+    },
+    {
+      "name": "world_entry_catchup_wait",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4869",
+        "server/src/server_phase8_player_session_routes.ts:1118"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "entry/recovery; ready/restart retries only",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered chunks, request/session IDs and revision-checked ready/active",
+      "optimization": "bounded stream; full snapshot only for initialization/recovery",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_entry_rejected",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4873",
+        "server/src/server_phase8_player_session_routes.ts:966",
+        "server/src/server_phase8_player_session_routes.ts:989"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "entry/recovery; ready/restart retries only",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered chunks, request/session IDs and revision-checked ready/active",
+      "optimization": "bounded stream; full snapshot only for initialization/recovery",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_entry_snapshot_restart",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4867",
+        "server/src/server_phase8_player_session_routes.ts:1059"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "entry/recovery; ready/restart retries only",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered chunks, request/session IDs and revision-checked ready/active",
+      "optimization": "bounded stream; full snapshot only for initialization/recovery",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_interaction_update",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4968",
+        "server/src/server.ts:7138",
+        "server/src/server.ts:7251",
+        "server/src/server.ts:7717",
+        "server/src/server.ts:7731",
+        "server/src/server.ts:8589",
+        "server/src/server.ts:8973",
+        "server/src/server.ts:9197",
+        "server/src/server.ts:9561",
+        "server/src/server.ts:9920",
+        "server/src/server.ts:9950",
+        "server/src/server.ts:10102",
+        "server/src/server.ts:10540",
+        "server/src/server.ts:11073",
+        "server/src/server.ts:11206",
+        "server/src/server.ts:11605",
+        "server/src/server.ts:12001",
+        "server/src/server.ts:12654",
+        "server/src/server.ts:12770",
+        "server/src/server.ts:12830",
+        "server/src/server.ts:12924",
+        "server/src/server.ts:13028",
+        "server/src/server.ts:17655",
+        "server/src/server.ts:19262",
+        "server/src/server.ts:25293",
+        "server/src/server.ts:25480",
+        "server/src/server.ts:27936",
+        "server/src/server.ts:28099",
+        "server/src/server.ts:28328",
+        "server/src/server.ts:30715",
+        "server/src/server_world_state_helpers.ts:1862",
+        "server/src/server_world_state_helpers.ts:1900",
+        "server/src/server_world_state_helpers.ts:1995",
+        "server/src/server_world_state_helpers.ts:2005",
+        "measured proxy/stress fixture"
+      ],
+      "count": 2,
+      "bytes": 1428,
+      "max_bytes": 714,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": 714
+    },
+    {
+      "name": "world_item_drop_create",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4973",
+        "server/src/server_phase6_helpers.ts:467"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_item_drop_pickup",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4987",
+        "server/src/server_drop_contracts.ts:145"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_item_drop_remove",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5003",
+        "server/src/server_drop_contracts.ts:195",
+        "server/src/server_phase6_helpers.ts:300",
+        "server/src/server_phase6_helpers.ts:487"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_item_drop_update",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4978",
+        "server/src/server_drop_contracts.ts:125",
+        "server/src/server_drop_contracts.ts:209",
+        "server/src/server_phase6_helpers.ts:271"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_population",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5015",
+        "server/src/server.ts:34553"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "presence/interest boundary changes; explicit request",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered lifecycle; no separate application ACK",
+      "optimization": "interest management and population guidance; never periodic full-world state",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_population_update",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5015",
+        "server/src/server_phase6_helpers.ts:403",
+        "measured proxy/stress fixture"
+      ],
+      "count": 1338,
+      "bytes": 407659,
+      "max_bytes": 309,
+      "frequency": "presence/interest boundary changes; explicit request",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered lifecycle; no separate application ACK",
+      "optimization": "interest management and population guidance; never periodic full-world state",
+      "average_payload_bytes": 304.7
+    },
+    {
+      "name": "world_route_redirect",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:5054",
+        "server/src/server.ts:34013"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "event/request driven; exact frequency depends on gameplay",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "reliable ordered event; request results use matching ID where defined (see source)",
+      "optimization": "no constant whole-world replication; no duplicate loop found in active receive dispatcher; do not coalesce critical events",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_seed_update",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4963",
+        "server/src/server.ts:14652",
+        "server/src/server.ts:14721",
+        "server/src/server.ts:14863",
+        "server/src/server.ts:14974",
+        "server/src/server.ts:15038",
+        "server/src/server.ts:27004"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_state",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4875",
+        "server/src/server.ts:30857"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "entry/recovery; ready/restart retries only",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered chunks, request/session IDs and revision-checked ready/active",
+      "optimization": "bounded stream; full snapshot only for initialization/recovery",
+      "average_payload_bytes": null
+    },
+    {
+      "name": "world_state_stream_begin",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4861",
+        "server/src/server_world_state_helpers.ts:435",
+        "measured proxy/stress fixture"
+      ],
+      "count": 63,
+      "bytes": 119514,
+      "max_bytes": 1922,
+      "frequency": "entry/recovery; ready/restart retries only",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered chunks, request/session IDs and revision-checked ready/active",
+      "optimization": "bounded stream; full snapshot only for initialization/recovery",
+      "average_payload_bytes": 1897
+    },
+    {
+      "name": "world_state_stream_chunk",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4863",
+        "server/src/server_world_state_helpers.ts:380",
+        "measured proxy/stress fixture"
+      ],
+      "count": 192,
+      "bytes": 3311721,
+      "max_bytes": 36312,
+      "frequency": "entry/recovery; ready/restart retries only",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered chunks, request/session IDs and revision-checked ready/active",
+      "optimization": "bounded stream; full snapshot only for initialization/recovery",
+      "average_payload_bytes": 17248.5
+    },
+    {
+      "name": "world_state_stream_end",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4865",
+        "server/src/server_world_state_helpers.ts:448",
+        "measured proxy/stress fixture"
+      ],
+      "count": 63,
+      "bytes": 16310,
+      "max_bytes": 272,
+      "frequency": "entry/recovery; ready/restart retries only",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered chunks, request/session IDs and revision-checked ready/active",
+      "optimization": "bounded stream; full snapshot only for initialization/recovery",
+      "average_payload_bytes": 258.9
+    },
+    {
+      "name": "world_update_batch",
+      "direction": "S→C",
+      "sources": [
+        "client/Scripts/network_manager.gd:4953",
+        "server/src/server.ts:35479",
+        "server/src/server.ts:35725",
+        "measured proxy/stress fixture"
+      ],
+      "count": 1174,
+      "bytes": 722111,
+      "max_bytes": 1434,
+      "frequency": "mutation/interaction; some generators emit timed pulses",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "ordered world revisions and action identity; authoritative event/result/repair",
+      "optimization": "delta events/batches; nearby drops; repeated breaks are intentional hits, not duplicate commits",
+      "average_payload_bytes": 615.1
+    },
+    {
+      "name": "netfox_spawn",
+      "direction": "S→Netfox",
+      "sources": [
+        "server/src/server.ts; inactive alternate movement transport"
+      ],
+      "count": 0,
+      "bytes": 0,
+      "max_bytes": 0,
+      "frequency": "inactive alternate-mode routes",
+      "reliability": "ordered reliable WebSocket/TCP",
+      "acknowledgement": "mode/ticket/server validation; outside active WebSocket movement",
+      "optimization": "no parallel replication in current default mode",
+      "average_payload_bytes": null
+    }
+  ],
+  "inventory_transaction_actions": [
+    "magnet_get_state",
+    "magnet_select",
+    "magnet_update",
+    "magnet_toggle",
+    "magnet_deposit",
+    "magnet_withdraw",
+    "magnet_remote",
+    "magnet_place",
+    "magnet_remove",
+    "quest_board_get",
+    "quest_accept",
+    "quest_refresh",
+    "quest_inspect",
+    "quest_hint",
+    "quest_solve",
+    "quest_choose",
+    "quest_abandon",
+    "quest_redeem",
+    "quest_equip",
+    "craft_recipe",
+    "furnace_recipe",
+    "safe_get_state",
+    "safe_deposit",
+    "safe_withdraw",
+    "display_get_state",
+    "display_deposit",
+    "display_withdraw",
+    "donation_box_get_state",
+    "donation_box_donate",
+    "donation_box_retrieve",
+    "donation_box_retrieve_all",
+    "seed_splice",
+    "seed_fertilize",
+    "seed_place",
+    "seed_harvest",
+    "convert_world_lock",
+    "world_lock_get_key",
+    "trash_inventory_item",
+    "fish_monger_sell",
+    "fish_monger_prices",
+    "fish_monger_sell_all",
+    "fishing_start",
+    "fishing_complete",
+    "drop_inventory_item",
+    "shop_buy",
+    "vend_get_state",
+    "vend_set_listing",
+    "vend_buy",
+    "vend_collect",
+    "vend_cancel"
+  ],
+  "unclassified_server_type_literals": [
+    {
+      "name": "duplicate_public_id",
+      "sources": [
+        "server/src/postgres_store.ts:4156"
+      ]
+    },
+    {
+      "name": "impossible_state",
+      "sources": [
+        "server/src/postgres_store.ts:4191"
+      ]
+    },
+    {
+      "name": "inventory_count_mismatch",
+      "sources": [
+        "server/src/postgres_store.ts:4269"
+      ]
+    },
+    {
+      "name": "missing_inventory_hash",
+      "sources": [
+        "server/src/postgres_store.ts:4343"
+      ]
+    },
+    {
+      "name": "inventory_hash_mismatch",
+      "sources": [
+        "server/src/postgres_store.ts:4354"
+      ]
+    },
+    {
+      "name": "missing_transaction_hash",
+      "sources": [
+        "server/src/postgres_store.ts:4416"
+      ]
+    },
+    {
+      "name": "transaction_hash_mismatch",
+      "sources": [
+        "server/src/postgres_store.ts:4428"
+      ]
+    },
+    {
+      "name": "missing_world_snapshot_hash",
+      "sources": [
+        "server/src/postgres_store.ts:4467"
+      ]
+    },
+    {
+      "name": "world_snapshot_hash_mismatch",
+      "sources": [
+        "server/src/postgres_store.ts:4481"
+      ]
+    },
+    {
+      "name": "inventory_item_ledger_mismatch",
+      "sources": [
+        "server/src/postgres_store.ts:4520"
+      ]
+    },
+    {
+      "name": "gem_ledger_balance_mismatch",
+      "sources": [
+        "server/src/postgres_store.ts:4559"
+      ]
+    },
+    {
+      "name": "vending_instance_also_in_inventory",
+      "sources": [
+        "server/src/postgres_store.ts:4590"
+      ]
+    },
+    {
+      "name": "item_instance_audit_failed",
+      "sources": [
+        "server/src/postgres_store.ts:4610"
+      ]
+    },
+    {
+      "name": "broken_bottle",
+      "sources": [
+        "server/src/server.ts:868"
+      ]
+    },
+    {
+      "name": "broken_jar",
+      "sources": [
+        "server/src/server.ts:869"
+      ]
+    },
+    {
+      "name": "broken_flask",
+      "sources": [
+        "server/src/server.ts:870"
+      ]
+    },
+    {
+      "name": "garbage_box",
+      "sources": [
+        "server/src/server.ts:871"
+      ]
+    },
+    {
+      "name": "broken_vending_machine",
+      "sources": [
+        "server/src/server.ts:872"
+      ]
+    },
+    {
+      "name": "inventory_transaction_request",
+      "sources": [
+        "server/src/server.ts:18018"
+      ]
+    },
+    {
+      "name": "netfox_spawn",
+      "sources": [
+        "server/src/server.ts:30168"
+      ]
+    },
+    {
+      "name": "dirt",
+      "sources": [
+        "server/src/server.ts:32091",
+        "server/src/server.ts:32103",
+        "server/src/server.ts:32108",
+        "server/src/server.ts:32117",
+        "server/src/server.ts:32124",
+        "server/src/server.ts:32131",
+        "server/src/server.ts:32138",
+        "server/src/server.ts:32144",
+        "server/src/server.ts:32159",
+        "server/src/server.ts:32165",
+        "server/src/server.ts:32170"
+      ]
+    },
+    {
+      "name": "sand",
+      "sources": [
+        "server/src/server.ts:32092",
+        "server/src/server.ts:32104",
+        "server/src/server.ts:32109",
+        "server/src/server.ts:32119",
+        "server/src/server.ts:32126",
+        "server/src/server.ts:32133",
+        "server/src/server.ts:32140",
+        "server/src/server.ts:32146",
+        "server/src/server.ts:32167",
+        "server/src/server.ts:32172"
+      ]
+    },
+    {
+      "name": "stone",
+      "sources": [
+        "server/src/server.ts:32093",
+        "server/src/server.ts:32102",
+        "server/src/server.ts:32110",
+        "server/src/server.ts:32118",
+        "server/src/server.ts:32125",
+        "server/src/server.ts:32132",
+        "server/src/server.ts:32139",
+        "server/src/server.ts:32145",
+        "server/src/server.ts:32157",
+        "server/src/server.ts:32166",
+        "server/src/server.ts:32171"
+      ]
+    },
+    {
+      "name": "lava",
+      "sources": [
+        "server/src/server.ts:32158"
+      ]
+    },
+    {
+      "name": "any",
+      "sources": [
+        "server/src/server_calendar_events.ts:22",
+        "server/src/server_calendar_events.ts:59",
+        "server/src/server_calendar_events.ts:83"
+      ]
+    },
+    {
+      "name": "values",
+      "sources": [
+        "server/src/server_calendar_events.ts:22",
+        "server/src/server_calendar_events.ts:83"
+      ]
+    },
+    {
+      "name": "electrical_generation",
+      "sources": [
+        "server/src/server_phase8_world_action_routes.ts:821"
+      ]
+    }
+  ]
+}

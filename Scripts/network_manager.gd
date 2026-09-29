@@ -2,6 +2,7 @@ extends Node
 
 const RuntimeProfiler = preload("res://Scripts/runtime_profiler.gd")
 const MovementBatchCodec = preload("res://Scripts/networking/movement_batch_codec.gd")
+const ConnectionHealth = preload("res://Scripts/networking/connection_health.gd")
 
 signal server_auth_finished(data)
 signal server_connection_changed(is_connected)
@@ -21,6 +22,10 @@ const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
 
 var socket := WebSocketPeer.new()
 var socket_generation: int = 0
+var connection_health = ConnectionHealth.new()
+var application_paused := false
+var reconnect_scheduled := false
+var connection_recovering := false
 var connected := false
 var player_id := ""
 var player_name := "Guest"
@@ -98,6 +103,7 @@ var local_position_batch_budget := 0
 var local_position_batch_world := ""
 var local_position_batch_limit := 0
 var local_position_batch_sends := 0
+var local_position_next_send_msec := 0.0
 var local_position_batch_skips := 0
 var local_position_queue_last_flush_msec := 0
 var _last_local_position_debug_msec := 0
@@ -115,7 +121,7 @@ var WORLD_ROUTE_WS_URLS: Array[String] = [
 ]
 # Keep in sync with export_presets.cfg "version/name" on every release build.
 # The server gates packets against this value via MIN_CLIENT_VERSION.
-const CLIENT_VERSION := "1.2.13"
+const CLIENT_VERSION := "1.2.14"
 const CLIENT_PLATFORM := "godot"
 const DEBUG_SERVER_PACKETS := false
 const DEBUG_ACTION_POSITION_FLOW := false
@@ -190,9 +196,11 @@ const MAX_WORLD_SEED_GROW_TIME_SECONDS := 3600.0 * 24.0 * 30.0
 const MAX_BLOCK_HIT_METRIC := 1024
 # Keep WebSocket movement responsive for current interpolation/backend.
 # Lower this later only after remote interpolation buffer is retuned.
-const MAX_PLAYER_POSITION_RATE_PER_SECOND := 60
+const MAX_PLAYER_POSITION_RATE_PER_SECOND := 30
+const CROWDED_PLAYER_POSITION_RATE_PER_SECOND := 20
+const MOVEMENT_OUTBOUND_SOFT_LIMIT_BYTES := 8192
 const LOCAL_POSITION_QUEUE_FLUSH_DEBUG_INTERVAL_MS := 600
-const LOCAL_POSITION_QUEUE_FLUSH_INTERVAL_MS := 120
+const LOCAL_POSITION_QUEUE_FLUSH_INTERVAL_MS := 16
 const MAX_PLAYER_PUNCH_RATE_PER_SECOND := 8
 const MAX_NETFOX_STATE_BRIDGE_RATE_PER_SECOND := 20
 const MAX_TRADE_RATE_PER_SECOND := 14
@@ -217,7 +225,6 @@ const WORLD_POPULATION_RESET_UNRESPONSIVE_AFTER_SECONDS := 600.0
 const PICKUP_REMAINING_AMOUNT_UNKNOWN := -2147483648
 const MOVEMENT_VISUAL_SYNC_INTERVAL_MS := 2500
 const LOCAL_POSITION_BATCH_BUDGET_WINDOW_MS := 500
-const LOCAL_POSITION_BATCH_BURST_SCALE := 1024.0
 const AUTH_TOKEN_MESSAGE_TYPES := [
 	"login",
 	"account_register",
@@ -703,9 +710,17 @@ func _ready():
 
 
 func _process(delta: float) -> void:
+	if RuntimeProfiler.enabled:
+		RuntimeProfiler.network_health = {
+			"state": get_connection_state(), "rtt_ms": connection_health.rtt_ms,
+			"jitter_ms": connection_health.jitter_ms, "missed_probes": connection_health.missed_probes,
+			"tcp_packet_loss_percent": null, "outbound_buffer_bytes": socket.get_current_outbound_buffered_amount()
+		}
 	RuntimeProfiler.frame(delta, socket.get_available_packet_count(), world_event_tile_update_queue.size() - world_event_tile_update_queue_read_index)
 	_sample_world_entry_frame(delta)
 	if not MovementMode.should_run_websocket_backend():
+		return
+	if application_paused:
 		return
 
 	# Keep this frame bound to one peer. A route packet can replace `socket` while
@@ -719,6 +734,8 @@ func _process(delta: float) -> void:
 	var state: int = frame_socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN and not connected:
 		connected = true
+		connection_health.opened(Time.get_ticks_msec())
+		reconnect_scheduled = false
 		server_session_authenticated = false
 		last_connection_error = ""
 		last_close_code = -1
@@ -734,13 +751,13 @@ func _process(delta: float) -> void:
 			send_account_token_login(session_username, session_token)
 
 	process_server_packets_with_budget(frame_socket, frame_socket_generation)
-	if is_server_session_authenticated() and RuntimeProfiler.ping_due():
-		send_message({"type": "client_ping", "request_id": "perf_%d" % Time.get_ticks_usec()})
 	_process_network_followup()
 
 	# Packet handling may have followed a world-route redirect and installed a
 	# replacement peer. Never apply lifecycle state from the retired connection.
 	if frame_socket_generation != socket_generation:
+		return
+	if _process_connection_health():
 		return
 
 	state = frame_socket.get_ready_state()
@@ -791,13 +808,94 @@ func _process(delta: float) -> void:
 				false
 			)
 		elif had_active_session:
-			print("[NetworkManager] Transient disconnect; preserving authenticated join state for reconnect.")
+			_prepare_transport_recovery("transient_disconnect")
 
 	if state == WebSocketPeer.STATE_CLOSED:
+		if not reconnect_scheduled:
+			reconnect_timer = connection_health.retry_delay_seconds(randf_range(0.8, 1.2))
+			reconnect_scheduled = true
 		reconnect_timer -= delta
 		if reconnect_timer <= 0.0:
-			reconnect_timer = RECONNECT_INTERVAL
+			reconnect_scheduled = false
 			connect_to_server()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_PAUSED:
+		application_paused = true
+	elif what == NOTIFICATION_APPLICATION_RESUMED:
+		application_paused = false
+		# Suspension is not evidence that the server failed. Probe on resume.
+		connection_health.reset_probe(Time.get_ticks_msec())
+		connection_health.phase_started_ms = Time.get_ticks_msec()
+		reconnect_timer = 0.0
+		_clear_local_position_payload_queue()
+
+
+func _prepare_transport_recovery(reason: String) -> void:
+	connection_recovering = has_active_session()
+	if connection_recovering and not has_pending_join():
+		var target := active_join_world_name if active_join_world_name != "" else current_world_name
+		if is_world_node_active() or active_join_request_id != "":
+			set_pending_join(target, session_username)
+	if connection_recovering and has_pending_join():
+		var world_node: Node = get_world_node()
+		if world_node != null and is_world_node_active():
+			# A fresh join is authorized at the entrance by the server. Reuse the
+			# normal entry spawn path before revealing the rebuilt world, rather
+			# than retaining the old position until a corrective packet arrives.
+			world_node.set_meta("world_entry_force_entrance_spawn", true)
+	_invalidate_active_join_request_for_transport_change(reason)
+	_clear_local_position_payload_queue()
+	clear_world_event_tile_update_queue()
+	pending_server_player_state.clear()
+	pending_player_state_requests.clear()
+	connection_health.reset_probe(Time.get_ticks_msec())
+
+
+func _process_connection_health() -> bool:
+	var now := Time.get_ticks_msec()
+	# Drain local initialization/queued packets before calling the route dead.
+	if socket.get_available_packet_count() > 0 or is_world_state_apply_in_progress():
+		return false
+	var reason: String = connection_health.timeout_reason(now)
+	if socket.get_ready_state() != WebSocketPeer.STATE_CLOSED and reason != "":
+		if reason == "heartbeat_timeout":
+			connection_health.missed_probes += 1
+		_prepare_transport_recovery(reason)
+		last_connection_error = reason
+		connection_health.phase = "DISCONNECTED"
+		socket.close()
+		socket_generation += 1
+		socket = WebSocketPeer.new()
+		if connected:
+			connected = false
+			server_session_authenticated = false
+			server_connection_changed.emit(false)
+		reconnect_scheduled = false
+		RuntimeProfiler.count(reason)
+		return true
+	if is_server_session_authenticated() and connection_health.ping_due(now):
+		var request_id := "health_%d_%d" % [socket_generation, now]
+		if send_message({"type": "client_ping", "request_id": request_id}):
+			connection_health.sent_ping(request_id, now)
+	return false
+
+
+func get_connection_state() -> String:
+	if application_paused:
+		return "SUSPENDED"
+	if connection_recovering and not server_session_authenticated:
+		return "RECONNECTING"
+	if not is_connected_to_server():
+		return "CONNECTING" if socket.get_ready_state() == WebSocketPeer.STATE_CONNECTING else "DISCONNECTED"
+	if connection_health.phase in ["AUTHENTICATING", "FAILED"]:
+		return connection_health.phase
+	if has_incomplete_join_lifecycle_for_world(current_world_name):
+		return "JOINING_WORLD"
+	if world_entry_active:
+		return "IN_WORLD"
+	return "CONNECTED"
 
 
 func _process_network_followup() -> void:
@@ -916,8 +1014,6 @@ func should_allow_network_override() -> bool:
 
 func connect_to_server(force: bool = false) -> void:
 	var state = socket.get_ready_state()
-	if force:
-		_invalidate_active_join_request_for_transport_change("forced_reconnect")
 	if state == WebSocketPeer.STATE_OPEN:
 		if not force:
 			return
@@ -935,6 +1031,9 @@ func connect_to_server(force: bool = false) -> void:
 	if active_server_urls.is_empty():
 		return
 
+	# Automatic reconnects also replace the snapshot/ready lifecycle.
+	_invalidate_active_join_request_for_transport_change("transport_replaced")
+	_clear_local_position_payload_queue()
 	socket_generation += 1
 	socket = WebSocketPeer.new()
 	socket.inbound_buffer_size = MAX_SERVER_MESSAGE_BYTES
@@ -942,6 +1041,7 @@ func connect_to_server(force: bool = false) -> void:
 	var server_url = active_server_urls[server_url_index % active_server_urls.size()]
 	last_connection_attempt_url = server_url
 	last_connection_started_at = Time.get_ticks_msec()
+	connection_health.start_attempt(last_connection_started_at)
 	last_connection_error = ""
 	last_close_code = -1
 	last_close_reason = ""
@@ -1162,6 +1262,8 @@ func get_connection_debug_summary() -> String:
 	var parts = PackedStringArray()
 	parts.append("url=" + last_connection_attempt_url)
 	parts.append("state=" + get_server_connection_state_text())
+	parts.append("connection=" + get_connection_state())
+	parts.append("rtt_ms=%.1f jitter_ms=%.1f missed_probes=%d" % [connection_health.rtt_ms, connection_health.jitter_ms, connection_health.missed_probes])
 	parts.append("batch_sends=" + str(local_position_batch_sends))
 	parts.append("batch_skips=" + str(local_position_batch_skips))
 	parts.append("batch_limit=" + str(local_position_batch_limit))
@@ -1529,6 +1631,8 @@ func _load_saved_session_for_netfox_real_client_launch() -> void:
 
 
 func clear_runtime_session() -> void:
+	connection_recovering = false
+	connection_health.opened(Time.get_ticks_msec())
 	account_id = ""
 	profile_id = ""
 	game_player_id = player_id
@@ -1721,6 +1825,8 @@ func send_message(data: Dictionary) -> bool:
 		push_warning("NetworkManager: refused oversized client packet type=" + str(outgoing.get("type", "")))
 		return false
 	var send_error = socket.send_text(payload_text)
+	if send_error == OK and str(outgoing.get("type", "")) in ["account_login", "account_register", "account_token_login", "account_refresh_token_login", "dev_backend_login"]:
+		connection_health.authenticating(Time.get_ticks_msec())
 	if send_error == OK and RuntimeProfiler.enabled:
 		RuntimeProfiler.sent(outgoing, payload_text.to_utf8_buffer().size())
 	return send_error == OK
@@ -2359,16 +2465,8 @@ func _get_batch_density_scale(world_population: int) -> float:
 
 
 func _get_local_position_batch_limit(world_name: String) -> int:
-	var clean_world = _safe_world_name(world_name)
-	var guidance_batch_items = get_server_guided_position_batch_max_items(clean_world)
-	if guidance_batch_items <= 0:
-		guidance_batch_items = 1
-
-	var base_limit = max(1, int(ceil(LOCAL_POSITION_BATCH_BURST_SCALE / float(guidance_batch_items))))
-	var batch_population = _get_world_population_for_batching(clean_world)
-	var density_scale = _get_batch_density_scale(batch_population)
-
-	return max(1, int(ceil(float(base_limit) * density_scale)))
+	# Kept for diagnostics. Server batch capacity is unrelated to client rate.
+	return maxi(1, int(ceil(get_server_guided_player_position_rate_per_second(world_name) * 0.5)))
 
 
 func _consume_local_position_batch_slot(world_name: String) -> bool:
@@ -2376,27 +2474,32 @@ func _consume_local_position_batch_slot(world_name: String) -> bool:
 	if clean_world == "":
 		clean_world = "START"
 
-	var now_msec = Time.get_ticks_msec()
-	if local_position_batch_world != clean_world or local_position_batch_window_msec <= 0 or now_msec >= local_position_batch_window_msec:
+	var now_msec := float(Time.get_ticks_msec())
+	if local_position_batch_world != clean_world:
 		local_position_batch_world = clean_world
-		local_position_batch_limit = _get_local_position_batch_limit(clean_world)
-		local_position_batch_budget = local_position_batch_limit
-		local_position_batch_window_msec = now_msec + LOCAL_POSITION_BATCH_BUDGET_WINDOW_MS
-
-	if local_position_batch_budget > 0:
-		local_position_batch_budget -= 1
-		return true
-
-	return false
+		local_position_next_send_msec = 0.0
+	if now_msec + 0.5 < local_position_next_send_msec:
+		return false
+	var interval_ms := 1000.0 / float(get_server_guided_player_position_rate_per_second(clean_world))
+	# Retain sub-frame phase, but never accumulate a catch-up burst after a stall.
+	local_position_next_send_msec = maxf(now_msec, local_position_next_send_msec + interval_ms)
+	if local_position_next_send_msec <= now_msec:
+		local_position_next_send_msec = now_msec + interval_ms
+	local_position_batch_limit = _get_local_position_batch_limit(clean_world)
+	local_position_batch_budget = 0
+	return true
 
 
 func get_server_guided_player_position_rate_per_second(world_name: String, fallback_rate_per_second: int = MAX_PLAYER_POSITION_RATE_PER_SECOND) -> int:
+	var cap := mini(MAX_PLAYER_POSITION_RATE_PER_SECOND, maxi(1, fallback_rate_per_second))
+	if _get_world_population_for_batching(world_name) > 8:
+		cap = mini(cap, CROWDED_PLAYER_POSITION_RATE_PER_SECOND)
 	var broadcast_ms = get_server_guided_position_broadcast_ms(world_name)
 	if broadcast_ms <= 0.0:
-		return max(1, fallback_rate_per_second)
+		return cap
 
-	var derived_rate = int(ceil(1000.0 / max(1.0, broadcast_ms)))
-	return clamp(derived_rate, 1, max(1, fallback_rate_per_second))
+	var derived_rate = int(floor(1000.0 / max(1.0, broadcast_ms)))
+	return clamp(derived_rate, 1, cap)
 
 
 func request_world_population(world_names: Array = []) -> bool:
@@ -2566,6 +2669,9 @@ func send_join_world(world_name: String) -> bool:
 	if world_node != null and world_node.has_method("update_smooth_world_load_message"):
 		world_node.update_smooth_world_load_message("Finding world...")
 	movement_sequence = 0
+	local_position_batch_world = ""
+	_last_movement_visual_key = ""
+	_last_movement_visual_sync_msec = 0
 	_clear_local_position_payload_queue()
 	last_accepted_position_sequence = 0
 	last_rejected_position_sequence = 0
@@ -2650,7 +2756,7 @@ func cancel_active_join_request() -> void:
 
 
 func _invalidate_active_join_request_for_transport_change(reason: String = "transport_change") -> void:
-	if not active_join_request_pending:
+	if not active_join_request_pending and active_join_request_id == "" and pending_world_state_stream.is_empty() and pending_server_world_state.is_empty():
 		return
 	debug_action_position_flow("invalidate active join for transport change", {
 		"reason": reason,
@@ -3919,6 +4025,13 @@ func send_trade_payload(payload: Dictionary) -> bool:
 
 func _should_send_full_movement_visual_sync(equipment_slots: Dictionary, fishing_state: Dictionary, damage_state: Dictionary, clean_position_reason: String, bypass_rate_limit: bool) -> bool:
 	var now_msec := Time.get_ticks_msec()
+	var visual_key := _movement_visual_key(equipment_slots, fishing_state, damage_state)
+	return bypass_rate_limit or MOVEMENT_VISUAL_SYNC_REASONS.has(clean_position_reason) \
+		or visual_key != _last_movement_visual_key \
+		or now_msec - _last_movement_visual_sync_msec >= MOVEMENT_VISUAL_SYNC_INTERVAL_MS
+
+
+func _movement_visual_key(equipment_slots: Dictionary, fishing_state: Dictionary, damage_state: Dictionary) -> String:
 	var visual_key := get_equipment_slots_debug_key(equipment_slots)
 	visual_key += "|fishing=" + str(bool(fishing_state.get("active", false)))
 	visual_key += ":" + str(fishing_state.get("target_x", -1))
@@ -3928,21 +4041,7 @@ func _should_send_full_movement_visual_sync(equipment_slots: Dictionary, fishing
 	visual_key += "|damage=" + str(bool(damage_state.get("active", false)))
 	visual_key += ":" + str(int(damage_state.get("token", 0)))
 
-	if bypass_rate_limit or MOVEMENT_VISUAL_SYNC_REASONS.has(clean_position_reason):
-		_last_movement_visual_key = visual_key
-		_last_movement_visual_sync_msec = now_msec
-		return true
-
-	if visual_key != _last_movement_visual_key:
-		_last_movement_visual_key = visual_key
-		_last_movement_visual_sync_msec = now_msec
-		return true
-
-	if now_msec - _last_movement_visual_sync_msec >= MOVEMENT_VISUAL_SYNC_INTERVAL_MS:
-		_last_movement_visual_sync_msec = now_msec
-		return true
-
-	return false
+	return visual_key
 
 
 func send_player_position(position: Vector2, facing: int, world_name: String, allow_join: bool = true, bypass_rate_limit: bool = false, position_reason: String = "") -> bool:
@@ -3953,16 +4052,15 @@ func send_player_position(position: Vector2, facing: int, world_name: String, al
 	var clean_world = _safe_world_name(world_name)
 	if clean_world == "":
 		clean_world = "START"
-	if not bypass_rate_limit and not _can_send_rate_limited("player_position", get_server_guided_player_position_rate_per_second(clean_world, MAX_PLAYER_POSITION_RATE_PER_SECOND)):
-		_set_local_position_payload_queue(clean_world, _build_player_position_payload(position, facing, clean_world, allow_join, false, position_reason), "rate_limited")
-		_maybe_log_local_position_queue_debug("local_rate_limited", clean_world, {
-			"world": clean_world,
-			"position_reason": _safe_string(position_reason, "", MAX_ITEM_ID_LENGTH),
-		})
+	# The old scene can still produce physics/action flushes while a replacement
+	# socket downloads its world. Wait for the snapshot/ready handshake instead
+	# of sending that old transform against the new server spawn guard.
+	if has_incomplete_join_lifecycle_for_world(clean_world):
+		_clear_local_position_payload_queue()
 		return false
 	if not (position is Vector2):
 		return false
-	if not _consume_local_position_batch_slot(clean_world):
+	if not bypass_rate_limit and not _consume_local_position_batch_slot(clean_world):
 		local_position_batch_skips += 1
 		var batch_population = _get_world_population_for_batching(clean_world)
 		_set_local_position_payload_queue(clean_world, _build_player_position_payload(position, facing, clean_world, allow_join, false, position_reason), "batch_limit")
@@ -3994,7 +4092,6 @@ func send_player_position(position: Vector2, facing: int, world_name: String, al
 	# This used to be unreachable (an unconditional `return sent` sat above it), so a failed
 	# send was silently dropped instead of being queued for retry. Restoring it as the actual
 	# else-branch it was written to be.
-	local_position_batch_sends += 1
 	_set_local_position_payload_queue(clean_world, _build_player_position_payload(position, safe_facing, clean_world, allow_join, false, position_reason), "send_failed")
 	return false
 
@@ -4082,6 +4179,11 @@ func _build_player_position_payload(position: Vector2, safe_facing: int, clean_w
 func _send_local_player_position_payload(world_name: String, payload: Dictionary) -> bool:
 	if not (payload is Dictionary):
 		return false
+	# Keep the newest unsent position above TCP instead of queuing old motion
+	# behind congestion. Gameplay actions retain their ordered reliable sends.
+	if socket.get_current_outbound_buffered_amount() > MOVEMENT_OUTBOUND_SOFT_LIMIT_BYTES:
+		RuntimeProfiler.count("movement_backpressure_coalesced")
+		return false
 	var outgoing := payload.duplicate(true)
 	var next_movement_sequence = movement_sequence + 1
 	if next_movement_sequence >= 2147483647:
@@ -4092,6 +4194,12 @@ func _send_local_player_position_payload(world_name: String, payload: Dictionary
 	var sent := send_message(attach_session_auth(outgoing))
 	if sent:
 		movement_sequence = next_movement_sequence
+		if bool(outgoing.get("visual_sync", false)):
+			_last_movement_visual_key = _movement_visual_key(outgoing.get("equipment_slots", {}), {
+				"active": outgoing.get("fishing_active", false), "target_x": outgoing.get("fishing_target_x", -1),
+				"target_y": outgoing.get("fishing_target_y", -1), "lure_id": outgoing.get("fishing_lure_id", ""), "rod_id": outgoing.get("fishing_rod_id", "")
+			}, {"active": outgoing.get("damage_flash_active", false), "token": outgoing.get("damage_flash_token", 0)})
+			_last_movement_visual_sync_msec = sent_at_msec
 		_maybe_log_local_position_queue_debug("sent", world_name, {
 			"world": world_name,
 			"movement_sequence": next_movement_sequence,
@@ -4129,13 +4237,8 @@ func _process_local_position_queue() -> void:
 	if clean_world == "":
 		clean_world = "START"
 
-	var max_rate_per_second = get_server_guided_player_position_rate_per_second(clean_world, MAX_PLAYER_POSITION_RATE_PER_SECOND)
-	if not _can_send_rate_limited("player_position", max_rate_per_second):
-		_maybe_log_local_position_queue_debug("local_queue_rate_limited", clean_world, {
-			"world": clean_world,
-			"queue_age_msec": queue_age_msec,
-			"reason": local_position_pending_reason
-		})
+	if clean_world != _safe_world_name(current_world_name) or has_incomplete_join_lifecycle_for_world(clean_world):
+		_clear_local_position_payload_queue()
 		return
 
 	if not _consume_local_position_batch_slot(clean_world):
@@ -4148,6 +4251,10 @@ func _process_local_position_queue() -> void:
 		})
 		return
 
+	# Re-sample after a stall. Never timestamp an old transform as fresh motion.
+	var player = get_world_player_node()
+	if player != null and player is Node2D:
+		local_position_pending_payload = _build_player_position_payload(player.global_position, int(local_position_pending_payload.get("facing", 1)), clean_world, bool(local_position_pending_payload.get("allow_join", false)), false, str(local_position_pending_payload.get("position_reason", "")))
 	var sent := _send_local_player_position_payload(clean_world, local_position_pending_payload)
 	local_position_batch_sends += 1
 	if sent:
@@ -4666,6 +4773,10 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 			if game_player_id.strip_edges() == "":
 				game_player_id = player_id
 			_check_connected_client_version(data)
+		"client_pong":
+			if connection_health.received_pong(str(data.get("request_id", "")), Time.get_ticks_msec()):
+				RuntimeProfiler.observe("rtt_ms", connection_health.rtt_ms)
+				RuntimeProfiler.observe("jitter_ms", connection_health.jitter_ms)
 		"login_ok":
 			player_name = _safe_string(data.get("name", player_name), player_name, MAX_USERNAME_LENGTH)
 		"client_update_required":
@@ -4675,6 +4786,7 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 		"account_auth_ok":
 			handle_account_auth_ok(data)
 		"account_auth_error":
+			connection_health.phase = "FAILED"
 			var had_session_before_auth_error := has_active_session()
 			var saved_refresh_login_failed := saved_refresh_login_in_flight
 			saved_refresh_login_in_flight = false
@@ -5307,6 +5419,8 @@ func handle_account_auth_ok(data: Dictionary) -> void:
 		session_role = role if role != "" else "player"
 		session_authenticated = true
 		server_session_authenticated = true
+		connection_health.authenticated(Time.get_ticks_msec())
+		connection_recovering = false
 		pending_saved_refresh_token = ""
 		saved_refresh_login_in_flight = false
 		developer_pin_required = bool(data.get("developer_pin_required", false))
@@ -6202,7 +6316,7 @@ func _handle_world_entry_active(data: Dictionary) -> void:
 	active_world_entry_block_revision = incoming_block_revision
 	var announce_local_entry := not world_entry_active
 	world_entry_active = true
-	if announce_local_entry:
+	if announce_local_entry and not bool(data.get("world_entry_notice_v1", false)):
 		call_deferred("show_local_world_entry_notice", incoming_world)
 	mark_active_join_request_complete()
 	persist_completed_world_join(incoming_world, session_username)
@@ -6780,6 +6894,9 @@ func _route_action_rejected_as_player_state_lookup(data: Dictionary) -> bool:
 func handle_chat_message(data: Dictionary) -> void:
 	var message_type: String = _safe_string(data.get("type", ""), "", MAX_SERVER_MESSAGE_TYPE_LENGTH).to_lower()
 	var message_limit: int = MAX_BROADCAST_LENGTH if message_type == "broadcast" else MAX_CHAT_MESSAGE_LENGTH
+	# Server entry notices include world settings, honors, and lock ownership.
+	if str(data.get("player_id", "")) == "system":
+		message_limit = 1024
 	var chat_message = _safe_string(data.get("message", ""), "", message_limit)
 	if chat_message == "":
 		return
@@ -6808,6 +6925,7 @@ func handle_chat_message(data: Dictionary) -> void:
 			"player_id": sender_id,
 			"server_announcement": bool(data.get("server_announcement", false)),
 			"account_role": str(data.get("role", "")),
+			"world_entry_key": get_world_entry_notice_key(source_world) if sender_id == "system" else "",
 			"filtered_message": server_filtered_message
 		})
 
@@ -7785,6 +7903,10 @@ func _can_send_rate_limited(counter_key: String, max_per_second: int) -> bool:
 	return true
 
 
+func get_world_entry_notice_key(notice_world: String) -> String:
+	return "%s:%s:%s" % [_safe_world_name(notice_world), active_join_request_id, active_world_entry_session_id]
+
+
 func show_local_world_entry_notice(joined_world: String) -> void:
 	if not world_entry_active or _safe_world_name(joined_world) != _safe_world_name(current_world_name):
 		return
@@ -7792,10 +7914,44 @@ func show_local_world_entry_notice(joined_world: String) -> void:
 	if chat == null:
 		return
 	var username := player_name if player_name != "" else session_username
-	chat.add_chat_message(username, "", {
-		"type": "system", "presence": "entered",
-		"others": get_world_other_player_count(joined_world)
-	})
+	chat.add_chat_message("System", build_world_presence_message(
+		username, joined_world, true, get_world_other_player_count(joined_world)
+	), {"type": "system", "world": _safe_world_name(joined_world), "world_entry_key": get_world_entry_notice_key(joined_world)})
+
+
+func get_world_entry_flags(world_name: String) -> PackedStringArray:
+	var flags := PackedStringArray()
+	if _safe_world_name(world_name) != _safe_world_name(current_world_name):
+		return flags
+	var world_node = get_world_node()
+	var manager = world_node.get("block_manager") if world_node != null and "block_manager" in world_node else null
+	if manager == null:
+		return flags
+	for setting in [
+		["is_anti_punch_enabled", "NOPUNCH"],
+		["is_anti_talk_enabled", "NOTALK"],
+		["is_anti_gravity_enabled", "NOGRAVITY"],
+		["has_snow_repellent_block_in_world", "SNOWREPELLENT"],
+	]:
+		if manager.has_method(setting[0]) and bool(manager.call(setting[0])):
+			flags.append(setting[1])
+	return flags
+
+
+func build_world_presence_message(username: String, world_name: String, entered: bool, others: int) -> String:
+	var flags := get_world_entry_flags(world_name) if entered else PackedStringArray()
+	var settings := " [%s]" % ", ".join(flags) if not flags.is_empty() else ""
+	var message := "%s %s, %s%s. " % [username, "entered" if entered else "left", _safe_world_name(world_name), settings]
+	if entered:
+		var world_node = get_world_node()
+		var lock_manager = world_node.get("world_lock_manager") if world_node != null and "world_lock_manager" in world_node else null
+		if lock_manager != null and bool(lock_manager.is_locked):
+			var owner := str(lock_manager.owner_name).strip_edges()
+			message += "This world is locked by %s, " % owner if owner != "" else "This world is locked, "
+		else:
+			message += "This world is unlocked, "
+	var count := maxi(0, others)
+	return message + "%d %s here." % [count, "other" if count == 1 else "others"]
 
 
 func show_world_presence_notice(data: Dictionary, entered: bool) -> void:
@@ -7812,4 +7968,6 @@ func show_world_presence_notice(data: Dictionary, entered: bool) -> void:
 	var chat = get_chat_ui_node()
 	if chat != null:
 		var count := maxi(0, known.size() + (1 if entered else -1))
-		chat.add_chat_message(username, "", {"type": "system", "presence": "entered" if entered else "left", "others": count})
+		chat.add_chat_message("System", build_world_presence_message(
+			username, notice_world, entered, count
+		), {"type": "system", "world": notice_world})

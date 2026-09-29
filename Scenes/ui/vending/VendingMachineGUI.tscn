@@ -26,6 +26,8 @@
 [ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/drop_pressed.tres" id="20_drop_pressed"]
 [ext_resource type="StyleBoxTexture" path="res://Scenes/ui/vending/styles/drop_hover.tres" id="21_drop_hover"]
 
+[ext_resource type="Script" path="res://Scripts/ui/vending_purchase_confirmation.gd" id="purchase_modal"]
+
 [node name="VendingUI" type="Control" unique_id=1841926686]
 layout_mode = 3
 anchors_preset = 15
@@ -657,10 +659,8 @@ popup/item_0/id = 0
 popup/item_1/text = "Items per WL"
 popup/item_1/id = 1
 
-[node name="PurchaseConfirmation" type="ConfirmationDialog" parent="."]
-title = "Confirm purchase"
-size = Vector2i(460, 180)
-ok_button_text = "Buy"
+[node name="PurchaseConfirmation" type="Control" parent="."]
+script = ExtResource("purchase_modal")
 
 [node name="Subtitle" type="Label" parent="VendingPanel"]
 layout_mode = 0

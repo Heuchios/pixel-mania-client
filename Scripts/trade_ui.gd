@@ -74,7 +74,7 @@ var world = null
 
 @onready var final_overlay: Control = get_node_or_null("FinalConfirmOverlay") as Control
 @onready var final_title_label: Label = get_node_or_null("FinalConfirmOverlay/FinalPanel/Title") as Label
-@onready var final_summary_label: Label = get_node_or_null("FinalConfirmOverlay/FinalPanel/FinalSummaryLabel") as Label
+@onready var final_summary_label: Label = get_node_or_null("FinalConfirmOverlay/FinalPanel/SummaryScroll/FinalSummaryLabel") as Label
 @onready var final_confirm_button: Button = get_node_or_null("FinalConfirmOverlay/FinalPanel/FinalConfirmButton") as Button
 @onready var final_back_button: Button = get_node_or_null("FinalConfirmOverlay/FinalPanel/BackButton") as Button
 
@@ -172,7 +172,7 @@ func _apply_styles() -> void:
 	for slot in remote_slots:
 		_style_slot(slot, false)
 
-	PixelUIStyle.apply_yellow_button(accept_button, 18)
+	PixelUIStyle.apply_atlas_button(accept_button, "green_button")
 	PixelUIStyle.apply_atlas_button(cancel_button, "red_button")
 	cancel_button.text = "Cancel"
 
@@ -184,7 +184,7 @@ func _apply_styles() -> void:
 
 	PixelUIStyle.apply_label_shadow(final_title_label, 26)
 	PixelUIStyle.apply_small_label(final_summary_label, 17)
-	PixelUIStyle.apply_yellow_button(final_confirm_button, 16)
+	PixelUIStyle.apply_atlas_button(final_confirm_button, "green_button")
 	PixelUIStyle.apply_atlas_button(final_back_button, "red_button")
 	final_back_button.text = "Cancel"
 
@@ -202,35 +202,29 @@ func _style_slot(slot: Button, is_local: bool) -> void:
 	if is_local:
 		var clear_button = slot.get_node_or_null("ClearButton")
 		if clear_button != null:
-			PixelUIStyle.apply_close_button(clear_button)
+			PixelUIStyle.apply_atlas_button(clear_button, "red_button")
+			clear_button.tooltip_text = "Remove from offer"
 	_apply_slot_style(slot, false)
 
 
+func _process(_delta: float) -> void:
+	if visible:
+		update_position()
+
+
 func update_position():
-	if panel != null:
-		var screen = get_viewport_rect().size
-		panel.position = Vector2(
-			(screen.x - panel.size.x) / 2.0,
-			max(32.0, (screen.y - panel.size.y) / 2.0)
-		)
-
+	var screen := get_viewport_rect().size
+	var windows: Array = [panel]
 	if picker_overlay != null:
-		var picker_panel = picker_overlay.get_node_or_null("PickerPanel")
-		if picker_panel != null:
-			var screen = get_viewport_rect().size
-			picker_panel.position = Vector2(
-				(screen.x - picker_panel.size.x) / 2.0,
-				max(34.0, (screen.y - picker_panel.size.y) / 2.0)
-			)
-
+		windows.append(picker_overlay.get_node_or_null("PickerPanel"))
 	if final_overlay != null:
-		var final_panel = final_overlay.get_node_or_null("FinalPanel")
-		if final_panel != null:
-			var screen = get_viewport_rect().size
-			final_panel.position = Vector2(
-				(screen.x - final_panel.size.x) / 2.0,
-				max(46.0, (screen.y - final_panel.size.y) / 2.0)
-			)
+		windows.append(final_overlay.get_node_or_null("FinalPanel"))
+	for window in windows:
+		if window == null:
+			continue
+		var fit: float = minf(1.0, minf((screen.x - 24.0) / window.size.x, (screen.y - 24.0) / window.size.y))
+		window.scale = Vector2.ONE * maxf(0.1, fit)
+		window.position = (screen - window.size * window.scale) / 2.0
 
 
 func handle_trade_message(data: Dictionary):
@@ -536,6 +530,7 @@ func set_slot_visual(button: Button, item, label_text: String, is_local: bool, e
 			icon.texture = get_item_texture(item_id, category)
 			icon.visible = icon.texture != null
 		if label != null:
+			label.position.y = 72 if item is Dictionary else 38
 			label.text = label_text
 			if use_pixel_ui_style:
 				PixelUIStyle.apply_small_label(label, 12)
@@ -547,6 +542,7 @@ func set_slot_visual(button: Button, item, label_text: String, is_local: bool, e
 			icon.texture = null
 			icon.visible = false
 		if label != null:
+			label.position.y = 72 if item is Dictionary else 38
 			label.text = label_text
 			if use_pixel_ui_style:
 				PixelUIStyle.apply_small_label(label, 13)
@@ -558,11 +554,10 @@ func set_slot_visual(button: Button, item, label_text: String, is_local: bool, e
 func _apply_slot_style(button: Button, filled: bool):
 	if not use_pixel_ui_style or button == null:
 		return
-	var fill = slot_fill_filled if filled else slot_fill_empty
-	var border = slot_border_filled if filled else slot_border_empty
-	button.add_theme_stylebox_override("normal", PixelUIStyle.style_box(fill, border, 3, 10, 4))
-	button.add_theme_stylebox_override("hover", PixelUIStyle.style_box(fill.lightened(0.12), border, 3, 10, 4))
-	button.add_theme_stylebox_override("pressed", PixelUIStyle.style_box(fill.darkened(0.10), border, 3, 10, 4))
+	var normal := PixelUIStyle.slot_style("common")
+	for state in ["normal", "disabled", "pressed"]:
+		button.add_theme_stylebox_override(state, normal)
+	button.add_theme_stylebox_override("hover", PixelUIStyle.slot_style("uncommon") if filled else normal)
 
 
 func get_status_text(status: String) -> String:
