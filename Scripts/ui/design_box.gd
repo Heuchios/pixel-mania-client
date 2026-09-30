@@ -120,6 +120,8 @@ func _apply() -> void:
 		var control := child as Control
 		if control == null:
 			continue
+		if control.get_meta("manual_screen_layout", false):
+			continue
 		if not _is_pinned_to_top_left(control):
 			continue
 

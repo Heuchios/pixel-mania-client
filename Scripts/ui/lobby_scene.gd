@@ -143,6 +143,7 @@ func _ready() -> void:
 	# Last, so it wins the status label over anything the setup above wrote: if we got here
 	# because a world join failed, this is where the player finds out why.
 	_show_pending_world_join_failure_message()
+	_configure_mobile_lobby()
 
 
 # A failed world entry cannot show its own error -- by the time save_manager knows the join
@@ -172,6 +173,68 @@ func _process(delta: float) -> void:
 	WorldScenePreloader.pump()
 	_update_lobby_parallax_background(delta)
 	_update_lobby_button_animation(delta)
+	_layout_mobile_lobby()
+
+
+func _is_mobile_lobby() -> bool:
+	var scaling = get_node_or_null("/root/MobileUIScale")
+	return scaling != null and scaling.is_mobile()
+
+
+func _set_mobile_lobby_font(control: Control, font_size: int) -> void:
+	if control == null:
+		return
+	control.set_meta("pixelmania_font_size", font_size)
+	PixelUIStyle.apply_global_typography_to_node(control)
+
+
+func _configure_mobile_lobby() -> void:
+	if not _is_mobile_lobby():
+		return
+	get_node("Logo").set_meta("ignore_mobile_ui_scale", true)
+	# The back arrow is authored outside this wrapper's bounds.
+	get_node("TopButtons").set_meta("ignore_mobile_ui_scale", true)
+	for path in ["WorldsPanel", "JoinPanel", "LeftButtons", "LandfillEventCard"]:
+		var control := get_node_or_null(path) as Control
+		if control != null:
+			# Lay out the connected panels together; independent scaling makes them overlap.
+			control.set_meta("ignore_mobile_ui_scale", true)
+			control.set_meta("manual_screen_layout", true)
+	_set_mobile_lobby_font(world_input, 36)
+	world_input.add_theme_color_override("font_placeholder_color", Color(0.92, 0.90, 0.95))
+	_set_mobile_lobby_font(join_button, 36)
+	_set_mobile_lobby_font(get_node_or_null("WorldsPanel/WorldsHeader/WorldsTitle"), 40)
+	_set_mobile_lobby_font(active_world_empty_label, 32)
+	if landfill_event_card != null:
+		for child in landfill_event_card.get_children():
+			if child is Label:
+				_set_mobile_lobby_font(child, 32)
+	_layout_mobile_lobby()
+
+
+func _layout_mobile_lobby() -> void:
+	if not _is_mobile_lobby() or world_input == null:
+		return
+	var screen := get_viewport_rect().size
+	var scaling = get_node_or_null("/root/MobileUIScale")
+	var preference: float = scaling.ui_scale if scaling != null else 1.25
+	# Reserve the logo above and a separate event column beside the world browser.
+	var factor := minf(1.4 * preference / 1.25, minf((screen.y - 310.0) / 506.0, (screen.x - 540.0) / 684.0))
+	factor = maxf(0.5, factor)
+	var origin := Vector2((screen.x - 684.0 * factor - 440.0) * 0.5, 286.0)
+	var worlds := get_node("WorldsPanel") as Control
+	var join_panel := get_node("JoinPanel") as Control
+	var filters := get_node("LeftButtons") as Control
+	for control in [worlds, join_panel, filters]:
+		control.scale = Vector2.ONE * factor
+		control.pivot_offset = Vector2.ZERO
+	join_panel.position = origin + Vector2(60, 0) * factor
+	worlds.position = origin + Vector2(60, 86) * factor
+	filters.position = origin + Vector2(0, 86) * factor
+	if landfill_event_card != null:
+		landfill_event_card.scale = Vector2.ONE
+		landfill_event_card.pivot_offset = Vector2.ZERO
+		landfill_event_card.position = Vector2(worlds.position.x + 624.0 * factor + 24.0, 390.0)
 
 
 func _exit_tree() -> void:
@@ -227,6 +290,8 @@ func _layout_lobby_parallax_background() -> void:
 		var layer := layer_entry.get("node", null) as TextureRect
 		if layer == null or not is_instance_valid(layer):
 			continue
+		layer.set_meta("ignore_mobile_ui_scale", true)
+		layer.set_meta("manual_screen_layout", true)
 
 		var margin := float(layer_entry.get("overscan", 0.0))
 		var base_position := Vector2(-margin, -margin)
@@ -567,6 +632,8 @@ func _add_active_world_row(world_name: String, player_count: int) -> void:
 	var name_label := _get_world_row_label(row, ["StartName", "Name"])
 	if name_label != null:
 		name_label.text = world_name + " [" + str(player_count) + "]"
+		if _is_mobile_lobby():
+			_set_mobile_lobby_font(name_label, 36)
 	var meta_label := _get_world_row_label(row, ["StartMeta", "Meta"])
 	if meta_label != null:
 		var source_label := "OFFICIAL"

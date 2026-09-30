@@ -25,9 +25,10 @@ func run() -> void:
 	config.load(path)
 	check(config.get_value("audio", "sfx_volume") == 0.4, "Audio survives save")
 	check(config.get_value("mobile_controls", "jump_scale") == 1.1, "Control customization survives save")
-	check(ScaleManager.clean_scale("invalid") == 1.0, "Invalid setting defaults safely")
-	check(ScaleManager.clean_scale(NAN) == 1.0, "Non-finite setting defaults safely")
-	check(ScaleManager.clean_scale(20) == 1.25, "Large setting clamped")
+	check(ScaleManager.clean_scale("invalid") == 1.25, "Invalid setting defaults safely")
+	check(ScaleManager.clean_scale(NAN) == 1.25, "Non-finite setting defaults safely")
+	check(ScaleManager.load_scale(path + ".missing") == 1.25, "New players get the larger default")
+	check(ScaleManager.clean_scale(20) == 1.5, "Large setting clamped")
 	check(ScaleManager.clean_scale(0) == 0.75, "Small setting clamped")
 	var layer := CanvasLayer.new()
 	root.add_child(layer)
@@ -43,7 +44,7 @@ func run() -> void:
 	child.text = "Nested text"
 	for screen in [Vector2(1920, 1080), Vector2(2400, 1080), Vector2(1280, 720)]:
 		panel.position = screen - panel.size - Vector2(20, 20)
-		for value in [0.75, 1.25, 1.0]:
+		for value in [0.75, 1.25, 1.5, 1.0]:
 			manager.ui_scale = value
 			manager.apply_branch(wrapper, screen)
 			var applied := panel.scale
@@ -62,7 +63,7 @@ func run() -> void:
 	root.add_child(settings)
 	await process_frame
 	check(settings.ui_scale_slider != null, "Mobile settings exposes slider")
-	check(settings.ui_scale_slider.min_value == 75 and settings.ui_scale_slider.max_value == 125, "Slider bounds")
+	check(settings.ui_scale_slider.min_value == 75 and settings.ui_scale_slider.max_value == 150, "Slider bounds")
 	check(settings.ui_scale_row.position.y >= settings.mobile_controls_row.position.y + 44, "Slider follows controls row")
 	check(settings.ui_scale_row.position.y + 44 <= settings.window.size.y, "Scale row fits settings panel")
 	settings.queue_free()

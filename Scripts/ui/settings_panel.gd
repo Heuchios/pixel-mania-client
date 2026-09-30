@@ -422,8 +422,8 @@ func _setup_ui_scale_row() -> void:
 	ui_scale_slider = HSlider.new()
 	ui_scale_slider.position = Vector2(130, 4)
 	ui_scale_slider.size = Vector2(200, 40)
-	ui_scale_slider.min_value = 75
-	ui_scale_slider.max_value = 125
+	ui_scale_slider.min_value = manager.MIN_SCALE * 100
+	ui_scale_slider.max_value = manager.MAX_SCALE * 100
 	ui_scale_slider.step = 5
 	ui_scale_slider.value = manager.ui_scale * 100.0
 	ui_scale_row.add_child(ui_scale_slider)
@@ -452,7 +452,7 @@ func _setup_ui_scale_row() -> void:
 			manager.set_ui_scale(ui_scale_slider.value / 100.0)
 	)
 	reset.pressed.connect(func():
-		ui_scale_slider.set_value_no_signal(100)
-		ui_scale_value.text = "100%"
-		manager.set_ui_scale(1.0)
+		ui_scale_slider.set_value_no_signal(manager.DEFAULT_SCALE * 100)
+		ui_scale_value.text = "%d%%" % (manager.DEFAULT_SCALE * 100)
+		manager.set_ui_scale(manager.DEFAULT_SCALE)
 	)

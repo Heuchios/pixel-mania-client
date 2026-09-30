@@ -4,8 +4,9 @@ signal scale_changed(value: float)
 
 const SAVE_PATH := "user://pixelmania_settings.cfg"
 const MIN_SCALE := 0.75
-const MAX_SCALE := 1.25
-var ui_scale := 1.0
+const MAX_SCALE := 1.5
+const DEFAULT_SCALE := 1.25
+var ui_scale := DEFAULT_SCALE
 var _roots: Array[Control] = []
 var _states: Dictionary = {}
 
@@ -21,14 +22,14 @@ func _ready() -> void:
 
 static func clean_scale(value: Variant) -> float:
 	if not (value is float or value is int) or not is_finite(float(value)):
-		return 1.0
+		return DEFAULT_SCALE
 	return snappedf(clampf(float(value), MIN_SCALE, MAX_SCALE), 0.05)
 
 static func load_scale(path: String = SAVE_PATH) -> float:
 	var config := ConfigFile.new()
 	if config.load(path) != OK:
-		return 1.0
-	return clean_scale(config.get_value("interface", "mobile_ui_scale", 1.0))
+		return DEFAULT_SCALE
+	return clean_scale(config.get_value("interface", "mobile_ui_scale", DEFAULT_SCALE))
 
 func set_ui_scale(value: float, path: String = SAVE_PATH) -> void:
 	ui_scale = clean_scale(value)
