@@ -20,6 +20,9 @@ var cards_root: GridContainer = null
 var empty_label: Label = null
 var selected_rarity := "all"
 var tab_buttons: Dictionary = {}
+var close_target: Control = null
+var close_button: Button = null
+var close_touch_index := -1
 
 
 func setup(world_ref) -> void:
@@ -44,12 +47,36 @@ func open_journal() -> void:
 		_build_ui()
 	refresh()
 	visible = true
+	# GUI hit testing follows tree order, not z_index. Raise the UI branch too.
+	var branch: Node = self
+	while branch.get_parent() is Control:
+		branch.get_parent().move_child(branch, -1)
+		branch = branch.get_parent()
+	if branch.get_parent() is CanvasLayer:
+		branch.get_parent().move_child(branch, -1)
 	_position_panel()
 	# Keep the viewport-fit scale when opening on smaller screens.
 
 
 func close_journal() -> void:
+	close_touch_index = -1
 	visible = false
+
+
+func _on_close_gui_input(event: InputEvent) -> void:
+	# Native touch (including a second finger) must not depend on mouse emulation.
+	if event is InputEventScreenTouch:
+		if event.pressed and not event.canceled:
+			close_touch_index = event.index
+		elif event.index == close_touch_index:
+			close_touch_index = -1
+			if not event.canceled and Rect2(Vector2.ZERO, close_button.size).has_point(event.position):
+				close_journal()
+		close_button.accept_event()
+	elif event is InputEventScreenDrag and event.index == close_touch_index:
+		if not Rect2(Vector2.ZERO, close_button.size).has_point(event.position):
+			close_touch_index = -1
+		close_button.accept_event()
 
 
 func refresh() -> void:
@@ -118,14 +145,18 @@ func _build_ui() -> void:
 	_preserve_text(title_label, 32)
 	panel.add_child(title_label)
 
-	var close_button: Button = Button.new()
+	close_target = Control.new()
+	close_target.name = "CloseTarget"
+	close_target.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(close_target)
+	close_button = Button.new()
 	close_button.name = "CloseButton"
-	close_button.position = Vector2(PANEL_W - 62.0, 18)
-	close_button.size = Vector2(42, 42)
+	close_button.size = Vector2(48, 48)
 	close_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	PixelUIStyle.apply_close_button(close_button)
 	close_button.pressed.connect(close_journal)
-	panel.add_child(close_button)
+	close_button.gui_input.connect(_on_close_gui_input)
+	close_target.add_child(close_button)
 
 	completion_label = Label.new()
 	completion_label.position = Vector2(30, 88)
@@ -207,6 +238,12 @@ func _position_panel() -> void:
 	panel.size = Vector2(PANEL_W, PANEL_H)
 	panel.scale = Vector2.ONE * maxf(0.1, fit)
 	panel.position = (ss - panel.size * panel.scale) * 0.5
+	# Include viewport stretching: phones can display a 1920-wide logical canvas.
+	# Keep the target at least 48 screen pixels, not just 48 logical UI units.
+	if close_target != null:
+		var screen_scale := panel.get_screen_transform().get_scale().abs().max(Vector2(0.01, 0.01))
+		close_target.scale = (Vector2.ONE / screen_scale).max(Vector2.ONE)
+		close_target.position = Vector2(PANEL_W - 16.0 - 48.0 * close_target.scale.x, 16.0)
 
 
 func _on_tab_pressed(rarity: String) -> void:

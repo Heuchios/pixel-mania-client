@@ -8313,7 +8313,21 @@ func is_major_ui_open() -> bool:
 	return false
 
 
+func is_fishing_journal_open() -> bool:
+	if fishing_manager == null or not is_instance_valid(fishing_manager.fishing_ui):
+		return false
+	var journal = fishing_manager.fishing_ui.journal_ui
+	return is_instance_valid(journal) and journal.is_visible_in_tree()
+
+
+func close_fishing_journal() -> void:
+	if is_fishing_journal_open():
+		fishing_manager.fishing_ui.journal_ui.close_journal()
+
+
 func is_movement_blocking_ui_open() -> bool:
+	if is_fishing_journal_open():
+		return true
 	if is_quest_board_open():
 		return true
 	if is_wooden_entrance_confirm_open():
@@ -8384,6 +8398,8 @@ func is_movement_blocking_ui_open() -> bool:
 
 
 func is_gameplay_hud_blocked() -> bool:
+	if is_fishing_journal_open():
+		return true
 	if is_wooden_entrance_confirm_open():
 		return true
 	if is_theme_machine_confirm_open():

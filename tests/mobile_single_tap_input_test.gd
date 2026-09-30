@@ -79,6 +79,9 @@ class MockWorld:
 	func is_trade_open() -> bool:
 		return false
 
+	func is_magnet_machine_open() -> bool:
+		return false
+
 	func is_vending_open() -> bool:
 		return false
 

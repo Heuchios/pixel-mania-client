@@ -107,6 +107,7 @@ func is_world_lock_ui_open() -> bool: return false
 func is_area_lock_ui_open() -> bool: return false
 func is_door_editor_open() -> bool: return false
 func is_trade_open() -> bool: return false
+func is_magnet_machine_open() -> bool: return false
 func is_vending_open() -> bool: return false
 func is_safe_open() -> bool: return false
 func is_mailbox_open() -> bool: return false

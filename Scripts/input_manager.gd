@@ -194,6 +194,7 @@ func _activate_floating_hud_button_at_point(point: Vector2) -> bool:
 
 
 func _non_chat_ui_blocking() -> bool:
+	if world.has_method("is_fishing_journal_open") and world.is_fishing_journal_open(): return true
 	if world.is_player_menu_open():     return true
 	if world.has_method("is_game_menu_open") and world.is_game_menu_open(): return true
 	if world.is_world_menu_open():      return true
@@ -295,7 +296,9 @@ func handle_back_request() -> bool:
 		return false
 
 	_stop_hold()
-	if world.is_chat_input_focused():
+	if world.has_method("is_fishing_journal_open") and world.is_fishing_journal_open():
+		world.close_fishing_journal()
+	elif world.is_chat_input_focused():
 		if world.has_method("release_chat_focus"):
 			world.release_chat_focus()
 	elif world.has_method("is_trade_open") and world.is_trade_open():
