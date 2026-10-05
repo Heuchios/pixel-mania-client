@@ -46,6 +46,19 @@ const HEADER_NAME_MARKERS := [
 ]
 
 static var game_font: Font = null
+static var scaled_game_font: FontFile = null
+
+
+static func get_scaled_game_font() -> Font:
+	# MSDF keeps glyph edges sharp when a drawer uses fractional UI scaling.
+	if scaled_game_font == null:
+		var source := get_game_font() as FontFile
+		if source == null:
+			return get_game_font()
+		scaled_game_font = source.duplicate() as FontFile
+		scaled_game_font.multichannel_signed_distance_field = true
+		scaled_game_font.msdf_size = 96
+	return scaled_game_font
 
 
 static func get_game_font() -> Font:
@@ -61,8 +74,16 @@ static func apply_game_font_to_node(node: Node) -> void:
 		return
 
 	var font := get_game_font()
+	var ancestor := node
+	while ancestor != null:
+		if ancestor.get_meta("pixelmania_scaled_text", false):
+			font = get_scaled_game_font()
+			break
+		ancestor = ancestor.get_parent()
 	if font == null:
 		return
+	if font == scaled_game_font and node is Control and _is_text_control(node):
+		(node as Control).texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 
 	if node.has_method("add_theme_font_override"):
 		_add_font_override(node, "font", font)

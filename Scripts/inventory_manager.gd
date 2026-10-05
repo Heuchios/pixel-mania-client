@@ -23,8 +23,9 @@ const HOTBAR_HANDLE_HEIGHT = 24
 const HOTBAR_HANDLE_TOUCH_PAD_TOP = 18.0
 const HOTBAR_HANDLE_TOUCH_SIDE_PAD = 20.0
 const HOTBAR_INVENTORY_GAP = 0.0
-const HOTBAR_Z_INDEX = 176
-const INVENTORY_BUTTON_Z_INDEX = 178
+# Keep the entire hotbar (including its layered slot art) below panels at z = 0.
+const HOTBAR_Z_INDEX = -32
+const INVENTORY_BUTTON_Z_INDEX = -16
 const INVENTORY_WINDOW_Z_INDEX = 175
 const INVENTORY_MODAL_Z_INDEX = 240
 const ITEM_ACTION_POPUP_Z_INDEX = 300
@@ -1155,6 +1156,8 @@ func handle_active_drawer_drag_input(event: InputEvent) -> bool:
 
 func begin_handle_drag_input(event: InputEvent) -> bool:
 	if hotbar_handle == null or not (hotbar_handle is Control):
+		return false
+	if is_other_ui_blocking_inventory_passthrough():
 		return false
 
 	if event is InputEventMouseButton:

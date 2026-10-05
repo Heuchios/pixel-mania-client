@@ -217,7 +217,7 @@ func _layout_mobile_lobby() -> void:
 		return
 	var screen := get_viewport_rect().size
 	var scaling = get_node_or_null("/root/MobileUIScale")
-	var preference: float = scaling.ui_scale if scaling != null else 1.0
+	var preference: float = scaling.ui_scale if scaling != null else 1.25
 	var event_width := 440.0 if landfill_event_card != null and landfill_event_card.visible else 0.0
 	# Reserve the logo above and a separate event column beside the world browser.
 	var factor := minf(1.4 * preference / 1.25, minf((screen.y - 310.0) / 506.0, (screen.x - event_width - 100.0) / 684.0))

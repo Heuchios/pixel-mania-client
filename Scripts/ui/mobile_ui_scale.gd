@@ -5,7 +5,7 @@ signal scale_changed(value: float)
 const SAVE_PATH := "user://pixelmania_settings.cfg"
 const MIN_SCALE := 0.75
 const MAX_SCALE := 1.5
-const DEFAULT_SCALE := 1.0
+const DEFAULT_SCALE := 1.25
 var ui_scale := DEFAULT_SCALE
 var _roots: Array[Control] = []
 var _states: Dictionary = {}

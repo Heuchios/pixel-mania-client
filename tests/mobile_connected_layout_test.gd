@@ -75,6 +75,8 @@ func run() -> void:
 	layer.add_child(hotbar)
 	hotbar.size = Vector2(manager.get_hotbar_base_visual_width(), manager.get_hotbar_base_visual_height())
 	manager.hotbar_root = hotbar
+	hotbar.z_index = manager.HOTBAR_Z_INDEX
+	assert_hotbar_below_panels(hotbar, 0)
 	var inventory = load("res://Scenes/ui/inventory/InventoryScene.tscn").instantiate()
 	layer.add_child(inventory)
 	inventory.position = Vector2.ZERO
@@ -186,3 +188,11 @@ func run() -> void:
 	layer.free()
 	print("MOBILE_CONNECTED_LAYOUT_PASS")
 	quit()
+
+func assert_hotbar_below_panels(node: Node, parent_z: int) -> void:
+	var effective_z := parent_z
+	if node is CanvasItem:
+		effective_z = node.z_index + (parent_z if node.z_as_relative else 0)
+		assert(effective_z < 0, "Hotbar artwork covers a default-depth panel: " + str(node.name))
+	for child in node.get_children():
+		assert_hotbar_below_panels(child, effective_z)

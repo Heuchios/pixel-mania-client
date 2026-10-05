@@ -596,12 +596,7 @@ func setup_player_menu_ui():
 			world.player_menu_ui = Control.new()
 			world.player_menu_ui.set_script(menu_script)
 		world.player_menu_ui.name = "PlayerMenuUI"
-		# Without this it defaults to z_index 0, which sits BELOW the hotbar (z_index 176,
-		# see inventory_manager.gd HOTBAR_Z_INDEX) even though both are children of
-		# ModalLayer/HudLayer under the same UI CanvasLayer -- the hotbar was drawing on top
-		# of the profile popup's showcase row and Add Friend button. Matches
-		# settings_panel_ui's z_index (see setup_settings_panel_ui below) so profile and
-		# settings sit at the same tier, both above the hotbar and below the recipe book (240).
+		# Keep profile and settings at the same modal tier below the recipe book (240).
 		world.player_menu_ui.z_index = 220
 		parent_node.add_child(world.player_menu_ui)
 

@@ -133,10 +133,8 @@ func get_ui_texture(file_name: String):
 
 
 func get_chat_font() -> Font:
-	if chat_font == null and ResourceLoader.exists(CHAT_FONT_PATH):
-		var loaded_font: Resource = load(CHAT_FONT_PATH)
-		if loaded_font is Font:
-			chat_font = loaded_font
+	if chat_font == null:
+		chat_font = PixelUIStyle.get_scaled_game_font()
 	return chat_font
 
 
@@ -148,7 +146,8 @@ func apply_chat_font_to_control(control: Control) -> void:
 	if font == null:
 		return
 
-	control.add_theme_font_override("font", font)
+	control.set_meta("pixelmania_scaled_text", true)
+	PixelUIStyle.apply_game_font_to_node(control)
 	if control is Label:
 		var label := control as Label
 		if label.label_settings != null:
@@ -168,6 +167,8 @@ func apply_chat_font_to_tree(root: Node) -> void:
 
 func _ready():
 	set_meta("ignore_mobile_ui_scale", true)
+	set_meta("pixelmania_scaled_text", true)
+	set_meta("pixelmania_text_shadow", false)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	setup_chat_ui()
