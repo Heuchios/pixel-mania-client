@@ -191,6 +191,7 @@ func _run_backend_dev_login_bypass() -> void:
 
 
 func _process(delta: float) -> void:
+	_layout_mobile_login()
 	WorldScenePreloader.pump()
 	_update_background_parallax(delta)
 
@@ -200,6 +201,31 @@ func _process(delta: float) -> void:
 
 	server_status_refresh_timer = 0.35
 	_update_server_status_indicator(_is_network_connected(_get_network_manager()))
+
+
+func _layout_mobile_login() -> void:
+	if not MobileUIScale.is_mobile():
+		return
+	var panel := get_node_or_null("LoginPanel") as Control
+	var news := get_node_or_null("NewsPanel") as Control
+	if panel == null or news == null:
+		return
+	get_node("StarryNightBackground").set_meta("ignore_mobile_ui_scale", true)
+	var screen := get_viewport_rect().size
+	# News is authored as a sibling, but belongs inside the left half of the form.
+	var factor := minf(MobileUIScale.get_layout_scale(), minf((screen.x - 48.0) / 1080.0, (screen.y - 240.0) / 560.0))
+	factor = maxf(0.3, factor)
+	var origin := Vector2((screen.x - 1080.0 * factor) * 0.5, (screen.y - 560.0 * factor + 180.0) * 0.5)
+	for control in [panel, news]:
+		control.set_meta("ignore_mobile_ui_scale", true)
+		control.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		control.pivot_offset = Vector2.ZERO
+		control.scale = Vector2.ONE * factor
+	panel.position = origin
+	news.position = origin + Vector2(24, 24) * factor
+	var logo := panel.get_node("Logo") as Control
+	logo.position = Vector2(280, -180.0 / factor)
+	logo.size = Vector2(520, 160.0 / factor)
 
 
 func _try_dev_test_login_bypass() -> bool:
@@ -362,7 +388,10 @@ func _bind_login_scene_ui() -> bool:
 
 	var login_panel := get_node_or_null("LoginPanel") as Control
 	if login_panel != null:
-		PixelUIStyle.play_panel_open(login_panel, Vector2(0.98, 0.98), 0.22)
+		if MobileUIScale.is_mobile():
+			_layout_mobile_login()
+		else:
+			PixelUIStyle.play_panel_open(login_panel, Vector2(0.98, 0.98), 0.22)
 
 	return true
 

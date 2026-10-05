@@ -167,6 +167,7 @@ func apply_chat_font_to_tree(root: Node) -> void:
 
 
 func _ready():
+	set_meta("ignore_mobile_ui_scale", true)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	setup_chat_ui()
@@ -1322,11 +1323,14 @@ func layout_chat_controls(screen_size: Vector2):
 
 
 func layout_authored_top_drawer_controls(screen_size: Vector2) -> void:
+	var factor := get_chat_layout_scale()
 	var visual_width: float = max(1.0, authored_chat_panel_visual_bounds.size.x)
-	var panel_x: float = round((screen_size.x - visual_width) * 0.5 - authored_chat_panel_visual_bounds.position.x)
+	var panel_x: float = round((screen_size.x - visual_width * factor) * 0.5 - authored_chat_panel_visual_bounds.position.x * factor)
 	var closed_y: float = get_authored_chat_closed_y()
 	var open_y: float = get_authored_chat_open_y()
 	chat_panel.size = authored_chat_panel_size
+	chat_panel.pivot_offset = Vector2.ZERO
+	chat_panel.scale = Vector2.ONE * factor
 	chat_panel.position = Vector2(panel_x, lerp(closed_y, open_y, chat_panel_amount))
 
 	layout_authored_quick_chat_bar(screen_size)
@@ -1337,22 +1341,33 @@ func layout_authored_quick_chat_bar(screen_size: Vector2) -> void:
 	if quick_chat_bar == null:
 		return
 
-	var bar_width: float = max(1.0, authored_quick_chat_size.x)
+	var factor := get_chat_layout_scale()
+	quick_chat_bar.pivot_offset = Vector2.ZERO
+	quick_chat_bar.scale = Vector2.ONE * factor
+	var bar_width: float = max(1.0, authored_quick_chat_size.x * factor)
 	var base_x: float = (screen_size.x - bar_width) * 0.5
 	var base_y: float = 58.0
 	if chat_handle != null:
-		base_y = chat_panel.position.y + chat_handle.position.y + chat_handle.size.y + 8.0
+		base_y = chat_panel.position.y + (chat_handle.position.y + chat_handle.size.y) * factor + 8.0
 
 	quick_chat_bar.size = authored_quick_chat_size
 	quick_chat_bar.position = Vector2(max(18.0, base_x), base_y)
 
 
+func get_chat_layout_scale() -> float:
+	var screen := get_viewport_rect().size
+	var bounds := authored_chat_panel_visual_bounds
+	var preference := MobileUIScale.get_layout_scale()
+	var side_clearance := 2.0 * (54.0 + 64.0 * preference)
+	return maxf(0.25, minf(preference, minf((screen.x - side_clearance) / maxf(1.0, bounds.size.x), (screen.y - 160.0) / maxf(1.0, bounds.size.y))))
+
+
 func get_authored_chat_open_y() -> float:
-	return 8.0 - authored_chat_panel_visual_bounds.position.y
+	return 8.0 - authored_chat_panel_visual_bounds.position.y * get_chat_layout_scale()
 
 
 func get_authored_chat_closed_y() -> float:
-	return 8.0 - authored_chat_handle_rect.position.y
+	return 8.0 - authored_chat_handle_rect.position.y * get_chat_layout_scale()
 
 
 func get_authored_chat_drag_height() -> float:
@@ -1429,11 +1444,7 @@ func layout_chat_button(screen_size: Vector2) -> void:
 
 	chat_button.size = CHAT_BUTTON_SIZE
 	chat_button.custom_minimum_size = CHAT_BUTTON_SIZE
-	var button_y: float = CHAT_BUTTON_Y
-	if screen_size.y < CHAT_BUTTON_Y + chat_button.size.y + 14.0:
-		button_y = max(60.0, screen_size.y - chat_button.size.y - 62.0)
-	var button_x: float = screen_size.x - 102.0
-	chat_button.position = Vector2(max(8.0, button_x), button_y)
+	MobileUIScale.layout_corner_button(chat_button, 2, screen_size)
 
 
 func _on_chat_panel_gui_input(event: InputEvent):

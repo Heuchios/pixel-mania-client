@@ -1827,10 +1827,7 @@ func update_shop_button_position():
 		return
 
 	var screen_size = get_viewport_rect().size
-	var button_x = screen_size.x - 124.0
-	if shop_button.size.x <= 72.0:
-		button_x = screen_size.x - 102.0
-	shop_button.position = Vector2(max(8.0, button_x), SHOP_BUTTON_Y)
+	MobileUIScale.layout_corner_button(shop_button, 1, screen_size)
 
 
 func is_floating_hud_blocked() -> bool:

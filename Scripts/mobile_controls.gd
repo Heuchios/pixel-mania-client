@@ -131,6 +131,8 @@ func _notification(what):
 
 
 func _configure_root():
+	# These controls already size themselves for touch and support custom layouts.
+	set_meta("ignore_mobile_ui_scale", true)
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	offset_left = 0.0
 	offset_top = 0.0
@@ -226,12 +228,22 @@ func _layout_controls():
 	var move_x = (left_space_width - move_group_width) * 0.5 - move_group_left_shift
 	move_x = clamp(move_x, min_hotbar_gap, max(min_hotbar_gap, hotbar_rect.position.x - move_group_width - min_hotbar_gap))
 
-	var action_group_width = action_size.x * 2.0 + gap
 	var right_space_left = hotbar_rect.position.x + hotbar_rect.size.x
-	var right_space_width = max(0.0, screen_size.x - right_space_left)
+	var right_edge: float = screen_size.x
+	var action_band_top: float = screen_size.y - margin_bottom - action_size.y + inventory_drawer_offset.y
+	var ui_scaling := get_node_or_null("/root/MobileUIScale")
+	if ui_scaling != null and ui_scaling.is_mobile() and action_band_top < 32.0 + 232.0 * ui_scaling.get_layout_scale():
+		# Opening the drawer lifts the action buttons into the HUD's corner column.
+		# Reserve that column, fitting this pair into the space beside the hotbar.
+		right_edge -= 54.0 + 64.0 * ui_scaling.get_layout_scale()
+		var pair_space: float = maxf(1.0, right_edge - right_space_left - min_hotbar_gap * 2.0)
+		var fit: float = minf(1.0, (pair_space - gap) / maxf(1.0, action_size.x * 2.0))
+		action_size *= maxf(0.5, fit)
+	var action_group_width = action_size.x * 2.0 + gap
+	var right_space_width = max(0.0, right_edge - right_space_left)
 	var action_x = right_space_left + (right_space_width - action_group_width) * 0.5 + action_group_right_shift
 	var action_min_x = right_space_left + min_hotbar_gap
-	var action_max_x = screen_size.x - action_group_width - min_hotbar_gap
+	var action_max_x = right_edge - action_group_width - min_hotbar_gap
 	if action_max_x < action_min_x:
 		action_min_x = max(min_hotbar_gap, action_max_x)
 	action_x = clamp(action_x, action_min_x, max(action_min_x, action_max_x))

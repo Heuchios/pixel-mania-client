@@ -58,6 +58,7 @@ const INVENTORY_DRAWER_WIDTH = INVENTORY_DRAWER_BASE_WIDTH + INVENTORY_SLOT_STEP
 const INVENTORY_DRAWER_HEIGHT = INVENTORY_DRAWER_BASE_HEIGHT + INVENTORY_SLOT_STEP * INVENTORY_DRAWER_EXTRA_ROWS
 const INVENTORY_SCENE_WINDOW_SIZE = Vector2(1000.0, 640.0)
 const INVENTORY_SCENE_VISUAL_SIZE = Vector2(1349.0, 657.0)
+const INVENTORY_SCENE_VISUAL_ORIGIN = Vector2(-223.0, -9.0)
 const MOBILE_GUI_SCALE_SETTING := "gui/theme/default_theme_scale"
 const INVENTORY_ICON_FRAME_POSITION = Vector2(10.0, 9.0)
 const INVENTORY_ICON_FRAME_SIZE = Vector2(62.0, 60.0)
@@ -558,7 +559,8 @@ func get_inventory_margin_x(screen_size: Vector2) -> float:
 
 func get_inventory_window_size_for_viewport(screen_size: Vector2) -> Vector2:
 	if is_inventory_scene_window():
-		return INVENTORY_SCENE_WINDOW_SIZE * get_inventory_scene_window_scale_for_viewport(screen_size)
+		var extent: Vector2 = INVENTORY_SCENE_VISUAL_SIZE if MobileUIScale.is_mobile() else INVENTORY_SCENE_WINDOW_SIZE
+		return extent * get_inventory_scene_window_scale_for_viewport(screen_size)
 	var available_width = max(420.0, screen_size.x - 32.0)
 	var available_height = max(360.0, screen_size.y - get_hotbar_visual_height(screen_size) - 32.0)
 	return Vector2(
@@ -569,7 +571,8 @@ func get_inventory_window_size_for_viewport(screen_size: Vector2) -> Vector2:
 
 func get_inventory_scene_window_scale_for_viewport(screen_size: Vector2) -> float:
 	var available_width: float = maxf(320.0, screen_size.x - 24.0)
-	var available_height: float = maxf(240.0, screen_size.y - get_hotbar_visual_height(screen_size) - HOTBAR_INVENTORY_GAP - 24.0)
+	var top_clearance := 16.0 + 80.0 * MobileUIScale.get_layout_scale() if MobileUIScale.is_mobile() else 0.0
+	var available_height: float = maxf(240.0, screen_size.y - get_hotbar_visual_height(screen_size) - HOTBAR_INVENTORY_GAP - 24.0 - top_clearance)
 	var target_scale: float = get_mobile_gui_target_scale()
 	var fit_scale: float = minf(
 		available_width / INVENTORY_SCENE_VISUAL_SIZE.x,
@@ -579,10 +582,7 @@ func get_inventory_scene_window_scale_for_viewport(screen_size: Vector2) -> floa
 
 
 func get_mobile_gui_target_scale() -> float:
-	if not is_mobile_touch_platform():
-		return 1.0
-	var configured_scale := float(ProjectSettings.get_setting_with_override(MOBILE_GUI_SCALE_SETTING))
-	return clampf(configured_scale, 1.0, 1.5)
+	return MobileUIScale.get_layout_scale()
 
 
 func is_mobile_touch_platform() -> bool:
@@ -596,11 +596,8 @@ func should_ignore_mobile_mouse_event(event: InputEvent) -> bool:
 
 
 func get_mobile_hud_scale(_screen_size: Vector2 = Vector2.ZERO) -> float:
-	# These are logical canvas units. Godot already scales the 1920x1080
-	# canvas to the device; an extra mobile multiplier enlarged only the
-	# hotbar and changed the inventory drawer's position relative to PC.
-	# Touch action buttons retain their separate accessibility sizing.
-	return 1.0
+	# Drawer geometry and hit targets must use the same scale as the hotbar.
+	return MobileUIScale.get_layout_scale()
 
 
 func get_hotbar_base_visual_height() -> float:
@@ -618,6 +615,8 @@ func get_hotbar_closed_y(screen_size: Vector2) -> float:
 func get_hotbar_open_y(screen_size: Vector2) -> float:
 	var window_size = get_inventory_window_size_for_viewport(screen_size)
 	var unit_height = get_hotbar_visual_height(screen_size) + HOTBAR_INVENTORY_GAP + window_size.y
+	if MobileUIScale.is_mobile():
+		unit_height += 24.0
 	return clamp(screen_size.y - unit_height, 0.0, get_hotbar_closed_y(screen_size))
 
 
@@ -2875,6 +2874,8 @@ func get_hotbar_visual_width(screen_size: Vector2 = Vector2.ZERO) -> float:
 func update_hotbar_position():
 	if hotbar_root == null:
 		return
+	hotbar_root.set_meta("ignore_mobile_ui_scale", true)
+	hotbar_root.pivot_offset = Vector2.ZERO
 	var hotbar_visible: bool = not is_gameplay_hud_blocked()
 	hotbar_root.visible = hotbar_visible
 	if not hotbar_visible:
@@ -6569,6 +6570,7 @@ func remove_inventory_item(item_type: String, category: String, amount: float) -
 func update_inventory_window_position():
 	if inventory_window == null:
 		return
+	inventory_window.set_meta("ignore_mobile_ui_scale", true)
 	if is_inventory_scene_window():
 		var scene_should_be_visible: bool = inventory_drawer_target > 0.0 or inventory_drawer_amount > 0.01
 		inventory_window.visible = scene_should_be_visible
@@ -6588,6 +6590,8 @@ func update_inventory_window_position():
 			(scene_screen_size.x - scene_window_size.x) / 2.0,
 			scene_hotbar_y + get_hotbar_visual_height(scene_screen_size) + HOTBAR_INVENTORY_GAP
 		)
+		if MobileUIScale.is_mobile():
+			scene_top_left -= INVENTORY_SCENE_VISUAL_ORIGIN * scene_scale_amount
 		if inventory_window.has_method("set_drawer_window_transform"):
 			inventory_window.set_drawer_window_transform(scene_top_left, scene_scale_amount)
 		else:

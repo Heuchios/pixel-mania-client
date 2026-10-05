@@ -5,13 +5,24 @@ signal scale_changed(value: float)
 const SAVE_PATH := "user://pixelmania_settings.cfg"
 const MIN_SCALE := 0.75
 const MAX_SCALE := 1.5
-const DEFAULT_SCALE := 1.25
+const DEFAULT_SCALE := 1.5
 var ui_scale := DEFAULT_SCALE
 var _roots: Array[Control] = []
 var _states: Dictionary = {}
 
 func is_mobile() -> bool:
 	return OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios") or OS.has_feature("web_android") or OS.has_feature("web_ios")
+
+func get_layout_scale() -> float:
+	return ui_scale if is_mobile() else 1.0
+
+func layout_corner_button(button: Control, row: int, screen: Vector2) -> void:
+	# The three HUD buttons share a column; scale its spacing as well as its icons.
+	var factor := get_layout_scale()
+	button.set_meta("ignore_mobile_ui_scale", true)
+	button.pivot_offset = Vector2.ZERO
+	button.scale = Vector2.ONE * factor
+	button.position = Vector2(maxf(8.0, screen.x - 38.0 - 64.0 * factor), 16.0 + row * 84.0 * factor)
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
