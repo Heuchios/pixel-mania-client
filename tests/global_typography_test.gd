@@ -13,45 +13,55 @@ func _run() -> void:
 	body_label.name = "StatusLabel"
 	body_label.add_theme_font_size_override("font_size", 14)
 	PixelUIStyle.apply_global_typography_to_node(body_label)
-	assert(body_label.get_theme_font_size("font_size") == 24)
+	assert(body_label.get_theme_font_size("font_size") == 26)
 
 	var subtitle_label := Label.new()
 	subtitle_label.name = "SubtitleLabel"
 	PixelUIStyle.apply_global_typography_to_node(subtitle_label)
-	assert(subtitle_label.get_theme_font_size("font_size") == 24)
+	assert(subtitle_label.get_theme_font_size("font_size") == 26)
 
 	var title_label := Label.new()
 	title_label.name = "TitleLabel"
 	title_label.add_theme_font_size_override("font_size", 14)
 	PixelUIStyle.apply_global_typography_to_node(title_label)
-	assert(title_label.get_theme_font_size("font_size") == 36)
+	assert(title_label.get_theme_font_size("font_size") == 38)
 
 	var authored_header := Label.new()
 	authored_header.name = "WorldName"
 	authored_header.set_meta(PixelUIStyle.GLOBAL_FONT_ROLE_META, "header")
 	authored_header.add_theme_font_size_override("font_size", 44)
 	PixelUIStyle.apply_global_typography_to_node(authored_header)
-	assert(authored_header.get_theme_font_size("font_size") == 36)
+	assert(authored_header.get_theme_font_size("font_size") == 38)
 
 	var settings_label := Label.new()
 	settings_label.name = "InfoLabel"
 	settings_label.label_settings = LabelSettings.new()
 	settings_label.label_settings.font_size = 13
 	PixelUIStyle.apply_global_typography_to_node(settings_label)
-	assert(settings_label.get_theme_font_size("font_size") == 24)
-	assert(settings_label.label_settings.font_size == 24)
+	assert(settings_label.get_theme_font_size("font_size") == 26)
+	assert(settings_label.label_settings.font_size == 26)
 
 	var rich_text := RichTextLabel.new()
 	rich_text.name = "Description"
 	PixelUIStyle.apply_global_typography_to_node(rich_text)
-	assert(rich_text.get_theme_font_size("normal_font_size") == 24)
-	assert(rich_text.get_theme_font_size("bold_font_size") == 24)
+	assert(rich_text.get_theme_font_size("normal_font_size") == 26)
+	assert(rich_text.get_theme_font_size("bold_font_size") == 26)
 
 	var custom_label := Label.new()
 	custom_label.name = "CompactCounter"
 	custom_label.set_meta(PixelUIStyle.GLOBAL_FONT_SIZE_META, 18)
 	PixelUIStyle.apply_global_typography_to_node(custom_label)
-	assert(custom_label.get_theme_font_size("font_size") == 18)
+	assert(custom_label.get_theme_font_size("font_size") == 20)
+	custom_label.set_meta(PixelUIStyle.GLOBAL_FONT_SIZE_META, 12)
+	for repeat in range(3):
+		PixelUIStyle.apply_global_typography_to_node(custom_label)
+		PixelUIStyle.apply_global_typography_to_node(settings_label)
+		assert(custom_label.get_theme_font_size("font_size") == 14, "12 becomes 14 without compounding")
+		assert(settings_label.label_settings.font_size == 26, "Shared label settings do not compound")
+	assert(custom_label.get_meta(PixelUIStyle.GLOBAL_FONT_SIZE_META) == 12)
+	custom_label.set_meta(PixelUIStyle.GLOBAL_FONT_SIZE_META, 18)
+	PixelUIStyle.apply_global_typography_to_node(custom_label)
+	assert(custom_label.get_theme_font_size("font_size") == 20, "Runtime size changes still receive the increase")
 
 	var manager := GlobalFontManagerScript.new()
 	var runtime_panel := Control.new()
@@ -62,8 +72,8 @@ func _run() -> void:
 	runtime_panel.add_child(runtime_body)
 	runtime_panel.add_child(runtime_title)
 	manager.apply_to_node_tree(runtime_panel)
-	assert(runtime_body.get_theme_font_size("font_size") == 24)
-	assert(runtime_title.get_theme_font_size("font_size") == 36)
+	assert(runtime_body.get_theme_font_size("font_size") == 26)
+	assert(runtime_title.get_theme_font_size("font_size") == 38)
 
 	body_label.free()
 	subtitle_label.free()

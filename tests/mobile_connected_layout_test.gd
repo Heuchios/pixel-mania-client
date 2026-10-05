@@ -26,7 +26,7 @@ func run() -> void:
 	var scaling = root.get_node("MobileUIScale")
 	scaling.set_script(PhoneScale)
 	scaling.set_process(true)
-	scaling.ui_scale = 1.5
+	scaling.ui_scale = scaling.DEFAULT_SCALE
 	var login = load("res://Scenes/ui/login/LoginScene.tscn").instantiate()
 	login.set_script(load("res://tests/fixtures/mobile_login_fixture.gd"))
 	root.add_child(login)
@@ -42,10 +42,10 @@ func run() -> void:
 			assert(login.get_viewport_rect().encloses(form.get_global_rect()), "Login form offscreen")
 			assert(login.get_viewport_rect().encloses(login.get_node("LoginPanel/Logo").get_global_rect()), "Logo offscreen")
 	root.size = Vector2i(1300, 600)
-	scaling.ui_scale = 1.5
+	scaling.ui_scale = scaling.DEFAULT_SCALE
 	await process_frame
 	await process_frame
-	await capture("phone-150-login")
+	await capture("phone-default-login")
 	login.free()
 
 	var lobby = load("res://Scenes/ui/lobby/LobbyScene.tscn").instantiate()
@@ -63,7 +63,7 @@ func run() -> void:
 			assert(not bounds.intersects(lobby.landfill_event_card.get_global_rect()))
 		else:
 			assert(absf(bounds.get_center().x - lobby.get_viewport_rect().size.x * 0.5) < 2, "Inactive event leaves lobby off center")
-	await capture("phone-150-lobby")
+	await capture("phone-default-lobby")
 	lobby.free()
 
 	var layer := CanvasLayer.new()
@@ -152,7 +152,7 @@ func run() -> void:
 	assert(chat.handle_global_chat_handle_touch_input(touch))
 	assert(is_zero_approx(chat.chat_panel_target), "Dragging scaled chat handle back up closes drawer")
 	root.size = Vector2i(1300, 600)
-	scaling.ui_scale = 1.5
+	scaling.ui_scale = scaling.DEFAULT_SCALE
 	await process_frame
 	manager.inventory_drawer_amount = 1.0
 	manager.inventory_drawer_target = 1.0
@@ -180,7 +180,7 @@ func run() -> void:
 	assert(not selected.is_empty(), "Touching scaled inventory slot does not select it")
 	for action in ["move_left", "move_right", "jump", "punch", "zoom_in", "zoom_out"]:
 		assert(not controls.action_buttons[action].get_global_rect().intersects(inventory.inventory_scroll.get_global_rect()), "Touch control overlaps item grid: " + action)
-	await capture("phone-150-inventory")
+	await capture("phone-default-inventory")
 	inventory.close_button.pressed.emit()
 	assert(not inventory.visible, "Inventory close stops showing the drawer")
 	layer.free()

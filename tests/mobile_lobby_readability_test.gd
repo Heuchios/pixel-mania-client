@@ -47,10 +47,10 @@ func run() -> void:
 				assert(lobby.get_viewport_rect().encloses(panel.get_global_rect()), "Mobile lobby panel is offscreen")
 			var row: Control = lobby.active_world_rows.get_node("World_START")
 			var label: Label = row.get_node("StartName")
-			assert(label.get_theme_font_size("font_size") == 36)
-			assert(label.get_theme_font("font").get_height(36) <= row.size.y, "World text clips vertically")
+			assert(label.get_theme_font_size("font_size") == 38)
+			assert(label.get_theme_font("font").get_height(38) <= row.size.y, "World text clips vertically")
 			if value == 1.25:
-				assert(36 * label.get_screen_transform().y.length() >= 16, "Default mobile world text too small")
+				assert(38 * label.get_screen_transform().y.length() >= 16, "Default mobile world text too small")
 			row.get_node("StartJoin").pressed.emit()
 			assert(lobby.joined_world == "START")
 	lobby.free()

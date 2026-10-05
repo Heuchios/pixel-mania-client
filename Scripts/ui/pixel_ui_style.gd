@@ -27,8 +27,9 @@ const GREEN_BUTTON_INK := Color(0.12, 0.56, 0.21, 1.0)
 const TEXT_LIGHT := Color.WHITE
 const TEXT_SOFT := Color(0.86, 0.96, 1.0, 1.0)
 const GAME_FONT_PATH := "res://Assets/font/font.ttf"
-const DEFAULT_TEXT_FONT_SIZE := 24
-const HEADER_FONT_SIZE := 36
+const GLOBAL_FONT_SIZE_INCREASE := 2
+const DEFAULT_TEXT_FONT_SIZE := 24 + GLOBAL_FONT_SIZE_INCREASE
+const HEADER_FONT_SIZE := 36 + GLOBAL_FONT_SIZE_INCREASE
 const GLOBAL_TEXT_SHADOW_COLOR := Color(0.0, 0.0, 0.0, 0.85)
 const GLOBAL_TEXT_SHADOW_OFFSET := Vector2(2.0, 2.0)
 const GLOBAL_FONT_ROLE_META := &"pixelmania_font_role"
@@ -119,8 +120,10 @@ static func _is_text_control(node: Node) -> bool:
 
 
 static func _resolve_global_font_size(node: Node) -> int:
-	if node.has_meta("pixelmania_font_size"):
-		return int(node.get_meta("pixelmania_font_size"))
+	if node.has_meta(GLOBAL_FONT_SIZE_META):
+		# Metadata keeps the authored size so repeated theme updates never compound.
+		var authored_size := int(node.get_meta(GLOBAL_FONT_SIZE_META))
+		return authored_size + GLOBAL_FONT_SIZE_INCREASE if authored_size > 0 else authored_size
 	var role := str(node.get_meta(GLOBAL_FONT_ROLE_META, "")).strip_edges().to_lower()
 	match role:
 		"icon":
