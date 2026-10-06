@@ -40,6 +40,15 @@ world_name_reserve, and world_name_claim. This caused the lock panel to display
 and rejects unknown actions and unauthenticated requests. Restart the running
 client/editor play session to load this client-side fix.
 
+Name-retention correction deployed to staging as `20261006-name-retention-1b77a2b`:
+locking a world keeps its entered public name for seven days even when the account
+has other unpaid reservations. Only unpaid expiry assigns the old name plus 1–3
+random digits, skipping occupied names. Internal UUID identities remain unchanged.
+The full deployment gate and real PostgreSQL regression tests passed. The prematurely
+renamed owned ABC was restored with its original October 13, 20:08:28 UTC deadline;
+the unused, unowned re-entry placeholder was preserved as ABC1. Both repairs were
+recorded in the transaction ledger after a verified staging database backup.
+
 ### Netfox Movement / Server Handoff (2026-07-02)
 
 Current goal: transition player movement to Netfox while keeping the existing
