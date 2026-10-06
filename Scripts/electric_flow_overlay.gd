@@ -7,6 +7,7 @@ const ANIMATION_HZ := 30.0
 const STATE_INTERVAL := 0.4
 const VIEW_INTERVAL := 0.2
 const SPEED := 48.0
+const Cable = preload("res://Scripts/electric_cable.gd")
 var manager = null
 var inspector = null
 var scope := ""
@@ -17,6 +18,7 @@ var pole_neighbors: Dictionary = {}
 var outputs: Array[String] = []
 var consumers: Array[String] = []
 var directions: Dictionary = {}
+var powered_edges: Dictionary = {}
 var visible_edges: Array[Dictionary] = []
 var topology_signature: Array = []
 var activity_signature: Array = []
@@ -47,6 +49,7 @@ func ensure_scope() -> void:
 	generation_until.clear()
 	edges.clear()
 	directions.clear()
+	powered_edges.clear()
 	outputs.clear()
 	consumers.clear()
 	pole_neighbors.clear()
@@ -134,6 +137,28 @@ func refresh_routes() -> void:
 	activity_signature = state_key
 	route_build_count += 1
 	directions.clear()
+	powered_edges.clear()
+	# Availability is separate from demand: a charged circuit can be idle.
+	var powered_poles: Dictionary = {}
+	var supply_queue: Array[Vector2i] = []
+	for key in outputs:
+		if not available_generators.has(edges[key].source_grid): continue
+		powered_edges[key] = true
+		var pole: Vector2i = edges[key].target_grid
+		if not powered_poles.has(pole):
+			powered_poles[pole] = true
+			supply_queue.append(pole)
+	var supply_cursor := 0
+	while supply_cursor < supply_queue.size():
+		var pole := supply_queue[supply_cursor]
+		supply_cursor += 1
+		for neighbor in pole_neighbors.get(pole, []):
+			powered_edges[neighbor.key] = true
+			if not powered_poles.has(neighbor.grid):
+				powered_poles[neighbor.grid] = true
+				supply_queue.append(neighbor.grid)
+	for key in consumers:
+		if powered_poles.has(edges[key].target_grid): powered_edges[key] = true
 	for key in generation_until:
 		if edges.has(key): directions[key] = -1
 	# Search outward from running consumers, then trace EVERY charged output
@@ -144,6 +169,7 @@ func refresh_routes() -> void:
 	var queue: Array[Vector2i] = []
 	for key in live_consumers:
 		var edge: Dictionary = edges[key]
+		if not powered_edges.has(key): continue
 		directions[key] = -1
 		if parents.has(edge.target_grid): continue
 		parents[edge.target_grid] = {"root": true}
@@ -168,6 +194,10 @@ func refresh_routes() -> void:
 			if parent.root: break
 			directions[parent.key] = parent.direction
 			pole = parent.previous
+	for key in edges:
+		var line := get_live_line(str(key), int(edges[key].line_id))
+		if line != null and line.has_method("set_power_state"):
+			line.set_power_state("flow" if directions.has(key) else "ready" if powered_edges.has(key) else "idle")
 	route_revision += 1
 	view_elapsed = VIEW_INTERVAL
 
@@ -220,9 +250,11 @@ func step_topology() -> bool:
 		var a: Vector2i = manager.parse_grid_key(parts[1])
 		var b: Vector2i = manager.parse_grid_key(parts[2])
 		var start := line.get_point_position(0)
-		var end := line.get_point_position(1)
+		var end := line.get_point_position(line.get_point_count() - 1)
+		var bounds := Rect2(start, Vector2.ZERO)
+		for point in line.points: bounds = bounds.expand(point)
 		# Cache values and identity, never a Node reference across network updates.
-		edges[key] = {"key": key, "kind": parts[0], "source_grid": a, "target_grid": b, "start": start, "end": end, "line_id": line.get_instance_id()}
+		edges[key] = {"key": key, "kind": parts[0], "source_grid": a, "target_grid": b, "start": start, "end": end, "points": line.points, "bounds": bounds, "line_id": line.get_instance_id()}
 		match parts[0]:
 			"output": outputs.append(key)
 			"refinery_input", "battery_charger_input": consumers.append(key)
@@ -253,18 +285,21 @@ func refresh_visible() -> void:
 	for key in edges:
 		var edge: Dictionary = edges[key]
 		var line := get_live_line(str(key), int(edge.line_id))
-		if line == null or line.modulate.a < 0.5: continue
-		var screen_a: Vector2 = canvas_transform * edge.start
-		var screen_b: Vector2 = canvas_transform * edge.end
-		if not Rect2(screen_a, screen_b - screen_a).abs().grow(8).intersects(get_viewport_rect()): continue
+		if line == null: continue
+		if line.modulate.a < 0.5: continue
+		var screen_bounds: Rect2 = canvas_transform * edge.bounds
+		if not screen_bounds.grow(8).intersects(get_viewport_rect()): continue
 		var sign_value := int(directions.get(key, 0))
-		if sign_value == 0 and edge.kind == "pole_coupling": continue
-		if sign_value == 0: sign_value = -1 if edge.kind in ["input", "refinery_input", "battery_charger_input"] else 1
+		if sign_value == 0: continue # Idle connections never imply flowing power.
 		var from: Vector2 = edge.start if sign_value > 0 else edge.end
 		var to: Vector2 = edge.end if sign_value > 0 else edge.start
 		var length := from.distance_to(to)
 		if length < 10: continue	
-		var mark := {"start": from, "end": to, "direction": (to-from)/length, "length": length, "active": directions.has(key)}
+		var curve: PackedVector2Array = edge.points.duplicate()
+		if sign_value < 0: curve.reverse()
+		var distances := PackedFloat32Array([0.0])
+		for i in range(1, curve.size()): distances.append(distances[-1] + curve[i - 1].distance_to(curve[i]))
+		var mark := {"start": from, "end": to, "points": curve, "distances": distances, "direction": (to-from)/length, "length": float(distances[-1]), "active": true}
 		if key == inspector.selected_wire: visible_edges.append(mark)
 		elif mark.active and active_edges.size() < MAX_VISIBLE_WIRES: active_edges.append(mark)
 		elif not mark.active and idle_edges.size() < MAX_VISIBLE_WIRES: idle_edges.append(mark)
@@ -281,23 +316,25 @@ func build_marks(seconds: float) -> void:
 	marks.clear()
 	faint_marks.clear()
 	for edge in visible_edges:
-		var direction: Vector2 = edge.direction
-		var side := Vector2(-direction.y, direction.x)
 		var count := 2 if edge.active and edge.length > 70 else 1
 		for index in range(count):
 			var fraction := fmod(seconds * SPEED / edge.length + float(index) / count, 1.0) if edge.active else 0.55
-			var tip: Vector2 = edge.start.lerp(edge.end, 0.08 + fraction * 0.84)
+			var tip := point_on_cable(edge, (0.08 + fraction * 0.84) * edge.length).round()
+			var tail := point_on_cable(edge, maxf(0.0, (0.08 + fraction * 0.84) * edge.length - 6.0)).round()
 			if edge.active:
-				marks.append(tip - direction * 5 + side * 3)
+				marks.append(tail)
 				marks.append(tip)
-				marks.append(tip)
-				marks.append(tip - direction * 5 - side * 3)
-			else:
-				faint_marks.append(tip - direction * 5 + side * 3)
-				faint_marks.append(tip)
-				faint_marks.append(tip)
-				faint_marks.append(tip - direction * 5 - side * 3)
+
+func point_on_cable(edge: Dictionary, distance: float) -> Vector2:
+	var curve: PackedVector2Array = edge.points
+	var distances: PackedFloat32Array = edge.distances
+	for i in range(1, curve.size()):
+		if distances[i] < distance: continue
+		var span := float(distances[i] - distances[i - 1])
+		return curve[i - 1].lerp(curve[i], clampf((distance - distances[i - 1]) / maxf(0.001, span), 0.0, 1.0))
+	return curve[-1]
 
 func _draw() -> void:
-	if not faint_marks.is_empty(): draw_multiline(faint_marks, Color(1.0, 0.85, 0.25, 0.35), 1.0)
-	if not marks.is_empty(): draw_multiline(marks, Color(1.0, 0.98, 0.7, 0.95), 1.5)
+	if not marks.is_empty():
+		draw_multiline(marks, Color("214a42"), Cable.OUTLINE_WIDTH, false)
+		draw_multiline(marks, Color("c5ffe6"), Cable.CORE_WIDTH, false)

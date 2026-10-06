@@ -9,6 +9,7 @@ extends Node
 var world = null
 
 var is_locked: bool = false
+var persistent_ownership: bool = false
 var owner_name: String = ""
 var owner_account_id: String = ""
 var owner_player_id: String = ""
@@ -223,6 +224,7 @@ func refresh_world_lock_block_visual() -> void:
 
 func _reset_world_lock_state() -> void:
 	is_locked = false
+	persistent_ownership = false
 	owner_name = ""
 	owner_account_id = ""
 	owner_player_id = ""
@@ -286,6 +288,8 @@ func reconcile_world_lock_state_with_blocks() -> bool:
 
 	var scan := _scan_world_lock_blocks()
 	if not bool(scan.get("found", false)):
+		if persistent_ownership:
+			return false
 		_reset_world_lock_state()
 		return true
 
@@ -606,7 +610,7 @@ func can_current_player_place_block(block_type: String, grid_pos: Variant = null
 
 	reconcile_world_lock_state_with_blocks()
 	if is_world_lock_block_type(block_type):
-		return not is_locked and not has_world_lock_block()
+		return (not is_locked or (persistent_ownership and is_current_player_owner())) and not has_world_lock_block()
 
 	if is_safe_block(block_type):
 		return is_locked and is_current_player_owner()
@@ -1032,6 +1036,12 @@ func on_world_lock_block_placed(grid_pos: Vector2i, block_type: String = WORLD_L
 
 	reconcile_world_lock_state_with_blocks()
 	if is_locked:
+		if persistent_ownership and is_current_player_owner():
+			lock_grid_pos = grid_pos
+			lock_block_type = normalize_world_lock_block_type(block_type)
+			refresh_world_lock_block_visual()
+			request_save()
+			return
 		if lock_grid_pos == grid_pos and get_lock_block_type() == normalize_world_lock_block_type(block_type):
 			return
 		if world != null and world.has_method("show_notification"):
@@ -1078,6 +1088,11 @@ func on_world_lock_block_broken(grid_pos: Vector2i):
 		return
 
 	var old_owner: String = owner_name
+	if persistent_ownership:
+		if world != null and world.has_method("show_notification"):
+			world.show_notification("World Lock removed. You still own this world and its name reservation.")
+		request_save()
+		return
 	_reset_world_lock_state()
 
 	if world != null and world.has_method("show_notification"):
@@ -2012,6 +2027,7 @@ func get_area_lock_info_text(area_lock: Dictionary) -> String:
 func get_save_data() -> Dictionary:
 	return {
 		"is_locked": is_locked,
+		"persistent_ownership": persistent_ownership,
 		"owner_name": owner_name,
 		"owner_account_id": owner_account_id,
 		"owner_player_id": owner_player_id,
@@ -2034,6 +2050,7 @@ func get_save_data() -> Dictionary:
 
 func load_save_data(data: Dictionary):
 	is_locked = bool(data.get("is_locked", false))
+	persistent_ownership = is_locked and bool(data.get("persistent_ownership", false))
 	owner_name = normalize_name(str(data.get("owner_name", "")))
 	owner_account_id = normalize_identity_id(data.get("owner_account_id", data.get("account_id", "")))
 	owner_player_id = normalize_identity_id(data.get("owner_player_id", data.get("owner_profile_id", data.get("profile_id", ""))))

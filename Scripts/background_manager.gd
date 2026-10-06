@@ -142,7 +142,6 @@ const THEME_CONFIGS = {
 	}
 }
 
-const LANDFILL_WORLD_PREFIX := "landfill_"
 const LANDFILL_THEME := "landfill"
 
 
@@ -243,7 +242,7 @@ func _is_landfill_world() -> bool:
 	if world == null or not is_instance_valid(world):
 		return false
 	var world_name := str(world.get("current_world_name")) if "current_world_name" in world else ""
-	return world_name.strip_edges().to_lower().begins_with(LANDFILL_WORLD_PREFIX)
+	return preload("res://Scripts/world_name_rules.gd").is_event_instance(world_name)
 
 
 func _resolve_theme_for_world(requested_theme: String) -> String:

@@ -7,6 +7,7 @@ const HOTBAR_SCENE = preload("res://Scenes/ui/hotbar/Hotbar.tscn")
 const INVENTORY_SCENE = preload("res://Scenes/ui/inventory/InventoryScene.tscn")
 const INVENTORY_UPGRADE_CONFIRM_SCENE = preload("res://Scenes/ui/inventory/InventoryUpgradeConfirm.tscn")
 const ITEM_ACTION_POPUP_SCENE = preload("res://Scenes/ui/inventory/ItemActionPopup.tscn")
+const ItemDisplayFacts = preload("res://Scripts/item_display_facts.gd")
 const ColourCycleModulation = preload("res://Scripts/colour_cycle_modulation.gd")
 const SelectedSlotFrameClock = preload("res://Scripts/ui/selected_slot_frame_clock.gd")
 const PickupFlight = preload("res://Scripts/ui/pickup_flight.gd")
@@ -3731,7 +3732,7 @@ func _on_inventory_scene_info_requested(item: Dictionary) -> void:
 	var category: String = _get_inventory_scene_item_category(item)
 	if item_type == "" or category == "":
 		return
-	show_item_info(item_type, category)
+	_show_item_action_popup(_build_item_action_payload(item_type, category, item))
 
 
 func _on_inventory_scene_trash_requested(item: Dictionary) -> void:
@@ -3777,10 +3778,6 @@ func _ensure_item_action_popup() -> Control:
 		popup_control.offset_bottom = 0.0
 		popup_control.z_index = ITEM_ACTION_POPUP_Z_INDEX
 
-	_connect_item_action_popup_signal("use_requested", "_on_inventory_scene_primary_action_requested")
-	_connect_item_action_popup_signal("drop_requested", "_on_inventory_scene_drop_requested")
-	_connect_item_action_popup_signal("info_requested", "_on_inventory_scene_info_requested")
-	_connect_item_action_popup_signal("trash_requested", "_on_inventory_scene_trash_requested")
 	_connect_item_action_popup_signal("closed", "_on_item_action_popup_closed")
 	return item_action_popup as Control
 
@@ -3816,9 +3813,9 @@ func _build_item_action_payload(item_type: String, category: String, base_item: 
 	payload["available_count"] = maxi(1, available_count)
 	payload["rarity"] = get_item_rarity(item_type, category)
 	payload["description"] = str(payload.get("description", database_entry.get("description", "")))
-	payload["spliceable"] = bool(payload.get("spliceable", false)) \
-		or str(database_entry.get("seed", "")).strip_edges() != "" \
-		or database_entry.has("recipe")
+	var facts := ItemDisplayFacts.describe(item_type, world.item_database, world.splice_recipes) if world != null else {}
+	for fact in ["spliceable", "has_properties", "farmable"]:
+		payload[fact] = bool(facts.get(fact, false))
 	payload["can_use"] = true
 	payload["can_drop"] = can_drop_item_from_inventory(item_type, category)
 	payload["can_trash"] = item_type != "punch"

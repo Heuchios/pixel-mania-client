@@ -21,6 +21,43 @@ signal landfill_claim_result_received(data)
 const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
 
 var socket := WebSocketPeer.new()
+var world_name_claims: Dictionary = {}
+var pending_join_world_identity := ""
+
+func get_public_world_name(internal_name: String) -> String:
+	var info: Dictionary = world_name_claims.get(internal_name.to_upper(), {})
+	return str(info.get("name", internal_name))
+
+func receive_world_name_status(data: Dictionary) -> void:
+	var identity := str(data.get("world", "")).to_upper()
+	var info = data.get("world_name_claim", null)
+	if identity != "" and info is Dictionary:
+		world_name_claims[identity] = info.duplicate(true)
+		var active_world = get_world_node()
+		if active_world != null and str(active_world.get("current_world_name")) == identity:
+			var lock_ui = active_world.get("world_lock_ui")
+			if lock_ui != null and lock_ui.has_method("receive_name_status"):
+				lock_ui.receive_name_status(info)
+
+func handle_world_name_redirect(data: Dictionary) -> bool:
+	var from_world := _safe_world_name(str(data.get("world", "")))
+	var target_world := _safe_world_name(str(data.get("target_world", "")))
+	if _get_message_join_request_id(data) != active_join_request_id or active_join_request_id == "":
+		return false
+	if from_world != active_join_world_name or target_world == "" or target_world == from_world:
+		return false
+	world_name_claims[target_world] = {"name": str(data.get("public_name", from_world))}
+	pending_server_world_state.clear()
+	pending_world_state_stream.clear()
+	_reset_world_entry_session()
+	active_join_world_name = target_world
+	active_join_request_pending = true
+	current_world_name = target_world
+	pending_join_world_name = str(data.get("public_name", from_world))
+	pending_join_world_identity = target_world
+	sync_active_world_name_from_server(target_world)
+	return true
+
 var socket_generation: int = 0
 var connection_health = ConnectionHealth.new()
 var application_paused := false
@@ -837,7 +874,8 @@ func _prepare_transport_recovery(reason: String) -> void:
 	if connection_recovering and not has_pending_join():
 		var target := active_join_world_name if active_join_world_name != "" else current_world_name
 		if is_world_node_active() or active_join_request_id != "":
-			set_pending_join(target, session_username)
+			set_pending_join(get_public_world_name(target), session_username)
+			pending_join_world_identity = target if world_name_claims.has(target) else ""
 	if connection_recovering and has_pending_join():
 		var world_node: Node = get_world_node()
 		if world_node != null and is_world_node_active():
@@ -1175,9 +1213,9 @@ func handle_landfill_instance_redirect(data: Dictionary) -> bool:
 	var request_id := _get_message_join_request_id(data)
 	if request_id == "" or request_id != active_join_request_id:
 		return false
-	if from_world != active_join_world_name or not from_world.begins_with("LANDFILL_"):
+	if from_world != active_join_world_name or not preload("res://Scripts/world_name_rules.gd").is_event_instance(from_world):
 		return false
-	if not target_world.begins_with("LANDFILL_") or target_world == from_world:
+	if not preload("res://Scripts/world_name_rules.gd").is_event_instance(target_world) or target_world == from_world:
 		return false
 	# The server continues this same request with a fresh snapshot. Switch the world fence
 	# before its join acknowledgement arrives; old-world packets remain stale.
@@ -1219,7 +1257,8 @@ func handle_world_route_redirect(data: Dictionary) -> bool:
 	world_route_redirect_target_url = redirect_url
 	world_route_redirect_world_name = redirect_world
 	world_route_redirect_action = redirect_action
-	set_pending_join(redirect_world, session_username)
+	set_pending_join(get_public_world_name(redirect_world), session_username)
+	pending_join_world_identity = redirect_world
 	current_world_name = redirect_world
 	login_notice_message = "Moving to the correct world server..."
 	if not push_world_route_url_front(redirect_url):
@@ -2289,6 +2328,9 @@ func _log_player_state_lookup(message: String, data: Dictionary = {}) -> void:
 
 
 func set_pending_join(world_name: String, profile_name: String = "") -> void:
+	pending_join_world_identity = ""
+	if not preload("res://Scripts/world_name_rules.gd").is_valid(world_name):
+		return
 	var clean_world = _safe_world_name(world_name)
 	if clean_world == "":
 		return
@@ -2321,6 +2363,7 @@ func persist_completed_world_join(world_name: String, _profile_name: String = ""
 		return
 
 	clear_completed_pending_join_for_world(clean_world)
+	clean_world = get_public_world_name(clean_world)
 
 	var cfg := ConfigFile.new()
 	cfg.load(profile_path)
@@ -2649,7 +2692,12 @@ func consume_pending_join() -> Dictionary:
 	return data
 
 
-func send_join_world(world_name: String) -> bool:
+func send_join_world(world_name: String, by_identity: bool = false) -> bool:
+	var retry_identity := world_name if by_identity and world_name_claims.has(world_name) else ""
+	if by_identity:
+		world_name = get_public_world_name(world_name)
+	if not preload("res://Scripts/world_name_rules.gd").is_valid(world_name):
+		return false
 	if not is_server_session_authenticated():
 		return false
 	sync_player_name_from_world()
@@ -2681,6 +2729,8 @@ func send_join_world(world_name: String) -> bool:
 	})
 	var sent: bool = send_message(attach_session_auth({
 		"type": "join_world",
+		"world_identity": retry_identity,
+		"world_name_claims_v1": true,
 		"world": current_world_name,
 		"request_id": join_request_id,
 		"join_request_id": join_request_id,
@@ -2730,13 +2780,15 @@ func has_incomplete_join_lifecycle_for_world(world_name: String) -> bool:
 	)
 
 
-func send_join_world_if_needed(world_name: String) -> bool:
+func send_join_world_if_needed(world_name: String, by_identity: bool = false) -> bool:
+	if not preload("res://Scripts/world_name_rules.gd").is_valid(world_name):
+		return false
 	var clean_world := _safe_world_name(world_name)
 	if clean_world == "":
 		clean_world = "START"
 	if has_incomplete_join_lifecycle_for_world(clean_world):
 		return true
-	return send_join_world(clean_world)
+	return send_join_world(clean_world, by_identity)
 
 
 func mark_active_join_request_complete() -> void:
@@ -4806,6 +4858,10 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 			handle_account_session_replaced(data)
 		"landfill_instance_redirect":
 			handle_landfill_instance_redirect(data)
+		"world_name_redirect":
+			handle_world_name_redirect(data)
+		"world_name_status":
+			receive_world_name_status(data)
 		"join_world_ok":
 			if not _is_message_for_active_join_request(data):
 				debug_action_position_flow("ignored stale join_world_ok request", {
@@ -4838,6 +4894,7 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 				return
 			apply_server_movement_guidance(guided_world, data.get("network_movement_guidance", {}))
 			current_world_name = guided_world
+			receive_world_name_status(data)
 			store_netfox_spawn_route_from_message(data)
 			clear_world_route_redirect_state(true)
 			sync_active_world_name_from_server(current_world_name)
@@ -4855,6 +4912,7 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 			_log_netfox_spawn_ticket_response(data)
 			store_netfox_spawn_route_from_message(data)
 		"door_enter_ok":
+			receive_world_name_status(data)
 			world_node = get_world_node()
 			if world_node != null and is_world_node_active() and world_node.has_method("handle_network_door_enter_ok"):
 				world_node.handle_network_door_enter_ok(data)
@@ -5015,6 +5073,12 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 		"player_state":
 			handle_player_state_message(data)
 		"world_population", "world_population_update":
+			var aliases = data.get("world_aliases", {})
+			if aliases is Dictionary:
+				for identity in aliases:
+					var info: Dictionary = world_name_claims.get(str(identity), {})
+					info["name"] = str(aliases[identity])
+					world_name_claims[str(identity)] = info
 			var incoming = data.get("world_counts", {})
 			if incoming is Dictionary:
 				_apply_world_population_payload(incoming, data.get("clear_unreported", false))
@@ -5435,14 +5499,17 @@ func handle_account_auth_ok(data: Dictionary) -> void:
 			world_node.request_network_player_state()
 		_seed_netfox_real_launch_pending_join(username)
 		if has_pending_join():
-			send_join_world_if_needed(pending_join_world_name)
+			if pending_join_world_identity != "":
+				send_join_world_if_needed(pending_join_world_identity, true)
+			else:
+				send_join_world_if_needed(pending_join_world_name)
 		elif world_node != null and is_world_node_active():
 			var active_world_name = current_world_name
 			if "current_world_name" in world_node:
 				active_world_name = _safe_world_name(world_node.get("current_world_name"))
 			if active_world_name == "":
 				active_world_name = current_world_name
-			send_join_world_if_needed(active_world_name)
+			send_join_world_if_needed(active_world_name, true)
 	server_auth_finished.emit(data)
 
 
@@ -5554,6 +5621,8 @@ func handle_iap_purchase_result(data: Dictionary) -> void:
 
 
 func handle_inventory_transaction_result(data: Dictionary) -> void:
+	if data.has("world_name_claim"):
+		receive_world_name_status(data)
 	var action = str(data.get("action", "")).strip_edges().to_lower()
 	if action == "world_lock_get_key":
 		var player_data_debug = data.get("player_data", {})
@@ -7555,7 +7624,7 @@ func sync_current_world_population_from_players(world_name: String, players_data
 	world_population_players[clean_world] = ids
 	if not bool(world_population_authoritative.get(clean_world, false)):
 		world_population_counts[clean_world] = ids.size()
-	world_population_changed.emit(world_population_counts.duplicate(true))
+	world_population_changed.emit(get_world_population_counts())
 
 
 func _apply_world_population_payload(raw_counts: Dictionary, clear_unreported: bool = false) -> void:
@@ -7588,7 +7657,7 @@ func _apply_world_population_payload(raw_counts: Dictionary, clear_unreported: b
 	for world_name in updated_counts.keys():
 		world_population_counts[world_name] = updated_counts[world_name]
 
-	world_population_changed.emit(world_population_counts.duplicate(true))
+	world_population_changed.emit(get_world_population_counts())
 
 
 func remember_world_player(world_name: String, id: String) -> void:
@@ -7603,7 +7672,7 @@ func remember_world_player(world_name: String, id: String) -> void:
 	world_population_players[clean_world] = ids
 	if not bool(world_population_authoritative.get(clean_world, false)):
 		world_population_counts[clean_world] = ids.size()
-		world_population_changed.emit(world_population_counts.duplicate(true))
+		world_population_changed.emit(get_world_population_counts())
 
 
 func forget_world_player(world_name: String, id: String) -> void:
@@ -7617,11 +7686,14 @@ func forget_world_player(world_name: String, id: String) -> void:
 		world_population_players[clean_world] = ids
 		if not bool(world_population_authoritative.get(clean_world, false)):
 			world_population_counts[clean_world] = ids.size()
-			world_population_changed.emit(world_population_counts.duplicate(true))
+			world_population_changed.emit(get_world_population_counts())
 
 
 func get_world_population_counts() -> Dictionary:
-	return world_population_counts.duplicate(true)
+	var public_counts: Dictionary = {}
+	for identity in world_population_counts:
+		public_counts[get_public_world_name(str(identity))] = world_population_counts[identity]
+	return public_counts
 
 
 func get_owned_locked_worlds_cache() -> Array:

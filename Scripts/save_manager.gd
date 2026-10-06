@@ -514,6 +514,9 @@ func get_current_world_display_name() -> String:
 	if world.in_world != true:
 		return "NOT IN WORLD"
 
+	var name_network = world.get_node_or_null("/root/NetworkManager")
+	if name_network != null and name_network.has_method("get_public_world_name"):
+		return name_network.get_public_world_name(str(world.current_world_name))
 	return world.current_world_name
 
 
@@ -855,11 +858,13 @@ func retry_server_world_entry(reason: String = "world_state_timeout") -> bool:
 			network.cancel_active_join_request()
 	if network.has_method("set_pending_join"):
 		network.set_pending_join(target_world, get_current_player_profile_name())
+		if "pending_join_world_identity" in network and "world_name_claims" in network and network.world_name_claims.has(target_world):
+			network.pending_join_world_identity = target_world
 
 	var sent := false
 	if network.has_method("is_server_session_authenticated") and bool(network.is_server_session_authenticated()):
 		if network.has_method("send_join_world"):
-			sent = bool(network.send_join_world(target_world))
+			sent = bool(network.send_join_world(target_world, true))
 	if not sent and network.has_method("request_server_connection"):
 		network.request_server_connection(false)
 
@@ -1469,6 +1474,9 @@ func _run_final_entrance_gate_snap_for_world_entry(snap_id: int, expected_world:
 
 
 func enter_world_by_name(raw_name: String):
+	if not preload("res://Scripts/world_name_rules.gd").is_valid(raw_name):
+		world.show_notification(preload("res://Scripts/world_name_rules.gd").MESSAGE)
+		return
 	var sanitized_name: String = sanitize_world_name(raw_name)
 	debug_action_position_flow("enter_world_by_name start", {
 		"raw_name": raw_name,

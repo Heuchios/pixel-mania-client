@@ -87,6 +87,7 @@ var inventory_items: Array[Dictionary] = []
 var current_tab: String = "all"
 var selected_key: String = ""
 var selected_item: Dictionary = {}
+var action_selection_key := ""
 var tab_buttons: Dictionary = {}
 var slot_nodes: Dictionary = {}
 var slot_template_nodes: Array[Button] = []
@@ -140,11 +141,12 @@ var drawer_transform_managed := false
 @onready var detail_selected_frame: TextureRect = $Window/DetailPreviewSlot/SelectedFrame
 @onready var detail_icon_shadow: TextureRect = $Window/DetailPreviewSlot/IconShadow
 @onready var detail_icon: TextureRect = $Window/DetailPreviewSlot/Icon
-@onready var selected_label: Label = $Window/FooterSelectedLabel
 @onready var count_label: Label = $Window/FooterCountLabel
 @onready var close_button: Button = $Window/CloseButton
 @onready var drop_amount_input: LineEdit = get_node_or_null("Window/DropAmountInput") as LineEdit
 @onready var drop_amount_slider: HSlider = get_node_or_null("Window/DropAmountSlider") as HSlider
+@onready var quantity_label: Label = $Window/QuantityLabel
+@onready var action_skin: NinePatchRect = $Window/ActionSkin
 @onready var use_button: Button = $Window/UseButton
 @onready var drop_button: Button = $Window/DropButton
 @onready var info_button: Button = get_node_or_null("Window/InfoButton") as Button
@@ -153,6 +155,8 @@ var drawer_transform_managed := false
 
 func _ready() -> void:
 	current_tab = default_tab
+	# Let the viewport shrink while the grid recomputes its column minimum.
+	inventory_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 	window.pivot_offset = WINDOW_SIZE * 0.5
 	_fit_window_to_viewport()
 	_apply_texture_filter(self)
@@ -188,6 +192,10 @@ func _ready() -> void:
 
 
 func _notification(what: int) -> void:
+	if what == NOTIFICATION_VISIBILITY_CHANGED and not visible:
+		action_selection_key = ""
+		if is_node_ready():
+			_update_action_rail()
 	if what == NOTIFICATION_RESIZED and is_inside_tree():
 		call_deferred("_fit_window_to_viewport")
 
@@ -208,15 +216,19 @@ func _process(delta: float) -> void:
 	last_slot_tap_key = ""
 	last_slot_tap_time_ms = 0
 	_select_slot_item(item)
-	var popup_position: Vector2 = _slot_anchor_position(active_slot_touch_key, active_slot_touch_start_position)
 	_clear_active_slot_touch()
 	_clear_inventory_scroll_touch()
-	item_action_popup_requested.emit(item.duplicate(true), popup_position)
 
 
 func _input(event: InputEvent) -> void:
 	if not visible or inventory_scroll == null:
 		return
+	if inventory_source != null:
+		var manager: Variant = inventory_source.get("inventory_manager")
+		if manager != null and manager.is_item_action_popup_open():
+			_clear_inventory_scroll_touch()
+			_clear_active_slot_touch()
+			return
 
 	if inventory_scroll_handle_dragging:
 		if event is InputEventMouseMotion and inventory_scroll_handle_touch_index == -1:
@@ -534,7 +546,6 @@ func refresh_item_live_from_world(source: Object, item_id: String, category: Str
 		selected_item = item
 		_update_detail()
 	_refresh_slot_live(slot_key, item)
-	_update_selected_footer()
 	return true
 
 
@@ -858,13 +869,8 @@ func _sync_selected_item(filtered_items: Array) -> void:
 
 	if not selected_still_visible:
 		selected_item = {}
-		for item in filtered_items:
-			if _is_selectable_inventory_item(item):
-				selected_item = item
-				break
-		if selected_item.is_empty():
-			selected_item = filtered_items[0]
-		selected_key = _item_key(selected_item)
+		selected_key = ""
+		action_selection_key = ""
 
 
 func _get_filtered_items() -> Array:
@@ -953,7 +959,7 @@ func _item_inventory_index(item: Dictionary) -> int:
 
 
 func _can_refresh() -> bool:
-	return is_inside_tree() and search_input != null and inventory_grid != null and detail_title != null and selected_label != null and count_label != null
+	return is_inside_tree() and search_input != null and inventory_grid != null and detail_title != null and count_label != null
 
 
 func _tab_accepts_item(item: Dictionary) -> bool:
@@ -1253,22 +1259,17 @@ func _update_detail() -> void:
 	_update_seed_box_icon_overlay(detail_icon, selected_item if has_selection else {})
 	_apply_colour_cycle_icon_modulation(detail_icon, selected_item if has_selection else {}, 0.0)
 	_sync_drop_amount_controls()
+	_update_action_rail()
 
 
 func _update_footer(_filtered_items: Array) -> void:
-	_update_selected_footer()
 	var occupied_slots: int = _count_usable_inventory_slots(inventory_items)
 	var total_slots: int = _resolve_inventory_slot_count_from_source(inventory_source)
 	if total_slots < occupied_slots:
 		total_slots = occupied_slots
-	count_label.text = str(occupied_slots) + " / " + str(total_slots) + " ITEMS"
-
-
-func _update_selected_footer() -> void:
-	if selected_item.is_empty():
-		selected_label.text = "Selected: none"
-	else:
-		selected_label.text = "Selected: " + _item_display_name(selected_item) + " " + _detail_count_text(selected_item)
+	var suffix := "" if _compact_inventory and window.size.x < 500 else " ITEMS"
+	count_label.text = str(occupied_slots) + " / " + str(total_slots) + suffix
+	count_label.tooltip_text = str(occupied_slots) + " / " + str(total_slots) + " ITEMS"
 
 
 func _set_slot_selected(slot_key: String, is_selected: bool) -> void:
@@ -1289,7 +1290,6 @@ func _update_selection_state(previous_selected_key: String = "") -> void:
 		_set_slot_selected(previous_selected_key, false)
 	_set_slot_selected(selected_key, true)
 	_update_detail()
-	_update_selected_footer()
 
 
 func _on_tab_pressed(tab_id: String) -> void:
@@ -1331,8 +1331,8 @@ func _select_slot_item(item: Dictionary) -> void:
 	var previous_selected_key: String = selected_key
 	selected_item = item
 	selected_key = _item_key(item)
-	if previous_selected_key != selected_key:
-		_update_selection_state(previous_selected_key)
+	action_selection_key = selected_key if not _is_capacity_slot(item) else ""
+	_update_selection_state(previous_selected_key)
 	item_selected.emit(selected_item)
 
 
@@ -1436,8 +1436,6 @@ func _on_slot_gui_input(event: InputEvent, slot_key: String) -> void:
 			_select_slot_item(item)
 			if _is_inventory_upgrade_slot(item):
 				inventory_upgrade_requested.emit(item)
-			else:
-				item_action_popup_requested.emit(item.duplicate(true), _slot_anchor_position(slot_key, get_viewport().get_mouse_position()))
 			accept_event()
 	elif event is InputEventScreenTouch:
 		var touch: InputEventScreenTouch = event as InputEventScreenTouch
@@ -1469,7 +1467,7 @@ func _on_slot_hovered(slot: Control, hovered: bool) -> void:
 
 
 func _on_use_pressed() -> void:
-	if selected_item.is_empty():
+	if selected_item.is_empty() or use_button.disabled:
 		return
 	if _is_inventory_upgrade_slot(selected_item):
 		inventory_upgrade_requested.emit(selected_item)
@@ -1480,7 +1478,7 @@ func _on_use_pressed() -> void:
 
 
 func _on_drop_pressed() -> void:
-	if selected_item.is_empty():
+	if selected_item.is_empty() or drop_button.disabled:
 		return
 	if _is_capacity_slot(selected_item):
 		return
@@ -1492,6 +1490,10 @@ func _on_drop_amount_input_changed(new_text: String) -> void:
 		return
 	var text: String = new_text.strip_edges()
 	if text == "":
+		return
+	if str(selected_item.get("category", "")) == "fish":
+		if text.is_valid_float() and is_finite(float(text)):
+			drop_amount = _clamp_drop_amount(roundi(float(text) * 10.0))
 		return
 	if not text.is_valid_int():
 		_sync_drop_amount_controls()
@@ -1532,7 +1534,8 @@ func _sync_drop_amount_controls() -> void:
 	syncing_drop_amount_controls = true
 	if drop_amount_input != null:
 		drop_amount_input.editable = has_available_selection
-		drop_amount_input.text = str(drop_amount)
+		drop_amount_input.text = ("%.1f" % (drop_amount / 10.0)) if str(selected_item.get("category", "")) == "fish" else str(drop_amount)
+		drop_amount_input.tooltip_text = "Quantity (kg)" if str(selected_item.get("category", "")) == "fish" else "Quantity to use, drop or trash"
 		drop_amount_input.placeholder_text = str(DROP_AMOUNT_MIN)
 		drop_amount_input.caret_column = drop_amount_input.text.length()
 	if drop_amount_slider != null:
@@ -1568,7 +1571,7 @@ func _clamp_drop_amount(value: int) -> int:
 
 
 func _on_info_pressed() -> void:
-	if selected_item.is_empty():
+	if selected_item.is_empty() or info_button.disabled:
 		return
 	if _is_capacity_slot(selected_item):
 		return
@@ -1576,7 +1579,7 @@ func _on_info_pressed() -> void:
 
 
 func _on_trash_pressed() -> void:
-	if selected_item.is_empty():
+	if selected_item.is_empty() or trash_button.disabled:
 		return
 	if _is_capacity_slot(selected_item):
 		return
@@ -1831,7 +1834,6 @@ func _setup_mouse_passthrough() -> void:
 		"Window/DetailPreviewSlot/Icon",
 		"Window/DetailDescription",
 		"Window/FooterSkin",
-		"Window/FooterSelectedLabel",
 		"Window/FooterCountLabel"
 	]:
 		var decorative_control: Control = get_node_or_null(node_path) as Control
@@ -1867,6 +1869,15 @@ func _control_contains_screen_point(control: Control, point: Vector2) -> bool:
 
 
 func _style_static_nodes() -> void:
+	for button in [use_button, drop_button, info_button, trash_button]:
+		button.add_theme_font_size_override("font_size", 16)
+		button.set_meta("pixelmania_font_size", 16)
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.focus_mode = Control.FOCUS_NONE
+		button.action_mode = BaseButton.ACTION_MODE_BUTTON_RELEASE
+	drop_amount_input.add_theme_font_size_override("font_size", 18)
+	drop_amount_input.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_NUMBER_DECIMAL
+	drop_amount_input.select_all_on_focus = true
 	var title_label: Label = get_node_or_null("Window/TitleLabel") as Label
 	if title_label != null:
 		_apply_label_style(title_label, 28, Color(0.96, 0.99, 1.0, 1.0))
@@ -1875,7 +1886,6 @@ func _style_static_nodes() -> void:
 	_apply_label_style(detail_title, 20, Color(0.96, 0.99, 1.0, 1.0))
 	_apply_label_style(detail_rarity, 14, Color(0.65, 0.9, 1.0, 1.0))
 	_apply_label_style(detail_category, 12, Color(0.74, 0.92, 1.0, 0.86))
-	_apply_label_style(selected_label, 14, Color(0.9, 0.98, 1.0, 1.0))
 	_apply_label_style(count_label, 13, Color(0.95, 0.85, 0.35, 1.0))
 	_apply_label_style(gem_counter_label, 16, Color(1.0, 0.9, 0.34, 1.0))
 
@@ -2520,6 +2530,113 @@ func _compact_rect(control: Control, rect: Rect2) -> void:
 	control.size = rect.size
 
 
+func _place_action_control(control: Control, rect: Rect2) -> void:
+	control.position = rect.position
+	control.size = rect.size
+
+
+func _update_action_rail() -> void:
+	var active := action_selection_key != "" and action_selection_key == selected_key and _selected_available_count() > 0
+	if not active:
+		action_selection_key = ""
+	for control in [use_button, drop_button, info_button, trash_button, drop_amount_input, drop_amount_slider, quantity_label, action_skin]:
+		control.visible = true
+	var item_id := str(selected_item.get("id", ""))
+	use_button.disabled = not active or not bool(selected_item.get("can_use", true))
+	drop_button.disabled = not active or not bool(selected_item.get("can_drop", item_id != "punch"))
+	trash_button.disabled = not active or not bool(selected_item.get("can_trash", item_id != "punch"))
+	info_button.disabled = not active
+	drop_amount_input.editable = active
+	drop_amount_slider.editable = active and _selected_available_count() > 1
+	for control in [use_button, drop_button, info_button, trash_button]:
+		control.modulate.a = 0.45 if control.disabled else 1.0
+	quantity_label.modulate.a = 1.0 if active else 0.45
+	if active and inventory_source != null:
+		var manager: Variant = inventory_source.get("inventory_manager")
+		if manager != null and manager.has_method("can_drop_item_from_inventory"):
+			drop_button.disabled = not manager.can_drop_item_from_inventory(item_id, str(selected_item.get("category", "")))
+	_layout_action_rail()
+
+
+func _layout_action_rail() -> void:
+	if inventory_scroll == null:
+		return
+	# Keep a stable, symmetrical footprint whether or not an item is selected.
+	var panel_width := 144.0
+	var outer_left := -235.0
+	var outer_right := 1117.0
+	var panel_top := -9.0
+	var panel_height := 650.0
+	var panel_gap := 12.0
+	var inset := 16.0
+	var button_height := 48.0
+	var button_gap := 6.0
+	if _compact_inventory:
+		panel_width = 104.0 if window.size.x >= 500 else 88.0
+		outer_left = 0.0
+		outer_right = window.size.x
+		panel_top = 0.0
+		panel_height = window.size.y
+		panel_gap = 8.0
+		inset = 8.0
+		button_height = 44.0
+		button_gap = 4.0
+	var main_left := outer_left + panel_width + panel_gap
+	var main_right := outer_right - panel_width - panel_gap
+	var main_width := main_right - main_left
+	var right_left := outer_right - panel_width
+	_place_action_control(window.get_node("TabSkin"), Rect2(outer_left, panel_top, panel_width, panel_height))
+	_place_action_control(action_skin, Rect2(right_left, panel_top, panel_width, panel_height))
+	_place_action_control(window.get_node("WindowSkin"), Rect2(main_left, panel_top, main_width, panel_height))
+	var tab_width := 64.0 if _compact_inventory else 72.0
+	_place_action_control(tabs, Rect2(outer_left + (panel_width - tab_width) * 0.5, panel_top + 8, tab_width, panel_height - 16))
+	if _compact_inventory:
+		var grid_top := 72.0
+		if main_width < 360:
+			_place_action_control(search_input, Rect2(main_left + 8, 12, main_width - 16, 48))
+			_place_action_control(count_label, Rect2(main_left + 8, 68, main_width - 72, 48))
+			_place_action_control(close_button, Rect2(main_right - 56, 68, 48, 48))
+			count_label.add_theme_font_size_override("font_size", 14)
+			grid_top = 124.0
+		else:
+			count_label.add_theme_font_size_override("font_size", 18)
+		_place_action_control(inventory_scroll, Rect2(main_left + 4, grid_top, main_width - 28, panel_height - grid_top - 12))
+		_place_action_control(inventory_scroll_slider, Rect2(main_right - 20, grid_top, 16, panel_height - grid_top - 12))
+	else:
+		count_label.add_theme_font_size_override("font_size", 18)
+		_place_action_control(inventory_scroll, Rect2(main_left + 12, 78, main_width - 48, 553))
+		_place_action_control(inventory_scroll_slider, Rect2(main_right - 28, 78, 16, 553))
+	_update_footer([])
+	inventory_scroll_track.size.y = inventory_scroll_slider.size.y
+	# The authored slot frame extends 28 pixels past its cell's left edge.
+	inventory_grid.columns = mini(slot_columns, maxi(1, int((inventory_scroll.size.x - 28 + 12) / 108.0)))
+	if main_width >= 360:
+		# Align the header to the visible frames, not the offset grid container.
+		var header_left := inventory_scroll.position.x + 28.0
+		var header_width := inventory_grid.columns * 108.0 - 12.0
+		var header_gap := 8.0 if _compact_inventory else 12.0
+		var header_height := 48.0 if _compact_inventory else 60.0
+		var header_top := 12.0 if _compact_inventory else 6.0
+		var count_width := 180.0 if _compact_inventory else 240.0
+		var search_width := header_width - count_width - 48.0 - header_gap * 2.0
+		_place_action_control(search_input, Rect2(Vector2(header_left, header_top), Vector2(search_width, header_height) / search_input.scale))
+		_place_action_control(count_label, Rect2(header_left + search_width + header_gap, header_top, count_width, header_height))
+		_place_action_control(close_button, Rect2(header_left + header_width - 48, header_top + (header_height - 48) * 0.5, 48, 48))
+	var controls_height := 88 + button_height * 4 + button_gap * 3
+	var controls_top := panel_top + (panel_height - controls_height) * 0.5
+	var controls_left := right_left + inset
+	var controls_width := panel_width - inset * 2
+	quantity_label.text = "KG" if str(selected_item.get("category", "")) == "fish" else "QTY"
+	_place_action_control(quantity_label, Rect2(controls_left, controls_top, controls_width, 20))
+	_place_action_control(drop_amount_input, Rect2(controls_left, controls_top + 20, controls_width, 40))
+	_place_action_control(drop_amount_slider, Rect2(controls_left, controls_top + 60, controls_width, 28))
+	var action_y := controls_top + 88
+	for button in [use_button, drop_button, info_button, trash_button]:
+		_place_action_control(button, Rect2(controls_left, action_y, controls_width, button_height))
+		action_y += button_height + button_gap
+	_queue_inventory_scroll_slider_sync()
+
+
 func _fit_compact_inventory(viewport_size: Vector2) -> bool:
 	if window == null:
 		return false
@@ -2535,6 +2652,8 @@ func _fit_compact_inventory(viewport_size: Vector2) -> bool:
 			tabs.add_theme_constant_override("separation", _desktop_tab_separation)
 			inventory_grid.columns = slot_columns
 		_compact_inventory = false
+		search_input.scale = Vector2(0.75, 0.75)
+		_layout_action_rail()
 		return false
 	if not _compact_inventory:
 		_desktop_tab_separation = tabs.get_theme_constant("separation")
@@ -2545,20 +2664,32 @@ func _fit_compact_inventory(viewport_size: Vector2) -> bool:
 	window.scale = Vector2.ONE
 	_compact_rect(window.get_node("WindowSkin"), Rect2(Vector2.ZERO, extent))
 	_compact_rect(search_input, Rect2(12, 12, extent.x - 84, 44))
-	_compact_rect(selected_label, Rect2(80, 62, (extent.x - 104) * 0.6, 32))
-	selected_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	search_input.scale = Vector2.ONE
+	_compact_rect(close_button, Rect2(extent.x - 64, 12, 52, 44))
 	_compact_rect(count_label, Rect2(80 + (extent.x - 104) * 0.6, 62, (extent.x - 104) * 0.4, 32))
+	count_label.clip_text = true
+	count_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_compact_rect(tabs, Rect2(8, 64, 64, extent.y - 72))
+	_compact_rect(window.get_node("TabSkin"), Rect2(8, 64, 64, extent.y - 72))
 	for button in tabs.get_children():
 		if button is Button:
 			_compact_rect(button, Rect2(button.position, Vector2(64, 44)))
 			button.custom_minimum_size = Vector2(64, 44)
 			button.custom_maximum_size = Vector2(64, 44)
+	# Container minimums update after its children have adopted the compact size.
+	call_deferred("_settle_compact_tabs")
 	_compact_rect(inventory_scroll, Rect2(80, 100, extent.x - 112, extent.y - 112))
 	_compact_rect(inventory_scroll_slider, Rect2(extent.x - 24, 100, 16, extent.y - 112))
 	inventory_scroll_track.size.y = extent.y - 112
 	inventory_grid.columns = maxi(1, int(inventory_scroll.size.x / 108.0))
+	_layout_action_rail()
 	return true
+
+
+func _settle_compact_tabs() -> void:
+	if _compact_inventory:
+		tabs.size = Vector2(64, window.size.y - 72)
+		_layout_action_rail()
 
 
 func _fit_window_to_viewport() -> void:
@@ -2583,6 +2714,8 @@ func _fit_window_to_viewport() -> void:
 	)
 	var scale_amount := clampf(minf(target_scale, fit_scale), 0.28, target_scale)
 	window.scale = Vector2.ONE * scale_amount
+	window.pivot_offset = Vector2.ZERO
+	window.position = (viewport_size - WINDOW_VISUAL_SIZE * scale_amount) * 0.5 - Vector2(-235, -9) * scale_amount
 
 
 func _apply_texture_filter(node: Node) -> void:

@@ -404,7 +404,7 @@ static func apply_ui_chrome_to_node(node: Node) -> void:
 	if node is Button and ("close" in String(node.name).to_lower() or node.get_meta("standard_close_button", false) or node.text.strip_edges() in ["X", "×", "✕", "Close", "CLOSE"]):
 		apply_close_button(node)
 		var parent := node.get_parent() as Control
-		if parent != null and not parent is Container and not "close" in String(parent.name).to_lower():
+		if parent != null and not parent is Container and not "close" in String(parent.name).to_lower() and not node.get_meta("preserve_close_button_layout", false):
 			var bounds := Rect2(Vector2.ZERO, parent.size)
 			for child in parent.get_children():
 				if child is NinePatchRect and child.texture != null and child.texture.get_meta("atlas_region", "") == "outer_panel":

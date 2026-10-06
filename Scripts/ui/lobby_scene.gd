@@ -220,7 +220,8 @@ func _layout_mobile_lobby() -> void:
 	var preference: float = scaling.ui_scale if scaling != null else 1.25
 	var event_width := 440.0 if landfill_event_card != null and landfill_event_card.visible else 0.0
 	# Reserve the logo above and a separate event column beside the world browser.
-	var factor := minf(1.4 * preference / 1.25, minf((screen.y - 310.0) / 506.0, (screen.x - event_width - 100.0) / 684.0))
+	var status_height := 76.0 if input_status_label != null and not input_status_label.text.is_empty() else 0.0
+	var factor := minf(1.4 * preference / 1.25, minf((screen.y - 310.0) / (506.0 + status_height), (screen.x - event_width - 100.0) / 684.0))
 	factor = maxf(0.5, factor)
 	var origin := Vector2((screen.x - 684.0 * factor - event_width) * 0.5, 286.0)
 	var worlds := get_node("WorldsPanel") as Control
@@ -332,7 +333,7 @@ func _bind_scene_nodes() -> void:
 	if world_input != null:
 		world_input.text = ""
 	join_button = get_node_or_null("JoinPanel/JoinButton") as Button
-	input_status_label = get_node_or_null("JoinPanel/WorldInputLabel") as Label
+	input_status_label = get_node_or_null("WorldsPanel/WorldInputLabel") as Label
 	username_label = get_node_or_null("ProfilePanel/ProfileCard/Username") as Label
 	profile_level_label = get_node_or_null("ProfilePanel/LevelText") as Label
 	profile_xp_label = get_node_or_null("ProfilePanel/XpText") as Label
@@ -930,6 +931,9 @@ func _get_world_name_from_row(row: Button) -> String:
 
 
 func _join_world_name(raw_world_name: String) -> void:
+	if not preload("res://Scripts/world_name_rules.gd").is_valid(raw_world_name):
+		_set_input_status(preload("res://Scripts/world_name_rules.gd").MESSAGE)
+		return
 	if join_scene_change_in_progress:
 		return
 
@@ -1004,6 +1008,7 @@ func _join_world_name(raw_world_name: String) -> void:
 func _set_input_status(text: String) -> void:
 	if input_status_label != null:
 		input_status_label.text = text
+		_layout_mobile_lobby()
 
 
 func _save_recent_world_name(world_name: String) -> void:

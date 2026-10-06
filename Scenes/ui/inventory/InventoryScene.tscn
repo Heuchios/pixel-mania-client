@@ -45,6 +45,7 @@
 [ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/item_equipped_overlay_44136fa355.tres" id="atlas_StyleBoxTexture_vmp8c"]
 [ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/pink_button_f72e84db31.tres" id="atlas_StyleBoxTexture_kyfno"]
 [ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/pink_button_1b992e4807.tres" id="atlas_StyleBoxTexture_135m5"]
+[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/pink_button_c4d4758782.tres" id="use_hover"]
 [ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_f72e84db31.tres" id="atlas_StyleBoxTexture_voml5"]
 [ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_1b992e4807.tres" id="atlas_StyleBoxTexture_iwe7p"]
 [ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/red_button_c4d4758782.tres" id="atlas_StyleBoxTexture_7ouvt"]
@@ -60,6 +61,10 @@
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/scroll_bar.tres" id="27_iwe7p"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/scroll_handle.tres" id="28_7ouvt"]
 
+[ext_resource type="Texture2D" path="res://Assets/ui/inventory/quantity_grabber.svg" id="quantity_grab"]
+[ext_resource type="Texture2D" path="res://Assets/ui/inventory/quantity_grabber_hover.svg" id="quantity_grab_hover"]
+[ext_resource type="Texture2D" path="res://Assets/ui/inventory/quantity_grabber_disabled.svg" id="quantity_grab_disabled"]
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tab_focus"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_slot_button"]
@@ -68,11 +73,20 @@
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hqjgx"]
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ae2ds"]
-load_path = "res://.godot/imported/button_hover.png-d87e40b63d5741bc1dee90eb5b966621.ctex"
+[sub_resource type="StyleBoxFlat" id="quantity_track"]
+bg_color = Color(0.19, 0.075, 0.24, 1)
+content_margin_top = 4.0
+content_margin_bottom = 4.0
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_t60xp"]
-texture = SubResource("CompressedTexture2D_ae2ds")
+[sub_resource type="StyleBoxFlat" id="quantity_fill"]
+bg_color = Color(0.65, 0.35, 0.77, 1)
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxFlat" id="quantity_input"]
+bg_color = Color(0.19, 0.075, 0.24, 1)
+content_margin_left = 4.0
+content_margin_right = 4.0
 
 [node name="InventoryScene" type="Control" unique_id=809308218]
 layout_mode = 3
@@ -163,6 +177,7 @@ alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
 [node name="CloseButton" type="Button" parent="Window" unique_id=1240602590]
+metadata/preserve_close_button_layout = true
 custom_minimum_size = Vector2(52, 44)
 layout_mode = 0
 offset_left = 1026.0
@@ -1546,6 +1561,24 @@ mouse_filter = 2
 text = "A basic building block."
 horizontal_alignment = 1
 
+[node name="ActionSkin" type="NinePatchRect" parent="Window"]
+visible = false
+mouse_filter = 2
+texture = ExtResource("panel_role_2")
+patch_margin_left = 1
+patch_margin_top = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
+
+[node name="QuantityLabel" type="Label" parent="Window"]
+visible = false
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+metadata/pixelmania_font_size = 16
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "QTY"
+vertical_alignment = 1
+
 [node name="DropAmountInput" type="LineEdit" parent="Window" unique_id=287618185]
 visible = false
 layout_mode = 0
@@ -1557,8 +1590,10 @@ theme_override_colors/font_color = Color(0.95, 0.98, 1, 1)
 theme_override_colors/font_placeholder_color = Color(0.55, 0.78, 0.9, 0.7)
 theme_override_colors/caret_color = Color(0.75, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 13
-text = "0"
-placeholder_text = "0"
+theme_override_styles/normal = SubResource("quantity_input")
+text = "1"
+placeholder_theme_override_styles/normal = SubResource("quantity_input")
+text = "1"
 alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
@@ -1570,8 +1605,12 @@ offset_top = 386.0
 offset_right = 1082.0
 offset_bottom = 416.0
 focus_mode = 0
-theme_override_styles/grabber_area = SubResource("StyleBoxTexture_nqja0")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_hqjgx")
+theme_override_styles/grabber_area = SubResource("quantity_fill")
+theme_override_styles/grabber_area_highlight = SubResource("quantity_fill")
+theme_override_styles/slider = SubResource("quantity_track")
+theme_override_icons/grabber = ExtResource("quantity_grab")
+theme_override_icons/grabber_highlight = ExtResource("quantity_grab_hover")
+theme_override_icons/grabber_disabled = ExtResource("quantity_grab_disabled")
 max_value = 400.0
 rounded = true
 
@@ -1584,7 +1623,7 @@ offset_right = 1001.0
 offset_bottom = 471.0
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_kyfno")
 theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_135m5")
-theme_override_styles/hover = SubResource("StyleBoxTexture_t60xp")
+theme_override_styles/hover = ExtResource("use_hover")
 action_mode = 0
 text = "USE"
 
@@ -1636,20 +1675,6 @@ patch_margin_left = 1
 patch_margin_top = 1
 patch_margin_right = 1
 patch_margin_bottom = 1
-
-[node name="FooterSelectedLabel" type="Label" parent="Window" unique_id=1750498333]
-layout_mode = 0
-offset_left = 315.0
-offset_top = 6.0
-offset_right = 748.0
-offset_bottom = 65.0
-theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = ExtResource("panel_role_6")
-text = "  Selected: none"
-horizontal_alignment = 1
-vertical_alignment = 1
-clip_text = true
-metadata/pixelmania_font_role = "preserve"
 
 [node name="FooterCountLabel" type="Label" parent="Window" unique_id=1463866860]
 layout_mode = 0

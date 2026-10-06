@@ -382,10 +382,10 @@ func make_pole_link_key(pole_a_grid: Vector2i, pole_b_grid: Vector2i) -> String:
 
 
 func make_wire_line(line_name: String, color: Color) -> Line2D:
-	var line := Line2D.new()
+	var line: Line2D = Line2D.new() if line_name == "GeneratorLinkPreview" else preload("res://Scripts/electric_cable.gd").new()
 	line.name = line_name
 	line.width = LINK_LINE_WIDTH
-	line.default_color = color
+	line.default_color = color if line_name == "GeneratorLinkPreview" else Color.TRANSPARENT
 	line.z_as_relative = true
 	line.z_index = 2
 	line.top_level = false
@@ -396,6 +396,9 @@ func make_wire_line(line_name: String, color: Color) -> Line2D:
 func set_line_points(line: Line2D, start_pos: Vector2, end_pos: Vector2) -> void:
 	if line == null or not is_instance_valid(line):
 		return
+	if line.has_method("set_endpoints"):
+		line.set_endpoints(start_pos, end_pos)
+		return
 	if line.get_point_count() == 2:
 		if line.get_point_position(0).is_equal_approx(start_pos) and line.get_point_position(1).is_equal_approx(end_pos):
 			return
@@ -405,6 +408,11 @@ func set_line_points(line: Line2D, start_pos: Vector2, end_pos: Vector2) -> void
 	line.clear_points()
 	line.add_point(start_pos)
 	line.add_point(end_pos)
+
+
+func get_cable_anchor(grid: Vector2i, endpoint_type: String) -> Vector2:
+	# Attach overhead cables to the insulators, not the middle of the post.
+	return grid_to_world_pos(grid) + (Vector2(0, -11) if endpoint_type == LINK_ENDPOINT_ELECTRIC_POLE else Vector2.ZERO)
 
 
 func get_wire_flow_particles_scene() -> PackedScene:
@@ -724,7 +732,7 @@ func draw_generator_link_line(generator_grid: Vector2i, target_grid: Vector2i, l
 		line = make_wire_line("GeneratorLinkLine", color)
 		link_lines[link_key] = line
 		link_revision += 1
-	set_line_points(line, grid_to_world_pos(generator_grid), grid_to_world_pos(target_grid))
+	set_line_points(line, grid_to_world_pos(generator_grid), get_cable_anchor(target_grid, LINK_ENDPOINT_ELECTRIC_POLE if clean_kind == LINK_MODE_OUTPUT else LINK_ENDPOINT_METAL_PAD))
 	update_wire_flow_particles(link_key, generator_grid, target_grid, clean_kind)
 
 
@@ -745,7 +753,7 @@ func draw_oil_refinery_link_line(refinery_grid: Vector2i, pole_grid: Vector2i, c
 		line = make_wire_line("OilRefineryLinkLine", color)
 		link_lines[link_key] = line
 		link_revision += 1
-	set_line_points(line, grid_to_world_pos(refinery_grid), grid_to_world_pos(pole_grid))
+	set_line_points(line, grid_to_world_pos(refinery_grid), get_cable_anchor(pole_grid, LINK_ENDPOINT_ELECTRIC_POLE))
 	update_wire_flow_particles(link_key, refinery_grid, pole_grid, LINK_MODE_REFINERY_INPUT)
 
 
@@ -766,7 +774,7 @@ func draw_battery_charger_link_line(charger_grid: Vector2i, pole_grid: Vector2i,
 		line = make_wire_line("BatteryChargerLinkLine", color)
 		link_lines[link_key] = line
 		link_revision += 1
-	set_line_points(line, grid_to_world_pos(charger_grid), grid_to_world_pos(pole_grid))
+	set_line_points(line, grid_to_world_pos(charger_grid), get_cable_anchor(pole_grid, LINK_ENDPOINT_ELECTRIC_POLE))
 	update_wire_flow_particles(link_key, charger_grid, pole_grid, LINK_MODE_CHARGER_INPUT)
 
 
@@ -789,7 +797,7 @@ func draw_pole_link_line(pole_a_grid: Vector2i, pole_b_grid: Vector2i, color: Co
 		line = make_wire_line("PoleLinkLine", color)
 		link_lines[link_key] = line
 		link_revision += 1
-	set_line_points(line, grid_to_world_pos(pole_a_grid), grid_to_world_pos(pole_b_grid))
+	set_line_points(line, get_cable_anchor(pole_a_grid, LINK_ENDPOINT_ELECTRIC_POLE), get_cable_anchor(pole_b_grid, LINK_ENDPOINT_ELECTRIC_POLE))
 	update_wire_flow_particles(link_key, pole_a_grid, pole_b_grid, LINK_MODE_POLE_COUPLING)
 
 
@@ -822,6 +830,8 @@ func apply_generator_links(link_entries, clear_existing: bool = true) -> void:
 		if not (entry is Dictionary):
 			continue
 		var generator_grid := Vector2i(int(entry.get("generator_x", entry.get("x", 0))), int(entry.get("generator_y", entry.get("y", 0))))
+		if entry.has("generator_watts") and circuit_ux != null and circuit_ux.flow_overlay != null:
+			circuit_ux.flow_overlay.update_generator({"x": generator_grid.x, "y": generator_grid.y, "watts": entry.generator_watts})
 		var link_kind := normalize_generator_link_kind(str(entry.get("link_type", entry.get("target_type", LINK_MODE_INPUT))))
 		if entry.has("pole_x") or entry.has("pole_y"):
 			link_kind = LINK_MODE_OUTPUT
@@ -1041,16 +1051,23 @@ func try_electric_tool_link_at(raw_grid: Vector2i) -> bool:
 		return true
 	var endpoint := resolve_electrical_link_endpoint(raw_grid)
 	if not is_link_endpoint_valid(endpoint):
+		if electric_tool_link_mode_active:
+			cancel_electric_tool_link_mode(true)
+			return true
 		if circuit_ux != null and circuit_ux.try_select_wire():
 			return true
-		if electric_tool_link_mode_active:
-			world.show_notification(get_electric_tool_link_target_prompt(electric_tool_link_source_type))
-			update_electric_tool_link_preview_line()
-		else:
-			world.show_notification("Tap an electrical device to start a link.")
+		world.show_notification("Tap an electrical device to start a link.")
 		return true
 
 	var endpoint_grid := get_link_endpoint_grid(endpoint)
+	# Cancelling never requires reaching the target or the original device.
+	var pair: Dictionary = {}
+	if electric_tool_link_mode_active:
+		var source_endpoint := make_link_endpoint(electric_tool_link_source_type, electric_tool_link_source_grid)
+		pair = make_electric_tool_link_pair(source_endpoint, endpoint)
+		if pair.is_empty():
+			cancel_electric_tool_link_mode(true)
+			return true
 	if world.has_method("can_reach_grid") and not bool(world.can_reach_grid(endpoint_grid)):
 		world.show_notification("Too far away.")
 		return true
@@ -1062,23 +1079,35 @@ func try_electric_tool_link_at(raw_grid: Vector2i) -> bool:
 				return true
 		return begin_electric_tool_link_mode(endpoint)
 
-	if endpoint_grid == electric_tool_link_source_grid and get_link_endpoint_type(endpoint) == electric_tool_link_source_type:
-		cancel_electric_tool_link_mode(true)
-		return true
-
-	var source_endpoint := make_link_endpoint(electric_tool_link_source_type, electric_tool_link_source_grid)
-	var pair := make_electric_tool_link_pair(source_endpoint, endpoint)
-	if pair.is_empty():
-		world.show_notification("Those devices cannot be linked.")
-		update_electric_tool_link_preview_line()
-		return true
-
 	if circuit_ux != null and circuit_ux.select_existing(pair):
 		return true
 	return complete_electric_tool_link(pair)
 
 
+func reject_occupied_machine_input(pair: Dictionary) -> bool:
+	var kind := str(pair.get("kind", ""))
+	if kind not in [LINK_MODE_REFINERY_INPUT, LINK_MODE_CHARGER_INPUT]:
+		return false
+	var refinery := kind == LINK_MODE_REFINERY_INPUT
+	var grid := get_link_pair_grid(pair, "refinery_grid" if refinery else "charger_grid")
+	var states: Dictionary = world.oil_refinery_states if refinery else world.battery_charger_states
+	var machine: Dictionary = states.get(grid, {})
+	var occupied := bool(machine.get("linked_pole", false))
+	var prefix := kind + "|" + make_grid_key(grid) + "|"
+	for key in link_lines:
+		if str(key).begins_with(prefix):
+			occupied = true
+			break
+	if not occupied:
+		return false
+	cancel_electric_tool_link_mode()
+	world.show_notification("This machine already has a power wire. Use the Wire Cutter to remove it first.")
+	return true
+
+
 func complete_electric_tool_link(pair: Dictionary) -> bool:
+	if reject_occupied_machine_input(pair):
+		return true
 	var link_kind := normalize_electrical_link_kind(str(pair.get("kind", "")))
 	if link_preview_line != null and is_instance_valid(link_preview_line):
 		link_preview_line.default_color = LINK_LINE_VALID_COLOR
@@ -1300,12 +1329,12 @@ func try_link_generator_pad_at(target_grid: Vector2i) -> bool:
 		cancel_generator_link_mode()
 		return true
 	target_grid = resolve_link_target_for_kind(target_grid, generator_link_mode_kind)
+	if not is_valid_link_target_for_kind(target_grid, generator_link_mode_kind):
+		cancel_generator_link_mode()
+		world.show_notification("Electrical link cancelled.")
+		return true
 	if not world.can_reach_grid(target_grid):
 		world.show_notification("Too far away.")
-		return true
-	if not is_valid_link_target_for_kind(target_grid, generator_link_mode_kind):
-		world.show_notification("Tap " + get_generator_link_target_prompt() + " to link.")
-		update_link_preview_line()
 		return true
 
 	if link_preview_line != null and is_instance_valid(link_preview_line):
@@ -1356,12 +1385,15 @@ func try_link_oil_refinery_pole_at(target_grid: Vector2i) -> bool:
 		cancel_oil_refinery_link_mode()
 		return true
 	target_grid = resolve_electric_pole_grid(target_grid)
+	if not is_electric_pole_at(target_grid):
+		cancel_oil_refinery_link_mode()
+		world.show_notification("Electrical link cancelled.")
+		return true
+	if reject_occupied_machine_input({"kind": LINK_MODE_REFINERY_INPUT, "refinery_grid": oil_refinery_link_source_grid}):
+		cancel_oil_refinery_link_mode()
+		return true
 	if not world.can_reach_grid(target_grid):
 		world.show_notification("Too far away.")
-		return true
-	if not is_electric_pole_at(target_grid):
-		world.show_notification("Tap an electric pole to link.")
-		update_oil_refinery_link_preview_line()
 		return true
 
 	if link_preview_line != null and is_instance_valid(link_preview_line):
@@ -1403,12 +1435,15 @@ func try_link_battery_charger_pole_at(target_grid: Vector2i) -> bool:
 		cancel_battery_charger_link_mode()
 		return true
 	target_grid = resolve_electric_pole_grid(target_grid)
+	if not is_electric_pole_at(target_grid):
+		cancel_battery_charger_link_mode()
+		world.show_notification("Electrical link cancelled.")
+		return true
+	if reject_occupied_machine_input({"kind": LINK_MODE_CHARGER_INPUT, "charger_grid": battery_charger_link_source_grid}):
+		cancel_battery_charger_link_mode()
+		return true
 	if not world.can_reach_grid(target_grid):
 		world.show_notification("Too far away.")
-		return true
-	if not is_electric_pole_at(target_grid):
-		world.show_notification("Tap an electric pole to link.")
-		update_battery_charger_link_preview_line()
 		return true
 
 	if link_preview_line != null and is_instance_valid(link_preview_line):

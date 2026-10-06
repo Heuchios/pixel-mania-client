@@ -27,7 +27,6 @@ extends Control
 
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 
-const LANDFILL_WORLD_PREFIX := "landfill_"
 const POLL_INTERVAL_SEC := 0.5
 # How long the results stay on screen before players are returned to the lobby. Kept comfortably
 # under the server's own LANDFILL_RESULTS_DISPLAY_SECONDS (default 12) so the client leaves under
@@ -217,7 +216,7 @@ func _check_return_to_lobby() -> void:
 
 
 func _is_landfill_world_name(world_name: String) -> bool:
-	return world_name.to_lower().begins_with(LANDFILL_WORLD_PREFIX)
+	return preload("res://Scripts/world_name_rules.gd").is_event_instance(world_name)
 
 
 func _refresh_from_current_world() -> void:

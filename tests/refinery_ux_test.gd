@@ -16,12 +16,13 @@ class FakeWorld extends Node2D:
 	var notices: Array[String] = []
 	var area_lookup_calls := 0
 	var reach_calls := 0
+	var reachable := true
 	func get_anchor_grid_for_block_area(_grid: Vector2i) -> Vector2i:
 		area_lookup_calls += 1
 		return Vector2i(999999, 999999)
 	func can_reach_grid(_grid: Vector2i) -> bool:
 		reach_calls += 1
-		return true
+		return reachable
 	func get_pointer_global_position() -> Vector2: return Vector2(320, 320)
 	func show_notification(message: String) -> void: notices.append(message)
 
@@ -69,9 +70,9 @@ func run() -> void:
 		live.link_lines[key] = line
 	inspector.refresh_inspection()
 	assert(live.link_lines["refinery_input|1,1|3,3"].modulate.a == 1.0)
-	assert(live.link_lines["refinery_input|2,2|3,3"].modulate.a < 0.2)
+	assert(live.link_lines["refinery_input|2,2|3,3"].modulate.a == 1.0, "Other circuits must remain equally visible")
 	assert(live.link_lines["input|4,4|5,5"].modulate.a == 1.0)
-	assert(live.link_lines["input|9,9|8,8"].modulate.a < 0.2)
+	assert(live.link_lines["input|9,9|8,8"].modulate.a == 1.0)
 	var rebuilds: int = inspector.graph_rebuild_count
 	for i in range(100): inspector.refresh_inspection()
 	assert(inspector.graph_rebuild_count == rebuilds, "Idle inspection must reuse the graph")
@@ -111,6 +112,8 @@ func run() -> void:
 	assert(not live.try_wire_cutter_at(Vector2i(10, 10)))
 	inspector.finish()
 	inspector.pending.clear()
+	test_cancel_link(live, world)
+	test_machine_single_input(live, world)
 	for i in range(1500):
 		var key := "pole_coupling|%d,0|%d,0" % [i, i+1]
 		var wire := live.make_wire_line("StressWire", Color.YELLOW)
@@ -128,3 +131,91 @@ func run() -> void:
 	world.free()
 	print("REFINERY_UX_TEST_OK")
 	quit()
+
+func test_cancel_link(live, world) -> void:
+	var source := Vector2i(4, 4)
+	var pole := Vector2i(8, 4)
+	world.blocks[source] = {"type": "transformer"}
+	world.blocks[pole] = {"type": "electric_pole"}
+	world.blocks[Vector2i(12, 4)] = {"type": "oil_refinery"}
+	world.blocks[Vector2i(16, 4)] = {"type": "battery_charger"}
+	world.blocks[Vector2i(20, 4)] = {"type": "stone"}
+	world.blocks[Vector2i(24, 4)] = {"type": "transformer"}
+	var original_links: int = live.link_lines.size()
+	world.reachable = false
+	for target in [Vector2i(100, 100), Vector2i(20, 4), Vector2i(24, 4), source]:
+		assert(live.begin_electric_tool_link_mode(live.make_link_endpoint("transformer", source)))
+		world.reach_calls = 0
+		assert(live.try_electric_tool_link_at(target))
+		assert(not live.has_pending_electric_tool_link(), "Clicking away or the source must cancel")
+		assert(live.link_preview_line == null, "Cancellation must remove the dangling wire")
+		assert(world.reach_calls == 0, "Cancellation must work outside interaction reach")
+		assert(live.circuit_ux.pending.is_empty() and live.link_lines.size() == original_links)
+	assert(live.begin_electric_tool_link_mode(live.make_link_endpoint("transformer", source)))
+	assert(live.try_electric_tool_link_at(pole))
+	assert(live.has_pending_electric_tool_link(), "An out-of-reach valid target must not connect")
+	live.cancel_electric_tool_link_mode()
+	assert(live.begin_generator_link_mode_for_kind(source, live.LINK_MODE_OUTPUT))
+	world.reach_calls = 0
+	assert(live.try_link_generator_pad_at(Vector2i(100, 100)))
+	assert(not live.has_pending_generator_link() and live.link_preview_line == null)
+	assert(world.reach_calls == 0)
+	assert(live.begin_oil_refinery_link_mode(Vector2i(12, 4)))
+	world.reach_calls = 0
+	assert(live.try_link_oil_refinery_pole_at(Vector2i(100, 100)))
+	assert(not live.has_pending_oil_refinery_link() and live.link_preview_line == null)
+	assert(world.reach_calls == 0)
+	assert(live.begin_battery_charger_link_mode(Vector2i(16, 4)))
+	world.reach_calls = 0
+	assert(live.try_link_battery_charger_pole_at(Vector2i(100, 100)))
+	assert(not live.has_pending_battery_charger_link() and live.link_preview_line == null)
+	assert(world.reach_calls == 0)
+	world.reachable = true
+	# A valid existing connection still selects normally after cancellation.
+	var key: String = live.make_link_key(source, pole, "output")
+	live.link_lines[key] = live.make_wire_line("ExistingConnection", Color.YELLOW)
+	assert(live.begin_electric_tool_link_mode(live.make_link_endpoint("transformer", source)))
+	assert(live.try_electric_tool_link_at(pole))
+	assert(live.circuit_ux.selected_wire == key and not live.has_pending_electric_tool_link())
+	live.circuit_ux.finish()
+
+func test_machine_single_input(live, world) -> void:
+	for entry in [
+		{"kind": "refinery_input", "type": "oil_refinery", "field": "refinery_grid", "grid": Vector2i(12, 4)},
+		{"kind": "battery_charger_input", "type": "battery_charger", "field": "charger_grid", "grid": Vector2i(16, 4)}
+	]:
+		var grid: Vector2i = entry.grid
+		var states: Dictionary = world.oil_refinery_states if entry.type == "oil_refinery" else world.battery_charger_states
+		states[grid] = {"linked_pole": true, "linked_pole_x": 8, "linked_pole_y": 4}
+		var pair := {"kind": entry.kind, "pole_grid": Vector2i(28, 4)}
+		pair[entry.field] = grid
+		# State-only detection covers the interval before visibility draws the wire.
+		assert(live.begin_electric_tool_link_mode(live.make_link_endpoint("electric_pole", Vector2i(28, 4))))
+		assert(live.complete_electric_tool_link(pair))
+		assert(not live.has_pending_electric_tool_link() and live.circuit_ux.pending.is_empty())
+		assert(states[grid].linked_pole_x == 8)
+		assert(world.notices[-1].contains("already has a power wire"))
+		if entry.type == "oil_refinery":
+			assert(live.begin_oil_refinery_link_mode(grid))
+			assert(live.try_link_oil_refinery_pole_at(Vector2i(8, 4)))
+			assert(not live.has_pending_oil_refinery_link())
+		else:
+			assert(live.begin_battery_charger_link_mode(grid))
+			assert(live.try_link_battery_charger_pole_at(Vector2i(8, 4)))
+			assert(not live.has_pending_battery_charger_link())
+		states.erase(grid)
+		assert(not live.reject_occupied_machine_input(pair), "An unconnected machine must accept its first wire")
+		var key: String = entry.kind + "|" + live.make_grid_key(grid) + "|8,4"
+		live.link_lines[key] = live.make_wire_line("OccupiedInput", Color.YELLOW)
+		# Both click orders normalize to the same machine input pair.
+		for reverse in [false, true]:
+			var machine: Dictionary = live.make_link_endpoint(entry.type, grid)
+			var pole: Dictionary = live.make_link_endpoint("electric_pole", Vector2i(28, 4))
+			var normalized: Dictionary = live.make_electric_tool_link_pair(pole if reverse else machine, machine if reverse else pole)
+			assert(live.circuit_ux.select_existing(normalized))
+			assert(live.circuit_ux.selected_wire == key)
+			assert(live.reject_occupied_machine_input(normalized), "Drawn wires also reserve the machine input")
+		live.link_lines[key].free()
+		live.link_lines.erase(key)
+		assert(not live.reject_occupied_machine_input(pair), "Cutting the current wire allows reconnection")
+	live.circuit_ux.finish()

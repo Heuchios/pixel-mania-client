@@ -35,7 +35,7 @@ func _run() -> void:
 	assert(inventory_scroll != null)
 	assert(inventory_grid != null)
 	assert(detail_skin != null)
-	assert(inventory_grid.columns == 10)
+	assert(inventory_grid.columns == 9)
 
 	var visible_slots: Array[Control] = []
 	for child in inventory_grid.get_children():

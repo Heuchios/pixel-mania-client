@@ -1078,13 +1078,16 @@ theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_blue_hover")
 text = "ACTIVE WORLDS"
 metadata/pixelmania_font_role = "preserve"
 
-[node name="WorldInputLabel" type="Label" parent="JoinPanel" unique_id=738811975]
+[node name="WorldInputLabel" type="Label" parent="WorldsPanel" unique_id=738811975]
 visible = true
-layout_mode = 0
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 0.0
-offset_top = -42.0
-offset_right = 624.0
-offset_bottom = -8.0
+offset_top = 12.0
+offset_bottom = 76.0
+mouse_filter = 2
 theme_override_colors/font_color = Color(0.870588, 0.960784, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 1
@@ -1092,7 +1095,9 @@ theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 16
 text = ""
+horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 metadata/pixelmania_font_role = "preserve"
 
 [node name="WorldInput" type="LineEdit" parent="JoinPanel" unique_id=339740]

@@ -1,38 +1,24 @@
 extends Node2D
 ## Circuit inspection and editing; link mutations remain server authoritative.
-const Status = preload("res://Scripts/refinery_status.gd")
-const Style = preload("res://Scripts/ui/pixel_ui_style.gd")
 var manager = null
 var focus_grid := Vector2i(999999, 999999)
 var focus_type := ""
 var selected_wire := ""
-var selected_only := true
 var multi_connect := false
 var inspect_mode := false
 var pending: Dictionary = {}
 var undo_action: Dictionary = {}
 var focused_nodes: Dictionary = {}
-var toolbar: PanelContainer
-var hint: Label
-var selection_label: Label
-var view_button: Button
-var multi_button: Button
-var inspect_button: Button
-var disconnect_button: Button
-var undo_button: Button
 var elapsed := 0.0
 var generation_pulses: Dictionary = {}
 var generation_notes: Array[Dictionary] = []
 var pad_hint_shown := false
 var previous_world := ""
-var connect_button: Button
-var done_button: Button
 var inspection_signature: Array = []
 var graph_signature: Array = []
 var adjacency: Dictionary = {}
 var graph_rebuild_count := 0
 var last_draw_signature: Array = []
-var layout_signature: Array = []
 var flow_overlay = null
 
 func setup(owner_manager) -> void:
@@ -41,50 +27,6 @@ func setup(owner_manager) -> void:
 	flow_overlay = preload("res://Scripts/electric_flow_overlay.gd").new()
 	add_child(flow_overlay)
 	flow_overlay.setup(manager, self)
-	var canvas := CanvasLayer.new()
-	canvas.layer = 90
-	add_child(canvas)
-	toolbar = PanelContainer.new()
-	canvas.add_child(toolbar)
-	toolbar.add_theme_stylebox_override("panel", Style.style_box(Color(0.08, 0.04, 0.14, 0.96), Color(0.75, 0.5, 0.8), 2, 8, 0))
-	var column := VBoxContainer.new()
-	toolbar.add_child(column)
-	hint = Label.new()
-	hint.clip_text = true
-	hint.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	hint.custom_minimum_size.y = 22
-	Style.apply_small_label(hint, 14)
-	hint.set_meta("pixelmania_font_role", "icon")
-	hint.add_theme_font_size_override("font_size", 14)
-	column.add_child(hint)
-	var row := HFlowContainer.new()
-	column.add_child(row)
-	connect_button = add_button(row, "Connect", func(): set_mode(false))
-	inspect_button = add_button(row, "Inspect", func(): set_mode(true))
-	inspect_button.tooltip_text = "Moving arrows show active supply routes. Faint arrows show connection direction."
-	connect_button.toggle_mode = true
-	inspect_button.toggle_mode = true
-	view_button = add_button(row, "Show all", func(): selected_only = not selected_only)
-	multi_button = add_button(row, "Keep connecting", func(): multi_connect = not multi_connect)
-	multi_button.toggle_mode = true
-	disconnect_button = add_button(row, "Disconnect", disconnect_selected)
-	undo_button = add_button(row, "Undo", undo_last)
-	done_button = add_button(row, "Done", finish)
-	selection_label = Label.new()
-	selection_label.hide()
-	column.add_child(selection_label)
-	toolbar.hide()
-
-func add_button(parent: Control, text: String, callback: Callable) -> Button:
-	var button := Button.new()
-	button.text = text
-	button.custom_minimum_size.y = 36
-	Style.apply_button_text(button, 14)
-	button.set_meta("pixelmania_font_role", "icon")
-	button.add_theme_font_size_override("font_size", 14)
-	button.pressed.connect(callback)
-	parent.add_child(button)
-	return button
 
 func set_mode(inspect: bool) -> void:
 	finish()
@@ -135,14 +77,14 @@ func key_pair(key: String) -> Dictionary:
 func select_existing(pair: Dictionary) -> bool:
 	var key := pair_key(pair)
 	if not manager.link_lines.has(key):
-		# Replacing a machine input implicitly would make Undo ambiguous.
+		# Each consumer accepts one incoming wire; cut it before reconnecting.
 		var parts := key.split("|")
 		if parts.size() == 3 and parts[0] in ["refinery_input", "battery_charger_input"]:
 			for existing in manager.link_lines:
 				if str(existing).begins_with(parts[0] + "|" + parts[1] + "|"):
 					selected_wire = existing
 					manager.cancel_electric_tool_link_mode()
-					manager.world.show_notification("Disconnect the selected wire before changing this machine's input.")
+					manager.world.show_notification("This machine already has a power wire. Use the Wire Cutter to remove it first.")
 					return true
 		return false
 	selected_wire = key
@@ -157,11 +99,12 @@ func try_select_wire() -> bool:
 	for key in manager.link_lines:
 		var line: Line2D = manager.link_lines[key]
 		if not is_instance_valid(line) or line.get_point_count() < 2: continue
-		var candidate := Geometry2D.get_closest_point_to_segment(point, line.get_point_position(0), line.get_point_position(1))
-		var d := candidate.distance_to(point)
-		if d < distance:
-			distance = d
-			closest = key
+		for index in range(1, line.get_point_count()):
+			var candidate := Geometry2D.get_closest_point_to_segment(point, line.get_point_position(index - 1), line.get_point_position(index))
+			var d := candidate.distance_to(point)
+			if d < distance:
+				distance = d
+				closest = key
 	if closest.is_empty(): return false
 	selected_wire = closest
 	focus_grid = manager.parse_grid_key(closest.split("|")[1])
@@ -191,6 +134,7 @@ func send_mutation(pair: Dictionary, should_disconnect: bool) -> bool:
 	if pair.is_empty(): return false
 	if should_disconnect and not manager.has_wire_cutter_equipped(): return false
 	if not should_disconnect and not manager.has_electric_tool_equipped(): return false
+	if not should_disconnect and manager.reject_occupied_machine_input(pair): return false
 	if not manager.should_use_server_authoritative_actions():
 		manager.world.show_notification("Connect to the server to edit saved wiring.")
 		return false
@@ -214,12 +158,6 @@ func _process(delta: float) -> void:
 		generation_pulses.clear()
 		generation_notes.clear()
 		finish()
-	var tool: bool = manager.has_electric_tool_equipped() or manager.has_wire_cutter_equipped()
-	toolbar.visible = tool and manager.electrical_visible
-	for ui_name in ["oil_refinery_ui", "generator_ui", "battery_charger_ui"]:
-		if ui_name in manager.world:
-			var ui = manager.world.get(ui_name)
-			if ui != null and is_instance_valid(ui) and ui.visible: toolbar.hide()
 	if not manager.has_electric_tool_equipped() and manager.electric_tool_link_mode_active: finish()
 	elapsed += delta
 	if elapsed >= 0.15:
@@ -239,42 +177,7 @@ func refresh_inspection() -> void:
 		elif Time.get_ticks_msec() - int(pending.since) > 8000:
 			pending.clear()
 			manager.world.show_notification("Wiring was not confirmed. Inspect the connection and try again.")
-	var size := get_viewport_rect().size
-	toolbar.position = Vector2(12, 56)
-	connect_button.visible = manager.has_electric_tool_equipped()
-	connect_button.set_pressed_no_signal(not inspect_mode)
-	inspect_button.set_pressed_no_signal(inspect_mode)
-	view_button.visible = focus_grid != manager.INVALID_LINK_GRID
-	view_button.text = "Show all" if selected_only else "Focus circuit"
-	multi_button.visible = manager.electric_tool_link_mode_active and manager.electric_tool_link_source_type == "transformer"
-	multi_button.set_pressed_no_signal(multi_connect)
-	done_button.visible = focus_grid != manager.INVALID_LINK_GRID or manager.electric_tool_link_mode_active
-	disconnect_button.visible = manager.has_wire_cutter_equipped() and not selected_wire.is_empty() and manager.link_lines.has(selected_wire)
-	disconnect_button.disabled = not pending.is_empty()
-	undo_button.visible = not undo_action.is_empty()
-	undo_button.disabled = not pending.is_empty() or (not undo_action.is_empty() and (not manager.has_electric_tool_equipped() if bool(undo_action.disconnect) else not manager.has_wire_cutter_equipped()))
-	if not pending.is_empty():
-		hint.text = "Saving connection..."
-	elif manager.electric_tool_link_mode_active:
-		hint.text = manager.get_electric_tool_link_target_prompt(manager.electric_tool_link_source_type)
-	elif manager.has_wire_cutter_equipped():
-		hint.text = "Tap a wire to cut its connection. Equip the Screwdriver to reconnect."
-	elif inspect_mode:
-		hint.text = "Tap a device to trace power, or a wire to select it."
-		if not selected_wire.is_empty(): hint.text = "Wire selected. Equip the Wire Cutter to disconnect."
-		elif focus_type == "oil_refinery":
-			var state: Dictionary = manager.world.oil_refinery_states.get(focus_grid, {})
-			hint.text = "Refinery: " + str(Status.describe(state).hint)
-	else:
-		hint.text = "Tap a device, then the device to connect."
-	var layout: Array = [size, view_button.visible, multi_button.visible, done_button.visible, disconnect_button.visible, undo_button.visible, hint.text]
-	if layout != layout_signature:
-		layout_signature = layout
-		toolbar.custom_minimum_size.x = minf(460, size.x - 32)
-		hint.custom_minimum_size.x = maxf(180, toolbar.custom_minimum_size.x - 16)
-		toolbar.size = Vector2(toolbar.custom_minimum_size.x, 0)
-		toolbar.reset_size.call_deferred()
-	var signature: Array = [manager.link_revision, manager.link_lines.size(), focus_grid, focus_type, selected_only, selected_wire, manager.electrical_visible]
+	var signature: Array = [manager.link_revision, manager.link_lines.size(), focus_grid, focus_type, selected_wire, manager.electrical_visible]
 	if signature != inspection_signature:
 		inspection_signature = signature
 		rebuild_focus()
@@ -319,11 +222,8 @@ func rebuild_focus() -> void:
 			cursor += 1
 	for key in manager.link_lines:
 		var line: Line2D = manager.link_lines[key]
-		var parts: PackedStringArray = str(key).split("|")
-		var focused := parts.size() == 3 and focused_nodes.has(endpoint_type(parts[0], true) + "@" + parts[1]) and focused_nodes.has(endpoint_type(parts[0], false) + "@" + parts[2])
-		line.modulate.a = 0.15 if selected_only and not focused_nodes.is_empty() and not focused else 1.0
-		line.width = 2.0 if key == selected_wire else 1.0
-		line.default_color = Color.WHITE if key == selected_wire else manager.LINK_LINE_COLOR
+		line.modulate.a = 1.0
+		if line.has_method("set_selected"): line.set_selected(key == selected_wire)
 
 func endpoint_type(kind: String, source: bool) -> String:
 	if not source: return "metal_pad" if kind == "input" else "electric_pole"
@@ -354,7 +254,7 @@ func _draw() -> void:
 			var line: Line2D = manager.link_lines[selected_wire]
 			if is_instance_valid(line) and line.get_point_count() >= 2:
 				var a := line.get_point_position(0)
-				var b := line.get_point_position(1)
+				var b := line.get_point_position(line.get_point_count() - 1)
 				draw_circle(a, 3, Color.WHITE, false)
 				draw_circle(b, 3, Color.WHITE, false)
 	var now := Time.get_ticks_msec()

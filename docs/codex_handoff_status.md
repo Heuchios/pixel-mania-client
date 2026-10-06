@@ -1,11 +1,28 @@
 # PixelMania Codex Handoff Status
 
-Last updated: 2026-07-02
+Last updated: 2026-10-06
 
 This document exists so a fresh Codex chat can continue from the current
 backend/security state without relying on chat memory.
 
 ## Latest Verified Status
+
+### World name claims (2026-10-06, local implementation only)
+
+World-name reservations, rarity-priced permanent claims, seven-day expiry, and
+server-verified original payment receipts are implemented in the sibling
+PixelManiaServer repository and this client. See that repository's
+`docs/world-name-claims.md` for architecture, activation, checks and limitations.
+`WORLD_NAME_CLAIMS_ENABLED` defaults off: no production activation or deadlines
+were started. Existing owners receive seven days from first database activation.
+Public names are aliases; stable internal world identities preserve contents and
+ownership when names expire. Do not replace this with physical world-row renames.
+Ship the matching client and coordinate all backend shards before enabling it.
+
+Claim SQL/rollback/receipt tests, pricing, server builds/security wiring, and new
+client alias/receipt/layout tests pass. Existing world-entry lifecycle coverage
+has an unrelated stale fade-duration assertion (0.34 versus current 0.08 seconds);
+multi-shard staging remains required before deployment.
 
 ### Netfox Movement / Server Handoff (2026-07-02)
 

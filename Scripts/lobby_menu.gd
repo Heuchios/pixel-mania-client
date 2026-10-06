@@ -1905,6 +1905,9 @@ func _get_or_create_landfill_ui_panel() -> Control:
 
 
 func _join_world_name(raw_world_name: String) -> void:
+	if not preload("res://Scripts/world_name_rules.gd").is_valid(raw_world_name):
+		status_label.text = preload("res://Scripts/world_name_rules.gd").MESSAGE
+		return
 	if join_scene_change_in_progress:
 		return
 

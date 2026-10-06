@@ -2,7 +2,7 @@ extends Control
 
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 
-const WINDOW_SIZE := Vector2(1080.0, 700.0)
+const WINDOW_SIZE := Vector2(1080.0, 856.0)
 const ACCESS_LOOKUP_TIMEOUT_MS := 15000
 const WORLD_LOCK_ROLE_OPTIONS := ["ADMIN", "BUILDER", "VISITOR"]
 const DEFAULT_WORLD_LOCK_ROLE := "BUILDER"
@@ -39,6 +39,14 @@ var _access_check_timeout_deadline_ms := 0
 var _compact_scroll: ScrollContainer
 var _compact_body: Control
 var _desktop_positions: Dictionary = {}
+var _name_card: PanelContainer
+var _name_label: Label
+var _name_input: LineEdit
+var _name_button: Button
+var _name_info: Dictionary = {}
+var _name_can_manage := false
+var _name_request_deadline := 0
+var _name_next_refresh := 0
 
 @onready var backdrop: ColorRect = $Backdrop
 @onready var dimmer: ColorRect = $Dimmer
@@ -84,6 +92,7 @@ func _ready() -> void:
 	_apply_texture_filter(self)
 	_configure_static_ui()
 	_layout_simple_panel()
+	_create_name_card()
 	_fit_window_to_viewport()
 	close_world_lock()
 
@@ -97,6 +106,12 @@ func _process(_delta: float) -> void:
 	if not menu_open:
 		return
 	_process_access_lookup_timeout()
+	if _name_request_deadline > 0 and Time.get_ticks_msec() > _name_request_deadline:
+		_name_request_deadline = 0
+		_request_name("world_name_status")
+	if Time.get_ticks_msec() > _name_next_refresh:
+		_name_next_refresh = Time.get_ticks_msec() + 1000
+		_refresh_name_card()
 
 
 func setup(parent_world, ui_node) -> void:
@@ -190,7 +205,7 @@ func _layout_simple_panel() -> void:
 		panel.texture = UIAtlasDB.get_texture("inner_panel")
 	window.size = WINDOW_SIZE
 	window.position = (get_viewport_rect().size - WINDOW_SIZE) * 0.5
-	_place("WindowSkin", Rect2(0, 0, 1080, 700))
+	_place("WindowSkin", Rect2(0, 0, 1080, 856))
 	_place("HeaderSkin", Rect2(24, 24, 1032, 56))
 	window.get_node("HeaderSkin").show()
 	_place("TitleLabel", Rect2(24, 24, 608, 56))
@@ -289,6 +304,7 @@ func _fit_compact_lock(viewport_size: Vector2) -> bool:
 			lock_badge.show()
 			title_label.add_theme_font_size_override("font_size", 32)
 			_fit_action_controls(public_button.get_parent(), 424.0)
+			call_deferred("_restore_name_card_size")
 		return false
 	if _compact_scroll == null:
 		_compact_scroll = ScrollContainer.new()
@@ -297,10 +313,11 @@ func _fit_compact_lock(viewport_size: Vector2) -> bool:
 		window.add_child(_compact_scroll)
 		_compact_body = Control.new()
 		_compact_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		_compact_body.custom_minimum_size.y = 892
+		_compact_body.custom_minimum_size.y = 1048
 		_compact_scroll.add_child(_compact_body)
 		for control in [window, window.get_node("WindowSkin"), window.get_node("HeaderSkin"), title_label, get_key_button, close_button, world_label, owner_label, access_title, actions_title, window.get_node("InfoCard"), access_scroll.get_parent(), public_button.get_parent(), access_scroll]:
 			_desktop_positions[control] = control.get_rect()
+		_desktop_positions[_name_card] = _name_card.get_rect()
 	var extent := Vector2(maxf(380, viewport_size.x - 24), maxf(280, viewport_size.y - 24))
 	window.size = extent
 	window.position = (viewport_size - extent) * 0.5
@@ -342,8 +359,18 @@ func _fit_compact_lock(viewport_size: Vector2) -> bool:
 	actions_card.position = Vector2(0, 432)
 	actions_card.size = Vector2(width, 428)
 	_fit_action_controls(actions_card, width)
+	if _name_card.get_parent() != _compact_body:
+		_name_card.reparent(_compact_body)
+	_name_card.position = Vector2(0, 876)
+	_name_card.size = Vector2(width, maxf(148, _name_card.get_combined_minimum_size().y))
+	_compact_body.custom_minimum_size.y = maxf(1048, _name_card.position.y + _name_card.size.y + 24)
 	return true
 
+
+func _restore_name_card_size() -> void:
+	await get_tree().process_frame
+	if is_instance_valid(_name_card) and _name_card.get_parent() == window:
+		_name_card.size = Vector2(1032, 136)
 
 func _fit_action_controls(card: Control, width: float) -> void:
 	var ratio := (width - 40.0) / 384.0
@@ -399,6 +426,10 @@ func open_world_lock(grid_pos: Vector2i) -> void:
 	clear_confirmation_popup()
 	_fit_window_to_viewport()
 	refresh()
+	_name_info = {}
+	_name_can_manage = false
+	_name_label.text = "Name claim: checking server..."
+	_request_name("world_name_status")
 	PixelUIStyle.play_panel_open(window)
 
 
@@ -995,6 +1026,21 @@ func _sync_world_lock_key_inventory_result(data: Dictionary) -> void:
 
 
 func handle_inventory_transaction_result(data: Dictionary) -> bool:
+	if str(data.get("action", "")).begins_with("world_name_"):
+		if world == null or str(data.get("world", "")) != str(world.current_world_name):
+			return true
+		_name_request_deadline = 0
+		if bool(data.get("ok", false)) and data.get("world_name_claim") is Dictionary:
+			_name_can_manage = bool(data.get("can_manage", false))
+			receive_name_status(data.world_name_claim)
+		else:
+			_name_label.text = str(data.get("message", "Name service unavailable."))
+			_name_button.disabled = true
+			_name_info = {}
+		if str(data.get("action")) != "world_name_status":
+			show_result(data)
+		refresh()
+		return true
 	if str(data.get("action", "")) != "world_lock_get_key":
 		return false
 	print("[WorldLockKey][Client] result ", {
@@ -1008,6 +1054,105 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 	refresh()
 	return true
 
+
+func _create_name_card() -> void:
+	_name_card = PanelContainer.new()
+	_name_card.name = "NameClaimCard"
+	_name_card.position = Vector2(24, 696)
+	_name_card.size = Vector2(1032, 136)
+	var name_style := PixelUIStyle.style_box(Color(0.19, 0.10, 0.23), PixelUIStyle.GLASS_BORDER, 3, 6, 7)
+	name_style.content_margin_left = 16
+	name_style.content_margin_right = 16
+	name_style.content_margin_top = 12
+	name_style.content_margin_bottom = 12
+	_name_card.add_theme_stylebox_override("panel", name_style)
+	window.add_child(_name_card)
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 8)
+	_name_card.add_child(content)
+	_name_label = Label.new()
+	_name_label.text = "Name claim: checking server..."
+	_name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_name_label.add_theme_font_size_override("font_size", 18)
+	content.add_child(_name_label)
+	var controls := HBoxContainer.new()
+	content.add_child(controls)
+	_name_input = LineEdit.new()
+	_name_input.placeholder_text = "New name (letters and numbers)"
+	_name_input.max_length = 32
+	_name_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_name_input.custom_minimum_size.y = 44
+	apply_world_lock_input_style(_name_input, 18)
+	controls.add_child(_name_input)
+	_name_button = Button.new()
+	_name_button.text = "CLAIM NAME"
+	_name_button.custom_minimum_size = Vector2(180, 44)
+	apply_world_lock_arcade_button_style(_name_button, true, false, 18)
+	controls.add_child(_name_button)
+	_name_button.pressed.connect(_on_name_action)
+	_name_button.disabled = true
+	_name_input.hide()
+
+func _gem_amount(value: int) -> String:
+	var digits := str(value)
+	var formatted := ""
+	for index in range(digits.length()):
+		if index > 0 and (digits.length() - index) % 3 == 0:
+			formatted += ","
+		formatted += digits[index]
+	return formatted
+
+func receive_name_status(info: Dictionary) -> void:
+	_name_info = info.duplicate(true)
+	_refresh_name_card()
+	if menu_open:
+		refresh()
+
+func _refresh_name_card() -> void:
+	if _name_label == null or _name_info.is_empty():
+		return
+	var state := str(_name_info.get("status", ""))
+	var public_name := str(_name_info.get("name", ""))
+	var paid = _name_info.get("original_paid_gems", null)
+	var receipt := "Original claim paid: " + (_gem_amount(int(paid)) + " gems (server verified)" if paid != null else "Not paid")
+	if state == "claimed":
+		_name_label.text = public_name + " — Permanently claimed\n" + receipt
+	elif state == "reserved":
+		var deadline := str(_name_info.get("expires_at", "")).replace("T", " ").left(19)
+		_name_label.text = "Claim " + public_name + " for " + _gem_amount(int(_name_info.get("quoted_gems", 0))) + " gems by " + deadline + " UTC\n" + receipt
+	else:
+		_name_label.text = public_name + " — Your world is safe. Reserve an available name for seven days.\n" + receipt
+	_name_input.visible = _name_can_manage and state == "generated"
+	_name_button.visible = _name_can_manage and state in ["reserved", "generated"]
+	_name_button.text = "CLAIM NAME" if state == "reserved" else "RESERVE NAME"
+	_name_button.disabled = _name_request_deadline > 0
+	_name_label.tooltip_text = "This is the original name claim fee recorded by the server, not a resale price."
+	if visible:
+		call_deferred("_fit_window_to_viewport")
+
+func _request_name(action: String, extra: Dictionary = {}) -> void:
+	var network = get_node_or_null("/root/NetworkManager")
+	if network == null or world == null:
+		return
+	var payload := {"action": action, "world": str(world.current_world_name)}
+	payload.merge(extra, true)
+	if bool(network.send_inventory_transaction_request(payload)):
+		_name_request_deadline = Time.get_ticks_msec() + 15000
+		_name_button.disabled = true
+	else:
+		_name_label.text = "Could not contact the server. Reopen the lock to try again."
+
+func _on_name_action() -> void:
+	if not _name_can_manage or _name_request_deadline > 0:
+		return
+	if str(_name_info.get("status", "")) == "generated":
+		_request_name("world_name_reserve", {"name": _name_input.text})
+		return
+	var claim_name := str(_name_info.get("name", ""))
+	var claim_price := int(_name_info.get("quoted_gems", 0))
+	_show_confirm_panel("Permanently claim " + claim_name + " for " + _gem_amount(claim_price) + " gems?\nThis one-time payment will be publicly recorded.", func():
+		_request_name("world_name_claim", {"name": claim_name, "price_gems": claim_price})
+	, "PAY AND CLAIM")
 
 func _show_confirm_loading(message: String) -> void:
 	if world == null:

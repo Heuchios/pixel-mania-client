@@ -1,14 +1,9 @@
 extends Control
 class_name ItemActionPopup
 
-signal use_requested(item: Dictionary)
-signal drop_requested(item: Dictionary)
-signal info_requested(item: Dictionary)
-signal trash_requested(item: Dictionary)
 signal closed
 
-const MIN_AMOUNT := 1
-const WINDOW_BASE_SIZE := Vector2(430.0, 368.0)
+const WINDOW_BASE_SIZE := Vector2(430.0, 366.0)
 const WINDOW_RENDER_SCALE := 1.35
 const VIEWPORT_MARGIN := 12.0
 const ANCHOR_GAP := 12.0
@@ -16,9 +11,7 @@ const OPEN_ANIMATION_SECONDS := 0.14
 const CLOSE_ANIMATION_SECONDS := 0.10
 
 var item_data: Dictionary = {}
-var amount: int = MIN_AMOUNT
-var amount_limit: int = MIN_AMOUNT
-var syncing_amount: bool = false
+var amount_limit := 1
 var popup_tween: Tween = null
 var window_base_scale := Vector2(WINDOW_RENDER_SCALE, WINDOW_RENDER_SCALE)
 var last_anchor_position := Vector2.ZERO
@@ -31,17 +24,11 @@ var last_anchor_position := Vector2.ZERO
 @onready var item_type_label: Label = get_node_or_null("Window/TypeLabel") as Label
 @onready var item_rarity_label: Label = get_node_or_null("Window/RarityLabel") as Label
 @onready var item_spliceable_label: Label = get_node_or_null("Window/SpliceableLabel") as Label
-@onready var more_details_label: Label = get_node_or_null("Window/MoreDetailsLabel") as Label
-@onready var description_label: Label = get_node_or_null("Window/DescriptionLabel") as Label
+@onready var item_properties_label: Label = get_node_or_null("Window/PropertiesLabel") as Label
+@onready var item_farmable_label: Label = get_node_or_null("Window/FarmableLabel") as Label
+@onready var description_label: RichTextLabel = get_node_or_null("Window/DescriptionLabel") as RichTextLabel
 @onready var item_icon_shadow: TextureRect = get_node_or_null("Window/PreviewSlot/IconShadow") as TextureRect
 @onready var item_icon: TextureRect = get_node_or_null("Window/PreviewSlot/Icon") as TextureRect
-@onready var amount_label: Label = get_node_or_null("Window/AmountLabel") as Label
-@onready var amount_input: LineEdit = get_node_or_null("Window/AmountInput") as LineEdit
-@onready var amount_slider: HSlider = get_node_or_null("Window/AmountSlider") as HSlider
-@onready var use_button: Button = get_node_or_null("Window/UseButton") as Button
-@onready var drop_button: Button = get_node_or_null("Window/DropButton") as Button
-@onready var info_button: Button = get_node_or_null("Window/InfoButton") as Button
-@onready var trash_button: Button = get_node_or_null("Window/TrashButton") as Button
 
 
 func _ready() -> void:
@@ -59,20 +46,6 @@ func _ready() -> void:
 		dismiss_area.pressed.connect(_on_close_pressed)
 	if close_button != null:
 		close_button.pressed.connect(_on_close_pressed)
-	if amount_input != null:
-		amount_input.text_changed.connect(_on_amount_text_changed)
-		amount_input.text_submitted.connect(_on_amount_text_submitted)
-		amount_input.focus_exited.connect(_sync_amount_controls)
-	if amount_slider != null:
-		amount_slider.value_changed.connect(_on_amount_slider_changed)
-	if use_button != null:
-		use_button.pressed.connect(_on_use_pressed)
-	if drop_button != null:
-		drop_button.pressed.connect(_on_drop_pressed)
-	if info_button != null:
-		info_button.pressed.connect(_on_info_pressed)
-	if trash_button != null:
-		trash_button.pressed.connect(_on_trash_pressed)
 	get_viewport().size_changed.connect(_on_viewport_resized)
 
 
@@ -112,12 +85,9 @@ func open_popup(item: Dictionary, icon_texture: Texture2D = null, anchor_positio
 		close_popup(false)
 		return
 	item_data = item.duplicate(true)
-	amount_limit = maxi(MIN_AMOUNT, int(item_data.get("count", item_data.get("available_count", MIN_AMOUNT))))
-	amount = MIN_AMOUNT
+	amount_limit = maxi(1, int(item_data.get("count", item_data.get("available_count", 1))))
 	_update_item_preview(icon_texture)
 	_update_item_facts()
-	_sync_amount_controls()
-	_update_action_state()
 	_set_popup_visible(true)
 	move_to_front()
 	call_deferred("_position_window_and_play_open", anchor_position)
@@ -128,8 +98,6 @@ func close_popup(emit_closed: bool = true) -> void:
 	if not visible:
 		_hide_popup_immediate(true)
 		return
-	if amount_input != null:
-		amount_input.release_focus()
 	_play_close_animation(should_emit_closed)
 
 
@@ -181,8 +149,6 @@ func _hide_popup_immediate(clear_item_data: bool = false) -> void:
 	if window != null:
 		window.scale = window_base_scale
 		window.modulate.a = 1.0
-	if amount_input != null:
-		amount_input.release_focus()
 	if clear_item_data:
 		item_data.clear()
 
@@ -248,15 +214,7 @@ func _get_scaled_window_global_rect() -> Rect2:
 
 
 func _is_pointer_over_interactive_control(point: Vector2) -> bool:
-	for control in [
-		close_button,
-		amount_input,
-		amount_slider,
-		use_button,
-		drop_button,
-		info_button,
-		trash_button
-	]:
+	for control in [close_button, description_label]:
 		if _control_contains_screen_point(control as Control, point):
 			return true
 	return false
@@ -379,7 +337,7 @@ func _update_item_facts() -> void:
 	var spliceable := bool(item_data.get("spliceable", false))
 	var description := str(item_data.get("description", "")).strip_edges()
 	if description == "":
-		description = category + " item ready for the active inventory action."
+		description = "A " + category.to_lower() + " item."
 
 	if item_type_label != null:
 		item_type_label.text = "Type: " + category
@@ -387,10 +345,16 @@ func _update_item_facts() -> void:
 		item_rarity_label.text = "Rarity: " + rarity
 	if item_spliceable_label != null:
 		item_spliceable_label.text = "Spliceable: " + ("Yes" if spliceable else "No")
-	if more_details_label != null:
-		more_details_label.text = "... (More details)"
+		item_spliceable_label.tooltip_text = "Its seed is used in or produced by a splice recipe."
+	if item_properties_label != null:
+		item_properties_label.text = "Has Properties: " + ("Yes" if bool(item_data.get("has_properties", false)) else "No")
+		item_properties_label.tooltip_text = "Has a special gameplay effect or function."
+	if item_farmable_label != null:
+		item_farmable_label.text = "Farmable: " + ("Yes" if bool(item_data.get("farmable", false)) else "No")
+		item_farmable_label.tooltip_text = "Its seed grows a tree that returns blocks and seeds for replanting."
 	if description_label != null:
 		description_label.text = description
+		description_label.scroll_to_line(0)
 		description_label.tooltip_text = description
 
 
@@ -401,108 +365,12 @@ func _display_case_text(raw_text: String) -> String:
 	return clean_text.capitalize()
 
 
-func _update_action_state() -> void:
-	var can_use: bool = bool(item_data.get("can_use", true))
-	var can_drop: bool = bool(item_data.get("can_drop", true))
-	var can_trash: bool = bool(item_data.get("can_trash", true))
-	if use_button != null:
-		use_button.disabled = not can_use
-	if drop_button != null:
-		drop_button.disabled = not can_drop
-	if info_button != null:
-		info_button.disabled = false
-	if trash_button != null:
-		trash_button.disabled = not can_trash
-	var amount_editable: bool = amount_limit > MIN_AMOUNT and (can_drop or can_trash)
-	if amount_input != null:
-		amount_input.editable = can_drop or can_trash
-	if amount_slider != null:
-		amount_slider.editable = amount_editable
-
-
-func _sync_amount_controls() -> void:
-	if syncing_amount:
-		return
-	amount = clampi(amount, MIN_AMOUNT, amount_limit)
-	syncing_amount = true
-	if amount_label != null:
-		amount_label.text = "QUANTITY  / " + _quantity_text(amount_limit)
-	if amount_input != null:
-		amount_input.text = ("%.1f" % (amount / 10.0)) if _is_fish() else str(amount)
-		amount_input.caret_column = amount_input.text.length()
-	if amount_slider != null:
-		amount_slider.min_value = float(MIN_AMOUNT)
-		amount_slider.max_value = float(amount_limit)
-		amount_slider.step = 1.0
-		amount_slider.rounded = true
-		amount_slider.value = float(amount)
-	syncing_amount = false
-
-
-func _on_amount_text_changed(new_text: String) -> void:
-	if syncing_amount:
-		return
-	var clean_text: String = new_text.strip_edges()
-	if clean_text == "":
-		return
-	if _is_fish():
-		if clean_text.is_valid_float() and is_finite(float(clean_text)):
-			amount = clampi(roundi(float(clean_text) * 10.0), MIN_AMOUNT, amount_limit)
-		# Preserve intermediate input such as "5." while the player types.
-		return
-	if not clean_text.is_valid_int():
-		_sync_amount_controls()
-		return
-	amount = clampi(int(clean_text), MIN_AMOUNT, amount_limit)
-	_sync_amount_controls()
-
-
-func _on_amount_text_submitted(_new_text: String) -> void:
-	_sync_amount_controls()
-
-
-func _on_amount_slider_changed(value: float) -> void:
-	if syncing_amount:
-		return
-	amount = clampi(int(round(value)), MIN_AMOUNT, amount_limit)
-	_sync_amount_controls()
-
-
 func _is_fish() -> bool:
 	return str(item_data.get("item_category", item_data.get("category", ""))) == "fish"
 
 
 func _quantity_text(units: int) -> String:
 	return ("%.1f kg" % (units / 10.0)) if _is_fish() else str(units)
-
-
-func _payload_with_amount() -> Dictionary:
-	var payload: Dictionary = item_data.duplicate(true)
-	payload["amount"] = amount
-	payload["drop_amount"] = amount
-	return payload
-
-
-func _emit_action(action_signal: Signal) -> void:
-	var payload: Dictionary = _payload_with_amount()
-	close_popup()
-	action_signal.emit(payload)
-
-
-func _on_use_pressed() -> void:
-	_emit_action(use_requested)
-
-
-func _on_drop_pressed() -> void:
-	_emit_action(drop_requested)
-
-
-func _on_info_pressed() -> void:
-	_emit_action(info_requested)
-
-
-func _on_trash_pressed() -> void:
-	_emit_action(trash_requested)
 
 
 func _on_close_pressed() -> void:

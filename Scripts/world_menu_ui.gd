@@ -624,7 +624,9 @@ func _save_current_world_menu_state_for_lobby():
 			current_world_name = str(world.get_current_world_name()).strip_edges()
 
 	if current_world_name != "":
-		cfg.set_value("profile", "last_world", current_world_name)
+		var name_network = world.get_node_or_null("/root/NetworkManager")
+		var public_world: String = name_network.get_public_world_name(current_world_name) if name_network != null and name_network.has_method("get_public_world_name") else current_world_name
+		cfg.set_value("profile", "last_world", public_world)
 
 	cfg.set_value("pending_join", "enabled", false)
 	cfg.set_value("pending_join", "world_name", "")
@@ -659,7 +661,7 @@ func enter_world_from_input():
 
 		return
 
-	var typed_name = world_name_input.text.strip_edges()
+	var typed_name = world_name_input.text
 
 	if typed_name == "":
 		typed_name = "START"

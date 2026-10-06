@@ -25,7 +25,6 @@ extends Control
 # they move past the entry pen bounds (see getLandfillEntryPenBounds server-side).
 
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
-const LANDFILL_WORLD_PREFIX := "landfill_"
 const STATUS_POLL_INTERVAL_SEC := 0.5
 const PANEL_W: float = 380.0
 const PANEL_H: float = 56.0
@@ -117,7 +116,7 @@ func _process(delta: float) -> void:
 
 
 func _is_landfill_world_name(world_name: String) -> bool:
-	return world_name.to_lower().begins_with(LANDFILL_WORLD_PREFIX)
+	return preload("res://Scripts/world_name_rules.gd").is_event_instance(world_name)
 
 
 func _refresh_from_current_world() -> void:

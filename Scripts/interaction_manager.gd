@@ -158,6 +158,11 @@ func use_selected_item_at_mouse():
 		return
 
 	var clicked_grid = world.get_mouse_grid_position()
+	# Finish or cancel an active wire before ordinary item/reach handling,
+	# even when the equipped Screwdriver is not the selected hotbar slot.
+	if world.electricity_manager != null and world.electricity_manager.has_pending_electric_tool_link():
+		if world.try_electric_tool_link_at(clicked_grid):
+			return
 	if str(world.equipped_tool) == "wire_cutter" and world.electricity_manager != null:
 		if world.electricity_manager.try_wire_cutter_at(clicked_grid):
 			return
@@ -1253,7 +1258,11 @@ func save_door_editor_state():
 
 	var door_name = sanitize_door_name(door_name_input.text if door_name_input != null else "")
 	var door_id = sanitize_door_id(door_id_input.text if door_id_input != null else "")
-	var destination = normalize_door_destination_text(door_destination_input.text if door_destination_input != null else "")
+	var raw_destination: String = door_destination_input.text if door_destination_input != null else ""
+	if not preload("res://Scripts/world_name_rules.gd").is_valid_door_destination(raw_destination):
+		world.show_notification(preload("res://Scripts/world_name_rules.gd").MESSAGE)
+		return
+	var destination = normalize_door_destination_text(raw_destination)
 	var locked = bool(world.blocks[grid_pos].get("entrance_locked", false))
 	if door_locked_checkbox != null and can_current_player_toggle_door_lock():
 		locked = door_locked_checkbox.button_pressed

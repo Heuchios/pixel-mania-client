@@ -8,8 +8,7 @@ func _initialize() -> void: call_deferred("run")
 
 func edge(key: String, start: Vector2 = Vector2.ZERO, end: Vector2 = Vector2(100, 0)) -> void:
 	var line: Line2D = manager.make_wire_line("FlowTest", Color.YELLOW)
-	line.add_point(start)
-	line.add_point(end)
+	manager.set_line_points(line, start, end)
 	manager.link_lines[key] = line
 	manager.link_revision += 1
 
@@ -21,7 +20,6 @@ func run() -> void:
 	manager.setup(world)
 	manager.electrical_visible = true
 	var ux = manager.circuit_ux
-	ux.selected_only = false
 	var flow = ux.flow_overlay
 	flow.ensure_scope()
 	edge("input|0,0|0,1")
@@ -35,6 +33,14 @@ func run() -> void:
 	assert(flow.directions.get("pole_coupling|1,0|2,0",0) == 1)
 	assert(flow.directions.get("refinery_input|3,0|2,0",0) == -1)
 	assert(not flow.directions.has("input|0,0|0,1"), "Pads animate only on generation")
+	assert(manager.link_lines["output|0,0|1,0"].power_state == "flow")
+	assert(manager.link_lines["input|0,0|0,1"].power_state == "idle")
+	var cable: Line2D = manager.link_lines["output|0,0|1,0"]
+	assert(cable.points.size() > 2 and cable.points[cable.points.size() / 2].y > 0, "Cables should hang below their anchors")
+	flow.refresh_visible()
+	flow.build_marks(0.7)
+	assert(flow.faint_marks.is_empty(), "No direction indicators on idle cables")
+	assert(flow.point_on_cable(flow.visible_edges[0], 50).y > 0, "Pulses must follow the cable sag")
 	flow.generation({"x":0,"y":0,"source_x":0,"source_y":1,"watts":210,"generated_watts":10})
 	flow.refresh_routes()
 	assert(flow.directions["input|0,0|0,1"] == -1)
@@ -44,6 +50,12 @@ func run() -> void:
 	assert(flow.directions.is_empty(), "Battery-only production must not animate grid wires")
 	flow.refresh_visible()
 	assert(not flow.animated)
+	assert(manager.link_lines["output|0,0|1,0"].power_state == "ready", "Stored power without grid demand is ready, not supplying")
+	flow.update_generator({"x":0,"y":0,"watts":0})
+	world.oil_refinery_states[Vector2i(3,0)].power_source = "transformer"
+	flow.refresh_routes()
+	assert(flow.directions.is_empty(), "Running flag without a charged source must not claim grid supply")
+	assert(manager.link_lines["refinery_input|3,0|2,0"].power_state == "idle")
 	# Reproduce the debugger stop: a cached wire is actually freed between the
 	# slower route refresh and visibility refresh, then replaced under its key.
 	var replaced_key := "output|0,0|1,0"
@@ -100,6 +112,13 @@ func run() -> void:
 	world.oil_refinery_states[Vector2i.ZERO].running = false
 	flow.refresh_routes()
 	assert(flow.directions.is_empty(), "Stopped consumers have no animated supply route")
+	# Hit-testing follows the visible hanging cable, not the old straight chord.
+	edge("input|30,30|31,31", Vector2(200,300), Vector2(440,300))
+	ux.inspect_mode = true
+	assert(ux.try_select_wire())
+	assert(ux.selected_wire == "input|30,30|31,31")
+	ux.inspect_mode = false
+	ux.selected_wire = ""
 	# Worst-case visible fixture: 1,500 active wires compete for a 64-wire budget.
 	manager.clear_link_line_visuals()
 	world.oil_refinery_states.clear()
@@ -121,10 +140,10 @@ func run() -> void:
 	assert(flow.visible_edges.size() == flow.MAX_VISIBLE_WIRES)
 	assert(flow.animated)
 	flow.build_marks(1.0)
-	assert(flow.marks.size() <= 64 * 8, "Maximum two chevrons per budgeted wire")
+	assert(flow.marks.size() <= 64 * 4, "Maximum two pulses per budgeted wire")
 	var first_marks: PackedVector2Array = flow.marks.duplicate()
 	flow.build_marks(1.1)
-	assert(flow.marks != first_marks, "Active chevrons must move")
+	assert(flow.marks != first_marks, "Active pulses must move")
 	started = Time.get_ticks_usec()
 	for i in range(1000): flow.build_marks(float(i)/30.0)
 	print("Flow animation, 64 visible wires: %.3f ms/update" % (float(Time.get_ticks_usec()-started)/1000000.0))

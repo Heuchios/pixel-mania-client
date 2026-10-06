@@ -1174,7 +1174,10 @@ func command_warp(parts: Array):
 	for i in range(1, parts.size()):
 		world_name_parts.append(str(parts[i]))
 
-	var target_world_name = "_".join(world_name_parts).strip_edges()
+	var target_world_name = " ".join(world_name_parts)
+	if not preload("res://Scripts/world_name_rules.gd").is_valid(target_world_name):
+		respond(preload("res://Scripts/world_name_rules.gd").MESSAGE)
+		return
 
 	if target_world_name == "":
 		respond("Use: /warp world_name")
