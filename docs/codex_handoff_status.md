@@ -57,6 +57,11 @@ Paid names and active reservations cannot be replaced through this control.
 Client requests correlate responses and invalidate quotes when the input changes.
 Focused PostgreSQL/WASM, request transport and desktop/mobile UI tests pass.
 Restart the client/editor play session to load the new search action and controls.
+Deployed to staging as `20261006-name-search-e8584bf` (backend `e8584bf`, client
+`16d0dee`). The full security gate, post-deploy smoke checks, and the updated
+search/reservation/expiry tests against real PostgreSQL in a disposable staging
+schema passed. Live registry verification confirms preserved identities and valid
+seven-day deadlines: 1 claimed, 13 reserved and 120 unowned names.
 
 ### Netfox Movement / Server Handoff (2026-07-02)
 
