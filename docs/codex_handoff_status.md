@@ -33,6 +33,13 @@ multi-shard verification remains required before production deployment. Staging
 currently has one backend process. Do not roll staging back to a pre-claims binary
 without a directory/database migration; permanent world identities now use aliases.
 
+Staging follow-up: the client inventory-action allowlist omitted world_name_status,
+world_name_reserve, and world_name_claim. This caused the lock panel to display
+"Could not contact the server" before sending anything. All three are now allowed;
+`tests/world_name_request_test.gd` exercises the real sender with captured transport
+and rejects unknown actions and unauthenticated requests. Restart the running
+client/editor play session to load this client-side fix.
+
 ### Netfox Movement / Server Handoff (2026-07-02)
 
 Current goal: transition player movement to Netfox while keeping the existing
