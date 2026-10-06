@@ -330,6 +330,7 @@ const INVENTORY_TRANSACTION_ACTIONS := [
 	"convert_world_lock",
 	"world_lock_get_key",
 	"world_name_status",
+	"world_name_search",
 	"world_name_reserve",
 	"world_name_claim",
 	"trash_inventory_item",

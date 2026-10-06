@@ -21,7 +21,7 @@ func send_message(data: Dictionary) -> bool:
 	var network = capture.new()
 	root.add_child(network)
 	network.current_world_name = "TEST"
-	for action in ["world_name_status", "world_name_reserve", "world_name_claim"]:
+	for action in ["world_name_status", "world_name_search", "world_name_reserve", "world_name_claim"]:
 		var payload := {"action":action, "world":"TEST", "name":"SHOP", "price_gems":750000}
 		assert(network.send_inventory_transaction_request(payload), "Name action must reach transport: " + action)
 		assert(network.sent.back().type == "inventory_transaction_request")
@@ -32,7 +32,7 @@ func send_message(data: Dictionary) -> bool:
 	assert(not network.send_inventory_transaction_request({"action":"world_name_forged"}))
 	network.authenticated = false
 	assert(not network.send_inventory_transaction_request({"action":"world_name_claim"}))
-	assert(network.sent.size() == 3)
+	assert(network.sent.size() == 4)
 	network.free()
 	print("WORLD_NAME_REQUEST_TEST_OK")
 	quit()

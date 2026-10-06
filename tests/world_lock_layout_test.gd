@@ -13,7 +13,7 @@ func _init() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	root.size = Vector2i(1280, 960)
+	root.size = Vector2i(1280, 1040)
 	root.content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
 	root.content_scale_size = Vector2i.ZERO
 	var ui = load("res://Scenes/ui/locks/WorldLockGUI.tscn").instantiate()

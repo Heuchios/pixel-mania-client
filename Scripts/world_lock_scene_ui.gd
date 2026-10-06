@@ -2,7 +2,7 @@ extends Control
 
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 
-const WINDOW_SIZE := Vector2(1080.0, 856.0)
+const WINDOW_SIZE := Vector2(1080.0, 960.0)
 const ACCESS_LOOKUP_TIMEOUT_MS := 15000
 const WORLD_LOCK_ROLE_OPTIONS := ["ADMIN", "BUILDER", "VISITOR"]
 const DEFAULT_WORLD_LOCK_ROLE := "BUILDER"
@@ -43,6 +43,11 @@ var _name_card: PanelContainer
 var _name_label: Label
 var _name_input: LineEdit
 var _name_button: Button
+var _name_search_button: Button
+var _name_search_label: Label
+var _name_quote: Dictionary = {}
+var _name_request_id := ""
+var _name_request_action := ""
 var _name_info: Dictionary = {}
 var _name_can_manage := false
 var _name_request_deadline := 0
@@ -107,8 +112,12 @@ func _process(_delta: float) -> void:
 		return
 	_process_access_lookup_timeout()
 	if _name_request_deadline > 0 and Time.get_ticks_msec() > _name_request_deadline:
+		var timed_out_action := _name_request_action
 		_name_request_deadline = 0
-		_request_name("world_name_status")
+		_name_request_id = ""
+		_name_search_label.text = "Request timed out. Search again or reopen the lock."
+		if timed_out_action in ["world_name_reserve", "world_name_claim"]:
+			_request_name("world_name_status")
 	if Time.get_ticks_msec() > _name_next_refresh:
 		_name_next_refresh = Time.get_ticks_msec() + 1000
 		_refresh_name_card()
@@ -205,7 +214,7 @@ func _layout_simple_panel() -> void:
 		panel.texture = UIAtlasDB.get_texture("inner_panel")
 	window.size = WINDOW_SIZE
 	window.position = (get_viewport_rect().size - WINDOW_SIZE) * 0.5
-	_place("WindowSkin", Rect2(0, 0, 1080, 856))
+	_place("WindowSkin", Rect2(0, 0, 1080, 960))
 	_place("HeaderSkin", Rect2(24, 24, 1032, 56))
 	window.get_node("HeaderSkin").show()
 	_place("TitleLabel", Rect2(24, 24, 608, 56))
@@ -370,7 +379,7 @@ func _fit_compact_lock(viewport_size: Vector2) -> bool:
 func _restore_name_card_size() -> void:
 	await get_tree().process_frame
 	if is_instance_valid(_name_card) and _name_card.get_parent() == window:
-		_name_card.size = Vector2(1032, 136)
+		_name_card.size = Vector2(1032, 240)
 
 func _fit_action_controls(card: Control, width: float) -> void:
 	var ratio := (width - 40.0) / 384.0
@@ -428,6 +437,9 @@ func open_world_lock(grid_pos: Vector2i) -> void:
 	refresh()
 	_name_info = {}
 	_name_can_manage = false
+	_name_quote = {}
+	_name_input.text = ""
+	_name_search_label.text = "Search a name to see availability and its claim price."
 	_name_label.text = "Name claim: checking server..."
 	_request_name("world_name_status")
 	PixelUIStyle.play_panel_open(window)
@@ -435,6 +447,8 @@ func open_world_lock(grid_pos: Vector2i) -> void:
 
 func close_world_lock() -> void:
 	menu_open = false
+	_name_request_id = ""
+	_name_request_deadline = 0
 	_clear_access_lookup_wait()
 	clear_confirmation_popup()
 	if add_input != null:
@@ -1029,16 +1043,25 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 	if str(data.get("action", "")).begins_with("world_name_"):
 		if world == null or str(data.get("world", "")) != str(world.current_world_name):
 			return true
+		if _name_request_id == "" or str(data.get("request_id", "")) != _name_request_id:
+			return true
 		_name_request_deadline = 0
+		_name_request_id = ""
+		var action := str(data.get("action", ""))
 		if bool(data.get("ok", false)) and data.get("world_name_claim") is Dictionary:
 			_name_can_manage = bool(data.get("can_manage", false))
 			receive_name_status(data.world_name_claim)
+			if action == "world_name_search" and data.get("world_name_search") is Dictionary:
+				_receive_name_quote(data.world_name_search)
+			elif action == "world_name_reserve":
+				_name_quote = {}
+				_name_search_label.text = "Name reserved for seven days. Pay the claim price before the deadline."
 		else:
-			_name_label.text = str(data.get("message", "Name service unavailable."))
-			_name_button.disabled = true
-			_name_info = {}
-		if str(data.get("action")) != "world_name_status":
+			_name_search_label.text = str(data.get("message", "Name service unavailable."))
+			_name_quote = {}
+		if action not in ["world_name_status", "world_name_search"]:
 			show_result(data)
+		_refresh_name_card()
 		refresh()
 		return true
 	if str(data.get("action", "")) != "world_lock_get_key":
@@ -1059,7 +1082,7 @@ func _create_name_card() -> void:
 	_name_card = PanelContainer.new()
 	_name_card.name = "NameClaimCard"
 	_name_card.position = Vector2(24, 696)
-	_name_card.size = Vector2(1032, 136)
+	_name_card.size = Vector2(1032, 240)
 	var name_style := PixelUIStyle.style_box(Color(0.19, 0.10, 0.23), PixelUIStyle.GLASS_BORDER, 3, 6, 7)
 	name_style.content_margin_left = 16
 	name_style.content_margin_right = 16
@@ -1083,15 +1106,39 @@ func _create_name_card() -> void:
 	_name_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_name_input.custom_minimum_size.y = 44
 	apply_world_lock_input_style(_name_input, 18)
+	var search_input_style := StyleBoxFlat.new()
+	search_input_style.bg_color = Color("180d20")
+	search_input_style.border_color = Color("e5c8ec")
+	search_input_style.set_border_width_all(2)
+	search_input_style.content_margin_left = 10
+	search_input_style.content_margin_right = 10
+	_name_input.add_theme_stylebox_override("normal", search_input_style)
+	var search_focus_style := search_input_style.duplicate() as StyleBoxFlat
+	search_focus_style.border_color = PixelUIStyle.GOLD_SOFT
+	_name_input.add_theme_stylebox_override("focus", search_focus_style)
 	controls.add_child(_name_input)
+	_name_input.text_changed.connect(_invalidate_name_quote)
+	_name_input.text_submitted.connect(func(_text: String): _search_name())
+	_name_search_button = Button.new()
+	_name_search_button.text = "SEARCH"
+	_name_search_button.custom_minimum_size = Vector2(120, 44)
+	apply_world_lock_arcade_button_style(_name_search_button, false, false, 18)
+	controls.add_child(_name_search_button)
+	_name_search_button.pressed.connect(_search_name)
+	_name_search_label = Label.new()
+	_name_search_label.text = "Search a name to see availability and its claim price."
+	_name_search_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_name_search_label.add_theme_font_size_override("font_size", 18)
+	content.add_child(_name_search_label)
 	_name_button = Button.new()
 	_name_button.text = "CLAIM NAME"
 	_name_button.custom_minimum_size = Vector2(180, 44)
 	apply_world_lock_arcade_button_style(_name_button, true, false, 18)
-	controls.add_child(_name_button)
+	_name_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	content.add_child(_name_button)
 	_name_button.pressed.connect(_on_name_action)
 	_name_button.disabled = true
-	_name_input.hide()
+	_name_button.hide()
 
 func _gem_amount(value: int) -> String:
 	var digits := str(value)
@@ -1122,10 +1169,12 @@ func _refresh_name_card() -> void:
 		_name_label.text = "Claim " + public_name + " for " + _gem_amount(int(_name_info.get("quoted_gems", 0))) + " gems by " + deadline + " UTC\n" + receipt
 	else:
 		_name_label.text = public_name + " — Your world is safe. Reserve an available name for seven days.\n" + receipt
-	_name_input.visible = _name_can_manage and state == "generated"
+	_name_input.visible = true
+	_name_search_button.disabled = _name_request_deadline > 0 or _name_input.text.strip_edges() == ""
 	_name_button.visible = _name_can_manage and state in ["reserved", "generated"]
 	_name_button.text = "CLAIM NAME" if state == "reserved" else "RESERVE NAME"
-	_name_button.disabled = _name_request_deadline > 0
+	var quote_matches := str(_name_quote.get("name", "")) == _name_input.text.strip_edges().to_upper()
+	_name_button.disabled = _name_request_deadline > 0 or (state == "generated" and (not quote_matches or not bool(_name_quote.get("can_reserve", false))))
 	_name_label.tooltip_text = "This is the original name claim fee recorded by the server, not a resale price."
 	if visible:
 		call_deferred("_fit_window_to_viewport")
@@ -1134,19 +1183,57 @@ func _request_name(action: String, extra: Dictionary = {}) -> void:
 	var network = get_node_or_null("/root/NetworkManager")
 	if network == null or world == null:
 		return
-	var payload := {"action": action, "world": str(world.current_world_name)}
+	_name_request_id = "name_" + str(Time.get_ticks_usec())
+	_name_request_action = action
+	var payload := {"action": action, "world": str(world.current_world_name), "request_id": _name_request_id}
 	payload.merge(extra, true)
 	if bool(network.send_inventory_transaction_request(payload)):
 		_name_request_deadline = Time.get_ticks_msec() + 15000
 		_name_button.disabled = true
+		_name_search_button.disabled = true
 	else:
-		_name_label.text = "Could not contact the server. Reopen the lock to try again."
+		_name_request_id = ""
+		_name_search_label.text = "Could not contact the server. Reopen the lock to try again."
+
+func _invalidate_name_quote(_text: String) -> void:
+	_name_quote = {}
+	_name_search_label.text = "Search a name to see availability and its claim price."
+	_refresh_name_card()
+
+func _search_name() -> void:
+	if _name_request_deadline > 0:
+		return
+	_name_quote = {}
+	_name_search_label.text = "Searching..."
+	_request_name("world_name_search", {"name": _name_input.text.strip_edges()})
+
+func _receive_name_quote(quote: Dictionary) -> void:
+	if str(quote.get("name", "")) != _name_input.text.strip_edges().to_upper():
+		return
+	_name_quote = quote.duplicate(true)
+	var result := str(quote.get("name", "")) + " — " + _gem_amount(int(quote.get("price_gems", 0))) + " gems to claim. "
+	if bool(quote.get("available", false)):
+		result += "Available."
+		if bool(quote.get("can_reserve", false)):
+			result += " Reserve free for seven days."
+		else:
+			result += " Only an auto-named world's owner can reserve it."
+	else:
+		result += str(quote.get("reason", "Unavailable."))
+	_name_search_label.text = result
+	_refresh_name_card()
 
 func _on_name_action() -> void:
 	if not _name_can_manage or _name_request_deadline > 0:
 		return
 	if str(_name_info.get("status", "")) == "generated":
-		_request_name("world_name_reserve", {"name": _name_input.text})
+		if not bool(_name_quote.get("can_reserve", false)) or str(_name_quote.get("name", "")) != _name_input.text.strip_edges().to_upper():
+			return
+		var reserve_name := str(_name_quote.get("name", ""))
+		var reserve_price := int(_name_quote.get("price_gems", 0))
+		_show_confirm_panel("Reserve " + reserve_name + " for this world?\nReservation is free. Pay " + _gem_amount(reserve_price) + " gems within seven days to keep it permanently.", func():
+			_request_name("world_name_reserve", {"name": reserve_name, "price_gems": reserve_price})
+		, "RESERVE NAME")
 		return
 	var claim_name := str(_name_info.get("name", ""))
 	var claim_price := int(_name_info.get("quoted_gems", 0))
