@@ -6,8 +6,8 @@ const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 @export var preferred_panel_size := Vector2(980, 610)
 @export_range(620.0, 1400.0, 10.0) var minimum_panel_width := 620.0
 @export_range(430.0, 900.0, 10.0) var minimum_panel_height := 430.0
-@export_range(110.0, 240.0, 2.0) var donation_card_width := 190.0
-@export_range(96.0, 190.0, 2.0) var donation_card_height := 132.0
+@export_range(110.0, 300.0, 2.0) var donation_card_width := 270.0
+@export_range(96.0, 190.0, 2.0) var donation_card_height := 148.0
 @export_range(2, 8, 1) var maximum_columns := 5
 @export_range(6.0, 32.0, 1.0) var card_gap := 14.0
 
@@ -93,11 +93,7 @@ func build_ui():
 	for child in get_children():
 		child.queue_free()
 
-	var viewport_size := get_view_size()
-	var actual_panel_size := Vector2(
-		min(preferred_panel_size.x, max(minimum_panel_width, viewport_size.x - 72.0)),
-		min(preferred_panel_size.y, max(minimum_panel_height, viewport_size.y - 80.0))
-	)
+	var actual_panel_size := preferred_panel_size
 
 	overlay = ColorRect.new()
 	overlay.name = "DonationBoxOverlay"
@@ -123,11 +119,12 @@ func build_ui():
 	var panel_back := Panel.new()
 	panel_back.size = actual_panel_size
 	panel_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(PixelUIStyle.GLASS_PANEL_STRONG, PixelUIStyle.GLASS_BORDER_BRIGHT, 4, 18, 16))
+	panel_back.add_theme_stylebox_override("panel", PixelUIStyle.panel_style())
 	panel.add_child(panel_back)
 
 	var header := Panel.new()
 	header.size = Vector2(actual_panel_size.x, 94)
+	header.visible = false
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	header.add_theme_stylebox_override("panel", PixelUIStyle.style_box(PixelUIStyle.GLASS_HEADER, PixelUIStyle.GLASS_BORDER, 0, 18, 8))
 	panel.add_child(header)
@@ -136,6 +133,7 @@ func build_ui():
 	top_line.position = Vector2(0, 89)
 	top_line.size = Vector2(actual_panel_size.x, 5)
 	top_line.color = accent_color
+	top_line.visible = false
 	top_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_child(top_line)
 
@@ -145,7 +143,9 @@ func build_ui():
 	title.size = Vector2(actual_panel_size.x * 0.52, 54)
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(title, 44 if actual_panel_size.x >= 850 else 34)
+	title.set_meta("pixelmania_font_size", 38)
+	title.set_meta("pixelmania_text_shadow", false)
+	PixelUIStyle.apply_label_shadow(title, 38, Color("321b3d"))
 	panel.add_child(title)
 
 	var subtitle := Label.new()
@@ -153,7 +153,9 @@ func build_ui():
 	subtitle.position = Vector2(34, 59)
 	subtitle.size = Vector2(actual_panel_size.x * 0.58, 23)
 	subtitle.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(subtitle, 13)
+	subtitle.set_meta("pixelmania_text_shadow", false)
+	subtitle.set_meta("pixelmania_font_size", 16)
+	PixelUIStyle.apply_label_shadow(subtitle, 16, Color("321b3d"))
 	panel.add_child(subtitle)
 
 	var close_button := Button.new()
@@ -161,7 +163,7 @@ func build_ui():
 	close_button.text = "X"
 	close_button.size = Vector2(52, 48)
 	close_button.position = Vector2(actual_panel_size.x - 82, 18)
-	apply_button_style(close_button, false, true, 24)
+	PixelUIStyle.apply_close_button(close_button)
 	close_button.pressed.connect(close_donation_box)
 	panel.add_child(close_button)
 
@@ -171,7 +173,9 @@ func build_ui():
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	status_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(status_label, 16)
+	status_label.set_meta("pixelmania_text_shadow", false)
+	status_label.set_meta("pixelmania_font_size", 18)
+	PixelUIStyle.apply_label_shadow(status_label, 18, Color("321b3d"))
 	panel.add_child(status_label)
 
 	var action_y := 108.0
@@ -180,13 +184,13 @@ func build_ui():
 	donate_button.text = "DONATE"
 	donate_button.position = Vector2(30, action_y)
 	donate_button.size = Vector2(200, 50)
-	apply_button_style(donate_button, true, false, 17)
+	PixelUIStyle.apply_atlas_button(donate_button, "green_button")
 	donate_button.pressed.connect(_on_donate_pressed)
 	panel.add_child(donate_button)
 
 	retrieve_all_button = Button.new()
 	retrieve_all_button.name = "RetrieveAllButton"
-	retrieve_all_button.text = "RETRIEVE ALL DONATIONS"
+	retrieve_all_button.text = "RETRIEVE ALL"
 	retrieve_all_button.position = Vector2(244, action_y)
 	retrieve_all_button.size = Vector2(292, 50)
 	apply_button_style(retrieve_all_button, false, false, 15)
@@ -194,21 +198,23 @@ func build_ui():
 	panel.add_child(retrieve_all_button)
 
 	hint_label = Label.new()
-	hint_label.position = Vector2(552, action_y + 3)
-	hint_label.size = Vector2(max(140.0, actual_panel_size.x - 582.0), 44)
-	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	hint_label.position = Vector2(30, 168)
+	hint_label.size = Vector2(actual_panel_size.x - 60, 32)
+	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	hint_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(hint_label, 12)
+	hint_label.set_meta("pixelmania_text_shadow", false)
+	hint_label.set_meta("pixelmania_font_size", 15)
+	PixelUIStyle.apply_label_shadow(hint_label, 15, Color("321b3d"))
 	panel.add_child(hint_label)
 
 	var card := Panel.new()
-	card.position = Vector2(30, 174)
-	card.size = Vector2(actual_panel_size.x - 60.0, actual_panel_size.y - 204.0)
+	card.position = Vector2(30, 210)
+	card.size = Vector2(actual_panel_size.x - 60.0, actual_panel_size.y - 240.0)
 	card.clip_contents = true
 	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	card.add_theme_stylebox_override("panel", PixelUIStyle.style_box(PixelUIStyle.GLASS_SECTION, PixelUIStyle.GLASS_BORDER, 3, 14, 10))
+	card.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
 	panel.add_child(card)
 
 	donations_scroll = ScrollContainer.new()
@@ -235,10 +241,12 @@ func update_position():
 	if panel == null:
 		return
 	var viewport_size := get_view_size()
-	var panel_position := Vector2(floor((viewport_size.x - panel.size.x) * 0.5), floor(max(30.0, (viewport_size.y - panel.size.y) * 0.5)))
-	panel.position = panel_position
+	var fit := minf(1.0, minf((viewport_size.x - 24) / panel.size.x, (viewport_size.y - 24) / panel.size.y))
+	panel.scale = Vector2.ONE * maxf(0.1, fit)
+	panel.position = (viewport_size - panel.size * panel.scale) * 0.5
 	if panel_shadow != null:
-		panel_shadow.position = panel_position
+		panel_shadow.visible = false
+
 
 
 func has_donation_box_at_grid(grid_pos: Vector2i) -> bool:
@@ -430,18 +438,32 @@ func make_donation_card(index: int, entry: Dictionary, columns: int) -> Button:
 	var row_index := floori(float(index) / float(columns))
 	button.position = Vector2(float(index % columns) * (donation_card_width + card_gap), float(row_index) * (donation_card_height + card_gap))
 	button.clip_contents = true
-	button.add_theme_stylebox_override("normal", PixelUIStyle.style_box(card_fill_color, card_border_color, 3, 9, 7))
-	button.add_theme_stylebox_override("hover", PixelUIStyle.style_box(card_fill_color.lightened(0.10), accent_border_color, 4, 9, 9))
-	button.add_theme_stylebox_override("pressed", PixelUIStyle.style_box(card_fill_color.darkened(0.14), accent_color, 3, 9, 5))
+	var card_style := StyleBoxFlat.new()
+	card_style.bg_color = Color("24112e")
+	card_style.border_color = Color("92749f")
+	card_style.set_border_width_all(2)
+	button.add_theme_stylebox_override("normal", card_style)
+	button.add_theme_stylebox_override("hover", PixelUIStyle.atlas_style("inner_panel", Color(1.18, 1.18, 1.18), 3))
+	button.add_theme_stylebox_override("pressed", PixelUIStyle.section_style())
 	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 	button.add_theme_color_override("font_color", Color(1, 1, 1, 0))
 	button.pressed.connect(_on_donation_pressed.bind(str(entry.get("donation_id", ""))))
 
 	var item_id := str(entry.get("item_id", entry.get("item_type", "")))
 	var category := str(entry.get("item_category", "block"))
+	var slot := Panel.new()
+	slot.position = Vector2(10, 10)
+	slot.size = Vector2(68, 68)
+	slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var rarity := "common"
+	if world != null and "item_database" in world:
+		rarity = str(world.item_database.get(item_id, {}).get("rarity", "common"))
+	slot.add_theme_stylebox_override("panel", PixelUIStyle.slot_style(rarity))
+	button.add_child(slot)
 	var icon := TextureRect.new()
-	icon.position = Vector2(12, 12)
-	icon.size = Vector2(62, 62)
+	icon.position = Vector2(16, 16)
+	icon.size = Vector2(56, 56)
+	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -459,15 +481,17 @@ func make_donation_card(index: int, entry: Dictionary, columns: int) -> Button:
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_label.clip_text = true
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(name_label, 14)
+	name_label.set_meta("pixelmania_font_size", 16)
+	PixelUIStyle.apply_label_shadow(name_label, 16)
 	button.add_child(name_label)
 
 	var amount_label := Label.new()
-	amount_label.text = "x" + str(max(1, int(entry.get("amount", 1))))
+	amount_label.text = str(max(1, int(entry.get("amount", 1))))
 	amount_label.position = Vector2(82, 57)
 	amount_label.size = Vector2(max(60.0, donation_card_width - 92.0), 24)
 	amount_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(amount_label, 17)
+	amount_label.set_meta("pixelmania_font_size", 20)
+	PixelUIStyle.apply_label_shadow(amount_label, 20)
 	amount_label.add_theme_color_override("font_color", accent_border_color)
 	button.add_child(amount_label)
 
@@ -478,7 +502,10 @@ func make_donation_card(index: int, entry: Dictionary, columns: int) -> Button:
 	donor_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	donor_label.clip_text = true
 	donor_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(donor_label, 11)
+	donor_label.set_meta("pixelmania_font_size", 13)
+	donor_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	donor_label.tooltip_text = donor_label.text
+	PixelUIStyle.apply_small_label(donor_label, 13)
 	button.add_child(donor_label)
 
 	var action_label := Label.new()
@@ -487,7 +514,8 @@ func make_donation_card(index: int, entry: Dictionary, columns: int) -> Button:
 	action_label.size = Vector2(donation_card_width - 16.0, 20)
 	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(action_label, 12)
+	action_label.set_meta("pixelmania_font_size", 14)
+	PixelUIStyle.apply_label_shadow(action_label, 14)
 	button.add_child(action_label)
 	return button
 

@@ -4,7 +4,7 @@ const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 
 const MAX_BULLETIN_BOARD_MESSAGES := 30
 const MAX_MESSAGE_LENGTH := 220
-const PANEL_BASE_SIZE := Vector2(760, 560)
+const PANEL_BASE_SIZE := Vector2(760, 600)
 const PANEL_MARGIN := 28.0
 
 var world = null
@@ -51,16 +51,14 @@ func build_ui():
 	panel = Panel.new()
 	panel.size = PANEL_BASE_SIZE
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		PixelUIStyle.GLASS_PANEL_STRONG,
-		PixelUIStyle.GLASS_BORDER_BRIGHT,
-		4, 8, 14
-	))
+	panel.add_theme_stylebox_override("panel", PixelUIStyle.panel_style())
 	add_child(panel)
 
 	title_label = Label.new()
 	title_label.text = "BULLETIN BOARD"
-	PixelUIStyle.apply_label_shadow(title_label, 34)
+	title_label.set_meta("pixelmania_font_size", 38)
+	title_label.set_meta("pixelmania_text_shadow", false)
+	PixelUIStyle.apply_label_shadow(title_label, 38, Color("321b3d"))
 	panel.add_child(title_label)
 
 	close_button = Button.new()
@@ -70,13 +68,16 @@ func build_ui():
 	panel.add_child(close_button)
 
 	status_label = Label.new()
-	PixelUIStyle.apply_small_label(status_label, 15)
+	status_label.set_meta("pixelmania_text_shadow", false)
+	status_label.set_meta("pixelmania_font_size", 16)
+	PixelUIStyle.apply_label_shadow(status_label, 16, Color("321b3d"))
 	panel.add_child(status_label)
 
 	messages_scroll = ScrollContainer.new()
 	messages_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	messages_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	messages_scroll.mouse_filter = Control.MOUSE_FILTER_STOP
+	messages_scroll.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
 	panel.add_child(messages_scroll)
 
 	messages_root = VBoxContainer.new()
@@ -86,6 +87,7 @@ func build_ui():
 	messages_scroll.add_child(messages_root)
 
 	message_input = TextEdit.new()
+	message_input.placeholder_text = "Write a message for visitors..."
 	message_input.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 	message_input.mouse_filter = Control.MOUSE_FILTER_STOP
 	apply_text_edit_style(message_input, 16)
@@ -93,12 +95,13 @@ func build_ui():
 	panel.add_child(message_input)
 
 	count_label = Label.new()
-	PixelUIStyle.apply_small_label(count_label, 14)
+	count_label.set_meta("pixelmania_text_shadow", false)
+	PixelUIStyle.apply_label_shadow(count_label, 14, Color("321b3d"))
 	panel.add_child(count_label)
 
 	post_button = Button.new()
 	post_button.text = "POST"
-	PixelUIStyle.apply_yellow_button(post_button, 18)
+	PixelUIStyle.apply_atlas_button(post_button, "green_button")
 	post_button.pressed.connect(post_message)
 	panel.add_child(post_button)
 
@@ -125,7 +128,7 @@ func layout_panel():
 
 	if close_button != null:
 		close_button.position = Vector2(panel_w - 66.0, 14)
-		close_button.size = Vector2(42, 38)
+		close_button.size = Vector2(48, 48)
 
 	if status_label != null:
 		status_label.position = Vector2(margin + 4.0, 58)
@@ -164,18 +167,11 @@ func update_position():
 		return
 
 	var screen_size: Vector2 = get_viewport_rect().size
-	var target_size := Vector2(
-		min(PANEL_BASE_SIZE.x, max(420.0, screen_size.x - PANEL_MARGIN * 2.0)),
-		min(PANEL_BASE_SIZE.y, max(420.0, screen_size.y - PANEL_MARGIN * 2.0))
-	)
-	if panel.size != target_size:
-		panel.size = target_size
-		layout_panel()
+	panel.size = PANEL_BASE_SIZE
+	var fit := minf(1.0, minf((screen_size.x - 24) / panel.size.x, (screen_size.y - 24) / panel.size.y))
+	panel.scale = Vector2.ONE * maxf(0.1, fit)
+	panel.position = (screen_size - panel.size * panel.scale) * 0.5
 
-	panel.position = Vector2(
-		floor((screen_size.x - panel.size.x) * 0.5),
-		floor(max(PANEL_MARGIN, (screen_size.y - panel.size.y) * 0.5))
-	)
 
 
 func open_bulletin_board(grid_pos: Vector2i):
@@ -212,6 +208,7 @@ func refresh():
 		return
 
 	for child in messages_root.get_children():
+		messages_root.remove_child(child)
 		child.queue_free()
 
 	var messages: Array = get_messages()
@@ -225,7 +222,7 @@ func refresh():
 	update_character_count()
 
 	if count <= 0:
-		add_empty_row("No posts yet.")
+		add_empty_row("No posts yet.\nLeave the first message below.")
 		return
 
 	var ordered: Array = messages.duplicate()
@@ -275,9 +272,11 @@ func can_clear_board() -> bool:
 func add_empty_row(text: String):
 	var row := Label.new()
 	row.text = text
+	row.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	row.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	if messages_root != null:
-		row.custom_minimum_size = Vector2(messages_root.custom_minimum_size.x, 0)
+		row.custom_minimum_size = Vector2(messages_root.custom_minimum_size.x, 180)
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	PixelUIStyle.apply_small_label(row, 17)
@@ -286,11 +285,12 @@ func add_empty_row(text: String):
 
 func add_message_row(message: Dictionary):
 	var card := PanelContainer.new()
-	card.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.090, 0.190, 0.275, 0.62),
-		Color(0.420, 0.780, 1.000, 0.38),
-		2, 8, 4
-	))
+	card.set_meta("pixelmania_panel_shadow", false)
+	var post_style := StyleBoxFlat.new()
+	post_style.bg_color = Color("24112e")
+	post_style.border_color = Color("92749f")
+	post_style.set_border_width_all(2)
+	card.add_theme_stylebox_override("panel", post_style)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	card.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	if messages_root != null:
@@ -314,6 +314,9 @@ func add_message_row(message: Dictionary):
 		player_name = "Player"
 	header.text = player_name + "  -  " + format_timestamp(message.get("posted_at", message.get("created_at", message.get("sent_at", ""))))
 	header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.clip_text = true
+	header.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	header.set_meta("pixelmania_font_size", 16)
 	PixelUIStyle.apply_section_title(header, 16)
 	box.add_child(header)
 
@@ -322,7 +325,8 @@ func add_message_row(message: Dictionary):
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	PixelUIStyle.apply_small_label(body, 16)
+	body.set_meta("pixelmania_font_size", 18)
+	PixelUIStyle.apply_small_label(body, 18)
 	box.add_child(body)
 
 	messages_root.add_child(card)
@@ -408,6 +412,8 @@ func update_character_count():
 	if message_input != null:
 		length = message_input.text.length()
 	count_label.text = str(length) + "/" + str(MAX_MESSAGE_LENGTH)
+	if post_button != null:
+		post_button.disabled = message_input == null or message_input.text.strip_edges().is_empty() or is_anti_talk_blocking_post()
 
 
 func format_timestamp(value) -> String:

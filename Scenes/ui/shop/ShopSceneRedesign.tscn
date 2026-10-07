@@ -4230,10 +4230,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -345.0
-offset_top = -189.0
-offset_right = 345.0
-offset_bottom = 156.0
+offset_left = -370.0
+offset_top = -215.0
+offset_right = 370.0
+offset_bottom = 215.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = ExtResource("panel_role_5")
@@ -4263,8 +4263,8 @@ color = Color(1, 1, 1, 0.055)
 layout_mode = 1
 offset_left = 14.0
 offset_top = 14.0
-offset_right = 676.0
-offset_bottom = 76.0
+offset_right = 726.0
+offset_bottom = 110.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("atlas_StyleBoxTexture_card_n")
 
@@ -4272,7 +4272,7 @@ theme_override_styles/panel = ExtResource("atlas_StyleBoxTexture_card_n")
 layout_mode = 1
 offset_left = 30.0
 offset_top = 21.0
-offset_right = 660.0
+offset_right = 710.0
 offset_bottom = 63.0
 theme_override_colors/font_color = Color(1, 0.92, 0.3, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -4285,13 +4285,15 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
+metadata/pixelmania_font_size = 36
+
 [node name="Subtitle" type="Label" parent="PurchaseRewardOverlay/RewardCard" unique_id=-1310000018]
 z_index = 1
 layout_mode = 1
 offset_left = 32.0
-offset_top = 84.0
-offset_right = 658.0
-offset_bottom = 108.0
+offset_top = 70.0
+offset_right = 708.0
+offset_bottom = 100.0
 theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
@@ -4303,14 +4305,18 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
+metadata/pixelmania_font_size = 18
+
+text_overrun_behavior = 3
+
 [node name="RewardsBack" type="Panel" parent="PurchaseRewardOverlay/RewardCard" unique_id=-1310000019]
 layout_mode = 1
-offset_left = 13.0
-offset_top = 81.0
-offset_right = 676.0
-offset_bottom = 281.0
+offset_left = 14.0
+offset_top = 122.0
+offset_right = 726.0
+offset_bottom = 344.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_iiuj2")
+theme_override_styles/panel = ExtResource("atlas_StyleBoxTexture_card_n")
 
 [node name="RewardsHighlight" type="ColorRect" parent="PurchaseRewardOverlay/RewardCard" unique_id=-1310000020]
 visible = false
@@ -4324,14 +4330,14 @@ color = Color(1, 0.86, 0.24, 0.28)
 
 [node name="RewardScroll" type="ScrollContainer" parent="PurchaseRewardOverlay/RewardCard" unique_id=-1310000021]
 layout_mode = 1
-offset_left = 36.0
-offset_top = 128.0
-offset_right = 654.0
-offset_bottom = 254.0
+offset_left = 30.0
+offset_top = 138.0
+offset_right = 710.0
+offset_bottom = 328.0
 vertical_scroll_mode = 0
 
 [node name="RewardItems" type="Control" parent="PurchaseRewardOverlay/RewardCard/RewardScroll" unique_id=-1310000022]
-custom_minimum_size = Vector2(618, 126)
+custom_minimum_size = Vector2(680, 180)
 layout_mode = 2
 mouse_filter = 2
 
@@ -4339,14 +4345,14 @@ mouse_filter = 2
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 286.0
-offset_bottom = 328.0
+offset_top = 362.0
+offset_bottom = 410.0
 grow_horizontal = 2
 theme_override_constants/separation = 16
 alignment = 1
 
 [node name="BuyAgainButton" type="Button" parent="PurchaseRewardOverlay/RewardCard/ButtonRow" unique_id=-1310000024]
-custom_minimum_size = Vector2(182, 42)
+custom_minimum_size = Vector2(222, 48)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -4359,8 +4365,8 @@ theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_reward_buyagain
 text = "BUY AGAIN"
 metadata/pixelmania_font_role = "preserve"
 
-[node name="CloseButton" type="Button" parent="PurchaseRewardOverlay/RewardCard/ButtonRow" unique_id=-1310000025]
-custom_minimum_size = Vector2(182, 42)
+[node name="DoneButton" type="Button" parent="PurchaseRewardOverlay/RewardCard/ButtonRow" unique_id=-1310000025]
+custom_minimum_size = Vector2(182, 48)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -4370,5 +4376,5 @@ theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_reward_close_n")
 theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_reward_close_p")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_reward_close_h")
-text = "CLOSE"
+text = "DONE"
 metadata/pixelmania_font_role = "preserve"

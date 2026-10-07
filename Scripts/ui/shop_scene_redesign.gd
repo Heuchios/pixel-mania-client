@@ -1,6 +1,7 @@
 extends Control
 
 const ScrollTouchGuard = preload("res://Scripts/touch_input_guard.gd")
+var pack_info = null
 
 ## Growtopia-style Shop layout - the live, wired-up Shop scene.
 ##
@@ -101,7 +102,7 @@ const STAR_TEXTURE: Texture2D = preload("res://Assets/effects/confetti_star.svg"
 @onready var reward_scroll: ScrollContainer = $PurchaseRewardOverlay/RewardCard/RewardScroll
 @onready var reward_items_container: Control = $PurchaseRewardOverlay/RewardCard/RewardScroll/RewardItems
 @onready var reward_buy_again_button: Button = $PurchaseRewardOverlay/RewardCard/ButtonRow/BuyAgainButton
-@onready var reward_close_button: Button = $PurchaseRewardOverlay/RewardCard/ButtonRow/CloseButton
+@onready var reward_close_button: Button = $PurchaseRewardOverlay/RewardCard/ButtonRow/DoneButton
 
 # What show_reward_popup() should report back if the Buy Again button is
 # pressed - see _on_reward_buy_again_pressed() below.
@@ -184,6 +185,9 @@ func _ready() -> void:
 		get_gems_button.pressed.connect(_on_get_gems_pressed)
 	detail_close_button.pressed.connect(_close_detail)
 	detail_buy_button.pressed.connect(_on_detail_buy_pressed)
+	pack_info = preload("res://Scripts/ui/shop_pack_info.gd").new()
+	add_child(pack_info)
+	pack_info.setup(self)
 	dim.gui_input.connect(_on_dim_gui_input)
 
 	reward_buy_again_button.pressed.connect(_on_reward_buy_again_pressed)
@@ -528,6 +532,7 @@ func _open_detail(card: Button) -> void:
 	_detail_amount = int(card.get_meta("amount", 1))
 	_detail_price = int(card.get_meta("price", 0))
 	_detail_is_gem_pack = bool(card.get_meta("is_gem_pack", false))
+	pack_info.show_for_item(_detail_item_id, _detail_is_gem_pack)
 	_refresh_detail_affordability()
 
 	detail_overlay.visible = true
@@ -545,6 +550,7 @@ func _close_detail() -> void:
 
 
 func _on_detail_closed() -> void:
+	pack_info.close()
 	detail_overlay.visible = false
 	detail_card.modulate = Color(1, 1, 1, 1)
 	detail_card.scale = Vector2.ONE
@@ -651,7 +657,9 @@ func _align_category_header() -> void:
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not is_visible_in_tree() or not event.is_action_pressed("ui_cancel"):
 		return
-	if reward_overlay.visible:
+	if pack_info != null and pack_info.is_open():
+		pack_info.close()
+	elif reward_overlay.visible:
 		hide_reward_popup()
 	elif detail_overlay.visible:
 		_close_detail()
@@ -679,6 +687,9 @@ func show_purchase_success_feedback() -> void:
 
 func show_reward_popup(subtitle_text: String, can_buy_again: bool, buy_again_disabled: bool, buy_again_item_id: String, buy_again_amount: int, buy_again_price: int) -> void:
 	reward_subtitle_label.text = subtitle_text
+	reward_subtitle_label.tooltip_text = subtitle_text
+	preload("res://Scripts/ui/pixel_ui_style.gd").apply_atlas_button(reward_close_button, "pink_button")
+	reward_scroll.scroll_horizontal = 0
 	_reward_buy_again_item_id = buy_again_item_id
 	_reward_buy_again_amount = buy_again_amount
 	_reward_buy_again_price = buy_again_price

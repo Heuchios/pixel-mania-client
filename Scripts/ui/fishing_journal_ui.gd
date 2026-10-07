@@ -287,15 +287,12 @@ func _create_fish_card(entry: Dictionary) -> void:
 	card.add_theme_stylebox_override("panel", PixelUIStyle.atlas_style("outer_panel", Color.WHITE if discovered else Color("95859d"), 3))
 	cards_root.add_child(card)
 	_journal_panel(card, "Inner", Rect2(4, 4, CARD_W - 8, CARD_H - 8), PixelUIStyle.section_style())
-	var art_style := StyleBoxFlat.new()
-	art_style.bg_color = Color("22132e").lerp(accent, 0.13 if discovered else 0.02)
-	art_style.border_color = accent
-	art_style.border_width_bottom = 3
-	_journal_panel(card, "FishDisplay", Rect2(16, 16, 136, 114), art_style)
+	var art_style := PixelUIStyle.slot_style(rarity if discovered else "common")
+	_journal_panel(card, "FishDisplay", Rect2(27, 16, 114, 114), art_style)
 	var icon := TextureRect.new()
 	icon.name = "FishArtwork"
-	icon.position = Vector2(28, 30)
-	icon.size = Vector2(112, 84)
+	icon.position = Vector2(37, 26)
+	icon.size = Vector2(94, 94)
 	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	var icon_value = entry.get("icon", null)
 	icon.texture = icon_value as Texture2D if icon_value is Texture2D else null
@@ -313,7 +310,7 @@ func _create_fish_card(entry: Dictionary) -> void:
 	icon.modulate = Color.WHITE if discovered else Color(0.05, 0.02, 0.08, 0.9)
 	card.add_child(icon)
 	if not discovered:
-		var mystery := _journal_text(card, "Mystery", "?", Rect2(28, 30, 112, 84), 32, Color("c9b5d2"))
+		var mystery := _journal_text(card, "Mystery", "?", Rect2(37, 26, 94, 94), 32, Color("c9b5d2"))
 		mystery.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_journal_text(card, "FishName", "UNDISCOVERED", Rect2(168, 20, 246, 42), 26, Color("c9b5d2"))
 		_journal_text(card, "DiscoveryHint", "Your next catch could fill this page.", Rect2(168, 64, 244, 60), 16, PixelUIStyle.TEXT_SOFT)

@@ -6,7 +6,7 @@ const StationRecipes = preload("res://Scripts/station_recipes.gd")
 const PANEL_SIZE = Vector2(1080, 760)
 const RECIPE_ROOT_WIDTH = 960.0
 const RECIPE_ROOT_MIN_HEIGHT = 376.0
-const RECIPE_CARD_SIZE = Vector2(470, 240)
+const RECIPE_CARD_SIZE = Vector2(470, 264)
 const RECIPE_CARD_GAP = Vector2(16, 18)
 
 var world = null
@@ -140,6 +140,7 @@ func setup_panel():
 
 	var top_bar = Panel.new()
 	top_bar.name = "TopBar"
+	top_bar.visible = false
 	top_bar.position = Vector2(20, 16)
 	top_bar.size = Vector2(panel.size.x - 40.0, 80)
 	top_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -170,8 +171,12 @@ func setup_panel():
 	title.size = Vector2(510, 54)
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	title.set_meta("pixelmania_font_size", 28)
-	PixelUIStyle.apply_label_shadow(title, 28)
+	title.set_meta("pixelmania_font_size", 40)
+	title.set_meta("pixelmania_text_shadow", false)
+	PixelUIStyle.apply_label_shadow(title, 40, Color("321b3d"))
+	title.add_theme_color_override("font_shadow_color", Color.TRANSPARENT)
+	title.add_theme_constant_override("shadow_offset_x", 0)
+	title.add_theme_constant_override("shadow_offset_y", 0)
 	panel.add_child(title)
 
 	var title_sub = Label.new()
@@ -181,7 +186,9 @@ func setup_panel():
 	title_sub.size = Vector2(560, 20)
 	title_sub.set_meta("pixelmania_font_size", 16)
 	title_sub.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(title_sub, 14)
+	title_sub.set_meta("pixelmania_text_shadow", false)
+	PixelUIStyle.apply_label_shadow(title_sub, 16, Color("321b3d"))
+	title_sub.add_theme_color_override("font_shadow_color", Color.TRANSPARENT)
 	panel.add_child(title_sub)
 
 	var close_button = Button.new()
@@ -266,7 +273,7 @@ func setup_panel():
 	recipe_area.position = Vector2(32, 178)
 	recipe_area.size = Vector2(panel.size.x - 64.0, panel.size.y - 226.0)
 	recipe_area.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	recipe_area.add_theme_stylebox_override("panel", station_section_style())
+	recipe_area.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	panel.add_child(recipe_area)
 
 	recipe_scroll = ScrollContainer.new()
@@ -307,7 +314,7 @@ func create_recipe_cards():
 	var columns = 2
 	var row_height := RECIPE_CARD_SIZE.y
 	for recipe in visible_recipes:
-		row_height = maxf(row_height, 168 + recipe.cost.size() * 34)
+		row_height = maxf(row_height, 192 + recipe.cost.size() * 34)
 	var rows = int(ceil(float(visible_recipes.size()) / float(columns)))
 	var content_height = max(RECIPE_ROOT_MIN_HEIGHT, rows * row_height + max(0, rows - 1) * RECIPE_CARD_GAP.y)
 
@@ -431,8 +438,9 @@ func create_recipe_card(recipe: Dictionary, card_position: Vector2, _card_index:
 	var output: Dictionary = recipe.output
 	var card := Panel.new()
 	card.name = "RecipeCard_" + str(output.item_id)
+	card.set_meta("pixelmania_panel_shadow", false)
 	card.position = card_position
-	card.size = Vector2(RECIPE_CARD_SIZE.x, maxf(RECIPE_CARD_SIZE.y, 168 + recipe.cost.size() * 34))
+	card.size = Vector2(RECIPE_CARD_SIZE.x, maxf(RECIPE_CARD_SIZE.y, 192 + recipe.cost.size() * 34))
 	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_theme_stylebox_override("panel", PixelUIStyle.panel_style())
 	recipe_root.add_child(card)
@@ -445,36 +453,36 @@ func create_recipe_card(recipe: Dictionary, card_position: Vector2, _card_index:
 	card.add_child(inner)
 	var icon_frame := Panel.new()
 	icon_frame.position = Vector2(14, 14)
-	icon_frame.size = Vector2(64, 64)
+	icon_frame.size = Vector2(88, 88)
 	icon_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon_frame.add_theme_stylebox_override("panel", PixelUIStyle.slot_style(get_item_rarity(output.item_id)))
 	card.add_child(icon_frame)
 	var icon := TextureRect.new()
 	icon.name = "Icon"
 	icon.position = Vector2(22, 22)
-	icon.size = Vector2(48, 48)
+	icon.size = Vector2(72, 72)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	icon.texture = get_item_texture(output.item_id, output.category)
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(icon)
-	var title := _card_label(card, "Name", get_item_display_name(output.item_id, output.category), Vector2(90, 14), Vector2(274, 42), 22)
+	var title := _card_label(card, "Name", get_item_display_name(output.item_id, output.category), Vector2(118, 14), Vector2(330, 54), 28)
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title.max_lines_visible = 2
-	var status := _card_label(card, "Status", "READY TO CRAFT" if can_make else "MATERIALS NEEDED", Vector2(90, 58), Vector2(350, 24), 15)
+	var status := _card_label(card, "Status", "READY TO CRAFT" if can_make else "MATERIALS NEEDED", Vector2(118, 72), Vector2(330, 24), 15)
 	status.modulate = Color("99efb0") if can_make else Color("edbcb0")
-	var output_count := _card_label(card, "OutputCount", "x%d" % int(output.amount), Vector2(376, 20), Vector2(76, 30), 22)
+	var output_count := _card_label(card, "OutputCount", str(int(output.amount)), Vector2(20, 72), Vector2(74, 24), 20)
 	output_count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	output_count.modulate = Color("ffe577")
-	_card_label(card, "MaterialsLabel", "INGREDIENTS", Vector2(20, 88), Vector2(260, 22), 13)
-	var column_label := _card_label(card, "CountsLabel", "HAVE / NEED", Vector2(322, 88), Vector2(128, 22), 13)
+	output_count.modulate = Color.WHITE
+	_card_label(card, "MaterialsLabel", "INGREDIENTS", Vector2(20, 112), Vector2(260, 22), 13)
+	var column_label := _card_label(card, "CountsLabel", "HAVE / NEED", Vector2(322, 112), Vector2(128, 22), 13)
 	column_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	for i in range(recipe.cost.size()):
 		var cost: Dictionary = recipe.cost[i]
 		var owned := get_crafting_cost_inventory_count(cost.item_id, cost.category)
-		var row_y := 112.0 + i * 34.0
+		var row_y := 136.0 + i * 34.0
 		var row_back := Panel.new()
 		row_back.position = Vector2(14, row_y)
 		row_back.size = Vector2(442, 30)
@@ -497,7 +505,7 @@ func create_recipe_card(recipe: Dictionary, card_position: Vector2, _card_index:
 		count.modulate = Color("99efb0") if owned >= int(cost.amount) else Color("ffab9c")
 	var button := Button.new()
 	button.name = "CraftButton"
-	button.text = "CRAFT x%d" % int(output.amount) if can_make else "NEED MATERIALS"
+	button.text = "CRAFT %d" % int(output.amount) if can_make else "NEED MATERIALS"
 	button.position = Vector2(16, card.size.y - 52)
 	button.size = Vector2(card.size.x - 32, 38)
 	button.disabled = not can_make

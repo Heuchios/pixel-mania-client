@@ -1,0 +1,12 @@
+from pathlib import Path
+p=Path('Scripts/donation_box_ui.gd');s=p.read_text(encoding='utf-8')
+s=s.replace('@export_range(110.0, 240.0, 2.0) var donation_card_width := 190.0','@export_range(110.0, 300.0, 2.0) var donation_card_width := 270.0').replace('var donation_card_height := 132.0','var donation_card_height := 148.0')
+s=s.replace('button.add_theme_stylebox_override("normal", PixelUIStyle.section_style())','''var card_style := StyleBoxFlat.new()
+	card_style.bg_color = Color("24112e")
+	card_style.border_color = Color("92749f")
+	card_style.set_border_width_all(2)
+	button.add_theme_stylebox_override("normal", card_style)''')
+s=s.replace('PixelUIStyle.apply_small_label(donor_label, 11)','donor_label.set_meta("pixelmania_font_size", 13)\n\tdonor_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS\n\tdonor_label.tooltip_text = donor_label.text\n\tPixelUIStyle.apply_small_label(donor_label, 13)')
+s=s.replace('PixelUIStyle.apply_label_shadow(action_label, 12)','action_label.set_meta("pixelmania_font_size", 14)\n\tPixelUIStyle.apply_label_shadow(action_label, 14)')
+s=s.replace('PixelUIStyle.apply_label_shadow(amount_label, 17)','amount_label.set_meta("pixelmania_font_size", 20)\n\tPixelUIStyle.apply_label_shadow(amount_label, 20)')
+p.write_text(s,encoding='utf-8')

@@ -1430,7 +1430,7 @@ func show_purchase_reward_popup(purchased_item_id: String, rewards: Array, purch
 	var price_text = ""
 	if price > 0:
 		price_text = "  - " + format_shop_price(price) + " gems"
-	var subtitle_text = "PURCHASE COMPLETE - " + str(amount) + "x " + item_name + price_text
+	var subtitle_text = "PURCHASE COMPLETE - " + str(amount) + " " + item_name + price_text
 	if purchased_item_id == "lure_pack":
 		subtitle_text = "Lure Pack opened"
 	elif purchased_item_id == "basic_items_pack":
@@ -1484,142 +1484,80 @@ func normalize_reward_entries(rewards: Array) -> Array:
 
 
 func populate_purchase_reward_slots(root: Control, rewards: Array, scroll_size: Vector2):
-	var slot_size = 92.0
-	var gap = 20.0
-	var total_width = max(scroll_size.x, rewards.size() * (slot_size + gap) - gap)
-	root.custom_minimum_size = Vector2(total_width, scroll_size.y)
+	var slot_size := 112.0
+	var cell_width := 148.0
+	var gap := 16.0
+	var content_width := maxf(0.0, rewards.size() * (cell_width + gap) - gap)
+	root.custom_minimum_size = Vector2(maxf(scroll_size.x, content_width), 180)
 	root.size = root.custom_minimum_size
-	var start_x = max(0.0, (scroll_size.x - (rewards.size() * (slot_size + gap) - gap)) / 2.0)
-
+	var start_x := maxf(0.0, (scroll_size.x - content_width) / 2.0)
 	for i in range(rewards.size()):
-		var reward = rewards[i]
-		create_purchase_reward_slot(root, reward, Vector2(start_x + i * (slot_size + gap), 8), slot_size, i)
+		create_purchase_reward_slot(root, rewards[i], Vector2(start_x + i * (cell_width + gap) + 18, 8), slot_size, i)
 
 
 func create_purchase_reward_slot(root: Control, reward: Dictionary, slot_position: Vector2, slot_size: float, slot_index: int):
-	var item_id = str(reward.get("item_id", ""))
-	var category = str(reward.get("category", ""))
-	var amount = int(reward.get("amount", 0))
-	var amount_text: String = ("%.1f lb" % (float(amount) / 10.0)) if category == "fish" else "x" + str(amount)
-	var rarity = "common"
+	var item_id := str(reward.get("item_id", ""))
+	var amount_text := str(int(reward.get("amount", 0)))
+	var rarity := "common"
 	if world != null and world.item_database.has(item_id):
 		rarity = str(world.item_database[item_id].get("rarity", "common"))
-	var accent = get_reward_popup_accent_color(rarity)
-
-	var glow = Panel.new()
-	glow.name = "RewardGlow_" + item_id
-	glow.position = slot_position - Vector2(7, 7)
-	glow.size = Vector2(slot_size + 14.0, slot_size + 14.0)
-	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	glow.modulate = Color(1.0, 1.0, 1.0, 0.0)
-	glow.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(accent.r, accent.g, accent.b, 0.12),
-		Color(accent.r, accent.g, accent.b, 0.34),
-		2, 18, 8
-	))
-	root.add_child(glow)
-
-	var slot = Panel.new()
+	var slot := Panel.new()
 	slot.name = "Reward_" + item_id
 	slot.position = slot_position
-	slot.size = Vector2(slot_size, slot_size)
-	slot.pivot_offset = Vector2(slot_size * 0.5, slot_size * 0.5)
-	slot.scale = Vector2(0.62, 0.62)
-	slot.modulate = Color(1.0, 1.0, 1.0, 0.0)
-	slot.tooltip_text = get_item_display_name(item_id) + " " + amount_text
-	slot.mouse_filter = Control.MOUSE_FILTER_STOP
-	slot.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.035, 0.12, 0.17, 0.98),
-		accent,
-		4, 14, 7
-	))
+	slot.size = Vector2.ONE * slot_size
+	slot.pivot_offset = slot.size * 0.5
+	slot.scale = Vector2.ONE * 0.9
+	slot.modulate.a = 0.0
+	slot.tooltip_text = get_item_display_name(item_id) + " - " + amount_text
+	slot.mouse_filter = Control.MOUSE_FILTER_PASS
+	slot.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	slot.set_meta("pixelmania_panel_shadow", false)
+	slot.add_theme_stylebox_override("panel", PixelUIStyle.slot_style(rarity))
 	root.add_child(slot)
 
-	var top_shine = ColorRect.new()
-	top_shine.name = "TopShine"
-	top_shine.position = Vector2(9, 7)
-	top_shine.size = Vector2(slot_size - 18.0, 7)
-	top_shine.color = Color(1.0, 1.0, 1.0, 0.22)
-	top_shine.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	slot.add_child(top_shine)
-
-	var inner = Panel.new()
-	inner.name = "Inner"
-	inner.position = Vector2(6, 6)
-	inner.size = Vector2(slot_size - 12.0, slot_size - 12.0)
-	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	inner.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(accent.r * 0.12, accent.g * 0.16, accent.b * 0.20, 0.78),
-		Color(0.86, 0.98, 1.0, 0.20),
-		1, 11, 0
-	))
-	slot.add_child(inner)
-
-	var icon_shadow = TextureRect.new()
-	icon_shadow.name = "IconShadow"
-	icon_shadow.position = Vector2(17, 19)
-	icon_shadow.size = Vector2(slot_size - 28.0, slot_size - 32.0)
-	icon_shadow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon_shadow.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon_shadow.texture = get_item_texture(item_id)
-	icon_shadow.modulate = Color(0, 0, 0, 0.34)
-	icon_shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	slot.add_child(icon_shadow)
-
-	var icon = TextureRect.new()
+	var icon := TextureRect.new()
 	icon.name = "Icon"
-	icon.position = Vector2(13, 15)
-	icon.size = Vector2(slot_size - 28.0, slot_size - 32.0)
+	icon.position = Vector2(10, 10)
+	icon.size = Vector2.ONE * (slot_size - 20)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.texture = get_item_texture(item_id)
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	slot.add_child(icon)
 
-	var amount_back = Panel.new()
-	amount_back.name = "AmountBack"
-	var amount_back_width: float = 58.0 if category == "fish" else 44.0
-	amount_back.position = Vector2(slot_size - amount_back_width - 6.0, slot_size - 25.0)
-	amount_back.size = Vector2(amount_back_width, 20)
-	amount_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	amount_back.add_theme_stylebox_override("panel", PixelUIStyle.style_box(
-		Color(0.005, 0.020, 0.032, 0.94),
-		Color(1.0, 0.86, 0.20, 0.62),
-		2, 8, 2
-	))
-	slot.add_child(amount_back)
-
-	var amount_label = Label.new()
+	var amount_label := Label.new()
 	amount_label.name = "Amount"
 	amount_label.text = amount_text
-	amount_label.position = amount_back.position
-	amount_label.size = amount_back.size - Vector2(4, 0)
+	amount_label.position = Vector2(8, slot_size - 32)
+	amount_label.size = Vector2(slot_size - 16, 26)
 	amount_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	amount_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	amount_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_label_shadow(amount_label, 14, Color(1.0, 0.94, 0.50, 1.0))
+	amount_label.set_meta("pixelmania_font_size", 22)
+	PixelUIStyle.apply_label_shadow(amount_label, 22, Color.WHITE)
 	slot.add_child(amount_label)
 
-	var name_label = Label.new()
-	name_label.name = "Name"
+	var name_label := Label.new()
+	name_label.name = "RewardItemName"
 	name_label.text = get_item_display_name(item_id)
-	name_label.position = Vector2(slot_position.x - 12.0, slot_position.y + slot_size + 4.0)
-	name_label.size = Vector2(slot_size + 24.0, 20)
+	name_label.position = slot_position + Vector2(-18, slot_size + 8)
+	name_label.size = Vector2(148, 48)
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	name_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	name_label.clip_text = true
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	name_label.modulate = Color(1.0, 1.0, 1.0, 0.0)
-	PixelUIStyle.apply_small_label(name_label, 12)
+	name_label.modulate.a = 0.0
+	name_label.set_meta("pixelmania_font_size", 18)
+	PixelUIStyle.apply_label_shadow(name_label, 18, PixelUIStyle.TEXT_LIGHT)
 	root.add_child(name_label)
 
-	var reveal_delay = 0.08 + float(slot_index) * 0.06
-	var tween = create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(glow, "modulate", Color(1.0, 1.0, 1.0, 0.88), 0.18).set_delay(reveal_delay).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	tween.tween_property(slot, "scale", Vector2.ONE, 0.23).set_delay(reveal_delay).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.tween_property(slot, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.13).set_delay(reveal_delay).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	tween.tween_property(name_label, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.12).set_delay(reveal_delay + 0.08).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	var delay := minf(float(slot_index) * 0.05, 0.4)
+	var tween := create_tween().set_parallel(true)
+	tween.tween_property(slot, "scale", Vector2.ONE, 0.18).set_delay(delay).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(slot, "modulate:a", 1.0, 0.18).set_delay(delay)
+	tween.tween_property(name_label, "modulate:a", 1.0, 0.18).set_delay(delay)
 
 
 func get_reward_popup_accent_color(rarity: String) -> Color:
