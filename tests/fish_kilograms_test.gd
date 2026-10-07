@@ -29,32 +29,32 @@ func run_checks():
 	check(inventory._slot_count_text({"category": "fish", "count": 57}) == "5.7 kg", "inventory stack shows kg")
 	check(inventory._detail_count_text({"category": "fish", "count": 20000}) == "2000.0 / 2000 kg", "maximum stack displays")
 	var fishing = Fishing.new()
-	check(Species.merge_inventory({"pond_fish_small": 13, "pond_fish_med": 24, "pond_fish_large": 57}) == {"pond_fish_large": 94}, "species consolidation preserves decimal weight")
-	var records := {"total_caught_per_species": {"pond_fish_small": 2, "pond_fish_med": 3}, "biggest_fish_per_species": {"pond_fish_small": 1.3, "pond_fish_med": 2.4}}
+	check(Species.merge_inventory({"pond_fish_small": 13, "guppy": 57}) == {"guppy": 57}, "retired species removed without changing new weights")
+	var records := {"total_caught_per_species": {"pond_fish_small": 2, "guppy": 3}, "biggest_fish_per_species": {"pond_fish_small": 1.3, "guppy": 2.4}}
 	Species.merge_records(records)
-	check(records.total_caught_per_species.pond_fish_large == 5, "journal counts merge")
-	check(is_equal_approx(records.biggest_fish_per_species.pond_fish_large, 2.4), "journal best weight preserved")
-	check(is_equal_approx(fishing._server_catch_weight({"catch_weight": 5.7}, "pond_fish_large"), 5.7), "server decimal weight reaches catch card")
-	check(is_equal_approx(fishing._server_catch_weight({"fish_inventory_unit": "tenths_kg", "rewards": [{"item_id": "pond_fish_large", "amount": 57}]}, "pond_fish_large"), 5.7), "reward fallback preserves authoritative decimal weight")
-	check(is_equal_approx(fishing._get_fish_sell_value("pond_fish_large", {"fish_base_price_kg": 2.25}), 2.25), "catch estimate retains decimal price without monger open")
+	check(records.total_caught_per_species == {"guppy": 3}, "journal removes retired species")
+	check(is_equal_approx(records.biggest_fish_per_species.guppy, 2.4), "current journal best weight preserved")
+	check(is_equal_approx(fishing._server_catch_weight({"catch_weight": 5.7}, "guppy"), 5.7), "server decimal weight reaches catch card")
+	check(is_equal_approx(fishing._server_catch_weight({"fish_inventory_unit": "tenths_kg", "rewards": [{"item_id": "guppy", "amount": 57}]}, "guppy"), 5.7), "reward fallback preserves authoritative decimal weight")
+	check(is_equal_approx(fishing._get_fish_sell_value("guppy", {"fish_base_price_kg": 2.25}), 2.25), "catch estimate retains decimal price without monger open")
 	var save_script = load("res://Scripts/save_manager.gd")
 	var saves = save_script.new()
 	var world_script = load("res://Scripts/world.gd")
 	var world = world_script.new()
-	world.item_database["pond_fish"] = {"category": "fish", "stack_limit": 20000}
-	check(world.get_stack_limit_for_item("pond_fish", "fish") == 20000, "real world stack limit supports 2000 kg")
-	world.fish_inventory["pond_fish"] = 0
-	world.apply_network_inventory_delta({"item_type": "pond_fish", "item_category": "fish", "after_count": 20000})
-	check(world.fish_inventory.pond_fish == 20000, "network inventory does not truncate weight")
+	world.item_database["guppy"] = {"category": "fish", "stack_limit": 20000}
+	check(world.get_stack_limit_for_item("guppy", "fish") == 20000, "real world stack limit supports 2000 kg")
+	world.fish_inventory["guppy"] = 0
+	world.apply_network_inventory_delta({"item_type": "guppy", "item_category": "fish", "after_count": 20000})
+	check(world.fish_inventory.guppy == 20000, "network inventory does not truncate weight")
 	check(saves.safe_fish_count_from_save(7, "count") == 70, "legacy counts convert to one kg each")
 	check(saves.safe_fish_count_from_save(57, "tenths_kg") == 57, "new saves do not convert twice")
-	var legacy := {"fish_inventory": {"pond_fish": 2}, "fish_inventory_unit": "count"}
-	saves.merge_legacy_inventory_counts(legacy, {"fish_inventory": {"pond_fish": 3}, "fish_inventory_unit": "count"})
-	check(legacy.fish_inventory.pond_fish == 30 and legacy.fish_inventory_unit == "tenths_kg", "legacy merge keeps the new unit marker")
+	var legacy := {"fish_inventory": {"guppy": 2}, "fish_inventory_unit": "count"}
+	saves.merge_legacy_inventory_counts(legacy, {"fish_inventory": {"guppy": 3}, "fish_inventory_unit": "count"})
+	check(legacy.fish_inventory.guppy == 30 and legacy.fish_inventory_unit == "tenths_kg", "legacy merge keeps the new unit marker")
 	check(fishing._fish_weight_to_tenths(5.7) == 57, "catch encodes exact units")
 	check(is_equal_approx(fishing._fish_tenths_to_weight(57), 5.7), "catch decodes exact units")
 	for index in range(1000):
-		var weight: float = fishing._roll_catch_weight("pond_fish")
+		var weight: float = fishing._roll_catch_weight("guppy")
 		check(weight >= 0.1 and weight <= 150.0, "catch within bounds")
 	for node in [monger, ui, inventory, fishing, saves, world]:
 		node.free()

@@ -2650,6 +2650,27 @@ func update_scene_hotbar_slot_count(slot: Control, item_type: String, category: 
 			count_badge.visible = count.text != ""
 
 
+func update_scene_hotbar_slot_equipped(slot: Control, item_type: String, category: String) -> void:
+	var overlay := slot.get_node_or_null("Equipped") as TextureRect
+	if overlay == null:
+		overlay = TextureRect.new()
+		overlay.name = "Equipped"
+		overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		overlay.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		overlay.texture = UIAtlasDB.get_texture("item_equipped_overlay")
+		overlay.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		overlay.stretch_mode = TextureRect.STRETCH_SCALE
+		overlay.z_index = 3
+		slot.add_child(overlay)
+	# Match the inventory overlay's placement relative to its 96-pixel frame.
+	var frame := slot.get_node_or_null("SlotFrame") as Control
+	var frame_size := frame.size if frame != null else Vector2(96, 96)
+	var frame_position := frame.position if frame != null else Vector2.ZERO
+	overlay.position = frame_position + frame_size * Vector2(12.0 / 96.0, 24.0 / 96.0)
+	overlay.size = frame_size * Vector2(60.0 / 96.0, 57.0 / 96.0)
+	overlay.visible = item_type != "" and is_inventory_item_equipped(item_type, category)
+
+
 func refresh_hotbar_live() -> void:
 	if world == null:
 		return
@@ -2674,6 +2695,7 @@ func refresh_hotbar_live() -> void:
 		var is_selected: bool = world.selected_item_category == category and world.selected_item_type == item_type
 		update_scene_hotbar_slot_frame(slot, get_item_rarity(item_type, category), is_selected, item_type, category)
 		update_scene_hotbar_slot_count(slot, item_type, category)
+		update_scene_hotbar_slot_equipped(slot, item_type, category)
 
 
 func update_scene_hotbar_slots(normalize_first: bool = true):
@@ -2706,6 +2728,7 @@ func update_scene_hotbar_slots(normalize_first: bool = true):
 			rarity_pip.visible = false
 
 		update_scene_hotbar_slot_count(slot, item_type, category)
+		update_scene_hotbar_slot_equipped(slot, item_type, category)
 
 
 func setup_hotbar():
@@ -6795,7 +6818,7 @@ func get_inventory_slot_style_key(rarity: String, selected: bool, hovered: bool)
 func is_inventory_item_equipped(item_type: String, category: String) -> bool:
 	if world == null:
 		return false
-	return (category == "tool" and world.equipped_tool == item_type) or (category == "back" and world.equipped_back_item == item_type) or (category == "hat" and world.equipped_hat_item == item_type) or (category == "hair" and world.equipped_hair_item == item_type) or (category == "eyewear" and world.equipped_eyewear_item == item_type) or (category == "shirt" and world.equipped_shirt_item == item_type) or (category == "pants" and world.equipped_pants_item == item_type) or (category == "shoes" and world.equipped_shoes_item == item_type) or (category == "ride" and world.equipped_ride_item == item_type) or (category == "body_accessory" and world.equipped_body_accessory_item == item_type)
+	return (category == "tool" and world.equipped_tool == item_type) or (category == "back" and world.equipped_back_item == item_type) or (category == "hat" and world.equipped_hat_item == item_type) or (category == "hair" and world.equipped_hair_item == item_type) or (category == "eyewear" and world.equipped_eyewear_item == item_type) or (category == "beard" and world.equipped_beard_item == item_type) or (category == "shirt" and world.equipped_shirt_item == item_type) or (category == "pants" and world.equipped_pants_item == item_type) or (category == "shoes" and world.equipped_shoes_item == item_type) or (category == "ride" and world.equipped_ride_item == item_type) or (category == "body_accessory" and world.equipped_body_accessory_item == item_type)
 
 
 func update_inventory_slot_state(slot, item_type: String, category: String, count: int, refresh_static_visuals: bool = false) -> void:
@@ -7326,7 +7349,7 @@ func update_inventory_window():
 		slot.tooltip_text = get_item_display_name(item_type, category) + " " + format_inventory_amount(item_type, category, count)
 		var equipped_label = slot.get_node_or_null("EquippedLabel")
 		if equipped_label != null:
-			equipped_label.visible = (category == "tool" and world.equipped_tool == item_type) or (category == "back" and world.equipped_back_item == item_type) or (category == "hat" and world.equipped_hat_item == item_type) or (category == "hair" and world.equipped_hair_item == item_type) or (category == "eyewear" and world.equipped_eyewear_item == item_type) or (category == "shirt" and world.equipped_shirt_item == item_type) or (category == "pants" and world.equipped_pants_item == item_type) or (category == "shoes" and world.equipped_shoes_item == item_type) or (category == "ride" and world.equipped_ride_item == item_type) or (category == "body_accessory" and world.equipped_body_accessory_item == item_type)
+			equipped_label.visible = (category == "tool" and world.equipped_tool == item_type) or (category == "back" and world.equipped_back_item == item_type) or (category == "hat" and world.equipped_hat_item == item_type) or (category == "hair" and world.equipped_hair_item == item_type) or (category == "eyewear" and world.equipped_eyewear_item == item_type) or (category == "beard" and world.equipped_beard_item == item_type) or (category == "shirt" and world.equipped_shirt_item == item_type) or (category == "pants" and world.equipped_pants_item == item_type) or (category == "shoes" and world.equipped_shoes_item == item_type) or (category == "ride" and world.equipped_ride_item == item_type) or (category == "body_accessory" and world.equipped_body_accessory_item == item_type)
 
 	cache_visible_inventory_items(filtered_items)
 	update_inventory_detail_panel()

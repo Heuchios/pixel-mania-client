@@ -4,8 +4,8 @@ const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 
 const PANEL_W := 960.0
 const PANEL_H := 704.0
-const CARD_W := 288.0
-const CARD_H := 212.0
+const CARD_W := 432.0
+const CARD_H := 202.0
 const RARITY_TABS := ["all", "common", "uncommon", "rare", "epic", "legendary"]
 
 var world = null
@@ -211,7 +211,7 @@ func _build_ui() -> void:
 
 	cards_root = GridContainer.new()
 	cards_root.name = "CardsRoot"
-	cards_root.columns = 3
+	cards_root.columns = 2
 	cards_root.custom_minimum_size = Vector2(PANEL_W - 84.0, PANEL_H - 284.0)
 	cards_root.add_theme_constant_override("h_separation", 12)
 	cards_root.add_theme_constant_override("v_separation", 12)
@@ -279,38 +279,27 @@ func _clear_cards() -> void:
 
 
 func _create_fish_card(entry: Dictionary) -> void:
-	var discovered: bool = bool(entry.get("discovered", false))
-	var rarity: String = str(entry.get("rarity", "common")).to_lower()
-	var card: Panel = Panel.new()
+	var discovered := bool(entry.get("discovered", false))
+	var rarity := str(entry.get("rarity", "common")).to_lower()
+	var accent := _rarity_color(rarity) if discovered else Color("786480")
+	var card := Panel.new()
 	card.custom_minimum_size = Vector2(CARD_W, CARD_H)
-	card.size = Vector2(CARD_W, CARD_H)
 	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	card.add_theme_stylebox_override("panel", PixelUIStyle.atlas_style("outer_panel", Color.WHITE if discovered else Color(0.72, 0.72, 0.72, 1), 3))
+	card.add_theme_stylebox_override("panel", PixelUIStyle.atlas_style("outer_panel", Color.WHITE if discovered else Color("95859d"), 3))
 	cards_root.add_child(card)
-	var card_inner := Panel.new()
-	card_inner.name = "CardInner"
-	card_inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	card.add_child(card_inner)
-	card_inner.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	card_inner.offset_left = 5
-	card_inner.offset_top = 5
-	card_inner.offset_right = -5
-	card_inner.offset_bottom = -5
-	card_inner.add_theme_stylebox_override("panel", PixelUIStyle.atlas_style("inner_panel", Color.WHITE if discovered else Color(0.78, 0.78, 0.78, 1), 3))
-
-	var icon_back: Panel = Panel.new()
-	icon_back.position = Vector2(18, 18)
-	icon_back.size = Vector2(64, 64)
-	icon_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon_back.add_theme_stylebox_override("panel", PixelUIStyle.card_style())
-	card.add_child(icon_back)
-
-	var icon: TextureRect = TextureRect.new()
-	icon.position = Vector2(24, 24)
-	icon.size = Vector2(52, 52)
+	_journal_panel(card, "Inner", Rect2(4, 4, CARD_W - 8, CARD_H - 8), PixelUIStyle.section_style())
+	var art_style := StyleBoxFlat.new()
+	art_style.bg_color = Color("22132e").lerp(accent, 0.13 if discovered else 0.02)
+	art_style.border_color = accent
+	art_style.border_width_bottom = 3
+	_journal_panel(card, "FishDisplay", Rect2(16, 16, 136, 114), art_style)
+	var icon := TextureRect.new()
+	icon.name = "FishArtwork"
+	icon.position = Vector2(28, 30)
+	icon.size = Vector2(112, 84)
 	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	var icon_value = entry.get("icon", null)
-	icon.texture = (icon_value as Texture2D) if icon_value is Texture2D else null
+	icon.texture = icon_value as Texture2D if icon_value is Texture2D else null
 	if icon.texture != null:
 		var image := icon.texture.get_image()
 		if image != null and image.get_used_rect().has_area():
@@ -322,74 +311,55 @@ func _create_fish_card(entry: Dictionary) -> void:
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon.modulate = Color.WHITE if discovered else Color(0.0, 0.0, 0.0, 0.72)
+	icon.modulate = Color.WHITE if discovered else Color(0.05, 0.02, 0.08, 0.9)
 	card.add_child(icon)
-
-	var lock_label: Label = Label.new()
-	lock_label.text = "?"
-	lock_label.position = Vector2(24, 22)
-	lock_label.size = Vector2(52, 52)
-	lock_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lock_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	lock_label.visible = not discovered
-	PixelUIStyle.apply_label_shadow(lock_label, 28, PixelUIStyle.TEXT_SOFT)
-	_preserve_text(lock_label, 28)
-	card.add_child(lock_label)
-
-	var name_label: Label = Label.new()
-	name_label.text = str(entry.get("name", "Fish")) if discovered else "Unknown Fish"
-	name_label.position = Vector2(92, 20)
-	name_label.size = Vector2(CARD_W - 106.0, 48)
-	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	if not discovered:
+		var mystery := _journal_text(card, "Mystery", "?", Rect2(28, 30, 112, 84), 32, Color("c9b5d2"))
+		mystery.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_journal_text(card, "FishName", "UNDISCOVERED", Rect2(168, 20, 246, 42), 26, Color("c9b5d2"))
+		_journal_text(card, "DiscoveryHint", "Your next catch could fill this page.", Rect2(168, 64, 244, 60), 16, PixelUIStyle.TEXT_SOFT)
+		_journal_text(card, "LockedRecords", "Catch this fish to reveal its records.", Rect2(20, 148, 392, 36), 15, Color("a58cb1"))
+		return
+	var name_label := _journal_text(card, "FishName", str(entry.get("name", "Fish")), Rect2(168, 12, 246, 64), 28, Color.WHITE)
 	name_label.tooltip_text = name_label.text
-	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	name_label.clip_text = true
-	PixelUIStyle.apply_label_shadow(name_label, 16, PixelUIStyle.TEXT_LIGHT)
-	_preserve_text(name_label, 16)
-	card.add_child(name_label)
+	_journal_text(card, "Rarity", rarity.to_upper(), Rect2(168, 78, 246, 24), 15, accent)
+	_journal_text(card, "Habitat", str(entry.get("location", "Any Water")), Rect2(168, 104, 246, 28), 15, PixelUIStyle.TEXT_SOFT)
+	var record_values := [str(int(entry.get("total_caught", 0))), _format_weight(float(entry.get("biggest_weight", 0.0))), str(int(entry.get("best_value", 0))) + " gems"]
+	var record_titles := ["CAUGHT", "BIGGEST", "BEST VALUE"]
+	for i in range(3):
+		var x := 16.0 + i * 136.0
+		var record_style := StyleBoxFlat.new()
+		record_style.bg_color = Color("24112e")
+		_journal_panel(card, "Record%d" % i, Rect2(x, 142, 128, 44), record_style)
+		_journal_text(card, "RecordTitle%d" % i, record_titles[i], Rect2(x + 8, 146, 112, 15), 11, Color("b8a3c5"))
+		_journal_text(card, "RecordValue%d" % i, record_values[i], Rect2(x + 8, 162, 112, 22), 16, Color.WHITE)
 
-	var rarity_label: Label = Label.new()
-	rarity_label.text = rarity.capitalize() if discovered else "Locked"
-	rarity_label.position = Vector2(92, 70)
-	rarity_label.size = Vector2(CARD_W - 106.0, 24)
-	rarity_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	PixelUIStyle.apply_small_label(rarity_label, 13)
-	_preserve_text(rarity_label, 13)
-	rarity_label.add_theme_color_override("font_color", _rarity_color(rarity) if discovered else Color(0.62, 0.72, 0.78, 1.0))
-	card.add_child(rarity_label)
 
-	var location_label: Label = Label.new()
-	location_label.text = str(entry.get("location", "Any Water")) if discovered else "???"
-	location_label.position = Vector2(18, 106)
-	location_label.size = Vector2(CARD_W - 36.0, 22)
-	location_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	PixelUIStyle.apply_small_label(location_label, 12)
-	_preserve_text(location_label, 12)
-	card.add_child(location_label)
+func _journal_panel(parent: Control, node_name: String, bounds: Rect2, style: StyleBox) -> void:
+	var section := Panel.new()
+	section.name = node_name
+	section.position = bounds.position
+	section.size = bounds.size
+	section.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	section.add_theme_stylebox_override("panel", style)
+	parent.add_child(section)
 
-	var total_label: Label = Label.new()
-	total_label.text = "Caught: " + str(int(entry.get("total_caught", 0))) if discovered else "Caught: --"
-	total_label.position = Vector2(18, 130)
-	total_label.size = Vector2(CARD_W - 36.0, 20)
-	PixelUIStyle.apply_small_label(total_label, 12)
-	_preserve_text(total_label, 12)
-	card.add_child(total_label)
 
-	var weight_label: Label = Label.new()
-	weight_label.text = "Biggest: " + _format_weight(float(entry.get("biggest_weight", 0.0))) if discovered else "Biggest: --"
-	weight_label.position = Vector2(18, 152)
-	weight_label.size = Vector2(CARD_W - 36.0, 20)
-	PixelUIStyle.apply_small_label(weight_label, 12)
-	_preserve_text(weight_label, 12)
-	card.add_child(weight_label)
-
-	var value_label: Label = Label.new()
-	value_label.text = "Best value: " + str(int(entry.get("best_value", 0))) + " gems" if discovered else "Best value: --"
-	value_label.position = Vector2(18, 174)
-	value_label.size = Vector2(CARD_W - 36.0, 20)
-	PixelUIStyle.apply_small_label(value_label, 12)
-	_preserve_text(value_label, 12)
-	card.add_child(value_label)
+func _journal_text(parent: Control, node_name: String, text: String, bounds: Rect2, font_size: int, color: Color) -> Label:
+	var label := Label.new()
+	label.name = node_name
+	label.text = text
+	label.position = bounds.position
+	label.size = bounds.size
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	label.clip_text = true
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.set_meta("pixelmania_font_size", font_size)
+	PixelUIStyle.apply_label_shadow(label, font_size, color)
+	parent.add_child(label)
+	return label
 
 
 func _format_weight(weight: float) -> String:

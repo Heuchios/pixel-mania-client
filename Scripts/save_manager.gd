@@ -1873,6 +1873,7 @@ func get_player_save_data() -> Dictionary:
 		"lure_inventory": world.lure_inventory,
 		"fish_inventory": get_fish_inventory_count_save_data(),
 		"fish_inventory_unit": "tenths_kg",
+		"fishing_catalog_version": FishSpecies.CATALOG_VERSION,
 		"fishing_records": world.fishing_manager.get_fishing_records_save_data() if world.fishing_manager != null and world.fishing_manager.has_method("get_fishing_records_save_data") else {},
 		"equipped_tool": str(world.equipped_tool) if world.equipped_tool != null else "",
 		"equipped_back_item": str(world.equipped_back_item) if world.equipped_back_item != null else "",
@@ -2420,6 +2421,7 @@ func apply_player_data(data: Dictionary, skip_hotbar_render: bool = false):
 	apply_saved_inventory_counts(world.currency_inventory, data.get("currency_inventory", {}), not data.has("currency_inventory"))
 	apply_saved_inventory_counts(world.material_inventory, data.get("material_inventory", {}), true)
 	world.set_meta("shop_claims", data.get("shop_claims", []).duplicate() if data.get("shop_claims") is Array else [])
+	FishSpecies.migrate_player(data)
 	apply_saved_inventory_counts(world.lure_inventory, data.get("lure_inventory", {}), true)
 	apply_saved_fish_count_inventory(data.get("fish_inventory", {}), true, str(data.get("fish_inventory_unit", "")))
 	world.normalize_hotbar()
@@ -2913,6 +2915,7 @@ func get_player_data_dedup_hash(player_data: Dictionary) -> int:
 		"lure_inventory": player_data.get("lure_inventory", {}) if player_data.get("lure_inventory", null) is Dictionary else {},
 		"fish_inventory": player_data.get("fish_inventory", {}) if player_data.get("fish_inventory", null) is Dictionary else {},
 		"fish_inventory_unit": _safe_string(player_data.get("fish_inventory_unit", ""), "", MAX_INVENTORY_STRING_LEN),
+		"fishing_catalog_version": int(player_data.get("fishing_catalog_version", 0)),
 		"fishing_records": player_data.get("fishing_records", {}) if player_data.get("fishing_records", null) is Dictionary else {}
 	}
 	return hash(normalized_payload)
@@ -2967,6 +2970,7 @@ func get_current_player_state_dedup_hash() -> int:
 		"lure_inventory": world.lure_inventory.duplicate(true) if world.lure_inventory is Dictionary else {},
 		"fish_inventory": get_fish_inventory_count_save_data(),
 		"fish_inventory_unit": "tenths_kg",
+		"fishing_catalog_version": FishSpecies.CATALOG_VERSION,
 		"fishing_records": world.fishing_manager.get_fishing_records_save_data() if world.fishing_manager != null and world.fishing_manager.has_method("get_fishing_records_save_data") else {}
 	}
 	return hash(normalized_payload)
@@ -3120,6 +3124,7 @@ func save_world():
 		"lure_inventory": world.lure_inventory,
 		"fish_inventory": get_fish_inventory_count_save_data(),
 		"fish_inventory_unit": "tenths_kg",
+		"fishing_catalog_version": FishSpecies.CATALOG_VERSION,
 		"fishing_records": world.fishing_manager.get_fishing_records_save_data() if world.fishing_manager != null and world.fishing_manager.has_method("get_fishing_records_save_data") else {},
 		"equipped_tool": str(world.equipped_tool) if world.equipped_tool != null else "",
 		"equipped_back_item": str(world.equipped_back_item) if world.equipped_back_item != null else "",
@@ -3332,6 +3337,7 @@ func load_world():
 	apply_saved_inventory_counts(world.currency_inventory, data.get("currency_inventory", {}), not data.has("currency_inventory"))
 	apply_saved_inventory_counts(world.material_inventory, data.get("material_inventory", {}), true)
 	world.set_meta("shop_claims", data.get("shop_claims", []).duplicate() if data.get("shop_claims") is Array else [])
+	FishSpecies.migrate_player(data)
 	apply_saved_inventory_counts(world.lure_inventory, data.get("lure_inventory", {}), true)
 	apply_saved_fish_count_inventory(data.get("fish_inventory", {}), true, str(data.get("fish_inventory_unit", "")))
 	world.normalize_hotbar()

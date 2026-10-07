@@ -126,6 +126,10 @@ var _detail_is_gem_pack := false
 var _available_gems := 0
 var _detail_price_text := ""
 var _shop_fit_scale := 1.0
+var category_rail: Panel
+var category_scroll: ScrollContainer
+const CATEGORY_RAIL_WIDTH := 164.0
+const CATEGORY_RAIL_GAP := 16.0
 var _panel_open_tweens: Dictionary = {}
 
 # Custom scrollbar drag state (see "item scroll slider" section below) - one
@@ -143,26 +147,31 @@ var _item_scroll_layout_sync_queued := false
 func _ready() -> void:
 	_sidebar_buttons.assign(sidebar.get_children())
 	_category_grids.assign(item_scroll.get_children())
-	# Keep categories reachable on short phone screens without shrinking text.
-	var category_scroll := ScrollContainer.new()
+	# Detached inventory-style rail; it shares the window's scale and fit budget.
+	category_rail = Panel.new()
+	category_rail.name = "CategoryRail"
+	category_rail.add_theme_stylebox_override("panel", preload("res://Scripts/ui/pixel_ui_style.gd").section_style())
+	add_child(category_rail)
+	move_child(category_rail, shop_window.get_index())
+	category_scroll = ScrollContainer.new()
 	category_scroll.name = "CategoryScroll"
-	category_scroll.custom_minimum_size.x = 140
-	category_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	category_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	var body := sidebar.get_parent()
-	body.add_child(category_scroll)
-	body.move_child(category_scroll, 0)
+	category_rail.add_child(category_scroll)
 	sidebar.reparent(category_scroll)
 	sidebar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sidebar.add_theme_constant_override("separation", 10)
 	for button in _sidebar_buttons:
+		# Keep the scene's original pink text-button and selected-tab styles.
 		button.custom_minimum_size = Vector2(140, 48)
 		button.custom_maximum_size = Vector2(-1, -1)
+		button.set_meta("preserve_selected_style", true)
+		button.set_meta("pixelmania_font_size", 16)
 	category_title_label.custom_minimum_size = Vector2(0, 40)
 
 	for i in range(_sidebar_buttons.size()):
 		var button := _sidebar_buttons[i]
 		button.toggled.connect(_on_sidebar_button_toggled.bind(i))
-		_wire_hover_lift(button)
+		# Keep category tabs aligned while hovering.
 
 	for grid in _category_grids:
 		for card in grid.get_children():
@@ -186,7 +195,7 @@ func _ready() -> void:
 	_fit_shop_window()
 
 	detail_overlay.visible = false
-	_play_panel_open(shop_window)
+	# Fit the detached rail and window together; popups retain their open animation.
 
 
 # ------------------------------------------------------------- header ----
@@ -582,13 +591,21 @@ func _fit_shop_window() -> void:
 	for panel in [shop_window, detail_card, reward_card]:
 		panel.modulate.a = 1.0
 	# Reflow product columns before applying any last-resort fit scale.
-	var available := Vector2(maxf(616.0, size.x - 24.0), maxf(300.0, size.y - 24.0))
-	shop_window.size = Vector2(minf(1100.0, available.x), minf(700.0, available.y))
-	shop_window.position = (size - shop_window.size) * 0.5
-	_reflow_product_grid.call_deferred()
-	_shop_fit_scale = minf(1.0, minf(maxf(1.0, size.x - 24.0) / shop_window.size.x, maxf(1.0, size.y - 24.0) / shop_window.size.y))
-	shop_window.pivot_offset = shop_window.size * 0.5
+	var rail_space := CATEGORY_RAIL_WIDTH + CATEGORY_RAIL_GAP
+	var available := Vector2(maxf(772.0, size.x - 24.0), maxf(300.0, size.y - 24.0))
+	var group_size := Vector2(minf(1100.0, available.x), minf(700.0, available.y))
+	shop_window.size = Vector2(group_size.x - rail_space, group_size.y)
+	_shop_fit_scale = minf(1.0, minf(maxf(1.0, size.x - 24.0) / group_size.x, maxf(1.0, size.y - 24.0) / group_size.y))
+	var origin := (size - group_size * _shop_fit_scale) * 0.5
+	shop_window.pivot_offset = Vector2.ZERO
 	shop_window.scale = Vector2.ONE * _shop_fit_scale
+	shop_window.position = origin + Vector2(rail_space * _shop_fit_scale, 0)
+	category_rail.size = Vector2(CATEGORY_RAIL_WIDTH, group_size.y)
+	category_rail.scale = Vector2.ONE * _shop_fit_scale
+	category_rail.position = origin
+	category_scroll.position = Vector2(12, 18)
+	category_scroll.size = category_rail.size - Vector2(24, 36)
+	_reflow_product_grid.call_deferred()
 	for popup in [detail_card, reward_card]:
 		popup.pivot_offset = popup.size * 0.5
 		popup.scale = Vector2.ONE * minf(1.0, minf(maxf(1.0, size.x - 24.0) / popup.size.x, maxf(1.0, size.y - 24.0) / popup.size.y))
@@ -600,10 +617,8 @@ func _reflow_product_grid() -> void:
 	# A disabled horizontal scrollbar includes the old grid minimum. Measure
 	# the window budget too, so four desktop columns can shrink to one.
 	var margins := $ShopWindow/Margin as MarginContainer
-	var body := $ShopWindow/Margin/Layout/Body as HBoxContainer
 	var row := item_scroll.get_parent() as HBoxContainer
 	var content_width := shop_window.size.x - margins.get_theme_constant("margin_left") - margins.get_theme_constant("margin_right")
-	content_width -= sidebar.get_parent().size.x + body.get_theme_constant("separation")
 	content_width -= item_scroll_slider.size.x + row.get_theme_constant("separation")
 	content_width = maxf(200.0, minf(item_scroll.size.x, content_width))
 	# Measure the actual content viewport, including the space reserved for

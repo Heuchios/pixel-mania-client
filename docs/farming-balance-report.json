@@ -639,7 +639,7 @@
       "tree_xp": 0,
       "seeds_per_cycle": null,
       "gems_per_cycle": null,
-      "break_details": "neptune_trident: 1 at 1.00%; treasure_chest: 1 at 9.00%; mossy_chest: 1 at 14.00%; golden_lure: 1 at 10.00%; void_worm_lure: 1 at 4.00%; coral: 2–5 at 12.00%; clam: 2–5 at 12.00%; seaweed: 3–8 at 14.00%; trash_can: 2–5 at 10.00%; rusty_bicycle: 1–2 at 8.00%; naval_mines: 1 at 6.00%",
+      "break_details": "neptune_trident: 1 at 1.00%; minnow_bait: 1 at 9.00%; worm_bait: 1 at 14.00%; shiny_worm_bait: 1 at 10.00%; shrimp_bait: 1 at 4.00%; coral: 2–5 at 12.00%; clam: 2–5 at 12.00%; seaweed: 3–8 at 14.00%; trash_can: 2–5 at 10.00%; rusty_bicycle: 1–2 at 8.00%; naval_mines: 1 at 6.00%",
       "tree_details": "None",
       "source": "Existing special behavior",
       "growth_source": "",

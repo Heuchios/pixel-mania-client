@@ -261,12 +261,12 @@ var fishing_lure_id = ""
 var fishing_target_grid = INVALID_GRID_POS
 
 const ITEM_DATABASE_PATH = "res://Scripts/item_database.gd"
-const SEED_BOX_TEXTURE_PATH = "res://Assets/seeds/seed_box.png"
-const SEED_ICON_PREVIEW_MAX_SIZE = 10
-const SEED_ICON_PREVIEW_TOP = 13
-const SEED_ICON_PREVIEW_OFFSET = Vector2i(-4, -2)
-const SEED_DROP_ICON_PREVIEW_MAX_SIZE = 10
-const SEED_DROP_ICON_PREVIEW_TOP = 14
+const SEED_BOX_TEXTURE_PATH = "res://Assets/seeds/seed_box.tres"
+const SEED_ICON_PREVIEW_MAX_SIZE = 18
+const SEED_ICON_PREVIEW_TOP = 10
+const SEED_ICON_PREVIEW_OFFSET = Vector2i(-3, -2)
+const SEED_DROP_ICON_PREVIEW_MAX_SIZE = 18
+const SEED_DROP_ICON_PREVIEW_TOP = 10
 const SEED_DROP_ICON_PREVIEW_OFFSET = Vector2i(-3, -2)
 const BLOCK_TREE_TEMPLATE_PATHS = [
 	"res://Assets/seed_tree_sprites/block_tree_stage_0.png",
@@ -351,6 +351,7 @@ var seed_textures = {}
 var seed_tree_textures = {}
 var seed_icon_texture_cache = {}
 var seed_drop_icon_texture_cache = {}
+var seed_box_preview_texture_cache = {}
 var generated_seed_tree_texture_blocks = {}
 var tool_textures = {}
 var back_textures = {}
@@ -1096,7 +1097,7 @@ func get_seed_box_preview_layout(seed_type: String, preview_max_size: int, previ
 		return {}
 
 	var block_type: String = get_seed_preview_block_type(clean_seed_type)
-	var block_texture: Texture2D = get_seed_preview_block_texture(block_type)
+	var block_texture: Texture2D = get_seed_box_fitted_preview_texture(block_type)
 	if block_texture == null:
 		return {}
 
@@ -1120,6 +1121,23 @@ func get_seed_box_preview_layout(seed_type: String, preview_max_size: int, previ
 		"destination": destination,
 		"block_type": block_type
 	}
+
+
+func get_seed_box_fitted_preview_texture(block_type: String) -> Texture2D:
+	var source: Texture2D = get_seed_preview_block_texture(block_type)
+	if source == null:
+		return null
+	var cached: Dictionary = seed_box_preview_texture_cache.get(block_type, {})
+	if cached.get("source") == source:
+		return cached["texture"]
+	var fitted: Texture2D = source
+	var source_image := get_texture_region_image(source)
+	if source_image != null:
+		var visible_rect := source_image.get_used_rect()
+		if visible_rect.has_area() and visible_rect != Rect2i(Vector2i.ZERO, source_image.get_size()):
+			fitted = ImageTexture.create_from_image(source_image.get_region(visible_rect))
+	seed_box_preview_texture_cache[block_type] = {"source": source, "texture": fitted}
+	return fitted
 
 
 func get_seed_box_composite_texture(seed_type: String, cache: Dictionary) -> Texture2D:
@@ -1413,6 +1431,7 @@ func setup_item_database():
 	seed_tree_textures.clear()
 	seed_icon_texture_cache.clear()
 	seed_drop_icon_texture_cache.clear()
+	seed_box_preview_texture_cache.clear()
 	generated_seed_tree_texture_blocks.clear()
 	tool_inventory.clear()
 	back_inventory.clear()
@@ -6178,7 +6197,7 @@ func roll_lure_from_pack() -> String:
 	if fishing_manager != null and fishing_manager.has_method("roll_lure_from_pack"):
 		return fishing_manager.roll_lure_from_pack()
 
-	return "worm_lure"
+	return "bait"
 func use_selected_item_at_mouse():
 	if interaction_manager != null and interaction_manager.has_method("use_selected_item_at_mouse"):
 		interaction_manager.use_selected_item_at_mouse()

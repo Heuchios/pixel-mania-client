@@ -1,6 +1,10 @@
 [gd_scene format=3 uid="uid://bwn7fo0p2tquy"]
 
-[ext_resource type="Texture2D" uid="uid://bfrspsdgbvcb" path="res://Assets/items/lures/worm_lure.png" id="1_vhoxl"]
+[ext_resource type="Texture2D" path="res://Assets/items/material.png" id="1_vhoxl"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_worm_bait"]
+atlas = ExtResource("1_vhoxl")
+region = Rect2(32, 160, 32, 32)
 
 [sub_resource type="Animation" id="Animation_rvxom"]
 length = 0.001
@@ -149,7 +153,7 @@ width = 2.0
 default_color = Color(0.85, 0.95, 1, 0.88)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=582393742]
-texture = ExtResource("1_vhoxl")
+texture = SubResource("AtlasTexture_worm_bait")
 
 [node name="FishingLineEnd" type="Marker2D" parent="Sprite2D" unique_id=1768453618]
 visible = false

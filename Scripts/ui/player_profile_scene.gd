@@ -33,6 +33,7 @@ var showcase_world_label: Label = null
 var edit_bio_button_skin: NinePatchRect = null
 var edit_bio_button: Button = null
 var recipe_book_button: Button = null
+var fish_journal_button: Button = null
 var bio_editor_skin: NinePatchRect = null
 var bio_text_edit: TextEdit = null
 var bio_save_button: Button = null
@@ -61,6 +62,7 @@ func build_menu():
 	action_panel = get_node_or_null("CenterContainer/ProfileWindow/FooterPanel")
 	worlds_button = get_node_or_null("%VisitWorldButton")
 	recipe_book_button = get_node_or_null("%RecipeBookButton") as Button
+	fish_journal_button = get_node_or_null("%FishJournalButton") as Button
 	titles_button = null
 	trade_button = get_node_or_null("%MessageButton")
 	friend_button = get_node_or_null("%PrimaryActionButton")
@@ -126,6 +128,10 @@ func _connect_profile_buttons() -> void:
 		var friend_callback := Callable(self, "_on_friend_pressed")
 		if not friend_button.pressed.is_connected(friend_callback):
 			friend_button.pressed.connect(friend_callback)
+	if fish_journal_button != null:
+		var journal_callback := Callable(self, "_on_fish_journal_pressed")
+		if not fish_journal_button.pressed.is_connected(journal_callback):
+			fish_journal_button.pressed.connect(journal_callback)
 	if recipe_book_button != null:
 		var recipe_book_callback := Callable(self, "_on_recipe_book_pressed")
 		if not recipe_book_button.pressed.is_connected(recipe_book_callback):
@@ -904,9 +910,12 @@ func update_action_buttons():
 		_set_action_button(trade_button, false, false, "TRADE")
 		_set_action_button(friend_button, false, false, "ADD FRIEND")
 		_set_action_button(recipe_book_button, true, false, "RECIPE BOOK")
+		_set_action_button(fish_journal_button, true, false, "FISH JOURNAL")
 		_set_action_button(worlds_button, true, false, "MY WORLDS")
 		if recipe_book_button != null:
 			visible_buttons.append(recipe_book_button)
+		if fish_journal_button != null:
+			visible_buttons.append(fish_journal_button)
 		visible_buttons.append(worlds_button)
 		_layout_action_buttons(visible_buttons)
 		return
@@ -926,6 +935,7 @@ func update_action_buttons():
 	# The recipe book is a personal reference view, so it stays off other
 	# players' profiles.
 	_set_action_button(recipe_book_button, false, false, "RECIPE BOOK")
+	_set_action_button(fish_journal_button, false, false, "FISH JOURNAL")
 
 	for button in [trade_button, worlds_button, friend_button]:
 		if button != null and button.get_parent() != null and button.get_parent().visible:
@@ -976,6 +986,16 @@ func _layout_action_buttons(buttons: Array[Button]) -> void:
 		skin.position = Vector2(x, 6.0)
 		skin.size = Vector2(widths[index], 48.0)
 		x += widths[index] + gap
+
+
+func _on_fish_journal_pressed() -> void:
+	if profile_mode == "remote":
+		return
+	if world != null and world.get("fishing_manager") != null:
+		close_menu()
+		world.fishing_manager.open_fishing_journal()
+		return
+	notify("The fish journal is not available right now.")
 
 
 func _on_recipe_book_pressed() -> void:

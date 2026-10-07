@@ -122,8 +122,8 @@ func _test_rules() -> void:
 		game.pull()
 		check(game.pulls == 1, "Visible zone boundary was counted as a miss")
 
-func begin_local(fish := "pond_fish") -> void:
-	manager.start_local_cast(world.target, "worm_lure", true, "", {"item_id": fish, "difficulty": 1})
+func begin_local(fish := "guppy") -> void:
+	manager.start_local_cast(world.target, "bait", true, "", {"item_id": fish, "difficulty": 1})
 	manager.update_fishing(.4)
 	manager.update_fishing(6.0)
 
@@ -149,13 +149,13 @@ func send_click(position: Vector2) -> void:
 func _test_cast_and_inputs() -> void:
 	world.target = Vector2i(8, 1)
 	manager.use_fishing_rod_at_mouse()
-	check(not world.fishing_active and world.lure_inventory.worm_lure == 20, "Out-of-reach cast spent bait")
+	check(not world.fishing_active and world.lure_inventory.bait == 20, "Out-of-reach cast spent bait")
 	world.target = Vector2i(2, 2)
 	manager.use_fishing_rod_at_mouse()
 	check(not world.fishing_active, "Cast on dry land started")
 	world.target = Vector2i(2, 1)
 	begin_local()
-	check(world.lure_inventory.worm_lure == 19 and manager.state == "bite", "Cast did not spend one lure and reach bite")
+	check(world.lure_inventory.bait == 19 and manager.state == "bite", "Cast did not spend one lure and reach bite")
 	check(manager.bobber != null and manager.fishing_line.visible, "Bobber/line did not appear")
 	check(manager.fishing_line.points.size() == 17, "Fishing line lost its segments")
 	inputs.is_holding = true
@@ -185,13 +185,13 @@ func _test_cast_and_inputs() -> void:
 	manager.update_minigame_visuals()
 	await create_timer(.15).timeout
 	send_click(manager.fishing_ui.reel_button.get_global_rect().get_center())
-	var landed_units: int = int(world.fish_inventory.get("pond_fish", 0))
+	var landed_units: int = int(world.fish_inventory.get("guppy", 0))
 	check(manager.state == "idle" and landed_units >= 1 and landed_units <= 1500, "Native REEL did not award a 0.1–150 kg catch")
 	check(manager.fishing_ui.catch_card.visible, "Local catch card was not shown")
 	manager.catch_fish()
-	check(world.fish_inventory.get("pond_fish", 0) == landed_units, "Duplicate completion awarded twice")
+	check(world.fish_inventory.get("guppy", 0) == landed_units, "Duplicate completion awarded twice")
 	await process_frame
-	begin_local("crystal_fish")
+	begin_local("swordfish")
 	await process_frame
 	send_key(KEY_E)
 	check(manager.pull_game.required_pulls == 4, "Rare fish must need four pulls")
@@ -245,39 +245,39 @@ func _test_cleanup() -> void:
 	check(not world.fishing_active, "Missed bite did not reset cast")
 
 func cast_reply(request_id: String, session := "test-session") -> Dictionary:
-	return {"action": "fishing_start", "ok": true, "request_id": request_id, "session_id": session, "target_x": 2, "target_y": 1, "lure_id": "worm_lure", "item_id": "pond_fish", "item_category": "fish", "difficulty": 1}
+	return {"action": "fishing_start", "ok": true, "request_id": request_id, "session_id": session, "target_x": 2, "target_y": 1, "lure_id": "bait", "item_id": "guppy", "item_category": "fish", "difficulty": 1}
 
 func _test_network_lifecycle() -> void:
 	network.online = true
 	world.authoritative = true
-	manager.start_cast(world.target, "worm_lure")
+	manager.start_cast(world.target, "bait")
 	var request: String = manager.cast_request_id
 	var count: int = network.requests.size()
-	manager.start_cast(world.target, "worm_lure")
+	manager.start_cast(world.target, "bait")
 	check(network.requests.size() == count, "Second cast sent while acknowledgement was pending")
 	manager.cancel_fishing()
 	manager.handle_inventory_transaction_result(cast_reply(request))
 	check(not world.fishing_active and network.requests.back().success == false, "Late cancelled cast reopened fishing")
-	manager.start_cast(world.target, "worm_lure")
+	manager.start_cast(world.target, "bait")
 	request = manager.cast_request_id
 	manager.update_fishing(8.1)
 	check(not manager.is_fishing_active(), "Cast acknowledgement timeout left fishing locked")
 	manager.handle_inventory_transaction_result(cast_reply(request, "timeout-session"))
 	check(not world.fishing_active, "Timed-out cast reopened fishing")
-	manager.start_cast(world.target, "worm_lure")
+	manager.start_cast(world.target, "bait")
 	request = manager.cast_request_id
 	world.current_world_name = "OTHER"
 	manager.handle_inventory_transaction_result(cast_reply(request, "old-world-session"))
 	check(not world.fishing_active, "Old world cast started in new world")
 	world.current_world_name = "FISHING_TEST"
-	manager.start_cast(world.target, "worm_lure")
+	manager.start_cast(world.target, "bait")
 	request = manager.cast_request_id
-	var bait: int = world.lure_inventory.worm_lure
+	var bait: int = world.lure_inventory.bait
 	var reply := cast_reply(request, "good-session")
 	manager.handle_inventory_transaction_result(reply)
 	var bobber = manager.bobber
 	manager.handle_inventory_transaction_result(reply)
-	check(manager.bobber == bobber and world.lure_inventory.worm_lure == bait, "Ack restarted cast or charged client bait twice")
+	check(manager.bobber == bobber and world.lure_inventory.bait == bait, "Ack restarted cast or charged client bait twice")
 	manager.update_fishing(.4)
 	manager.update_fishing(6)
 	manager.start_minigame()
@@ -288,18 +288,18 @@ func _test_network_lifecycle() -> void:
 	var complete: Dictionary = network.requests.back()
 	check(complete.success == true and complete.session_id == "good-session", "Wrong success/session sent")
 	count = network.requests.size()
-	manager.start_cast(world.target, "worm_lure")
+	manager.start_cast(world.target, "bait")
 	check(network.requests.size() == count, "New cast raced pending reward")
 	manager.update_fishing(12.1)
 	check(not manager.is_fishing_active(), "Lost reward acknowledgement locked fishing forever")
-	manager.start_cast(world.target, "worm_lure")
+	manager.start_cast(world.target, "bait")
 	request = manager.cast_request_id
 	manager.handle_inventory_transaction_result(cast_reply(request, "new-session"))
-	var reward := {"action": "fishing_complete", "ok": true, "request_id": complete.request_id, "fish_id": "pond_fish", "item_id": "pond_fish", "item_category": "fish", "catch_weight": 1.0, "message": "Caught Pond Fish"}
-	var before: int = world.fish_inventory.get("pond_fish", 0)
+	var reward := {"action": "fishing_complete", "ok": true, "request_id": complete.request_id, "fish_id": "guppy", "item_id": "guppy", "item_category": "fish", "catch_weight": 1.0, "message": "Caught Guppy"}
+	var before: int = world.fish_inventory.get("guppy", 0)
 	manager.handle_inventory_transaction_result(reward)
 	manager.handle_inventory_transaction_result(reward)
-	check(world.fish_inventory.pond_fish == before + 10, "Duplicate reward applied twice")
+	check(world.fish_inventory.guppy == before + 10, "Duplicate reward applied twice")
 	check(manager.state == "casting" and manager.fishing_ui.waiting_panel.visible, "Late reward hid the new cast")
 	manager.cancel_fishing()
 	manager.handle_inventory_transaction_result({"action":"fishing_complete", "ok":true, "request_id": manager.catch_request_id})
@@ -311,7 +311,7 @@ func _test_layout() -> void:
 		root.content_scale_size = Vector2i.ZERO
 		await process_frame
 		manager.pull_game.start(false)
-		ui.set_reeling_reward(world.fish_textures.pond_fish)
+		ui.set_reeling_reward(world.fish_textures.guppy)
 		ui.show_pull_game(manager.pull_game.snapshot())
 		await create_timer(.2).timeout
 		var panel: Rect2 = ui.reeling_panel.get_global_rect()
@@ -326,11 +326,11 @@ func _test_layout() -> void:
 		check(is_equal_approx(ui.bite_time_left, 2.0), "UI advanced the manager's bite countdown twice")
 		check_fits(ui.bite_panel, Vector2(width, 720))
 		check(ui.bite_panel.get_node("HookButton").get_global_rect().size.y >= 44.0, "Touch hook target is too small")
-		ui.show_catch_result({"name":"Pond Fish", "rarity":"common", "amount":"x1", "value":"3"})
+		ui.show_catch_result({"name":"Guppy", "rarity":"common", "amount":"x1", "value":"3"})
 		await create_timer(.25).timeout
 		check_fits(ui.catch_card, Vector2(width, 720))
 		ui._fade_out(ui.catch_card)
-		ui.show_catch_result({"name":"Pond Fish", "rarity":"common", "amount":"x1", "value":"3"})
+		ui.show_catch_result({"name":"Guppy", "rarity":"common", "amount":"x1", "value":"3"})
 		await create_timer(.25).timeout
 		check(ui.catch_card.visible, "Old fade hid a newer catch")
 		ui.show_escape()
@@ -349,13 +349,13 @@ func check_fits(panel: Control, dimensions: Vector2) -> void:
 
 
 func _test_last_lure() -> void:
-	world.selected_item_type = "worm_lure"
+	world.selected_item_type = "bait"
 	world.selected_item_category = "lure"
-	world.lure_inventory.worm_lure = 1
-	manager.start_cast(world.target, "worm_lure")
+	world.lure_inventory.bait = 1
+	manager.start_cast(world.target, "bait")
 	var request: String = manager.cast_request_id
 	# The real network manager applies inventory deltas before dispatching the ack.
-	world.lure_inventory.worm_lure = 0
+	world.lure_inventory.bait = 0
 	world.selected_item_type = "punch"
 	world.selected_item_category = "tool"
 	manager.handle_inventory_transaction_result(cast_reply(request, "last-lure"))
@@ -365,9 +365,9 @@ func _test_last_lure() -> void:
 	manager.handle_inventory_transaction_result({"action":"fishing_complete", "ok":true, "request_id": manager.catch_request_id})
 	network.online = false
 	world.authoritative = false
-	world.selected_item_type = "worm_lure"
+	world.selected_item_type = "bait"
 	world.selected_item_category = "lure"
-	world.lure_inventory.worm_lure = 1
+	world.lure_inventory.bait = 1
 	begin_local()
 	world.selected_item_type = "punch"
 	world.selected_item_category = "tool"
@@ -377,5 +377,5 @@ func _test_last_lure() -> void:
 	world.selected_item_type = "bamboo_fishing_rod"
 	manager.use_fishing_rod_at_mouse()
 	check(not world.fishing_active, "Fishing started without bait")
-	world.lure_inventory.worm_lure = 20
+	world.lure_inventory.bait = 20
 	await process_frame

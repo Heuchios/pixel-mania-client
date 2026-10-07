@@ -24,7 +24,7 @@ func _run() -> void:
 	await capture(viewport, output, "waiting")
 	ui.show_bite(3.0)
 	await capture(viewport, output, "bite")
-	ui.set_reeling_reward(world.fish_textures.pond_fish)
+	ui.set_reeling_reward(world.fish_textures.guppy)
 	manager.pull_game.start(false)
 	manager.pull_game.rest_left = 0
 	manager.pull_game.pulls = 1
@@ -35,11 +35,11 @@ func _run() -> void:
 	viewport.size = Vector2i(320, 720)
 	await capture(viewport, output, "reeling-narrow")
 	viewport.size = Vector2i(1280, 720)
-	world.item_database["pond_fish_large"] = {"display_name": "Pond Fish", "category": "fish", "rarity": "common", "fish_base_price_kg": 2.25}
-	world.fish_textures["pond_fish_large"] = load("res://Assets/items/fish/pond_fish_large.png")
-	var catch_data: Dictionary = manager._build_catch_result_data("pond_fish_large", true, 5.7)
+	world.item_database["guppy"] = {"display_name": "Guppy", "category": "fish", "rarity": "common", "fish_base_price_kg": 2.25}
+	world.fish_textures["guppy"] = world.fish_icon(0)
+	var catch_data: Dictionary = manager._build_catch_result_data("guppy", true, 5.7)
 	assert(catch_data.amount == "5.7 kg")
-	assert(catch_data.name == "Pond Fish")
+	assert(catch_data.name == "Guppy")
 	assert(catch_data.value == 13)
 	ui.show_catch_result(catch_data)
 	await capture(viewport, output, "catch")

@@ -20,14 +20,14 @@ var fish_monger_manager = null
 var player: Node2D
 var ui_layer: CanvasLayer
 var blocks := {Vector2i(2, 1): {"type": "water"}}
-var lure_inventory := {"worm_lure": 20}
+var lure_inventory := {"bait": 20}
 var fish_inventory: Dictionary = {}
-var fish_items: Array = ["pond_fish", "crystal_fish"]
+var fish_items: Array = ["guppy", "swordfish"]
 var material_inventory: Dictionary = {}
 var seed_inventory: Dictionary = {}
 var item_database := {
-	"pond_fish": {"name": "Pond Fish", "rarity": "common", "difficulty": 1, "sell_value": 3},
-	"crystal_fish": {"name": "Crystal Fish", "rarity": "rare", "difficulty": 5, "sell_value": 16}
+	"guppy": {"category": "fish", "name": "Guppy", "rarity": "common", "difficulty": 1, "sell_value": 3},
+	"swordfish": {"category": "fish", "name": "Swordfish", "rarity": "rare", "difficulty": 5, "sell_value": 16}
 }
 var fish_textures: Dictionary = {}
 var material_textures: Dictionary = {}
@@ -59,8 +59,8 @@ func _ready() -> void:
 	hand.add_child(tip)
 	ui_layer = CanvasLayer.new()
 	add_child(ui_layer)
-	fish_textures["pond_fish"] = load("res://Assets/items/fish/pond_fish_small.png")
-	fish_textures["crystal_fish"] = load("res://Assets/items/fish/crystal_fish.png")
+	fish_textures["guppy"] = fish_icon(0)
+	fish_textures["swordfish"] = fish_icon(12)
 
 func _input(event: InputEvent) -> void:
 	if input_manager != null:
@@ -118,3 +118,9 @@ func is_fish_monger_open() -> bool: return false
 func is_cctv_open() -> bool: return false
 func is_oil_refinery_open() -> bool: return false
 func is_battery_charger_open() -> bool: return false
+
+func fish_icon(column: int) -> Texture2D:
+	var icon := AtlasTexture.new()
+	icon.atlas = load("res://Assets/items/material.png")
+	icon.region = Rect2(column * 32, 192, 32, 32)
+	return icon

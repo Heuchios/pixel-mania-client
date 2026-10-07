@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://cbh6sycrk86rb"]
 
+[ext_resource type="Script" path="res://Scripts/ui/lobby_gameplay_tips.gd" id="gameplay_tips"]
+
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/outer_panel.tres" id="panel_role_0"]
 [ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_1"]
 [ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/outer_panel.tres" id="panel_role_2"]
@@ -1132,3 +1134,8 @@ theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_w816g")
 theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_i8c6c")
 text = "JOIN"
 metadata/pixelmania_font_role = "preserve"
+
+[node name="GameplayTips" type="Label" parent="."]
+mouse_filter = 2
+metadata/manual_screen_layout = true
+script = ExtResource("gameplay_tips")

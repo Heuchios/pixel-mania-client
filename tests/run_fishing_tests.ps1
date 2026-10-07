@@ -18,12 +18,12 @@ $files = @(
     'Scripts/ui/fishing_catch_spotlight.gd', 'Scripts/ui/atlas_progress_visual.gd',
     'Scripts/ui/pixel_ui_style.gd', 'Scripts/ui/panel_drop_shadow.gd',
     'Scripts/ui/global_font_manager.gd', 'Scenes/fishing_bobber.tscn',
-    'Assets/ui/UI_3.0.png', 'Assets/items/lures/worm_lure.png',
-    'Assets/items/fish/pond_fish_small.png', 'Assets/items/fish/crystal_fish.png',
-    'Assets/items/fish/pond_fish_large.png',
+    'Assets/ui/UI_3.0.png', 'Assets/items/material.png',
     'Assets/font/font.ttf', 'tests/fishing_minigame_test.gd',
     'tests/fixtures/fishing_test_world.gd', 'tests/mobile_single_tap_input_test.gd',
-    'tests/fishing_ui_preview.gd'
+    'tests/fishing_ui_preview.gd', 'tests/fishing_catalog_test.gd',
+    'Scripts/item_database.gd', 'Scripts/item_data_contract.gd',
+    'Data/items/item_data_overrides.json', 'Data/items/fishing_catalog.json'
 )
 foreach ($relative in $files) {
     $destination = Join-Path $testRoot $relative
@@ -48,7 +48,9 @@ renderer/rendering_method="gl_compatibility"
 textures/canvas_textures/default_texture_filter=0
 '@ | Set-Content -LiteralPath (Join-Path $testRoot 'project.godot')
 Write-Output "Fishing test project: $testRoot"
+$ErrorActionPreference = 'Continue'
 & $Godot --headless --path $testRoot --log-file (Join-Path $testRoot 'import.log') --editor --import --quit 2>&1 | Out-File (Join-Path $testRoot 'import-output.log')
+$ErrorActionPreference = 'Stop'
 if ($LASTEXITCODE -ne 0) { Get-Content (Join-Path $testRoot 'import-output.log'); exit $LASTEXITCODE }
 @'
 [autoload]
@@ -56,8 +58,10 @@ GlobalFontManager="*res://Scripts/ui/global_font_manager.gd"
 [gui]
 theme/custom="res://Assets/ui/atlas/theme.tres"
 '@ | Add-Content -LiteralPath (Join-Path $testRoot 'project.godot')
-foreach ($test in @('fishing_minigame_test', 'mobile_single_tap_input_test')) {
+foreach ($test in @('fishing_catalog_test', 'fishing_minigame_test', 'mobile_single_tap_input_test')) {
+    $ErrorActionPreference = 'Continue'
     & $Godot --headless --path $testRoot --log-file (Join-Path $testRoot ($test + '.log')) --script ('res://tests/' + $test + '.gd')
+    $ErrorActionPreference = 'Stop'
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     $runtimeErrors = Get-Content -LiteralPath (Join-Path $testRoot ($test + '.log')) | Where-Object {
         $_ -match '^(SCRIPT ERROR|ERROR):' -and $_ -notmatch '^ERROR: Failed to read the root certificate store\.$'

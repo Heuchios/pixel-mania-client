@@ -36,7 +36,7 @@ func _run() -> void:
 	var item_database_node = item_database_script.new()
 	var merged_database := ITEM_ATLAS_DB.merge_item_database({
 		"fish_hanger": item_database_node.get_item_data("fish_hanger").duplicate(true),
-		"pond_fish": item_database_node.get_item_data("pond_fish").duplicate(true)
+		"guppy": item_database_node.get_item_data("guppy").duplicate(true)
 	})
 	var hanger_data: Dictionary = merged_database.get("fish_hanger", {})
 	assert(bool(hanger_data.get("display_block", false)))
@@ -47,7 +47,10 @@ func _run() -> void:
 
 	var world := MockWorld.new()
 	world.item_database = merged_database
-	world.fish_textures["pond_fish"] = load("res://Assets/items/fish/pond_fish_large.png")
+	var fish_icon := AtlasTexture.new()
+	fish_icon.atlas = load("res://Assets/items/material.png")
+	fish_icon.region = Rect2(0, 192, 32, 32)
+	world.fish_textures["guppy"] = fish_icon
 	root.add_child(world)
 
 	var hanger_grid := Vector2i(4, 3)
@@ -58,8 +61,8 @@ func _run() -> void:
 	world.display_states[hanger_grid] = {
 		"state": {
 			"slot": {
-				"item_id": "pond_fish",
-				"item_type": "pond_fish",
+				"item_id": "guppy",
+				"item_type": "guppy",
 				"item_category": "fish",
 				"amount": 1
 			}

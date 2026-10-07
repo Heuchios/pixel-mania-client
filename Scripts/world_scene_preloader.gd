@@ -76,7 +76,7 @@ const STARTUP_TEXTURE_KEYS := [
 ]
 const ALWAYS_WARM_VISUAL_PATHS := [
 	"res://Assets/atlases/items.png",
-	"res://Assets/seeds/seed_box.png",
+	"res://Assets/seeds/seed_box.tres",
 	"res://Assets/seed_tree_sprites/block_tree_stage_0.png",
 	"res://Assets/seed_tree_sprites/block_tree_stage_1.png",
 	"res://Assets/seed_tree_sprites/block_tree_stage_2.png",

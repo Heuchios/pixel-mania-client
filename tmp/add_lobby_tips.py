@@ -1,0 +1,2 @@
+from pathlib import Path
+p=Path('Scenes/ui/lobby/LobbyScene.tscn');s=p.read_text(encoding='utf-8');idx=s.index('[node ');s=s[:idx]+'[ext_resource type="Script" path="res://Scripts/ui/lobby_gameplay_tips.gd" id="gameplay_tips"]\n\n'+s[idx:];s+='\n[node name="GameplayTips" type="Label" parent="."]\nmouse_filter = 2\nmetadata/manual_screen_layout = true\nscript = ExtResource("gameplay_tips")\n';p.write_text(s,encoding='utf-8')

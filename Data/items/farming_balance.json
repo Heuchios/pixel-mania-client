@@ -5355,25 +5355,25 @@
             "amount": 1
           },
           {
-            "item_id": "treasure_chest",
-            "item_category": "fish",
+            "item_id": "minnow_bait",
+            "item_category": "lure",
             "weight": 9,
             "amount": 1
           },
           {
-            "item_id": "mossy_chest",
-            "item_category": "fish",
+            "item_id": "worm_bait",
+            "item_category": "lure",
             "weight": 14,
             "amount": 1
           },
           {
-            "item_id": "golden_lure",
+            "item_id": "shiny_worm_bait",
             "item_category": "lure",
             "weight": 10,
             "amount": 1
           },
           {
-            "item_id": "void_worm_lure",
+            "item_id": "shrimp_bait",
             "item_category": "lure",
             "weight": 4,
             "amount": 1

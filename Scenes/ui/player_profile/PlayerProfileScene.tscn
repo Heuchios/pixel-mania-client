@@ -1176,6 +1176,44 @@ theme_override_colors/font_hover_color = Color(0.35, 0.16, 0.43, 1)
 theme_override_colors/font_pressed_color = Color(0.19, 0.09, 0.24, 1)
 theme_override_colors/font_disabled_color = Color(0.38, 0.32, 0.42, 1)
 
+[node name="FishJournalButtonSkin" type="NinePatchRect" parent="CenterContainer/ProfileWindow/FooterPanel"]
+editor_description = "NinePatchRect skin for FishJournalButton. Replace its texture to customize the button background."
+texture_filter = 1
+layout_mode = 0
+offset_left = 182.0
+offset_top = 6.0
+offset_right = 378.0
+offset_bottom = 44.0
+mouse_filter = 1
+texture = ExtResource("5_k7k66")
+patch_margin_left = 2
+patch_margin_top = 1
+patch_margin_right = 2
+patch_margin_bottom = 5
+
+[node name="FishJournalButton" type="Button" parent="CenterContainer/ProfileWindow/FooterPanel/FishJournalButtonSkin"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxEmpty_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
+text = "FISH JOURNAL"
+metadata/pixelmania_font_role = "preserve"
+theme_override_colors/font_color = Color(0.19, 0.09, 0.24, 1)
+theme_override_colors/font_hover_color = Color(0.35, 0.16, 0.43, 1)
+theme_override_colors/font_pressed_color = Color(0.19, 0.09, 0.24, 1)
+theme_override_colors/font_disabled_color = Color(0.38, 0.32, 0.42, 1)
+
 [node name="EquipmentCaption" type="Label" parent="CenterContainer/ProfileWindow/ShowcasePanel/BadgeSlot"]
 offset_right = 208.0
 offset_bottom = 20.0

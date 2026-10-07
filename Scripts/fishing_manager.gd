@@ -1,5 +1,8 @@
 extends Node
 
+const POPUP_W = 440.0
+const POPUP_H = 360.0
+
 const RodAttachment = preload("res://Scripts/fishing_rod_attachment.gd")
 const FishSpecies = preload("res://Scripts/fish_species.gd")
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
@@ -1311,7 +1314,7 @@ func is_fishable_water(grid_pos: Vector2i) -> bool:
 
 
 func get_best_available_lure() -> String:
-	for lure_id in ["void_worm_lure", "bonito_lure", "cotton_cordel_lure", "golden_lure", "shiny_lure", "worm_lure", "hook"]:
+	for lure_id in ["shrimp_bait","minnow_bait","shiny_worm_bait","worm_bait","bait"]:
 		if world.lure_inventory.has(lure_id) and int(world.lure_inventory[lure_id]) > 0:
 			return lure_id
 	for lure_id in world.lure_inventory.keys():
@@ -1352,57 +1355,75 @@ func _roll_fish_entry(lure_id: String, rod_id: String = "") -> Dictionary:
 
 
 func get_fishing_table_for_lure(lure_id: String, rod_id: String = "") -> Array:
-	var safe_lure_id := lure_id.strip_edges()
-	if safe_lure_id == "magnet_lure":
-		return _filter_fishing_table_for_rod(get_magnetic_fishing_table(), rod_id)
-
-	return build_fishing_table_from_rarity_weights(get_fishing_rarity_weights(safe_lure_id), rod_id)
-
+	return build_fishing_table_from_rarity_weights(get_fishing_rarity_weights(lure_id), rod_id)
 
 func get_fishing_rarity_weights(lure_id: String) -> Dictionary:
 	match lure_id:
-		"hook", "worm_lure":
-			return {"common": 8000, "uncommon": 1600, "rare": 300, "epic": 90, "legendary": 10}
-		"shiny_lure":
-			return {"common": 3000, "uncommon": 6100, "rare": 800, "epic": 90, "legendary": 10}
-		"golden_lure":
-			return {"common": 2000, "uncommon": 3000, "rare": 4500, "epic": 490, "legendary": 10}
-		"bonito_lure", "cotton_cordel_lure":
-			return {"common": 1000, "uncommon": 2000, "rare": 3000, "epic": 3500, "legendary": 500}
-		"void_worm_lure":
-			return {"common": 1000, "uncommon": 1500, "rare": 2000, "epic": 2000, "legendary": 3500}
+		"bait":
+			return {"common":8000,"uncommon":1600,"rare":300,"epic":90,"legendary":10}
+		"worm_bait":
+			return {"common":3000,"uncommon":6100,"rare":800,"epic":90,"legendary":10}
+		"shiny_worm_bait":
+			return {"common":2000,"uncommon":3000,"rare":4500,"epic":490,"legendary":10}
+		"minnow_bait":
+			return {"common":1000,"uncommon":2000,"rare":3000,"epic":3500,"legendary":500}
+		"shrimp_bait":
+			return {"common":1000,"uncommon":1500,"rare":2000,"epic":2000,"legendary":3500}
 		_:
-			return {"common": 8000, "uncommon": 1600, "rare": 300, "epic": 90, "legendary": 10}
-
+			return {"common":8000,"uncommon":1600,"rare":300,"epic":90,"legendary":10}
 
 func get_fishing_rarity_pools() -> Dictionary:
 	return {
 		"common": [
-			{"fish_id": "pond_fish_large"},
-			{"fish_id": "cat_fish_large"},
-			{"fish_id": "sea_horse_large"}
+			{
+				"fish_id": "guppy"
+			},
+			{
+				"fish_id": "goldfish"
+			},
+			{
+				"fish_id": "catfish"
+			},
+			{
+				"fish_id": "minnow"
+			}
 		],
 		"uncommon": [
-			{"fish_id": "bone_fish_large"},
-			{"fish_id": "stingray_large"}
+			{
+				"fish_id": "bass"
+			},
+			{
+				"fish_id": "bluegill"
+			},
+			{
+				"fish_id": "mudfish"
+			}
 		],
 		"rare": [
-			{"fish_id": "lava_fish_large"},
-			{"fish_id": "alien_fish_large"}
+			{
+				"fish_id": "blue_tang"
+			},
+			{
+				"fish_id": "red_snapper"
+			},
+			{
+				"fish_id": "clownfish"
+			}
 		],
 		"epic": [
-			{"fish_id": "barracuda_large"},
-			{"fish_id": "shark_large"}
+			{
+				"fish_id": "tuna"
+			},
+			{
+				"fish_id": "salmon"
+			}
 		],
 		"legendary": [
-			{"fish_id": "tail_of_trident"},
-			{"fish_id": "mermaid"},
-			{"fish_id": "megalodon"},
-			{"fish_id": "kraken"},
-			{"fish_id": "sea_eater"}
+			{
+				"fish_id": "swordfish"
+			}
 		]
 	}
-
 
 func get_neptune_rod_special_fishing_rewards(rod_id: String) -> Array:
 	var rewards := [
@@ -1463,21 +1484,6 @@ func get_fishing_entry_difficulty(entry: Dictionary) -> int:
 	return 1
 
 
-func get_magnetic_fishing_table() -> Array:
-	return [
-		{"item_id": "seaweed", "item_category": "material", "weight": 18, "difficulty": 1},
-		{"item_id": "trash_can", "item_category": "material", "weight": 16, "difficulty": 1},
-		{"item_id": "coral", "item_category": "material", "weight": 13, "difficulty": 2},
-		{"item_id": "clam", "item_category": "material", "weight": 13, "difficulty": 2},
-		{"item_id": "compass", "item_category": "material", "weight": 9, "difficulty": 3},
-		{"item_id": "pearl", "item_category": "material", "weight": 8, "difficulty": 3},
-		{"item_id": "rusty_bicycle", "item_category": "material", "weight": 7, "difficulty": 4},
-		{"item_id": "lost_chapter", "item_category": "material", "weight": 5, "difficulty": 5},
-		{"item_id": "topaz_necklace", "item_category": "material", "weight": 4, "difficulty": 6},
-		{"item_id": "toxic_waste", "item_category": "block", "weight": 4, "difficulty": 6},
-		{"item_id": "naval_mines", "item_category": "material", "weight": 2, "difficulty": 7},
-		{"item_id": "atlantic_chest", "item_category": "block", "weight": 1, "difficulty": 6}
-	]
 
 
 func _filter_fishing_table_for_rod(table: Array, rod_id: String) -> Array:
@@ -1503,33 +1509,14 @@ func open_lure_pack(amount: int = 1):
 
 
 func roll_lure_from_pack() -> String:
-	var table := [
-		{"item_id": "hook", "weight": 300},
-		{"item_id": "worm_lure", "weight": 300},
-		{"item_id": "shiny_lure", "weight": 180},
-		{"item_id": "golden_lure", "weight": 100},
-		{"item_id": "magnet_lure", "weight": 60},
-		{"item_id": "bonito_lure", "weight": 30},
-		{"item_id": "cotton_cordel_lure", "weight": 25},
-		{"item_id": "void_worm_lure", "weight": 5}
-	]
-	var total := 0
-	for entry in table:
-		total += int(entry.get("weight", 0))
-	var roll = randi_range(1, max(1, total))
+	var table := [{"item_id":"bait","weight":600},{"item_id":"worm_bait","weight":180},{"item_id":"shiny_worm_bait","weight":160},{"item_id":"minnow_bait","weight":55},{"item_id":"shrimp_bait","weight":5}]
+	var roll := randi_range(1, 1000)
 	var running := 0
 	for entry in table:
-		running += int(entry.get("weight", 0))
+		running += int(entry.weight)
 		if roll <= running:
-			return str(entry.get("item_id", "worm_lure"))
-	return "worm_lure"
-
-
-# ── Fish caught popup ─────────────────────────────────────────
-
-const POPUP_W = 440.0
-const POPUP_H = 360.0
-
+			return str(entry.item_id)
+	return "bait"
 
 func _build_catch_popup():
 	if world == null or world.ui_layer == null:
@@ -1727,20 +1714,7 @@ func _show_catch_popup(fish_id: String):
 # ── Helpers ───────────────────────────────────────────────────
 
 func _lure_bonus(lure_id: String) -> float:
-	match lure_id:
-		"shiny_lure":
-			return 0.045
-		"golden_lure":
-			return 0.075
-		"bonito_lure", "cotton_cordel_lure":
-			return 0.095
-		"void_worm_lure":
-			return 0.12
-		"magnet_lure":
-			return 0.04
-		_:
-			return 0.0
-
+	return float({"bait": 0.0, "worm_bait": 0.045, "shiny_worm_bait": 0.075, "minnow_bait": 0.095, "shrimp_bait": 0.12}.get(lure_id, 0.0))
 
 func _default_fishing_records() -> Dictionary:
 	return {
@@ -1979,7 +1953,8 @@ func _get_all_fish_ids() -> Array:
 		return fish_ids
 	for fish_id_value in world.fish_items:
 		var fish_id: String = str(fish_id_value)
-		if fish_id != "" and not bool(_get_fish_item_data(fish_id).get("hidden", false)) and not fish_ids.has(fish_id):
+		var data := _get_fish_item_data(fish_id)
+		if str(data.get("category", "")) == "fish" and not bool(data.get("hidden", false)) and not fish_ids.has(fish_id):
 			fish_ids.append(fish_id)
 	for item_id_value in world.item_database.keys():
 		var item_id: String = str(item_id_value)
