@@ -7,6 +7,14 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### World taxes removed from gameplay (2026-10-07)
+
+User requested removing taxes for now. Backend WORLD_TAX_SUSPENDED defaults true,
+overriding prior activation; no billing, payments, or overdue acquisition blocks.
+Profile no longer creates the Taxes entry or panel. Historical accounting remains
+untouched. Name reservations, claim prices and permanent ownership are unchanged.
+Do not opt back in without a billing-date migration to prevent retroactive bills.
+
 ### Unpaid world lock release (2026-10-07)
 
 Removing an unpaid world lock now releases the reservation and owner immediately,
