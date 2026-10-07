@@ -1169,7 +1169,11 @@ func _refresh_name_card() -> void:
 		_name_label.text = "Claim " + public_name + " for " + _gem_amount(int(_name_info.get("quoted_gems", 0))) + " gems by " + deadline + " UTC\n" + receipt
 	else:
 		_name_label.text = public_name + " — Your world is safe. Reserve an available name for seven days.\n" + receipt
-	_name_input.visible = true
+	_name_input.get_parent().visible = state != "claimed"
+	_name_input.visible = state != "claimed"
+	_name_search_label.visible = state != "claimed"
+	if state == "claimed":
+		_name_quote = {}
 	_name_search_button.disabled = _name_request_deadline > 0 or _name_input.text.strip_edges() == ""
 	_name_button.visible = _name_can_manage and state in ["reserved", "generated"]
 	_name_button.text = "CLAIM NAME" if state == "reserved" else "RESERVE NAME"
@@ -1201,7 +1205,7 @@ func _invalidate_name_quote(_text: String) -> void:
 	_refresh_name_card()
 
 func _search_name() -> void:
-	if _name_request_deadline > 0:
+	if _name_request_deadline > 0 or str(_name_info.get("status", "")) == "claimed":
 		return
 	_name_quote = {}
 	_name_search_label.text = "Searching..."

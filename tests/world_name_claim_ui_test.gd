@@ -22,7 +22,9 @@ func _run() -> void:
 	assert(ui._name_label.text.contains("750,000 gems (server verified)"))
 	assert(ui._name_label.text.contains("Permanently claimed"))
 	assert(not ui._name_button.visible, "Visitors must not see payment controls")
-	assert(ui._name_input.visible, "Visitors may search availability and prices")
+	assert(not ui._name_input.visible, "Claimed worlds must not offer another name search")
+	assert(not ui._name_search_button.is_visible_in_tree())
+	assert(not ui._name_search_label.visible)
 	assert(ui._name_label.get_global_rect().size.x <= ui._name_card.get_global_rect().size.x)
 	assert(ui.window.get_global_rect().encloses(ui._name_card.get_global_rect()))
 	if "--render" in OS.get_cmdline_user_args():

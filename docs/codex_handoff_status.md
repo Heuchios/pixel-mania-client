@@ -54,6 +54,8 @@ availability and claim price. Only the owner of an auto-named world can reserve 
 replacement; reservation is free and changes the public alias for seven days.
 The server rechecks availability, cooldown and quoted price during reservation.
 Paid names and active reservations cannot be replaced through this control.
+Permanently claimed worlds hide search controls and reject server-side searches;
+their claimed name and original payment receipt remain visible.
 Client requests correlate responses and invalidate quotes when the input changes.
 Focused PostgreSQL/WASM, request transport and desktop/mobile UI tests pass.
 Restart the client/editor play session to load the new search action and controls.
