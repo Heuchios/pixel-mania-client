@@ -1510,6 +1510,9 @@ func update_auto_door_entry(player_grid: Vector2i):
 
 	if player_grid == last_auto_door_grid:
 		return
+	# Retry a new tile after an in-flight request instead of consuming its entry.
+	if Time.get_ticks_msec() < door_enter_cooldown_until_msec:
+		return
 
 	last_auto_door_grid = player_grid
 	if not world.blocks.has(player_grid):
@@ -1527,6 +1530,13 @@ func update_auto_door_entry(player_grid: Vector2i):
 func set_door_enter_cooldown(duration_msec: int = DOOR_ENTER_COOLDOWN_MSEC):
 	door_enter_cooldown_until_msec = Time.get_ticks_msec() + max(0, duration_msec)
 	last_auto_door_grid = Vector2i(999999, 999999)
+
+
+func mark_door_arrival(player_grid: Vector2i):
+	# Suppress only the portal we landed in until the player steps out of it.
+	# Another portal can be used immediately; no global post-travel timer.
+	door_enter_cooldown_until_msec = 0
+	last_auto_door_grid = player_grid
 
 
 func is_toggle_block(block_type: String) -> bool:

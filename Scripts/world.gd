@@ -8027,14 +8027,21 @@ func apply_server_door_spawn(data: Dictionary):
 
 	target_position.x = clamp(target_position.x, 0.0, float((WORLD_WIDTH - 1) * BLOCK_SIZE))
 	target_position.y = clamp(target_position.y, 0.0, float((WORLD_HEIGHT - 1) * BLOCK_SIZE))
+	if server_position_correction_tween != null and server_position_correction_tween.is_valid():
+		server_position_correction_tween.kill()
+		server_position_correction_tween = null
+	_restore_server_correction_presentation_nodes(_get_server_correction_presentation_nodes())
 	player.global_position = target_position
+	player.reset_physics_interpolation()
 
 	if player is CharacterBody2D:
 		player.velocity = Vector2.ZERO
+		if player.has_method("stop_movement_for_portal_arrival"):
+			player.stop_movement_for_portal_arrival()
 		player.set_physics_process(true)
 
-	if has_method("set_door_enter_cooldown"):
-		set_door_enter_cooldown()
+	if interaction_manager != null:
+		interaction_manager.mark_door_arrival(get_player_grid_position())
 
 	if player_manager != null and player_manager.has_method("reset_multiplayer_sync_state"):
 		player_manager.reset_multiplayer_sync_state()

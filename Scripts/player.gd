@@ -170,6 +170,7 @@ var standing_slippery_cache_position := Vector2.ZERO
 var standing_slippery_cache_on_floor := false
 var standing_slippery_cache_data: Dictionary = {}
 var punch_knockback_slide_timer := 0.0
+var portal_arrival_held_direction := 0.0
 var collision_trace_enabled: bool = false
 var collision_trace_lines_left: int = 0
 var collision_trace_release_followup_frames_left: int = 0
@@ -2334,6 +2335,30 @@ func update_variable_jump_release() -> void:
 
 
 func get_horizontal_input_direction() -> float:
+	var direction := get_raw_horizontal_input_direction()
+	if portal_arrival_held_direction != 0.0:
+		if direction == 0.0 or signf(direction) != portal_arrival_held_direction:
+			portal_arrival_held_direction = 0.0
+		else:
+			return 0.0
+	return direction
+
+
+func stop_movement_for_portal_arrival() -> void:
+	velocity = Vector2.ZERO
+	# Walking into the source must not walk us off the destination while fading in.
+	# A release or a new direction rearms movement immediately (including touch input).
+	portal_arrival_held_direction = signf(get_raw_horizontal_input_direction())
+	jump_buffer_timer = 0.0
+	coyote_timer = 0.0
+	variable_jump_active = false
+	punch_knockback_slide_timer = 0.0
+	last_slippery_surface_data.clear()
+	airborne_slippery_surface_data.clear()
+	invalidate_movement_surface_cache()
+
+
+func get_raw_horizontal_input_direction() -> float:
 	var direction = Input.get_axis("move_left", "move_right")
 
 	if Input.is_key_pressed(KEY_LEFT):
