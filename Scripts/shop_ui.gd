@@ -744,6 +744,25 @@ func _set_shop_name_label_text(name_label: Label, text: String) -> void:
 	name_label.add_theme_font_size_override("font_size", 24)
 
 
+func _shop_card_background(item: Dictionary, data: Dictionary) -> String:
+	# Shop category "special" also contains ordinary tools; it is not exclusivity.
+	for source in [item, data]:
+		for flag in ["special", "limited", "unique", "exclusive", "is_special", "is_limited", "is_unique", "once_per_account"]:
+			if source.get(flag, false) == true:
+				return "shop_card_special"
+		if str(source.get("rarity", "")).to_lower() in ["special", "limited", "unique"]:
+			return "shop_card_special"
+	return "shop_card_legendary" if str(data.get("rarity", item.get("rarity", "common"))).to_lower() == "legendary" else "shop_card_normal"
+
+
+func _apply_shop_card_background(card: Button, region: String) -> void:
+	card.set_meta("shop_card_background", region)
+	var backdrop := card.get_node_or_null("IconSlot") as TextureRect
+	if backdrop != null:
+		backdrop.texture = UIAtlasDB.get_texture(region)
+		backdrop.modulate = Color.WHITE
+
+
 func bind_item_card(card: Button, item: Dictionary, category_key: String) -> void:
 	var item_id = str(item.get("item_id", ""))
 	var amount = int(item.get("amount", 1))
@@ -757,6 +776,7 @@ func bind_item_card(card: Button, item: Dictionary, category_key: String) -> voi
 	card.set_meta("price", price)
 	card.set_meta("is_gem_pack", false)
 	card.tooltip_text = get_shop_item_description(item)
+	_apply_shop_card_background(card, _shop_card_background(item, world.item_database.get(item_id, {}) if world != null else {}))
 	card.visible = true
 
 	var icon_slot = card.get_node_or_null("IconSlot")
@@ -798,6 +818,7 @@ func bind_gem_pack_card(card: Button, pack_data: Dictionary) -> void:
 	card.set_meta("price", 0)
 	card.set_meta("is_gem_pack", true)
 	card.tooltip_text = edition
+	_apply_shop_card_background(card, _shop_card_background(pack_data, {}))
 	card.visible = true
 
 	var icon_slot = card.get_node_or_null("IconSlot")

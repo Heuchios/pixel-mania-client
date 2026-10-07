@@ -90,7 +90,7 @@ const STAR_TEXTURE: Texture2D = preload("res://Assets/effects/confetti_star.svg"
 @onready var detail_card: Panel = $DetailOverlay/DetailCard
 @onready var detail_icon_slot: TextureRect = $DetailOverlay/DetailCard/DetailIconSlot
 @onready var detail_icon: TextureRect = $DetailOverlay/DetailCard/DetailIconSlot/DetailIcon
-@onready var detail_name_label: Label = $DetailOverlay/DetailCard/Margin/Column/DetailNameLabel
+@onready var detail_name_label: Label = $DetailOverlay/DetailCard/DetailNameLabel
 @onready var detail_desc_label: Label = $DetailOverlay/DetailCard/Margin/Column/DetailDescLabel
 @onready var detail_close_button: Button = $DetailOverlay/DetailCard/Margin/Column/TopRow/DetailCloseButton
 @onready var detail_buy_button: Button = $DetailOverlay/DetailCard/Margin/Column/DetailBuyButton
@@ -522,7 +522,13 @@ func _open_detail(card: Button) -> void:
 	var card_name_label: Label = card.get_node("NameLabel")
 	var card_price_label: Label = card.get_node("PriceLabel")
 
-	detail_icon_slot.modulate = card_icon_slot.modulate
+	detail_icon_slot.modulate = Color.WHITE
+	var background := UIAtlasDB.get_texture(str(card.get_meta("shop_card_background", "shop_card_normal")))
+	var outer_style := StyleBoxTexture.new()
+	outer_style.texture = background
+	detail_card.add_theme_stylebox_override("panel", outer_style)
+	# Keep the item framed separately from the full-window rarity artwork.
+	detail_icon_slot.texture = UIAtlasDB.get_texture("inv_slot_normal")
 	detail_icon.texture = card_icon.texture
 	detail_name_label.text = card_name_label.text
 	detail_desc_label.text = card.tooltip_text
@@ -583,7 +589,7 @@ func _refresh_detail_affordability() -> void:
 		return
 	var affordable := _detail_is_gem_pack or _available_gems >= _detail_price
 	detail_buy_button.disabled = _detail_item_id.is_empty() or not affordable
-	detail_buy_button.text = "BUY  " + _detail_price_text if affordable else "NEED %s MORE GEMS" % (_detail_price - _available_gems)
+	detail_buy_button.text = ("CLAIM FREE" if _detail_price == 0 and not _detail_is_gem_pack else "BUY  " + _detail_price_text) if affordable else "NEED %s MORE GEMS" % (_detail_price - _available_gems)
 	detail_buy_button.tooltip_text = "" if affordable else "You can keep browsing or use Get Gems to add gems."
 
 

@@ -4063,27 +4063,47 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -210.0
-offset_top = -235.0
-offset_right = 210.0
-offset_bottom = 235.0
+offset_left = -280.0
+offset_top = -300.0
+offset_right = 280.0
+offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = ExtResource("panel_role_5")
+metadata/pixelmania_text_shadow = false
+metadata/pixelmania_panel_shadow = false
+
+
+
+[node name="DetailNameLabel" type="Label" parent="DetailOverlay/DetailCard"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 20.0
+offset_right = 470.0
+offset_bottom = 116.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.196, 0.106, 0.239, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_fonts/font = ExtResource("31_font")
+theme_override_font_sizes/font_size = 40
+text = "Item name"
+autowrap_mode = 3
+metadata/pixelmania_font_size = 40
+metadata/pixelmania_text_shadow = false
 
 [node name="Margin" type="MarginContainer" parent="DetailOverlay/DetailCard" unique_id=-1294967035]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -3.5
-offset_bottom = 3.5
+offset_top = 0.0
+offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 22
-theme_override_constants/margin_top = 18
-theme_override_constants/margin_right = 22
-theme_override_constants/margin_bottom = 18
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 24
 
 [node name="Column" type="VBoxContainer" parent="DetailOverlay/DetailCard/Margin" unique_id=-1294967034]
 layout_mode = 2
@@ -4110,37 +4130,26 @@ expand_icon = true
 
 [node name="DetailIconSpacer" type="Control" parent="DetailOverlay/DetailCard/Margin/Column" unique_id=-1294968028]
 z_index = 1
-custom_minimum_size = Vector2(0, 230)
+custom_minimum_size = Vector2(0, 238)
 layout_mode = 2
 
-[node name="DetailNameLabel" type="Label" parent="DetailOverlay/DetailCard/Margin/Column" unique_id=-1294967028]
-z_index = 1
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_fonts/font = ExtResource("31_font")
-theme_override_font_sizes/font_size = 24
-text = "99,000 GEMS
-DELUXE EDITION"
-horizontal_alignment = 1
-metadata/pixelmania_font_role = "preserve"
 
 [node name="DetailDescLabel" type="Label" parent="DetailOverlay/DetailCard/Margin/Column" unique_id=-1294967027]
 z_index = 1
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(0, 72)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.86, 0.96, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
+theme_override_colors/font_color = Color(0.196, 0.106, 0.239, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
 theme_override_fonts/font = ExtResource("31_font")
 theme_override_font_sizes/font_size = 14
 text = "They said it couldn't be mined. They were wrong."
 horizontal_alignment = 1
 autowrap_mode = 3
 metadata/pixelmania_font_role = "preserve"
+
+metadata/pixelmania_font_size = 19
 
 [node name="BottomSpacer" type="Control" parent="DetailOverlay/DetailCard/Margin/Column" unique_id=-1294967026]
 layout_mode = 2
@@ -4163,31 +4172,35 @@ metadata/pixelmania_font_role = "preserve"
 [node name="DetailIconSlot" type="TextureRect" parent="DetailOverlay/DetailCard" unique_id=-1294968030]
 layout_mode = 1
 anchors_preset = 10
-anchor_right = 1.0
-offset_left = 21.0
-offset_top = 15.0
-offset_right = -22.0
-offset_bottom = 401.0
+anchor_right = 0.0
+offset_left = 188.0
+offset_top = 132.0
+offset_right = 372.0
+offset_bottom = 316.0
 grow_horizontal = 2
 mouse_filter = 2
 texture = ExtResource("14_htq3s")
 expand_mode = 1
 
 [node name="DetailIcon" type="TextureRect" parent="DetailOverlay/DetailCard/DetailIconSlot" unique_id=-1294968029]
-modulate = Color(1, 1, 1, 0.92)
+modulate = Color(1, 1, 1, 1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 83.0
-offset_top = 57.5
-offset_right = -94.0
-offset_bottom = -128.5
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("25_icongem")
 stretch_mode = 5
+
+expand_mode = 1
+
+texture_filter = 1
 
 [node name="PurchaseRewardOverlay" type="Control" parent="." unique_id=-1310000010]
 visible = false

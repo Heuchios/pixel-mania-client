@@ -20,6 +20,9 @@ const TILE_SIZE := 32
 # Coordinates are (col, row) on the 32px grid, matching the "Atlas Coords" /
 # "Size in Atlas" convention used by res://tmp/UI.tres in the TileSet editor.
 const REGIONS := {
+	"shop_card_normal": {"cell": Vector2i(8, 11), "size_in_atlas": Vector2i(3, 3)},
+	"shop_card_legendary": {"cell": Vector2i(11, 11), "size_in_atlas": Vector2i(3, 3)},
+	"shop_card_special": {"cell": Vector2i(14, 11), "size_in_atlas": Vector2i(3, 3)},
 	# Row 0 (y = 0)
 	"outer_panel": {"cell": Vector2i(0, 0)},
 	"inner_panel": {"cell": Vector2i(1, 0)},

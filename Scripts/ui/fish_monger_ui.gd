@@ -76,6 +76,8 @@ func _preserve_text(control: Control, font_size: int):
 func _surface(parent: Control, node_name: String, rect: Rect2, outer: bool = false) -> Panel:
 	var surface := Panel.new()
 	surface.name = node_name
+	if node_name.begins_with("FishRow_") or node_name == "IconBack":
+		surface.set_meta("pixelmania_panel_shadow", false)
 	surface.position = rect.position
 	surface.size = rect.size
 	surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -122,7 +124,7 @@ func build_ui():
 	total_value_label = _text(panel, "TotalValue", "", Rect2(244, 138, 540, 24), 15, PixelUIStyle.GOLD_SOFT)
 	sell_all_button = _button(panel, "SellAllButton", "SELL ALL", Rect2(840, 115, 168, 42), true)
 	sell_all_button.pressed.connect(_on_sell_all_pressed)
-	_surface(panel, "ScrollBack", Rect2(228, 184, 796, 424))
+
 	fish_scroll = ScrollContainer.new()
 	fish_scroll.name = "FishScroll"
 	fish_scroll.position = Vector2(238, 194)
@@ -136,8 +138,9 @@ func build_ui():
 	fish_rows_root.custom_minimum_size = Vector2(get_fish_row_content_width(), 404)
 	fish_rows_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	fish_scroll.add_child(fish_rows_root)
-	empty_label = _text(panel, "EmptyState", "No fish to sell yet.\nCast a line and bring back your catch!", Rect2(248, 322, 748, 100), 18, PixelUIStyle.TEXT_SOFT)
+	empty_label = _text(panel, "EmptyState", "No fish to sell yet.\nCast a line and bring back your catch!", Rect2(248, 322, 748, 100), 18, Color("321b3d"))
 	empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	empty_label.set_meta("pixelmania_text_shadow", false)
 	_text(panel, "Hint", "Estimates shown. Sales use the current market price.", Rect2(244, 615, 764, 28), 14, PixelUIStyle.TEXT_SOFT)
 	call_deferred("apply_fish_monger_scrollbar_style")
 	update_panel_position()
@@ -611,7 +614,7 @@ func create_fish_row(entry: Dictionary, row_position: Vector2, row_height: float
 	var row := _surface(fish_rows_root, "FishRow_" + item_id, Rect2(row_position, Vector2(row_width, row_height)), true)
 	_surface(row, "InnerPanel", Rect2(5, 5, row_width - 10, row_height - 10))
 	var icon_back := _surface(row, "IconBack", Rect2(16, 18, 76, 76), true)
-	icon_back.self_modulate = Color.WHITE.lerp(accent_color, 0.25)
+	icon_back.add_theme_stylebox_override("panel", PixelUIStyle.slot_style(rarity))
 	var icon := TextureRect.new()
 	icon.name = "Icon"
 	icon.position = Vector2(24, 26)
