@@ -92,7 +92,7 @@ func _build_panel() -> void:
 	var header := HBoxContainer.new()
 	header.add_theme_constant_override("separation", 12)
 	content.add_child(header)
-	title = _label("PACK CONTENTS", 22)
+	title = _label("PACK CONTENTS", 40)
 	title.add_theme_color_override("font_color", Color("321b3c"))
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -106,7 +106,7 @@ func _build_panel() -> void:
 	summary.add_theme_color_override("font_color", Color("321b3c"))
 	summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(summary)
-	var heading := _label("Possible items - Chance per draw", 16)
+	var heading := _label("Chances per draw.", 16)
 	heading.add_theme_color_override("font_color", Color("321b3c"))
 	heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(heading)
@@ -132,7 +132,7 @@ func open() -> void:
 	var pack: Dictionary = packs[selected_pack]
 	title.text = str(Database.ITEMS.get(selected_pack, {}).get("display_name", selected_pack))
 	var draws := int(pack.get("draws", 1))
-	summary.text = "1 random item per pack." if draws == 1 else "%d independent draws per pack. Repeats are possible." % draws
+	summary.text = "Get 1 random item." if draws == 1 else "Get %d random items." % draws
 	for reward in pack.get("rewards", []):
 		var definition: Dictionary = Database.ITEMS.get(str(reward.item_id), {})
 		var card := PanelContainer.new()
