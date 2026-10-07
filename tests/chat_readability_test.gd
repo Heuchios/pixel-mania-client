@@ -37,14 +37,19 @@ func run() -> void:
 			if not label is RichTextLabel or label.is_queued_for_deletion():
 				continue
 			var font := label.get_theme_font("normal_font") as FontFile
-			assert(font != null and font.multichannel_signed_distance_field)
-			assert(label.texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR)
-			assert(label.get_theme_font_size("normal_font_size") == 22)
+			assert(font != null and not font.multichannel_signed_distance_field)
+			assert(font.antialiasing == TextServer.FONT_ANTIALIASING_NONE)
+			assert(label.texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST)
+			assert(label.get_theme_font_size("normal_font_size") == 24)
 			assert(label.get_theme_color("font_shadow_color").a == 0.0)
 			assert(label.size.y >= label.get_content_height(), "Larger chat lines are clipped")
 			if "longer message" in label.get_parsed_text():
 				assert(label.get_line_count() > 1, "Long messages must wrap inside the drawer")
-		assert((chat.chat_input.get_theme_font("font") as FontFile).multichannel_signed_distance_field)
+		assert(chat.chat_input.get_theme_font("font") == PixelUIStyle.get_pixel_game_font())
+		assert(chat.chat_send_button.texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST)
+		assert(chat.chat_button.texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST)
+		assert(chat.chat_button_icon.texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST)
+		assert(PixelUIStyle.get_pixel_game_font() != PixelUIStyle.get_game_font())
 		assert(not (PixelUIStyle.get_game_font() as FontFile).multichannel_signed_distance_field, "Chat must not change the rest of the game's font")
 		if "--render" in OS.get_cmdline_user_args():
 			await RenderingServer.frame_post_draw

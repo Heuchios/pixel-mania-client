@@ -20,7 +20,7 @@ const UIAtlas = preload("res://Scripts/UIAtlasDB.gd")
 const BROADCAST_HOLD_SECONDS = 0.55
 const BROADCAST_HOLD_MOVE_CANCEL = 18.0
 const CHAT_FONT_PATH = "res://Assets/font/font.ttf"
-const CHAT_MESSAGE_FONT_SIZE := 20
+const CHAT_MESSAGE_FONT_SIZE := 22
 const CHAT_MESSAGE_LINE_HEIGHT := 20.0
 const CHAT_MESSAGE_PAD_X = 12.0
 const CHAT_MESSAGE_PAD_Y = 2.0
@@ -134,7 +134,7 @@ func get_ui_texture(file_name: String):
 
 func get_chat_font() -> Font:
 	if chat_font == null:
-		chat_font = PixelUIStyle.get_scaled_game_font()
+		chat_font = PixelUIStyle.get_pixel_game_font()
 	return chat_font
 
 
@@ -146,7 +146,7 @@ func apply_chat_font_to_control(control: Control) -> void:
 	if font == null:
 		return
 
-	control.set_meta("pixelmania_scaled_text", true)
+	control.set_meta("pixelmania_pixel_text", true)
 	PixelUIStyle.apply_game_font_to_node(control)
 	if control is Label:
 		var label := control as Label
@@ -167,7 +167,7 @@ func apply_chat_font_to_tree(root: Node) -> void:
 
 func _ready():
 	set_meta("ignore_mobile_ui_scale", true)
-	set_meta("pixelmania_scaled_text", true)
+	set_meta("pixelmania_pixel_text", true)
 	set_meta("pixelmania_text_shadow", false)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -768,6 +768,7 @@ func capture_authored_chat_scene_layout() -> void:
 
 
 func style_send_arrow(button: Button) -> void:
+	button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	for state in ["normal", "hover", "pressed", "hover_pressed"]:
 		var arrow := UIAtlas.get_stylebox("chat_send_button").duplicate() as StyleBoxTexture
 		arrow.modulate_color = Color(0.32, 0.12, 0.4)
@@ -835,6 +836,7 @@ func apply_chat_icon_button_style(button: Button):
 	if button == null:
 		return
 
+	button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	button.focus_mode = Control.FOCUS_NONE
 	button.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 	button.add_theme_stylebox_override("hover", StyleBoxEmpty.new())

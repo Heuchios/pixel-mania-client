@@ -47,6 +47,20 @@ const HEADER_NAME_MARKERS := [
 
 static var game_font: Font = null
 static var scaled_game_font: FontFile = null
+static var pixel_game_font: FontFile = null
+
+
+static func get_pixel_game_font() -> Font:
+	if pixel_game_font == null:
+		var source := get_game_font() as FontFile
+		if source == null:
+			return get_game_font()
+		pixel_game_font = source.duplicate() as FontFile
+		pixel_game_font.multichannel_signed_distance_field = false
+		pixel_game_font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
+		pixel_game_font.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+		pixel_game_font.oversampling = 1.0
+	return pixel_game_font
 
 
 static func get_scaled_game_font() -> Font:
@@ -76,6 +90,9 @@ static func apply_game_font_to_node(node: Node) -> void:
 	var font := get_game_font()
 	var ancestor := node
 	while ancestor != null:
+		if ancestor.get_meta("pixelmania_pixel_text", false):
+			font = get_pixel_game_font()
+			break
 		if ancestor.get_meta("pixelmania_scaled_text", false):
 			font = get_scaled_game_font()
 			break
@@ -84,6 +101,8 @@ static func apply_game_font_to_node(node: Node) -> void:
 		return
 	if font == scaled_game_font and node is Control and _is_text_control(node):
 		(node as Control).texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	elif font == pixel_game_font and node is Control:
+		(node as Control).texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 	if node.has_method("add_theme_font_override"):
 		_add_font_override(node, "font", font)

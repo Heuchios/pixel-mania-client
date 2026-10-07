@@ -94,6 +94,13 @@ var shop_last_purchase_context = {}
 
 var shop_items = [
 	{
+		"item_id": "water_well",
+		"amount": 1,
+		"price": 500,
+		"section": "stations",
+		"description": "Produces water buckets to collect every 5 minutes."
+	},
+	{
 		"item_id": "appreciation_wings", "amount": 1, "price": 0, "section": "clothes",
 		"description": "A thank-you gift for playing PixelMania. Claim one free pair per account.",
 		"once_per_account": true,
