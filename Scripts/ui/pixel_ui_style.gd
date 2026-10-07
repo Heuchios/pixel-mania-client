@@ -498,6 +498,8 @@ static func _apply_pink_button_text(node: Node) -> void:
 
 
 static func _apply_window_shadow(node: Node) -> void:
+	if not bool(node.get_meta("pixelmania_panel_shadow", true)):
+		return
 	if not node is Control:
 		return
 	if node.is_queued_for_deletion() or node.get_parent() == null:

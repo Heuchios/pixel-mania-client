@@ -121,9 +121,9 @@ func _build_ui() -> void:
 	panel.add_theme_stylebox_override("panel", PixelUIStyle.panel_style())
 	add_child(panel)
 	var inner := Panel.new()
-	inner.name = "InnerPanel"
+	inner.name = "SummaryPanel"
 	inner.position = Vector2(16, 78)
-	inner.size = Vector2(PANEL_W - 32, PANEL_H - 94)
+	inner.size = Vector2(PANEL_W - 32, 92)
 	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	inner.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
 	panel.add_child(inner)
@@ -281,6 +281,7 @@ func _create_fish_card(entry: Dictionary) -> void:
 	var rarity := str(entry.get("rarity", "common")).to_lower()
 	var accent := _rarity_color(rarity) if discovered else Color("786480")
 	var card := Panel.new()
+	card.set_meta("pixelmania_panel_shadow", false)
 	card.custom_minimum_size = Vector2(CARD_W, CARD_H)
 	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_theme_stylebox_override("panel", PixelUIStyle.atlas_style("outer_panel", Color.WHITE if discovered else Color("95859d"), 3))
