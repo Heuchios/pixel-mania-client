@@ -1163,7 +1163,10 @@ func _refresh_name_card() -> void:
 	var paid = _name_info.get("original_paid_gems", null)
 	var receipt := "Original claim paid: " + (_gem_amount(int(paid)) + " gems (server verified)" if paid != null else "Not paid")
 	if state == "claimed":
-		_name_label.text = public_name + " — Permanently claimed\n" + receipt
+		_name_label.text = public_name + " — Claimed\n" + receipt
+		var unlock_deadline := str(_name_info.get("unlocked_until", ""))
+		if unlock_deadline != "" and unlock_deadline != "<null>":
+			_name_label.text += "\nWARNING: Replace the World Lock before " + unlock_deadline.replace("T", " ").left(19) + " UTC or lose ownership."
 	elif state == "reserved":
 		var deadline := str(_name_info.get("expires_at", "")).replace("T", " ").left(19)
 		_name_label.text = "Claim " + public_name + " for " + _gem_amount(int(_name_info.get("quoted_gems", 0))) + " gems by " + deadline + " UTC\n" + receipt
@@ -1239,13 +1242,13 @@ func _on_name_action() -> void:
 			return
 		var reserve_name := str(_name_quote.get("name", ""))
 		var reserve_price := int(_name_quote.get("price_gems", 0))
-		_show_confirm_panel("Reserve " + reserve_name + " for this world?\nReservation is free. Pay " + _gem_amount(reserve_price) + " gems within seven days to keep it permanently.", func():
+		_show_confirm_panel("Reserve " + reserve_name + " for this world?\nReservation is free. Pay " + _gem_amount(reserve_price) + " gems within seven days to claim it. After claiming, removing the lock starts a seven-day ownership expiry.", func():
 			_request_name("world_name_reserve", {"name": reserve_name, "price_gems": reserve_price})
 		, "RESERVE NAME")
 		return
 	var claim_name := str(_name_info.get("name", ""))
 	var claim_price := int(_name_info.get("quoted_gems", 0))
-	_show_confirm_panel("Permanently claim " + claim_name + " for " + _gem_amount(claim_price) + " gems?\nThis one-time payment will be publicly recorded.", func():
+	_show_confirm_panel("Claim " + claim_name + " for " + _gem_amount(claim_price) + " gems?\nPayment is publicly recorded. If you remove the World Lock, replace it within 7 days or lose the world and name. No refund.", func():
 		_request_name("world_name_claim", {"name": claim_name, "price_gems": claim_price})
 	, "PAY AND CLAIM")
 

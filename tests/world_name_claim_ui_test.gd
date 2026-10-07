@@ -20,7 +20,9 @@ func _run() -> void:
 	ui.receive_name_status({"name":"SHOP", "status":"claimed", "original_paid_gems":750000})
 	await process_frame
 	assert(ui._name_label.text.contains("750,000 gems (server verified)"))
-	assert(ui._name_label.text.contains("Permanently claimed"))
+	assert(ui._name_label.text.contains("Claimed"))
+	ui.receive_name_status({"name":"SHOP", "status":"claimed", "original_paid_gems":750000, "unlocked_until":"2026-10-20T18:00:00Z"})
+	assert(ui._name_label.text.contains("Replace the World Lock before 2026-10-20 18:00:00 UTC"))
 	assert(not ui._name_button.visible, "Visitors must not see payment controls")
 	assert(not ui._name_input.visible, "Claimed worlds must not offer another name search")
 	assert(not ui._name_search_button.is_visible_in_tree())

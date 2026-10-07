@@ -23,6 +23,7 @@ const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
 
 var socket := WebSocketPeer.new()
 var world_name_claims: Dictionary = {}
+var world_name_unlock_warnings: Dictionary = {}
 var pending_join_world_identity := ""
 
 func get_public_world_name(internal_name: String) -> String:
@@ -39,6 +40,12 @@ func receive_world_name_status(data: Dictionary) -> void:
 			var lock_manager = active_world.get("world_lock_manager")
 			if lock_manager != null:
 				lock_manager.persistent_ownership = bool(lock_manager.is_locked) and str(info.get("status", "")) == "claimed"
+				if info.get("unlocked_until") != null and lock_manager.is_current_player_owner():
+					var deadline := str(info.unlocked_until)
+					var warning_key := identity + ":" + deadline + ":" + str(info.get("server_time", "")).left(10)
+					if not world_name_unlock_warnings.has(warning_key) and active_world.has_method("show_notification"):
+						world_name_unlock_warnings[warning_key] = true
+						active_world.show_notification("WARNING: Replace the World Lock in " + str(info.get("name", identity)) + " before " + deadline.replace("T", " ").left(19) + " UTC or lose the world and name. No refund.")
 			var lock_ui = active_world.get("world_lock_ui")
 			if lock_ui != null and lock_ui.has_method("receive_name_status"):
 				lock_ui.receive_name_status(info)

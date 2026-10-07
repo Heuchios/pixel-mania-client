@@ -7,6 +7,18 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Claimed-world lock removal grace (2026-10-07)
+
+Paid ownership now survives physical World Lock removal for seven days only.
+PostgreSQL stores `unlocked_until`; repeat saves/restarts do not reset it. Only
+the owner can replace the lock during grace, canceling the timer at no charge.
+Expiry releases ownership and claim while retaining public name and terrain;
+old receipts move to world_name_claim_history, release is ledgered, no refund.
+Another player or former owner can lock and pay to claim again. Existing claimed
+worlds already missing locks start a full window on migration. Client removal
+notice, daily in-world reminders, lock card and payment confirmations explain it.
+Taxes remain suspended. This replaces previous permanently-retained ownership.
+
 ### World taxes removed from gameplay (2026-10-07)
 
 User requested removing taxes for now. Backend WORLD_TAX_SUSPENDED defaults true,
