@@ -18,6 +18,20 @@ See sibling backend `docs/world-taxes.md` for accounting, tests and activation.
 PostgreSQL/WASM rollback, concurrency, receipt replay and transfer tests pass;
 client profile access, request transport and desktop/mobile panel tests pass.
 
+Active on staging release `20261007-world-tax-685a0a3` (backend `685a0a3`, client
+`0858378`). Full security/deployment smoke checks and the tax suite against real
+PostgreSQL in a disposable staging schema passed, including trade eligibility,
+deadline-crossing permits and receipt replay. Activation: 2026-10-07 02:59:35 UTC;
+existing owners' first bills: October 14 02:59:35 UTC, grace ends October 21 at the
+same time. Initial verification: 8 owner accounts, 14 owned worlds, zero debt,
+1,000 gems total projected first-week bills. A verified staging database backup
+was taken before rollout. Permanent names and existing reservation deadlines are
+unchanged. Production was not deployed or activated. Restart the client/editor
+play session for Profile > TAXES. Tax activation persists across restarts.
+For service restarts, source the release's `.release-env` with BASE_DIR set and
+exported before calling the release activator; otherwise release/client-version
+metadata is lost. This was corrected and public health reverified on staging.
+
 ### World name claims (2026-10-06, active on staging)
 
 World-name reservations, rarity-priced permanent claims, seven-day expiry, and
