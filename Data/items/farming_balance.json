@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "design": "Sustainable farming: average 5–10% seed surplus after repeatedly breaking all returned blocks. Independent rolls; uniform integer quantity ranges. Tree gem mean is twice the per-break gem mean. Existing valid item growth times and source gem averages are retained; missing values use explicit tier defaults.",
+  "version": 2,
+  "design": "Live ITEM DATA numeric gem averages and break XP. Listed block/seed quantities roll uniformly and independently on breaks and harvests (0–3 = 25% each; 0–1 = 50% each), as explicitly requested. Tree gems/XP and growth times are retained. Missing/conflicting fields and special recovery behavior retain existing rules. Uniform block returns can exceed one block per break; no finite full-recycling yield is claimed.",
   "tier_growth_defaults": [
     30,
     120,
@@ -78,13 +78,26 @@
       "balance_tier": 1,
       "seed_id": "dirt_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 6",
+      "source": "Live ITEM DATA gem average, rows 6",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 6",
       "gem_mean": 0.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        6
+      ]
     },
     "grass": {
       "name": "grass",
@@ -92,13 +105,26 @@
       "balance_tier": 2,
       "seed_id": "grass_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 98",
+      "source": "Live ITEM DATA gem average, rows 108",
       "profile": "starter",
       "grow_seconds": 100,
       "growth_source": "Imported splice sheet, row 8",
-      "gem_mean": 0.8,
+      "gem_mean": 0.4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.6,
+      "break_xp": 5,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        108
+      ]
     },
     "hay": {
       "name": "Dried Hay",
@@ -106,13 +132,26 @@
       "balance_tier": 2,
       "seed_id": "hay_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 562",
+      "source": "Live ITEM DATA gem average, rows 618",
       "profile": "starter",
       "grow_seconds": 100,
       "growth_source": "Imported splice sheet, row 24",
-      "gem_mean": 0.6,
+      "gem_mean": 0.4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.2,
+      "break_xp": 5,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        618
+      ]
     },
     "stone": {
       "name": "stone",
@@ -120,13 +159,26 @@
       "balance_tier": 1,
       "seed_id": "stone_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 18",
+      "source": "Live ITEM DATA gem average, rows 18",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 18",
       "gem_mean": 0.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        18
+      ]
     },
     "wood": {
       "name": "Tree Trunk",
@@ -134,13 +186,26 @@
       "balance_tier": 1,
       "seed_id": "wood_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 140",
+      "source": "Live ITEM DATA gem average, rows 150",
       "profile": "starter",
       "grow_seconds": 40,
       "growth_source": "Imported item sheet, row 140",
-      "gem_mean": 0.5,
+      "gem_mean": 0.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        150
+      ]
     },
     "leaf": {
       "name": "leaf",
@@ -148,13 +213,26 @@
       "balance_tier": 1,
       "seed_id": "leaf_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 88",
+      "source": "Live ITEM DATA gem average, rows 96",
       "profile": "starter",
       "grow_seconds": 35,
       "growth_source": "Imported item sheet, row 88",
-      "gem_mean": 0.35,
+      "gem_mean": 0.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.7,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        96
+      ]
     },
     "bedrock": {
       "name": "bedrock",
@@ -170,13 +248,26 @@
       "balance_tier": 1,
       "seed_id": "lava_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 24",
+      "source": "Live ITEM DATA gem average, rows 24",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 24",
       "gem_mean": 0.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        24
+      ]
     },
     "sand": {
       "name": "sand",
@@ -184,13 +275,26 @@
       "balance_tier": 1,
       "seed_id": "sand_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 150",
+      "source": "Live ITEM DATA gem average, rows 160",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 150",
-      "gem_mean": 0.2,
+      "gem_mean": 0.35,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        160
+      ]
     },
     "glass": {
       "name": "glass",
@@ -198,13 +302,26 @@
       "balance_tier": 3,
       "seed_id": "glass_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 330",
+      "source": "Live ITEM DATA gem average, rows 388",
       "profile": "starter",
       "grow_seconds": 240,
       "growth_source": "Imported splice sheet, row 60",
-      "gem_mean": 0.8,
+      "gem_mean": 1,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.6,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        388
+      ]
     },
     "water": {
       "name": "water",
@@ -243,13 +360,26 @@
       "balance_tier": 7,
       "seed_id": "metal_pad_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 464",
+      "source": "Live ITEM DATA gem average, rows 520",
       "profile": "advanced",
       "grow_seconds": 28800,
       "growth_source": "Imported splice sheet, row 278",
-      "gem_mean": 4,
+      "gem_mean": 3.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 8,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        520
+      ]
     },
     "generator": {
       "name": "Transformer",
@@ -280,13 +410,26 @@
       "balance_tier": 6,
       "seed_id": "electric_pole_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 462",
+      "source": "Live ITEM DATA gem average, rows 518",
       "profile": "established",
       "grow_seconds": 5400,
       "growth_source": "Imported splice sheet, row 244",
-      "gem_mean": 2.2,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4.4,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        518
+      ]
     },
     "golden_statue": {
       "name": "Golden Statue",
@@ -317,13 +460,26 @@
       "balance_tier": 1,
       "seed_id": "snow_dirt_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 162",
+      "source": "Live ITEM DATA gem average, rows 172",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 162",
-      "gem_mean": 0.2,
+      "gem_mean": 0.35,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        172
+      ]
     },
     "ice_block": {
       "name": "Ice Block",
@@ -331,13 +487,27 @@
       "balance_tier": 1,
       "seed_id": "ice_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 176",
+      "source": "Live ITEM DATA gem average, rows 174, 186",
       "profile": "starter",
       "grow_seconds": 40,
       "growth_source": "Imported item sheet, row 176",
-      "gem_mean": 0.5,
+      "gem_mean": 0.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        174,
+        186
+      ]
     },
     "ice_shard": {
       "name": "Ice Shard",
@@ -438,13 +608,26 @@
       "balance_tier": 1,
       "seed_id": "snow_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 160",
+      "source": "Live ITEM DATA gem average, rows 170",
       "profile": "starter",
       "grow_seconds": 35,
       "growth_source": "Imported item sheet, row 160",
-      "gem_mean": 0.35,
+      "gem_mean": 0.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.7,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        170
+      ]
     },
     "snow_leaf": {
       "name": "Snow Leaf",
@@ -458,7 +641,22 @@
       "growth_source": "Imported item sheet, row 182",
       "gem_mean": 0.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        192,
+        236,
+        238,
+        240
+      ]
     },
     "frozen_grass": {
       "name": "Frozen Grass",
@@ -466,13 +664,26 @@
       "balance_tier": 1,
       "seed_id": "frozen_grass_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 172",
+      "source": "Live ITEM DATA gem average, rows 182",
       "profile": "starter",
       "grow_seconds": 35,
       "growth_source": "Imported item sheet, row 172",
-      "gem_mean": 0.35,
+      "gem_mean": 0.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.7,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        182
+      ]
     },
     "frozen_grass_1": {
       "name": "Frozen Grass",
@@ -480,13 +691,26 @@
       "balance_tier": 1,
       "seed_id": "frozen_grass_1_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 172",
+      "source": "Live ITEM DATA gem average, rows 182",
       "profile": "starter",
       "grow_seconds": 35,
       "growth_source": "Imported item sheet, row 172",
-      "gem_mean": 0.35,
+      "gem_mean": 0.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.7,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        182
+      ]
     },
     "frozen_grass_2": {
       "name": "Frozen Grass",
@@ -494,13 +718,26 @@
       "balance_tier": 1,
       "seed_id": "frozen_grass_2_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 172",
+      "source": "Live ITEM DATA gem average, rows 182",
       "profile": "starter",
       "grow_seconds": 35,
       "growth_source": "Imported item sheet, row 172",
-      "gem_mean": 0.35,
+      "gem_mean": 0.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.7,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        182
+      ]
     },
     "frozen_grass_3": {
       "name": "Frozen Grass",
@@ -508,13 +745,26 @@
       "balance_tier": 1,
       "seed_id": "frozen_grass_3_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 172",
+      "source": "Live ITEM DATA gem average, rows 182",
       "profile": "starter",
       "grow_seconds": 35,
       "growth_source": "Imported item sheet, row 172",
-      "gem_mean": 0.35,
+      "gem_mean": 0.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.7,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        182
+      ]
     },
     "snow_bank": {
       "name": "Snow Bank",
@@ -538,13 +788,26 @@
       "balance_tier": 1,
       "seed_id": "snow_stone_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 174",
+      "source": "Live ITEM DATA gem average, rows 184",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 174",
-      "gem_mean": 0.2,
+      "gem_mean": 0.35,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        184
+      ]
     },
     "pile_of_snow": {
       "name": "Pile of Snow",
@@ -552,13 +815,26 @@
       "balance_tier": 1,
       "seed_id": "pile_of_snow_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 170",
+      "source": "Live ITEM DATA gem average, rows 180",
       "profile": "starter",
       "grow_seconds": 40,
       "growth_source": "Imported item sheet, row 170",
-      "gem_mean": 0.5,
+      "gem_mean": 0.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        180
+      ]
     },
     "cave_background": {
       "name": "cave_background",
@@ -566,13 +842,26 @@
       "balance_tier": 1,
       "seed_id": "cave_background_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 12",
+      "source": "Live ITEM DATA gem average, rows 12",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 12",
       "gem_mean": 0.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        12
+      ]
     },
     "broken_bottle": {
       "name": "Broken Bottle",
@@ -708,13 +997,26 @@
       "balance_tier": 1,
       "seed_id": "broken_tv_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 504",
+      "source": "Live ITEM DATA gem average, rows 560",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 504",
-      "gem_mean": 0.2,
+      "gem_mean": 0.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        560
+      ]
     },
     "tires": {
       "name": "Used Tires",
@@ -722,13 +1024,26 @@
       "balance_tier": 1,
       "seed_id": "tires_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 506",
+      "source": "Live ITEM DATA gem average, rows 562",
       "profile": "starter",
       "grow_seconds": 40,
       "growth_source": "Imported item sheet, row 506",
-      "gem_mean": 0.5,
+      "gem_mean": 0.35,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        562
+      ]
     },
     "white_wallpaper": {
       "name": "White Wall",
@@ -736,13 +1051,26 @@
       "balance_tier": 4,
       "seed_id": "white_wallpaper_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 288",
+      "source": "Live ITEM DATA gem average, rows 346",
       "profile": "established",
       "grow_seconds": 480,
       "growth_source": "Imported splice sheet, row 82",
-      "gem_mean": 1.2,
+      "gem_mean": 1.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2.4,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        346
+      ]
     },
     "grey_wallpaper": {
       "name": "Gray Wall",
@@ -750,13 +1078,26 @@
       "balance_tier": 4,
       "seed_id": "grey_wallpaper_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 296",
+      "source": "Live ITEM DATA gem average, rows 354",
       "profile": "established",
       "grow_seconds": 570,
       "growth_source": "Imported splice sheet, row 90",
-      "gem_mean": 1.8,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        354
+      ]
     },
     "black_wallpaper": {
       "name": "Black Wall",
@@ -764,13 +1105,26 @@
       "balance_tier": 4,
       "seed_id": "black_wallpaper_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 304",
+      "source": "Live ITEM DATA gem average, rows 362",
       "profile": "established",
       "grow_seconds": 510,
       "growth_source": "Imported splice sheet, row 92",
-      "gem_mean": 1.5,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        362
+      ]
     },
     "red_wallpaper": {
       "name": "Red Wall",
@@ -778,13 +1132,26 @@
       "balance_tier": 4,
       "seed_id": "red_wallpaper_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 290",
+      "source": "Live ITEM DATA gem average, rows 348",
       "profile": "established",
       "grow_seconds": 570,
       "growth_source": "Imported splice sheet, row 84",
-      "gem_mean": 1.8,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        348
+      ]
     },
     "orange_wallpaper": {
       "name": "Orange Wall",
@@ -792,13 +1159,26 @@
       "balance_tier": 5,
       "seed_id": "orange_wallpaper_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 298",
+      "source": "Live ITEM DATA gem average, rows 356",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 146",
-      "gem_mean": 2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        356
+      ]
     },
     "yellow_wallpaper": {
       "name": "Yellow Wall",
@@ -806,13 +1186,26 @@
       "balance_tier": 4,
       "seed_id": "yellow_wallpaper_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 306",
+      "source": "Live ITEM DATA gem average, rows 364",
       "profile": "established",
       "grow_seconds": 480,
       "growth_source": "Imported splice sheet, row 94",
-      "gem_mean": 1.2,
+      "gem_mean": 1.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2.4,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        364
+      ]
     },
     "green_wallpaper": {
       "name": "Green Wall",
@@ -820,13 +1213,26 @@
       "balance_tier": 4,
       "seed_id": "green_wallpaper_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 292",
+      "source": "Live ITEM DATA gem average, rows 350",
       "profile": "established",
       "grow_seconds": 510,
       "growth_source": "Imported splice sheet, row 86",
-      "gem_mean": 1.5,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        350
+      ]
     },
     "aqua_wallpaper": {
       "name": "Aqua Wall",
@@ -834,13 +1240,26 @@
       "balance_tier": 6,
       "seed_id": "aqua_wallpaper_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 300",
+      "source": "Live ITEM DATA gem average, rows 358",
       "profile": "established",
       "grow_seconds": 5400,
       "growth_source": "Imported splice sheet, row 218",
-      "gem_mean": 2.2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4.4,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        358
+      ]
     },
     "blue_wallpaper": {
       "name": "Blue Wall",
@@ -848,13 +1267,26 @@
       "balance_tier": 5,
       "seed_id": "blue_wallpaper_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 308",
+      "source": "Live ITEM DATA gem average, rows 366",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 148",
-      "gem_mean": 2.5,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        366
+      ]
     },
     "purple_wallpaper": {
       "name": "Purple Wall",
@@ -862,13 +1294,26 @@
       "balance_tier": 6,
       "seed_id": "purple_wallpaper_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 302",
+      "source": "Live ITEM DATA gem average, rows 360",
       "profile": "established",
       "grow_seconds": 7800,
       "growth_source": "Imported splice sheet, row 220",
-      "gem_mean": 3,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        360
+      ]
     },
     "pink_wallpaper": {
       "name": "Pink Wall",
@@ -876,13 +1321,26 @@
       "balance_tier": 5,
       "seed_id": "pink_wallpaper_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 310",
+      "source": "Live ITEM DATA gem average, rows 368",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 150",
-      "gem_mean": 2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        368
+      ]
     },
     "brown_wallpaper": {
       "name": "Brown Wall",
@@ -890,13 +1348,26 @@
       "balance_tier": 4,
       "seed_id": "brown_wallpaper_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 294",
+      "source": "Live ITEM DATA gem average, rows 352",
       "profile": "established",
       "grow_seconds": 480,
       "growth_source": "Imported splice sheet, row 88",
-      "gem_mean": 1.2,
+      "gem_mean": 1.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2.4,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        352
+      ]
     },
     "glowing_dirt": {
       "name": "glowing_dirt",
@@ -927,13 +1398,26 @@
       "balance_tier": 3,
       "seed_id": "red_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 216",
+      "source": "Live ITEM DATA gem average, rows 274",
       "profile": "starter",
       "grow_seconds": 240,
       "growth_source": "Imported splice sheet, row 48",
-      "gem_mean": 0.8,
+      "gem_mean": 1,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.6,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        274
+      ]
     },
     "blue_block": {
       "name": "Blue Block",
@@ -941,13 +1425,26 @@
       "balance_tier": 4,
       "seed_id": "blue_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 234",
+      "source": "Live ITEM DATA gem average, rows 292",
       "profile": "established",
       "grow_seconds": 480,
       "growth_source": "Imported splice sheet, row 78",
-      "gem_mean": 1.2,
+      "gem_mean": 1.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2.4,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        292
+      ]
     },
     "green_block": {
       "name": "Green Block",
@@ -955,13 +1452,26 @@
       "balance_tier": 3,
       "seed_id": "green_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 218",
+      "source": "Live ITEM DATA gem average, rows 276",
       "profile": "starter",
       "grow_seconds": 360,
       "growth_source": "Imported splice sheet, row 50",
-      "gem_mean": 1.2,
+      "gem_mean": 0.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2.4,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        276
+      ]
     },
     "purple_block": {
       "name": "Purple Block",
@@ -969,13 +1479,26 @@
       "balance_tier": 5,
       "seed_id": "purple_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 228",
+      "source": "Live ITEM DATA gem average, rows 286",
       "profile": "established",
       "grow_seconds": 1500,
       "growth_source": "Imported splice sheet, row 120",
-      "gem_mean": 1.8,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        286
+      ]
     },
     "yellow_block": {
       "name": "Yellow Block",
@@ -983,13 +1506,26 @@
       "balance_tier": 3,
       "seed_id": "yellow_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 232",
+      "source": "Live ITEM DATA gem average, rows 290",
       "profile": "starter",
       "grow_seconds": 270,
       "growth_source": "Imported splice sheet, row 58",
-      "gem_mean": 1,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        290
+      ]
     },
     "aqua_block": {
       "name": "Aqua Block",
@@ -997,13 +1533,26 @@
       "balance_tier": 5,
       "seed_id": "aqua_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 226",
+      "source": "Live ITEM DATA gem average, rows 284",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 118",
-      "gem_mean": 2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        284
+      ]
     },
     "black_block": {
       "name": "Black Block",
@@ -1011,13 +1560,26 @@
       "balance_tier": 3,
       "seed_id": "black_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 230",
+      "source": "Live ITEM DATA gem average, rows 288",
       "profile": "starter",
       "grow_seconds": 360,
       "growth_source": "Imported splice sheet, row 56",
-      "gem_mean": 1.2,
+      "gem_mean": 0.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2.4,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        288
+      ]
     },
     "blue_pastel_block": {
       "name": "Pastel Blue Block",
@@ -1025,13 +1587,26 @@
       "balance_tier": 6,
       "seed_id": "blue_pastel_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 268",
+      "source": "Live ITEM DATA gem average, rows 326",
       "profile": "established",
       "grow_seconds": 9600,
       "growth_source": "Imported splice sheet, row 210",
-      "gem_mean": 2.5,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        326
+      ]
     },
     "brown_block": {
       "name": "Brown Block",
@@ -1039,13 +1614,26 @@
       "balance_tier": 3,
       "seed_id": "brown_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 220",
+      "source": "Live ITEM DATA gem average, rows 278",
       "profile": "starter",
       "grow_seconds": 270,
       "growth_source": "Imported splice sheet, row 52",
-      "gem_mean": 1,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        278
+      ]
     },
     "dark_aqua_block": {
       "name": "Dark Aqua Block",
@@ -1053,13 +1641,26 @@
       "balance_tier": 6,
       "seed_id": "dark_aqua_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 246",
+      "source": "Live ITEM DATA gem average, rows 304",
       "profile": "established",
       "grow_seconds": 5400,
       "growth_source": "Imported splice sheet, row 204",
-      "gem_mean": 2.2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4.4,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        304
+      ]
     },
     "dark_blue_block": {
       "name": "Dark Blue Block",
@@ -1067,13 +1668,26 @@
       "balance_tier": 5,
       "seed_id": "dark_blue_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 252",
+      "source": "Live ITEM DATA gem average, rows 310",
       "profile": "established",
       "grow_seconds": 1500,
       "growth_source": "Imported splice sheet, row 130",
-      "gem_mean": 1.8,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        310
+      ]
     },
     "dark_brown_block": {
       "name": "Dark Brown Block",
@@ -1087,7 +1701,19 @@
       "growth_source": "Imported item sheet, row 242",
       "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        300,
+        552
+      ]
     },
     "dark_green_block": {
       "name": "Dark Green Block",
@@ -1095,13 +1721,26 @@
       "balance_tier": 5,
       "seed_id": "dark_green_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 240",
+      "source": "Live ITEM DATA gem average, rows 298",
       "profile": "established",
       "grow_seconds": 1500,
       "growth_source": "Imported splice sheet, row 124",
-      "gem_mean": 1.8,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        298
+      ]
     },
     "dark_pink_block": {
       "name": "Dark Pink Block",
@@ -1109,13 +1748,26 @@
       "balance_tier": 5,
       "seed_id": "dark_pink_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 254",
+      "source": "Live ITEM DATA gem average, rows 312",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 132",
-      "gem_mean": 2.5,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        312
+      ]
     },
     "dark_purple_block": {
       "name": "Dark Purple Block",
@@ -1123,13 +1775,26 @@
       "balance_tier": 6,
       "seed_id": "dark_purple_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 248",
+      "source": "Live ITEM DATA gem average, rows 306",
       "profile": "established",
       "grow_seconds": 7800,
       "growth_source": "Imported splice sheet, row 206",
-      "gem_mean": 3,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        306
+      ]
     },
     "maroon_block": {
       "name": "Dark Red Block",
@@ -1137,13 +1802,26 @@
       "balance_tier": 5,
       "seed_id": "dark_red_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 238",
+      "source": "Live ITEM DATA gem average, rows 296",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 122",
-      "gem_mean": 2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        296
+      ]
     },
     "dark_yellow_block": {
       "name": "Dark Yellow Block",
@@ -1151,13 +1829,26 @@
       "balance_tier": 5,
       "seed_id": "dark_yellow_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 250",
+      "source": "Live ITEM DATA gem average, rows 308",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 128",
-      "gem_mean": 2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        308
+      ]
     },
     "green_pastel_block": {
       "name": "Pastel Green Block",
@@ -1165,13 +1856,26 @@
       "balance_tier": 5,
       "seed_id": "green_pastel_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 258",
+      "source": "Live ITEM DATA gem average, rows 316",
       "profile": "established",
       "grow_seconds": 1500,
       "growth_source": "Imported splice sheet, row 138",
-      "gem_mean": 1.8,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        316
+      ]
     },
     "grey_block": {
       "name": "Grey Block",
@@ -1179,13 +1883,26 @@
       "balance_tier": 3,
       "seed_id": "grey_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 222",
+      "source": "Live ITEM DATA gem average, rows 280",
       "profile": "starter",
       "grow_seconds": 240,
       "growth_source": "Imported splice sheet, row 54",
-      "gem_mean": 0.8,
+      "gem_mean": 1,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.6,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        280
+      ]
     },
     "happy_block": {
       "name": "Pastel Bunny Block",
@@ -1193,13 +1910,26 @@
       "balance_tier": 6,
       "seed_id": "happy_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 270",
+      "source": "Live ITEM DATA gem average, rows 328",
       "profile": "established",
       "grow_seconds": 5400,
       "growth_source": "Imported splice sheet, row 212",
-      "gem_mean": 2.2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4.4,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        328
+      ]
     },
     "dark_orange_block": {
       "name": "Dark Orange Block",
@@ -1207,13 +1937,26 @@
       "balance_tier": 5,
       "seed_id": "light_brown_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 244",
+      "source": "Live ITEM DATA gem average, rows 302",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 126",
-      "gem_mean": 2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        302
+      ]
     },
     "orange_block": {
       "name": "Orange Block",
@@ -1221,13 +1964,26 @@
       "balance_tier": 4,
       "seed_id": "orange_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 224",
+      "source": "Live ITEM DATA gem average, rows 282",
       "profile": "established",
       "grow_seconds": 570,
       "growth_source": "Imported splice sheet, row 76",
-      "gem_mean": 1.8,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        282
+      ]
     },
     "orange_pastel_block": {
       "name": "Pastel Orange Block",
@@ -1235,13 +1991,26 @@
       "balance_tier": 5,
       "seed_id": "orange_pastel_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 264",
+      "source": "Live ITEM DATA gem average, rows 322",
       "profile": "established",
       "grow_seconds": 1500,
       "growth_source": "Imported splice sheet, row 142",
-      "gem_mean": 1.8,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        322
+      ]
     },
     "pastel_flower_block": {
       "name": "Pastel Lily Block",
@@ -1249,13 +2018,26 @@
       "balance_tier": 6,
       "seed_id": "pastel_flower_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 272",
+      "source": "Live ITEM DATA gem average, rows 330",
       "profile": "established",
       "grow_seconds": 7800,
       "growth_source": "Imported splice sheet, row 214",
-      "gem_mean": 3,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        330
+      ]
     },
     "pink_block": {
       "name": "Pink Block",
@@ -1263,13 +2045,26 @@
       "balance_tier": 4,
       "seed_id": "pink_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 236",
+      "source": "Live ITEM DATA gem average, rows 294",
       "profile": "established",
       "grow_seconds": 570,
       "growth_source": "Imported splice sheet, row 80",
-      "gem_mean": 1.8,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        294
+      ]
     },
     "pink_pastel_block": {
       "name": "Pastel Pink Block",
@@ -1277,13 +2072,26 @@
       "balance_tier": 5,
       "seed_id": "pink_pastel_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 266",
+      "source": "Live ITEM DATA gem average, rows 324",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 144",
-      "gem_mean": 2.5,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        324
+      ]
     },
     "purple_pastel_block": {
       "name": "Pastel Purple Block",
@@ -1291,13 +2099,26 @@
       "balance_tier": 6,
       "seed_id": "purple_pastel_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 260",
+      "source": "Live ITEM DATA gem average, rows 318",
       "profile": "established",
       "grow_seconds": 7800,
       "growth_source": "Imported splice sheet, row 208",
-      "gem_mean": 3,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        318
+      ]
     },
     "red_pastel_block": {
       "name": "Pastel Red Block",
@@ -1305,13 +2126,26 @@
       "balance_tier": 5,
       "seed_id": "red_pastel_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 256",
+      "source": "Live ITEM DATA gem average, rows 314",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 136",
-      "gem_mean": 2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        314
+      ]
     },
     "white_block": {
       "name": "White Block",
@@ -1319,13 +2153,26 @@
       "balance_tier": 3,
       "seed_id": "white_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 214",
+      "source": "Live ITEM DATA gem average, rows 272",
       "profile": "starter",
       "grow_seconds": 270,
       "growth_source": "Imported splice sheet, row 46",
-      "gem_mean": 1,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        272
+      ]
     },
     "yellow_pastel_block": {
       "name": "Pastel Yellow Block",
@@ -1333,13 +2180,26 @@
       "balance_tier": 5,
       "seed_id": "yellow_pastel_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 262",
+      "source": "Live ITEM DATA gem average, rows 320",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 140",
-      "gem_mean": 2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        320
+      ]
     },
     "ps_blue_block": {
       "name": "ps_blue_block",
@@ -1462,13 +2322,26 @@
       "balance_tier": 1,
       "seed_id": "rose_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 100",
+      "source": "Live ITEM DATA gem average, rows 110",
       "profile": "starter",
       "grow_seconds": 35,
       "growth_source": "Imported item sheet, row 100",
-      "gem_mean": 0.35,
+      "gem_mean": 0.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.7,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        110
+      ]
     },
     "sunflower": {
       "name": "Sunflower",
@@ -1476,13 +2349,26 @@
       "balance_tier": 1,
       "seed_id": "tulip_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 104",
+      "source": "Live ITEM DATA gem average, rows 114",
       "profile": "starter",
       "grow_seconds": 40,
       "growth_source": "Imported item sheet, row 104",
-      "gem_mean": 0.5,
+      "gem_mean": 0.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        114
+      ]
     },
     "hanging_vine": {
       "name": "Small Vines",
@@ -1490,13 +2376,26 @@
       "balance_tier": 1,
       "seed_id": "vines_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 94",
+      "source": "Live ITEM DATA gem average, rows 104",
       "profile": "starter",
       "grow_seconds": 35,
       "growth_source": "Imported item sheet, row 94",
-      "gem_mean": 0.35,
+      "gem_mean": 0.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.7,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        104
+      ]
     },
     "apple": {
       "name": "Apple",
@@ -1504,13 +2403,26 @@
       "balance_tier": 1,
       "seed_id": "apple_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 114",
+      "source": "Live ITEM DATA gem average, rows 124",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 114",
-      "gem_mean": 0.2,
+      "gem_mean": 0.35,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        124
+      ]
     },
     "climbing_vine": {
       "name": "Climbing Vine",
@@ -1518,13 +2430,26 @@
       "balance_tier": 5,
       "seed_id": "climbing_vine_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 142",
+      "source": "Live ITEM DATA gem average, rows 152",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 110",
-      "gem_mean": 2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        152
+      ]
     },
     "sun_flower": {
       "name": "Sun Flower",
@@ -1560,13 +2485,26 @@
       "balance_tier": 1,
       "seed_id": "lily_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 102",
+      "source": "Live ITEM DATA gem average, rows 112",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 102",
-      "gem_mean": 0.2,
+      "gem_mean": 0.35,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        112
+      ]
     },
     "sand_castle": {
       "name": "Sand Castle",
@@ -1574,13 +2512,26 @@
       "balance_tier": 1,
       "seed_id": "sand_castle_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 156",
+      "source": "Live ITEM DATA gem average, rows 166",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 156",
-      "gem_mean": 0.2,
+      "gem_mean": 0.35,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        166
+      ]
     },
     "pile_of_sand": {
       "name": "Pile of Sand",
@@ -1588,13 +2539,26 @@
       "balance_tier": 1,
       "seed_id": "pile_of_sand_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 158",
+      "source": "Live ITEM DATA gem average, rows 168",
       "profile": "starter",
       "grow_seconds": 40,
       "growth_source": "Imported item sheet, row 158",
-      "gem_mean": 0.5,
+      "gem_mean": 0.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        168
+      ]
     },
     "vines_2": {
       "name": "Big Vines",
@@ -1602,13 +2566,26 @@
       "balance_tier": 2,
       "seed_id": "vines_2_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 96",
+      "source": "Live ITEM DATA gem average, rows 106",
       "profile": "starter",
       "grow_seconds": 100,
       "growth_source": "Imported splice sheet, row 6",
-      "gem_mean": 0.4,
+      "gem_mean": 0.6,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.8,
+      "break_xp": 5,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        106
+      ]
     },
     "entrance_gate": {
       "name": "entrance_gate",
@@ -1708,13 +2685,26 @@
       "balance_tier": 6,
       "seed_id": "big_spike_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 340",
+      "source": "Live ITEM DATA gem average, rows 398",
       "profile": "established",
       "grow_seconds": 9600,
       "growth_source": "Imported splice sheet, row 238",
-      "gem_mean": 2.5,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        398
+      ]
     },
     "spike": {
       "name": "Hanging Spike",
@@ -1767,13 +2757,26 @@
       "balance_tier": 7,
       "seed_id": "biohazard_barrel_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 348",
+      "source": "Live ITEM DATA gem average, rows 406",
       "profile": "advanced",
       "grow_seconds": 23100,
       "growth_source": "Imported splice sheet, row 270",
-      "gem_mean": 3,
+      "gem_mean": 3.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        406
+      ]
     },
     "blue_mail_box": {
       "name": "Blue Mailbox",
@@ -1781,13 +2784,26 @@
       "balance_tier": 7,
       "seed_id": "blue_mail_box_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 384",
+      "source": "Live ITEM DATA gem average, rows 442",
       "profile": "advanced",
       "grow_seconds": 23100,
       "growth_source": "Imported splice sheet, row 274",
-      "gem_mean": 3,
+      "gem_mean": 3.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        442
+      ]
     },
     "bulletin_board": {
       "name": "Bulletin Board",
@@ -1795,13 +2811,26 @@
       "balance_tier": 8,
       "seed_id": "bulletin_board_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 392",
+      "source": "Live ITEM DATA gem average, rows 450",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported splice sheet, row 312",
-      "gem_mean": 5.5,
+      "gem_mean": 4.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 11,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        450
+      ]
     },
     "saw_blade": {
       "name": "Spike",
@@ -1809,13 +2838,26 @@
       "balance_tier": 6,
       "seed_id": "saw_blade_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 336",
+      "source": "Live ITEM DATA gem average, rows 394",
       "profile": "established",
       "grow_seconds": 5400,
       "growth_source": "Imported splice sheet, row 236",
-      "gem_mean": 2.2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4.4,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        394
+      ]
     },
     "slime": {
       "name": "Slime",
@@ -1823,13 +2865,26 @@
       "balance_tier": 5,
       "seed_id": "slime_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 346",
+      "source": "Live ITEM DATA gem average, rows 404",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 154",
-      "gem_mean": 2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        404
+      ]
     },
     "pinball": {
       "name": "Pinball",
@@ -1837,13 +2892,18 @@
       "balance_tier": 7,
       "seed_id": "pinball_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 342",
+      "source": "Live ITEM DATA gem average, rows 400",
       "profile": "advanced",
       "grow_seconds": 23100,
       "growth_source": "Imported item sheet, row 342: 6h 25m",
-      "gem_mean": 3,
+      "gem_mean": 3.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 70,
+      "sheet_rows": [
+        400
+      ]
     },
     "mail_box": {
       "name": "Mailbox",
@@ -1851,13 +2911,26 @@
       "balance_tier": 6,
       "seed_id": "mail_box_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 380",
+      "source": "Live ITEM DATA gem average, rows 438",
       "profile": "established",
       "grow_seconds": 7800,
       "growth_source": "Imported splice sheet, row 242",
-      "gem_mean": 3,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        438
+      ]
     },
     "display_box": {
       "name": "Display Block",
@@ -1865,13 +2938,26 @@
       "balance_tier": 9,
       "seed_id": "display_box_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 376",
+      "source": "Live ITEM DATA gem average, rows 434",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 338",
-      "gem_mean": 6,
+      "gem_mean": 6.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 12,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        434
+      ]
     },
     "display_case": {
       "name": "Display Wall",
@@ -1879,13 +2965,26 @@
       "balance_tier": 8,
       "seed_id": "display_case_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 378",
+      "source": "Live ITEM DATA gem average, rows 436",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported splice sheet, row 310",
-      "gem_mean": 4.5,
+      "gem_mean": 5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 9,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        436
+      ]
     },
     "tackle_box": {
       "name": "Bait Box",
@@ -1901,13 +3000,26 @@
       "balance_tier": 7,
       "seed_id": "chicken_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 534",
+      "source": "Live ITEM DATA gem average, rows 590",
       "profile": "advanced",
       "grow_seconds": 23100,
       "growth_source": "Imported splice sheet, row 284",
-      "gem_mean": 3,
+      "gem_mean": 4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        590
+      ]
     },
     "cow": {
       "name": "Cow",
@@ -1915,13 +3027,26 @@
       "balance_tier": 8,
       "seed_id": "cow_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 554",
+      "source": "Live ITEM DATA gem average, rows 610",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported splice sheet, row 320",
-      "gem_mean": 5.5,
+      "gem_mean": 5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 11,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        610
+      ]
     },
     "duck": {
       "name": "Duck",
@@ -1929,13 +3054,26 @@
       "balance_tier": 9,
       "seed_id": "duck_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 544",
+      "source": "Live ITEM DATA gem average, rows 600",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 344",
-      "gem_mean": 6,
+      "gem_mean": 5.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 12,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        600
+      ]
     },
     "bone": {
       "name": "Bone",
@@ -1943,13 +3081,26 @@
       "balance_tier": 1,
       "seed_id": "bone_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 552",
+      "source": "Live ITEM DATA gem average, rows 608",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 552",
-      "gem_mean": 0.2,
+      "gem_mean": 0.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        608
+      ]
     },
     "white_fence": {
       "name": "Farm Fence",
@@ -1957,13 +3108,26 @@
       "balance_tier": 5,
       "seed_id": "white_fence_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 522",
+      "source": "Live ITEM DATA gem average, rows 578",
       "profile": "established",
       "grow_seconds": 1500,
       "growth_source": "Imported splice sheet, row 162",
-      "gem_mean": 1.8,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        578
+      ]
     },
     "sugar_cane": {
       "name": "Sugarcane",
@@ -1971,13 +3135,26 @@
       "balance_tier": 5,
       "seed_id": "sugar_cane_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 550",
+      "source": "Live ITEM DATA gem average, rows 606",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 166",
-      "gem_mean": 2,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        606
+      ],
+      "tree_gem_mean": 4
     },
     "street_lamp": {
       "name": "Street Lamp",
@@ -1985,13 +3162,26 @@
       "balance_tier": 8,
       "seed_id": "street_lamp_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 710",
+      "source": "Live ITEM DATA gem average, rows 768",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported splice sheet, row 332",
-      "gem_mean": 5.5,
+      "gem_mean": 4.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 11,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        768
+      ]
     },
     "fire_escape": {
       "name": "Fire Escape",
@@ -1999,13 +3189,26 @@
       "balance_tier": 9,
       "seed_id": "fire_escape_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 706",
+      "source": "Live ITEM DATA gem average, rows 764",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 362",
-      "gem_mean": 6,
+      "gem_mean": 6.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 12,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        764
+      ]
     },
     "city_fence": {
       "name": "Gothic Fence",
@@ -2013,13 +3216,26 @@
       "balance_tier": 9,
       "seed_id": "city_fence_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 708",
+      "source": "Live ITEM DATA gem average, rows 766",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 364",
-      "gem_mean": 5.5,
+      "gem_mean": 6,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 11,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        766
+      ]
     },
     "fire_hydrant": {
       "name": "Fire Hydrant",
@@ -2027,13 +3243,26 @@
       "balance_tier": 9,
       "seed_id": "fire_hydrant_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 712",
+      "source": "Live ITEM DATA gem average, rows 770",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 366",
-      "gem_mean": 6,
+      "gem_mean": 6.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 12,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        770
+      ]
     },
     "shifty_block": {
       "name": "RGB Block",
@@ -2055,13 +3284,26 @@
       "balance_tier": 4,
       "seed_id": "barn_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 510",
+      "source": "Live ITEM DATA gem average, rows 566",
       "profile": "established",
       "grow_seconds": 480,
       "growth_source": "Imported splice sheet, row 96",
-      "gem_mean": 1.2,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2.4,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        566
+      ]
     },
     "barn_door": {
       "name": "Barn Door",
@@ -2069,13 +3311,26 @@
       "balance_tier": 5,
       "seed_id": "barn_door_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 524",
+      "source": "Live ITEM DATA gem average, rows 580",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 164",
-      "gem_mean": 2.5,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        580
+      ]
     },
     "barn_background": {
       "name": "Barn Wall",
@@ -2083,13 +3338,26 @@
       "balance_tier": 5,
       "seed_id": "barn_background_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 514",
+      "source": "Live ITEM DATA gem average, rows 570",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 160",
-      "gem_mean": 2,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        570
+      ]
     },
     "barn_window": {
       "name": "Barn Window",
@@ -2097,13 +3365,26 @@
       "balance_tier": 5,
       "seed_id": "barn_window_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 512",
+      "source": "Live ITEM DATA gem average, rows 568",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 158",
-      "gem_mean": 2.5,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        568
+      ]
     },
     "water_well": {
       "name": "Water Well",
@@ -2111,13 +3392,26 @@
       "balance_tier": 7,
       "seed_id": "water_well_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 528",
+      "source": "Live ITEM DATA gem average, rows 584",
       "profile": "advanced",
       "grow_seconds": 23100,
       "growth_source": "Imported splice sheet, row 282",
-      "gem_mean": 3,
+      "gem_mean": 4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        584
+      ]
     },
     "dice_block": {
       "name": "Dice Block",
@@ -2125,13 +3419,26 @@
       "balance_tier": 10,
       "seed_id": "dice_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 422",
+      "source": "Live ITEM DATA gem average, rows 480",
       "profile": "endgame",
       "grow_seconds": 129600,
       "growth_source": "Imported splice sheet, row 378",
-      "gem_mean": 8,
+      "gem_mean": 7,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 16,
+      "break_xp": 140,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        480
+      ]
     },
     "checkpoint": {
       "name": "Checkpoint",
@@ -2139,13 +3446,26 @@
       "balance_tier": 8,
       "seed_id": "checkpoint_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 394",
+      "source": "Live ITEM DATA gem average, rows 452",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported splice sheet, row 314",
-      "gem_mean": 5,
+      "gem_mean": 5.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 10,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        452
+      ]
     },
     "star_checkpoint": {
       "name": "Star Checkpoint",
@@ -2175,13 +3495,26 @@
       "balance_tier": 11,
       "seed_id": "blue_portal_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 418",
+      "source": "Live ITEM DATA gem average, rows 476",
       "profile": "endgame",
       "grow_seconds": 216000,
       "growth_source": "Imported splice sheet, row 386",
-      "gem_mean": 9,
+      "gem_mean": 9.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 18,
+      "break_xp": 170,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        476
+      ]
     },
     "yellow_portal": {
       "name": "Orange Portal",
@@ -2189,13 +3522,26 @@
       "balance_tier": 11,
       "seed_id": "yellow_portal_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 416",
+      "source": "Live ITEM DATA gem average, rows 474",
       "profile": "endgame",
       "grow_seconds": 216000,
       "growth_source": "Imported splice sheet, row 384",
-      "gem_mean": 9.5,
+      "gem_mean": 8.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 19,
+      "break_xp": 170,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        474
+      ]
     },
     "bomb": {
       "name": "Bomb",
@@ -2203,13 +3549,26 @@
       "balance_tier": 9,
       "seed_id": "bomb_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 402",
+      "source": "Live ITEM DATA gem average, rows 460",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 342",
-      "gem_mean": 5.5,
+      "gem_mean": 6,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 11,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        460
+      ]
     },
     "display_shelf": {
       "name": "Display Shelf",
@@ -2239,13 +3598,26 @@
       "balance_tier": 5,
       "seed_id": "fish_hanger_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 356",
+      "source": "Live ITEM DATA gem average, rows 414",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported item sheet, row 356",
-      "gem_mean": 2.5,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        414
+      ]
     },
     "password_door": {
       "name": "Password Door",
@@ -2253,13 +3625,26 @@
       "balance_tier": 11,
       "seed_id": "password_door_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 420",
+      "source": "Live ITEM DATA gem average, rows 478",
       "profile": "endgame",
       "grow_seconds": 216000,
       "growth_source": "Imported splice sheet, row 388",
-      "gem_mean": 8.5,
+      "gem_mean": 9,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 17,
+      "break_xp": 170,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        478
+      ]
     },
     "star_block": {
       "name": "Star Block",
@@ -2267,13 +3652,26 @@
       "balance_tier": 7,
       "seed_id": "star_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 354",
+      "source": "Live ITEM DATA gem average, rows 412",
       "profile": "advanced",
       "grow_seconds": 23100,
       "growth_source": "Imported splice sheet, row 272",
-      "gem_mean": 3,
+      "gem_mean": 7.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        412
+      ]
     },
     "anti_punch": {
       "name": "Anti-Punch",
@@ -2311,7 +3709,18 @@
       "growth_source": "Tier default replaces generic 150-second placeholder",
       "gem_mean": 3.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        464
+      ]
     },
     "night_theme_machine": {
       "name": "Night Theme Machine",
@@ -2349,7 +3758,18 @@
       "growth_source": "Tier default replaces generic 150-second placeholder",
       "gem_mean": 4.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        462
+      ]
     },
     "oil_refinery": {
       "name": "Oil Refinery",
@@ -2357,13 +3777,26 @@
       "balance_tier": 13,
       "seed_id": "oil_refinery_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 434",
+      "source": "Live ITEM DATA gem average, rows 492",
       "profile": "endgame",
       "grow_seconds": 604800,
       "growth_source": "Imported splice sheet, row 398",
-      "gem_mean": 14.5,
+      "gem_mean": 12.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 29,
+      "break_xp": 220,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        492
+      ]
     },
     "battery_charger": {
       "name": "Battery Charger",
@@ -2455,13 +3888,26 @@
       "balance_tier": 2,
       "seed_id": "stone_brick_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 206",
+      "source": "Live ITEM DATA gem average, rows 264",
       "profile": "starter",
       "grow_seconds": 100,
       "growth_source": "Imported splice sheet, row 20",
-      "gem_mean": 0.8,
+      "gem_mean": 0.4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.6,
+      "break_xp": 5,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        264
+      ]
     },
     "red_brick": {
       "name": "Red Brick",
@@ -2469,13 +3915,26 @@
       "balance_tier": 2,
       "seed_id": "red_brick_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 202",
+      "source": "Live ITEM DATA gem average, rows 260",
       "profile": "starter",
       "grow_seconds": 100,
       "growth_source": "Imported splice sheet, row 18",
-      "gem_mean": 0.6,
+      "gem_mean": 0.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.2,
+      "break_xp": 5,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        260
+      ]
     },
     "green_brick": {
       "name": "Grimstone",
@@ -2483,13 +3942,26 @@
       "balance_tier": 4,
       "seed_id": "green_brick_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 210",
+      "source": "Live ITEM DATA gem average, rows 268",
       "profile": "established",
       "grow_seconds": 480,
       "growth_source": "Imported splice sheet, row 74",
-      "gem_mean": 1.2,
+      "gem_mean": 1.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2.4,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        268
+      ]
     },
     "green_moss_brick": {
       "name": "Green Moss Brick",
@@ -2511,13 +3983,26 @@
       "balance_tier": 3,
       "seed_id": "red_brick_wall_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 204",
+      "source": "Live ITEM DATA gem average, rows 262",
       "profile": "starter",
       "grow_seconds": 240,
       "growth_source": "Imported splice sheet, row 42",
-      "gem_mean": 0.8,
+      "gem_mean": 1,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.6,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        262
+      ]
     },
     "stone_brick_wall": {
       "name": "Stone Brick Wall",
@@ -2525,13 +4010,26 @@
       "balance_tier": 3,
       "seed_id": "stone_brick_wall_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 208",
+      "source": "Live ITEM DATA gem average, rows 266",
       "profile": "starter",
       "grow_seconds": 270,
       "growth_source": "Imported splice sheet, row 44",
-      "gem_mean": 1,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        266
+      ]
     },
     "green_brick_wall": {
       "name": "Grimstone Wall",
@@ -2539,13 +4037,26 @@
       "balance_tier": 5,
       "seed_id": "green_brick_wall_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 212",
+      "source": "Live ITEM DATA gem average, rows 270",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 116",
-      "gem_mean": 2.5,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        270
+      ]
     },
     "green_moss_brick_wall": {
       "name": "Green Moss Wall",
@@ -2567,13 +4078,26 @@
       "balance_tier": 5,
       "seed_id": "red_brick_platform_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 636",
+      "source": "Live ITEM DATA gem average, rows 692",
       "profile": "established",
       "grow_seconds": 1500,
       "growth_source": "Imported splice sheet, row 178",
-      "gem_mean": 1.8,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        692
+      ]
     },
     "white_brick_block": {
       "name": "Polished Stone Brick",
@@ -2581,13 +4105,26 @@
       "balance_tier": 4,
       "seed_id": "white_brick_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 638",
+      "source": "Live ITEM DATA gem average, rows 694",
       "profile": "established",
       "grow_seconds": 570,
       "growth_source": "Imported splice sheet, row 100",
-      "gem_mean": 1.8,
+      "gem_mean": 1.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        694
+      ]
     },
     "white_brick_wall": {
       "name": "Polished Stone Wall",
@@ -2595,13 +4132,26 @@
       "balance_tier": 5,
       "seed_id": "white_brick_wall_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 642",
+      "source": "Live ITEM DATA gem average, rows 698",
       "profile": "established",
       "grow_seconds": 1500,
       "growth_source": "Imported splice sheet, row 180",
-      "gem_mean": 1.8,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        698
+      ]
     },
     "white_brick_platform": {
       "name": "Polished Stone Platform",
@@ -2609,13 +4159,26 @@
       "balance_tier": 5,
       "seed_id": "white_brick_platform_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 644",
+      "source": "Live ITEM DATA gem average, rows 700",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 182",
-      "gem_mean": 2.5,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        700
+      ]
     },
     "blue_couch": {
       "name": "Couch",
@@ -2623,13 +4186,26 @@
       "balance_tier": 7,
       "seed_id": "blue_couch_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 586",
+      "source": "Live ITEM DATA gem average, rows 642",
       "profile": "advanced",
       "grow_seconds": 27000,
       "growth_source": "Imported splice sheet, row 290",
-      "gem_mean": 3.5,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 7,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        642
+      ]
     },
     "green_couch": {
       "name": "Potato Couch",
@@ -2637,13 +4213,26 @@
       "balance_tier": 9,
       "seed_id": "green_couch_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 588",
+      "source": "Live ITEM DATA gem average, rows 644",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 346",
-      "gem_mean": 5.5,
+      "gem_mean": 6.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 11,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        644
+      ]
     },
     "side_table": {
       "name": "House Table",
@@ -2651,13 +4240,26 @@
       "balance_tier": 5,
       "seed_id": "side_table_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 590",
+      "source": "Live ITEM DATA gem average, rows 646",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 168",
-      "gem_mean": 2.5,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        646
+      ]
     },
     "toilet": {
       "name": "Toilet",
@@ -2665,13 +4267,26 @@
       "balance_tier": 6,
       "seed_id": "toilet_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 608",
+      "source": "Live ITEM DATA gem average, rows 664",
       "profile": "established",
       "grow_seconds": 7800,
       "growth_source": "Imported splice sheet, row 256",
-      "gem_mean": 3,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        664
+      ]
     },
     "toilet_open": {
       "name": "Toilet",
@@ -2688,13 +4303,26 @@
       "balance_tier": 9,
       "seed_id": "refrigerator_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 612",
+      "source": "Live ITEM DATA gem average, rows 668",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 348",
-      "gem_mean": 5.5,
+      "gem_mean": 6.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 11,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        668
+      ]
     },
     "refrigerator_open": {
       "name": "Refrigerator",
@@ -2711,13 +4339,26 @@
       "balance_tier": 5,
       "seed_id": "fireplace_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 620",
+      "source": "Live ITEM DATA gem average, rows 676",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 176",
-      "gem_mean": 2.5,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        676
+      ]
     },
     "fireplace_on": {
       "name": "Fireplace",
@@ -2734,13 +4375,26 @@
       "balance_tier": 7,
       "seed_id": "bathtub_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 624",
+      "source": "Live ITEM DATA gem average, rows 680",
       "profile": "advanced",
       "grow_seconds": 23100,
       "growth_source": "Imported splice sheet, row 298",
-      "gem_mean": 3,
+      "gem_mean": 4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        680
+      ]
     },
     "bathtub_on": {
       "name": "Bathtub",
@@ -2757,13 +4411,26 @@
       "balance_tier": 6,
       "seed_id": "sink_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 628",
+      "source": "Live ITEM DATA gem average, rows 684",
       "profile": "established",
       "grow_seconds": 9600,
       "growth_source": "Imported splice sheet, row 258",
-      "gem_mean": 2.5,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        684
+      ]
     },
     "sink_on": {
       "name": "Sink",
@@ -2780,13 +4447,26 @@
       "balance_tier": 9,
       "seed_id": "fan_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 646",
+      "source": "Live ITEM DATA gem average, rows 702",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 350",
-      "gem_mean": 6,
+      "gem_mean": 5.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 12,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        702
+      ]
     },
     "bed": {
       "name": "Bed",
@@ -2794,13 +4474,26 @@
       "balance_tier": 6,
       "seed_id": "bed_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 648",
+      "source": "Live ITEM DATA gem average, rows 704",
       "profile": "established",
       "grow_seconds": 5400,
       "growth_source": "Imported splice sheet, row 260",
-      "gem_mean": 2.2,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4.4,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        704
+      ]
     },
     "gold_block": {
       "name": "Golden Block",
@@ -2808,14 +4501,23 @@
       "balance_tier": 10,
       "seed_id": "gold_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 466; seedless break retained",
+      "source": "Live ITEM DATA gem average, rows 522",
       "profile": "endgame",
       "grow_seconds": 129600,
       "growth_source": "Imported item sheet, row 466",
-      "gem_mean": 7.5,
+      "gem_mean": 7,
       "extra_break_drops": [],
       "extra_tree_drops": [],
-      "no_break_seed": true
+      "no_break_seed": true,
+      "tree_gem_mean": 15,
+      "break_xp": 140,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_rows": [
+        522
+      ]
     },
     "emerald_block": {
       "name": "Emerald Block",
@@ -2823,14 +4525,23 @@
       "balance_tier": 10,
       "seed_id": "emerald_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 468; seedless break retained",
+      "source": "Live ITEM DATA gem average, rows 524",
       "profile": "endgame",
       "grow_seconds": 129600,
       "growth_source": "Imported item sheet, row 468",
-      "gem_mean": 7,
+      "gem_mean": 8,
       "extra_break_drops": [],
       "extra_tree_drops": [],
-      "no_break_seed": true
+      "no_break_seed": true,
+      "tree_gem_mean": 14,
+      "break_xp": 140,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_rows": [
+        524
+      ]
     },
     "ruby_block": {
       "name": "Ruby Block",
@@ -2838,14 +4549,23 @@
       "balance_tier": 10,
       "seed_id": "ruby_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 470; seedless break retained",
+      "source": "Live ITEM DATA gem average, rows 526",
       "profile": "endgame",
       "grow_seconds": 129600,
       "growth_source": "Imported item sheet, row 470",
-      "gem_mean": 8,
+      "gem_mean": 7.5,
       "extra_break_drops": [],
       "extra_tree_drops": [],
-      "no_break_seed": true
+      "no_break_seed": true,
+      "tree_gem_mean": 16,
+      "break_xp": 140,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_rows": [
+        526
+      ]
     },
     "diamond_block": {
       "name": "Diamond Block",
@@ -2853,14 +4573,23 @@
       "balance_tier": 10,
       "seed_id": "diamond_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 472; seedless break retained",
+      "source": "Live ITEM DATA gem average, rows 528",
       "profile": "endgame",
       "grow_seconds": 129600,
       "growth_source": "Imported item sheet, row 472",
-      "gem_mean": 7.5,
+      "gem_mean": 7,
       "extra_break_drops": [],
       "extra_tree_drops": [],
-      "no_break_seed": true
+      "no_break_seed": true,
+      "tree_gem_mean": 15,
+      "break_xp": 140,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_rows": [
+        528
+      ]
     },
     "amethyst_block": {
       "name": "Gem Block",
@@ -2868,14 +4597,23 @@
       "balance_tier": 10,
       "seed_id": "amethyst_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 474; seedless break retained",
+      "source": "Live ITEM DATA gem average, rows 530",
       "profile": "endgame",
       "grow_seconds": 129600,
       "growth_source": "Imported item sheet, row 474",
-      "gem_mean": 7,
+      "gem_mean": 8,
       "extra_break_drops": [],
       "extra_tree_drops": [],
-      "no_break_seed": true
+      "no_break_seed": true,
+      "tree_gem_mean": 14,
+      "break_xp": 140,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_rows": [
+        530
+      ]
     },
     "glass_panel": {
       "name": "glass_panel",
@@ -2883,13 +4621,26 @@
       "balance_tier": 2,
       "seed_id": "glass_panel_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 332",
+      "source": "Live ITEM DATA gem average, rows 390",
       "profile": "starter",
       "grow_seconds": 100,
       "growth_source": "Imported splice sheet, row 22",
-      "gem_mean": 0.8,
+      "gem_mean": 0.4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.6,
+      "break_xp": 5,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        390
+      ]
     },
     "rainbow_block": {
       "name": "Rainbow Block",
@@ -2897,13 +4648,26 @@
       "balance_tier": 6,
       "seed_id": "gem_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 274",
+      "source": "Live ITEM DATA gem average, rows 332",
       "profile": "established",
       "grow_seconds": 9600,
       "growth_source": "Imported splice sheet, row 216",
-      "gem_mean": 2.5,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        332
+      ]
     },
     "wood_platform": {
       "name": "wood_platform",
@@ -2911,13 +4675,26 @@
       "balance_tier": 3,
       "seed_id": "wood_platform_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 108",
+      "source": "Live ITEM DATA gem average, rows 118",
       "profile": "starter",
       "grow_seconds": 240,
       "growth_source": "Imported splice sheet, row 26",
-      "gem_mean": 0.8,
+      "gem_mean": 1,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.6,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        118
+      ]
     },
     "wooden_entrance": {
       "name": "wooden_entrance",
@@ -2925,13 +4702,26 @@
       "balance_tier": 4,
       "seed_id": "wooden_entrance_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 124",
+      "source": "Live ITEM DATA gem average, rows 134",
       "profile": "established",
       "grow_seconds": 510,
       "growth_source": "Imported splice sheet, row 68",
-      "gem_mean": 1.5,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        134
+      ]
     },
     "sign": {
       "name": "sign",
@@ -2939,13 +4729,26 @@
       "balance_tier": 3,
       "seed_id": "sign_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 122",
+      "source": "Live ITEM DATA gem average, rows 132",
       "profile": "starter",
       "grow_seconds": 360,
       "growth_source": "Imported splice sheet, row 28",
-      "gem_mean": 1.2,
+      "gem_mean": 0.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2.4,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        132
+      ]
     },
     "leaderboard": {
       "name": "Leaderboard",
@@ -3000,13 +4803,26 @@
       "balance_tier": 7,
       "seed_id": "mechanical_entrance_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 328",
+      "source": "Live ITEM DATA gem average, rows 386",
       "profile": "advanced",
       "grow_seconds": 27000,
       "growth_source": "Imported splice sheet, row 268",
-      "gem_mean": 3.5,
+      "gem_mean": 4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 7,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        386
+      ]
     },
     "ceiling_lamp": {
       "name": "ceiling_lamp",
@@ -3014,13 +4830,26 @@
       "balance_tier": 6,
       "seed_id": "ceiling_lamp_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 322",
+      "source": "Live ITEM DATA gem average, rows 380",
       "profile": "established",
       "grow_seconds": 9600,
       "growth_source": "Imported splice sheet, row 230",
-      "gem_mean": 2.5,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        380
+      ]
     },
     "steel_door": {
       "name": "steel_door",
@@ -3028,13 +4857,26 @@
       "balance_tier": 6,
       "seed_id": "steel_door_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 318",
+      "source": "Live ITEM DATA gem average, rows 376",
       "profile": "established",
       "grow_seconds": 5400,
       "growth_source": "Imported splice sheet, row 226",
-      "gem_mean": 2.2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4.4,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        376
+      ]
     },
     "steel_block": {
       "name": "steel_block",
@@ -3042,13 +4884,26 @@
       "balance_tier": 5,
       "seed_id": "steel_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 312",
+      "source": "Live ITEM DATA gem average, rows 370",
       "profile": "established",
       "grow_seconds": 1500,
       "growth_source": "Imported splice sheet, row 152",
-      "gem_mean": 1.8,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        370
+      ]
     },
     "screen_door": {
       "name": "screen_door",
@@ -3056,13 +4911,26 @@
       "balance_tier": 6,
       "seed_id": "screen_door_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 320",
+      "source": "Live ITEM DATA gem average, rows 378",
       "profile": "established",
       "grow_seconds": 7800,
       "growth_source": "Imported splice sheet, row 228",
-      "gem_mean": 3,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        378
+      ]
     },
     "steel_background": {
       "name": "steel_background",
@@ -3070,13 +4938,26 @@
       "balance_tier": 6,
       "seed_id": "steel_background_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 314",
+      "source": "Live ITEM DATA gem average, rows 372",
       "profile": "established",
       "grow_seconds": 7800,
       "growth_source": "Imported splice sheet, row 222",
-      "gem_mean": 3,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        372
+      ]
     },
     "steel_sign": {
       "name": "steel_sign",
@@ -3084,13 +4965,26 @@
       "balance_tier": 6,
       "seed_id": "steel_sign_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 316",
+      "source": "Live ITEM DATA gem average, rows 374",
       "profile": "established",
       "grow_seconds": 9600,
       "growth_source": "Imported splice sheet, row 224",
-      "gem_mean": 2.5,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        374
+      ]
     },
     "steel_platform": {
       "name": "steel_platform",
@@ -3098,13 +4992,26 @@
       "balance_tier": 6,
       "seed_id": "steel_platform_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 334",
+      "source": "Live ITEM DATA gem average, rows 392",
       "profile": "established",
       "grow_seconds": 9600,
       "growth_source": "Imported splice sheet, row 234",
-      "gem_mean": 2.5,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        392
+      ]
     },
     "steel_ladder": {
       "name": "steel_ladder",
@@ -3112,13 +5019,26 @@
       "balance_tier": 6,
       "seed_id": "steel_ladder_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 326",
+      "source": "Live ITEM DATA gem average, rows 384",
       "profile": "established",
       "grow_seconds": 7800,
       "growth_source": "Imported splice sheet, row 232",
-      "gem_mean": 3,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        384
+      ]
     },
     "mushroom": {
       "name": "mushroom",
@@ -3126,13 +5046,26 @@
       "balance_tier": 2,
       "seed_id": "mushroom_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 110",
+      "source": "Live ITEM DATA gem average, rows 120",
       "profile": "starter",
       "grow_seconds": 100,
       "growth_source": "Imported splice sheet, row 12",
-      "gem_mean": 0.8,
+      "gem_mean": 0.4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.6,
+      "break_xp": 5,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        120
+      ]
     },
     "wooden_door": {
       "name": "wooden_door",
@@ -3140,13 +5073,26 @@
       "balance_tier": 3,
       "seed_id": "wooden_door_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 132",
+      "source": "Live ITEM DATA gem average, rows 142",
       "profile": "starter",
       "grow_seconds": 240,
       "growth_source": "Imported splice sheet, row 32",
-      "gem_mean": 0.8,
+      "gem_mean": 1,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.6,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        142
+      ]
     },
     "wooden_block": {
       "name": "wooden_block",
@@ -3154,13 +5100,26 @@
       "balance_tier": 2,
       "seed_id": "wooden_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 126",
+      "source": "Live ITEM DATA gem average, rows 136",
       "profile": "starter",
       "grow_seconds": 100,
       "growth_source": "Imported splice sheet, row 14",
-      "gem_mean": 0.4,
+      "gem_mean": 0.6,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.8,
+      "break_xp": 5,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        136
+      ]
     },
     "wooden_wallpaper": {
       "name": "Wooden Wallpaper",
@@ -3168,13 +5127,26 @@
       "balance_tier": 2,
       "seed_id": "wooden_background_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 128",
+      "source": "Live ITEM DATA gem average, rows 138",
       "profile": "starter",
       "grow_seconds": 100,
       "growth_source": "Imported splice sheet, row 16",
-      "gem_mean": 0.8,
+      "gem_mean": 0.4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.6,
+      "break_xp": 5,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        138
+      ]
     },
     "wooden_fence": {
       "name": "wooden_fence",
@@ -3182,13 +5154,26 @@
       "balance_tier": 3,
       "seed_id": "wooden_fence_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 134",
+      "source": "Live ITEM DATA gem average, rows 144",
       "profile": "starter",
       "grow_seconds": 360,
       "growth_source": "Imported splice sheet, row 34",
-      "gem_mean": 1.2,
+      "gem_mean": 0.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2.4,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        144
+      ]
     },
     "wooden_window": {
       "name": "Wooden Window",
@@ -3196,13 +5181,26 @@
       "balance_tier": 3,
       "seed_id": "wooden_frame_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 130",
+      "source": "Live ITEM DATA gem average, rows 140",
       "profile": "starter",
       "grow_seconds": 270,
       "growth_source": "Imported splice sheet, row 30",
-      "gem_mean": 1,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        140
+      ]
     },
     "wooden_chair": {
       "name": "wooden_chair",
@@ -3210,13 +5208,26 @@
       "balance_tier": 4,
       "seed_id": "wooden_chair_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 136",
+      "source": "Live ITEM DATA gem average, rows 146",
       "profile": "established",
       "grow_seconds": 510,
       "growth_source": "Imported splice sheet, row 70",
-      "gem_mean": 1.5,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        146
+      ]
     },
     "wooden_table": {
       "name": "wooden_table",
@@ -3224,13 +5235,26 @@
       "balance_tier": 3,
       "seed_id": "wooden_table_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 138",
+      "source": "Live ITEM DATA gem average, rows 148",
       "profile": "starter",
       "grow_seconds": 240,
       "growth_source": "Imported splice sheet, row 36",
-      "gem_mean": 0.8,
+      "gem_mean": 1,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.6,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        148
+      ]
     },
     "wooden_crappy_sign": {
       "name": "Mysterious Sign",
@@ -3238,13 +5262,26 @@
       "balance_tier": 3,
       "seed_id": "wooden_crappy_sign_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 148",
+      "source": "Live ITEM DATA gem average, rows 158",
       "profile": "starter",
       "grow_seconds": 270,
       "growth_source": "Imported splice sheet, row 38",
-      "gem_mean": 1,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        158
+      ]
     },
     "wooden_ladder": {
       "name": "wooden_ladder",
@@ -3252,13 +5289,26 @@
       "balance_tier": 4,
       "seed_id": "wooden_ladder_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 120",
+      "source": "Live ITEM DATA gem average, rows 130",
       "profile": "established",
       "grow_seconds": 480,
       "growth_source": "Imported splice sheet, row 66",
-      "gem_mean": 1.2,
+      "gem_mean": 1.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2.4,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        130
+      ]
     },
     "toxic_waste": {
       "name": "Toxic Waste",
@@ -3388,13 +5438,26 @@
       "balance_tier": 10,
       "seed_id": "recycle_bin_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 408",
+      "source": "Live ITEM DATA gem average, rows 466",
       "profile": "endgame",
       "grow_seconds": 129600,
       "growth_source": "Imported splice sheet, row 374",
-      "gem_mean": 7,
+      "gem_mean": 7.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 14,
+      "break_xp": 140,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        466
+      ]
     },
     "quest_board": {
       "name": "Quest Board",
@@ -3408,7 +5471,18 @@
       "growth_source": "Tier default for missing duration",
       "gem_mean": 3.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        486
+      ]
     },
     "sashimi_table": {
       "name": "Sashimi Table",
@@ -3416,13 +5490,26 @@
       "balance_tier": 8,
       "seed_id": "sashimi_table_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 430",
+      "source": "Live ITEM DATA gem average, rows 488",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported splice sheet, row 316",
-      "gem_mean": 5,
+      "gem_mean": 5.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 10,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        488
+      ]
     },
     "copper_block": {
       "name": "Copper Block",
@@ -3430,14 +5517,23 @@
       "balance_tier": 8,
       "seed_id": "copper_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 476; seedless break retained",
+      "source": "Live ITEM DATA gem average, rows 532",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported item sheet, row 476",
-      "gem_mean": 5.5,
+      "gem_mean": 5,
       "extra_break_drops": [],
       "extra_tree_drops": [],
-      "no_break_seed": true
+      "no_break_seed": true,
+      "tree_gem_mean": 11,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_rows": [
+        532
+      ]
     },
     "rusty_copper_block": {
       "name": "Rusty Copper Block",
@@ -3445,14 +5541,23 @@
       "balance_tier": 8,
       "seed_id": "rusty_copper_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 478; seedless break retained",
+      "source": "Live ITEM DATA gem average, rows 534",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported item sheet, row 478",
-      "gem_mean": 5,
+      "gem_mean": 4.5,
       "extra_break_drops": [],
       "extra_tree_drops": [],
-      "no_break_seed": true
+      "no_break_seed": true,
+      "tree_gem_mean": 10,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_rows": [
+        534
+      ]
     },
     "hay_bales": {
       "name": "Hay Bales",
@@ -3460,13 +5565,26 @@
       "balance_tier": 3,
       "seed_id": "hay_bales_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 564",
+      "source": "Live ITEM DATA gem average, rows 620",
       "profile": "starter",
       "grow_seconds": 240,
       "growth_source": "Imported splice sheet, row 62",
-      "gem_mean": 0.8,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.6,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        620
+      ]
     },
     "seaweed_block": {
       "name": "Seaweed",
@@ -3474,13 +5592,26 @@
       "balance_tier": 1,
       "seed_id": "seaweed_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 566",
+      "source": "Live ITEM DATA gem average, rows 622",
       "profile": "starter",
       "grow_seconds": 40,
       "growth_source": "Imported item sheet, row 566",
-      "gem_mean": 0.5,
+      "gem_mean": 0.35,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        622
+      ]
     },
     "coral_block": {
       "name": "Coral",
@@ -3488,13 +5619,26 @@
       "balance_tier": 1,
       "seed_id": "coral_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 568",
+      "source": "Live ITEM DATA gem average, rows 624",
       "profile": "starter",
       "grow_seconds": 35,
       "growth_source": "Imported item sheet, row 568",
-      "gem_mean": 0.35,
+      "gem_mean": 0.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.7,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        624
+      ]
     },
     "pearl_clam": {
       "name": "Pearl Clam",
@@ -3502,13 +5646,26 @@
       "balance_tier": 1,
       "seed_id": "pearl_clam_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 570",
+      "source": "Live ITEM DATA gem average, rows 626",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 570",
-      "gem_mean": 0.2,
+      "gem_mean": 0.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        626
+      ]
     },
     "pearl_clam_open": {
       "name": "Pearl Clam Open",
@@ -3525,13 +5682,26 @@
       "balance_tier": 7,
       "seed_id": "empty_jar_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 526",
+      "source": "Live ITEM DATA gem average, rows 582",
       "profile": "advanced",
       "grow_seconds": 27000,
       "growth_source": "Imported splice sheet, row 280",
-      "gem_mean": 3.5,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 7,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        582
+      ]
     },
     "bush": {
       "name": "Bush",
@@ -3539,13 +5709,26 @@
       "balance_tier": 2,
       "seed_id": "bush_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 106",
+      "source": "Live ITEM DATA gem average, rows 116",
       "profile": "starter",
       "grow_seconds": 100,
       "growth_source": "Imported splice sheet, row 10",
-      "gem_mean": 0.6,
+      "gem_mean": 0.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.2,
+      "break_xp": 5,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        116
+      ]
     },
     "obsidian": {
       "name": "Obsidian",
@@ -3553,13 +5736,26 @@
       "balance_tier": 1,
       "seed_id": "obsidian_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 22",
+      "source": "Live ITEM DATA gem average, rows 22",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Reference screenshot: 30 seconds",
       "gem_mean": 0.35,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.7,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        22
+      ]
     },
     "spring_leaf": {
       "name": "Leaf Block (Spring Event)",
@@ -3567,13 +5763,26 @@
       "balance_tier": 1,
       "seed_id": "spring_leaf_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 90",
+      "source": "Live ITEM DATA gem average, rows 98",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Tier default for missing duration",
-      "gem_mean": 0.2,
+      "gem_mean": 0.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        98
+      ]
     },
     "autumn_leaf": {
       "name": "Leaf Block (Autumn Event)",
@@ -3581,13 +5790,26 @@
       "balance_tier": 1,
       "seed_id": "autumn_leaf_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 92",
+      "source": "Live ITEM DATA gem average, rows 100",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Tier default for missing duration",
-      "gem_mean": 0.5,
+      "gem_mean": 0.35,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        100
+      ]
     },
     "tiny_rock": {
       "name": "Tiny Rock",
@@ -3595,13 +5817,18 @@
       "balance_tier": 1,
       "seed_id": "tiny_rock_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 28",
+      "source": "Live ITEM DATA gem average, rows 28",
       "profile": "starter",
       "grow_seconds": 35,
       "growth_source": "Imported item sheet, row 28",
       "gem_mean": 0.35,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.7,
+      "break_xp": 1,
+      "sheet_rows": [
+        28
+      ]
     },
     "big_rock": {
       "name": "Big Rock",
@@ -3609,13 +5836,18 @@
       "balance_tier": 1,
       "seed_id": "big_rock_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 30",
+      "source": "Live ITEM DATA gem average, rows 30",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 30",
       "gem_mean": 0.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_rows": [
+        30
+      ]
     },
     "snow_tiny_rock": {
       "name": "Snow Tiny Rock",
@@ -3623,13 +5855,26 @@
       "balance_tier": 1,
       "seed_id": "snow_tiny_rock_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 178",
+      "source": "Live ITEM DATA gem average, rows 188",
       "profile": "starter",
       "grow_seconds": 35,
       "growth_source": "Imported item sheet, row 178",
-      "gem_mean": 0.35,
+      "gem_mean": 0.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.7,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        188
+      ]
     },
     "snow_big_rock": {
       "name": "Snow Big Rock",
@@ -3637,13 +5882,26 @@
       "balance_tier": 1,
       "seed_id": "snow_big_rock_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 180",
+      "source": "Live ITEM DATA gem average, rows 190",
       "profile": "starter",
       "grow_seconds": 30,
       "growth_source": "Imported item sheet, row 180",
-      "gem_mean": 0.2,
+      "gem_mean": 0.35,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.4,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        190
+      ]
     },
     "wooden_barrel": {
       "name": "Wooden Barrel",
@@ -3651,13 +5909,26 @@
       "balance_tier": 5,
       "seed_id": "wooden_barrel_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 184",
+      "source": "Live ITEM DATA gem average, rows 242",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 112",
-      "gem_mean": 2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        242
+      ]
     },
     "wooden_box": {
       "name": "Wooden Box",
@@ -3665,13 +5936,26 @@
       "balance_tier": 4,
       "seed_id": "wooden_box_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 186",
+      "source": "Live ITEM DATA gem average, rows 244",
       "profile": "established",
       "grow_seconds": 480,
       "growth_source": "Imported splice sheet, row 72",
-      "gem_mean": 1.2,
+      "gem_mean": 1.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2.4,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        244
+      ]
     },
     "lantern": {
       "name": "Lantern",
@@ -3679,13 +5963,26 @@
       "balance_tier": 5,
       "seed_id": "lantern_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 188",
+      "source": "Live ITEM DATA gem average, rows 246",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 114",
-      "gem_mean": 2.5,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        246
+      ]
     },
     "campfire": {
       "name": "Campfire",
@@ -3693,13 +5990,26 @@
       "balance_tier": 3,
       "seed_id": "campfire_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 190",
+      "source": "Live ITEM DATA gem average, rows 248",
       "profile": "starter",
       "grow_seconds": 270,
       "growth_source": "Imported splice sheet, row 40",
-      "gem_mean": 1,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        248
+      ]
     },
     "dungeon_door": {
       "name": "Dungeon Door",
@@ -3707,13 +6017,26 @@
       "balance_tier": 6,
       "seed_id": "dungeon_door_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 192",
+      "source": "Live ITEM DATA gem average, rows 250",
       "profile": "established",
       "grow_seconds": 5400,
       "growth_source": "Imported splice sheet, row 198",
-      "gem_mean": 2.2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4.4,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        250
+      ]
     },
     "sturdy_box": {
       "name": "Sturdy Box",
@@ -3721,13 +6044,26 @@
       "balance_tier": 6,
       "seed_id": "sturdy_box_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 194",
+      "source": "Live ITEM DATA gem average, rows 252",
       "profile": "established",
       "grow_seconds": 7800,
       "growth_source": "Imported splice sheet, row 200",
-      "gem_mean": 3,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        252
+      ]
     },
     "wagon_wheel": {
       "name": "Wagon Wheel",
@@ -3735,13 +6071,26 @@
       "balance_tier": 6,
       "seed_id": "wagon_wheel_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 196",
+      "source": "Live ITEM DATA gem average, rows 254",
       "profile": "established",
       "grow_seconds": 9600,
       "growth_source": "Imported splice sheet, row 202",
-      "gem_mean": 2.5,
+      "gem_mean": 4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        6
+      ],
+      "sheet_seed_range": [
+        0,
+        3
+      ],
+      "sheet_rows": [
+        254
+      ]
     },
     "portcullis": {
       "name": "Portcullis",
@@ -3749,13 +6098,26 @@
       "balance_tier": 7,
       "seed_id": "portcullis_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 198",
+      "source": "Live ITEM DATA gem average, rows 256",
       "profile": "advanced",
       "grow_seconds": 23100,
       "growth_source": "Imported splice sheet, row 266",
-      "gem_mean": 3,
+      "gem_mean": 3.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        256
+      ]
     },
     "weathervane": {
       "name": "Weathervane",
@@ -3763,13 +6125,26 @@
       "balance_tier": 6,
       "seed_id": "weathervane_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 532",
+      "source": "Live ITEM DATA gem average, rows 588",
       "profile": "established",
       "grow_seconds": 9600,
       "growth_source": "Imported splice sheet, row 248",
-      "gem_mean": 2.5,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        588
+      ]
     },
     "modern_chair": {
       "name": "Modern Chair",
@@ -3777,13 +6152,26 @@
       "balance_tier": 6,
       "seed_id": "modern_chair_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 592",
+      "source": "Live ITEM DATA gem average, rows 648",
       "profile": "established",
       "grow_seconds": 9600,
       "growth_source": "Imported splice sheet, row 252",
-      "gem_mean": 2.5,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        648
+      ]
     },
     "dresser": {
       "name": "Dresser",
@@ -3791,13 +6179,26 @@
       "balance_tier": 6,
       "seed_id": "dresser_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 594",
+      "source": "Live ITEM DATA gem average, rows 650",
       "profile": "established",
       "grow_seconds": 5400,
       "growth_source": "Imported splice sheet, row 254",
-      "gem_mean": 2.2,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4.4,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        650
+      ]
     },
     "royal_door": {
       "name": "House Door",
@@ -3805,13 +6206,26 @@
       "balance_tier": 5,
       "seed_id": "royal_door_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 596",
+      "source": "Live ITEM DATA gem average, rows 652",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 170",
-      "gem_mean": 2.5,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        652
+      ]
     },
     "grand_house_door": {
       "name": "Grand House Door",
@@ -3819,13 +6233,26 @@
       "balance_tier": 8,
       "seed_id": "grand_house_door_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 598",
+      "source": "Live ITEM DATA gem average, rows 654",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported splice sheet, row 324",
-      "gem_mean": 5,
+      "gem_mean": 4.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 10,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        654
+      ]
     },
     "royal_entrance": {
       "name": "House Entrance",
@@ -3833,13 +6260,26 @@
       "balance_tier": 7,
       "seed_id": "royal_entrance_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 600",
+      "source": "Live ITEM DATA gem average, rows 656",
       "profile": "advanced",
       "grow_seconds": 23100,
       "growth_source": "Imported splice sheet, row 292",
-      "gem_mean": 3,
+      "gem_mean": 4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        656
+      ]
     },
     "royal_window": {
       "name": "White Window",
@@ -3847,13 +6287,26 @@
       "balance_tier": 5,
       "seed_id": "royal_window_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 602",
+      "source": "Live ITEM DATA gem average, rows 658",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 172",
-      "gem_mean": 2.5,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        658
+      ]
     },
     "purple_curtains": {
       "name": "Purple Curtained Window",
@@ -3861,13 +6314,26 @@
       "balance_tier": 7,
       "seed_id": "purple_curtains_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 604",
+      "source": "Live ITEM DATA gem average, rows 660",
       "profile": "advanced",
       "grow_seconds": 27000,
       "growth_source": "Imported splice sheet, row 294",
-      "gem_mean": 3.5,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 7,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        660
+      ]
     },
     "pink_curtains": {
       "name": "Pink Curtained Window",
@@ -3875,13 +6341,26 @@
       "balance_tier": 7,
       "seed_id": "pink_curtains_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 606",
+      "source": "Live ITEM DATA gem average, rows 662",
       "profile": "advanced",
       "grow_seconds": 23100,
       "growth_source": "Imported splice sheet, row 296",
-      "gem_mean": 3,
+      "gem_mean": 4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        662
+      ]
     },
     "building_brick_block": {
       "name": "Building Brick Block",
@@ -3889,13 +6368,26 @@
       "balance_tier": 4,
       "seed_id": "building_brick_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 616",
+      "source": "Live ITEM DATA gem average, rows 672",
       "profile": "established",
       "grow_seconds": 510,
       "growth_source": "Imported splice sheet, row 98",
-      "gem_mean": 1.5,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        672
+      ]
     },
     "building_brick_wall": {
       "name": "Building Brick Wall",
@@ -3903,13 +6395,26 @@
       "balance_tier": 5,
       "seed_id": "building_brick_wall_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 618",
+      "source": "Live ITEM DATA gem average, rows 674",
       "profile": "established",
       "grow_seconds": 1500,
       "growth_source": "Imported splice sheet, row 174",
-      "gem_mean": 1.8,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        674
+      ]
     },
     "rubber_duck": {
       "name": "Rubber Duck",
@@ -3917,13 +6422,26 @@
       "balance_tier": 8,
       "seed_id": "rubber_duck_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 632",
+      "source": "Live ITEM DATA gem average, rows 688",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported splice sheet, row 326",
-      "gem_mean": 5.5,
+      "gem_mean": 5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 11,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        688
+      ]
     },
     "park_bench": {
       "name": "Park Bench",
@@ -3931,13 +6449,26 @@
       "balance_tier": 5,
       "seed_id": "park_bench_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 650",
+      "source": "Live ITEM DATA gem average, rows 706",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 184",
-      "gem_mean": 2.5,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        706
+      ]
     },
     "big_sign": {
       "name": "Big Sign",
@@ -3945,13 +6476,26 @@
       "balance_tier": 4,
       "seed_id": "big_sign_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 652",
+      "source": "Live ITEM DATA gem average, rows 708",
       "profile": "established",
       "grow_seconds": 510,
       "growth_source": "Imported splice sheet, row 102",
-      "gem_mean": 1.5,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        708
+      ]
     },
     "right_directional_sign": {
       "name": "Right Directional Sign",
@@ -3959,13 +6503,26 @@
       "balance_tier": 5,
       "seed_id": "right_directional_sign_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 654",
+      "source": "Live ITEM DATA gem average, rows 710",
       "profile": "established",
       "grow_seconds": 1500,
       "growth_source": "Imported splice sheet, row 186",
-      "gem_mean": 1.8,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        710
+      ]
     },
     "left_directional_sign": {
       "name": "Left Directional Sign",
@@ -3973,13 +6530,26 @@
       "balance_tier": 5,
       "seed_id": "left_directional_sign_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 656",
+      "source": "Live ITEM DATA gem average, rows 712",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 188",
-      "gem_mean": 2.5,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        712
+      ]
     },
     "digital_sign": {
       "name": "Digital Sign",
@@ -3987,13 +6557,26 @@
       "balance_tier": 9,
       "seed_id": "digital_sign_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 658",
+      "source": "Live ITEM DATA gem average, rows 714",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 352",
-      "gem_mean": 6,
+      "gem_mean": 5.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 12,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        714
+      ]
     },
     "star_wall": {
       "name": "Star Wall",
@@ -4001,13 +6584,26 @@
       "balance_tier": 4,
       "seed_id": "star_wall_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 660",
+      "source": "Live ITEM DATA gem average, rows 716",
       "profile": "established",
       "grow_seconds": 480,
       "growth_source": "Imported splice sheet, row 134",
-      "gem_mean": 1.2,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 2.4,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        716
+      ]
     },
     "blue_stripe_wall": {
       "name": "Blue Stripe Wall",
@@ -4015,13 +6611,26 @@
       "balance_tier": 4,
       "seed_id": "blue_stripe_wall_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 662",
+      "source": "Live ITEM DATA gem average, rows 720",
       "profile": "established",
       "grow_seconds": 570,
       "growth_source": "Imported splice sheet, row 104",
-      "gem_mean": 1.8,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        720
+      ]
     },
     "red_stripe_wall": {
       "name": "Red Stripe Wall",
@@ -4029,13 +6638,26 @@
       "balance_tier": 4,
       "seed_id": "red_stripe_wall_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 664",
+      "source": "Live ITEM DATA gem average, rows 722",
       "profile": "established",
       "grow_seconds": 510,
       "growth_source": "Imported splice sheet, row 106",
-      "gem_mean": 1.5,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        722
+      ]
     },
     "aquatic_line_wall": {
       "name": "Aquatic Line Wall",
@@ -4043,13 +6665,26 @@
       "balance_tier": 5,
       "seed_id": "aquatic_line_wall_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 666",
+      "source": "Live ITEM DATA gem average, rows 724",
       "profile": "established",
       "grow_seconds": 1500,
       "growth_source": "Imported splice sheet, row 190",
-      "gem_mean": 1.8,
+      "gem_mean": 2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        724
+      ]
     },
     "complementary_line_wall": {
       "name": "Complementary Line Wall",
@@ -4057,13 +6692,26 @@
       "balance_tier": 5,
       "seed_id": "complementary_line_wall_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 668",
+      "source": "Live ITEM DATA gem average, rows 726",
       "profile": "established",
       "grow_seconds": 1800,
       "growth_source": "Imported splice sheet, row 192",
-      "gem_mean": 2.5,
+      "gem_mean": 1.8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        726
+      ]
     },
     "checkered_wall": {
       "name": "Checkered Wall",
@@ -4071,13 +6719,26 @@
       "balance_tier": 5,
       "seed_id": "checkered_wall_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 670",
+      "source": "Live ITEM DATA gem average, rows 728",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 194",
-      "gem_mean": 2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        728
+      ]
     },
     "sale_sign": {
       "name": "Sale Sign",
@@ -4085,13 +6746,26 @@
       "balance_tier": 6,
       "seed_id": "sale_sign_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 672",
+      "source": "Live ITEM DATA gem average, rows 730",
       "profile": "established",
       "grow_seconds": 5400,
       "growth_source": "Imported splice sheet, row 262",
-      "gem_mean": 2.2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4.4,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        730
+      ]
     },
     "hazard_sign": {
       "name": "Hazard Sign",
@@ -4099,13 +6773,26 @@
       "balance_tier": 8,
       "seed_id": "hazard_sign_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 674",
+      "source": "Live ITEM DATA gem average, rows 732",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported splice sheet, row 328",
-      "gem_mean": 5.5,
+      "gem_mean": 4.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 11,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        732
+      ]
     },
     "open_sign": {
       "name": "Open Sign",
@@ -4113,13 +6800,26 @@
       "balance_tier": 8,
       "seed_id": "open_sign_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 676",
+      "source": "Live ITEM DATA gem average, rows 734",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported splice sheet, row 330",
-      "gem_mean": 5,
+      "gem_mean": 5.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 10,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        734
+      ]
     },
     "street_sign": {
       "name": "Street Sign",
@@ -4127,13 +6827,26 @@
       "balance_tier": 7,
       "seed_id": "street_sign_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 680",
+      "source": "Live ITEM DATA gem average, rows 738",
       "profile": "advanced",
       "grow_seconds": 28800,
       "growth_source": "Imported splice sheet, row 300",
-      "gem_mean": 4,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 8,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        738
+      ]
     },
     "chandelier": {
       "name": "Chandelier",
@@ -4141,13 +6854,26 @@
       "balance_tier": 10,
       "seed_id": "chandelier_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 682",
+      "source": "Live ITEM DATA gem average, rows 740",
       "profile": "endgame",
       "grow_seconds": 129600,
       "growth_source": "Imported splice sheet, row 382",
-      "gem_mean": 7.5,
+      "gem_mean": 8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 15,
+      "break_xp": 140,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        740
+      ]
     },
     "wall_clock": {
       "name": "Wall Clock",
@@ -4161,7 +6887,18 @@
       "growth_source": "Tier default for missing duration",
       "gem_mean": 3.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        744
+      ]
     },
     "vines_painting": {
       "name": "Vines Painting",
@@ -4169,13 +6906,26 @@
       "balance_tier": 9,
       "seed_id": "vines_painting_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 688",
+      "source": "Live ITEM DATA gem average, rows 746",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 354",
-      "gem_mean": 6,
+      "gem_mean": 6.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 12,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        746
+      ]
     },
     "scratched_banana_painting": {
       "name": "Scratched Banana Painting",
@@ -4183,13 +6933,26 @@
       "balance_tier": 9,
       "seed_id": "scratched_banana_painting_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 690",
+      "source": "Live ITEM DATA gem average, rows 748",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 356",
-      "gem_mean": 5.5,
+      "gem_mean": 6,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 11,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        748
+      ]
     },
     "heartbreak_painting": {
       "name": "Heartbreak Painting",
@@ -4197,13 +6960,26 @@
       "balance_tier": 9,
       "seed_id": "heartbreak_painting_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 692",
+      "source": "Live ITEM DATA gem average, rows 750",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 358",
-      "gem_mean": 6.5,
+      "gem_mean": 5.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 13,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        750
+      ]
     },
     "love_painting": {
       "name": "Love Painting",
@@ -4211,13 +6987,26 @@
       "balance_tier": 9,
       "seed_id": "love_painting_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 694",
+      "source": "Live ITEM DATA gem average, rows 752",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 360",
-      "gem_mean": 6,
+      "gem_mean": 6.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 12,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        752
+      ]
     },
     "the_starry_night": {
       "name": "The Starry Night",
@@ -4231,7 +7020,18 @@
       "growth_source": "Tier default for missing duration",
       "gem_mean": 6,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        762
+      ]
     },
     "sunflower_painting": {
       "name": "Sunflower Painting",
@@ -4245,7 +7045,18 @@
       "growth_source": "Tier default for missing duration",
       "gem_mean": 6,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        754
+      ]
     },
     "mona_lisa": {
       "name": "Mona Lisa",
@@ -4259,7 +7070,18 @@
       "growth_source": "Tier default for missing duration",
       "gem_mean": 6,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        756
+      ]
     },
     "american_gothic": {
       "name": "American Gothic",
@@ -4273,7 +7095,18 @@
       "growth_source": "Tier default for missing duration",
       "gem_mean": 6,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        758
+      ]
     },
     "the_girl_the_pearl_painting": {
       "name": "The Girl the Pearl Painting",
@@ -4287,7 +7120,18 @@
       "growth_source": "Tier default for missing duration",
       "gem_mean": 6,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        760
+      ]
     },
     "ventilation": {
       "name": "Ventilation",
@@ -4295,13 +7139,26 @@
       "balance_tier": 7,
       "seed_id": "ventilation_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 716",
+      "source": "Live ITEM DATA gem average, rows 774",
       "profile": "advanced",
       "grow_seconds": 28800,
       "growth_source": "Imported splice sheet, row 302",
-      "gem_mean": 4,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 8,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        774
+      ]
     },
     "sirene_lamp": {
       "name": "Sirene Lamp",
@@ -4323,13 +7180,26 @@
       "balance_tier": 9,
       "seed_id": "water_fountain_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 722",
+      "source": "Live ITEM DATA gem average, rows 780",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 370",
-      "gem_mean": 6.5,
+      "gem_mean": 5.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 13,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        780
+      ]
     },
     "moon": {
       "name": "Moon",
@@ -4337,13 +7207,26 @@
       "balance_tier": 11,
       "seed_id": "moon_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 724",
+      "source": "Live ITEM DATA gem average, rows 782",
       "profile": "endgame",
       "grow_seconds": 216000,
       "growth_source": "Imported splice sheet, row 390",
-      "gem_mean": 9,
+      "gem_mean": 9.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 18,
+      "break_xp": 170,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        782
+      ]
     },
     "earth": {
       "name": "Earth",
@@ -4351,13 +7234,26 @@
       "balance_tier": 11,
       "seed_id": "earth_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 726",
+      "source": "Live ITEM DATA gem average, rows 784",
       "profile": "endgame",
       "grow_seconds": 216000,
       "growth_source": "Imported splice sheet, row 392",
-      "gem_mean": 8.5,
+      "gem_mean": 9,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 17,
+      "break_xp": 170,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        784
+      ]
     },
     "sun": {
       "name": "Sun",
@@ -4371,7 +7267,25 @@
       "growth_source": "Imported splice sheet, row 394",
       "gem_mean": 9,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "break_xp": 170,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        786,
+        796,
+        798,
+        800,
+        802,
+        804,
+        806
+      ]
     },
     "digital_sign_on": {
       "name": "Digital Sign",
@@ -4415,13 +7329,26 @@
       "balance_tier": 6,
       "seed_id": "pillar_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 574",
+      "source": "Live ITEM DATA gem average, rows 630",
       "profile": "established",
       "grow_seconds": 9600,
       "growth_source": "Imported splice sheet, row 250",
-      "gem_mean": 2.5,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        630
+      ]
     },
     "neon_block": {
       "name": "Neon Block",
@@ -4429,13 +7356,26 @@
       "balance_tier": 7,
       "seed_id": "neon_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 736",
+      "source": "Live ITEM DATA gem average, rows 794",
       "profile": "advanced",
       "grow_seconds": 27000,
       "growth_source": "Imported splice sheet, row 306",
-      "gem_mean": 3.5,
+      "gem_mean": 4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 7,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        794
+      ]
     },
     "cozy_chalkboard": {
       "name": "Cozy Chalkboard",
@@ -4443,13 +7383,26 @@
       "balance_tier": 7,
       "seed_id": "cozy_chalkboard_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 732",
+      "source": "Live ITEM DATA gem average, rows 790",
       "profile": "advanced",
       "grow_seconds": 23100,
       "growth_source": "Imported splice sheet, row 304",
-      "gem_mean": 3,
+      "gem_mean": 3.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        790
+      ]
     },
     "almanac": {
       "name": "Almanac",
@@ -4457,13 +7410,26 @@
       "balance_tier": 8,
       "seed_id": "almanac_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 734",
+      "source": "Live ITEM DATA gem average, rows 792",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported splice sheet, row 334",
-      "gem_mean": 5.5,
+      "gem_mean": 4.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 11,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        792
+      ]
     },
     "pencil_block": {
       "name": "Pencil Block",
@@ -4471,13 +7437,26 @@
       "balance_tier": 5,
       "seed_id": "pencil_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 730",
+      "source": "Live ITEM DATA gem average, rows 788",
       "profile": "established",
       "grow_seconds": 1725,
       "growth_source": "Imported splice sheet, row 196",
-      "gem_mean": 2,
+      "gem_mean": 2.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 4,
+      "break_xp": 35,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        788
+      ]
     },
     "wooden_shelf": {
       "name": "Wooden Shelf",
@@ -4485,13 +7464,26 @@
       "balance_tier": 6,
       "seed_id": "wooden_shelf_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 358",
+      "source": "Live ITEM DATA gem average, rows 416",
       "profile": "established",
       "grow_seconds": 9600,
       "growth_source": "Imported splice sheet, row 240",
-      "gem_mean": 2.5,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 5,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        416
+      ]
     },
     "cloud_block": {
       "name": "Cloud Block",
@@ -4499,13 +7491,26 @@
       "balance_tier": 9,
       "seed_id": "cloud_block_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 200",
+      "source": "Live ITEM DATA gem average, rows 258",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 336",
-      "gem_mean": 6.5,
+      "gem_mean": 5.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 13,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        258
+      ]
     },
     "metal_gate": {
       "name": "Metal Gate",
@@ -4513,13 +7518,26 @@
       "balance_tier": 8,
       "seed_id": "metal_gate_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 360",
+      "source": "Live ITEM DATA gem average, rows 418",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported splice sheet, row 308",
-      "gem_mean": 4.5,
+      "gem_mean": 5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 9,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        418
+      ]
     },
     "electrical_box": {
       "name": "Electrical Box",
@@ -4527,13 +7545,26 @@
       "balance_tier": 8,
       "seed_id": "electrical_box_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 452",
+      "source": "Live ITEM DATA gem average, rows 508",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported splice sheet, row 318",
-      "gem_mean": 5.5,
+      "gem_mean": 5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 11,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        508
+      ]
     },
     "blink_checkpoint": {
       "name": "Blink Checkpoint",
@@ -4541,13 +7572,26 @@
       "balance_tier": 9,
       "seed_id": "blink_checkpoint_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 398",
+      "source": "Live ITEM DATA gem average, rows 456",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 340",
-      "gem_mean": 6.5,
+      "gem_mean": 5.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 13,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        456
+      ]
     },
     "battery_assembler": {
       "name": "Battery Assembler",
@@ -4555,13 +7599,26 @@
       "balance_tier": 10,
       "seed_id": "battery_assembler_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 456",
+      "source": "Live ITEM DATA gem average, rows 512",
       "profile": "endgame",
       "grow_seconds": 129600,
       "growth_source": "Imported splice sheet, row 380",
-      "gem_mean": 7,
+      "gem_mean": 8,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 14,
+      "break_xp": 140,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        512
+      ]
     },
     "gem_driller": {
       "name": "Gem Driller",
@@ -4569,13 +7626,26 @@
       "balance_tier": 14,
       "seed_id": "gem_driller_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 442",
+      "source": "Live ITEM DATA gem average, rows 498",
       "profile": "endgame",
       "grow_seconds": 712800,
       "growth_source": "Imported splice sheet, row 402",
-      "gem_mean": 16,
+      "gem_mean": 15,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 32,
+      "break_xp": 250,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        498
+      ]
     },
     "hellbrick": {
       "name": "Hellbrick",
@@ -4583,13 +7653,26 @@
       "balance_tier": 3,
       "seed_id": "hellbrick_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 750",
+      "source": "Live ITEM DATA gem average, rows 808",
       "profile": "starter",
       "grow_seconds": 240,
       "growth_source": "Imported splice sheet, row 64",
-      "gem_mean": 0.8,
+      "gem_mean": 1,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 1.6,
+      "break_xp": 10,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        808
+      ]
     },
     "hellbrick_wall": {
       "name": "Hellbrick Wall",
@@ -4597,13 +7680,26 @@
       "balance_tier": 4,
       "seed_id": "hellbrick_wall_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 752",
+      "source": "Live ITEM DATA gem average, rows 810",
       "profile": "established",
       "grow_seconds": 570,
       "growth_source": "Imported splice sheet, row 108",
-      "gem_mean": 1.8,
+      "gem_mean": 1.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 3.6,
+      "break_xp": 20,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        810
+      ]
     },
     "magma_stone": {
       "name": "Magma Stone",
@@ -4611,13 +7707,26 @@
       "balance_tier": 1,
       "seed_id": "magma_stone_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 754",
+      "source": "Live ITEM DATA gem average, rows 812",
       "profile": "starter",
       "grow_seconds": 35,
       "growth_source": "Imported item sheet, row 754",
-      "gem_mean": 0.35,
+      "gem_mean": 0.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 0.7,
+      "break_xp": 1,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        812
+      ]
     },
     "hell_portal": {
       "name": "Hell Portal",
@@ -4625,13 +7734,26 @@
       "balance_tier": 11,
       "seed_id": "hell_portal_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 756",
+      "source": "Live ITEM DATA gem average, rows 814",
       "profile": "endgame",
       "grow_seconds": 216000,
       "growth_source": "Imported splice sheet, row 396",
-      "gem_mean": 8.5,
+      "gem_mean": 9,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 17,
+      "break_xp": 170,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        814
+      ]
     },
     "hellbrick_platform": {
       "name": "Hellbrick Platform",
@@ -4639,13 +7761,26 @@
       "balance_tier": 6,
       "seed_id": "hellbrick_platform_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 758",
+      "source": "Live ITEM DATA gem average, rows 816",
       "profile": "established",
       "grow_seconds": 7800,
       "growth_source": "Imported splice sheet, row 264",
-      "gem_mean": 3,
+      "gem_mean": 2.2,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 50,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        816
+      ]
     },
     "hell_entrance": {
       "name": "Hell Entrance",
@@ -4653,13 +7788,26 @@
       "balance_tier": 9,
       "seed_id": "hell_entrance_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 760",
+      "source": "Live ITEM DATA gem average, rows 818",
       "profile": "advanced",
       "grow_seconds": 81900,
       "growth_source": "Imported splice sheet, row 372",
-      "gem_mean": 6,
+      "gem_mean": 6.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 12,
+      "break_xp": 115,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        818
+      ]
     },
     "melter": {
       "name": "Melter",
@@ -4667,13 +7815,26 @@
       "balance_tier": 10,
       "seed_id": "melter_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 410",
+      "source": "Live ITEM DATA gem average, rows 468",
       "profile": "endgame",
       "grow_seconds": 129600,
       "growth_source": "Imported splice sheet, row 376",
-      "gem_mean": 8,
+      "gem_mean": 7,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 16,
+      "break_xp": 140,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        468
+      ]
     },
     "colored_block_maker": {
       "name": "Coloured Block Maker",
@@ -4681,13 +7842,26 @@
       "balance_tier": 13,
       "seed_id": "colored_block_maker_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 448",
+      "source": "Live ITEM DATA gem average, rows 504",
       "profile": "endgame",
       "grow_seconds": 604800,
       "growth_source": "Imported splice sheet, row 400",
-      "gem_mean": 13.5,
+      "gem_mean": 12.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 27,
+      "break_xp": 220,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        504
+      ]
     },
     "donation_box": {
       "name": "Donation Box",
@@ -4695,13 +7869,26 @@
       "balance_tier": 7,
       "seed_id": "donation_box_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 388",
+      "source": "Live ITEM DATA gem average, rows 446",
       "profile": "advanced",
       "grow_seconds": 27000,
       "growth_source": "Imported splice sheet, row 276",
-      "gem_mean": 3.5,
+      "gem_mean": 4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 7,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        446
+      ]
     },
     "fish_bowl": {
       "name": "Fish Bowl",
@@ -4709,13 +7896,26 @@
       "balance_tier": 7,
       "seed_id": "fish_bowl_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 580",
+      "source": "Live ITEM DATA gem average, rows 636",
       "profile": "advanced",
       "grow_seconds": 27000,
       "growth_source": "Imported splice sheet, row 288",
-      "gem_mean": 3.5,
+      "gem_mean": 3,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 7,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        636
+      ]
     },
     "lamp": {
       "name": "Lamp",
@@ -4723,13 +7923,26 @@
       "balance_tier": 7,
       "seed_id": "lamp_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 576",
+      "source": "Live ITEM DATA gem average, rows 632",
       "profile": "advanced",
       "grow_seconds": 23100,
       "growth_source": "Imported splice sheet, row 286",
-      "gem_mean": 3,
+      "gem_mean": 4,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 6,
+      "break_xp": 70,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        632
+      ]
     },
     "tv": {
       "name": "TV",
@@ -4737,13 +7950,26 @@
       "balance_tier": 8,
       "seed_id": "tv_seed",
       "mode": "farm",
-      "source": "Imported sheet gem average, row 582",
+      "source": "Live ITEM DATA gem average, rows 638",
       "profile": "advanced",
       "grow_seconds": 60300,
       "growth_source": "Imported splice sheet, row 322",
-      "gem_mean": 4.5,
+      "gem_mean": 5.5,
       "extra_break_drops": [],
-      "extra_tree_drops": []
+      "extra_tree_drops": [],
+      "tree_gem_mean": 9,
+      "break_xp": 90,
+      "sheet_block_range": [
+        0,
+        3
+      ],
+      "sheet_seed_range": [
+        0,
+        1
+      ],
+      "sheet_rows": [
+        638
+      ]
     },
     "pillar_top": {
       "name": "Pillar Top",

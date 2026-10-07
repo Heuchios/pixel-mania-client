@@ -1,0 +1,6184 @@
+{
+  "spreadsheet_id": "1PJLhG99ik5hVTQNTC29gizhC1nSvb3enpCMKma2uumU",
+  "sheet": "ITEM DATA",
+  "retrieved": "2026-10-06",
+  "interpretation": "Block and seed ranges use independent uniform integer rolls for both breaks and harvests, explicitly requested by the user. Numeric gem columns describe average gems per block broken; XP is applied to breaks. Unspecified or conflicting fields and special recovery behavior require review.",
+  "rows": [
+    {
+      "row": 6,
+      "name": "Dirt",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 12,
+      "name": "Cave Wall",
+      "type": "bg",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 18,
+      "name": "Stone",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 22,
+      "name": "Obsidian",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": null
+    },
+    {
+      "row": 24,
+      "name": "Lava",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 26,
+      "name": "Water",
+      "type": "block",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 28,
+      "name": "Tiny Rock",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 30,
+      "name": "Large Rock",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 32,
+      "name": "Seed pack",
+      "type": "material",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 34,
+      "name": "Small gem",
+      "type": "material",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 36,
+      "name": "Medium gem",
+      "type": "material",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 38,
+      "name": "Big gem",
+      "type": "material",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 40,
+      "name": "Huge gem",
+      "type": "material",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 42,
+      "name": "Water bucket",
+      "type": "consumable",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "35",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "25m"
+    },
+    {
+      "row": 44,
+      "name": "World entrance mover",
+      "type": "consumable",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 46,
+      "name": "World lock mover",
+      "type": "consumable",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 48,
+      "name": "Door mover",
+      "type": "consumable",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 50,
+      "name": "Fertilizer Spray",
+      "type": "consumable",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 52,
+      "name": "Super Fertilizer Spray",
+      "type": "consumable",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 54,
+      "name": "World lock",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 60,
+      "name": "World key",
+      "type": "material",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 62,
+      "name": "World Entrance",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 64,
+      "name": "Vending Machine",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 70,
+      "name": "Magnetic machine",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 74,
+      "name": "Magnetic remote",
+      "type": "consumable",
+      "gems": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": null
+    },
+    {
+      "row": 76,
+      "name": "Super world lock",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 82,
+      "name": "Small lock",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 84,
+      "name": "Big lock",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": null
+    },
+    {
+      "row": 86,
+      "name": "large lock",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": null
+    },
+    {
+      "row": 88,
+      "name": "Crafting table",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 90,
+      "name": "Safe",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 92,
+      "name": "Bedrock block",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 94,
+      "name": "Empty potrait",
+      "type": "material",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": null
+    },
+    {
+      "row": 96,
+      "name": "Leaf block",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 98,
+      "name": "Leaf block (Spring Event)",
+      "type": "block",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": null
+    },
+    {
+      "row": 100,
+      "name": "Leaf block (Autumn Event)",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": null
+    },
+    {
+      "row": 102,
+      "name": "Stick",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": null
+    },
+    {
+      "row": 104,
+      "name": "Small Vines",
+      "type": "block",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 106,
+      "name": "Big Vine",
+      "type": "block",
+      "gems": [
+        "0.6",
+        "30",
+        "60",
+        "300",
+        "600"
+      ],
+      "xp": "5",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1m 40s"
+    },
+    {
+      "row": 108,
+      "name": "Grass",
+      "type": "block",
+      "gems": [
+        "0.4",
+        "20",
+        "40",
+        "200",
+        "400"
+      ],
+      "xp": "5",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1m 40s"
+    },
+    {
+      "row": 110,
+      "name": "Rose",
+      "type": "block",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 112,
+      "name": "Lily",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 114,
+      "name": "Sunflower",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 116,
+      "name": "Bush",
+      "type": "block",
+      "gems": [
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800"
+      ],
+      "xp": "5",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1m 40s"
+    },
+    {
+      "row": 118,
+      "name": "Wooden platform",
+      "type": "block",
+      "gems": [
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "4m 30s"
+    },
+    {
+      "row": 120,
+      "name": "Mushroom",
+      "type": "block",
+      "gems": [
+        "0.4",
+        "20",
+        "40",
+        "200",
+        "400"
+      ],
+      "xp": "5",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1m 40s"
+    },
+    {
+      "row": 124,
+      "name": "Apple",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 126,
+      "name": "Grains",
+      "type": "material, consumable",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 128,
+      "name": "Wheat",
+      "type": "material, consumable",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 130,
+      "name": "Wooden ladder",
+      "type": "block",
+      "gems": [
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m 30s"
+    },
+    {
+      "row": 132,
+      "name": "Wooden sign",
+      "type": "block",
+      "gems": [
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "4m"
+    },
+    {
+      "row": 134,
+      "name": "Wooden entrance",
+      "type": "block",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "9m 30s"
+    },
+    {
+      "row": 136,
+      "name": "Wood block",
+      "type": "block",
+      "gems": [
+        "0.6",
+        "30",
+        "60",
+        "300",
+        "600"
+      ],
+      "xp": "5",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1m 40s"
+    },
+    {
+      "row": 138,
+      "name": "Wood wall",
+      "type": "bg",
+      "gems": [
+        "0.4",
+        "20",
+        "40",
+        "200",
+        "400"
+      ],
+      "xp": "5",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1m 40s"
+    },
+    {
+      "row": 140,
+      "name": "Wooden window",
+      "type": "block",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6m"
+    },
+    {
+      "row": 142,
+      "name": "Wooden door",
+      "type": "block",
+      "gems": [
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "4m 30s"
+    },
+    {
+      "row": 144,
+      "name": "Wooden fence",
+      "type": "block",
+      "gems": [
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "4m"
+    },
+    {
+      "row": 146,
+      "name": "Wooden chair",
+      "type": "block",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "9m 30s"
+    },
+    {
+      "row": 148,
+      "name": "Wooden table",
+      "type": "block",
+      "gems": [
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "4m 30s"
+    },
+    {
+      "row": 150,
+      "name": "Tree trunk",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 152,
+      "name": "Climbing vine",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 154,
+      "name": "Wooden treasure chest (closed)",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 156,
+      "name": "Wooden treasure chest (open)",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 158,
+      "name": "Mysterious sign",
+      "type": "block",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6m"
+    },
+    {
+      "row": 160,
+      "name": "Sand block",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 166,
+      "name": "Sand castle",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 168,
+      "name": "Pile of sand",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 170,
+      "name": "Snow block",
+      "type": "block",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 172,
+      "name": "Snow dirt",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 174,
+      "name": "Ice block",
+      "type": "block",
+      "gems": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "xp": null,
+      "blocks": null,
+      "seeds": null,
+      "harvest_time": "-"
+    },
+    {
+      "row": 176,
+      "name": "Ice corpse",
+      "type": "block",
+      "gems": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "xp": null,
+      "blocks": null,
+      "seeds": null,
+      "harvest_time": "-"
+    },
+    {
+      "row": 178,
+      "name": "Frozen treasure",
+      "type": "block",
+      "gems": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "xp": null,
+      "blocks": null,
+      "seeds": null,
+      "harvest_time": "-"
+    },
+    {
+      "row": 180,
+      "name": "Pile of snow",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 182,
+      "name": "Frozen grass",
+      "type": "block",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 184,
+      "name": "Snow stone block",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 186,
+      "name": "Solid ice block",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 188,
+      "name": "Snowy Tiny Rock",
+      "type": "block",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 190,
+      "name": "Snowy Large Rock",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 192,
+      "name": "Snow leaf block",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 194,
+      "name": "Fish chunk",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 196,
+      "name": "Chum Bucket",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 198,
+      "name": "Bait",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 200,
+      "name": "Worm bait",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 202,
+      "name": "Shiny worm bait",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 204,
+      "name": "Minnow bait",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 206,
+      "name": "Shrimp bait",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 208,
+      "name": "Guppy",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 210,
+      "name": "Goldfish",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 212,
+      "name": "Blue tang",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 214,
+      "name": "Bass",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 216,
+      "name": "Catfish",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 218,
+      "name": "Red snapper",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 220,
+      "name": "Minnow",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 222,
+      "name": "Bluegill",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 224,
+      "name": "Mudfish",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 226,
+      "name": "Clownfish",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 228,
+      "name": "Tuna",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 230,
+      "name": "Salmon",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 232,
+      "name": "Swordfish",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 234,
+      "name": "Fish drill",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 236,
+      "name": "Snow leaf block",
+      "type": "block",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 238,
+      "name": "Snow leaf block",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 240,
+      "name": "Snow leaf block",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 242,
+      "name": "Wooden Barrel",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 244,
+      "name": "Wooden Box",
+      "type": "block",
+      "gems": [
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m 30s"
+    },
+    {
+      "row": 246,
+      "name": "Lantern",
+      "type": "block",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "25m"
+    },
+    {
+      "row": 248,
+      "name": "Campfire",
+      "type": "block",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6m"
+    },
+    {
+      "row": 250,
+      "name": "Dungeon Door",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 40m"
+    },
+    {
+      "row": 252,
+      "name": "Sturdy box",
+      "type": "block",
+      "gems": [
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1h 30m"
+    },
+    {
+      "row": 254,
+      "name": "Wagon Wheel",
+      "type": "block",
+      "gems": [
+        "4",
+        "200",
+        "400",
+        "2000",
+        "4000"
+      ],
+      "xp": "50",
+      "blocks": "0-6",
+      "seeds": "0-3",
+      "harvest_time": "2h 10m"
+    },
+    {
+      "row": 256,
+      "name": "Portcullis",
+      "type": "block",
+      "gems": [
+        "3.5",
+        "175",
+        "350",
+        "1750",
+        "3500"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "7h 30m"
+    },
+    {
+      "row": 258,
+      "name": "Cloud Block",
+      "type": "block",
+      "gems": [
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 260,
+      "name": "Red brick",
+      "type": "block",
+      "gems": [
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800"
+      ],
+      "xp": "5",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1m 40s"
+    },
+    {
+      "row": 262,
+      "name": "Red brick wall",
+      "type": "bg",
+      "gems": [
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "4m 30s"
+    },
+    {
+      "row": 264,
+      "name": "Stone brick",
+      "type": "block",
+      "gems": [
+        "0.4",
+        "20",
+        "40",
+        "200",
+        "400"
+      ],
+      "xp": "5",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1m 40s"
+    },
+    {
+      "row": 266,
+      "name": "Stone brick wall",
+      "type": "bg",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6m"
+    },
+    {
+      "row": 268,
+      "name": "Grimstone",
+      "type": "block",
+      "gems": [
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m 30s"
+    },
+    {
+      "row": 270,
+      "name": "Grimstone wall",
+      "type": "bg",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "25m"
+    },
+    {
+      "row": 272,
+      "name": "White block",
+      "type": "block",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6m"
+    },
+    {
+      "row": 274,
+      "name": "Red block",
+      "type": "block",
+      "gems": [
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "4m 30s"
+    },
+    {
+      "row": 276,
+      "name": "Green block",
+      "type": "block",
+      "gems": [
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "4m"
+    },
+    {
+      "row": 278,
+      "name": "Brown block",
+      "type": "block",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6m"
+    },
+    {
+      "row": 280,
+      "name": "Grey block",
+      "type": "block",
+      "gems": [
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "4m 30s"
+    },
+    {
+      "row": 282,
+      "name": "Orange block",
+      "type": "block",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m"
+    },
+    {
+      "row": 284,
+      "name": "Aqua block",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 286,
+      "name": "Purple block",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 288,
+      "name": "Black block",
+      "type": "block",
+      "gems": [
+        "0.8",
+        "40",
+        "80",
+        "400",
+        "800"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "4m"
+    },
+    {
+      "row": 290,
+      "name": "Yellow block",
+      "type": "block",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6m"
+    },
+    {
+      "row": 292,
+      "name": "Blue block",
+      "type": "block",
+      "gems": [
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m 30s"
+    },
+    {
+      "row": 294,
+      "name": "Pink block",
+      "type": "block",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m"
+    },
+    {
+      "row": 296,
+      "name": "Dark red block",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 298,
+      "name": "Dark green block",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 300,
+      "name": "Dark brown block",
+      "type": "block",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "25m"
+    },
+    {
+      "row": 302,
+      "name": "Dark orange block",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 304,
+      "name": "Dark aqua block",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 40m"
+    },
+    {
+      "row": 306,
+      "name": "Dark purple block",
+      "type": "block",
+      "gems": [
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1h 30m"
+    },
+    {
+      "row": 308,
+      "name": "Dark yellow block",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 310,
+      "name": "Dark blue block",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 312,
+      "name": "Dark pink block",
+      "type": "block",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "25m"
+    },
+    {
+      "row": 314,
+      "name": "Pastel red block",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 316,
+      "name": "Pastel green block",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 318,
+      "name": "Pastel purple block",
+      "type": "block",
+      "gems": [
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1h 30m"
+    },
+    {
+      "row": 320,
+      "name": "Pastel yellow block",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 322,
+      "name": "Pastel orange block",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 324,
+      "name": "Pastel pink block",
+      "type": "block",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "25m"
+    },
+    {
+      "row": 326,
+      "name": "Pastel blue block",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 10m"
+    },
+    {
+      "row": 328,
+      "name": "Pastel bunny block",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 40m"
+    },
+    {
+      "row": 330,
+      "name": "Pastel lily block",
+      "type": "block",
+      "gems": [
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1h 30m"
+    },
+    {
+      "row": 332,
+      "name": "Rainbow block",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 10m"
+    },
+    {
+      "row": 334,
+      "name": "RGB block",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 336,
+      "name": "Plant 1",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 338,
+      "name": "Plant (background)",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 340,
+      "name": "Plant (material)",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 342,
+      "name": "Plant (wearable)",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 344,
+      "name": "Plant (block)",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 346,
+      "name": "White wall",
+      "type": "bg",
+      "gems": [
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m 30s"
+    },
+    {
+      "row": 348,
+      "name": "Red wall",
+      "type": "bg",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m"
+    },
+    {
+      "row": 350,
+      "name": "Green wall",
+      "type": "bg",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "9m 30s"
+    },
+    {
+      "row": 352,
+      "name": "Brown wall",
+      "type": "bg",
+      "gems": [
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m 30s"
+    },
+    {
+      "row": 354,
+      "name": "Gray wall",
+      "type": "bg",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m"
+    },
+    {
+      "row": 356,
+      "name": "Orange wall",
+      "type": "bg",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 358,
+      "name": "Aqua wall",
+      "type": "bg",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 40m"
+    },
+    {
+      "row": 360,
+      "name": "Purple wall",
+      "type": "bg",
+      "gems": [
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1h 30m"
+    },
+    {
+      "row": 362,
+      "name": "Black wall",
+      "type": "bg",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "9m 30s"
+    },
+    {
+      "row": 364,
+      "name": "Yellow wall",
+      "type": "bg",
+      "gems": [
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m 30s"
+    },
+    {
+      "row": 366,
+      "name": "Blue wall",
+      "type": "bg",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "25m"
+    },
+    {
+      "row": 368,
+      "name": "Pink wall",
+      "type": "bg",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 370,
+      "name": "Metal block",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 372,
+      "name": "Metal wall",
+      "type": "bg",
+      "gems": [
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1h 30m"
+    },
+    {
+      "row": 374,
+      "name": "Metal sign",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 10m"
+    },
+    {
+      "row": 376,
+      "name": "Metal door",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 40m"
+    },
+    {
+      "row": 378,
+      "name": "Screen door",
+      "type": "block",
+      "gems": [
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1h 30m"
+    },
+    {
+      "row": 380,
+      "name": "Ceiling lamp",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 10m"
+    },
+    {
+      "row": 382,
+      "name": "Ceiling lamp (on)",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 40m"
+    },
+    {
+      "row": 384,
+      "name": "Metal ladder",
+      "type": "block",
+      "gems": [
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1h 30m"
+    },
+    {
+      "row": 386,
+      "name": "Metal entrance",
+      "type": "block",
+      "gems": [
+        "4",
+        "200",
+        "400",
+        "2000",
+        "4000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8h"
+    },
+    {
+      "row": 388,
+      "name": "Glass block",
+      "type": "block",
+      "gems": [
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "4m 30s"
+    },
+    {
+      "row": 390,
+      "name": "Glass pane",
+      "type": "bg",
+      "gems": [
+        "0.4",
+        "20",
+        "40",
+        "200",
+        "400"
+      ],
+      "xp": "5",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1m 40s"
+    },
+    {
+      "row": 392,
+      "name": "Metal platform",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 10m"
+    },
+    {
+      "row": 394,
+      "name": "Spike",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 40m"
+    },
+    {
+      "row": 396,
+      "name": "Spike (Hanging)",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 398,
+      "name": "Dark Spike",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 10m"
+    },
+    {
+      "row": 400,
+      "name": "Pinball",
+      "type": "block",
+      "gems": [
+        "3.5",
+        "175",
+        "350",
+        "1750",
+        "3500"
+      ],
+      "xp": "70",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "7h 30m"
+    },
+    {
+      "row": 402,
+      "name": "Pinball (Hit)",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 404,
+      "name": "Slime block",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 406,
+      "name": "Toxic barrel",
+      "type": "block",
+      "gems": [
+        "3.5",
+        "175",
+        "350",
+        "1750",
+        "3500"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "7h 30m"
+    },
+    {
+      "row": 408,
+      "name": "Toxic waste",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 412,
+      "name": "Starry block",
+      "type": "block",
+      "gems": [
+        "7.5",
+        "375",
+        "750",
+        "3750",
+        "7500"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "7h 30m"
+    },
+    {
+      "row": 414,
+      "name": "Fish hanger",
+      "type": "block",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "25m"
+    },
+    {
+      "row": 416,
+      "name": "Wooden shelf",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 10m"
+    },
+    {
+      "row": 418,
+      "name": "Metal gate",
+      "type": "block",
+      "gems": [
+        "5",
+        "250",
+        "500",
+        "2500",
+        "5000"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 420,
+      "name": "Metal gate (open)",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 422,
+      "name": "Anti punch",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 424,
+      "name": "Anti punch (on)",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 426,
+      "name": "Anti talk",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 428,
+      "name": "Anti talk (on)",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 430,
+      "name": "Anti gravity",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 432,
+      "name": "Anti gravity (on)",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 434,
+      "name": "Display block",
+      "type": "block",
+      "gems": [
+        "6.5",
+        "325",
+        "650",
+        "3250",
+        "6500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 436,
+      "name": "Display wall",
+      "type": "block",
+      "gems": [
+        "5",
+        "250",
+        "500",
+        "2500",
+        "5000"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 438,
+      "name": "Mailbox",
+      "type": "block",
+      "gems": [
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1h 30m"
+    },
+    {
+      "row": 440,
+      "name": "Mailbox (filled)",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 10m"
+    },
+    {
+      "row": 442,
+      "name": "Blue mailbox",
+      "type": "block",
+      "gems": [
+        "3.5",
+        "175",
+        "350",
+        "1750",
+        "3500"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "7h 30m"
+    },
+    {
+      "row": 444,
+      "name": "Blue mailbox (filled) ",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6h 25m"
+    },
+    {
+      "row": 446,
+      "name": "Donation box",
+      "type": "block",
+      "gems": [
+        "4",
+        "200",
+        "400",
+        "2000",
+        "4000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8h"
+    },
+    {
+      "row": 448,
+      "name": "Donation box (filled) ",
+      "type": "block",
+      "gems": [
+        "3.5",
+        "175",
+        "350",
+        "1750",
+        "3500"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "7h 30m"
+    },
+    {
+      "row": 450,
+      "name": "Bulletin Board",
+      "type": "block",
+      "gems": [
+        "4.5",
+        "225",
+        "450",
+        "2250",
+        "4500"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 452,
+      "name": "Checkpoint",
+      "type": "block",
+      "gems": [
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 454,
+      "name": "Checkpoint (on) ",
+      "type": "block",
+      "gems": [
+        "5",
+        "250",
+        "500",
+        "2500",
+        "5000"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 456,
+      "name": "Blink checkpoint",
+      "type": "block",
+      "gems": [
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 458,
+      "name": "Blink checkpoint (on) ",
+      "type": "",
+      "gems": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "xp": null,
+      "blocks": null,
+      "seeds": null,
+      "harvest_time": "-"
+    },
+    {
+      "row": 460,
+      "name": "Bomb",
+      "type": "block",
+      "gems": [
+        "6",
+        "300",
+        "600",
+        "3000",
+        "6000"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 462,
+      "name": "CCTV",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 464,
+      "name": "Snow repellent",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 466,
+      "name": "Recycler bin",
+      "type": "block",
+      "gems": [
+        "7.5",
+        "375",
+        "750",
+        "3750",
+        "7500"
+      ],
+      "xp": "140",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1d 12h"
+    },
+    {
+      "row": 468,
+      "name": "Melter",
+      "type": "block",
+      "gems": [
+        "7",
+        "350",
+        "700",
+        "3500",
+        "7000"
+      ],
+      "xp": "140",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1d 12h"
+    },
+    {
+      "row": 470,
+      "name": "Melter (on) ",
+      "type": "",
+      "gems": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "xp": null,
+      "blocks": null,
+      "seeds": null,
+      "harvest_time": "-"
+    },
+    {
+      "row": 472,
+      "name": "Melter (ready to collect) ",
+      "type": "",
+      "gems": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "xp": null,
+      "blocks": null,
+      "seeds": null,
+      "harvest_time": "-"
+    },
+    {
+      "row": 474,
+      "name": "Orange Portal",
+      "type": "block",
+      "gems": [
+        "8.5",
+        "425",
+        "850",
+        "4250",
+        "8500"
+      ],
+      "xp": "170",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2d 12h"
+    },
+    {
+      "row": 476,
+      "name": "Blue portal",
+      "type": "block",
+      "gems": [
+        "9.5",
+        "475",
+        "950",
+        "4750",
+        "9500"
+      ],
+      "xp": "170",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2d 12h"
+    },
+    {
+      "row": 478,
+      "name": "Password door",
+      "type": "block",
+      "gems": [
+        "9",
+        "450",
+        "900",
+        "4500",
+        "9000"
+      ],
+      "xp": "170",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2d 12h"
+    },
+    {
+      "row": 480,
+      "name": "Dice Block",
+      "type": "block",
+      "gems": [
+        "7",
+        "350",
+        "700",
+        "3500",
+        "7000"
+      ],
+      "xp": "140",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1d 12h"
+    },
+    {
+      "row": 482,
+      "name": "Bait box",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 484,
+      "name": "Bait box (ready) ",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 486,
+      "name": "Quest board",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 488,
+      "name": "Sashimi table",
+      "type": "block",
+      "gems": [
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 490,
+      "name": "Leaderboard",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 492,
+      "name": "Oil refinery",
+      "type": "block",
+      "gems": [
+        "12.5",
+        "625",
+        "1250",
+        "6250",
+        "12500"
+      ],
+      "xp": "220",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "7d"
+    },
+    {
+      "row": 494,
+      "name": "Crude oil",
+      "type": "material",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 496,
+      "name": "Gasoline",
+      "type": "material",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 498,
+      "name": "Gem driller",
+      "type": "block",
+      "gems": [
+        "15",
+        "750",
+        "1500",
+        "7500",
+        "15000"
+      ],
+      "xp": "250",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "7d 30h"
+    },
+    {
+      "row": 500,
+      "name": "Gem driller (on) ",
+      "type": "block",
+      "gems": [
+        "17",
+        "850",
+        "1700",
+        "8500",
+        "17000"
+      ],
+      "xp": "250",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": null
+    },
+    {
+      "row": 502,
+      "name": "Gem driller (ready) ",
+      "type": "block",
+      "gems": [
+        "16",
+        "800",
+        "1600",
+        "8000",
+        "16000"
+      ],
+      "xp": "250",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": null
+    },
+    {
+      "row": 504,
+      "name": "Colored block maker",
+      "type": "block",
+      "gems": [
+        "12.5",
+        "625",
+        "1250",
+        "6250",
+        "12500"
+      ],
+      "xp": "220",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "7d"
+    },
+    {
+      "row": 506,
+      "name": "Colored block maker (ready) ",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": null
+    },
+    {
+      "row": 508,
+      "name": "Electrical box",
+      "type": "block",
+      "gems": [
+        "5",
+        "250",
+        "500",
+        "2500",
+        "5000"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 510,
+      "name": "Electrical box (on) ",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": null
+    },
+    {
+      "row": 512,
+      "name": "Battery assambler",
+      "type": "block",
+      "gems": [
+        "8",
+        "400",
+        "800",
+        "4000",
+        "8000"
+      ],
+      "xp": "140",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1d 12h"
+    },
+    {
+      "row": 514,
+      "name": "Battery assambler (on) ",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": null
+    },
+    {
+      "row": 516,
+      "name": "Battery",
+      "type": "material",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 518,
+      "name": "Electrical pole",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 10m"
+    },
+    {
+      "row": 520,
+      "name": "Metal pad",
+      "type": "bg",
+      "gems": [
+        "3.5",
+        "175",
+        "350",
+        "1750",
+        "3500"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "7h 30m"
+    },
+    {
+      "row": 522,
+      "name": "Golden block",
+      "type": "block, material",
+      "gems": [
+        "7",
+        "350",
+        "700",
+        "3500",
+        "7000"
+      ],
+      "xp": "140",
+      "blocks": "0-3",
+      "seeds": "-",
+      "harvest_time": "1d 12h"
+    },
+    {
+      "row": 524,
+      "name": "Emerald block",
+      "type": "block, material",
+      "gems": [
+        "8",
+        "400",
+        "800",
+        "4000",
+        "8000"
+      ],
+      "xp": "140",
+      "blocks": "0-3",
+      "seeds": "-",
+      "harvest_time": "1d 12h"
+    },
+    {
+      "row": 526,
+      "name": "Ruby block",
+      "type": "block, material",
+      "gems": [
+        "7.5",
+        "375",
+        "750",
+        "3750",
+        "7500"
+      ],
+      "xp": "140",
+      "blocks": "0-3",
+      "seeds": "-",
+      "harvest_time": "1d 12h"
+    },
+    {
+      "row": 528,
+      "name": "Diamond block",
+      "type": "block, material",
+      "gems": [
+        "7",
+        "350",
+        "700",
+        "3500",
+        "7000"
+      ],
+      "xp": "140",
+      "blocks": "0-3",
+      "seeds": "-",
+      "harvest_time": "1d 12h"
+    },
+    {
+      "row": 530,
+      "name": "Gem block",
+      "type": "block, material",
+      "gems": [
+        "8",
+        "400",
+        "800",
+        "4000",
+        "8000"
+      ],
+      "xp": "140",
+      "blocks": "0-3",
+      "seeds": "-",
+      "harvest_time": "1d 12h"
+    },
+    {
+      "row": 532,
+      "name": "Copper block",
+      "type": "block, material",
+      "gems": [
+        "5",
+        "250",
+        "500",
+        "2500",
+        "5000"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "-",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 534,
+      "name": "Rusty copper block ",
+      "type": "block, material",
+      "gems": [
+        "4.5",
+        "225",
+        "450",
+        "2250",
+        "4500"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "-",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 536,
+      "name": "Scrap",
+      "type": "material",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 538,
+      "name": "Assambled scrap",
+      "type": "material",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 540,
+      "name": "Roman coin",
+      "type": "material",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 542,
+      "name": "Golden roman coin",
+      "type": "material",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 544,
+      "name": "Landfill dirt",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 548,
+      "name": "Landfill cave wall",
+      "type": "bg",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 550,
+      "name": "Landfill mineral gallon",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 552,
+      "name": "Dark brown block",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 554,
+      "name": "Landfill glass bottle",
+      "type": "block",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 556,
+      "name": "Landfill cardboard",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 558,
+      "name": "Landfill vend",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 560,
+      "name": "Landfill TV",
+      "type": "block",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 562,
+      "name": "Used tires",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 564,
+      "name": "Landfill ticket",
+      "type": "material",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 566,
+      "name": "Barn block",
+      "type": "block",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "9m 30s"
+    },
+    {
+      "row": 568,
+      "name": "Barn Window",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 570,
+      "name": "Barn wall",
+      "type": "bg",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "25m"
+    },
+    {
+      "row": 572,
+      "name": "Composer 0%-49%",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 10m"
+    },
+    {
+      "row": 574,
+      "name": "Composer 50%-99%",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 576,
+      "name": "Composer 100%",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "-"
+    },
+    {
+      "row": 578,
+      "name": "Farm fence",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 580,
+      "name": "Barn door",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 582,
+      "name": "Empty Jar",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6h 25m"
+    },
+    {
+      "row": 584,
+      "name": "Well",
+      "type": "block",
+      "gems": [
+        "4",
+        "200",
+        "400",
+        "2000",
+        "4000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8h"
+    },
+    {
+      "row": 586,
+      "name": "Well (ready) ",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 588,
+      "name": "Weathervane",
+      "type": "block",
+      "gems": [
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1h 30m"
+    },
+    {
+      "row": 590,
+      "name": "Chicken",
+      "type": "block",
+      "gems": [
+        "4",
+        "200",
+        "400",
+        "2000",
+        "4000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8h"
+    },
+    {
+      "row": 592,
+      "name": "Chicken (ready) ",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 594,
+      "name": "Chicken (Hungry) ",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 596,
+      "name": "Egg",
+      "type": "material, consumable",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 598,
+      "name": "Golden egg",
+      "type": "material",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 600,
+      "name": "Duck",
+      "type": "block",
+      "gems": [
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 602,
+      "name": "Duck (ready) ",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 604,
+      "name": "Duck (hungry) ",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 606,
+      "name": "Sugarcane",
+      "type": "block",
+      "gems": [
+        "2.2",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "25m"
+    },
+    {
+      "row": 608,
+      "name": "Death bone",
+      "type": "block",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 610,
+      "name": "Cow",
+      "type": "block",
+      "gems": [
+        "5",
+        "250",
+        "500",
+        "2500",
+        "5000"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 612,
+      "name": "Cow (ready) ",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 614,
+      "name": "Cow (hungry) ",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 616,
+      "name": "Bucket Milk",
+      "type": "material, consumable",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 618,
+      "name": "Dried hay",
+      "type": "block",
+      "gems": [
+        "0.4",
+        "20",
+        "40",
+        "200",
+        "400"
+      ],
+      "xp": "5",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1m 40s"
+    },
+    {
+      "row": 620,
+      "name": "Hay bales",
+      "type": "block",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6m"
+    },
+    {
+      "row": 622,
+      "name": "Seaweed",
+      "type": "block",
+      "gems": [
+        "0.35",
+        "17.5",
+        "35",
+        "175",
+        "350"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "35s"
+    },
+    {
+      "row": 624,
+      "name": "Coral",
+      "type": "block",
+      "gems": [
+        "0.2",
+        "10",
+        "20",
+        "100",
+        "200"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30s"
+    },
+    {
+      "row": 626,
+      "name": "Pearl clam",
+      "type": "block",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 628,
+      "name": "Pearl clam (open) ",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 630,
+      "name": "Pillar block",
+      "type": "block",
+      "gems": [
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1h 30m"
+    },
+    {
+      "row": 632,
+      "name": "House lamp",
+      "type": "block",
+      "gems": [
+        "4",
+        "200",
+        "400",
+        "2000",
+        "4000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8h"
+    },
+    {
+      "row": 634,
+      "name": "House lamp (on) ",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": null
+    },
+    {
+      "row": 636,
+      "name": "Fishbowl",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6h 25m"
+    },
+    {
+      "row": 638,
+      "name": "Modern TV",
+      "type": "block",
+      "gems": [
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 640,
+      "name": "Modern TV (on) ",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 642,
+      "name": "Couch",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6h 25m"
+    },
+    {
+      "row": 644,
+      "name": "Potato Couch",
+      "type": "block",
+      "gems": [
+        "6.5",
+        "325",
+        "650",
+        "3250",
+        "6500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 646,
+      "name": "House table",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 648,
+      "name": "Modern Chair",
+      "type": "block",
+      "gems": [
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1h 30m"
+    },
+    {
+      "row": 650,
+      "name": "Dresser",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 10m"
+    },
+    {
+      "row": 652,
+      "name": "House door",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 654,
+      "name": "Grand house door",
+      "type": "block",
+      "gems": [
+        "4.5",
+        "225",
+        "450",
+        "2250",
+        "4500"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 656,
+      "name": "House entrance",
+      "type": "block",
+      "gems": [
+        "4",
+        "200",
+        "400",
+        "2000",
+        "4000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8h"
+    },
+    {
+      "row": 658,
+      "name": "White window",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 660,
+      "name": "Purple curtained window",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6h 25m"
+    },
+    {
+      "row": 662,
+      "name": "Pink curtained window",
+      "type": "block",
+      "gems": [
+        "4",
+        "200",
+        "400",
+        "2000",
+        "4000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8h"
+    },
+    {
+      "row": 664,
+      "name": "Toilet",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 40m"
+    },
+    {
+      "row": 666,
+      "name": "Toilet (open) ",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 668,
+      "name": "Refrigerator",
+      "type": "block",
+      "gems": [
+        "6.5",
+        "325",
+        "650",
+        "3250",
+        "6500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 670,
+      "name": "Refrigerator (open)",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 672,
+      "name": "Building brick block",
+      "type": "block",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m"
+    },
+    {
+      "row": 674,
+      "name": "Building brick wall",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 676,
+      "name": "Fireplace",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 678,
+      "name": "Fireplace (on)",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": null
+    },
+    {
+      "row": 680,
+      "name": "Bathub",
+      "type": "block",
+      "gems": [
+        "4",
+        "200",
+        "400",
+        "2000",
+        "4000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8h"
+    },
+    {
+      "row": 682,
+      "name": "Bathub (on)",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": null
+    },
+    {
+      "row": 684,
+      "name": "Sink",
+      "type": "block",
+      "gems": [
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1h 30m"
+    },
+    {
+      "row": 686,
+      "name": "Sink (on)",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": null
+    },
+    {
+      "row": 688,
+      "name": "Rubber duck",
+      "type": "block",
+      "gems": [
+        "5",
+        "250",
+        "500",
+        "2500",
+        "5000"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 690,
+      "name": "Rubber duck (punched)",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": null
+    },
+    {
+      "row": 692,
+      "name": "Building brick platform",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 694,
+      "name": "Polished stone brick",
+      "type": "block",
+      "gems": [
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m 30s"
+    },
+    {
+      "row": 698,
+      "name": "Polished stone wall",
+      "type": "bg",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 700,
+      "name": "Polished stone platform",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 702,
+      "name": "Fan",
+      "type": "block",
+      "gems": [
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 704,
+      "name": "Bed",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 10m"
+    },
+    {
+      "row": 706,
+      "name": "Park bench",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 708,
+      "name": "Big sign",
+      "type": "block",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m"
+    },
+    {
+      "row": 710,
+      "name": "Right directional sign",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 712,
+      "name": "Left directional sign",
+      "type": "block",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 714,
+      "name": "Digital Sign",
+      "type": "block",
+      "gems": [
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 716,
+      "name": "Star wallpaper",
+      "type": "bg",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "9m 30s"
+    },
+    {
+      "row": 718,
+      "name": "Star fragment",
+      "type": "bg",
+      "gems": [
+        "1.5",
+        "75",
+        "150",
+        "750",
+        "1500"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m 30s"
+    },
+    {
+      "row": 720,
+      "name": "Blue strip wallpaper",
+      "type": "bg",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m"
+    },
+    {
+      "row": 722,
+      "name": "Red strip wallpaper",
+      "type": "bg",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "9m 30s"
+    },
+    {
+      "row": 724,
+      "name": "Aquatic line wallpaper",
+      "type": "bg",
+      "gems": [
+        "2",
+        "100",
+        "200",
+        "1000",
+        "2000"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "28m 45s"
+    },
+    {
+      "row": 726,
+      "name": "Complementary line wallpaper",
+      "type": "bg",
+      "gems": [
+        "1.8",
+        "90",
+        "180",
+        "900",
+        "1800"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "25m"
+    },
+    {
+      "row": 728,
+      "name": "Checkered wallpaper",
+      "type": "bg",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 730,
+      "name": "Sale sign",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2h 40m"
+    },
+    {
+      "row": 732,
+      "name": "Hazard sign",
+      "type": "block",
+      "gems": [
+        "4.5",
+        "225",
+        "450",
+        "2250",
+        "4500"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 734,
+      "name": "Open sign",
+      "type": "block",
+      "gems": [
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 738,
+      "name": "Street Sign",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6h 25m"
+    },
+    {
+      "row": 740,
+      "name": "Chandelier",
+      "type": "block",
+      "gems": [
+        "8",
+        "400",
+        "800",
+        "4000",
+        "8000"
+      ],
+      "xp": "140",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1d 12h"
+    },
+    {
+      "row": 744,
+      "name": "Wall clock",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 746,
+      "name": "Vines painting",
+      "type": "block",
+      "gems": [
+        "6.5",
+        "325",
+        "650",
+        "3250",
+        "6500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 748,
+      "name": "Scratched banana painting",
+      "type": "block",
+      "gems": [
+        "6",
+        "300",
+        "600",
+        "3000",
+        "6000"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 750,
+      "name": "Heartbreak painting",
+      "type": "block",
+      "gems": [
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 752,
+      "name": "Love painting",
+      "type": "block",
+      "gems": [
+        "6.5",
+        "325",
+        "650",
+        "3250",
+        "6500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 754,
+      "name": "Sunflower painting",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 756,
+      "name": "Mona lisa",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 758,
+      "name": "American gothic",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 760,
+      "name": "The girl with pearl earrings",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 762,
+      "name": "The starry night",
+      "type": "block",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "-"
+    },
+    {
+      "row": 764,
+      "name": "Fire escape",
+      "type": "block",
+      "gems": [
+        "6.5",
+        "325",
+        "650",
+        "3250",
+        "6500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 766,
+      "name": "Gothic fence",
+      "type": "block",
+      "gems": [
+        "6",
+        "300",
+        "600",
+        "3000",
+        "6000"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 768,
+      "name": "Street lamp",
+      "type": "block",
+      "gems": [
+        "4.5",
+        "225",
+        "450",
+        "2250",
+        "4500"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 770,
+      "name": "Fire Hydrant",
+      "type": "block",
+      "gems": [
+        "6.5",
+        "325",
+        "650",
+        "3250",
+        "6500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 774,
+      "name": "Ventilation",
+      "type": "block",
+      "gems": [
+        "3",
+        "150",
+        "300",
+        "1500",
+        "3000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "6h 25m"
+    },
+    {
+      "row": 776,
+      "name": "Sirene lamp (on)",
+      "type": "block",
+      "gems": [
+        "6.5",
+        "325",
+        "650",
+        "3250",
+        "6500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 778,
+      "name": "Sirene lamp",
+      "type": "",
+      "gems": [
+        "-",
+        "-",
+        "-",
+        "-",
+        "-"
+      ],
+      "xp": "-",
+      "blocks": "-",
+      "seeds": "-",
+      "harvest_time": null
+    },
+    {
+      "row": 780,
+      "name": "Water fountain",
+      "type": "block",
+      "gems": [
+        "5.5",
+        "275",
+        "550",
+        "2750",
+        "5500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    },
+    {
+      "row": 782,
+      "name": "Moon",
+      "type": "block",
+      "gems": [
+        "9.5",
+        "475",
+        "950",
+        "4750",
+        "9500"
+      ],
+      "xp": "170",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2d 12h"
+    },
+    {
+      "row": 784,
+      "name": "Earth",
+      "type": "block",
+      "gems": [
+        "9",
+        "450",
+        "900",
+        "4500",
+        "9000"
+      ],
+      "xp": "170",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2d 12h"
+    },
+    {
+      "row": 786,
+      "name": "Sun",
+      "type": "block",
+      "gems": [
+        "8.5",
+        "425",
+        "850",
+        "4250",
+        "8500"
+      ],
+      "xp": "170",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2d 12h"
+    },
+    {
+      "row": 788,
+      "name": "Pencil Block",
+      "type": "block",
+      "gems": [
+        "2.5",
+        "125",
+        "250",
+        "1250",
+        "2500"
+      ],
+      "xp": "35",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "30m"
+    },
+    {
+      "row": 790,
+      "name": "Cozy Chalkboard",
+      "type": "block",
+      "gems": [
+        "3.5",
+        "175",
+        "350",
+        "1750",
+        "3500"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "7h 30m"
+    },
+    {
+      "row": 792,
+      "name": "Almanac",
+      "type": "block",
+      "gems": [
+        "4.5",
+        "225",
+        "450",
+        "2250",
+        "4500"
+      ],
+      "xp": "90",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "16h 45m"
+    },
+    {
+      "row": 794,
+      "name": "Neon Block",
+      "type": "block",
+      "gems": [
+        "4",
+        "200",
+        "400",
+        "2000",
+        "4000"
+      ],
+      "xp": "70",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8h"
+    },
+    {
+      "row": 796,
+      "name": "Sun",
+      "type": "block",
+      "gems": [
+        "9",
+        "450",
+        "900",
+        "4500",
+        "9000"
+      ],
+      "xp": "170",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2d 12h"
+    },
+    {
+      "row": 798,
+      "name": "Sun",
+      "type": "block",
+      "gems": [
+        "8.5",
+        "425",
+        "850",
+        "4250",
+        "8500"
+      ],
+      "xp": "170",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2d 12h"
+    },
+    {
+      "row": 800,
+      "name": "Sun",
+      "type": "block",
+      "gems": [
+        "9.5",
+        "475",
+        "950",
+        "4750",
+        "9500"
+      ],
+      "xp": "170",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2d 12h"
+    },
+    {
+      "row": 802,
+      "name": "Sun",
+      "type": "block",
+      "gems": [
+        "9",
+        "450",
+        "900",
+        "4500",
+        "9000"
+      ],
+      "xp": "170",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2d 12h"
+    },
+    {
+      "row": 804,
+      "name": "Sun",
+      "type": "block",
+      "gems": [
+        "8.5",
+        "425",
+        "850",
+        "4250",
+        "8500"
+      ],
+      "xp": "170",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2d 12h"
+    },
+    {
+      "row": 806,
+      "name": "Sun",
+      "type": "block",
+      "gems": [
+        "9.5",
+        "475",
+        "950",
+        "4750",
+        "9500"
+      ],
+      "xp": "170",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2d 12h"
+    },
+    {
+      "row": 808,
+      "name": "Hellbrick",
+      "type": "block",
+      "gems": [
+        "1",
+        "50",
+        "100",
+        "500",
+        "1000"
+      ],
+      "xp": "10",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "4m 30s"
+    },
+    {
+      "row": 810,
+      "name": "Hellbrick wall",
+      "type": "bg",
+      "gems": [
+        "1.2",
+        "60",
+        "120",
+        "600",
+        "1200"
+      ],
+      "xp": "20",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "8m"
+    },
+    {
+      "row": 812,
+      "name": "Magma stone",
+      "type": "block",
+      "gems": [
+        "0.5",
+        "25",
+        "50",
+        "250",
+        "500"
+      ],
+      "xp": "1",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "40s"
+    },
+    {
+      "row": 814,
+      "name": "Hell portal",
+      "type": "block",
+      "gems": [
+        "9",
+        "450",
+        "900",
+        "4500",
+        "9000"
+      ],
+      "xp": "170",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "2d 12h"
+    },
+    {
+      "row": 816,
+      "name": "Hellbrick platform",
+      "type": "block",
+      "gems": [
+        "2.2",
+        "110",
+        "220",
+        "1100",
+        "2200"
+      ],
+      "xp": "50",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "1h 30m"
+    },
+    {
+      "row": 818,
+      "name": "Hell entrance",
+      "type": "block",
+      "gems": [
+        "6.5",
+        "325",
+        "650",
+        "3250",
+        "6500"
+      ],
+      "xp": "115",
+      "blocks": "0-3",
+      "seeds": "0-1",
+      "harvest_time": "22h 45m"
+    }
+  ]
+}
