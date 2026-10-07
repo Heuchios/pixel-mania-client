@@ -18,6 +18,17 @@ locked reservation expiry. The placement precheck now checks physical blocks,
 not the permanent-owner flag. Tax counts fall on release without erasing weekly
 peaks or accrued bills. This supersedes the earlier all-locks-persist rule below.
 
+Committed backend `3006ce9` and client `72a3996`; staging release
+`20261007-unpaid-release-3006ce9` is active. Full deployment security/smoke checks,
+focused Godot ownership/alias/claim UI checks, backend lock lifecycle checks, and
+both name/tax suites against disposable real PostgreSQL schemas passed.
+After a verified staging backup, repaired ABC's confirmed missing physical lock:
+released its unpaid owner/reservation, preserved ABC and every terrain block,
+cleared its expiry, and restarted staging with release metadata preserved.
+Post-repair verification: 1 claimed, 12 reserved, 122 unowned names, valid deadlines,
+preserved world identities, healthy authoritative PostgreSQL and Redis.
+Restart the editor play session to load the client-side replacement-lock fix.
+
 ### World taxes (2026-10-06)
 
 Implemented behind backend `WORLD_TAX_ENABLED`: three free worlds per account,
