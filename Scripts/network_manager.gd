@@ -2360,10 +2360,13 @@ func clear_completed_pending_join_for_world(world_name: String) -> void:
 	var clean_world := _safe_world_name(world_name)
 	if clean_world == "":
 		return
-	if pending_join_world_name != "" and pending_join_world_name != clean_world:
+	# A public-name join is redirected to a stable internal identity. Completion
+	# must consume that same pending request, not leave it queued for a second load.
+	if pending_join_world_name != "" and pending_join_world_name != clean_world and pending_join_world_identity != clean_world:
 		return
 	pending_join_enabled = false
 	pending_join_world_name = ""
+	pending_join_world_identity = ""
 	pending_join_profile_name = ""
 
 

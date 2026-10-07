@@ -27,6 +27,12 @@ func _run() -> void:
 	assert(network.active_join_world_name == "W123456")
 	assert(network.pending_join_world_name == "SHOP")
 	assert(network.pending_join_world_identity == "W123456")
+	network.pending_join_enabled = true
+	network.clear_completed_pending_join_for_world("OTHER")
+	assert(network.has_pending_join(), "Unrelated completion must preserve the queued join")
+	network.clear_completed_pending_join_for_world("W123456")
+	assert(not network.has_pending_join(), "Alias completion must consume the pending request instead of loading twice")
+	assert(network.pending_join_world_identity == "")
 	assert(network.get_public_world_name("W123456") == "SHOP")
 	var entry_world := EntryWorld.new()
 	root.add_child(entry_world)
