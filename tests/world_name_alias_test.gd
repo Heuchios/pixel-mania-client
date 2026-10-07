@@ -1,5 +1,9 @@
 extends SceneTree
 
+class EntryChat extends Node:
+	var messages: Array = []
+	func add_chat_message(_sender, message): messages.append(message)
+
 class EntryWorld extends Node:
 	var in_world := true
 	var current_world_name := "W123456"
@@ -28,8 +32,16 @@ func _run() -> void:
 	root.add_child(entry_world)
 	var saver = load("res://Scripts/save_manager.gd").new()
 	saver.world = entry_world
+	var entry_chat := EntryChat.new()
+	entry_world.add_child(entry_chat)
+	entry_world.chat_ui = entry_chat
+	network.world_entry_active = true
 	saver._finish_world_entry_noncritical_work("W123456", false, true)
 	assert(entry_world.notification == "Entered world: SHOP", "Entry popup must display the public name")
+	assert(entry_chat.messages.is_empty(), "Online entry chat belongs to the network, not save completion")
+	network.world_entry_active = false
+	saver._send_world_entry_chat_message()
+	assert(entry_chat.messages.size() == 1, "Offline entry retains its local notice")
 	assert(entry_world.current_world_name == "W123456", "Routing identity must remain unchanged")
 	saver.free()
 	entry_world.free()

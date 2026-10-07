@@ -1760,6 +1760,11 @@ func _finish_world_entry_noncritical_work(completed_world_name: String, save_aft
 
 
 func _send_world_entry_chat_message():
+	# NetworkManager owns online entry notices (server notice or its legacy
+	# fallback). The save/load completion must not append a second chat row.
+	var entry_network = world.get_node_or_null("/root/NetworkManager")
+	if entry_network != null and bool(entry_network.world_entry_active):
+		return
 	var world_name = world.current_world_name
 
 	if world.world_lock_manager != null and world.world_lock_manager.has_method("reconcile_world_lock_state_with_blocks"):
