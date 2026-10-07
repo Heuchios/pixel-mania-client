@@ -8,6 +8,7 @@ signal server_auth_finished(data)
 signal server_connection_changed(is_connected)
 signal world_population_changed(world_counts)
 signal owned_locked_worlds_received(data)
+signal world_tax_received(data)
 signal client_update_required(payload)
 signal iap_checkout_session_result(data)
 signal iap_purchase_result(data)
@@ -330,6 +331,8 @@ const INVENTORY_TRANSACTION_ACTIONS := [
 	"convert_world_lock",
 	"world_lock_get_key",
 	"world_name_status",
+	"world_tax_status",
+	"world_tax_pay",
 	"world_name_search",
 	"world_name_reserve",
 	"world_name_claim",
@@ -5676,6 +5679,8 @@ func handle_inventory_transaction_result(data: Dictionary) -> void:
 	var world_node = get_world_node()
 	if world_node != null and is_world_node_active() and world_node.has_method("handle_inventory_transaction_result"):
 		world_node.handle_inventory_transaction_result(data)
+	if action.begins_with("world_tax_"):
+		world_tax_received.emit(data)
 
 
 func _should_suppress_pickup_action_rejection_message(action: String, message: String, details: Dictionary = {}) -> bool:

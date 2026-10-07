@@ -7,6 +7,17 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### World taxes (2026-10-06)
+
+Implemented behind backend `WORLD_TAX_ENABLED`: three free worlds per account,
+500 gems per extra world weekly, seven days of grace, manual gem payment through
+the new personal Profile > TAXES panel. Weekly bills use peak extra ownership;
+transfers cannot erase accrued charges. Overdue accounts cannot acquire worlds or
+reserve/claim names. Existing worlds, builds and permanent names are preserved.
+See sibling backend `docs/world-taxes.md` for accounting, tests and activation.
+PostgreSQL/WASM rollback, concurrency, receipt replay and transfer tests pass;
+client profile access, request transport and desktop/mobile panel tests pass.
+
 ### World name claims (2026-10-06, active on staging)
 
 World-name reservations, rarity-priced permanent claims, seven-day expiry, and

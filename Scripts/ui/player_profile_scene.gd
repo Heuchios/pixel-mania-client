@@ -33,6 +33,8 @@ var showcase_world_label: Label = null
 var edit_bio_button_skin: NinePatchRect = null
 var edit_bio_button: Button = null
 var recipe_book_button: Button = null
+var taxes_button: Button = null
+var taxes_panel: Control = null
 var bio_editor_skin: NinePatchRect = null
 var bio_text_edit: TextEdit = null
 var bio_save_button: Button = null
@@ -95,6 +97,16 @@ func build_menu():
 		PixelUIStyle.apply_progress_bar(xp_fill.get_parent(), xp_fill)
 	_configure_portrait_preview()
 	_connect_profile_buttons()
+	if recipe_book_button != null and taxes_button == null:
+		var tax_skin := recipe_book_button.get_parent().duplicate() as NinePatchRect
+		action_panel.add_child(tax_skin)
+		taxes_button = tax_skin.get_child(0) as Button
+		taxes_button.text = "TAXES"
+		for connection in taxes_button.pressed.get_connections():
+			taxes_button.pressed.disconnect(connection.callable)
+		taxes_button.pressed.connect(_on_taxes_pressed)
+		taxes_panel = preload("res://Scripts/ui/world_tax_panel.gd").new()
+		add_child(taxes_panel)
 
 	if panel != null:
 		panel.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -793,6 +805,8 @@ func open_remote_profile(player_data: Dictionary):
 
 
 func close_menu():
+	if taxes_panel != null:
+		taxes_panel.close_panel()
 	editing_bio = false
 	_clear_portrait_preview()
 	if portrait_viewport != null:
@@ -900,6 +914,7 @@ func _format_compact_number(value: int) -> String:
 
 func update_action_buttons():
 	var visible_buttons: Array[Button] = []
+	_set_action_button(taxes_button, profile_mode != "remote", false, "TAXES")
 	if profile_mode != "remote":
 		_set_action_button(trade_button, false, false, "TRADE")
 		_set_action_button(friend_button, false, false, "ADD FRIEND")
@@ -908,6 +923,8 @@ func update_action_buttons():
 		if recipe_book_button != null:
 			visible_buttons.append(recipe_book_button)
 		visible_buttons.append(worlds_button)
+		if taxes_button != null:
+			visible_buttons.append(taxes_button)
 		_layout_action_buttons(visible_buttons)
 		return
 
@@ -985,6 +1002,10 @@ func _on_recipe_book_pressed() -> void:
 		world.open_recipe_book()
 		return
 	notify("The recipe book is not available right now.")
+
+func _on_taxes_pressed() -> void:
+	if profile_mode != "remote" and taxes_panel != null:
+		taxes_panel.open_panel(world)
 
 
 func _on_profile_trade_pressed() -> void:

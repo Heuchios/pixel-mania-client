@@ -160,6 +160,10 @@ func _run() -> void:
 	profile.update_menu_info()
 	assert(is_equal_approx(profile.portrait_preview_visual.get_node("RightArm").rotation, 0.5))
 	assert(profile.get_node("%VisitWorldButton").text == "MY WORLDS")
+	assert(profile.taxes_button.visible and profile.taxes_button.text == "TAXES")
+	profile._on_taxes_pressed()
+	assert(profile.taxes_panel.visible)
+	profile.taxes_panel.close_panel()
 	assert(profile.get_node("%MessageButton").get_parent() is NinePatchRect)
 	assert(profile.get_node("%VisitWorldButton").get_parent() is NinePatchRect)
 	assert(profile.get_node("%PrimaryActionButton").get_parent() is NinePatchRect)
@@ -242,6 +246,7 @@ func _run() -> void:
 		"equipment_slots": {}
 	})
 	profile.remote_profile_lookup_status = "offline"
+	assert(not profile.taxes_button.visible, "Taxes must only be accessible from your own profile")
 	profile.update_menu_info()
 	await process_frame
 	assert(profile.get_node("%DisplayNameLabel").text == "OFFLINEPLAYER")
