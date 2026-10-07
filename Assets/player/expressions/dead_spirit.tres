@@ -1,0 +1,35 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://svifw676nurg"]
+
+[ext_resource type="Texture2D" path="res://Assets/player/expressions/emotes.png" id="1_atlas"]
+
+[sub_resource type="AtlasTexture" id="Atlas_spirit_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 160, 32, 32)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_spirit_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(288, 160, 32, 32)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_spirit_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(320, 160, 32, 32)
+filter_clip = true
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 0.16666667,
+"texture": SubResource("Atlas_spirit_1")
+}, {
+"duration": 0.16666667,
+"texture": SubResource("Atlas_spirit_2")
+}, {
+"duration": 0.16666667,
+"texture": SubResource("Atlas_spirit_3")
+}],
+"loop": 1,
+"name": &"dead_spirit",
+"speed": 1.0
+}]

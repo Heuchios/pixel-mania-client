@@ -7,6 +7,28 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Player emote dropdown (2026-10-07, local)
+
+The right HUD now adds a smile button below chat with Wave, Laugh and Sad.
+The supplied emotes atlas drives faces, with timed arm/head/body gestures;
+movement, damage, death and world exit cancel them. Preview in Godot with
+`Scenes/debug/player_emotes_preview.tscn` (F6). Client tests cover gesture reset,
+input, routing, dedupe and desktop/mobile bounds; backend tests cover authentication,
+world membership, rate and server-owned identity. `player_emote` is a cosmetic
+world broadcast in the phase9 routes/phase7 dispatcher, with a message-rate bucket.
+No durable data or schema changes. Client and matching backend changes are local;
+the backend event must be deployed for live multiplayer visibility.
+
+### Fish stack cap and hotbar quantity consistency (2026-10-07, local)
+
+Fish additions now cap at 999 kg (9990 integer tenths) in client, item definitions,
+server catch/grant capacity and PostgreSQL inventory/pickup transactions. Legacy
+holdings up to the previous 2000 kg ceiling remain readable and sellable; no
+quantity migration or truncation is performed. Decreasing a grandfathered holding
+keeps its stored constraint at least its remaining amount. Hotbar and inventory
+share a 24px quantity baseline with measured fitting. Changes are not deployed.
+
+
 ### Claimed-world lock removal grace (2026-10-07)
 
 Paid ownership now survives physical World Lock removal for seven days only.

@@ -606,6 +606,29 @@ static func _apply_green_button_text(node: Node) -> void:
 		button.add_theme_constant_override("shadow_offset_x", 0)
 		button.add_theme_constant_override("shadow_offset_y", 0)
 
+static func fit_slot_count(label: Label, bounds: Rect2) -> void:
+	# Keep the complete quantity (including kg) inside the visible slot frame.
+	apply_game_font_to_node(label)
+	var base_size := 24
+	label.set_meta("slot_count_base_size", base_size)
+	var available := maxf(1.0, bounds.size.x - 16.0)
+	var font := label.get_theme_font("font")
+	var fitted_size := base_size
+	while fitted_size > 8 and font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fitted_size).x > available - 4.0:
+		fitted_size -= 1
+	label.set_meta(GLOBAL_FONT_SIZE_META, fitted_size - GLOBAL_FONT_SIZE_INCREASE)
+	label.add_theme_font_size_override("font_size", fitted_size)
+	if label.label_settings != null:
+		_ensure_owned_label_settings(label).font_size = fitted_size
+	label.clip_text = true
+	label.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	label.position = bounds.position + Vector2(8, bounds.size.y - 34)
+	label.size = Vector2(available, 26)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
 static func _set_green_label_ink(label: Label) -> void:
 	label.add_theme_color_override("font_color", GREEN_BUTTON_INK)
 	label.add_theme_color_override("font_shadow_color", Color.TRANSPARENT)

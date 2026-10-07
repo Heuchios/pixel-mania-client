@@ -8,6 +8,7 @@ const PlayerAnimationManagerScript = preload("res://Scripts/player_animation_man
 const PlayerShadowScript = preload("res://Scripts/player_shadow.gd")
 const PlayerWorldFadeFXScene = preload("res://Scenes/particles/PlayerWorldFadeFX.tscn")
 const MovementModeScript = preload("res://Scripts/networking/movement_mode.gd")
+const CameraPixelAlignment = preload("res://Scripts/camera_pixel_alignment.gd")
 
 var world = null
 var MovementMode: Node = null
@@ -379,6 +380,8 @@ func setup_world_camera_limits():
 	if camera == null:
 		return
 
+	CameraPixelAlignment.install(camera)
+
 	# Use the real visual edge of the block grid, not world.WORLD_WIDTH * world.BLOCK_SIZE.
 	# This removes the empty half-block strip on the right/bottom edges.
 	camera.limit_left = int(world.WORLD_VISUAL_LEFT)
@@ -422,19 +425,27 @@ func apply_camera_zoom():
 		return
 
 	world.current_camera_zoom = clamp(world.current_camera_zoom, world.CAMERA_ZOOM_MIN, world.CAMERA_ZOOM_MAX)
-	camera.zoom = Vector2(world.current_camera_zoom, world.current_camera_zoom)
+	CameraPixelAlignment.configure_zoom(camera, world.current_camera_zoom, world.CAMERA_ZOOM_MIN, world.CAMERA_ZOOM_MAX)
 
 func zoom_camera(amount: float, show_feedback: bool = true):
-	world.current_camera_zoom = clamp(world.current_camera_zoom + amount, world.CAMERA_ZOOM_MIN, world.CAMERA_ZOOM_MAX)
+	var camera = world.get_player_camera()
+	if show_feedback and camera != null and not is_zero_approx(amount):
+		# A wheel/key click always advances one visible scale step; continuous
+		# touch zoom still accumulates its small deltas before crossing a step.
+		var step := CameraPixelAlignment.screen_pixel_zoom_step(camera)
+		world.current_camera_zoom = camera.zoom.y + signf(amount) * maxf(absf(amount), step)
+	else:
+		world.current_camera_zoom += amount
+	world.current_camera_zoom = clamp(world.current_camera_zoom, world.CAMERA_ZOOM_MIN, world.CAMERA_ZOOM_MAX)
 	world.apply_camera_zoom()
 
 	if not show_feedback:
 		return
 
 	if amount > 0.0:
-		world.show_notification("Zoom In: " + str(snapped(world.current_camera_zoom, 0.01)) + "x")
+		world.show_notification("Zoom In: " + str(snapped(camera.zoom.y if camera != null else world.current_camera_zoom, 0.01)) + "x")
 	else:
-		world.show_notification("Zoom Out: " + str(snapped(world.current_camera_zoom, 0.01)) + "x")
+		world.show_notification("Zoom Out: " + str(snapped(camera.zoom.y if camera != null else world.current_camera_zoom, 0.01)) + "x")
 
 func reset_camera_zoom():
 	world.current_camera_zoom = world.CAMERA_ZOOM_DEFAULT
@@ -1001,6 +1012,7 @@ var network_position_timer := 0.0
 var network_heartbeat_timer := 0.0
 var last_sent_network_animation_state := ""
 var last_sent_network_lava_fire_state := false
+var last_sent_network_chat_typing := false
 var last_sent_network_position := Vector2(999999, 999999)
 var last_sent_network_facing := 0
 var last_sent_network_fishing_key := ""
@@ -2249,6 +2261,8 @@ func update_multiplayer_movement(delta: float, from_physics_step: bool = false):
 	var animation_changed = (current_animation_state != "" and current_animation_state != last_sent_network_animation_state) or get_local_action_visual_key() != str(world.player.get_meta("last_sent_action_visual_key", ""))
 	var current_lava_fire_state := bool(current_motion_state.get("in_lava_fire", false))
 	var lava_fire_changed: bool = current_lava_fire_state != last_sent_network_lava_fire_state
+	var current_chat_typing := bool(current_motion_state.get("chat_typing", false))
+	var chat_typing_changed := current_chat_typing != last_sent_network_chat_typing
 	var current_facing: int = -1 if int(world.player_facing_direction) < 0 else 1
 	var facing_changed: bool = current_facing != last_sent_network_facing
 	var current_fishing_key := get_local_fishing_sync_key()
@@ -2256,7 +2270,7 @@ func update_multiplayer_movement(delta: float, from_physics_step: bool = false):
 	var current_damage_key := get_local_damage_flash_sync_key()
 	var damage_changed: bool = current_damage_key != last_sent_network_damage_key
 
-	if not moved_enough and not should_send_heartbeat and not animation_changed and not lava_fire_changed and not facing_changed and not fishing_changed and not damage_changed:
+	if not moved_enough and not should_send_heartbeat and not animation_changed and not lava_fire_changed and not facing_changed and not fishing_changed and not damage_changed and not chat_typing_changed:
 		return
 
 	var sent := bool(network.send_player_position(current_position, current_facing, world.current_world_name, true))
@@ -2271,6 +2285,7 @@ func update_multiplayer_movement(delta: float, from_physics_step: bool = false):
 		last_sent_network_facing = current_facing
 		last_sent_network_fishing_key = current_fishing_key
 		last_sent_network_damage_key = current_damage_key
+		last_sent_network_chat_typing = current_chat_typing
 
 
 func get_local_action_visual_key() -> String:
@@ -3770,6 +3785,8 @@ func ensure_remote_player_shared_visual_pipeline(remote_player) -> bool:
 			cache_remote_visual_base_transform(player_visual)
 		if player_visual is CanvasItem:
 			player_visual.modulate = Color.WHITE
+			player_visual.self_modulate = Color.WHITE
+			player_visual.remove_meta(&"world_fade_base_alpha")
 			player_visual.visible = true
 		debug_remote_appearance_flow("created shared remote PlayerVisual", {
 			"player_id": str(remote_player.get_meta("remote_id", "")),
@@ -3947,6 +3964,9 @@ func spawn_player_world_fade_fx(player_node):
 
 	var existing = player_node.get_node_or_null(PLAYER_WORLD_FADE_FX_NODE_NAME)
 	if existing != null and is_instance_valid(existing):
+		if existing.has_method("cancel"):
+			existing.cancel()
+		player_node.remove_child(existing)
 		existing.queue_free()
 
 	var fx = PlayerWorldFadeFXScene.instantiate()
@@ -4059,6 +4079,7 @@ func reset_multiplayer_sync_state():
 	network_heartbeat_timer = 0.0
 	last_sent_network_animation_state = ""
 	last_sent_network_lava_fire_state = false
+	last_sent_network_chat_typing = false
 	last_sent_network_position = Vector2(999999, 999999)
 	last_sent_network_facing = 0
 	last_sent_network_fishing_key = ""

@@ -30,6 +30,54 @@ const SIGN_HOVER_OUTLINE_SIZE = 7
 const NOTIFICATION_BUBBLE_COOLDOWN := 0.42
 
 var last_notification_bubble_time := -999.0
+var last_emote_msec := -1000
+
+
+func setup_emotes_ui() -> void:
+	if world.ui_layer == null: return
+	world.emotes_ui = world.ui_layer.get_node_or_null("EmotesUI")
+	if world.emotes_ui == null:
+		world.emotes_ui = preload("res://Scenes/ui/emotes/EmotesScene.tscn").instantiate()
+		world.emotes_ui.name = "EmotesUI"
+		world.ui_layer.add_child(world.emotes_ui)
+	world.emotes_ui.set_world(world)
+	if not world.emotes_ui.emote_selected.is_connected(play_local_emote):
+		world.emotes_ui.emote_selected.connect(play_local_emote)
+
+
+func play_local_emote(id: String) -> void:
+	if not is_instance_valid(world) or not world.in_world or world.is_gameplay_hud_blocked() or world.is_player_dead_or_respawning(): return
+	if Time.get_ticks_msec() - last_emote_msec < 1000: return
+	var actor = world.player
+	if not is_instance_valid(actor): return
+	if actor is CharacterBody2D and (not actor.is_on_floor() or actor.velocity.length() > 6.0): return
+	if preload("res://Scripts/player_emotes.gd").play(actor, id):
+		last_emote_msec = Time.get_ticks_msec()
+		NetworkManager.send_player_emote(id)
+
+
+func handle_player_emote(data: Dictionary) -> void:
+	if not is_instance_valid(world) or not world.in_world: return
+	if str(data.get("world", "")).to_upper() != str(NetworkManager.current_world_name).to_upper(): return
+	var id := str(data.get("emote", ""))
+	var remote_id := str(data.get("player_id", ""))
+	if remote_id == "" or remote_id == str(NetworkManager.player_id): return
+	if not preload("res://Scripts/player_emotes.gd").DURATIONS.has(id): return
+	var actor: Node2D = null
+	if MovementMode.is_websocket():
+		if is_instance_valid(world.player_manager):
+			actor = world.player_manager.remote_players.get(remote_id, null)
+	elif is_instance_valid(world.netfox_real_manager):
+		# The backend supplies the authenticated display name; Netfox has separate peer IDs.
+		actor = world.netfox_real_manager._find_netfox_chat_player(remote_id, str(data.get("name", "")))
+	if not is_instance_valid(actor) or actor == world.player: return
+	var sequence := int(data.get("sequence", 0))
+	if sequence <= 0: return
+	if str(actor.get_meta("last_emote_sender_id", "")) == remote_id and sequence <= int(actor.get_meta("last_emote_sequence", 0)): return
+	actor.set_meta("last_emote_sender_id", remote_id)
+	actor.set_meta("last_emote_sequence", sequence)
+	preload("res://Scripts/player_emotes.gd").play(actor, id)
+
 
 func setup(world_ref):
 	world = world_ref
@@ -216,6 +264,7 @@ func setup_chat_ui():
 
 	if world.chat_ui.has_method("setup_chat_ui"):
 		world.chat_ui.setup_chat_ui()
+	setup_emotes_ui()
 
 
 func restore_chat_ui_after_world_enter():

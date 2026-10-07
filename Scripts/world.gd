@@ -411,6 +411,7 @@ var inventory_drawer_amount = 0.0
 var inventory_drawer_target = 0.0
 
 var chat_ui = null
+var emotes_ui = null
 var inventory_manager = null
 var save_manager = null
 var equipment_manager = null
@@ -500,7 +501,7 @@ func get_stack_limit_for_item(item_type: String, category: String = "") -> int:
 	if is_gem_currency(item_type, category):
 		return GEM_CURRENCY_CAP
 	if category == "fish" or str(item_database.get(item_type, {}).get("category", "")) == "fish":
-		return 20000 # Exact tenths of a kilogram: 2000 kg.
+		return 9990 # Exact tenths of a kilogram: 999 kg.
 
 	var item_data = null
 	if item_database.has(item_type):
@@ -533,7 +534,7 @@ func is_fishing_rod_item(item_type: String) -> bool:
 
 
 func clamp_item_stack_count(item_type: String, category: String, count: int) -> int:
-	return int(clamp(count, 0, get_stack_limit_for_item(item_type, category)))
+	return int(clamp(count, 0, 20000 if category == "fish" else get_stack_limit_for_item(item_type, category)))
 
 
 func notify_inventory_item_changed(item_type: String, category: String, source: String = "local") -> void:
@@ -699,7 +700,7 @@ func apply_network_inventory_delta(delta: Dictionary) -> bool:
 		_:
 			return false
 
-	var stack_limit = get_stack_limit_for_item(item_type, category)
+	var stack_limit = 20000 if category == "fish" else get_stack_limit_for_item(item_type, category)
 	var current_count = parse_network_inventory_count(target_inventory.get(item_type, 0), 0, 0, stack_limit)
 	var after_count = parse_network_inventory_count(delta.get("after_count", delta.get("count", null)), -1, 0, stack_limit)
 	if after_count < 0:
@@ -2828,6 +2829,9 @@ func is_gameplay_ui_at_point(point: Vector2) -> bool:
 	if chat_ui != null and chat_ui.has_method("is_chat_ui_at_point") and bool(chat_ui.is_chat_ui_at_point(point)):
 		return true
 
+	if is_instance_valid(emotes_ui) and emotes_ui.is_emotes_ui_at_point(point):
+		return true
+
 	return is_panel_ui_at_point(point)
 
 
@@ -4306,26 +4310,10 @@ func spawn_fishing_reward_confetti_ui_particles(canvas_position: Vector2, rarity
 	return true
 
 
-func handle_network_fishing_reward_fx(data: Dictionary):
-	var payload_world := str(data.get("world", data.get("current_world", ""))).strip_edges()
-	if payload_world != "" and payload_world != current_world_name:
-		return
-
-	var rarity := str(data.get("rarity", "")).strip_edges().to_lower()
-	if rarity != "epic" and rarity != "legendary":
-		return
-
-	if _is_local_fishing_reward_fx(data):
-		var ui_position := _get_local_fishing_reward_confetti_ui_position()
-		if is_finite(ui_position.x) and is_finite(ui_position.y):
-			if spawn_fishing_reward_confetti_ui_particles(ui_position, rarity):
-				return
-
-	var effect_position := Vector2(
-		get_network_float(data.get("x"), 0.0),
-		get_network_float(data.get("y"), 0.0)
-	) + Vector2(0.0, -38.0)
-	spawn_fishing_reward_confetti_particles(effect_position, rarity)
+func handle_network_fishing_reward_fx(_data: Dictionary):
+	# Older servers still broadcast these events. Catch cards now provide the
+	# celebration; do not spawn explosive bursts in the world or over the UI.
+	return
 
 
 func _is_local_fishing_reward_fx(data: Dictionary) -> bool:
@@ -8263,6 +8251,12 @@ func is_chat_input_focused() -> bool:
 		return gameplay_ui_manager.is_chat_input_focused()
 
 	return false
+
+
+func is_chat_typing() -> bool:
+	if not in_world or is_player_dead_or_respawning() or preload("res://Scripts/world_transition_ui_guard.gd").is_blocked(self):
+		return false
+	return is_instance_valid(chat_ui) and chat_ui.has_method("is_chat_typing") and bool(chat_ui.is_chat_typing())
 
 
 func is_major_ui_open() -> bool:

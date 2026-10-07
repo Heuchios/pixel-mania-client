@@ -350,6 +350,12 @@ func draw_background(ctx: Node2D, layer_textures: Array = [], layer_speeds: Arra
 		return
 
 	var cam_x = _camera_x()
+	# These layers live on their own CanvasLayer, outside the world camera.
+	# Snap at the physical render scale so parallax/drift cannot change the
+	# sampled texel widths as it scrolls. Quantize repeat size too to avoid seams.
+	var to_pixels: Transform2D = ctx.get_viewport().get_stretch_transform() * ctx.get_global_transform_with_canvas()
+	var from_pixels := to_pixels.affine_inverse()
+	var pixel_scale := to_pixels.get_scale().abs()
 
 	var draw_textures := layer_textures if not layer_textures.is_empty() else textures
 	var draw_speeds := layer_speeds if not layer_speeds.is_empty() else parallax_speeds
@@ -375,6 +381,8 @@ func draw_background(ctx: Node2D, layer_textures: Array = [], layer_speeds: Arra
 		var drawn_h      = ss.y * scale_ratio
 		var scale        = drawn_h / tex_h
 		var scaled_w     = tex_w * scale
+		drawn_h = maxf(1.0, roundf(drawn_h * pixel_scale.y)) / pixel_scale.y
+		scaled_w = maxf(1.0, roundf(scaled_w * pixel_scale.x)) / pixel_scale.x
 		# 0.0 pins the layer to the top of the screen, 1.0 to the bottom. A full-height layer has
 		# no slack, so this resolves to 0 for them either way.
 		var anchor_ratio = float(draw_anchors[i]) if i < draw_anchors.size() else 0.0
@@ -399,7 +407,8 @@ func draw_background(ctx: Node2D, layer_textures: Array = [], layer_speeds: Arra
 		# Tile across the screen
 		var x = -offset
 		while x < ss.x:
-			ctx.draw_texture_rect(texture, Rect2(x, draw_y, scaled_w, drawn_h), false)
+			var aligned_position: Vector2 = from_pixels * (to_pixels * Vector2(x, draw_y)).round()
+			ctx.draw_texture_rect(texture, Rect2(aligned_position, Vector2(scaled_w, drawn_h)), false)
 			x += step
 
 	# Underground fade removed — can be re-enabled later

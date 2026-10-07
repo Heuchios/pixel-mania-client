@@ -5,36 +5,16 @@
 [ext_resource type="Script" uid="uid://d350u8evihs1u" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="3_rollback"]
 [ext_resource type="Script" uid="uid://dour8fehaaugp" path="res://addons/netfox/tick-interpolator.gd" id="4_interpolator"]
 [ext_resource type="Texture2D" uid="uid://cmwio43avy4a2" path="res://Assets/player/body_parts/left_hand_idle_1.png" id="5_left_hand"]
-[ext_resource type="Texture2D" uid="uid://dpyv6nhqq3dky" path="res://Assets/player/expressions/dead_spirit_1.png" id="5_xpiay"]
-[ext_resource type="Texture2D" uid="uid://b01b8gdc4jgf8" path="res://Assets/player/expressions/dead_spirit_2.png" id="6_ln67o"]
 [ext_resource type="Texture2D" uid="uid://dhvw45dbsawpx" path="res://Assets/player/body_parts/right_foot_idle_1.png" id="6_right_foot"]
 [ext_resource type="Texture2D" uid="uid://b7iep25jiww67" path="res://Assets/player/body_parts/left_foot_idle_1.png" id="7_left_foot"]
-[ext_resource type="Texture2D" uid="uid://d3igh6txvr3s8" path="res://Assets/player/expressions/dead_spirit_3.png" id="7_w4s0u"]
 [ext_resource type="Texture2D" uid="uid://cih17ddmescem" path="res://Assets/player/body_parts/bottom_idle_1.png" id="8_bottom"]
 [ext_resource type="Texture2D" uid="uid://d3uscrqq63ykr" path="res://Assets/player/body_parts/body_idle_1.png" id="9_body"]
 [ext_resource type="Texture2D" uid="uid://bmo385y27type" path="res://Assets/player/body_parts/right_hand_idle_1.png" id="10_right_hand"]
 [ext_resource type="Texture2D" uid="uid://bgsjtudggrbrn" path="res://Assets/player/body_parts/head_idle_1.png" id="11_head"]
-[ext_resource type="Texture2D" uid="uid://b53hq1cc5ls5j" path="res://Assets/player/expressions/idle.png" id="12_face_idle"]
-[ext_resource type="Texture2D" uid="uid://cdt7cwcgk23ox" path="res://Assets/player/expressions/idle_blink.png" id="13_face_blink"]
-[ext_resource type="Texture2D" uid="uid://bfc38xdl6cc0e" path="res://Assets/player/expressions/jump.png" id="14_face_jump"]
-[ext_resource type="Texture2D" uid="uid://bepq2vcgwsnw1" path="res://Assets/player/expressions/fall.png" id="15_face_fall"]
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_uvybh"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("5_xpiay")
-}, {
-"duration": 1.0,
-"texture": ExtResource("6_ln67o")
-}, {
-"duration": 1.0,
-"texture": ExtResource("7_w4s0u")
-}],
-"loop": true,
-"name": &"dead_spirit",
-"speed": 6.0
-}]
+
+[ext_resource type="SpriteFrames" path="res://Assets/player/expressions/face_expressions.tres" id="90_face_atlas"]
+[ext_resource type="SpriteFrames" path="res://Assets/player/expressions/dead_spirit.tres" id="91_spirit_atlas"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
 size = Vector2(16, 32)
@@ -105,35 +85,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_face_expression"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("15_face_fall")
-}],
-"loop": true,
-"name": &"fall",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("12_face_idle")
-}, {
-"duration": 0.18,
-"texture": ExtResource("13_face_blink")
-}],
-"loop": true,
-"name": &"idle",
-"speed": 1.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("14_face_jump")
-}],
-"loop": true,
-"name": &"jump",
-"speed": 5.0
-}]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_right_arm"]
 animations = [{
@@ -807,7 +758,7 @@ enable_recording = false
 [node name="DeadSpiritAnimated" type="AnimatedSprite2D" parent="." unique_id=2129328972]
 visible = false
 position = Vector2(1, -8)
-sprite_frames = SubResource("SpriteFrames_uvybh")
+sprite_frames = ExtResource("91_spirit_atlas")
 animation = &"dead_spirit"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2138933146]
@@ -885,7 +836,8 @@ position = Vector2(1, 0)
 sprite_frames = SubResource("SpriteFrames_head")
 
 [node name="FaceExpressionAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Head" unique_id=527099271]
-sprite_frames = SubResource("SpriteFrames_face_expression")
+texture_filter = 1
+sprite_frames = ExtResource("90_face_atlas")
 animation = &"idle"
 
 [node name="HairAnimated" type="AnimatedSprite2D" parent="PlayerVisual/Head" unique_id=1301070538]

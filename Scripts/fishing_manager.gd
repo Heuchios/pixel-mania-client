@@ -784,7 +784,6 @@ func catch_fish():
 			return
 		_show_catch_result(pending_fish_id, false, -1.0, reward_category, true)
 		_show_catch_notification(pending_fish_id, reward_category)
-		_maybe_spawn_fishing_reward_confetti(pending_fish_id, reward_category)
 		play_bobber_anim("reel_success")
 		world.update_all_ui()
 		world.save_player_data()
@@ -793,8 +792,8 @@ func catch_fish():
 
 	var owned_before: float = _get_owned_fish_weight(pending_fish_id)
 	var catch_weight: float = _normalize_fish_weight(_roll_catch_weight(pending_fish_id))
-	if owned_before + catch_weight > 2000.0:
-		world.show_notification("Not enough room for this catch. Fish stacks hold 2000 kg.")
+	if owned_before + catch_weight > 999.0:
+		world.show_notification("Not enough room for this catch. Fish stacks hold 999 kg.")
 		reset_fishing_state(true)
 		return
 	var catch_record: Dictionary = record_fish_catch(pending_fish_id, catch_weight)
@@ -804,7 +803,6 @@ func catch_fish():
 	_show_catch_result(pending_fish_id, was_new, catch_weight, "fish", true)
 	_show_catch_notification(pending_fish_id, "fish")
 	_maybe_broadcast_legendary_catch(pending_fish_id)
-	_maybe_spawn_fishing_reward_confetti(pending_fish_id, "fish")
 	play_bobber_anim("reel_success")
 	world.update_all_ui()
 	world.save_player_data()
@@ -860,7 +858,7 @@ func _add_fish_weight_to_inventory(fish_id: String, weight) -> void:
 	if safe_weight <= 0.0:
 		return
 	var current_count: int = _fish_inventory_value_to_tenths(world.fish_inventory.get(fish_id, 0))
-	world.fish_inventory[fish_id] = mini(20000, current_count + _fish_weight_to_tenths(safe_weight))
+	world.fish_inventory[fish_id] = mini(9990, current_count + _fish_weight_to_tenths(safe_weight))
 	if world.has_method("refresh_ui_after_item_change"):
 		world.refresh_ui_after_item_change(fish_id, "fish")
 
@@ -1197,13 +1195,9 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 				_apply_server_fish_inventory_result(data, fish_id, server_weight)
 				_show_catch_result(fish_id, server_new, server_weight)
 				_maybe_broadcast_legendary_catch(fish_id)
-				if not bool(data.get("reward_fx_sent", false)):
-					_maybe_spawn_fishing_reward_confetti(fish_id, "fish")
 			elif reward_id != "":
 				_apply_server_reward_inventory_result(data, reward_id, reward_category)
 				_show_catch_result(reward_id, false, -1.0, reward_category)
-				if not bool(data.get("reward_fx_sent", false)):
-					_maybe_spawn_fishing_reward_confetti(reward_id, reward_category)
 			if message.strip_edges() != "":
 				world.show_notification(message)
 			elif caught_fish_id != "":
@@ -2094,24 +2088,6 @@ func _show_catch_notification(fish_id: String, category: String = "fish") -> voi
 		return
 	var safe_category := normalize_reward_category(category)
 	world.show_notification("Caught " + world.get_item_display_name(fish_id, safe_category) + " x1!")
-
-
-func _maybe_spawn_fishing_reward_confetti(item_id: String, category: String = "fish") -> void:
-	if world == null:
-		return
-
-	var rarity := _get_reward_rarity(item_id, category)
-	if rarity != "epic" and rarity != "legendary":
-		return
-
-	var ui_position := _get_fishing_reward_confetti_ui_position()
-	if is_finite(ui_position.x) and is_finite(ui_position.y):
-		if world.has_method("spawn_fishing_reward_confetti_ui_particles"):
-			if bool(world.spawn_fishing_reward_confetti_ui_particles(ui_position, rarity)):
-				return
-
-	if world.has_method("spawn_fishing_reward_confetti_particles"):
-		world.spawn_fishing_reward_confetti_particles(_get_fishing_reward_confetti_position(), rarity)
 
 
 func get_fishing_reward_confetti_ui_position() -> Vector2:

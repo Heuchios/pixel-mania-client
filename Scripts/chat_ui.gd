@@ -4,6 +4,7 @@ const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 
 const CHAT_PANEL_HEIGHT = 448.0
 const CHAT_OPEN_SPEED = 9.0
+const TYPING_IDLE_TIMEOUT_MSEC := 2200
 const MAX_CHAT_MESSAGES = 50
 const CHAT_SCROLL_BOTTOM_THRESHOLD := 24
 const CHAT_SCROLL_SLIDER_MAX := 1000.0
@@ -113,6 +114,7 @@ var chat_handle_drag_index = -1
 const CHAT_HANDLE_DRAG_TAP_THRESHOLD := 6.0
 const CHAT_HANDLE_TOUCH_PADDING := Vector2(30.0, 18.0)
 var quick_chat_active = false
+var last_chat_edit_msec := -TYPING_IDLE_TIMEOUT_MSEC
 var chat_button_hovered = false
 var chat_scroll_slider_syncing := false
 var chat_scroll_programmatic := false
@@ -1726,6 +1728,7 @@ func focus_chat_input():
 
 
 func release_chat_focus():
+	_on_chat_focus_exited()
 	if chat_input != null:
 		chat_input.release_focus()
 	if quick_chat_input != null:
@@ -1745,6 +1748,15 @@ func is_chat_input_focused() -> bool:
 	return main_focused or quick_focused
 
 
+func is_chat_typing() -> bool:
+	if not is_visible_in_tree() or not is_chat_input_focused():
+		return false
+	if Time.get_ticks_msec() - last_chat_edit_msec >= TYPING_IDLE_TIMEOUT_MSEC:
+		return false
+	var input := get_active_chat_input()
+	return input != null and input.is_visible_in_tree() and input.editable and not input.text.strip_edges().is_empty()
+
+
 func wire_chat_input_activity(line_edit: LineEdit) -> void:
 	if line_edit == null:
 		return
@@ -1752,14 +1764,24 @@ func wire_chat_input_activity(line_edit: LineEdit) -> void:
 		line_edit.focus_entered.connect(_on_chat_text_activity)
 	if not line_edit.text_changed.is_connected(_on_chat_text_changed):
 		line_edit.text_changed.connect(_on_chat_text_changed)
+	if not line_edit.focus_exited.is_connected(_on_chat_focus_exited):
+		line_edit.focus_exited.connect(_on_chat_focus_exited)
 
 
 func _on_chat_text_activity() -> void:
 	hide_notification_bubble()
 
 
-func _on_chat_text_changed(_new_text: String) -> void:
+func _on_chat_text_changed(new_text: String) -> void:
 	hide_notification_bubble()
+	if is_chat_input_focused() and not new_text.strip_edges().is_empty():
+		last_chat_edit_msec = Time.get_ticks_msec()
+	else:
+		_on_chat_focus_exited()
+
+
+func _on_chat_focus_exited() -> void:
+	last_chat_edit_msec = -TYPING_IDLE_TIMEOUT_MSEC
 
 
 func clear_notification_bubble_if_chat_active() -> void:

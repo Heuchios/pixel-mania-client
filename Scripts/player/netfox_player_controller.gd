@@ -46,6 +46,7 @@ var action_state: String = "none"
 var rollback_tick_count: int = 0
 var current_visual_animation: String = ""
 var current_face_animation: String = ""
+var face_animation_manager = null
 var display_name: String = ""
 var debug_enabled := false
 var punch_ticks_remaining: int = 0
@@ -708,20 +709,24 @@ func update_face_expression() -> void:
 	if face_expression_animated == null or face_expression_animated.sprite_frames == null:
 		return
 
-	var target_expression := "idle"
-	if is_punching and face_expression_animated.sprite_frames.has_animation("punch"):
-		target_expression = "punch"
-	elif movement_state == "jump":
-		target_expression = "jump"
-	elif movement_state == "fall":
-		target_expression = "fall"
-
-	if current_face_animation == target_expression:
-		return
-
-	if face_expression_animated.sprite_frames.has_animation(target_expression):
-		face_expression_animated.play(target_expression)
-		current_face_animation = target_expression
+	# Use the same expression priorities, water/chat detection and spirit effect
+	# as the normal player. Body movement remains driven by rollback state.
+	if face_animation_manager == null:
+		face_animation_manager = preload("res://Scripts/player_animation_manager.gd").new()
+		face_animation_manager.name = "FaceAnimationManager"
+		face_animation_manager.player = self
+		face_animation_manager.player_visual = player_visual
+		face_animation_manager.face_expression_animated = face_expression_animated
+		face_animation_manager.dead_spirit_animated = dead_spirit_animated
+		face_animation_manager.dead_spirit_random.randomize()
+		add_child(face_animation_manager)
+	if face_animation_manager.world == null:
+		face_animation_manager.world = get_world_node()
+	var expression_state := movement_state
+	if is_punching and not movement_state in ["hurt", "dead", "dead_spirit"]:
+		expression_state = "punch"
+	face_animation_manager.update_face_expression_animation(expression_state)
+	current_face_animation = face_animation_manager.current_face_expression_animation
 
 
 func update_body_animation() -> void:

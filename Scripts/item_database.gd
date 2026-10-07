@@ -14387,7 +14387,7 @@ const ITEMS = {
 "guppy": {
 	"category": "fish",
 	"rarity": "common",
-	"stack_limit": 20000,
+	"stack_limit": 9990,
 	"tradeable": true,
 	"dropable": true,
 	"admin_grantable": true,
@@ -14435,12 +14435,12 @@ const ITEMS = {
 		]
 	},
 	"fish_size": "weight",
-	"max_stack": 20000
+	"max_stack": 9990
 },
 "goldfish": {
 	"category": "fish",
 	"rarity": "common",
-	"stack_limit": 20000,
+	"stack_limit": 9990,
 	"tradeable": true,
 	"dropable": true,
 	"admin_grantable": true,
@@ -14488,12 +14488,12 @@ const ITEMS = {
 		]
 	},
 	"fish_size": "weight",
-	"max_stack": 20000
+	"max_stack": 9990
 },
 "blue_tang": {
 	"category": "fish",
 	"rarity": "rare",
-	"stack_limit": 20000,
+	"stack_limit": 9990,
 	"tradeable": true,
 	"dropable": true,
 	"admin_grantable": true,
@@ -14541,12 +14541,12 @@ const ITEMS = {
 		]
 	},
 	"fish_size": "weight",
-	"max_stack": 20000
+	"max_stack": 9990
 },
 "bass": {
 	"category": "fish",
 	"rarity": "uncommon",
-	"stack_limit": 20000,
+	"stack_limit": 9990,
 	"tradeable": true,
 	"dropable": true,
 	"admin_grantable": true,
@@ -14594,12 +14594,12 @@ const ITEMS = {
 		]
 	},
 	"fish_size": "weight",
-	"max_stack": 20000
+	"max_stack": 9990
 },
 "catfish": {
 	"category": "fish",
 	"rarity": "common",
-	"stack_limit": 20000,
+	"stack_limit": 9990,
 	"tradeable": true,
 	"dropable": true,
 	"admin_grantable": true,
@@ -14647,12 +14647,12 @@ const ITEMS = {
 		]
 	},
 	"fish_size": "weight",
-	"max_stack": 20000
+	"max_stack": 9990
 },
 "red_snapper": {
 	"category": "fish",
 	"rarity": "rare",
-	"stack_limit": 20000,
+	"stack_limit": 9990,
 	"tradeable": true,
 	"dropable": true,
 	"admin_grantable": true,
@@ -14700,12 +14700,12 @@ const ITEMS = {
 		]
 	},
 	"fish_size": "weight",
-	"max_stack": 20000
+	"max_stack": 9990
 },
 "minnow": {
 	"category": "fish",
 	"rarity": "common",
-	"stack_limit": 20000,
+	"stack_limit": 9990,
 	"tradeable": true,
 	"dropable": true,
 	"admin_grantable": true,
@@ -14753,12 +14753,12 @@ const ITEMS = {
 		]
 	},
 	"fish_size": "weight",
-	"max_stack": 20000
+	"max_stack": 9990
 },
 "bluegill": {
 	"category": "fish",
 	"rarity": "uncommon",
-	"stack_limit": 20000,
+	"stack_limit": 9990,
 	"tradeable": true,
 	"dropable": true,
 	"admin_grantable": true,
@@ -14806,12 +14806,12 @@ const ITEMS = {
 	},
 	"fish_family": "bluegill",
 	"fish_size": "weight",
-	"max_stack": 20000
+	"max_stack": 9990
 },
 "mudfish": {
 	"category": "fish",
 	"rarity": "uncommon",
-	"stack_limit": 20000,
+	"stack_limit": 9990,
 	"tradeable": true,
 	"dropable": true,
 	"admin_grantable": true,
@@ -14859,12 +14859,12 @@ const ITEMS = {
 		]
 	},
 	"fish_size": "weight",
-	"max_stack": 20000
+	"max_stack": 9990
 },
 "clownfish": {
 	"category": "fish",
 	"rarity": "rare",
-	"stack_limit": 20000,
+	"stack_limit": 9990,
 	"tradeable": true,
 	"dropable": true,
 	"admin_grantable": true,
@@ -14912,12 +14912,12 @@ const ITEMS = {
 	},
 	"fish_family": "clownfish",
 	"fish_size": "weight",
-	"max_stack": 20000
+	"max_stack": 9990
 },
 "tuna": {
 	"category": "fish",
 	"rarity": "epic",
-	"stack_limit": 20000,
+	"stack_limit": 9990,
 	"tradeable": true,
 	"dropable": true,
 	"admin_grantable": true,
@@ -14965,12 +14965,12 @@ const ITEMS = {
 		]
 	},
 	"fish_size": "weight",
-	"max_stack": 20000
+	"max_stack": 9990
 },
 "salmon": {
 	"category": "fish",
 	"rarity": "epic",
-	"stack_limit": 20000,
+	"stack_limit": 9990,
 	"tradeable": true,
 	"dropable": true,
 	"admin_grantable": true,
@@ -15018,12 +15018,12 @@ const ITEMS = {
 		]
 	},
 	"fish_size": "weight",
-	"max_stack": 20000
+	"max_stack": 9990
 },
 "swordfish": {
 	"category": "fish",
 	"rarity": "legendary",
-	"stack_limit": 20000,
+	"stack_limit": 9990,
 	"tradeable": true,
 	"dropable": true,
 	"admin_grantable": true,
@@ -15071,7 +15071,7 @@ const ITEMS = {
 	},
 	"fish_family": "swordfish",
 	"fish_size": "weight",
-	"max_stack": 20000
+	"max_stack": 9990
 },
 "lure_pack": {
 		"category": "lure",

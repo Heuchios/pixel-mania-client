@@ -1,29 +1,12 @@
-[gd_scene format=3 uid="uid://d3x48w4dwx5ho"]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/outer_panel.tres" id="panel_role_0"]
+[ext_resource type="Script" path="res://Scripts/emotes_ui.gd" id="1"]
+[ext_resource type="Texture2D" path="res://Assets/ui/icons/emotes.png" id="2"]
+[ext_resource type="FontFile" path="res://Assets/font/font.ttf" id="3"]
 
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_f72e84db31.tres" id="atlas_StyleBoxTexture_button_normal"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_1b992e4807.tres" id="atlas_StyleBoxTexture_button_pressed"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/blue_button_c4d4758782.tres" id="atlas_StyleBoxTexture_button_hover"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_6vey2"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_d67hh"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_gdm3d"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_bvsm7"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_ckkgi"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_cxore"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_xm37t"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_e674c"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_dbk1g"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_o22gw"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_yx4mb"]
-[ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inv_slot_normal_44136fa355.tres" id="atlas_StyleBoxTexture_ebwp0"]
+[sub_resource type="StyleBoxEmpty" id="Empty"]
 
-[ext_resource type="Script" uid="uid://ccuihbnkc6hh1" path="res://Scripts/emotes_ui.gd" id="1_emotes_ui"]
-[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/chat_drag_handle.tres" id="2_emotes_icon"]
-[ext_resource type="Texture2D" path="res://Assets/ui/atlas/textures/inv_slot_normal.tres" id="5_slot_normal"]
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_icon_button"]
-
-[node name="EmotesUI" type="Control" unique_id=1456632279]
+[node name="EmotesUI" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -31,547 +14,52 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("1_emotes_ui")
 texture_filter = 1
+theme_override_fonts/font = ExtResource("3")
+script = ExtResource("1")
 
-[node name="EmotesPanelClip" type="Control" parent="." unique_id=1737914764]
-clip_contents = true
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -338.0
-offset_top = 376.0
-offset_right = -26.0
-offset_bottom = 670.0
-grow_horizontal = 0
-
-[node name="EmotesPanel" type="Control" parent="EmotesPanelClip" unique_id=140374946]
-anchors_preset = 0
-offset_right = 312.0
-offset_bottom = 294.0
-
-[node name="PanelSkin" type="NinePatchRect" parent="EmotesPanelClip/EmotesPanel" unique_id=1218708647]
+[node name="EmotesButton" type="Button" parent="."]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 9.0
-offset_right = 294.0
-offset_bottom = 226.0
-texture = ExtResource("panel_role_0")
-patch_margin_left = 1
-patch_margin_top = 1
-patch_margin_right = 1
-patch_margin_bottom = 1
-
-[node name="HeaderButtonSkin" type="Button" parent="EmotesPanelClip/EmotesPanel" unique_id=87585057]
-visible = false
-custom_minimum_size = Vector2(288, 48)
-layout_mode = 0
-offset_left = 12.0
-offset_top = 10.0
-offset_right = 300.0
-offset_bottom = 58.0
+offset_left = 1818.0
+offset_top = 268.0
+offset_right = 1882.0
+offset_bottom = 332.0
 focus_mode = 0
+tooltip_text = "Player emotes"
+icon = ExtResource("2")
+expand_icon = true
+theme_override_constants/icon_max_width = 64
+theme_override_styles/normal = SubResource("Empty")
+theme_override_styles/hover = SubResource("Empty")
+theme_override_styles/pressed = SubResource("Empty")
+theme_override_styles/focus = SubResource("Empty")
+theme_override_colors/icon_hover_color = Color(1, 0.85, 1, 1)
+theme_override_colors/icon_pressed_color = Color(0.8, 0.6, 0.9, 1)
+
+[node name="EmotesPanel" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 244.0
+offset_bottom = 256.0
+mouse_filter = 0
+
+[node name="Margin" type="MarginContainer" parent="EmotesPanel"]
+layout_mode = 2
 mouse_filter = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_button_normal")
-theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_button_pressed")
-theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_button_hover")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="Choices" type="VBoxContainer" parent="EmotesPanel/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="EmotesPanel/Margin/Choices"]
+layout_mode = 2
 text = "EMOTES"
-metadata/pixelmania_font_role = "preserve"
-
-[node name="CountBadge" type="Button" parent="EmotesPanelClip/EmotesPanel" unique_id=1266522054]
-visible = false
-custom_minimum_size = Vector2(42, 32)
-layout_mode = 0
-offset_left = 246.0
-offset_top = 18.0
-offset_right = 288.0
-offset_bottom = 50.0
-focus_mode = 0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.9, 0.98, 1, 1)
-theme_override_colors/font_hover_color = Color(0.9, 0.98, 1, 1)
-theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_button_normal")
-theme_override_styles/pressed = ExtResource("atlas_StyleBoxTexture_button_pressed")
-theme_override_styles/hover = ExtResource("atlas_StyleBoxTexture_button_hover")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
-text = "12"
-metadata/pixelmania_font_role = "preserve"
-
-[node name="GridSkin" type="NinePatchRect" parent="EmotesPanelClip/EmotesPanel" unique_id=1536048928]
-layout_mode = 0
-offset_left = 13.0
-offset_top = 10.0
-offset_right = 293.0
-offset_bottom = 280.0
-patch_margin_left = 24
-patch_margin_top = 24
-patch_margin_right = 24
-patch_margin_bottom = 24
-
-[node name="EmotesGrid" type="GridContainer" parent="EmotesPanelClip/EmotesPanel" unique_id=1484237012]
-layout_mode = 0
-offset_left = 16.0
-offset_top = 20.0
-offset_right = 279.0
-offset_bottom = 212.0
-mouse_filter = 2
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 8
-columns = 4
-
-[node name="Placeholder01" type="Button" parent="EmotesPanelClip/EmotesPanel/EmotesGrid" unique_id=1594943897]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-tooltip_text = "placeholder_01"
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
-
-[node name="Frame" type="TextureRect" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder01" unique_id=2123499314]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-mouse_filter = 2
-texture = ExtResource("5_slot_normal")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="IconPlaceholder" type="Label" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder01" unique_id=1127069361]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_6vey2")
-text = ":)"
 horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.22, 0.10, 0.30, 1)
 metadata/pixelmania_font_role = "preserve"
-
-[node name="Placeholder02" type="Button" parent="EmotesPanelClip/EmotesPanel/EmotesGrid" unique_id=59361530]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-tooltip_text = "placeholder_02"
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
-
-[node name="Frame" type="TextureRect" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder02" unique_id=1523094744]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-mouse_filter = 2
-texture = ExtResource("5_slot_normal")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="IconPlaceholder" type="Label" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder02" unique_id=505190431]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_d67hh")
-text = ":D"
-horizontal_alignment = 1
-vertical_alignment = 1
-metadata/pixelmania_font_role = "preserve"
-
-[node name="Placeholder03" type="Button" parent="EmotesPanelClip/EmotesPanel/EmotesGrid" unique_id=1010817229]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-tooltip_text = "placeholder_03"
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
-
-[node name="Frame" type="TextureRect" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder03" unique_id=2022921813]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-mouse_filter = 2
-texture = ExtResource("5_slot_normal")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="IconPlaceholder" type="Label" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder03" unique_id=116101115]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_gdm3d")
-text = ";)"
-horizontal_alignment = 1
-vertical_alignment = 1
-metadata/pixelmania_font_role = "preserve"
-
-[node name="Placeholder04" type="Button" parent="EmotesPanelClip/EmotesPanel/EmotesGrid" unique_id=1190503524]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-tooltip_text = "placeholder_04"
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
-
-[node name="Frame" type="TextureRect" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder04" unique_id=1208386705]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-mouse_filter = 2
-texture = ExtResource("5_slot_normal")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="IconPlaceholder" type="Label" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder04" unique_id=162754497]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_bvsm7")
-text = "<3"
-horizontal_alignment = 1
-vertical_alignment = 1
-metadata/pixelmania_font_role = "preserve"
-
-[node name="Placeholder05" type="Button" parent="EmotesPanelClip/EmotesPanel/EmotesGrid" unique_id=342754002]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-tooltip_text = "placeholder_05"
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
-
-[node name="Frame" type="TextureRect" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder05" unique_id=919257451]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-mouse_filter = 2
-texture = ExtResource("5_slot_normal")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="IconPlaceholder" type="Label" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder05" unique_id=1168201476]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_ckkgi")
-text = ":P"
-horizontal_alignment = 1
-vertical_alignment = 1
-metadata/pixelmania_font_role = "preserve"
-
-[node name="Placeholder06" type="Button" parent="EmotesPanelClip/EmotesPanel/EmotesGrid" unique_id=313180735]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-tooltip_text = "placeholder_06"
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
-
-[node name="Frame" type="TextureRect" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder06" unique_id=1854877796]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-mouse_filter = 2
-texture = ExtResource("5_slot_normal")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="IconPlaceholder" type="Label" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder06" unique_id=1249760737]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_cxore")
-text = "B)"
-horizontal_alignment = 1
-vertical_alignment = 1
-metadata/pixelmania_font_role = "preserve"
-
-[node name="Placeholder07" type="Button" parent="EmotesPanelClip/EmotesPanel/EmotesGrid" unique_id=1615527237]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-tooltip_text = "placeholder_07"
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
-
-[node name="Frame" type="TextureRect" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder07" unique_id=532711214]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-mouse_filter = 2
-texture = ExtResource("5_slot_normal")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="IconPlaceholder" type="Label" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder07" unique_id=1316397103]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_xm37t")
-text = ":O"
-horizontal_alignment = 1
-vertical_alignment = 1
-metadata/pixelmania_font_role = "preserve"
-
-[node name="Placeholder08" type="Button" parent="EmotesPanelClip/EmotesPanel/EmotesGrid" unique_id=703995309]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-tooltip_text = "placeholder_08"
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
-
-[node name="Frame" type="TextureRect" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder08" unique_id=906681798]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-mouse_filter = 2
-texture = ExtResource("5_slot_normal")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="IconPlaceholder" type="Label" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder08" unique_id=277409391]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_e674c")
-text = ":|"
-horizontal_alignment = 1
-vertical_alignment = 1
-metadata/pixelmania_font_role = "preserve"
-
-[node name="Placeholder09" type="Button" parent="EmotesPanelClip/EmotesPanel/EmotesGrid" unique_id=813603593]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-tooltip_text = "placeholder_09"
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
-
-[node name="Frame" type="TextureRect" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder09" unique_id=1754460966]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-mouse_filter = 2
-texture = ExtResource("5_slot_normal")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="IconPlaceholder" type="Label" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder09" unique_id=1482732706]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_dbk1g")
-text = ":("
-horizontal_alignment = 1
-vertical_alignment = 1
-metadata/pixelmania_font_role = "preserve"
-
-[node name="Placeholder10" type="Button" parent="EmotesPanelClip/EmotesPanel/EmotesGrid" unique_id=1597698834]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-tooltip_text = "placeholder_10"
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
-
-[node name="Frame" type="TextureRect" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder10" unique_id=478123363]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-mouse_filter = 2
-texture = ExtResource("5_slot_normal")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="IconPlaceholder" type="Label" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder10" unique_id=95399056]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_o22gw")
-text = "XD"
-horizontal_alignment = 1
-vertical_alignment = 1
-metadata/pixelmania_font_role = "preserve"
-
-[node name="Placeholder11" type="Button" parent="EmotesPanelClip/EmotesPanel/EmotesGrid" unique_id=1454380038]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-tooltip_text = "placeholder_11"
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
-
-[node name="Frame" type="TextureRect" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder11" unique_id=1338944187]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-mouse_filter = 2
-texture = ExtResource("5_slot_normal")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="IconPlaceholder" type="Label" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder11" unique_id=1467954891]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_yx4mb")
-text = "!!"
-horizontal_alignment = 1
-vertical_alignment = 1
-metadata/pixelmania_font_role = "preserve"
-
-[node name="Placeholder12" type="Button" parent="EmotesPanelClip/EmotesPanel/EmotesGrid" unique_id=1592240598]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-tooltip_text = "placeholder_12"
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
-
-[node name="Frame" type="TextureRect" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder12" unique_id=1065229588]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-mouse_filter = 2
-texture = ExtResource("5_slot_normal")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="IconPlaceholder" type="Label" parent="EmotesPanelClip/EmotesPanel/EmotesGrid/Placeholder12" unique_id=1754461182]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
-theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = ExtResource("atlas_StyleBoxTexture_ebwp0")
-text = "??"
-horizontal_alignment = 1
-vertical_alignment = 1
-metadata/pixelmania_font_role = "preserve"
-
-[node name="EmotesButton" type="Button" parent="." unique_id=1230445776]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -102.0
-offset_top = 304.0
-offset_right = -38.0
-offset_bottom = 368.0
-grow_horizontal = 0
-tooltip_text = "Emotes"
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_icon_button")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_icon_button")
-
-[node name="EmotesIconShadow" type="TextureRect" parent="EmotesButton" unique_id=53949219]
-modulate = Color(0, 0, 0, 0.38)
-layout_mode = 0
-offset_left = 5.0
-offset_top = 7.0
-offset_right = 69.0
-offset_bottom = 71.0
-mouse_filter = 2
-texture = ExtResource("2_emotes_icon")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="EmotesIcon" type="TextureRect" parent="EmotesButton" unique_id=1489918262]
-modulate = Color(1, 1, 1, 0.96)
-layout_mode = 0
-offset_right = 64.0
-offset_bottom = 64.0
-mouse_filter = 2
-texture = ExtResource("2_emotes_icon")
-expand_mode = 1
-stretch_mode = 5

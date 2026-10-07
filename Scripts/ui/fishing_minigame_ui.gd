@@ -51,6 +51,7 @@ var pull_zone_label: Label = null
 var reel_scene: Panel = null
 var reel_fish: TextureRect = null
 var reel_line: ColorRect = null
+var pull_steps: Array[Panel] = []
 var progress_value := 0.0
 var progress_target := 0.0
 var pull_state: Dictionary = {}
@@ -68,6 +69,7 @@ var catch_value_label: Label = null
 var catch_new_badge: Panel = null
 var catch_new_label: Label = null
 var catch_timer := 0.0
+var catch_reveal_time := 0.0
 
 var escape_panel: Panel = null
 var escape_label: Label = null
@@ -103,6 +105,7 @@ func _process(delta: float) -> void:
 	_update_target_pulse(delta)
 	_update_bite_timer(delta)
 	_update_pull_preview(delta)
+	_update_catch_reveal(delta)
 	_update_auto_hide(delta)
 
 
@@ -145,7 +148,7 @@ func update_bite_timer(time_left: float, total_time: float) -> void:
 
 func set_reeling_reward(texture: Texture2D) -> void:
 	_ensure_ready()
-	reel_fish.texture = texture
+	reel_fish.texture = _fish_artwork(texture)
 
 
 func show_resolving() -> void:
@@ -165,9 +168,12 @@ func show_pull_game(data: Dictionary) -> void:
 		reeling_panel.visible = true
 		_position_reeling_panel()
 		_open_fitted_panel(reeling_panel, 0.12)
-	progress_label.text = "Pulls %d/%d" % [data.get("pulls", 0), data.get("required_pulls", 3)]
-	mistakes_label.text = "Misses %d/3" % data.get("misses", 0)
+	progress_label.text = "%d / %d PULLS" % [data.get("pulls", 0), data.get("required_pulls", 3)]
+	mistakes_label.text = "%d / 3 MISSES" % data.get("misses", 0)
+	mistakes_label.modulate = Color("ffacb7") if int(data.get("misses", 0)) > 0 else PixelUIStyle.TEXT_SOFT
 	pull_feedback.text = str(data.get("feedback", ""))
+	if pull_feedback.text == "Tap REEL in the green zone.":
+		pull_feedback.text = "Time your pull with the moving marker."
 	reel_button.text = "GET READY..." if bool(data.get("resting", false)) else "REEL"
 	_layout_reeling_panel()
 
@@ -196,6 +202,7 @@ func show_catch_result(fish_data: Dictionary) -> void:
 	catch_icon.texture = _fish_artwork(icon_value as Texture2D) if icon_value is Texture2D else null
 	catch_icon_back.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
 	catch_icon_back.get_node("Spotlight").accent = rarity_color
+	catch_icon_back.get_node("Spotlight").restart()
 	catch_new_badge.visible = is_new
 
 	var special_text: String = ""
@@ -214,22 +221,36 @@ func show_catch_result(fish_data: Dictionary) -> void:
 	catch_card.add_theme_stylebox_override("panel", PixelUIStyle.atlas_style("outer_panel", rarity_color.lightened(0.45), 4))
 
 	_position_catch_card()
-	var fitted_scale := catch_card.scale
-	var final_pos: Vector2 = catch_card.position
-	catch_card.position = final_pos + Vector2(0, 48)
-	catch_card.modulate = Color(1.0, 1.0, 1.0, 0.0)
-	catch_card.scale = fitted_scale * 0.92
 	catch_card.visible = true
 	catch_timer = 6.0 if rarity == "legendary" else 4.8
+	catch_reveal_time = 0.0
+	catch_card.modulate = Color.WHITE
+	catch_icon.pivot_offset = catch_icon.size * 0.5
+	_update_catch_reveal(0.0)
 
-	var tween: Tween = catch_card.create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(catch_card, "position", final_pos, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.tween_property(catch_card, "scale", fitted_scale, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.tween_property(catch_card, "modulate", Color.WHITE, 0.16).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
-	if special_text != "":
-		_shake_control(catch_icon_back, 5.0 if rarity != "legendary" else 7.0, 0.18)
+func _update_catch_reveal(delta: float) -> void:
+	if catch_card == null or not catch_card.visible:
+		return
+	var previous_time := catch_reveal_time
+	catch_reveal_time += delta
+	var entrance := clampf(catch_reveal_time / 0.28, 0.0, 1.0)
+	var settle := 1.0 - pow(1.0 - entrance, 3.0)
+	# Re-fit before the visual offset so resizing never fights an old tween.
+	_position_catch_card()
+	catch_card.position.y += 20.0 * (1.0 - settle) * catch_card.scale.y
+	if previous_time < 0.28:
+		catch_card.modulate.a = settle
+	var pop := clampf((catch_reveal_time - 0.07) / 0.42, 0.0, 1.0)
+	var back := pop - 1.0
+	var spring := 1.0 + 2.2 * back * back * back + 1.2 * back * back
+	catch_icon.scale = Vector2.ONE * lerpf(0.65, 1.0, spring)
+	catch_icon.modulate.a = clampf(pop * 4.0, 0.0, 1.0)
+	catch_icon.position.y = 111.0 + sin(maxf(0.0, catch_reveal_time - 0.49) * 2.0) * 2.5
+	# Stagger information after the artwork, then leave the collection action steady.
+	var reveal_nodes := [catch_name_label, catch_rarity_label, catch_weight_label, catch_value_label, catch_new_badge, catch_card.get_node("JournalButton")]
+	for i in reveal_nodes.size():
+		reveal_nodes[i].modulate.a = clampf((catch_reveal_time - 0.16 - minf(i, 3) * 0.045) / 0.18, 0.0, 1.0)
 
 
 func show_escape() -> void:
@@ -476,44 +497,58 @@ func _build_reeling_panel() -> void:
 	reeling_panel.name = "ReelingPanel"
 	reeling_panel.size = Vector2(REEL_W, REEL_H)
 	reeling_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	reeling_panel.add_theme_stylebox_override("panel", _fishing_panel())
+	reeling_panel.set_meta("pixelmania_panel_shadow", false)
+	reeling_panel.add_theme_stylebox_override("panel", PixelUIStyle.panel_style())
 	add_child(reeling_panel)
 	_add_inner_panel(reeling_panel)
-
-	reeling_title = _reel_label("ReelingTitle", "REEL IT IN!", Vector2(24, 16), Vector2(672, 42))
-	PixelUIStyle.apply_label_shadow(reeling_title, 36, PixelUIStyle.GOLD_SOFT)
-	_preserve_text(reeling_title, 36)
-	reel_hint = _reel_label("ReelHint", "Tap REEL in the green zone. Click, E or Space.", Vector2(24, 62), Vector2(672, 36))
-	reel_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-
+	pull_steps.clear()
+	reeling_title = _reel_label("ReelingTitle", "REEL IT IN", Vector2(24, 16), Vector2(672, 40))
+	reel_hint = _reel_label("ReelHint", "Land the marker in the green zone.", Vector2(24, 57), Vector2(672, 26))
+	reel_hint.add_theme_color_override("font_color", PixelUIStyle.TEXT_SOFT)
 	reel_scene = Panel.new()
 	reel_scene.name = "ReelScene"
-	reel_scene.position = Vector2(24, 106)
-	reel_scene.size = Vector2(672, 64)
+	reel_scene.position = Vector2(24, 96)
+	reel_scene.size = Vector2(672, 74)
 	reel_scene.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	reel_scene.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
 	reeling_panel.add_child(reel_scene)
 	reel_line = ColorRect.new()
 	reel_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	reel_line.color = PixelUIStyle.TEXT_SOFT
-	reel_line.position = Vector2(12, 32)
+	reel_line.position = Vector2(16, 25)
 	reel_scene.add_child(reel_line)
+	for i in range(3):
+		var step := Panel.new()
+		step.name = "PullStep%d" % i
+		step.size = Vector2(24, 24)
+		step.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		reel_scene.add_child(step)
+		var number := Label.new()
+		number.text = str(i + 1)
+		number.size = step.size
+		number.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		number.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		number.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		PixelUIStyle.apply_small_label(number, 16)
+		_preserve_text(number, 16)
+		step.add_child(number)
+		pull_steps.append(step)
 	reel_fish = TextureRect.new()
 	reel_fish.name = "ReelingFish"
-	reel_fish.size = Vector2(64, 64)
+	reel_fish.size = Vector2(58, 36)
 	reel_fish.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	reel_fish.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	reel_fish.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	reel_fish.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	reel_scene.add_child(reel_fish)
-
-	progress_label = _reel_label("PullCount", "Pulls 0/3", Vector2(24, 180), Vector2(330, 30))
-	mistakes_label = _reel_label("MissCount", "Misses 0/3", Vector2(366, 180), Vector2(330, 30))
+	progress_label = _reel_label("PullCount", "0 / 3 PULLS", Vector2(24, 179), Vector2(330, 28))
+	progress_label.add_theme_color_override("font_color", PixelUIStyle.GOLD_SOFT)
+	mistakes_label = _reel_label("MissCount", "0 / 3 MISSES", Vector2(366, 179), Vector2(330, 28))
 	mistakes_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	pull_track = Panel.new()
 	pull_track.name = "PullTrack"
-	pull_track.position = Vector2(24, 220)
-	pull_track.size = Vector2(672, 40)
+	pull_track.position = Vector2(24, 224)
+	pull_track.size = Vector2(672, 48)
 	pull_track.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	pull_track.add_theme_stylebox_override("panel", PixelUIStyle.input_style())
 	reeling_panel.add_child(pull_track)
@@ -523,22 +558,28 @@ func _build_reeling_panel() -> void:
 	pull_zone.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	pull_track.add_child(pull_zone)
 	pull_zone_label = Label.new()
-	pull_zone_label.text = "PULL"
-	pull_zone_label.set_meta("pixelmania_font_size", 18)
+	pull_zone_label.text = "REEL ZONE"
 	pull_zone_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pull_zone_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	pull_zone_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	PixelUIStyle.apply_small_label(pull_zone_label)
+	PixelUIStyle.apply_small_label(pull_zone_label, 14)
+	_preserve_text(pull_zone_label, 14)
 	pull_zone.add_child(pull_zone_label)
 	pull_marker = ColorRect.new()
 	pull_marker.name = "PullMarker"
 	pull_marker.color = PixelUIStyle.GOLD_SOFT
 	pull_marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	pull_track.add_child(pull_marker)
-
-	pull_feedback = _reel_label("PullFeedback", "Two mistakes forgiven.", Vector2(24, 270), Vector2(672, 42))
+	var cap := ColorRect.new()
+	cap.position = Vector2(-4, -2)
+	cap.size = Vector2(14, 6)
+	cap.color = PixelUIStyle.GOLD_SOFT
+	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pull_marker.add_child(cap)
+	pull_feedback = _reel_label("PullFeedback", "Time your pull with the moving marker.", Vector2(24, 280), Vector2(672, 28))
 	pull_feedback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pull_feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	pull_feedback.add_theme_color_override("font_color", PixelUIStyle.TEXT_SOFT)
 	reel_button = Button.new()
 	reel_button.name = "ReelButton"
 	reel_button.text = "REEL"
@@ -547,8 +588,8 @@ func _build_reeling_panel() -> void:
 	reel_button.focus_mode = Control.FOCUS_NONE
 	reel_button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 	reel_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	PixelUIStyle.apply_yellow_button(reel_button, 24)
-	_preserve_text(reel_button, 24)
+	PixelUIStyle.apply_green_button(reel_button, 22)
+	_preserve_text(reel_button, 22)
 	reel_button.pressed.connect(_on_reel_pressed)
 	reeling_panel.add_child(reel_button)
 
@@ -808,23 +849,29 @@ func _layout_reeling_panel() -> void:
 	pull_feedback.size.x = width
 	reel_button.size.x = width
 	for label in [reel_hint, progress_label, mistakes_label, pull_feedback]:
-		var text_size := 18 if narrow else 24
-		if int(label.get_meta("pixelmania_font_size", 0)) != text_size:
-			label.set_meta("pixelmania_font_size", text_size)
-			label.add_theme_font_size_override("font_size", text_size)
-	var title_size := 26 if narrow else 36
-	if int(reeling_title.get_meta("pixelmania_font_size", 0)) != title_size:
-		reeling_title.set_meta("pixelmania_font_size", title_size)
-		reeling_title.add_theme_font_size_override("font_size", title_size)
+		_preserve_text(label, 13 if narrow else 17)
+	_preserve_text(reeling_title, 26 if narrow else 32)
+	reeling_title.add_theme_color_override("font_color", PixelUIStyle.GOLD_SOFT)
+	reel_hint.text = "Reel in the green zone." if narrow else "Land the marker in the green zone.  [E] / [SPACE] / TAP"
 	var lane_width := maxf(1.0, width - 12.0)
-	pull_zone.position = Vector2(6.0 + lane_width * float(pull_state.get("zone_start", 0.26)), 4)
-	pull_zone.size = Vector2(lane_width * float(pull_state.get("zone_size", 0.44)), 32)
+	pull_zone.position = Vector2(6.0 + lane_width * float(pull_state.get("zone_start", 0.26)), 6)
+	pull_zone.size = Vector2(lane_width * float(pull_state.get("zone_size", 0.44)), 36)
 	pull_zone_label.size = pull_zone.size
+	pull_zone_label.visible = pull_zone.size.x >= 100.0
 	# Draw the authoritative cursor directly: interpolation would give false misses.
 	pull_marker.position = Vector2(6.0 + lane_width * float(pull_state.get("cursor", 0.0)) - 3.0, -5)
-	pull_marker.size = Vector2(6, 50)
-	reel_fish.position = Vector2(lerpf(maxf(12.0, width - 76.0), 12.0, progress_value), 0)
-	reel_line.size = Vector2(maxf(0.0, reel_fish.position.x + 20.0), 2)
+	pull_marker.size = Vector2(6, 58)
+	var resting := bool(pull_state.get("resting", false))
+	pull_track.modulate.a = 0.45 if resting else 1.0
+	for i in pull_steps.size():
+		var done := i < int(pull_state.get("pulls", 0))
+		var step := pull_steps[i]
+		step.position = Vector2(16 + i * (width - 56.0) / 2.0, 44)
+		if step.get_meta("completed", -1) != int(done):
+			step.set_meta("completed", int(done))
+			step.add_theme_stylebox_override("panel", PixelUIStyle.slot_style("uncommon" if done else "common"))
+	reel_fish.position = Vector2(lerpf(maxf(16.0, width - 74.0), 16.0, progress_value), 6)
+	reel_line.size = Vector2(maxf(0.0, width - 32.0), 2)
 
 
 func _update_waiting_dots(delta: float) -> void:
@@ -959,7 +1006,10 @@ func get_rarity_color(rarity: String) -> Color:
 
 
 func _preserve_text(control: Control, font_size: int) -> void:
+	if control.get_meta("pixelmania_font_role", "") == "preserve" and int(control.get_meta("pixelmania_font_size", 0)) == font_size and control.get_theme_font_size("font_size") == font_size:
+		return
 	control.set_meta("pixelmania_font_role", "preserve")
+	control.set_meta("pixelmania_font_size", font_size)
 	control.add_theme_font_size_override("font_size", font_size)
 
 

@@ -1,0 +1,199 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://cxog1jcflqo84"]
+
+[ext_resource type="Texture2D" path="res://Assets/player/expressions/emotes.png" id="1_atlas"]
+
+[sub_resource type="AtlasTexture" id="Atlas_punch"]
+atlas = ExtResource("1_atlas")
+region = Rect2(128, 39, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_blink"]
+atlas = ExtResource("1_atlas")
+region = Rect2(96, 40, 32, 24)
+margin = Rect2(0, 0, 0, 8)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_dead"]
+atlas = ExtResource("1_atlas")
+region = Rect2(192, 7, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_fall"]
+atlas = ExtResource("1_atlas")
+region = Rect2(128, 7, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_hurt"]
+atlas = ExtResource("1_atlas")
+region = Rect2(160, 7, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_idle"]
+atlas = ExtResource("1_atlas")
+region = Rect2(64, 39, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_jump"]
+atlas = ExtResource("1_atlas")
+region = Rect2(96, 7, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_underwater"]
+atlas = ExtResource("1_atlas")
+region = Rect2(224, 39, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_talk_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(160, 39, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_talk_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(192, 39, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_smile"]
+atlas = ExtResource("1_atlas")
+region = Rect2(160, 71, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_laugh_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(192, 71, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_laugh_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(224, 71, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_sad"]
+atlas = ExtResource("1_atlas")
+region = Rect2(64, 71, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_punch")
+}],
+"loop": 0,
+"name": &"angry",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 0.14,
+"texture": SubResource("Atlas_blink")
+}],
+"loop": 0,
+"name": &"blink",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_dead")
+}],
+"loop": 0,
+"name": &"dead",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_fall")
+}],
+"loop": 0,
+"name": &"fall",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_hurt")
+}],
+"loop": 0,
+"name": &"hurt",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 3.5,
+"texture": SubResource("Atlas_idle")
+}, {
+"duration": 0.14,
+"texture": SubResource("Atlas_blink")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_jump")
+}],
+"loop": 0,
+"name": &"jump",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_punch")
+}],
+"loop": 0,
+"name": &"punch",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_underwater")
+}],
+"loop": 0,
+"name": &"swim",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 0.16,
+"texture": SubResource("Atlas_talk_1")
+}, {
+"duration": 0.16,
+"texture": SubResource("Atlas_talk_2")
+}],
+"loop": 1,
+"name": &"talk",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_underwater")
+}],
+"loop": 0,
+"name": &"underwater",
+"speed": 1.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("Atlas_smile")}],
+"loop": true,
+"name": &"wave",
+"speed": 1.0
+}, {
+"frames": [{"duration": 0.22, "texture": SubResource("Atlas_smile")}, {"duration": 0.22, "texture": SubResource("Atlas_laugh_2")}, {"duration": 0.22, "texture": SubResource("Atlas_laugh_3")}],
+"loop": true,
+"name": &"laugh",
+"speed": 1.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("Atlas_sad")}],
+"loop": true,
+"name": &"sad",
+"speed": 1.0
+}]

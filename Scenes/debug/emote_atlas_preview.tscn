@@ -1,0 +1,265 @@
+[gd_scene format=3 uid="uid://ejypdw8ufpv7"]
+
+[ext_resource type="Texture2D" uid="uid://c47hjv2oag6xn" path="res://Assets/player/expressions/emotes.png" id="1_sheet"]
+[ext_resource type="SpriteFrames" path="res://Assets/player/expressions/face_expressions.tres" id="2_faces"]
+[ext_resource type="SpriteFrames" path="res://Assets/player/expressions/dead_spirit.tres" id="3_spirit"]
+[ext_resource type="Script" uid="uid://6lxcavfdc3yr" path="res://Scripts/debug/emote_atlas_preview.gd" id="4_preview"]
+
+[node name="EmoteAtlasPreview" type="Node2D" unique_id=338418604]
+texture_filter = 1
+script = ExtResource("4_preview")
+
+[node name="Background" type="Polygon2D" parent="." unique_id=1783357345]
+color = Color(0.12, 0.14, 0.18, 1)
+polygon = PackedVector2Array(0, 0, 1920, 0, 1920, 1080, 0, 1080)
+
+[node name="Title" type="Label" parent="." unique_id=2028309984]
+offset_left = 40.0
+offset_top = 18.0
+offset_right = 1840.0
+offset_bottom = 83.0
+theme_override_font_sizes/font_size = 30
+text = "Expression atlas | live animation and alignment reference"
+
+[node name="Help" type="Label" parent="." unique_id=622223853]
+offset_left = 40.0
+offset_top = 66.0
+offset_right = 1240.0
+offset_bottom = 131.0
+theme_override_font_sizes/font_size = 24
+text = "F: mirror previews     Space: pause / resume     Esc: close preview"
+
+[node name="SourceSheet" type="Sprite2D" parent="." unique_id=832797374]
+position = Vector2(40, 125)
+scale = Vector2(2, 2)
+texture = ExtResource("1_sheet")
+centered = false
+
+[node name="AtlasNote" type="Label" parent="." unique_id=1457713067]
+offset_left = 40.0
+offset_top = 648.0
+offset_right = 1540.0
+offset_bottom = 713.0
+theme_override_font_sizes/font_size = 22
+text = "Source: emotes.png (512 x 256) | grid: 32 x 32
+Coordinates below are pixel rectangles (x, y, width, height)."
+
+[node name="Label0" type="Label" parent="." unique_id=1650522556]
+offset_left = 1040.0
+offset_top = 226.0
+offset_right = 1300.0
+offset_bottom = 291.0
+theme_override_font_sizes/font_size = 23
+text = "Idle + brief blink"
+
+[node name="Coordinates0" type="Label" parent="." unique_id=139072881]
+offset_left = 1015.0
+offset_top = 265.0
+offset_right = 1275.0
+offset_bottom = 330.0
+theme_override_font_sizes/font_size = 15
+text = "64,39,32,25
+96,40,32,24"
+
+[node name="Preview0" type="AnimatedSprite2D" parent="." unique_id=373285488]
+position = Vector2(1120, 188)
+scale = Vector2(4, 4)
+sprite_frames = ExtResource("2_faces")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="Label1" type="Label" parent="." unique_id=1018766084]
+offset_left = 1305.0
+offset_top = 226.0
+offset_right = 1565.0
+offset_bottom = 291.0
+theme_override_font_sizes/font_size = 23
+text = "Jump"
+
+[node name="Coordinates1" type="Label" parent="." unique_id=1207757777]
+offset_left = 1280.0
+offset_top = 265.0
+offset_right = 1540.0
+offset_bottom = 330.0
+theme_override_font_sizes/font_size = 15
+text = "96,7,32,25"
+
+[node name="Preview1" type="AnimatedSprite2D" parent="." unique_id=5473366]
+position = Vector2(1385, 188)
+scale = Vector2(4, 4)
+sprite_frames = ExtResource("2_faces")
+animation = &"jump"
+autoplay = "jump"
+
+[node name="Label2" type="Label" parent="." unique_id=1533045871]
+offset_left = 1570.0
+offset_top = 226.0
+offset_right = 1830.0
+offset_bottom = 291.0
+theme_override_font_sizes/font_size = 23
+text = "Fall"
+
+[node name="Coordinates2" type="Label" parent="." unique_id=1136539686]
+offset_left = 1545.0
+offset_top = 265.0
+offset_right = 1805.0
+offset_bottom = 330.0
+theme_override_font_sizes/font_size = 15
+text = "128,7,32,25"
+
+[node name="Preview2" type="AnimatedSprite2D" parent="." unique_id=895792863]
+position = Vector2(1650, 188)
+scale = Vector2(4, 4)
+sprite_frames = ExtResource("2_faces")
+animation = &"fall"
+autoplay = "fall"
+
+[node name="Label3" type="Label" parent="." unique_id=520663421]
+offset_left = 1040.0
+offset_top = 456.0
+offset_right = 1300.0
+offset_bottom = 521.0
+theme_override_font_sizes/font_size = 23
+text = "Punch / angry"
+
+[node name="Coordinates3" type="Label" parent="." unique_id=1585169966]
+offset_left = 1015.0
+offset_top = 495.0
+offset_right = 1275.0
+offset_bottom = 560.0
+theme_override_font_sizes/font_size = 15
+text = "128,39,32,25"
+
+[node name="Preview3" type="AnimatedSprite2D" parent="." unique_id=597533757]
+position = Vector2(1120, 418)
+scale = Vector2(4, 4)
+sprite_frames = ExtResource("2_faces")
+animation = &"punch"
+autoplay = "punch"
+
+[node name="Label4" type="Label" parent="." unique_id=1533424056]
+offset_left = 1305.0
+offset_top = 456.0
+offset_right = 1565.0
+offset_bottom = 521.0
+theme_override_font_sizes/font_size = 23
+text = "Hurt"
+
+[node name="Coordinates4" type="Label" parent="." unique_id=1059540941]
+offset_left = 1280.0
+offset_top = 495.0
+offset_right = 1540.0
+offset_bottom = 560.0
+theme_override_font_sizes/font_size = 15
+text = "160,7,32,25"
+
+[node name="Preview4" type="AnimatedSprite2D" parent="." unique_id=169608007]
+position = Vector2(1385, 418)
+scale = Vector2(4, 4)
+sprite_frames = ExtResource("2_faces")
+animation = &"hurt"
+autoplay = "hurt"
+
+[node name="Label5" type="Label" parent="." unique_id=1071832043]
+offset_left = 1570.0
+offset_top = 456.0
+offset_right = 1830.0
+offset_bottom = 521.0
+theme_override_font_sizes/font_size = 23
+text = "Dead"
+
+[node name="Coordinates5" type="Label" parent="." unique_id=1291402592]
+offset_left = 1545.0
+offset_top = 495.0
+offset_right = 1805.0
+offset_bottom = 560.0
+theme_override_font_sizes/font_size = 15
+text = "192,7,32,25"
+
+[node name="Preview5" type="AnimatedSprite2D" parent="." unique_id=1171834549]
+position = Vector2(1650, 418)
+scale = Vector2(4, 4)
+sprite_frames = ExtResource("2_faces")
+animation = &"dead"
+autoplay = "dead"
+
+[node name="Label6" type="Label" parent="." unique_id=1792271559]
+offset_left = 1040.0
+offset_top = 686.0
+offset_right = 1300.0
+offset_bottom = 751.0
+theme_override_font_sizes/font_size = 23
+text = "Talk"
+
+[node name="Coordinates6" type="Label" parent="." unique_id=524750616]
+offset_left = 1015.0
+offset_top = 725.0
+offset_right = 1275.0
+offset_bottom = 790.0
+theme_override_font_sizes/font_size = 15
+text = "160,39,32,25
+192,39,32,25"
+
+[node name="Preview6" type="AnimatedSprite2D" parent="." unique_id=1457806733]
+position = Vector2(1120, 648)
+scale = Vector2(4, 4)
+sprite_frames = ExtResource("2_faces")
+animation = &"talk"
+autoplay = "talk"
+
+[node name="Label7" type="Label" parent="." unique_id=415032480]
+offset_left = 1305.0
+offset_top = 686.0
+offset_right = 1565.0
+offset_bottom = 751.0
+theme_override_font_sizes/font_size = 23
+text = "Swim / underwater"
+
+[node name="Coordinates7" type="Label" parent="." unique_id=878356389]
+offset_left = 1280.0
+offset_top = 725.0
+offset_right = 1540.0
+offset_bottom = 790.0
+theme_override_font_sizes/font_size = 15
+text = "224,39,32,25"
+
+[node name="Preview7" type="AnimatedSprite2D" parent="." unique_id=85891596]
+position = Vector2(1385, 648)
+scale = Vector2(4, 4)
+sprite_frames = ExtResource("2_faces")
+animation = &"underwater"
+autoplay = "underwater"
+
+[node name="Label8" type="Label" parent="." unique_id=1349549883]
+offset_left = 1570.0
+offset_top = 686.0
+offset_right = 1830.0
+offset_bottom = 751.0
+theme_override_font_sizes/font_size = 23
+text = "Spirit (3 frames)"
+
+[node name="Coordinates8" type="Label" parent="." unique_id=2039685190]
+offset_left = 1545.0
+offset_top = 725.0
+offset_right = 1805.0
+offset_bottom = 790.0
+theme_override_font_sizes/font_size = 15
+text = "256 / 288 / 320
+y=160, w=32, h=32"
+
+[node name="Preview8" type="AnimatedSprite2D" parent="." unique_id=294256838]
+position = Vector2(1650, 622)
+scale = Vector2(4, 4)
+sprite_frames = ExtResource("3_spirit")
+animation = &"dead_spirit"
+autoplay = "dead_spirit"
+
+[node name="AlignmentNote" type="Label" parent="." unique_id=1453953231]
+offset_left = 40.0
+offset_top = 780.0
+offset_right = 1840.0
+offset_bottom = 845.0
+theme_override_font_sizes/font_size = 24
+text = "Face crops remove the top padding and restore a 32 x 32 canvas with AtlasTexture margins.
+This preserves the existing head, hair, hat and body alignment. The full sheet stays untouched.
+Idle: 3.5 seconds open, 0.14 seconds closed. Talk: 6.25 frames/second. Spirit: 6 frames/second."

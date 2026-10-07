@@ -1063,13 +1063,7 @@ func _align_slot_count(slot: Button) -> void:
 		# Align to that frame so every stack ends at the same inset, at any scale.
 		var frame: Control = slot.get_node_or_null("Frame") as Control
 		var bounds := frame.get_rect() if frame != null else Rect2(Vector2.ZERO, SLOT_SIZE)
-		count.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		count.position = bounds.position + Vector2(8, bounds.size.y - 34)
-		count.size = Vector2(bounds.size.x - 16, 26)
-		count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		count.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-		count.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		count.clip_text = true
+		PixelUIStyle.fit_slot_count(count, bounds)
 
 
 func _sync_filtered_slot_order_and_layout(filtered_items: Array) -> void:
@@ -2391,6 +2385,7 @@ func _refresh_slot_live(slot_key: String, item: Dictionary) -> void:
 		label.text = count_text
 
 	var equipped_label: Label = slot.get_node_or_null("Equipped") as Label
+	_align_slot_count(slot)
 	if equipped_label != null:
 		equipped_label.visible = bool(item.get("equipped", false))
 		if bool(slot.get_meta("generated_equipped_label", false)):
@@ -2432,7 +2427,7 @@ func _detail_count_text(item: Dictionary) -> String:
 		return ""
 	var count: int = _count_from_value(item.get("count", 0))
 	if str(item.get("category", "")) == "fish":
-		return "%.1f / 2000 kg" % (count / 10.0)
+		return "%.1f / 999 kg" % (count / 10.0)
 	return "x" + str(count)
 
 

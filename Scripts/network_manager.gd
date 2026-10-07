@@ -2866,6 +2866,17 @@ func send_leave_world(world_name: String) -> bool:
 	}))
 
 
+func send_player_emote(emote: String) -> bool:
+	if not is_server_session_authenticated() or not world_entry_active:
+		return false
+	if not preload("res://Scripts/player_emotes.gd").DURATIONS.has(emote):
+		return false
+	var emote_world := _safe_world_name(current_world_name)
+	if emote_world == "" or not _can_send_rate_limited("player_emote", 1):
+		return false
+	return send_message(attach_session_auth({"type": "player_emote", "emote": emote, "world": emote_world}))
+
+
 func send_chat_message(message: String) -> bool:
 	if not is_server_session_authenticated():
 		return false
@@ -5158,6 +5169,10 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 			if _route_action_rejected_as_player_state_lookup(data):
 				return
 			handle_action_rejected(data)
+		"player_emote":
+			world_node = get_world_node()
+			if world_node != null and world_entry_active and is_world_node_active() and is_instance_valid(world_node.gameplay_ui_manager):
+				world_node.gameplay_ui_manager.handle_player_emote(data)
 		"chat", "broadcast":
 			handle_chat_message(data)
 			if _message_has_session_ending_punishment(data):
@@ -7553,7 +7568,7 @@ func get_player_motion_state() -> Dictionary:
 			if ["idle", "walk", "jump", "fall", "punch", "hurt", "dead", "dead_spirit"].has(manager_state):
 				result["animation_state"] = manager_state
 				used_animation_manager_state = true
-	if world_node != null and world_node.has_method("is_chat_input_focused") and bool(world_node.is_chat_input_focused()):
+	if world_node != null and world_node.has_method("is_chat_typing") and bool(world_node.is_chat_typing()):
 		result["chat_typing"] = true
 
 	if not used_animation_manager_state:

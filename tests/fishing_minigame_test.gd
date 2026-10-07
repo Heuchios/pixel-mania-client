@@ -48,6 +48,7 @@ func _run() -> void:
 		quit(1)
 		return
 	_test_rules()
+	_test_bobber_catch_animation()
 	network = MockNetwork.new()
 	network.name = "NetworkManager"
 	root.add_child(network)
@@ -318,6 +319,13 @@ func _test_layout() -> void:
 		check(panel.position.x >= 0 and panel.end.x <= width + 1, "Reeling panel overflows viewport")
 		check(ui.reel_button.get_global_rect().end.x <= panel.end.x, "Reel button overflows")
 		check(ui.pull_zone.get_global_rect().end.x < panel.end.x, "Pull zone overflows")
+		check(ui.progress_label.get_global_rect().end.x <= ui.mistakes_label.get_global_rect().position.x + 1, "Pull and miss counters overlap")
+		check(ui.reel_hint.get_minimum_size().x <= ui.reel_hint.size.x, "Reel instructions overflow on narrow screens")
+		for cursor in [0.0, 0.5, 1.0]:
+			ui.pull_state["cursor"] = cursor
+			ui._layout_reeling_panel()
+			var expected_x: float = 6.0 + (ui.pull_track.size.x - 12.0) * cursor
+			check(is_equal_approx(ui.pull_marker.position.x + ui.pull_marker.size.x * 0.5, expected_x), "Displayed cursor must match authoritative timing")
 		ui.show_waiting("Worm Lure")
 		check_fits(ui.waiting_panel, Vector2(width, 720))
 		ui.show_bite(3.0)
@@ -331,8 +339,12 @@ func _test_layout() -> void:
 		check_fits(ui.catch_card, Vector2(width, 720))
 		ui._fade_out(ui.catch_card)
 		ui.show_catch_result({"name":"Guppy", "rarity":"common", "amount":"x1", "value":"3"})
+		check(is_zero_approx(ui.catch_reveal_time), "New catch must restart its reveal")
 		await create_timer(.25).timeout
 		check(ui.catch_card.visible, "Old fade hid a newer catch")
+		await create_timer(.35).timeout
+		check(ui.catch_icon.scale.is_equal_approx(Vector2.ONE), "Catch artwork must settle after its entrance")
+		check(is_equal_approx(ui.catch_name_label.modulate.a, 1.0), "Catch details must finish fading in")
 		ui.show_escape()
 		check_fits(ui.escape_panel, Vector2(width, 720))
 	ui.hide_all()
@@ -341,6 +353,20 @@ func _test_layout() -> void:
 	ui.show_pull_game(manager.pull_game.snapshot())
 	check_fits(ui.reeling_panel, Vector2(640, 320))
 	ui.hide_all()
+
+
+func _test_bobber_catch_animation() -> void:
+	var bobber = load("res://Scenes/fishing_bobber.tscn").instantiate()
+	root.add_child(bobber)
+	var animation: AnimationPlayer = bobber.get_node("AnimationPlayer")
+	var sprite: Sprite2D = bobber.get_node("Sprite2D")
+	animation.play("reel_success")
+	for frame in range(14):
+		animation.seek(frame / 60.0, true)
+		check(sprite.scale.x <= 1.1 and sprite.scale.y <= 1.1, "Landing bait must never explode in size")
+	check(sprite.modulate.a < 0.01, "Landing bait must fade before its deferred removal")
+	check(sprite.position.y < 0, "Landing bait must lift out of the water")
+	bobber.queue_free()
 
 
 func check_fits(panel: Control, dimensions: Vector2) -> void:

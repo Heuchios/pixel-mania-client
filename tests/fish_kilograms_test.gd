@@ -27,7 +27,7 @@ func run_checks():
 	check(ui.get_total_sellable_fish_value_from_entries([{"count": 0.1, "sell_value": 2}, {"count": 0.1, "sell_value": 2}]) == 1, "sell-all rounds once")
 	var inventory = InventoryUI.new()
 	check(inventory._slot_count_text({"category": "fish", "count": 57}) == "5.7 kg", "inventory stack shows kg")
-	check(inventory._detail_count_text({"category": "fish", "count": 20000}) == "2000.0 / 2000 kg", "maximum stack displays")
+	check(inventory._detail_count_text({"category": "fish", "count": 20000}) == "2000.0 / 999 kg", "maximum stack displays")
 	var fishing = Fishing.new()
 	check(Species.merge_inventory({"pond_fish_small": 13, "guppy": 57}) == {"guppy": 57}, "retired species removed without changing new weights")
 	var records := {"total_caught_per_species": {"pond_fish_small": 2, "guppy": 3}, "biggest_fish_per_species": {"pond_fish_small": 1.3, "guppy": 2.4}}
@@ -42,7 +42,7 @@ func run_checks():
 	var world_script = load("res://Scripts/world.gd")
 	var world = world_script.new()
 	world.item_database["guppy"] = {"category": "fish", "stack_limit": 20000}
-	check(world.get_stack_limit_for_item("guppy", "fish") == 20000, "real world stack limit supports 2000 kg")
+	check(world.get_stack_limit_for_item("guppy", "fish") == 9990, "real world stack limit supports 999 kg")
 	world.fish_inventory["guppy"] = 0
 	world.apply_network_inventory_delta({"item_type": "guppy", "item_category": "fish", "after_count": 20000})
 	check(world.fish_inventory.guppy == 20000, "network inventory does not truncate weight")

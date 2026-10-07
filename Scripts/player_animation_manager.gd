@@ -5,6 +5,7 @@ const IDLE_FRAME_TIME = 0.45
 const BODY_PART_TEXTURE_FOLDER = "res://Assets/player/body_parts/"
 const BODY_PART_FRAME_SEARCH_LIMIT = 8
 const BODY_LAYER_POSITION = Vector2(0, -8)
+const TYPING_INDICATOR_SCENE = preload("res://Scenes/player/chat_typing_indicator.tscn")
 const NETWORK_ANIMATION_STATES = ["idle", "walk", "jump", "fall", "punch", "place_animation", "hurt", "dead", "dead_spirit"]
 const NON_MOVEMENT_OVERLAY_ANIMATIONS = ["hurt"]
 const DEAD_SPIRIT_EFFECT_DURATION = 3.0
@@ -29,6 +30,7 @@ var player_visual = null
 var movement_animation_player = null
 var current_movement_animation_player = null
 var face_expression_animated = null
+var chat_typing_indicator: AnimatedSprite2D = null
 var dead_spirit_animated = null
 var player_sprite = null
 var body_part_nodes = {}
@@ -342,6 +344,7 @@ func update_player_animation(delta: float, facing_direction: int):
 
 func update_face_expression_animation(movement_state: String):
 	var expression_name = get_face_expression_animation_name(movement_state)
+	update_chat_typing_indicator(is_chat_typing_for_face_expression() and not expression_name in ["hurt", "dead", "dead_spirit"])
 	if update_dead_spirit_visual(expression_name):
 		if face_expression_animated != null:
 			face_expression_animated.visible = false
@@ -354,6 +357,29 @@ func update_face_expression_animation(movement_state: String):
 		return
 
 	play_face_expression_animation(expression_name)
+
+
+func update_chat_typing_indicator(typing: bool) -> void:
+	if not is_instance_valid(player):
+		return
+	if not is_instance_valid(chat_typing_indicator):
+		var head = player.get_node_or_null("PlayerVisual/Head")
+		if head == null:
+			return
+		chat_typing_indicator = head.get_node_or_null("ChatTypingIndicator") as AnimatedSprite2D
+		if chat_typing_indicator == null:
+			if not typing:
+				return
+			chat_typing_indicator = TYPING_INDICATOR_SCENE.instantiate()
+			head.add_child(chat_typing_indicator)
+	# Head parenting follows bobbing and mirrors the bubble/tail with facing.
+	if typing:
+		if not chat_typing_indicator.visible:
+			chat_typing_indicator.show()
+			chat_typing_indicator.play(&"typing")
+	else:
+		chat_typing_indicator.hide()
+		chat_typing_indicator.stop()
 
 
 func get_dead_spirit_animated_node():
@@ -520,7 +546,7 @@ func get_face_expression_animation_name(movement_state: String) -> String:
 		return movement_state
 
 	if player != null:
-		var override_expression = str(player.get_meta("face_expression_override", "")).strip_edges()
+		var override_expression = str(player.get_meta("face_expression_override", "")).strip_edges().to_lower()
 		if override_expression != "":
 			return override_expression
 
@@ -534,10 +560,17 @@ func get_face_expression_animation_name(movement_state: String) -> String:
 	if is_player_underwater_for_face_expression():
 		return "underwater"
 
+	if movement_state == "punch":
+		return "punch"
+
 	if player != null:
 		var punch_until_msec = int(player.get_meta("face_punch_until_msec", 0))
 		if punch_until_msec > Time.get_ticks_msec():
 			return "punch"
+
+	var emote_face: String = preload("res://Scripts/player_emotes.gd").active_face(player, movement_state)
+	if emote_face != "":
+		return emote_face
 
 	if movement_state == "jump":
 		return "jump"
@@ -549,16 +582,19 @@ func get_face_expression_animation_name(movement_state: String) -> String:
 
 
 func is_chat_typing_for_face_expression() -> bool:
-	if world == null:
+	if world != null and world.get("in_world") is bool and not bool(world.get("in_world")):
 		return false
 
 	if player != null and player.has_meta("remote_chat_typing"):
 		var remote_typing = player.get_meta("remote_chat_typing")
 		if typeof(remote_typing) == TYPE_BOOL:
-			return remote_typing
+			# A lost connection must not leave a remote bubble playing indefinitely.
+			var last_received := int(player.get_meta("remote_last_receive_msec", Time.get_ticks_msec()))
+			# Allow the movement protocol's longest (10-second) idle heartbeat.
+			return remote_typing and Time.get_ticks_msec() - last_received < 15000
 
-	if world.player == player and world.has_method("is_chat_input_focused") and world.is_chat_input_focused():
-		return true
+	if world != null and world.player == player and world.has_method("is_chat_typing"):
+		return bool(world.is_chat_typing())
 
 	return false
 

@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/ui/UI_3.0.png" id="1_atlas"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_one_dot"]
+atlas = ExtResource("1_atlas")
+region = Rect2(224, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_two_dots"]
+atlas = ExtResource("1_atlas")
+region = Rect2(256, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_three_dots"]
+atlas = ExtResource("1_atlas")
+region = Rect2(288, 64, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_typing"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_one_dot")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_two_dots")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_three_dots")}],
+"loop": true,
+"name": &"typing",
+"speed": 3.0
+}]
+
+[node name="ChatTypingIndicator" type="AnimatedSprite2D"]
+visible = false
+texture_filter = 1
+z_index = 70
+position = Vector2(18, -16)
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_typing")
+animation = &"typing"

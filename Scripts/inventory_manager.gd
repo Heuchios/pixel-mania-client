@@ -2339,6 +2339,8 @@ func add_fish_weight(item_id: String, weight) -> bool:
 	if add_count <= 0:
 		return false
 	var current_count: int = get_item_weight_tenths(item_id)
+	if current_count + add_count > 9990:
+		return false
 	world.fish_inventory[item_id] = current_count + add_count
 	notify_inventory_item_changed(item_id, "fish")
 	return true
@@ -2646,6 +2648,9 @@ func update_scene_hotbar_slot_count(slot: Control, item_type: String, category: 
 		else:
 			var qty: int = get_item_count(item_type, category)
 			count.text = format_stack_count(qty) if qty > 0 else ""
+		var frame := slot.get_node_or_null("SlotFrame") as Control
+		var bounds := frame.get_rect() if frame != null else Rect2(Vector2.ZERO, slot.size)
+		PixelUIStyle.fit_slot_count(count, bounds)
 		if count_badge != null:
 			count_badge.visible = count.text != ""
 

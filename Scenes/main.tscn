@@ -4,48 +4,22 @@
 [ext_resource type="Script" uid="uid://d2idif5guhmld" path="res://Scripts/world.gd" id="3_kry3j"]
 [ext_resource type="Script" uid="uid://cvab8tcwqs84t" path="res://Scripts/world_tilemap_renderer.gd" id="4_tilemap"]
 [ext_resource type="Texture2D" uid="uid://bw5ti518atp5c" path="res://Assets/items/back_item.png" id="5_ueoa1"]
-[ext_resource type="Texture2D" uid="uid://cq1fixdhjpfry" path="res://Assets/player/expressions/dead.png" id="8_gt3je"]
 [ext_resource type="Texture2D" uid="uid://cmwio43avy4a2" path="res://Assets/player/body_parts/left_hand_idle_1.png" id="8_lhand"]
-[ext_resource type="Texture2D" uid="uid://dpyv6nhqq3dky" path="res://Assets/player/expressions/dead_spirit_1.png" id="9_3pmx8"]
 [ext_resource type="Texture2D" uid="uid://dhvw45dbsawpx" path="res://Assets/player/body_parts/right_foot_idle_1.png" id="9_rfoot"]
 [ext_resource type="Texture2D" uid="uid://ceofiamrbau2w" path="res://Assets/clothes/pants/tsunami.png" id="10_3pmx8"]
 [ext_resource type="Texture2D" uid="uid://b7iep25jiww67" path="res://Assets/player/body_parts/left_foot_idle_1.png" id="10_lfoot"]
-[ext_resource type="Texture2D" uid="uid://b01b8gdc4jgf8" path="res://Assets/player/expressions/dead_spirit_2.png" id="10_u50mg"]
 [ext_resource type="Texture2D" uid="uid://cih17ddmescem" path="res://Assets/player/body_parts/bottom_idle_1.png" id="11_bottom"]
-[ext_resource type="Texture2D" uid="uid://d3igh6txvr3s8" path="res://Assets/player/expressions/dead_spirit_3.png" id="11_cbgmd"]
-[ext_resource type="Texture2D" uid="uid://bepq2vcgwsnw1" path="res://Assets/player/expressions/fall.png" id="12_1w6v2"]
 [ext_resource type="Texture2D" uid="uid://d3uscrqq63ykr" path="res://Assets/player/body_parts/body_idle_1.png" id="12_body"]
 [ext_resource type="Texture2D" uid="uid://bmo385y27type" path="res://Assets/player/body_parts/right_hand_idle_1.png" id="13_rhand"]
-[ext_resource type="Texture2D" uid="uid://bvpe7dm0kp4f2" path="res://Assets/player/expressions/hurt.png" id="13_ueoa1"]
-[ext_resource type="Texture2D" uid="uid://b53hq1cc5ls5j" path="res://Assets/player/expressions/idle.png" id="14_6vcvc"]
 [ext_resource type="Texture2D" uid="uid://bgsjtudggrbrn" path="res://Assets/player/body_parts/head_idle_1.png" id="14_head"]
-[ext_resource type="Texture2D" uid="uid://cdt7cwcgk23ox" path="res://Assets/player/expressions/idle_blink.png" id="15_7k868"]
-[ext_resource type="Texture2D" uid="uid://bfc38xdl6cc0e" path="res://Assets/player/expressions/jump.png" id="16_hpc6h"]
-[ext_resource type="Texture2D" uid="uid://bdpjk1nqgj7m1" path="res://Assets/player/expressions/punch.png" id="17_kltya"]
-[ext_resource type="Texture2D" uid="uid://1rh8f11ulmei" path="res://Assets/player/expressions/talk_1.png" id="18_e08e2"]
-[ext_resource type="Texture2D" uid="uid://i414fhesd45e" path="res://Assets/player/expressions/talk_2.png" id="19_neg2b"]
-[ext_resource type="Texture2D" uid="uid://csq4ysed4e5v2" path="res://Assets/player/expressions/underwater.png" id="20_r33sp"]
 [ext_resource type="FontFile" uid="uid://e0ivgh0c6uck" path="res://Assets/font/font.ttf" id="23_u50mg"]
 [ext_resource type="Texture2D" uid="uid://cw58n4hxsavkv" path="res://Assets/items/wearable_64x32.png" id="24_6vcvc"]
 [ext_resource type="Texture2D" uid="uid://clbfwpmntdmj" path="res://image.png" id="26_cbgmd"]
 [ext_resource type="Texture2D" uid="uid://bmgnqd6c8iis8" path="res://Assets/items/wearable.png" id="27_1w6v2"]
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_gt3je"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("9_3pmx8")
-}, {
-"duration": 1.0,
-"texture": ExtResource("10_u50mg")
-}, {
-"duration": 1.0,
-"texture": ExtResource("11_cbgmd")
-}],
-"loop": 1,
-"name": &"dead_spirit",
-"speed": 6.0
-}]
+
+[ext_resource type="SpriteFrames" path="res://Assets/player/expressions/face_expressions.tres" id="90_face_atlas"]
+[ext_resource type="SpriteFrames" path="res://Assets/player/expressions/dead_spirit.tres" id="91_spirit_atlas"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player_main"]
 size = Vector2(17, 24)
@@ -525,78 +499,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_face_expression"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("8_gt3je")
-}],
-"loop": 0,
-"name": &"dead",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("12_1w6v2")
-}],
-"loop": 0,
-"name": &"fall",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("13_ueoa1")
-}],
-"loop": 0,
-"name": &"hurt",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("14_6vcvc")
-}, {
-"duration": 1.0,
-"texture": ExtResource("15_7k868")
-}],
-"loop": 1,
-"name": &"idle",
-"speed": 1.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("16_hpc6h")
-}],
-"loop": 0,
-"name": &"jump",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("17_kltya")
-}],
-"loop": 0,
-"name": &"punch",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("18_e08e2")
-}, {
-"duration": 1.0,
-"texture": ExtResource("19_neg2b")
-}],
-"loop": 1,
-"name": &"talk",
-"speed": 6.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("20_r33sp")
-}],
-"loop": 0,
-"name": &"underwater",
-"speed": 1.0
-}]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1w6v2"]
 atlas = ExtResource("27_1w6v2")
@@ -3946,7 +3848,7 @@ script = ExtResource("1_8gbba")
 [node name="DeadSpiritAnimated" type="AnimatedSprite2D" parent="Player" unique_id=750233279]
 visible = false
 position = Vector2(1, -8)
-sprite_frames = SubResource("SpriteFrames_gt3je")
+sprite_frames = ExtResource("91_spirit_atlas")
 animation = &"dead_spirit"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=397061839]
@@ -4047,9 +3949,9 @@ position = Vector2(1, 0)
 sprite_frames = SubResource("SpriteFrames_bo1nx")
 
 [node name="FaceExpressionAnimated" type="AnimatedSprite2D" parent="Player/PlayerVisual/Head" unique_id=1737427490]
-visible = false
-sprite_frames = SubResource("SpriteFrames_face_expression")
-animation = &"dead"
+texture_filter = 1
+sprite_frames = ExtResource("90_face_atlas")
+animation = &"idle"
 
 [node name="HairAnimated" type="AnimatedSprite2D" parent="Player/PlayerVisual/Head" unique_id=477111210]
 visible = false
