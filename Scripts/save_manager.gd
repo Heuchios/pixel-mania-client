@@ -1657,7 +1657,7 @@ func begin_server_door_world_entry(data: Dictionary, target_world: String):
 	clear_world()
 
 	if world.has_method("update_smooth_world_load_message"):
-		world.update_smooth_world_load_message("Entering " + world.current_world_name + "...")
+		world.update_smooth_world_load_message("Entering " + get_current_world_display_name() + "...")
 
 	debug_action_position_flow("begin_server_door_world_entry", {
 		"world": world.current_world_name,
@@ -1750,7 +1750,7 @@ func _finish_world_entry_noncritical_work(completed_world_name: String, save_aft
 	world.restore_chat_ui_after_world_enter()
 	world.update_all_ui()
 	if should_announce:
-		world.show_notification("Entered world: " + completed_world_name)
+		world.show_notification("Entered world: " + get_current_world_display_name())
 		_send_world_entry_chat_message()
 	if save_after_finish:
 		save_world()
@@ -1782,7 +1782,7 @@ func _send_world_entry_chat_message():
 	if not active_features.is_empty():
 		active_text = "%s %s active." % [_format_world_entry_list(active_features), "are" if active_features.size() != 1 else "is"]
 
-	var msg = "Entered \"%s\". %s %s %s" % [world_name, lock_text, player_text, active_text]
+	var msg = "Entered \"%s\". %s %s %s" % [get_current_world_display_name(), lock_text, player_text, active_text]
 
 	if world.chat_ui != null and world.chat_ui.has_method("add_chat_message"):
 		world.chat_ui.add_chat_message("System", msg)
@@ -3023,7 +3023,7 @@ func load_clean_server_world_base(skip_clear: bool = false):
 	world.set_meta("world_bulk_load_in_progress", true)
 	world.set_meta("world_bulk_load_reason", "waiting_for_server_world_state")
 	if world.has_method("update_smooth_world_load_message"):
-		world.update_smooth_world_load_message("Loading " + str(world.current_world_name).to_upper() + " from server...")
+		world.update_smooth_world_load_message("Loading " + get_current_world_display_name() + " from server...")
 
 	if not FAST_WORLD_ENTRY_SKIP_SERVER_BASE_GENERATION:
 		world.generate_world()

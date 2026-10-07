@@ -1,5 +1,16 @@
 extends SceneTree
 
+class EntryWorld extends Node:
+	var in_world := true
+	var current_world_name := "W123456"
+	var world_lock_manager = null
+	var block_manager = null
+	var chat_ui = null
+	var notification := ""
+	func restore_chat_ui_after_world_enter(): pass
+	func update_all_ui(): pass
+	func show_notification(message): notification = message
+
 func _init() -> void:
 	call_deferred("_run")
 
@@ -13,6 +24,15 @@ func _run() -> void:
 	assert(network.pending_join_world_name == "SHOP")
 	assert(network.pending_join_world_identity == "W123456")
 	assert(network.get_public_world_name("W123456") == "SHOP")
+	var entry_world := EntryWorld.new()
+	root.add_child(entry_world)
+	var saver = load("res://Scripts/save_manager.gd").new()
+	saver.world = entry_world
+	saver._finish_world_entry_noncritical_work("W123456", false, true)
+	assert(entry_world.notification == "Entered world: SHOP", "Entry popup must display the public name")
+	assert(entry_world.current_world_name == "W123456", "Routing identity must remain unchanged")
+	saver.free()
+	entry_world.free()
 	network.receive_world_name_status({"world":"W123456","world_name_claim":{"name":"SHOP","status":"unowned"}})
 	assert(network.get_public_world_name("W123456") == "SHOP", "Creation must retain the entered public name")
 	network.receive_world_name_status({"world":"W123456","world_name_claim":{"name":"SHOP","status":"reserved"}})
