@@ -1090,7 +1090,7 @@ func on_world_lock_block_broken(grid_pos: Vector2i):
 	var old_owner: String = owner_name
 	if persistent_ownership:
 		if world != null and world.has_method("show_notification"):
-			world.show_notification("World Lock removed. You still own this world and its name reservation.")
+			world.show_notification("World Lock removed. Your permanently claimed name and ownership are preserved.")
 		request_save()
 		return
 	_reset_world_lock_state()

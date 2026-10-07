@@ -36,6 +36,9 @@ func receive_world_name_status(data: Dictionary) -> void:
 		world_name_claims[identity] = info.duplicate(true)
 		var active_world = get_world_node()
 		if active_world != null and str(active_world.get("current_world_name")) == identity:
+			var lock_manager = active_world.get("world_lock_manager")
+			if lock_manager != null:
+				lock_manager.persistent_ownership = bool(lock_manager.is_locked) and str(info.get("status", "")) == "claimed"
 			var lock_ui = active_world.get("world_lock_ui")
 			if lock_ui != null and lock_ui.has_method("receive_name_status"):
 				lock_ui.receive_name_status(info)

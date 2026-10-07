@@ -13776,9 +13776,10 @@ func place_block_at_mouse():
 		return
 
 	if is_world_lock_block_type(selected_block_type) and world.world_lock_manager != null:
+		world.world_lock_manager.reconcile_world_lock_state_with_blocks()
 		var already_has_lock := bool(world.world_lock_manager.is_locked)
 		if world.world_lock_manager.has_method("has_world_lock_block"):
-			already_has_lock = already_has_lock or bool(world.world_lock_manager.has_world_lock_block())
+			already_has_lock = bool(world.world_lock_manager.has_world_lock_block())
 		if already_has_lock:
 			trace_place_attempt_blocked("world_lock_already_exists", "foreground", grid_pos, selected_block_type, selected_block_category)
 			world.show_notification("This world already has a World Lock.")

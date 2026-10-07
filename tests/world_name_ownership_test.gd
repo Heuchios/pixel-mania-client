@@ -11,6 +11,7 @@ class TestManager extends "res://Scripts/world_lock_manager.gd":
 	func is_current_player_owner() -> bool: return local_owner
 	func refresh_world_lock_block_visual() -> void: pass
 	func request_save(): pass
+	func send_network_world_lock_state(): pass
 
 func _initialize() -> void:
 	var manager := TestManager.new()
@@ -32,6 +33,13 @@ func _initialize() -> void:
 	manager.on_world_lock_block_placed(Vector2i(8, 9))
 	assert(manager.lock_grid_pos == Vector2i(8, 9))
 	assert(manager.public_build and manager.owner_name == "ALICE")
+	manager.persistent_ownership = false
+	manager.on_world_lock_block_broken(Vector2i(8, 9))
+	assert(not manager.is_locked, "Removing an unpaid lock must release the world")
+	assert(manager.owner_name == "")
+	assert(manager.can_current_player_place_block(manager.WORLD_LOCK_BLOCK_TYPE))
+	manager.local_owner = false
+	assert(manager.can_current_player_place_block(manager.WORLD_LOCK_BLOCK_TYPE), "Anyone may lock the released world")
 	manager.free()
 	print("WORLD_NAME_OWNERSHIP_TEST_OK")
 	quit()

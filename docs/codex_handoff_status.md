@@ -7,6 +7,17 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Unpaid world lock release (2026-10-07)
+
+Removing an unpaid world lock now releases the reservation and owner immediately,
+leaving the existing public name and terrain intact. Anyone, including the same
+player, may relock for a fresh seven-day period without a release cooldown.
+Only paid names retain ownership without a physical lock. Creation alone keeps
+the entered public name and has no expiry; auto-renaming only follows unpaid
+locked reservation expiry. The placement precheck now checks physical blocks,
+not the permanent-owner flag. Tax counts fall on release without erasing weekly
+peaks or accrued bills. This supersedes the earlier all-locks-persist rule below.
+
 ### World taxes (2026-10-06)
 
 Implemented behind backend `WORLD_TAX_ENABLED`: three free worlds per account,

@@ -1167,6 +1167,8 @@ func _refresh_name_card() -> void:
 	elif state == "reserved":
 		var deadline := str(_name_info.get("expires_at", "")).replace("T", " ").left(19)
 		_name_label.text = "Claim " + public_name + " for " + _gem_amount(int(_name_info.get("quoted_gems", 0))) + " gems by " + deadline + " UTC\n" + receipt
+	elif state == "unowned":
+		_name_label.text = public_name + " — Unlocked. Place a World Lock to reserve this name for seven days.\n" + receipt
 	else:
 		_name_label.text = public_name + " — Your world is safe. Reserve an available name for seven days.\n" + receipt
 	_name_input.get_parent().visible = state != "claimed"
@@ -1218,7 +1220,9 @@ func _receive_name_quote(quote: Dictionary) -> void:
 	var result := str(quote.get("name", "")) + " — " + _gem_amount(int(quote.get("price_gems", 0))) + " gems to claim. "
 	if bool(quote.get("available", false)):
 		result += "Available."
-		if bool(quote.get("can_reserve", false)):
+		if bool(quote.get("requires_world_lock", false)):
+			result += " Enter " + str(quote.get("name", "")) + " and place a World Lock to reserve it."
+		elif bool(quote.get("can_reserve", false)):
 			result += " Reserve free for seven days."
 		else:
 			result += " Only an auto-named world's owner can reserve it."
