@@ -14,6 +14,11 @@ overriding prior activation; no billing, payments, or overdue acquisition blocks
 Profile no longer creates the Taxes entry or panel. Historical accounting remains
 untouched. Name reservations, claim prices and permanent ownership are unchanged.
 Do not opt back in without a billing-date migration to prevent retroactive bills.
+Verified staging release `20261007-tax-suspended-7cd610a` (backend `7cd610a`,
+client `061aa26`). Profile regression, suspension no-accounting/no-payment checks,
+name integration and archived tax integration suites passed, as did the full
+security/deployment gate. Staging PostgreSQL/Redis healthy; name deadlines and
+world identities preserved. Restart the editor play session to remove the UI.
 
 ### Unpaid world lock release (2026-10-07)
 
