@@ -1,6 +1,7 @@
 extends Node
 
 const RodAttachment = preload("res://Scripts/fishing_rod_attachment.gd")
+const SelectedHandPreview = preload("res://Scripts/selected_hand_preview.gd")
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 const EquipmentManagerScript = preload("res://Scripts/equipment_manager.gd")
 const PlayerAnimationManagerScript = preload("res://Scripts/player_animation_manager.gd")
@@ -2273,9 +2274,11 @@ func update_multiplayer_movement(delta: float, from_physics_step: bool = false):
 
 
 func get_local_action_visual_key() -> String:
-	var selection := ""
-	if world.selected_item_category in ["block", "seed"] and world.get_item_count(world.selected_item_type, world.selected_item_category) > 0:
-		selection = str(world.selected_item_category) + ":" + str(world.selected_item_type)
+	var preview := SelectedHandPreview.resolve(world)
+	var selection := str(preview.get("category", "")) + ":" + str(preview.get("item_id", ""))
+	var network = world.get_node_or_null("/root/NetworkManager")
+	if network != null and network.has_method("get_equipment_slots"):
+		selection += "|" + network.get_equipment_slots_debug_key(network.get_equipment_slots())
 	return "%d:%d:%s" % [int(world.player.get_meta("jump_visual_sequence", 0)), int(world.player.get_meta("punch_visual_sequence", 0)), selection]
 
 
@@ -2310,6 +2313,7 @@ func flush_multiplayer_position(allow_join: bool = false, bypass_rate_limit: boo
 	debug_action_position_flow("flush_multiplayer_position allow_join=" + str(allow_join) + " bypass_rate_limit=" + str(bypass_rate_limit))
 	var sent := bool(network.send_player_position(current_position, current_facing, world.current_world_name, allow_join, bypass_rate_limit))
 	if sent:
+		world.player.set_meta("last_sent_action_visual_key", get_local_action_visual_key())
 		network_position_timer = get_network_position_send_interval()
 		network_heartbeat_timer = get_network_position_heartbeat_interval()
 		last_sent_network_position = current_position
@@ -2367,6 +2371,8 @@ func get_remote_grid_for_centered_world_point(world_position: Vector2, block_siz
 
 
 func is_multiplayer_position_flush_redundant(network: Node, current_position: Vector2, current_facing: int) -> bool:
+	if get_local_action_visual_key() != str(world.player.get_meta("last_sent_action_visual_key", "")):
+		return false
 	if current_position.distance_to(last_sent_network_position) >= NETWORK_POSITION_FLUSH_MIN_DISTANCE:
 		return false
 	if current_facing != last_sent_network_facing:

@@ -1,6 +1,7 @@
 extends Node
 
 const RuntimeProfiler = preload("res://Scripts/runtime_profiler.gd")
+const SelectedHandPreview = preload("res://Scripts/selected_hand_preview.gd")
 const MovementBatchCodec = preload("res://Scripts/networking/movement_batch_codec.gd")
 const ConnectionHealth = preload("res://Scripts/networking/connection_health.gd")
 
@@ -5675,6 +5676,10 @@ func handle_inventory_transaction_result(data: Dictionary) -> void:
 		var player_state_applied = false
 		if not inventory_delta_applied:
 			player_state_applied = apply_player_state_payload_if_present(data)
+		if not inventory_delta_applied and not player_state_applied and action in ["world_lock_key_auto_remove", "world_exit_items_auto_remove"]:
+			# The world scene may already be freed when its exit commit arrives.
+			# Keep the authoritative cleanup for the next world instead of losing it.
+			queue_player_state_payload_if_present(data, false)
 		if not player_state_applied:
 			apply_progression_payload_if_present(data)
 		if _is_drop_pickup_result_action(action):
@@ -7540,11 +7545,9 @@ func get_player_motion_state() -> Dictionary:
 	var world_node = get_world_node()
 	if world_node != null:
 		var animation_manager = world_node.get("player_animation_manager")
-		var selected_id := str(world_node.get("selected_item_type"))
-		var selected_category := str(world_node.get("selected_item_category"))
-		if selected_category in ["block", "seed"] and world_node.get_item_count(selected_id, selected_category) > 0:
-			result["selected_hand_item"] = selected_id
-			result["selected_hand_category"] = selected_category
+		var selection := SelectedHandPreview.resolve(world_node)
+		result["selected_hand_item"] = str(selection.get("item_id", ""))
+		result["selected_hand_category"] = str(selection.get("category", ""))
 		if animation_manager != null and animation_manager.has_method("get_player_animation_name"):
 			var manager_state = str(animation_manager.get_player_animation_name()).strip_edges().to_lower()
 			if ["idle", "walk", "jump", "fall", "punch", "hurt", "dead", "dead_spirit"].has(manager_state):

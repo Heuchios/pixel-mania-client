@@ -102,6 +102,8 @@ func select_item(item_type: String, category: String):
 	world.update_all_ui()
 	if world.equipment_manager != null:
 		world.equipment_manager.update_selected_hand_preview()
+	if world.has_method("flush_multiplayer_position"):
+		world.flush_multiplayer_position(false, true)
 
 
 func get_selected_item_text() -> String:

@@ -12,6 +12,10 @@ class TestWorld extends Node:
 	var block_textures := {}
 	var seed_textures := {}
 	var item_database := {"dirt": {"category": "block"}, "dirt_seed": {"category": "seed"}}
+	var current_world_name := "TEST"
+	var magnet = null
+	func get_magnet_machine_manager():
+		return magnet
 	func get_item_count(id, _category):
 		return counts.get(id, 0)
 	func get_inventory_icon_texture(_id, _category):
@@ -70,6 +74,36 @@ func run():
 	manager.update_selected_hand_preview()
 	assert(tool.visible and not first_preview.visible)
 	assert(manager.wearable_part_item_ids["hand_item"] == "rod")
+	world.magnet = load("res://Scripts/magnet_machine_manager.gd").new()
+	world.add_child(world.magnet)
+	world.magnet.world = world
+	world.magnet.remote_state = {"world": "TEST", "machine_id": "M", "item_id": "dirt_seed", "item_category": "seed", "count": 2, "building": true}
+	world.selected_item_type = "magnet_machine_remote"
+	world.selected_item_category = "tool"
+	world.counts["magnet_machine_remote"] = 1
+	manager.update_selected_hand_preview()
+	assert(first_preview.visible and not tool.visible, "Remote previews stocked seeds even without seeds in player inventory")
+	assert(manager.selected_hand_preview_key == "seed:dirt_seed")
+	assert(world.equipped_tool == "rod" and world.selected_item_type == "magnet_machine_remote", "Preview preserves equipment and remote placement selection")
+	world.magnet.remote_state.item_id = "dirt"
+	world.magnet.remote_state.item_category = "block"
+	manager.update_selected_hand_preview()
+	assert(manager.selected_hand_preview_key == "block:dirt")
+	for field in ["count", "building", "world"]:
+		var previous = world.magnet.remote_state[field]
+		world.magnet.remote_state[field] = {"count": 0, "building": false, "world": "OTHER"}[field]
+		manager.update_selected_hand_preview()
+		assert(not first_preview.visible and tool.visible, "Inactive remote must clear preview: " + field)
+		world.magnet.remote_state[field] = previous
+	world.counts["magnet_machine_remote"] = 0
+	manager.update_selected_hand_preview()
+	assert(not first_preview.visible)
+	world.counts["magnet_machine_remote"] = 1
+	manager.update_selected_hand_preview()
+	assert(first_preview.visible, "Refilled or reactivated stock restores its preview")
+	world.magnet.remote_state.clear()
+	manager.update_selected_hand_preview()
+	assert(not first_preview.visible, "Clearing the world binding clears its preview")
 	world.selected_item_type = "dirt"
 	world.selected_item_category = "block"
 	manager.update_selected_hand_preview()

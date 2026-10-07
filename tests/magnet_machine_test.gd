@@ -49,6 +49,8 @@ func run():
 	assert(remote.region == Rect2(6 * 32, 3 * 32, 32, 32))
 	assert(not remote.get_image().is_invisible())
 	assert(not DB.ITEMS.magnet_machine_remote.get("hidden", false), "Players must be able to select their remote in inventory")
+	assert(not DB.ITEMS.magnet_machine_remote.get("equipable", true))
+	assert(not DB.ITEMS.magnet_machine_remote.get("hand_item", true))
 	assert(DB.ITEMS.magnet_machine.break_return_to_inventory)
 	var ui = load("res://Scripts/magnet_machine_ui.gd").new()
 	world.ui_layer.add_child(ui)

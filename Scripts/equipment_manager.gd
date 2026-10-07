@@ -1,6 +1,7 @@
 extends Node
 
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
+const SelectedHandPreview = preload("res://Scripts/selected_hand_preview.gd")
 
 var world = null
 var player = null
@@ -176,10 +177,14 @@ func update_selected_hand_preview():
 	var is_local: bool = player == world.player
 	var item_id := str(world.selected_item_type) if is_local else str(player.get_meta("selected_hand_item", ""))
 	var category := str(world.selected_item_category) if is_local else str(player.get_meta("selected_hand_category", ""))
+	if is_local:
+		var selection := SelectedHandPreview.resolve(world)
+		item_id = str(selection.get("item_id", ""))
+		category = str(selection.get("category", ""))
 	var equipped_hand := str(world.equipped_tool) if is_local else str(player.get_meta("equipment_slots", {}).get("hand", ""))
 	var facing := int(world.player_facing_direction) if is_local else int(player.get_meta("facing", 1))
 	var preview_key := ""
-	if category in ["block", "seed"] and world.item_database.has(item_id) and (not is_local or world.get_item_count(item_id, category) > 0):
+	if category in ["block", "seed"] and world.item_database.has(item_id):
 		preview_key = category + ":" + item_id
 	if preview_key == "":
 		if selected_hand_preview_key != "":

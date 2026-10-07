@@ -46,6 +46,8 @@ func apply_state(data: Dictionary):
 	states[grid].erase("collection_fx")
 	if not remote_state.is_empty() and remote_state.get("machine_id") == data.get("machine_id"):
 		remote_state = states[grid].duplicate(true)
+	elif not remote_state.is_empty() and Vector2i(int(remote_state.get("x", -1)), int(remote_state.get("y", -1))) == grid:
+		remote_state.clear()
 	refresh_visual(grid)
 	play_collection_effect(grid, data)
 	if is_instance_valid(ui) and ui.visible and ui.current_grid == grid:
