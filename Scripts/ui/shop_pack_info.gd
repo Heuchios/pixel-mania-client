@@ -8,7 +8,7 @@ const Loot = preload("res://Scripts/ui/shop_pack_loot_data.gd")
 var shop: Control
 var info_button: Button
 var overlay: Control
-var panel: PanelContainer
+var panel: Panel
 var title: Label
 var summary: Label
 var rows: VBoxContainer
@@ -46,7 +46,7 @@ func show_for_item(item_id: String, is_gem_pack: bool) -> void:
 	close()
 	selected_pack = item_id if not is_gem_pack and packs.has(item_id) else ""
 	info_button.visible = not selected_pack.is_empty()
-	var reserved := 52.0 if info_button.visible else 0.0
+	var reserved := 0.0 # Detail panel reserves space for the optional INFO action.
 	icon_spacer.custom_minimum_size.y = base_spacer_height - reserved
 	shop.detail_icon.offset_bottom = base_icon_bottom - reserved
 
@@ -78,7 +78,9 @@ func _build_panel() -> void:
 	dim.gui_input.connect(func(event):
 		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 			close())
-	panel = PanelContainer.new()
+	# Keep temporary wrapped-text minimums from stretching the window on first open.
+	# The content lays itself out inside the viewport-sized panel instead.
+	panel = Panel.new()
 	panel.add_theme_stylebox_override("panel", Style.panel_style())
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	overlay.add_child(panel)
@@ -86,6 +88,7 @@ func _build_panel() -> void:
 	for side in ["left", "top", "right", "bottom"]:
 		margin.add_theme_constant_override("margin_" + side, 16)
 	panel.add_child(margin)
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 12)
 	margin.add_child(content)

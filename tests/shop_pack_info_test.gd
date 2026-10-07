@@ -31,6 +31,15 @@ func run():
 		info.info_button.pressed.emit()
 		await process_frame
 		assert(info.is_open())
+		var first_open_rect: Rect2 = info.panel.get_rect()
+		assert(first_open_rect.size.is_equal_approx(Vector2(580, 560)), "First opening must use the intended panel size")
+		assert(first_open_rect.position.is_equal_approx((shop.size - first_open_rect.size) * 0.5), "First opening must be centered")
+		await create_timer(0.1).timeout
+		assert(info.panel.get_rect().is_equal_approx(first_open_rect), "Content layout must not resize the panel")
+		info.close()
+		info.open()
+		await process_frame
+		assert(info.panel.get_rect().is_equal_approx(first_open_rect), "Reopening must use the same size and position")
 		assert(info.rows.get_child_count() == info.packs[id].rewards.size())
 		var total := 0.0
 		for reward in info.packs[id].rewards:
