@@ -18,6 +18,14 @@ Another player or former owner can lock and pay to claim again. Existing claimed
 worlds already missing locks start a full window on migration. Client removal
 notice, daily in-world reminders, lock card and payment confirmations explain it.
 Taxes remain suspended. This replaces previous permanently-retained ownership.
+Verified staging release `20261007-claimed-grace-987c429`, backend `987c429`,
+client `02995c7`. Full security/deploy gate, Godot claim UI/ownership/alias tests,
+and name integration tests in both PGlite and a disposable real PostgreSQL schema
+passed (grace start, no reset, owner-only replacement, expiry, archived receipt,
+stale snapshot suppression and new payment). Fresh staging backup verified before
+rollout. Live TEST remains claimed with its physical lock and no grace deadline;
+name identities/deadlines intact, PostgreSQL/Redis healthy, taxes disabled.
+Backend release used an isolated worktree to exclude concurrent quest edits.
 
 ### World taxes removed from gameplay (2026-10-07)
 
