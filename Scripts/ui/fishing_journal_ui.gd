@@ -128,21 +128,19 @@ func _build_ui() -> void:
 	inner.add_theme_stylebox_override("panel", PixelUIStyle.section_style())
 	panel.add_child(inner)
 
-	var header: Panel = Panel.new()
-	header.name = "Header"
-	header.position = Vector2(16, 16)
-	header.size = Vector2(PANEL_W - 32, 54)
-	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	header.add_theme_stylebox_override("panel", PixelUIStyle.header_style())
-	panel.add_child(header)
-
 	title_label = Label.new()
 	title_label.text = "FISHING JOURNAL"
 	title_label.position = Vector2(30, 22)
-	title_label.size = Vector2(430, 42)
+	title_label.size = Vector2(PANEL_W - 120, 46)
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	PixelUIStyle.apply_label_shadow(title_label, 32, PixelUIStyle.GOLD_SOFT)
-	_preserve_text(title_label, 32)
+	PixelUIStyle.apply_label_shadow(title_label, 40, Color("321b3d"))
+	_preserve_text(title_label, 40)
+	title_label.set_meta("pixelmania_font_size", 40)
+	title_label.set_meta("pixelmania_text_shadow", false)
+	title_label.add_theme_constant_override("shadow_offset_x", 0)
+	title_label.add_theme_constant_override("shadow_offset_y", 0)
+	title_label.add_theme_constant_override("outline_size", 0)
+	title_label.add_theme_color_override("font_shadow_color", Color.TRANSPARENT)
 	panel.add_child(title_label)
 
 	close_target = Control.new()
