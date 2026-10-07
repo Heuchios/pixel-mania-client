@@ -8,7 +8,9 @@ const CHAT_BUBBLE_MAX_WIDTH := 360.0
 const CHAT_BUBBLE_PAD_X := 14.0
 const CHAT_BUBBLE_PAD_Y := 8.0
 const CHAT_FONT_PATH := "res://Assets/font/font.ttf"
-const CHAT_BUBBLE_FONT_SIZE := 24
+const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
+const CHAT_BUBBLE_AUTHORED_FONT_SIZE := 24
+const CHAT_BUBBLE_FONT_SIZE := CHAT_BUBBLE_AUTHORED_FONT_SIZE + PixelUIStyle.GLOBAL_FONT_SIZE_INCREASE
 const CHAT_BUBBLE_LINE_SPACING := 2
 const CHAT_BUBBLE_DEFAULT_TEXT_COLOR := Color(0.16, 0.06, 0.2, 1.0)
 const NOTIFICATION_STACK_MAX_ENTRIES := 5
@@ -25,9 +27,9 @@ const BUBBLE_MODE_NOTIFICATION := "notification"
 # tree via a deferred call, which races the very first show_chat_message() on a
 # freshly created bubble (every new remote player's bubble, and the local
 # bubble after a world rejoin). Tagging the label with the same
-# "pixelmania_font_size" meta that username_label_manager.gd uses tells
-# PixelUIStyle to leave this label's font size alone entirely, closing that
-# race instead of hoping the numbers happen to line up.
+# "pixelmania_font_size" meta records the authored size. PixelUIStyle adds the
+# global increase to it, so measurement and initial rendering must use that
+# same effective size, including before the deferred typography pass.
 const GLOBAL_FONT_SIZE_META := &"pixelmania_font_size"
 # Small cushion subtracted from the wrap width so a minor measure-vs-render
 # rounding difference clips cleanly instead of spilling text past the panel.
@@ -268,7 +270,7 @@ func _build_bubble_ui():
 	label.z_index = 1
 	label.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 	label.add_theme_font_size_override("font_size", CHAT_BUBBLE_FONT_SIZE)
-	label.set_meta(GLOBAL_FONT_SIZE_META, CHAT_BUBBLE_FONT_SIZE)
+	label.set_meta(GLOBAL_FONT_SIZE_META, CHAT_BUBBLE_AUTHORED_FONT_SIZE)
 	label.add_theme_constant_override("line_spacing", CHAT_BUBBLE_LINE_SPACING)
 	apply_chat_font_to_label()
 	label.add_theme_color_override("font_color", current_text_color)
@@ -449,7 +451,7 @@ func create_notification_label(_text_color: Color) -> Label:
 	entry_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	entry_label.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 	entry_label.add_theme_font_size_override("font_size", CHAT_BUBBLE_FONT_SIZE)
-	entry_label.set_meta(GLOBAL_FONT_SIZE_META, CHAT_BUBBLE_FONT_SIZE)
+	entry_label.set_meta(GLOBAL_FONT_SIZE_META, CHAT_BUBBLE_AUTHORED_FONT_SIZE)
 	entry_label.add_theme_constant_override("line_spacing", CHAT_BUBBLE_LINE_SPACING)
 	var font := get_chat_font()
 	if font != null:
