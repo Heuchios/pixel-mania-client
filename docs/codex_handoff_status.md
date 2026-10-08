@@ -1,11 +1,38 @@
 # PixelMania Codex Handoff Status
 
-Last updated: 2026-10-06
+Last updated: 2026-10-07
 
 This document exists so a fresh Codex chat can continue from the current
 backend/security state without relying on chat memory.
 
 ## Latest Verified Status
+
+### Combined staging release verified (2026-10-07 local / 2026-10-08 UTC)
+
+Staging release `20261008-world-entry-fixes-9df7bb6` is active with backend
+`9df7bb6271d7` and client source/metadata `78e060635a95`. This supersedes the
+local/not-deployed status in the historical entries immediately below: portal
+snapshot ordering and guards, session item cleanup/restrictions, world-only door
+destinations, first-attempt login, chat/face presentation, remote fishing visuals,
+fish monger scrolling and developer noclip/visibility changes are included.
+Client gameplay changes require restarting the editor play session; this operation
+did not publish a new downloadable Windows/Android build. Production is untouched.
+
+Full `check:security` (including dependency audit, TypeScript, generated-module,
+economy/persistence and deployment checks) passed before commit. Developer
+visibility, 11 focused Godot suites, fishing catalog, 197 fishing checks and mobile
+tap tests passed. Deployment used `-Fast` only to avoid rerunning that completed
+full gate; remote archive validation, activation and public smoke checks passed.
+PostgreSQL and Redis are healthy. Read-only post-deployment verification confirms
+START still has 721 foreground and 178 background tiles, entrance (49,63).
+The pre-deployment staging dump was verified with `pg_restore --list`:
+`shared/backups/before-world-entry-fixes-1791419136802.dump` (45,595,504 bytes).
+Previous release `20261007-client-polish-71987b0` remains the rollback target.
+
+All game changes are committed locally. GitHub push was blocked by automatic
+approval review as private-source egress to unverified remotes; explicit approval
+was requested for both existing Heuchios repositories. Temporary diagnostic
+scripts/screenshots under `tmp/` remain outside the game release commit.
 
 ### Door/portal world snapshot race (2026-10-07, local)
 
