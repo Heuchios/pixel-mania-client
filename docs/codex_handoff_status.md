@@ -7,6 +7,44 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Production 1.2.18 and desktop/Android builds (2026-10-07 local / 2026-10-08 UTC)
+
+Production now runs `20261008-world-entry-fixes-9df7bb6`, backend commit
+`9df7bb6271d7`, promoted from staging with the identical backend archive SHA-256.
+Client release source is `499abd9b2089` (version 1.2.18, Android version code 40),
+including the combined fixes below and the latest weapon trails and wing effects.
+The vending preview hover experiment was removed before this release.
+
+Main and both production world-route instances (8080, 18091, 18092) report the
+new release, healthy PostgreSQL/Redis, server version 1.2.18 and minimum 1.2.14.
+The production database backup was verified with `pg_restore --list` before
+deployment: `shared/backups/before-production-1218-1791437805448.dump`
+(62,052,263 bytes). No world/player data restore or replacement was performed.
+Rollback target is `20261005T052200Z-b69931b01bc3`.
+
+The desktop update manifest now advertises 1.2.18, minimum 1.2.14; its public
+download returned HTTP 200 and its SHA-256 matches the local 47,596,161-byte ZIP.
+Release artifacts and build manifest are in
+`D:/Pixelmania/PixelMania/release_artifacts/client-1.2.18/`:
+`PixelMania-desktop-1.2.18.zip`, `PixelMania-1.2.18-build40.apk`, and
+`PixelMania-1.2.18-build40.aab`. Android store metadata was deliberately left
+unchanged: the APK/AAB are built and signed, but have not been uploaded to Play.
+
+Full backend `check:security` passed, including the production deployment's repeat
+gate. Eleven weapon/wing FX suites and the door-world snapshot safety suite
+passed. Isolated source import and release exports succeeded. Packaged debug PC
+startup connected to staging; packaged release startup connected to production
+even with staging override arguments. APK package/version, non-debuggable state
+and signing identity match were verified; AAB signature verification passed.
+Temporary export credentials were removed from the isolated source afterward.
+No physical Android-device or authenticated two-player gameplay test was run.
+The previously documented unrelated world-join lifecycle timing assertion remains.
+
+All game changes are committed locally; temporary `tmp/` diagnostics remain
+excluded. No GitHub push was attempted because the earlier source-egress approval
+request remains unanswered. This entry supersedes earlier production-untouched
+and no-downloadable-build notes below.
+
 ### Combined staging release verified (2026-10-07 local / 2026-10-08 UTC)
 
 Staging release `20261008-world-entry-fixes-9df7bb6` is active with backend
