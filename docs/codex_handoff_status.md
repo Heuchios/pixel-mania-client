@@ -1,11 +1,84 @@
 # PixelMania Codex Handoff Status
 
-Last updated: 2026-10-07
+Last updated: 2026-10-08
 
 This document exists so a fresh Codex chat can continue from the current
 backend/security state without relying on chat memory.
 
 ## Latest Verified Status
+
+### Global drop audit and release 1.2.19 preparation (2026-10-08)
+
+The user's follow-up authorized a game-wide pickup audit, Serpent Staff recovery,
+permanent fixes, and commits/deployment/new builds after all fixes pass checks.
+The production audit covered 5,596 active drops across 95 worlds and inspected
+all 220 saved worlds. After the 50-snow recovery below, only two tracked-drop
+mismatches remained: one Serpent Staff each in FISHING and BUYSEED. Both had no
+identity or ledger evidence anywhere. Both were recovered with admin/ledger audit
+records and a verified PostgreSQL backup. The fresh global audit reports zero
+mismatches among 78 tracked drops. Backend `docs/drop_identity_recovery.md` records
+the exact backup, recovery IDs, cause, audit CLI and regression commands.
+
+The historical harvest path omitted drop-origin/identity journal entries; the
+October 6 fix already protects newly harvested ordinary and mutated-tree rewards.
+The new backend changes repair the entire outstanding stack on partial pickup,
+check prior identities/events across all worlds and owners before any automatic
+repair, and use the actual reward item rather than a source block for identity
+creation. Nineteen pickup checks, real SQL/PGlite integration checks, the shipped
+harvest handler's weapon reward checks and four client state/loadout checks pass.
+
+Client metadata is prepared for 1.2.19, Android code 41. Code fixes and release
+preparation are still local at this point; a later release entry will record the
+actual deployed commit/builds. Do not raise the Android minimum until its Play
+release is available. Unrelated untracked `tmp/` diagnostics remain excluded.
+
+### FISHING legacy pickup recovery and partial player-state reset (2026-10-08)
+
+Production logs on the current host `pixelmania@68.183.141.114` confirmed
+`world_drop_item_instances_pending` for old FISHING snow drops. Fifty active
+one-item snow drops created before September 30 had no origin metadata, tracked
+identities, identity events, or matching item/transaction ledger references.
+Automatic pickup repair correctly refused their unknown provenance. Do not
+weaken that guard or infer provenance merely from a `server_` drop ID.
+
+The user explicitly approved recovery of those 50 drops. The operator script
+`PixelManiaServer/scripts/repair_legacy_drop_identities.js` first produced a
+read-only exact-row plan, then revalidated it under world/drop row locks and
+created exactly 50 identities in one audited transaction. Quantities, positions,
+world snapshots and player inventories were not replaced. Verification found 50
+active snow units, 50 claimable identities, zero mismatches and 50 ledger rows.
+No server restart was needed. Recovery request:
+`legacy-drop-repair-e2c79343-c209-42a5-a0a7-b515ee873299`.
+Verified pre-repair backup:
+`shared/backups/before-fishing-drop-repair-20261008-1791502062542.dump`
+(62,155,037 bytes; `pg_restore --list` passed). The plan and before image remain
+on the host under `/tmp/fishing-snow-plan-20261008.json*`; automatic approval
+review rejected exporting the detailed production plan to the local workspace.
+The separate old Serpent Staff drop was not part of the approved recovery.
+
+The local client log also confirmed the hotbar/equipment issue: a partial
+`player_data` update arrived without wearable inventory fields, and the client
+zeroed all omitted maps before ownership checks. `save_manager.gd` now preserves
+omitted/malformed maps while replacing explicitly supplied maps, including empty
+ones. This preserves loadout, fish, shop claims and fishing records on partial
+updates without reintroducing world-session item ghosts. The new
+`partial_player_state_test.gd` fails 60 checks against the old source and passes
+against the fix; session-item, hotbar-refresh and world-exit-appearance tests pass.
+
+A related backend edge case is fixed locally: when PostgreSQL safely rebuilds a
+server-authored drop's missing identities, it now rebuilds the entire outstanding
+stack rather than only the current pickup quantity. Otherwise a partial pickup
+made the remainder permanently fail the known-identity guard. All 17 pickup
+regressions and drop-capacity checks pass. The recovery SQL integration test
+passes in isolated PGlite, including atomic rollback on audit failure, repeat and
+stale-plan refusal, global identity/history checks and partial pickup conservation.
+The complete backend `npm run check:security` also passed, including the online
+dependency audit, TypeScript/generated-module checks and economy/security gates.
+
+Only the approved data recovery is live. The client/source and backend code fixes
+are local and require a client build/backend release before packaged clients and
+production pickup-repair code receive them. Production remains on 1.2.18 and
+`20261008-world-entry-fixes-9df7bb6`. No client update was published in this task.
 
 ### Production 1.2.18 and desktop/Android builds (2026-10-07 local / 2026-10-08 UTC)
 

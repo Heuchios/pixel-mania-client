@@ -2447,25 +2447,26 @@ func apply_player_data(data: Dictionary, skip_hotbar_render: bool = false):
 	if world.has_method("apply_inventory_slot_count"):
 		world.apply_inventory_slot_count(data.get("inventory_slot_count", data.get("inventory_slots", world.inventory_slot_count)), false)
 
-	apply_saved_inventory_counts(world.inventory, data.get("inventory", {}), false)
-	apply_saved_inventory_counts(world.seed_inventory, data.get("seed_inventory", {}), false)
-	apply_saved_inventory_counts(world.tool_inventory, data.get("tool_inventory", {}), true)
-	apply_saved_inventory_counts(world.back_inventory, data.get("back_inventory", {}), true)
-	apply_saved_inventory_counts(world.hat_inventory, data.get("hat_inventory", {}), true)
-	apply_saved_inventory_counts(world.hair_inventory, data.get("hair_inventory", {}), true)
-	apply_saved_inventory_counts(world.eyewear_inventory, data.get("eyewear_inventory", {}), true)
-	apply_saved_inventory_counts(world.beard_inventory, data.get("beard_inventory", {}), true)
-	apply_saved_inventory_counts(world.body_accessory_inventory, data.get("body_accessory_inventory", {}), true)
-	apply_saved_inventory_counts(world.shirt_inventory, data.get("shirt_inventory", {}), true)
-	apply_saved_inventory_counts(world.pants_inventory, data.get("pants_inventory", {}), true)
-	apply_saved_inventory_counts(world.shoes_inventory, data.get("shoes_inventory", {}), true)
-	apply_saved_inventory_counts(world.ride_inventory, data.get("ride_inventory", {}), true)
-	apply_saved_inventory_counts(world.currency_inventory, data.get("currency_inventory", {}), not data.has("currency_inventory"))
-	apply_saved_inventory_counts(world.material_inventory, data.get("material_inventory", {}), true)
-	world.set_meta("shop_claims", data.get("shop_claims", []).duplicate() if data.get("shop_claims") is Array else [])
+	apply_saved_inventory_counts(world.inventory, data.get("inventory", null), false)
+	apply_saved_inventory_counts(world.seed_inventory, data.get("seed_inventory", null), false)
+	apply_saved_inventory_counts(world.tool_inventory, data.get("tool_inventory", null), true)
+	apply_saved_inventory_counts(world.back_inventory, data.get("back_inventory", null), true)
+	apply_saved_inventory_counts(world.hat_inventory, data.get("hat_inventory", null), true)
+	apply_saved_inventory_counts(world.hair_inventory, data.get("hair_inventory", null), true)
+	apply_saved_inventory_counts(world.eyewear_inventory, data.get("eyewear_inventory", null), true)
+	apply_saved_inventory_counts(world.beard_inventory, data.get("beard_inventory", null), true)
+	apply_saved_inventory_counts(world.body_accessory_inventory, data.get("body_accessory_inventory", null), true)
+	apply_saved_inventory_counts(world.shirt_inventory, data.get("shirt_inventory", null), true)
+	apply_saved_inventory_counts(world.pants_inventory, data.get("pants_inventory", null), true)
+	apply_saved_inventory_counts(world.shoes_inventory, data.get("shoes_inventory", null), true)
+	apply_saved_inventory_counts(world.ride_inventory, data.get("ride_inventory", null), true)
+	apply_saved_inventory_counts(world.currency_inventory, data.get("currency_inventory", null), not data.has("currency_inventory"))
+	apply_saved_inventory_counts(world.material_inventory, data.get("material_inventory", null), true)
+	if data.has("shop_claims"):
+		world.set_meta("shop_claims", data.get("shop_claims", []).duplicate() if data.get("shop_claims") is Array else [])
 	FishSpecies.migrate_player(data)
-	apply_saved_inventory_counts(world.lure_inventory, data.get("lure_inventory", {}), true)
-	apply_saved_fish_count_inventory(data.get("fish_inventory", {}), true, str(data.get("fish_inventory_unit", "")))
+	apply_saved_inventory_counts(world.lure_inventory, data.get("lure_inventory", null), true)
+	apply_saved_fish_count_inventory(data.get("fish_inventory", null), true, str(data.get("fish_inventory_unit", "")))
 	world.normalize_hotbar()
 	# skip_hotbar_render lets callers that are about to immediately re-render the
 	# hotbar again (e.g. apply_network_player_state restoring the local loadout
@@ -2473,7 +2474,7 @@ func apply_player_data(data: Dictionary, skip_hotbar_render: bool = false):
 	# setup_scene_hotbar() full rebuild happens once per update instead of twice.
 	if not skip_hotbar_render:
 		world.setup_hotbar()
-	if world.fishing_manager != null and world.fishing_manager.has_method("apply_fishing_records"):
+	if data.get("fishing_records") is Dictionary and world.fishing_manager != null and world.fishing_manager.has_method("apply_fishing_records"):
 		var fishing_records_data = data.get("fishing_records", {})
 		var fishing_records_dictionary: Dictionary = (fishing_records_data as Dictionary) if fishing_records_data is Dictionary else {}
 		world.fishing_manager.apply_fishing_records(fishing_records_dictionary)
@@ -2834,6 +2835,10 @@ func apply_network_player_state(data: Dictionary):
 
 
 func apply_saved_inventory_counts(target_inventory: Dictionary, saved_inventory, preserve_default_if_missing: bool):
+	# A server map replaces that inventory, but an omitted/malformed map is not
+	# a replacement. Profile/progression packets legitimately contain no counts.
+	if applying_server_player_data and not (saved_inventory is Dictionary):
+		return
 	if not (saved_inventory is Dictionary):
 		saved_inventory = {}
 
@@ -2898,6 +2903,8 @@ func safe_fish_count_from_save(raw_value, unit: String = "") -> int:
 
 
 func apply_saved_fish_count_inventory(saved_inventory, _preserve_default_if_missing: bool, unit: String = ""):
+	if applying_server_player_data and not (saved_inventory is Dictionary):
+		return
 	if not (saved_inventory is Dictionary):
 		saved_inventory = {}
 
