@@ -283,6 +283,14 @@ func is_netfox_movement_node(node: Node) -> bool:
 
 
 func run_player_movement_step(delta: float) -> void:
+	# Keep noclip gravity-free even if another lifecycle path resumes physics.
+	var movement_world = get_world_controller()
+	if movement_world != null and bool(movement_world.get("noclip_enabled")):
+		velocity = Vector2.ZERO
+		jump_buffer_timer = 0.0
+		coyote_timer = 0.0
+		variable_jump_active = false
+		return
 	normalize_movement_runtime_state()
 	if is_player_dead_or_respawning():
 		velocity = Vector2.ZERO

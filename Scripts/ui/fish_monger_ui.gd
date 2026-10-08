@@ -132,11 +132,13 @@ func build_ui():
 	fish_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	fish_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	fish_scroll.clip_contents = true
+	fish_scroll.mouse_filter = Control.MOUSE_FILTER_STOP
+	fish_scroll.scroll_deadzone = 8
 	panel.add_child(fish_scroll)
 	fish_rows_root = Control.new()
 	fish_rows_root.name = "FishRows"
 	fish_rows_root.custom_minimum_size = Vector2(get_fish_row_content_width(), 404)
-	fish_rows_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	fish_rows_root.mouse_filter = Control.MOUSE_FILTER_PASS
 	fish_scroll.add_child(fish_rows_root)
 	empty_label = _text(panel, "EmptyState", "No fish to sell yet.\nCast a line and bring back your catch!", Rect2(248, 322, 748, 100), 18, Color("321b3d"))
 	empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -415,14 +417,11 @@ func apply_fish_monger_scrollbar_style():
 		return
 	var scrollbar = fish_scroll.get_v_scroll_bar()
 	scrollbar.custom_minimum_size.x = 12
-	var track := StyleBoxFlat.new()
-	track.bg_color = Color("24102e")
-	scrollbar.add_theme_stylebox_override("scroll", track)
+	scrollbar.add_theme_stylebox_override("scroll", PixelUIStyle.atlas_style("scroll_bar", Color.WHITE, 0))
 	for state in ["grabber", "grabber_highlight", "grabber_pressed"]:
-		var thumb := StyleBoxFlat.new()
-		thumb.bg_color = Color("e7caee") if state == "grabber" else Color.WHITE
-		thumb.content_margin_left = 6
-		thumb.content_margin_right = 6
+		var thumb := PixelUIStyle.atlas_style("scroll_handle", Color.WHITE, 0)
+		thumb.expand_margin_left = -2
+		thumb.expand_margin_right = -2
 		scrollbar.add_theme_stylebox_override(state, thumb)
 
 
@@ -612,6 +611,7 @@ func create_fish_row(entry: Dictionary, row_position: Vector2, row_height: float
 	var row_width = get_fish_row_content_width()
 	var accent_color = get_rarity_accent_color(rarity)
 	var row := _surface(fish_rows_root, "FishRow_" + item_id, Rect2(row_position, Vector2(row_width, row_height)), true)
+	row.mouse_filter = Control.MOUSE_FILTER_PASS
 	_surface(row, "InnerPanel", Rect2(5, 5, row_width - 10, row_height - 10))
 	var icon_back := _surface(row, "IconBack", Rect2(16, 18, 76, 76), true)
 	icon_back.add_theme_stylebox_override("panel", PixelUIStyle.slot_style(rarity))

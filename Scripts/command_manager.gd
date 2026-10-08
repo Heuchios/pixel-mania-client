@@ -84,6 +84,9 @@ func handle_command(raw_command: String, server_verified: bool = false, server_r
 		return
 
 	if not server_verified:
+		if command in ["inv", "vis"] and not is_developer_account_active():
+			respond("Visibility commands require developer access.")
+			return
 		if not is_admin_command_account_active():
 			respond("Admin commands require admin, developer, or designer access.")
 			return
@@ -462,6 +465,10 @@ func find_pending_developer_command_request_id(command_key: String) -> String:
 
 func apply_server_delivered_command_state(command_text: String, server_data: Dictionary) -> bool:
 	var command_name = get_developer_command_name(command_text)
+	if command_name in ["inv", "vis"]:
+		# Visibility is owned by the server; never hide the local player's visuals.
+		# Let the normal approval handler display the server's confirmation.
+		return false
 	if command_name == "noc" or command_name == "noclip":
 		if world == null:
 			return false
@@ -490,6 +497,7 @@ func requires_server_delivery(command_text: String) -> bool:
 		"event", "world_event", "forceevent",
 		"save", "load", "reload",
 		"noc", "noclip",
+		"inv", "vis",
 		"equip", "unequip",
 		"takeworld", "giveworld",
 		"ban", "mute", "tradeban", "worldban",
@@ -632,6 +640,11 @@ func build_developer_command_metadata(command_text: String) -> Dictionary:
 	if command_name == "noc" or command_name == "noclip":
 		return {
 			"command_type": "noclip",
+			"world": get_current_world_name_for_server_command()
+		}
+	if command_name in ["inv", "vis"]:
+		return {
+			"command_type": "visibility",
 			"world": get_current_world_name_for_server_command()
 		}
 
@@ -958,7 +971,7 @@ func show_admin_help():
 	var shared_commands = "/give item amount, /give username item amount, /remove username item amount, /ban user [time] reason, /mute user [time] reason, /tradeban user [time] reason, /worldban user world [time] reason, /unban user, /unmute user, /untradeban user, /unworldban user world, /punishments user, /itemaudit, /itemcopies id_or_item, /itemfreeze id reason, /itemunfreeze id reason, /itemretire id reason, /itemtransfer id user reason, /itemflag id reason, /heal, /health amount, /tp x y, /spawn block x y, /clear_drops, /speedproduce [ready|seconds] [world], /forceevent snow_storm, /event snow_storm start|end, /save, /load, /noc, /snapshot [world], /clear [world], /resetworld [world]"
 	if is_developer_account_active():
 		var developer_only_commands = ", /takeworld world_name, /giveworld world_name username" if is_local_username(DEVELOPER_USERNAME) else ""
-		respond("Admin commands: /dev, " + shared_commands + developer_only_commands)
+		respond("Admin commands: /dev, /inv (invisible to others), /vis (visible to others), " + shared_commands + developer_only_commands)
 	else:
 		respond("Designer commands: " + shared_commands)
 

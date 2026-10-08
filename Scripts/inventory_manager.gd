@@ -1777,7 +1777,7 @@ func can_select_item_for_vend(item_type: String, category: String) -> bool:
 	if item_type == "vending_machine" or item_type == "vend_empty" or item_type == "vend_pending" or item_type == "vend_sold":
 		return false
 	if world != null and world.item_database.has(item_type):
-		return bool(world.item_database[item_type].get("tradeable", true))
+		return bool(world.item_database[item_type].get("vendable", world.item_database[item_type].get("tradeable", true)))
 	return true
 
 
@@ -1789,7 +1789,8 @@ func can_select_item_for_safe(item_type: String, category: String) -> bool:
 	if item_type == "safe":
 		return false
 	if world != null and world.item_database.has(item_type):
-		return not bool(world.item_database[item_type].get("hidden", false)) and get_item_count(item_type, category) > 0
+		var item_data: Dictionary = world.item_database[item_type]
+		return not bool(item_data.get("hidden", false)) and bool(item_data.get("storable", true)) and get_item_count(item_type, category) > 0
 	return get_item_count(item_type, category) > 0
 
 
@@ -1802,7 +1803,7 @@ func can_select_item_for_donation_box(item_type: String, category: String) -> bo
 		return false
 	if world != null and world.item_database.has(item_type):
 		var item_data: Dictionary = world.item_database[item_type]
-		if bool(item_data.get("hidden", false)) or not bool(item_data.get("tradeable", true)):
+		if bool(item_data.get("hidden", false)) or not bool(item_data.get("tradeable", true)) or not bool(item_data.get("donatable", true)):
 			return false
 	return true
 

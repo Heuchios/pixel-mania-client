@@ -7,6 +7,103 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Door/portal world snapshot race (2026-10-07, local)
+
+Cross-world `door_enter_ok` started an asynchronous transition whose overlay waits
+delayed `clear_world()`. The immediately following destination snapshot could
+start building before that clear, losing its first batch (including the entrance
+and nearby platforms). The missing-entrance fallback then fabricated a roof-level
+gate with dirt/grass. Lobby and `/warp` entry did not use this delayed door path.
+Read-only staging inspection found START's saved entrance at (49,63), 721
+foreground tiles and 178 background tiles intact. No database restore or write
+was performed; returning through the normal entry path displayed the saved map.
+
+Door entry now claims a synchronous preparation barrier before any fade/overlay
+await. Network packet dispatch and queued snapshots wait until old-world cleanup
+has finished. Online snapshots are validated before replacement and their loaded
+tile maps checked before activation. Invalid loads return to the lobby instead
+of generating terrain; online entrance checks cannot alter saved terrain, and
+an online/rejected world cannot later fall through to a local whole-world save.
+
+Godot door snapshot regression passes for fade/no-fade transitions, delayed clear,
+snapshot eligibility, malformed/missing tiles and non-mutating gate checks.
+Portal entry, spawn safety, rejoin reconciliation and loading-operation tests
+pass. Both string and compact versions of the read-only START snapshot validate
+with all 899 tiles. The older lifecycle suite stops on its pre-existing 0.34s
+fade assertion (HEAD uses 0.08s); that unrelated test/code was left unchanged.
+Local client changes only; not committed or deployed. A live two-world traversal
+should still be checked in the updated client before release.
+
+### Developer noclip and visibility commands (2026-10-07, local)
+
+Noclip now keeps render-frame movement packets and idle heartbeats flowing while
+local physics is paused. The physics movement step also guards against gravity
+if another path resumes it; respawn/entrance placement respect noclip and punch
+knockback cannot resume physics during it. Remote players continue interpolating
+while the local developer uses noclip. Server presence carries `noclip_enabled`
+so observers do not collision-clamp a noclip avatar against walls.
+
+Developer-only `/inv` and `/vis` use the existing server role, PIN/2FA, cooldown
+and PostgreSQL admin audit path. Invisibility is temporary session state,
+independent of noclip, and never hides the local character. The server omits
+hidden avatars from direct/batched presence and join snapshots, immediately
+culls existing avatars without a departure fade, and clears queued stale
+presence/culls before switching visibility. `/vis` immediately restores current
+position. Same-session world changes preserve invisibility; new sessions default
+visible. Designers and regular players cannot use these commands.
+
+Verified `npm run check:developer-visibility`, 39 movement rollback scenarios,
+socket delivery/column batching, generated movement/server checks, and server
+validation/admin/account-security checks. Godot developer movement/visibility,
+batch protocol, multiplayer interaction and loading-operation suites pass.
+Client and backend changes are local, not deployed; ship both together.
+
+### World-session inventory ghosts (2026-10-07, local)
+
+The client preserved old tool/material counts when an authoritative inventory map
+omitted a zero-count item. It could therefore keep a cached Magnet Machine Remote
+or World Lock Key after the server had removed it. Authoritative inventory loads
+now clear absent counts. World exit immediately clears both local items, hotbar
+selection and the magnet binding; local player files exclude these session items.
+PostgreSQL cleanup remains server-authoritative. Godot world-session tests cover
+same/different-world re-entry, stale snapshots, both selected items, cache writes
+and unchanged ordinary inventory; hotbar and gem/rod regressions pass. Backend
+world-exit and PGlite magnet persistence tests pass, including removal of both
+inventory rows and their active item instances. Local only, not deployed.
+
+### First-attempt sign-on timeout (2026-10-07, local)
+
+Login now waits for the shared 20-second transport authentication deadline plus
+one second for packet dispatch, instead of discarding replies after 8 seconds.
+Sign On preserves an already-opening socket. Connection loss ends the UI wait;
+a genuine auth timeout retires the socket before another attempt can start.
+Password, registration and session-token senders now check whether the packet
+was sent. Transient failures preserve remembered credentials. The remembered-login
+suite passes with an 8.2-second delayed first response, disconnect, timeout,
+stale response, failed send and socket-retirement cases; connection-health tests
+also pass. No live account login was performed. Changes are local, not deployed.
+
+### Talking mouth follows sent chat (2026-10-07, local)
+
+Local and remote sent chat bubbles attach a weak reference to their speaker.
+The face controller plays talk only while that bubble is visible in chat mode;
+hidden/freed bubbles and notification messages do not trigger speech. Typing dots
+still follow input activity independently. Existing hurt/death priority remains.
+Face expression and chat typing indicator regression suites pass, including the
+alternate player controller. Changes are local, not deployed.
+
+### Fish monger and shared mobile scrolling (2026-10-07, local)
+
+Fish monger rows pass gestures to their ScrollContainer and use the shared atlas
+scrollbar/handle. InputManager no longer consumes UI wheel events before GUI
+dispatch. MobileScrollPolicy configures native scroll containers on every platform,
+including touch-capable desktops, with an 8px drag deadzone; text editors, ranges,
+and inventory's custom touch scrolling retain their own gesture handling.
+`tests/mobile_scroll_test.gd` and `tests/fish_monger_scroll_test.gd` pass. The latter
+checks wheel and touch-emulated swipes at 1280x800, 640x360 and 390x844, including
+swipes over Sell buttons without submitting a sale. Physical phones were not tested.
+These changes are local and not deployed.
+
 ### Player emote dropdown (2026-10-07, local)
 
 The right HUD now adds a smile button below chat with Wave, Laugh and Sad.

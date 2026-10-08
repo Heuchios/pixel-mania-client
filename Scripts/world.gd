@@ -4310,10 +4310,12 @@ func spawn_fishing_reward_confetti_ui_particles(canvas_position: Vector2, rarity
 	return true
 
 
-func handle_network_fishing_reward_fx(_data: Dictionary):
-	# Older servers still broadcast these events. Catch cards now provide the
-	# celebration; do not spawn explosive bursts in the world or over the UI.
-	return
+func handle_network_fishing_reward_fx(data: Dictionary):
+	# The local catch already drives its own landing and reward card.
+	if _is_local_fishing_reward_fx(data):
+		return
+	if player_manager != null:
+		player_manager.play_remote_fishing_landing(data)
 
 
 func _is_local_fishing_reward_fx(data: Dictionary) -> bool:
@@ -9910,7 +9912,7 @@ func handle_network_player_punch_knockback(data: Dictionary):
 
 	return
 
-func handle_network_player_left(remote_id: String):
+func handle_network_player_left(remote_id: String, fade_out: bool = true):
 	if MovementMode.is_netfox_real():
 		clear_remote_players()
 		if netfox_real_manager != null and netfox_real_manager.has_method("audit_player_nodes"):
@@ -9918,7 +9920,7 @@ func handle_network_player_left(remote_id: String):
 		return
 
 	if player_manager != null and player_manager.has_method("handle_network_player_left"):
-		return player_manager.handle_network_player_left(remote_id)
+		return player_manager.handle_network_player_left(remote_id, fade_out)
 
 	return
 

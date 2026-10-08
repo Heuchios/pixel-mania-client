@@ -554,7 +554,7 @@ func get_face_expression_animation_name(movement_state: String) -> String:
 		if hurt_until_msec > Time.get_ticks_msec():
 			return "hurt"
 
-	if is_chat_typing_for_face_expression():
+	if is_chat_speaking_for_face_expression():
 		return "talk"
 
 	if is_player_underwater_for_face_expression():
@@ -579,6 +579,18 @@ func get_face_expression_animation_name(movement_state: String) -> String:
 		return "fall"
 
 	return "idle"
+
+
+func is_chat_speaking_for_face_expression() -> bool:
+	if world != null and world.get("in_world") is bool and not bool(world.get("in_world")):
+		return false
+	if not is_instance_valid(player) or not player.has_meta("speech_bubble_ref"):
+		return false
+	var bubble_ref = player.get_meta("speech_bubble_ref")
+	if not bubble_ref is WeakRef:
+		return false
+	var bubble = bubble_ref.get_ref()
+	return is_instance_valid(bubble) and bubble.is_visible_in_tree() and bubble.bubble_mode == "chat"
 
 
 func is_chat_typing_for_face_expression() -> bool:

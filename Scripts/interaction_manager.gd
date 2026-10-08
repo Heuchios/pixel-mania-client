@@ -934,8 +934,8 @@ func get_door_state(grid_pos: Vector2i) -> Dictionary:
 		"door_id": sanitize_door_id(block_data.get("door_id", "")),
 		"door_name": sanitize_door_name(block_data.get("door_name", block_data.get("name", ""))),
 		"destination": destination,
-		"target_world": sanitize_door_world_name(block_data.get("door_target_world", parsed.get("world", ""))),
-		"target_door_id": sanitize_door_id(block_data.get("door_target_id", parsed.get("door_id", ""))),
+		"target_world": str(parsed.get("world", "")),
+		"target_door_id": str(parsed.get("door_id", "")),
 		"locked": bool(block_data.get("entrance_locked", false)),
 		"password": sanitize_door_password(block_data.get("door_password", "")),
 		"password_configured": bool(block_data.get("door_password_configured", sanitize_door_password(block_data.get("door_password", "")) != ""))
@@ -967,9 +967,9 @@ func apply_door_state_to_block(
 	var clean_destination = normalize_door_destination_text(destination)
 	var clean_target_world = sanitize_door_world_name(target_world)
 	var clean_target_id = sanitize_door_id(target_door_id)
-	if clean_target_world == "":
+	if clean_destination != "" or clean_target_world == "":
 		clean_target_world = str(parsed.get("world", ""))
-	if clean_target_id == "":
+	if clean_destination != "" or clean_target_id == "":
 		clean_target_id = str(parsed.get("door_id", ""))
 
 	world.blocks[grid_pos]["door_id"] = clean_door_id

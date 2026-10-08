@@ -811,7 +811,7 @@ func get_catch_card_confetti_position() -> Vector2:
 	if not catch_card.visible:
 		_position_catch_card()
 
-	return catch_card.global_position + catch_card.size * 0.5
+	return catch_card.get_global_transform() * (catch_card.size * 0.5)
 
 
 func _position_escape_panel() -> void:

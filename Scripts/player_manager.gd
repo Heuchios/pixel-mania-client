@@ -281,6 +281,11 @@ func update_noclip_movement(delta):
 	if world.player == null:
 		return
 
+	# Respawn/loading/knockback may have resumed physics since /noc was enabled.
+	world.player.set_physics_process(false)
+	if world.player is CharacterBody2D:
+		world.player.velocity = Vector2.ZERO
+
 	if world.has_method("is_movement_locked") and world.is_movement_locked():
 		if world.player is CharacterBody2D:
 			world.player.velocity = Vector2.ZERO
@@ -823,7 +828,7 @@ func complete_respawn_player():
 		world.player.velocity = Vector2.ZERO
 		if world.player.has_method("reset_instant_hazard_after_respawn"):
 			world.player.reset_instant_hazard_after_respawn()
-		world.player.set_physics_process(true)
+		world.player.set_physics_process(not world.noclip_enabled)
 		var camera = world.get_player_camera()
 		if camera != null and camera.has_method("reset_smoothing"):
 			camera.reset_smoothing()
@@ -854,7 +859,7 @@ func place_player_at_entrance_immediate():
 			world.player.velocity = Vector2.ZERO
 			if world.player.has_method("reset_instant_hazard_after_respawn"):
 				world.player.reset_instant_hazard_after_respawn()
-			world.player.set_physics_process(true)
+			world.player.set_physics_process(not world.noclip_enabled)
 		var camera = world.get_player_camera()
 		if camera != null and camera.has_method("reset_smoothing"):
 			camera.reset_smoothing()
@@ -1590,7 +1595,7 @@ func _update_remote_visual_position_v1(remote_player, delta: float) -> void:
 		var remote_animation_state = str(remote_player.get_meta("animation_state", "idle"))
 		var is_airborne_for_collision_checks := remote_animation_state in ["jump", "fall"] or not bool(remote_player.get_meta("network_on_floor", true))
 		var safe_position: Vector2 = buffered_position
-		if not is_airborne_for_collision_checks:
+		if not is_airborne_for_collision_checks and not bool(remote_player.get_meta("network_noclip_enabled", false)):
 			safe_position = get_safe_remote_render_position(remote_player.global_position, buffered_position)
 		remote_player.set_meta("smoothed_position", safe_position)
 		remote_player.global_position = safe_position
@@ -2038,6 +2043,23 @@ func play_remote_jump_sound(position: Vector2, facing: int, network_in_water: bo
 		world.play_sound_jump(position)
 
 
+func apply_remote_fishing_presence(remote_player: Node2D, player_data: Dictionary) -> void:
+	var fishing_session := str(player_data.get("fishing_session_id", ""))
+	if fishing_session != "" and fishing_session != str(remote_player.get_meta("last_fishing_session_id", "")):
+		clear_remote_fishing_visual(remote_player)
+		remote_player.set_meta("last_fishing_session_id", fishing_session)
+	remote_player.set_meta("fishing_hooked_item_id", str(player_data.get("fishing_hooked_item_id", "")))
+	remote_player.set_meta("fishing_hooked_item_category", str(player_data.get("fishing_hooked_item_category", "")))
+	var already_landed := fishing_session != "" and fishing_session == str(remote_player.get_meta("landed_fishing_session_id", ""))
+	remote_player.set_meta("fishing_active", bool(player_data.get("fishing_active", false)) and not already_landed)
+	remote_player.set_meta("fishing_target_grid", Vector2i(
+		_safe_int(player_data.get("fishing_target_x", -1), -1, -1, 1000000),
+		_safe_int(player_data.get("fishing_target_y", -1), -1, -1, 1000000)
+	))
+	remote_player.set_meta("fishing_lure_id", str(player_data.get("fishing_lure_id", "")))
+	remote_player.set_meta("fishing_rod_id", str(player_data.get("fishing_rod_id", "")))
+
+
 func get_remote_fishing_target_position(remote_player) -> Vector2:
 	var target_grid = remote_player.get_meta("fishing_target_grid", Vector2i(-1, -1))
 	if not (target_grid is Vector2i):
@@ -2051,7 +2073,7 @@ func get_remote_fishing_bobber(remote_player):
 	if remote_player == null or not is_instance_valid(remote_player):
 		return null
 
-	var bobber = remote_player.get_meta("remote_fishing_bobber", null)
+	var bobber = remote_player.get_meta("remote_fishing_bobber") if remote_player.has_meta("remote_fishing_bobber") else null
 	if bobber != null and is_instance_valid(bobber):
 		return bobber
 
@@ -2094,6 +2116,11 @@ func update_remote_fishing_visual(remote_player, delta: float):
 		return
 
 	bobber.global_position = get_remote_fishing_target_position(remote_player)
+	var hooked_item := str(remote_player.get_meta("fishing_hooked_item_id", ""))
+	if hooked_item != "" and str(bobber.get_meta("hooked_item_id", "")) != hooked_item and world.fishing_manager != null:
+		world.fishing_manager.apply_hooked_bobber_artwork(bobber, hooked_item, str(remote_player.get_meta("fishing_hooked_item_category", "fish")))
+		bobber.set_meta("hooked_item_id", hooked_item)
+		play_remote_fishing_bobber_animation(bobber, "bite")
 	var animation_player = bobber.get_node_or_null("AnimationPlayer")
 	if animation_player != null and not animation_player.is_playing() and animation_player.has_animation("idle_float"):
 		animation_player.play("idle_float")
@@ -2185,6 +2212,51 @@ func get_remote_wavy_fishing_line_points(start_pos: Vector2, end_pos: Vector2, p
 	return points
 
 
+func play_remote_fishing_landing(data: Dictionary) -> void:
+	if world == null or not world.in_world or str(data.get("world", "")) != str(world.current_world_name):
+		return
+	var remote_id := str(data.get("player_id", ""))
+	var remote = remote_players.get(remote_id)
+	if not is_instance_valid(remote) or world.fishing_manager == null:
+		return
+	var session_id := str(data.get("session_id", ""))
+	var item_id := str(data.get("item_id", ""))
+	if session_id == "" or item_id == "" or session_id == str(remote.get_meta("landed_fishing_session_id", "")):
+		return
+	var current_session := str(remote.get_meta("last_fishing_session_id", ""))
+	if current_session != "" and current_session != session_id:
+		return
+	var grid := Vector2(float(data.get("target_x", -1)), float(data.get("target_y", -1)))
+	if not grid.is_finite() or grid.x < 0 or grid.y < 0:
+		return
+	var texture = world.fishing_manager._hooked_artwork(world.fishing_manager.get_reward_texture(item_id, str(data.get("item_category", "fish"))))
+	if texture == null:
+		return
+	remote.set_meta("landed_fishing_session_id", session_id)
+	remote.set_meta("last_fishing_session_id", session_id)
+	remote.set_meta("fishing_active", false)
+	clear_remote_fishing_visual(remote)
+	var effect = load("res://Scripts/fishing_landing_fx.gd").new()
+	var origin_world := str(world.current_world_name)
+	var remote_ref: WeakRef = weakref(remote)
+	effect.context_valid = func():
+		var actor = remote_ref.get_ref()
+		return is_instance_valid(actor) and not actor.is_queued_for_deletion() and actor.is_inside_tree() and world.in_world and str(world.current_world_name) == origin_world and str(actor.get_meta("last_fishing_session_id", "")) == session_id
+	world.add_child(effect)
+	effect.global_position = grid * get_remote_world_block_size()
+	effect.z_index = 240
+	var rarity := str(data.get("rarity", "common"))
+	var accent := Color.WHITE
+	if world.fishing_manager.fishing_ui != null:
+		accent = world.fishing_manager.fishing_ui.get_rarity_color(rarity)
+	effect.setup(texture, accent)
+	var celebration_position: Vector2 = effect.global_position + Vector2(0, -52)
+	effect.landed.connect(func():
+		if rarity in ["epic", "legendary"] and world.has_method("spawn_fishing_reward_confetti_particles"):
+			world.spawn_fishing_reward_confetti_particles(celebration_position, rarity)
+	, CONNECT_ONE_SHOT)
+
+
 func clear_remote_fishing_visual(remote_player):
 	if remote_player == null:
 		return
@@ -2230,7 +2302,9 @@ func update_multiplayer_movement(delta: float, from_physics_step: bool = false):
 	# wrapper may still call this from _process(). Once the player script marks
 	# physics-based sync as active, ignore render-frame calls so outgoing
 	# packets are sampled right after move_and_slide() on every device.
-	if not from_physics_step and bool(world.player.get_meta("multiplayer_movement_sync_from_physics", false)):
+	# Noclip is driven by World._process() with player physics paused. Continue
+	# sending movement AND idle heartbeats so observers never time this player out.
+	if not from_physics_step and not world.noclip_enabled and bool(world.player.get_meta("multiplayer_movement_sync_from_physics", false)):
 		return
 
 	var network = world.get_node_or_null("/root/NetworkManager")
@@ -2716,11 +2790,6 @@ func handle_network_player_position(player_data: Dictionary):
 	var damage_flash_active: bool = bool(player_data.get("damage_flash_active", animation_state == "hurt"))
 	var damage_flash_remaining_msec: int = _safe_int(player_data.get("damage_flash_remaining_ms", HURT_FACE_EXPRESSION_TIME_MSEC if animation_state == "hurt" else 0), 0, 0, HURT_FACE_EXPRESSION_TIME_MSEC)
 	var damage_flash_token := _safe_int(player_data.get("damage_flash_token", 0), 0, 0, 2147483647)
-	var remote_fishing_active := bool(player_data.get("fishing_active", false))
-	var remote_fishing_target := Vector2i(
-		_safe_int(player_data.get("fishing_target_x", -1), -1, -1, 1000000),
-		_safe_int(player_data.get("fishing_target_y", -1), -1, -1, 1000000)
-	)
 
 	if has_authoritative_animation_state:
 		if animation_state in ["punch", "place_animation", "hurt", "dead", "dead_spirit"]:
@@ -2819,6 +2888,7 @@ func handle_network_player_position(player_data: Dictionary):
 	remote_player.set_meta("network_velocity_x", network_velocity_x)
 	remote_player.set_meta("network_velocity_y", network_velocity_y)
 	remote_player.set_meta("network_on_floor", network_on_floor)
+	remote_player.set_meta("network_noclip_enabled", bool(player_data.get("noclip_enabled", false)))
 	remote_player.set_meta("animation_state", animation_state)
 	remote_player.set_meta("remote_chat_typing", remote_chat_typing)
 	remote_player.set_meta("network_in_lava_fire", network_in_lava_fire)
@@ -2832,10 +2902,7 @@ func handle_network_player_position(player_data: Dictionary):
 		ensure_remote_player_shared_visual_pipeline(remote_player)
 	if has_damage_flash_payload or animation_state == "hurt":
 		update_remote_damage_flash(remote_player, damage_flash_active, damage_flash_remaining_msec, damage_flash_token)
-	remote_player.set_meta("fishing_active", remote_fishing_active)
-	remote_player.set_meta("fishing_target_grid", remote_fishing_target)
-	remote_player.set_meta("fishing_lure_id", str(player_data.get("fishing_lure_id", "")))
-	remote_player.set_meta("fishing_rod_id", str(player_data.get("fishing_rod_id", "")))
+	apply_remote_fishing_presence(remote_player, player_data)
 	remote_player.set_meta("facing", safe_facing)
 	if remote_visual_active:
 		update_remote_water_splash(remote_player, next_target_position, had_position, network_velocity_x, network_velocity_y, target_speed_hint)
@@ -2923,8 +2990,8 @@ func _extract_remote_snapshot_time_msec(player_data: Dictionary, fallback_msec: 
 	return fallback_msec
 
 
-func handle_network_player_left(remote_id: String):
-	remove_remote_player(remote_id)
+func handle_network_player_left(remote_id: String, fade_out: bool = true):
+	remove_remote_player(remote_id, fade_out)
 
 
 func clear_remote_player_ui(remote_id: String) -> void:
@@ -3538,6 +3605,8 @@ func apply_local_player_punch_knockback(knockback: Vector2):
 
 	if world == null or world.player == null:
 		return
+	if world.noclip_enabled:
+		return
 
 	var body: CharacterBody2D = world.player as CharacterBody2D
 	if body == null:
@@ -4051,7 +4120,7 @@ func update_remote_players_visuals(delta: float):
 			])
 			remote_player.set_meta("remote_stale_warning_emitted", true)
 
-		if not REMOTE_POSITION_UPDATE_FROM_PHYSICS:
+		if not REMOTE_POSITION_UPDATE_FROM_PHYSICS or world.noclip_enabled:
 			update_remote_visual_position(remote_player, delta)
 		update_remote_presentation_offset(remote_player, delta)
 		var visual_active := is_remote_player_visual_active(remote_player, visible_world_rect)
@@ -4870,6 +4939,7 @@ func _display_remote_chat_bubble(remote_player, remote_id: String, clean_message
 		return
 
 	bubble.show_chat_message(msg)
+	remote_player.set_meta("speech_bubble_ref", weakref(bubble))
 	_position_remote_chat_bubble(remote_id)
 
 

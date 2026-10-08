@@ -10,6 +10,12 @@ func _init() -> void:
 
 
 func _run() -> void:
+	var inverse := root.get_stretch_transform().affine_inverse()
+	var previous := inverse * Vector2(100, 100)
+	for offset in [0.49, 0.51, 0.48, 0.52]:
+		previous = ChatBubbleComponent.stable_screen_position(inverse * Vector2(100 + offset, 100), previous, root)
+		assert(previous.is_equal_approx(inverse * Vector2(100, 100)), "Camera subpixel noise must not jitter bubble text")
+	assert(ChatBubbleComponent.stable_screen_position(inverse * Vector2(102, 100), previous, root).is_equal_approx(inverse * Vector2(102, 100)), "Bubble must still follow deliberate movement")
 	var bubble = ChatBubbleComponent.new()
 	root.add_child(bubble)
 	await process_frame

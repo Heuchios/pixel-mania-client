@@ -399,7 +399,7 @@ func handle_input(event):
 			if world.has_method("handle_inventory_wheel") and world.handle_inventory_wheel(event):
 				return
 			if _is_gameplay_ui_at_point(event.position):
-				world.get_viewport().set_input_as_handled()
+				# GUI scroll containers must receive the wheel before unhandled input.
 				return
 			if world.can_use_camera_zoom(true):
 				world.zoom_camera(world.CAMERA_ZOOM_STEP)
@@ -410,7 +410,7 @@ func handle_input(event):
 			if world.has_method("handle_inventory_wheel") and world.handle_inventory_wheel(event):
 				return
 			if _is_gameplay_ui_at_point(event.position):
-				world.get_viewport().set_input_as_handled()
+				# GUI scroll containers must receive the wheel before unhandled input.
 				return
 			if world.can_use_camera_zoom(true):
 				world.zoom_camera(-world.CAMERA_ZOOM_STEP)

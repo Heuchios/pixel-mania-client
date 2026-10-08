@@ -3,6 +3,7 @@ extends Node
 const RuntimeProfiler = preload("res://Scripts/runtime_profiler.gd")
 
 const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
+const SnapshotGuard = preload("res://Scripts/world_snapshot_guard.gd")
 
 var world = null
 
@@ -1224,6 +1225,14 @@ func apply_network_world_state(data: Dictionary):
 				"world_state_reason": str(data.get("world_state_reason", ""))
 			})
 			return
+	# Validate before clearing anything, and never generate terrain to fill gaps
+	# in an authoritative snapshot. Returning to the lobby preserves server data.
+	world.set_meta("server_world_terrain_authoritative", true)
+	var checked := SnapshotGuard.validate(data, world.item_database, world.WORLD_WIDTH, world.WORLD_HEIGHT, Callable(world.block_manager, "normalize_legacy_block_id"))
+	if not checked.ok:
+		_reject_incomplete_world_snapshot(str(checked.reason))
+		return
+	world.set_meta("world_snapshot_rejected", false)
 	_reset_block_revision_tracking(incoming_world, incoming_block_revision)
 
 	world_state_apply_generation += 1
@@ -1319,11 +1328,11 @@ func apply_network_world_state(data: Dictionary):
 
 	var raw_foreground = data.get("foreground", [])
 	var raw_background = data.get("background", [])
-	var foreground: Array = _normalize_world_layer_entries(raw_foreground)
-	var background: Array = _normalize_world_layer_entries(raw_background)
+	var foreground: Array = checked.foreground
+	var background: Array = checked.background
 	# Compact dictionary snapshots contain one authoritative value per grid cell,
 	# so they can be safely reordered for progressive construction. Legacy arrays
-	# retain their original ordering in case they contain duplicate coordinates.
+	# retain their original ordering after validation.
 	if raw_foreground is Dictionary:
 		foreground = _prioritize_world_layer_entries_for_spawn(foreground, data)
 	if raw_background is Dictionary:
@@ -1335,23 +1344,6 @@ func apply_network_world_state(data: Dictionary):
 		"foreground_count": foreground.size(),
 		"background_count": background.size()
 	})
-	var has_explicit_foreground: bool = not foreground.is_empty()
-	var has_explicit_background: bool = not background.is_empty()
-	var server_cleared_world: bool = bool(data.get("cleared", data.get("world_cleared", data.get("clear_generated", false))))
-
-	# World-entry performance fix:
-	# If the server sent actual foreground blocks, build only that payload.
-	# A background-only payload should not suppress generated foreground terrain.
-	if not server_cleared_world and not has_explicit_foreground:
-		if world.has_method("update_smooth_world_load_message"):
-			world.update_smooth_world_load_message("Generating " + str(world.current_world_name).to_upper() + "...")
-		world.generate_world()
-		await world.get_tree().process_frame
-		if not is_world_state_apply_current(apply_generation):
-			_clear_world_state_apply_if_current(apply_generation)
-			return
-		if has_explicit_background and world.block_manager != null and world.block_manager.has_method("clear_background_blocks"):
-			world.block_manager.clear_background_blocks()
 
 	# Sub-stage accounting for client_foreground_built.
 	#
@@ -1495,6 +1487,10 @@ func apply_network_world_state(data: Dictionary):
 	})
 
 	var removed_foreground = data.get("removed_foreground", [])
+	if not SnapshotGuard.matches_loaded(foreground, world.blocks) or not SnapshotGuard.matches_loaded(background, world.block_manager.background_blocks):
+		_clear_world_state_apply_if_current(apply_generation)
+		_reject_incomplete_world_snapshot("applied_tiles_differ")
+		return
 	if removed_foreground is Array:
 		var processed = 0
 		for entry in removed_foreground:
@@ -1705,7 +1701,10 @@ func apply_network_world_state(data: Dictionary):
 						_clear_world_state_apply_if_current(apply_generation)
 						return
 
-	world.ensure_entrance_gate()
+	if world.environment_manager.find_entrance_gate_grid() == world.INVALID_GRID_POS:
+		_clear_world_state_apply_if_current(apply_generation)
+		_reject_incomplete_world_snapshot("entrance_missing_after_apply")
+		return
 
 	var force_player_position := _safe_bool(data.get("force_player_position", false), false)
 	var use_entrance_gate_spawn := should_use_entrance_gate_spawn_for_world_state(data)
@@ -1791,6 +1790,13 @@ func apply_network_world_state(data: Dictionary):
 		"respawn_player": data.get("respawn_player", null),
 		"world_state_reason": str(data.get("world_state_reason", ""))
 	})
+
+
+func _reject_incomplete_world_snapshot(reason: String) -> void:
+	world.set_meta("world_snapshot_rejected", true)
+	push_warning("[WorldSnapshotGuard] Rejected world=%s reason=%s" % [world.current_world_name, reason])
+	if world.save_manager != null and world.save_manager.has_method("handle_client_world_loading_failed"):
+		world.save_manager.handle_client_world_loading_failed("invalid_world_snapshot:" + reason, "World data did not load correctly. Please try entering again.")
 
 
 func apply_network_block_reconcile(data: Dictionary) -> void:

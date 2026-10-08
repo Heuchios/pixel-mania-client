@@ -6,14 +6,16 @@ class TestWorld extends Node:
 	var applying_network_world_update := false
 	var received_positions: Array[Dictionary] = []
 	var received_left_ids: Array[String] = []
+	var received_left_fades: Array[bool] = []
 	var received_world_updates: Array[Dictionary] = []
 	var received_block_reconciliations: Array[Dictionary] = []
 
 	func handle_network_player_position(data: Dictionary) -> void:
 		received_positions.append(data.duplicate(true))
 
-	func handle_network_player_left(player_id: String) -> void:
+	func handle_network_player_left(player_id: String, fade_out: bool = true) -> void:
 		received_left_ids.append(player_id)
+		received_left_fades.append(fade_out)
 
 	func apply_network_block_update(data: Dictionary) -> void:
 		received_world_updates.append(data.duplicate(true))
@@ -61,6 +63,19 @@ func _run() -> void:
 	assert(test_world.received_left_ids == ["REMOTE_B", "REMOTE_C"])
 	assert(network.world_population_players.get("BATCHTEST", {}).has("REMOTE_A"))
 	assert(not network.world_population_players.get("BATCHTEST", {}).has("REMOTE_B"))
+	assert(test_world.received_left_fades == [true, true])
+	network.handle_player_position_batch({
+		"world": "BATCHTEST",
+		"left": [{"player_id": "REMOTE_A", "interest_cull": true, "reason": "developer_invisible"}],
+	})
+	assert(test_world.received_left_ids.back() == "REMOTE_A")
+	assert(not test_world.received_left_fades.back(), "Invisibility removes all visuals without a departure fade")
+	assert(network.world_population_players.get("BATCHTEST", {}).has("REMOTE_A"), "Invisibility does not leave the world")
+	network.handle_server_message(JSON.stringify({
+		"type": "player_left", "world": "BATCHTEST", "player_id": "REMOTE_A",
+		"interest_cull": true, "reason": "developer_invisible",
+	}))
+	assert(not test_world.received_left_fades.back(), "Individual hide packets also skip the fade")
 
 	network.handle_player_position_batch({
 		"type": "player_position_batch",

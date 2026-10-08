@@ -55,6 +55,10 @@ var fishing_line        = null
 var fishing_line_start  = null
 var fishing_line_end    = null
 var fishing_line_wave_phase = 0.0
+var landing_origin := Vector2(INF, INF)
+var landing_generation := 0
+var landing_fx: Node2D
+
 var current_lure_id     = ""
 var pending_fish_id     = ""
 var pending_reward_category = "fish"
@@ -234,6 +238,10 @@ func start_cast(target_grid: Vector2i, lure_id: String):
 
 
 func start_local_cast(target_grid: Vector2i, lure_id: String, spend_lure: bool = true, session_id: String = "", fish_data: Dictionary = {}):
+	landing_generation += 1
+	landing_origin = Vector2(INF, INF)
+	if is_instance_valid(landing_fx):
+		landing_fx.queue_free()
 	awaiting_cast_ack = false
 	cast_ack_timer    = 0.0
 	if spend_lure:
@@ -715,6 +723,10 @@ func trigger_bite():
 	state       = STATE_BITE
 	state_timer = REACTION_WINDOW_TIME
 
+	_update_hooked_bobber()
+	var network = get_node_or_null("/root/NetworkManager")
+	if network != null and network.has_method("send_fishing_hook") and server_fishing_session_id != "":
+		network.send_fishing_hook(server_fishing_session_id)
 	play_bobber_anim("bite")
 	if fishing_ui != null and fishing_ui.has_method("show_bite"):
 		fishing_ui.show_bite(REACTION_WINDOW_TIME)
@@ -764,9 +776,10 @@ func catch_fish():
 		fail_fishing("Nothing bit the lure.")
 		return
 
+	landing_origin = bobber.global_position if is_instance_valid(bobber) else Vector2(INF, INF)
 	if server_fishing_session_id != "":
 		if request_server_fishing_complete(true):
-			play_bobber_anim("reel_success")
+			# The confirmed reward drives the landing presentation.
 			waiting_for_server_catch = true
 			reset_fishing_state(true)
 			if fishing_ui != null:
@@ -784,7 +797,7 @@ func catch_fish():
 			return
 		_show_catch_result(pending_fish_id, false, -1.0, reward_category, true)
 		_show_catch_notification(pending_fish_id, reward_category)
-		play_bobber_anim("reel_success")
+		# Landing presentation replaces the old bait pop.
 		world.update_all_ui()
 		world.save_player_data()
 		reset_fishing_state(true)
@@ -803,7 +816,7 @@ func catch_fish():
 	_show_catch_result(pending_fish_id, was_new, catch_weight, "fish", true)
 	_show_catch_notification(pending_fish_id, "fish")
 	_maybe_broadcast_legendary_catch(pending_fish_id)
-	play_bobber_anim("reel_success")
+	# Landing presentation replaces the old bait pop.
 	world.update_all_ui()
 	world.save_player_data()
 	reset_fishing_state(true)
@@ -2021,7 +2034,38 @@ func _show_catch_result(fish_id: String, was_new: bool = false, catch_weight: fl
 		return
 	if fishing_ui == null or not fishing_ui.has_method("show_catch_result"):
 		return
-	fishing_ui.show_catch_result(_build_catch_result_data(fish_id, was_new, catch_weight, category))
+	var result := _build_catch_result_data(fish_id, was_new, catch_weight, category)
+	if not landing_origin.is_finite():
+		_present_catch_card(result)
+		return
+	var origin := landing_origin
+	landing_origin = Vector2(INF, INF)
+	var generation := landing_generation
+	var origin_world := str(world.current_world_name)
+	fishing_ui.hide_fishing_state()
+	if is_instance_valid(bobber):
+		bobber.hide()
+	landing_fx = load("res://Scripts/fishing_landing_fx.gd").new()
+	world.add_child(landing_fx)
+	landing_fx.global_position = origin
+	landing_fx.z_index = 240
+	landing_fx.context_valid = func(): return generation == landing_generation and str(world.current_world_name) == origin_world
+	landing_fx.setup(_hooked_artwork(get_reward_texture(fish_id, category)), fishing_ui.get_rarity_color(str(result.get("rarity", "common"))))
+	landing_fx.landed.connect(func():
+		if generation == landing_generation and str(world.current_world_name) == origin_world and not world.fishing_active and not awaiting_cast_ack:
+			_present_catch_card(result)
+	, CONNECT_ONE_SHOT)
+
+
+func _present_catch_card(result: Dictionary) -> void:
+	fishing_ui.show_catch_result(result)
+	var rarity := str(result.get("rarity", "common")).to_lower()
+	if rarity not in ["epic", "legendary"]:
+		return
+	# Celebrate only when the confirmed reward is revealed, after the lift/shine.
+	# Network FX echoes must not trigger a second burst for this same catch.
+	if world.has_method("spawn_fishing_reward_confetti_ui_particles"):
+		world.spawn_fishing_reward_confetti_ui_particles(_get_fishing_reward_confetti_ui_position(), rarity)
 
 
 func _build_catch_result_data(fish_id: String, was_new: bool, _catch_weight: float = -1.0, category: String = "fish") -> Dictionary:
@@ -2272,3 +2316,29 @@ func show_minigame_ui(show: bool):
 func update_minigame_visuals():
 	if fishing_ui != null and state == STATE_MINIGAME:
 		fishing_ui.show_pull_game(pull_game.snapshot())
+
+
+func _hooked_artwork(texture: Texture2D) -> Texture2D:
+	if texture == null: return null
+	var image := texture.get_image()
+	if image == null: return texture
+	var bounds := image.get_used_rect()
+	if not bounds.has_area(): return texture
+	var cropped := AtlasTexture.new()
+	cropped.atlas = texture
+	cropped.region = Rect2(bounds)
+	cropped.filter_clip = true
+	return cropped
+
+
+func _update_hooked_bobber() -> void:
+	apply_hooked_bobber_artwork(bobber, pending_fish_id, get_pending_reward_category())
+
+
+func apply_hooked_bobber_artwork(target_bobber: Node, item_id: String, category: String) -> void:
+	if not is_instance_valid(target_bobber): return
+	var sprite := target_bobber.get_node_or_null("Sprite2D") as Sprite2D
+	var texture := _hooked_artwork(get_reward_texture(item_id, category))
+	if sprite == null or texture == null: return
+	sprite.texture = texture
+	sprite.scale = Vector2.ONE * (36.0 / maxf(texture.get_width(), texture.get_height()))

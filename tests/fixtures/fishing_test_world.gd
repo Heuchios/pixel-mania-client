@@ -1,4 +1,9 @@
 extends Node2D
+
+var catch_confetti: Array[String] = []
+func spawn_fishing_reward_confetti_ui_particles(_position: Vector2, rarity: String) -> bool:
+	catch_confetti.append(rarity)
+	return true
 ## Local-only fixture. No account, network connection, or saved inventory is used.
 
 const BLOCK_SIZE := 32

@@ -14,6 +14,11 @@ var loading_player_data := false
 var applying_server_player_data := false
 var waiting_for_server_world_state := false
 var world_entry_pending_announce := false
+const WORLD_SESSION_INVENTORIES := {
+	"tool_inventory": "magnet_machine_remote",
+	"material_inventory": "world_lock_key",
+}
+
 var legacy_server_inventory_import_in_flight := false
 var legacy_server_inventory_import_attempts := 0
 var last_server_player_state_username := ""
@@ -1221,6 +1226,7 @@ func notify_network_leave_world(world_name: String):
 	if world_name.strip_edges() == "":
 		return
 
+	clear_world_session_items()
 	notify_netfox_world_left(world_name, "notify_network_leave_world")
 
 	if _is_dev_test_login_active():
@@ -1235,6 +1241,31 @@ func notify_network_leave_world(world_name: String):
 
 	if world.player_manager != null and world.player_manager.has_method("reset_multiplayer_sync_state"):
 		world.player_manager.reset_multiplayer_sync_state()
+
+
+func clear_world_session_items() -> void:
+	# The server commits the actual removal. Clear the local view immediately so
+	# freeing the scene before its reply cannot carry these tools into another visit.
+	for field in WORLD_SESSION_INVENTORIES:
+		var inventory: Dictionary = world.get(field)
+		inventory[WORLD_SESSION_INVENTORIES[field]] = 0
+	if world.magnet_machine_manager != null:
+		world.magnet_machine_manager.remote_state.clear()
+	if str(world.equipped_tool) == "magnet_machine_remote":
+		world.equipped_tool = ""
+	world.normalize_hotbar()
+	world.update_hotbar()
+	world.update_equipment_visual()
+	save_player_data(false)
+
+
+func player_data_without_world_session_items(data: Dictionary) -> Dictionary:
+	var local_data := data.duplicate(true)
+	for field in WORLD_SESSION_INVENTORIES:
+		var inventory = local_data.get(field, {})
+		if inventory is Dictionary:
+			inventory.erase(WORLD_SESSION_INVENTORIES[field])
+	return local_data
 
 
 func get_pending_authoritative_block_update_count() -> int:
@@ -1607,6 +1638,10 @@ func _finish_same_world_door_spawn_transition(data: Dictionary):
 
 
 func begin_server_door_world_entry_with_transition(data: Dictionary, target_world: String):
+	# Claim the transition before the fade's first asynchronous callback. The
+	# server sends join_world_ok + snapshot immediately after door_enter_ok.
+	# Packet dispatch must wait until the delayed old-world clear has finished.
+	world.set_meta("door_world_entry_preparing", true)
 	var transition_data := data.duplicate(true)
 	var transition_world := target_world
 	var finished_callable := Callable(self, "_begin_server_door_world_entry_after_fade").bind(transition_data, transition_world)
@@ -1623,8 +1658,10 @@ func _begin_server_door_world_entry_after_fade(data: Dictionary, target_world: S
 func begin_server_door_world_entry(data: Dictionary, target_world: String):
 	var sanitized_name: String = sanitize_world_name(target_world)
 	if sanitized_name == "":
+		world.set_meta("door_world_entry_preparing", false)
 		return
 
+	world.set_meta("door_world_entry_preparing", true)
 	var target_world_name: String = sanitized_name.to_upper()
 	show_world_entry_loading_overlay(target_world_name, true, "Entering " + target_world_name + "...")
 	await wait_for_loading_overlay_to_draw("door_entry_before_save_clear")
@@ -1664,6 +1701,9 @@ func begin_server_door_world_entry(data: Dictionary, target_world: String):
 		"x": data.get("x", data.get("portal_spawn_x", null)),
 		"y": data.get("y", data.get("portal_spawn_y", null))
 	})
+	# No clear_world() may run after releasing this barrier: the next packet can
+	# begin constructing the destination immediately, including within this frame.
+	world.set_meta("door_world_entry_preparing", false)
 
 
 func finish_world_entry_after_load(save_after_finish: bool = true, announce_enter: bool = true, server_world_state_finalized: bool = false, defer_noncritical_work: bool = false):
@@ -1898,7 +1938,9 @@ func save_player_data(sync_to_server: bool = true):
 		print("Could not save player data.")
 		return
 
-	file.store_string(JSON.stringify(player_data))
+	# Session tools are issued by the current world; a cached file cannot restore
+	# them after restarting or after the exit acknowledgement arrives in the lobby.
+	file.store_string(JSON.stringify(player_data_without_world_session_items(player_data)))
 	file.close()
 
 	if sync_to_server and not loading_player_data and not applying_server_player_data:
@@ -2806,7 +2848,9 @@ func apply_saved_inventory_counts(target_inventory: Dictionary, saved_inventory,
 				target_inventory[item_name] = world.clamp_item_stack_count(item_name, category, safe_amount)
 			else:
 				target_inventory[item_name] = safe_amount
-		elif not preserve_default_if_missing:
+		elif not preserve_default_if_missing or applying_server_player_data or item_name in WORLD_SESSION_INVENTORIES.values():
+			# Server inventory maps omit zero counts. Preserve defaults only for
+			# legacy local saves, never a stale count absent from an authoritative map.
 			target_inventory[item_name] = 0
 
 
@@ -3074,6 +3118,10 @@ func _is_netfox_real_server_launch() -> bool:
 
 func save_world():
 	if world == null:
+		return
+	# Sticky for this scene: a disconnected/rejected online load must never
+	# become an offline whole-world save later in the transition.
+	if bool(world.get_meta("server_world_terrain_authoritative", false)) or bool(world.get_meta("world_snapshot_rejected", false)):
 		return
 
 	if not world.in_world:

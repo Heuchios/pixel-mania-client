@@ -21,7 +21,8 @@ const UIAtlas = preload("res://Scripts/UIAtlasDB.gd")
 const BROADCAST_HOLD_SECONDS = 0.55
 const BROADCAST_HOLD_MOVE_CANCEL = 18.0
 const CHAT_FONT_PATH = "res://Assets/font/font.ttf"
-const CHAT_MESSAGE_FONT_SIZE := 22
+const CHAT_MESSAGE_FONT_SIZE := 23
+const CHAT_DISPLAY_FONT_SIZE := CHAT_MESSAGE_FONT_SIZE + PixelUIStyle.GLOBAL_FONT_SIZE_INCREASE
 const CHAT_MESSAGE_LINE_HEIGHT := 20.0
 const CHAT_MESSAGE_PAD_X = 12.0
 const CHAT_MESSAGE_PAD_Y = 2.0
@@ -136,7 +137,7 @@ func get_ui_texture(file_name: String):
 
 func get_chat_font() -> Font:
 	if chat_font == null:
-		chat_font = PixelUIStyle.get_pixel_game_font()
+		chat_font = PixelUIStyle.get_game_font()
 	return chat_font
 
 
@@ -148,8 +149,9 @@ func apply_chat_font_to_control(control: Control) -> void:
 	if font == null:
 		return
 
-	control.set_meta("pixelmania_pixel_text", true)
 	PixelUIStyle.apply_game_font_to_node(control)
+	if not PixelUIStyle._is_text_control(control):
+		control.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	if control is Label:
 		var label := control as Label
 		if label.label_settings != null:
@@ -168,8 +170,8 @@ func apply_chat_font_to_tree(root: Node) -> void:
 
 
 func _ready():
+	RenderingServer.frame_pre_draw.connect(_update_bubble_before_draw)
 	set_meta("ignore_mobile_ui_scale", true)
-	set_meta("pixelmania_pixel_text", true)
 	set_meta("pixelmania_text_shadow", false)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -184,8 +186,21 @@ func _process(delta):
 			delta * CHAT_OPEN_SPEED
 		)
 	clear_notification_bubble_if_chat_active()
-	update_chat_bubble(delta)
 	update_chat_position()
+
+
+func _update_bubble_before_draw() -> void:
+	if not is_inside_tree() or chat_bubble_node == null or not chat_bubble_node.visible:
+		return
+	# Resolve both overhead elements after this frame's player/camera movement.
+	if world != null and world.username_label_manager != null:
+		world.username_label_manager.update_position(0.0)
+	update_chat_bubble(0.0)
+
+
+func _exit_tree() -> void:
+	if RenderingServer.frame_pre_draw.is_connected(_update_bubble_before_draw):
+		RenderingServer.frame_pre_draw.disconnect(_update_bubble_before_draw)
 
 
 func _input(event):
@@ -1195,7 +1210,7 @@ func setup_chat_channel_tabs() -> void:
 
 
 func apply_authored_chat_text_defaults() -> void:
-	var default_size := CHAT_MESSAGE_FONT_SIZE
+	var default_size := CHAT_DISPLAY_FONT_SIZE
 	var text_controls: Array = [
 		chat_input,
 		chat_send_button,
@@ -1209,6 +1224,7 @@ func apply_authored_chat_text_defaults() -> void:
 		if control is Control:
 			var text_control := control as Control
 			apply_chat_font_to_control(text_control)
+			text_control.set_meta("pixelmania_font_size", CHAT_MESSAGE_FONT_SIZE)
 			text_control.add_theme_font_size_override("font_size", default_size)
 
 
@@ -2120,8 +2136,9 @@ func refresh_chat_messages(force_scroll_to_bottom: bool = false):
 		if not entry_runs.is_empty():
 			var entry_label := RichTextLabel.new()
 			entry_label.name = "MessageRow"
+			entry_label.set_meta("pixelmania_font_size", CHAT_MESSAGE_FONT_SIZE)
 			apply_chat_font_to_control(entry_label)
-			entry_label.add_theme_font_size_override("normal_font_size", CHAT_MESSAGE_FONT_SIZE)
+			entry_label.add_theme_font_size_override("normal_font_size", CHAT_DISPLAY_FONT_SIZE)
 			entry_label.bbcode_enabled = false
 			entry_label.fit_content = true
 			entry_label.scroll_active = false
@@ -2135,7 +2152,8 @@ func refresh_chat_messages(force_scroll_to_bottom: bool = false):
 			continue
 		var label = Label.new()
 		label.name = "MessageLabel"
-		label.add_theme_font_size_override("font_size", CHAT_MESSAGE_FONT_SIZE)
+		label.set_meta("pixelmania_font_size", CHAT_MESSAGE_FONT_SIZE)
+		label.add_theme_font_size_override("font_size", CHAT_DISPLAY_FONT_SIZE)
 		apply_chat_font_to_control(label)
 		label.add_theme_color_override("font_color", get_sender_color(get_chat_message_color_key(sender, metadata)))
 		label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.72))
@@ -2147,7 +2165,7 @@ func refresh_chat_messages(force_scroll_to_bottom: bool = false):
 			full_text,
 			label_width,
 			label.get_theme_font("font"),
-			CHAT_MESSAGE_FONT_SIZE
+			CHAT_DISPLAY_FONT_SIZE
 		)
 		var line_count = CHAT_BUBBLE_COMPONENT.count_wrapped_lines(wrapped_text)
 		var row_height = max(
@@ -2202,7 +2220,7 @@ func refresh_authored_chat_messages(
 		label.name = "MessageRow"
 		label.set_meta("pixelmania_font_size", CHAT_MESSAGE_FONT_SIZE)
 		apply_chat_font_to_control(label)
-		label.add_theme_font_size_override("normal_font_size", CHAT_MESSAGE_FONT_SIZE)
+		label.add_theme_font_size_override("normal_font_size", CHAT_DISPLAY_FONT_SIZE)
 		label.add_theme_constant_override("line_separation", 0)
 		label.fit_content = true
 		label.scroll_active = false
@@ -2394,6 +2412,8 @@ func show_bubble_message(message: String, text_color: Color = Color.WHITE, bubbl
 	if not was_shown:
 		return false
 	active_bubble_kind = bubble_kind
+	if world != null and is_instance_valid(world.player):
+		world.player.set_meta("speech_bubble_ref", weakref(chat_bubble_node))
 	var anchor_screen_pos = _get_local_chat_anchor_screen_position()
 	_position_bubble_on_screen(anchor_screen_pos)
 	return true
@@ -2406,14 +2426,15 @@ func _position_bubble_on_screen(anchor_screen_pos: Vector2):
 		return
 
 	var bubble_position = Vector2(
-		round(anchor_screen_pos.x - chat_bubble_node.size.x / 2.0),
-		round(anchor_screen_pos.y - chat_bubble_node.size.y)
+		anchor_screen_pos.x - chat_bubble_node.size.x / 2.0,
+		anchor_screen_pos.y - chat_bubble_node.size.y
 	)
-	chat_bubble_node.position = CHAT_BUBBLE_COMPONENT.clamp_screen_position(
+	var clamped_position = CHAT_BUBBLE_COMPONENT.clamp_screen_position(
 		bubble_position,
 		chat_bubble_node.size,
 		chat_bubble_node.get_viewport()
 	)
+	chat_bubble_node.position = CHAT_BUBBLE_COMPONENT.stable_screen_position(clamped_position, chat_bubble_node.position, chat_bubble_node.get_viewport())
 
 
 func _get_local_chat_anchor_world_position() -> Vector2:

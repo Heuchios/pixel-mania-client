@@ -72,15 +72,28 @@ func run() -> void:
 	manager.update_face_expression_animation("idle")
 	check(is_equal_approx(face.frame_progress, 0.5), "Repeated updates must not restart blinking")
 	world.typing = true
-	check(manager.get_face_expression_animation_name("idle") == "talk")
-	check(manager.get_face_expression_animation_name("hurt") == "hurt", "Hurt must override talking")
+	check(manager.get_face_expression_animation_name("idle") == "idle", "Typing alone must not speak")
+	var bubble = load("res://Scripts/chat_bubble_component.gd").new()
+	root.add_child(bubble)
+	player.set_meta("speech_bubble_ref", weakref(bubble))
+	bubble.show_chat_message("Hello there!")
 	world.typing = false
+	check(manager.get_face_expression_animation_name("idle") == "talk", "Visible sent words must animate the mouth")
+	check(manager.get_face_expression_animation_name("hurt") == "hurt", "Hurt must override talking")
+	bubble.hide()
+	check(manager.get_face_expression_animation_name("idle") == "idle", "Hidden messages must stop talking")
+	bubble.show_notification_message("Casting with bait...")
+	check(manager.get_face_expression_animation_name("idle") == "idle", "Notifications are not spoken chat")
+	bubble.hide()
 	world.blocks[Vector2i.ZERO] = {"type": "water"}
 	check(manager.get_face_expression_animation_name("fall") == "underwater")
 	world.blocks.clear()
 	player.set_meta("remote_chat_typing", true)
-	check(manager.get_face_expression_animation_name("idle") == "talk", "Remote chat must animate")
+	check(manager.get_face_expression_animation_name("idle") == "idle", "Remote typing alone must not speak")
 	player.set_meta("remote_chat_typing", false)
+	bubble.show_chat_message("A remote message")
+	check(manager.get_face_expression_animation_name("idle") == "talk", "Remote sent chat must animate without typing")
+	bubble.hide()
 	player.set_meta("face_expression_override", " Angry ")
 	manager.update_face_expression_animation("idle")
 	check(face.animation == &"angry")
@@ -109,9 +122,14 @@ func run() -> void:
 	netfox.is_punching = false
 	netfox.movement_state = "idle"
 	world.typing = true
+	netfox.set_meta("speech_bubble_ref", weakref(bubble))
+	bubble.show_chat_message("Hello from the alternate controller")
 	netfox.update_face_expression()
 	check(netfox.face_expression_animated.animation == &"talk", "Netfox chat face")
 	world.typing = false
+	bubble.free()
+	netfox.update_face_expression()
+	check(netfox.face_expression_animated.animation == &"idle", "Freed bubbles stop speaking safely")
 	world.blocks[Vector2i.ZERO] = {"type": "water"}
 	netfox.update_face_expression()
 	check(netfox.face_expression_animated.animation == &"underwater", "Netfox swim face")

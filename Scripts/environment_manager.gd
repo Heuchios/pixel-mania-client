@@ -374,6 +374,16 @@ func ensure_generated_entrance_gate():
 
 func ensure_entrance_gate(use_generated_lower_layout: bool = false):
 	var existing_gate = find_entrance_gate_grid()
+	# Online terrain belongs to the server. A missing gate during a partial load
+	# must never clear a player's building or synthesize grass/dirt locally.
+	var server_terrain := bool(world.get_meta("server_world_terrain_authoritative", false))
+	var saver = world.get("save_manager")
+	if saver != null and saver.has_method("should_use_server_world_state"):
+		server_terrain = server_terrain or saver.should_use_server_world_state()
+	if server_terrain and not use_generated_lower_layout:
+		if existing_gate != world.INVALID_GRID_POS:
+			update_entrance_gate_visual(existing_gate)
+		return
 
 	if existing_gate != world.INVALID_GRID_POS:
 		ensure_entrance_gate_bedrock(existing_gate)

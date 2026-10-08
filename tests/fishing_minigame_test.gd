@@ -67,6 +67,10 @@ func _run() -> void:
 	await _test_network_lifecycle()
 	await _test_last_lure()
 	await _test_layout()
+	world.catch_confetti.clear()
+	for rarity in ["common", "uncommon", "rare", "epic", "legendary"]:
+		manager._present_catch_card({"name": "Test fish", "rarity": rarity})
+	check(world.catch_confetti == ["epic", "legendary"], "Original confetti must play once for epic and legendary reward cards only")
 	world.queue_free()
 	network.queue_free()
 	await process_frame
@@ -188,7 +192,9 @@ func _test_cast_and_inputs() -> void:
 	send_click(manager.fishing_ui.reel_button.get_global_rect().get_center())
 	var landed_units: int = int(world.fish_inventory.get("guppy", 0))
 	check(manager.state == "idle" and landed_units >= 1 and landed_units <= 1500, "Native REEL did not award a 0.1–150 kg catch")
-	check(manager.fishing_ui.catch_card.visible, "Local catch card was not shown")
+	check(not manager.fishing_ui.catch_card.visible, "Card must wait for the landing reveal")
+	await create_timer(1.15).timeout
+	check(manager.fishing_ui.catch_card.visible, "Local catch card was not shown after landing")
 	manager.catch_fish()
 	check(world.fish_inventory.get("guppy", 0) == landed_units, "Duplicate completion awarded twice")
 	await process_frame

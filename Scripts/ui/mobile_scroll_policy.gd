@@ -4,8 +4,6 @@ extends Node
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	if not (OS.has_feature("mobile") or DisplayServer.is_touchscreen_available()):
-		return
 	get_tree().node_added.connect(_on_node_added)
 	call_deferred("configure_tree", get_tree().root)
 
@@ -25,7 +23,11 @@ func configure_tree(node: Node) -> void:
 		configure_tree(child)
 
 func configure_control(control: Control) -> void:
-	if control is ScrollContainer or control.mouse_filter != Control.MOUSE_FILTER_STOP:
+	if control is ScrollContainer:
+		if not control.get_meta("custom_touch_scroll", false):
+			control.scroll_deadzone = 8
+		return
+	if control.mouse_filter != Control.MOUSE_FILTER_STOP:
 		return
 	var ancestor: Node = control
 	while ancestor != null:

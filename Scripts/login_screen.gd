@@ -17,6 +17,10 @@ const STARRY_NIGHT_LAYERS := [
 const AccountManagerScript = preload("res://Scripts/account_manager.gd")
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 const WorldScenePreloader = preload("res://Scripts/world_scene_preloader.gd")
+const ConnectionHealth = preload("res://Scripts/networking/connection_health.gd")
+# Let the transport's authentication deadline expire first, including its final
+# packet drain. The old 8-second UI deadline discarded valid slower replies.
+const AUTH_RESPONSE_TIMEOUT_SECONDS := ConnectionHealth.AUTH_TIMEOUT_MS / 1000.0 + 1.0
 const NEWS_API_PATH := "/news"
 const NEWS_FALLBACK_API_BASE := "https://api.pixelmaniagame.com"
 const NEWS_REQUEST_TIMEOUT_SECONDS := 8.0
@@ -315,7 +319,7 @@ func _setup_account_manager() -> void:
 
 
 func _connect_network_auth_signal() -> void:
-	var network = get_node_or_null("/root/NetworkManager")
+	var network = _get_network_manager()
 
 	if network == null:
 		return
@@ -773,6 +777,12 @@ func _on_server_auth_finished(data) -> void:
 
 
 func _on_server_connection_changed(server_connected: bool) -> void:
+	if not server_connected and pending_auth_request_id != "" and pending_auth_response.is_empty():
+		pending_auth_response = {
+			"ok": false,
+			"reason": "connection_lost",
+			"message": "Connection interrupted. Please sign on again.",
+		}
 	_update_server_status_indicator(server_connected)
 	_show_network_login_notice()
 
@@ -829,7 +839,6 @@ func _wait_for_server_connection(timeout_seconds: float = 10.0) -> bool:
 		timeout_seconds = max(timeout_seconds, 16.0)
 
 	var deadline = Time.get_ticks_msec() + int(timeout_seconds * 1000.0)
-	var first_attempt := true
 	var next_status_update := 0
 
 	while Time.get_ticks_msec() < deadline:
@@ -841,8 +850,8 @@ func _wait_for_server_connection(timeout_seconds: float = 10.0) -> bool:
 		if network != null:
 			_connect_network_auth_signal()
 			if network.has_method("request_server_connection"):
-				network.request_server_connection(first_attempt)
-				first_attempt = false
+				# Reuse an opening socket; replacing it delays the first sign-on.
+				network.request_server_connection(false)
 
 			if Time.get_ticks_msec() >= next_status_update:
 				var state_text = "connecting"
@@ -856,22 +865,30 @@ func _wait_for_server_connection(timeout_seconds: float = 10.0) -> bool:
 	return false
 
 
-func _wait_for_auth_response(request_id: String, timeout_seconds: float = 8.0) -> Dictionary:
+func _wait_for_auth_response(request_id: String, timeout_seconds: float = AUTH_RESPONSE_TIMEOUT_SECONDS) -> Dictionary:
 	pending_auth_request_id = request_id
 	pending_auth_response.clear()
 	var deadline = Time.get_ticks_msec() + int(timeout_seconds * 1000.0)
 
-	while Time.get_ticks_msec() < deadline:
+	while true:
 		if not pending_auth_response.is_empty():
 			var response = pending_auth_response.duplicate(true)
 			pending_auth_response.clear()
 			pending_auth_request_id = ""
 			return response
+		if Time.get_ticks_msec() >= deadline:
+			break
 
 		await get_tree().process_frame
 
+	# Retire the outstanding request before permitting another click. Otherwise a
+	# late success could rotate remembered tokens underneath the next attempt.
+	var network = _get_network_manager()
+	if network != null and network.has_method("cancel_pending_account_authentication"):
+		network.cancel_pending_account_authentication()
 	pending_auth_request_id = ""
-	return {"ok": false, "message": "Connection timed out. Try again."}
+	pending_auth_response.clear()
+	return {"ok": false, "reason": "authentication_timeout", "message": "Connection timed out. Try again."}
 
 
 func _validate_register_input(username: String, email: String, password: String) -> Dictionary:

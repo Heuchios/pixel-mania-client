@@ -918,17 +918,7 @@ func _process_connection_health() -> bool:
 	if socket.get_ready_state() != WebSocketPeer.STATE_CLOSED and reason != "":
 		if reason == "heartbeat_timeout":
 			connection_health.missed_probes += 1
-		_prepare_transport_recovery(reason)
-		last_connection_error = reason
-		connection_health.phase = "DISCONNECTED"
-		socket.close()
-		socket_generation += 1
-		socket = WebSocketPeer.new()
-		if connected:
-			connected = false
-			server_session_authenticated = false
-			server_connection_changed.emit(false)
-		reconnect_scheduled = false
+		_close_unresponsive_connection(reason)
 		RuntimeProfiler.count(reason)
 		return true
 	if is_server_session_authenticated() and connection_health.ping_due(now):
@@ -936,6 +926,26 @@ func _process_connection_health() -> bool:
 		if send_message({"type": "client_ping", "request_id": request_id}):
 			connection_health.sent_ping(request_id, now)
 	return false
+
+
+func _close_unresponsive_connection(reason: String) -> void:
+	_prepare_transport_recovery(reason)
+	last_connection_error = reason
+	connection_health.phase = "DISCONNECTED"
+	saved_refresh_login_in_flight = false
+	socket.close()
+	socket_generation += 1
+	socket = WebSocketPeer.new()
+	if connected:
+		connected = false
+		server_session_authenticated = false
+		server_connection_changed.emit(false)
+	reconnect_scheduled = false
+
+
+func cancel_pending_account_authentication() -> void:
+	if connection_health.phase == "AUTHENTICATING":
+		_close_unresponsive_connection("authentication_timeout")
 
 
 func get_connection_state() -> String:
@@ -1022,6 +1032,8 @@ func is_world_state_apply_in_progress() -> bool:
 	var world_node = get_world_node()
 	if world_node == null:
 		return false
+	if bool(world_node.get_meta("door_world_entry_preparing", false)):
+		return true
 	if "applying_network_world_update" in world_node:
 		return bool(world_node.get("applying_network_world_update"))
 	return false
@@ -1925,13 +1937,14 @@ func send_account_register(username: String, email: String, password: String) ->
 	if not is_connected_to_server():
 		return ""
 	var request_id = make_auth_request_id()
-	send_message({
+	if not send_message({
 		"type": "account_register",
 		"request_id": request_id,
 		"username": username.strip_edges(),
 		"email": email.strip_edges(),
 		"password": password
-	})
+	}):
+		return ""
 	return request_id
 
 
@@ -1939,13 +1952,14 @@ func send_account_login(username: String, email: String, password: String) -> St
 	if not is_connected_to_server():
 		return ""
 	var request_id = make_auth_request_id()
-	send_message({
+	if not send_message({
 		"type": "account_login",
 		"request_id": request_id,
 		"username": username.strip_edges(),
 		"email": email.strip_edges(),
 		"password": password
-	})
+	}):
+		return ""
 	return request_id
 
 
@@ -1956,12 +1970,13 @@ func send_account_token_login(username: String, token: String) -> String:
 	if clean_token == "":
 		return ""
 	var request_id = make_auth_request_id()
-	send_message({
+	if not send_message({
 		"type": "account_token_login",
 		"request_id": request_id,
 		"username": username.strip_edges(),
 		"session_token": clean_token
-	})
+	}):
+		return ""
 	return request_id
 
 
@@ -2863,6 +2878,14 @@ func send_leave_world(world_name: String) -> bool:
 	return send_message(attach_session_auth({
 		"type": "leave_world",
 		"world": clean_world
+	}))
+
+
+func send_fishing_hook(session_id: String) -> bool:
+	if session_id.is_empty() or not is_server_session_authenticated() or not world_entry_active:
+		return false
+	return send_message(attach_session_auth({
+		"type": "fishing_hook", "world": current_world_name, "session_id": session_id
 	}))
 
 
@@ -4706,7 +4729,7 @@ func handle_player_position_batch(data: Dictionary) -> void:
 			if not batch_interest_cull:
 				forget_world_player(str(left_entry.get("world", current_world_name)), left_player_id)
 			if world_node != null and is_world_node_active() and world_node.has_method("handle_network_player_left"):
-				world_node.handle_network_player_left(left_player_id)
+				world_node.handle_network_player_left(left_player_id, str(left_entry.get("reason", "")) != "developer_invisible")
 
 	var batch_players = MovementBatchCodec.decode_players(data)
 	if batch_players is Array:
@@ -5206,7 +5229,7 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 				forget_world_player(str(data.get("world", current_world_name)), str(data.get("player_id", "")))
 			world_node = get_world_node()
 			if world_node != null and is_world_node_active() and world_node.has_method("handle_network_player_left"):
-				world_node.handle_network_player_left(str(data.get("player_id", "")))
+				world_node.handle_network_player_left(str(data.get("player_id", "")), str(data.get("reason", "")) != "developer_invisible")
 		"developer_command_verified", "developer_command_approved":
 			world_node = get_world_node()
 			if world_node != null and is_world_node_active() and world_node.has_method("handle_verified_developer_command"):
@@ -6789,6 +6812,8 @@ func _is_valid_server_world_state_payload(data: Dictionary) -> bool:
 
 func _world_node_can_apply_server_world_state(world_node: Node) -> bool:
 	if world_node == null or not is_instance_valid(world_node):
+		return false
+	if bool(world_node.get_meta("door_world_entry_preparing", false)):
 		return false
 	# The first authoritative snapshot activates a newly-instantiated world. The
 	# join request, entry session, and target world are validated by the caller.

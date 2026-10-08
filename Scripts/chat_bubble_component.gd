@@ -69,6 +69,20 @@ static func get_anchor_offset_world_px() -> float:
 	return CHAT_BUBBLE_ANCHOR_OFFSET_WORLD_PX
 
 
+static func stable_screen_position(desired: Vector2, previous: Vector2, viewport: Viewport) -> Vector2:
+	# Snap in output pixels, including fractional window stretching. Hysteresis
+	# prevents tiny camera corrections crossing a rounding boundary every frame.
+	var transform := viewport.get_stretch_transform()
+	var target := transform * desired
+	var last := transform * previous
+	for axis in 2:
+		if absf(target[axis] - last[axis]) <= 0.75:
+			target[axis] = last[axis]
+		else:
+			target[axis] = roundf(target[axis])
+	return transform.affine_inverse() * target
+
+
 static func get_username_gap_screen_px() -> float:
 	return CHAT_BUBBLE_USERNAME_GAP_SCREEN_PX
 
