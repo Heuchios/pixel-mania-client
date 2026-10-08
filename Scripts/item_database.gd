@@ -11434,10 +11434,6 @@ const ITEMS = {
 		"back_pivot_offset_left": [0, 0],
 		"flap_pivot_offset": [0, 0],
 		"flap_pivot_offset_left": [0, 0],
-		"back_fx_scene": "res://Scenes/particles/WingPearlParticlesFX.tscn",
-		"back_fx_offset": [0, 8],
-		"back_fx_scale": [1.0, 1.0],
-		"back_fx_z_index": 72,
 
 		"order": 200
 	},
@@ -11555,10 +11551,10 @@ const ITEMS = {
 		"flap_sprite_offset_left": [0, 0],
 		"back_scale_multiplier": 1.0,
 		"back_flip_with_facing": false,
-		"back_fx_scene": "res://Scenes/particles/WingSparkleParticlesFX.tscn",
-		"back_fx_offset": [0, 8],
+		"back_fx_scene": "res://Scenes/particles/GoldenAngelWingsFX.tscn",
+		"back_fx_offset": [0, 0],
 		"back_fx_scale": [1.0, 1.0],
-		"back_fx_z_index": 72,
+		"back_fx_z_index": 1,
 
 		"order": 211
 	},
@@ -11929,10 +11925,10 @@ const ITEMS = {
 		"flap_sprite_offset_left": [0, 0],
 		"back_scale_multiplier": 1.0,
 		"back_flip_with_facing": false,
-		"back_fx_scene": "res://Scenes/particles/DragonFireWingsFX.tscn",
+		"back_fx_scene": "res://Scenes/particles/DragonFireWingAuraFX.tscn",
 		"back_fx_offset": [0, 0],
 		"back_fx_scale": [1.0, 1.0],
-		"back_fx_z_index": 72,
+		"back_fx_z_index": 1,
 
 		"order": 206
 	},
@@ -12010,10 +12006,10 @@ const ITEMS = {
 		"flap_sprite_offset_left": [0, 0],
 		"back_scale_multiplier": 1.0,
 		"back_flip_with_facing": false,
-		"back_fx_scene": "res://Scenes/particles/DragonFireWingsFX.tscn",
+		"back_fx_scene": "res://Scenes/particles/PhoenixWingsFX.tscn",
 		"back_fx_offset": [0, 0],
 		"back_fx_scale": [1.0, 1.0],
-		"back_fx_z_index": 72,
+		"back_fx_z_index": 1,
 
 		"order": 208
 	},
@@ -13807,6 +13803,7 @@ const ITEMS = {
 		"equipable": true,
 		"equipment_slot": "hand",
 		"hand_item": true,
+		"punch_animation": "punch_sword",
 		"animation_fps": 6.0,
 		"hand_item_animations": {
 			"idle": {

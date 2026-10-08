@@ -5,56 +5,74 @@
 [ext_resource type="Texture2D" uid="uid://ca0sha8kg6yfo" path="res://Assets/particles/water_splash.png" id="3_splash"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_glow"]
-blend_mode = 1
+blend_mode = 0
+
+[sub_resource type="Gradient" id="Gradient_water_fade"]
+offsets = PackedFloat32Array(0, 0.12, 0.58, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 0.65, 0.94, 1, 0.7, 0.3, 0.75, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture_water_fade"]
+gradient = SubResource("Gradient_water_fade")
+
+[sub_resource type="Curve" id="Curve_water_shrink"]
+_data = [Vector2(0, 0.65), 0.0, 0.0, 0, 0, Vector2(0.2, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.08), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_water_shrink"]
+curve = SubResource("Curve_water_shrink")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_80e6t"]
 particle_flag_disable_z = true
 emission_shape = 3
-emission_box_extents = Vector3(4, 5, 0)
+emission_box_extents = Vector3(1, 1.5, 0)
 angle_min = -24.0
 angle_max = 24.0
-spread = 58.0
-initial_velocity_min = 34.0
-initial_velocity_max = 132.0
+spread = 20.0
+initial_velocity_min = 35.0
+initial_velocity_max = 75.0
 angular_velocity_min = -220.0
 angular_velocity_max = 220.0
 gravity = Vector3(0, 18, 0)
 damping_min = 3.4
 damping_max = 7.2
-scale_min = 0.14
-scale_max = 0.36
-color = Color(0.78, 1, 1, 0.62)
+scale_min = 0.06
+scale_max = 0.14
+color = Color(0.65, 0.96, 1, 0.4)
 hue_variation_min = -0.04
 hue_variation_max = 0.05
+color_ramp = SubResource("GradientTexture_water_fade")
+scale_curve = SubResource("CurveTexture_water_shrink")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_l3trs"]
 particle_flag_disable_z = true
 emission_shape = 3
-emission_box_extents = Vector3(110, 4, 0)
+emission_box_extents = Vector3(110, 1.5, 0)
 angle_min = -18.0
 angle_max = 18.0
-spread = 24.0
-initial_velocity_min = 18.0
-initial_velocity_max = 74.0
+spread = 8.0
+initial_velocity_min = 55.0
+initial_velocity_max = 95.0
 angular_velocity_min = -180.0
 angular_velocity_max = 180.0
 gravity = Vector3(0, 8, 0)
 damping_min = 3.6
 damping_max = 8.8
-scale_min = 0.06
-scale_max = 0.18
-color = Color(0.9, 1, 1, 0.42)
+scale_min = 0.04
+scale_max = 0.10
+color = Color(0.85, 1, 1, 0.32)
 hue_variation_min = -0.05
 hue_variation_max = 0.06
+color_ramp = SubResource("GradientTexture_water_fade")
+scale_curve = SubResource("CurveTexture_water_shrink")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_o3y4j"]
 particle_flag_disable_z = true
 emission_shape = 3
-emission_box_extents = Vector3(110, 7, 0)
+emission_box_extents = Vector3(110, 2, 0)
 angle_min = -180.0
 angle_max = 180.0
 direction = Vector3(1, 0.03, 0)
-spread = 64.0
+spread = 18.0
 initial_velocity_min = 5.0
 initial_velocity_max = 30.0
 angular_velocity_min = -90.0
@@ -62,90 +80,98 @@ angular_velocity_max = 90.0
 gravity = Vector3(0, 4, 0)
 damping_min = 2.8
 damping_max = 7.4
-scale_min = 0.08
-scale_max = 0.24
-color = Color(0.38, 0.86, 1, 0.24)
+scale_min = 0.04
+scale_max = 0.12
+color = Color(0.28, 0.7, 1, 0.15)
 hue_variation_min = -0.05
 hue_variation_max = 0.06
+color_ramp = SubResource("GradientTexture_water_fade")
+scale_curve = SubResource("CurveTexture_water_shrink")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_f713m"]
 particle_flag_disable_z = true
 emission_shape = 3
-emission_box_extents = Vector3(5, 6, 0)
+emission_box_extents = Vector3(1.5, 2, 0)
 angle_min = -180.0
 angle_max = 180.0
 direction = Vector3(-0.35, -0.06, 0)
-spread = 132.0
-initial_velocity_min = 74.0
-initial_velocity_max = 224.0
+spread = 68.0
+initial_velocity_min = 45.0
+initial_velocity_max = 105.0
 angular_velocity_min = -360.0
 angular_velocity_max = 360.0
 gravity = Vector3(0, 88, 0)
 damping_min = 3.4
 damping_max = 8.0
-scale_min = 0.18
-scale_max = 0.48
-color = Color(0.64, 1, 1, 0.92)
+scale_min = 0.06
+scale_max = 0.16
+color = Color(0.6, 0.95, 1, 0.65)
 hue_variation_min = -0.05
 hue_variation_max = 0.06
+color_ramp = SubResource("GradientTexture_water_fade")
+scale_curve = SubResource("CurveTexture_water_shrink")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_s28r6"]
 particle_flag_disable_z = true
 emission_shape = 3
-emission_box_extents = Vector3(8, 8, 0)
+emission_box_extents = Vector3(2, 2, 0)
 angle_min = -180.0
 angle_max = 180.0
 direction = Vector3(-0.2, 0, 0)
-spread = 142.0
+spread = 85.0
 initial_velocity_min = 18.0
-initial_velocity_max = 96.0
+initial_velocity_max = 50.0
 angular_velocity_min = -180.0
 angular_velocity_max = 180.0
 gravity = Vector3(0, 32, 0)
 damping_min = 2.4
 damping_max = 6.4
-scale_min = 0.14
-scale_max = 0.38
-color = Color(0.92, 1, 1, 0.46)
+scale_min = 0.06
+scale_max = 0.16
+color = Color(0.82, 1, 1, 0.35)
 hue_variation_min = -0.04
 hue_variation_max = 0.05
+color_ramp = SubResource("GradientTexture_water_fade")
+scale_curve = SubResource("CurveTexture_water_shrink")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_2s3nc"]
 particle_flag_disable_z = true
 emission_shape = 3
-emission_box_extents = Vector3(5, 4, 0)
+emission_box_extents = Vector3(2, 2, 0)
 angle_min = -180.0
 angle_max = 180.0
 direction = Vector3(-0.15, -1, 0)
-spread = 86.0
-initial_velocity_min = 42.0
-initial_velocity_max = 150.0
+spread = 65.0
+initial_velocity_min = 35.0
+initial_velocity_max = 90.0
 angular_velocity_min = -260.0
 angular_velocity_max = 260.0
 gravity = Vector3(0, 130, 0)
 damping_min = 2.6
 damping_max = 5.8
-scale_min = 0.1
-scale_max = 0.3
-color = Color(0.82, 1, 1, 0.76)
+scale_min = 0.05
+scale_max = 0.13
+color = Color(0.74, 0.96, 1, 0.65)
 hue_variation_min = -0.05
 hue_variation_max = 0.06
+color_ramp = SubResource("GradientTexture_water_fade")
+scale_curve = SubResource("CurveTexture_water_shrink")
 
 [node name="WaterSurgeBeamFX" type="Node2D" unique_id=1548755209]
 z_index = 4092
 z_as_relative = false
 script = ExtResource("1_script")
-beam_width = 4.5
-wave_speed = 11.1
-one_shot_duration = 0.5
+beam_width = 6.2
+wave_strength = 1.5
+wave_speed = 19.0
+one_shot_duration = 0.4
 
 [node name="SourceSpray" type="GPUParticles2D" parent="." unique_id=1500101563]
 z_index = 3
 material = SubResource("CanvasItemMaterial_glow")
-amount = 32
+amount = 10
 texture = ExtResource("2_mote")
-lifetime = 0.32
-preprocess = 0.32
+lifetime = 0.22
 randomness = 0.58
 visibility_rect = Rect2(-18, -24, 58, 52)
 process_material = SubResource("ParticleProcessMaterial_80e6t")
@@ -154,10 +180,9 @@ process_material = SubResource("ParticleProcessMaterial_80e6t")
 z_index = 4
 material = SubResource("CanvasItemMaterial_glow")
 position = Vector2(110, 0)
-amount = 68
+amount = 28
 texture = ExtResource("2_mote")
-lifetime = 0.44
-preprocess = 0.44
+lifetime = 0.22
 randomness = 0.66
 visibility_rect = Rect2(-121, -24, 242, 48)
 process_material = SubResource("ParticleProcessMaterial_l3trs")
@@ -166,10 +191,9 @@ process_material = SubResource("ParticleProcessMaterial_l3trs")
 z_index = 2
 material = SubResource("CanvasItemMaterial_glow")
 position = Vector2(110, 0)
-amount = 42
+amount = 8
 texture = ExtResource("3_splash")
-lifetime = 0.56
-preprocess = 0.56
+lifetime = 0.26
 randomness = 0.76
 visibility_rect = Rect2(-121, -24, 242, 48)
 process_material = SubResource("ParticleProcessMaterial_o3y4j")
@@ -178,11 +202,9 @@ process_material = SubResource("ParticleProcessMaterial_o3y4j")
 z_index = 5
 material = SubResource("CanvasItemMaterial_glow")
 position = Vector2(220, 0)
-amount = 70
+amount = 16
 texture = ExtResource("3_splash")
-lifetime = 0.34
-one_shot = true
-explosiveness = 0.98
+lifetime = 0.28
 randomness = 0.62
 visibility_rect = Rect2(-34, -30, 70, 64)
 process_material = SubResource("ParticleProcessMaterial_f713m")
@@ -191,11 +213,9 @@ process_material = SubResource("ParticleProcessMaterial_f713m")
 z_index = 4
 material = SubResource("CanvasItemMaterial_glow")
 position = Vector2(220, 0)
-amount = 34
+amount = 6
 texture = ExtResource("2_mote")
-lifetime = 0.48
-one_shot = true
-explosiveness = 0.92
+lifetime = 0.28
 randomness = 0.72
 visibility_rect = Rect2(-34, -28, 70, 58)
 process_material = SubResource("ParticleProcessMaterial_s28r6")
@@ -204,11 +224,9 @@ process_material = SubResource("ParticleProcessMaterial_s28r6")
 z_index = 5
 material = SubResource("CanvasItemMaterial_glow")
 position = Vector2(220, 0)
-amount = 28
+amount = 12
 texture = ExtResource("2_mote")
-lifetime = 0.52
-one_shot = true
-explosiveness = 0.96
+lifetime = 0.32
 randomness = 0.54
 visibility_rect = Rect2(-30, -38, 58, 72)
 process_material = SubResource("ParticleProcessMaterial_2s3nc")

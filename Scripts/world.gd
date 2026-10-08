@@ -120,6 +120,9 @@ const SNOW_STORM_WIND_FX_SCENE_PATH = "res://Scenes/particles/WindGustFX.tscn"
 const ROTATING_SWORD_SLASH_FX_SCENE_PATH = "res://Scenes/particles/RotatingSwordSlashFX.tscn"
 const ANT_SWORD_SLASH_REMOTE_DEDUPE_MSEC := 140
 const SWORD_FIRE_HIT_FX_SCENE_PATH = "res://Scenes/particles/SwordFireHitFX.tscn"
+const VOID_TRIDENT_HIT_FX := preload("res://Scenes/particles/VoidTridentHitFX.tscn")
+const VOID_SABER_HIT_FX := preload("res://Scenes/particles/VoidSaberHitFX.tscn")
+const ANGELIC_SWORD_HIT_FX := preload("res://Scenes/particles/AngelicSwordHitFX.tscn")
 const PHOENIX_SWORD_FIRE_HIT_REMOTE_DEDUPE_MSEC := 140
 const FIRE_PROJECTILE_FX_SCENE_PATH = "res://Scenes/particles/FireProjectileFX.tscn"
 const FIRE_STAFF_PROJECTILE_REMOTE_DEDUPE_MSEC := 140
@@ -4290,9 +4293,36 @@ func spawn_thunder_particles(start_world_position: Vector2, end_world_position: 
 		particle_manager.spawn_thunder_arc(start_world_position, end_world_position, mirror_direction)
 
 
-func spawn_water_surge_beam_particles(start_world_position: Vector2, end_world_position: Vector2, mirror_direction: bool = false):
+func spawn_water_surge_beam_particles(start_world_position: Vector2, end_world_position: Vector2, mirror_direction: bool = false, source_actor: Node2D = null, source_id: String = ""):
 	if particle_manager != null and particle_manager.has_method("spawn_water_surge_beam"):
-		particle_manager.spawn_water_surge_beam(start_world_position, end_world_position, mirror_direction)
+		var source_provider := Callable()
+		if is_instance_valid(source_actor):
+			source_provider = get_neptune_jet_source_position.bind(source_actor, -1 if mirror_direction else 1, end_world_position)
+		particle_manager.spawn_water_surge_beam(start_world_position, end_world_position, mirror_direction, source_actor, source_id, source_provider)
+
+
+func get_neptune_jet_source_position(actor: Node2D, facing: int, target: Vector2) -> Vector2:
+	if not is_instance_valid(actor) or not actor.is_visible_in_tree():
+		return Vector2(INF, INF)
+	if actor == player and str(equipped_tool).strip_edges().to_lower() != "neptune_trident":
+		return Vector2(INF, INF)
+	var equipment = actor.get_meta("equipment_slots", {})
+	if actor != player and equipment is Dictionary and equipment.has("hand") and str(equipment.hand) != "neptune_trident":
+		return Vector2(INF, INF)
+	var sprite := actor.get_node_or_null("PlayerVisual/HandItem/HandItemAnimated") as AnimatedSprite2D
+	if sprite != null:
+		if not sprite.is_visible_in_tree():
+			return Vector2(INF, INF)
+		# Neptune's prongs end before the edge of its padded 64px atlas frame.
+		var tip := Vector2(21, -1) + sprite.offset
+		if not sprite.centered:
+			tip += Vector2(32, 32)
+		if sprite.flip_h:
+			tip.x = -tip.x
+		if sprite.flip_v:
+			tip.y = -tip.y
+		return sprite.to_global(tip)
+	return get_actor_weapon_edge_world_position(actor, facing, target)
 
 
 func spawn_fishing_reward_confetti_particles(world_position: Vector2, rarity: String):
@@ -4336,6 +4366,22 @@ func _get_local_fishing_reward_confetti_ui_position() -> Vector2:
 
 
 func spawn_neptune_trident_block_hit_particles(grid_pos: Vector2i, _block_type: String = "", _layer: String = "foreground", source_tool: String = ""):
+	if is_angelic_sword_source_tool(source_tool):
+		spawn_angelic_sword_hit_particles(get_block_center_world_position(grid_pos))
+		return
+
+	if is_serpent_staff_source_tool(source_tool):
+		spawn_serpent_staff_particles(get_block_center_world_position(grid_pos))
+		return
+
+	if is_void_saber_source_tool(source_tool):
+		spawn_void_saber_hit_particles(get_block_center_world_position(grid_pos))
+		return
+
+	if is_void_trident_source_tool(source_tool):
+		spawn_void_trident_hit_particles(get_block_center_world_position(grid_pos))
+		return
+
 	if is_blood_battleaxe_source_tool(source_tool):
 		spawn_blood_battleaxe_throw_particles(get_block_center_world_position(grid_pos))
 		return
@@ -4360,10 +4406,22 @@ func spawn_neptune_trident_block_hit_particles(grid_pos: Vector2i, _block_type: 
 		return
 
 	var target_position := get_block_center_world_position(grid_pos)
-	spawn_water_surge_beam_particles(get_local_weapon_edge_world_position(target_position), target_position, player_facing_direction < 0)
+	spawn_water_surge_beam_particles(get_local_weapon_edge_world_position(target_position), target_position, player_facing_direction < 0, player)
 
 
 func spawn_hand_item_swing_particles(target_world_position: Vector2 = Vector2(INF, INF), source_tool: String = "") -> bool:
+	if is_angelic_sword_source_tool(source_tool):
+		return spawn_angelic_sword_hit_particles(target_world_position)
+
+	if is_serpent_staff_source_tool(source_tool):
+		return spawn_serpent_staff_particles(target_world_position)
+
+	if is_void_saber_source_tool(source_tool):
+		return spawn_void_saber_hit_particles(target_world_position)
+
+	if is_void_trident_source_tool(source_tool):
+		return spawn_void_trident_hit_particles(target_world_position)
+
 	if is_blood_battleaxe_source_tool(source_tool):
 		return spawn_blood_battleaxe_throw_particles(target_world_position)
 
@@ -4400,7 +4458,7 @@ func spawn_neptune_trident_swing_particles(target_world_position: Vector2 = Vect
 			direction = Vector2.RIGHT * (1.0 if player_facing_direction >= 0 else -1.0)
 		target_position = start_position + direction * HAND_ITEM_SWING_RANGE_PIXELS
 
-	spawn_water_surge_beam_particles(start_position, target_position, player_facing_direction < 0)
+	spawn_water_surge_beam_particles(start_position, target_position, player_facing_direction < 0, player)
 	return true
 
 
@@ -4436,6 +4494,58 @@ func spawn_ant_sword_actor_swing_particles(actor: Node2D, facing_direction: int 
 
 
 func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type: String = "", _layer: String = "foreground", source_tool: String = "", source_data: Dictionary = {}):
+	if is_angelic_sword_source_tool(source_tool, false):
+		var angelic_target := get_block_center_world_position(grid_pos)
+		var angelic_actor = get_network_actor_node(source_data)
+		var angelic_now := Time.get_ticks_msec()
+		if is_instance_valid(angelic_actor):
+			var recent := angelic_now - int(angelic_actor.get_meta("last_angelic_sword_hit_msec", -1000))
+			if recent >= 0 and recent < 100 and angelic_actor.get_meta("last_angelic_sword_hit_position", Vector2.INF) == angelic_target:
+				return
+		if spawn_angelic_sword_hit_at(angelic_target, get_network_actor_facing(source_data)) and is_instance_valid(angelic_actor):
+			angelic_actor.set_meta("last_angelic_sword_hit_msec", angelic_now)
+			angelic_actor.set_meta("last_angelic_sword_hit_position", angelic_target)
+		return
+
+	if is_serpent_staff_source_tool(source_tool, false):
+		var serpent_target := get_block_center_world_position(grid_pos)
+		var serpent_actor = get_network_actor_node(source_data)
+		var serpent_now := Time.get_ticks_msec()
+		if is_instance_valid(serpent_actor):
+			var recent := serpent_now - int(serpent_actor.get_meta("last_serpent_staff_fx_msec", -1000))
+			if recent >= 0 and recent < 100 and serpent_actor.get_meta("last_serpent_staff_fx_position", Vector2.INF) == serpent_target:
+				return
+		if spawn_serpent_staff_at(get_network_actor_weapon_edge_world_position(source_data, serpent_target), serpent_target, get_network_actor_facing(source_data)) and is_instance_valid(serpent_actor):
+			serpent_actor.set_meta("last_serpent_staff_fx_msec", serpent_now)
+			serpent_actor.set_meta("last_serpent_staff_fx_position", serpent_target)
+		return
+
+	if is_void_saber_source_tool(source_tool, false):
+		var saber_target := get_block_center_world_position(grid_pos)
+		var saber_actor = get_network_actor_node(source_data)
+		var saber_now := Time.get_ticks_msec()
+		if is_instance_valid(saber_actor):
+			var recent := saber_now - int(saber_actor.get_meta("last_void_saber_hit_msec", -1000))
+			if recent >= 0 and recent < 100 and saber_actor.get_meta("last_void_saber_hit_position", Vector2(INF, INF)) == saber_target:
+				return
+		if spawn_void_saber_hit_at(saber_target, get_network_actor_facing(source_data)) and is_instance_valid(saber_actor):
+			saber_actor.set_meta("last_void_saber_hit_msec", saber_now)
+			saber_actor.set_meta("last_void_saber_hit_position", saber_target)
+		return
+
+	if is_void_trident_source_tool(source_tool, false):
+		var void_target := get_block_center_world_position(grid_pos)
+		var void_actor = get_network_actor_node(source_data)
+		var void_now := Time.get_ticks_msec()
+		if is_instance_valid(void_actor):
+			var recent := void_now - int(void_actor.get_meta("last_void_trident_hit_msec", -1000))
+			if recent >= 0 and recent < 100 and void_actor.get_meta("last_void_trident_hit_position", Vector2(INF, INF)) == void_target:
+				return
+		if spawn_void_trident_hit_at(void_target, get_network_actor_facing(source_data)) and is_instance_valid(void_actor):
+			void_actor.set_meta("last_void_trident_hit_msec", void_now)
+			void_actor.set_meta("last_void_trident_hit_position", void_target)
+		return
+
 	if is_blood_battleaxe_source_tool(source_tool, false):
 		var axe_target := get_block_center_world_position(grid_pos)
 		var axe_actor = get_network_actor_node(source_data)
@@ -4523,7 +4633,122 @@ func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type
 
 	var target_position := get_block_center_world_position(grid_pos)
 	var actor_facing := get_network_actor_facing(source_data)
-	spawn_water_surge_beam_particles(get_network_actor_weapon_edge_world_position(source_data, target_position), target_position, actor_facing < 0)
+	var source_id := str(source_data.get("player_id", source_data.get("source_player_id", source_data.get("username", ""))))
+	spawn_water_surge_beam_particles(get_network_actor_weapon_edge_world_position(source_data, target_position), target_position, actor_facing < 0, get_network_actor_node(source_data), source_id)
+
+
+func is_serpent_staff_source_tool(source_tool: String = "", allow_equipped_fallback: bool = true) -> bool:
+	var clean_tool := source_tool.strip_edges().to_lower()
+	if clean_tool != "" or not allow_equipped_fallback:
+		return clean_tool == "serpent_staff"
+	if str(equipped_tool).strip_edges().to_lower() == "serpent_staff":
+		return true
+	return selected_item_category == "tool" and str(selected_item_type).strip_edges().to_lower() == "serpent_staff"
+
+
+func spawn_serpent_staff_particles(target_world_position: Vector2 = Vector2.INF) -> bool:
+	if not is_instance_valid(player):
+		return false
+	var target := target_world_position
+	if not target.is_finite():
+		target = get_local_hand_item_swing_target_position()
+	var start := get_local_weapon_edge_world_position(target)
+	if start.distance_squared_to(target) < 16.0:
+		target = start + Vector2.RIGHT * float(player_facing_direction) * HAND_ITEM_SWING_RANGE_PIXELS
+	return spawn_serpent_staff_at(start, target, player_facing_direction)
+
+
+func spawn_serpent_staff_at(start: Vector2, target: Vector2, facing_direction: int = 1) -> bool:
+	if not start.is_finite() or not target.is_finite():
+		return false
+	var effect := preload("res://Scenes/particles/SerpentStaffFX.tscn").instantiate()
+	add_child(effect)
+	effect.launch_to(start, target, facing_direction)
+	return true
+
+
+func is_angelic_sword_source_tool(source_tool: String = "", allow_equipped_fallback: bool = true) -> bool:
+	var clean_tool := source_tool.strip_edges().to_lower()
+	if clean_tool != "" or not allow_equipped_fallback:
+		return clean_tool == "angelic_sword"
+	if str(equipped_tool).strip_edges().to_lower() == "angelic_sword":
+		return true
+	return selected_item_category == "tool" and str(selected_item_type).strip_edges().to_lower() == "angelic_sword"
+
+
+func spawn_angelic_sword_hit_at(world_position: Vector2, facing_direction: int = 1) -> bool:
+	if not world_position.is_finite():
+		return false
+	var effect := ANGELIC_SWORD_HIT_FX.instantiate()
+	effect.preview_emitting = false
+	effect.auto_restart_preview = false
+	add_child(effect)
+	effect.global_position = world_position
+	effect.play_once(facing_direction)
+	return true
+
+
+func spawn_angelic_sword_hit_particles(target_world_position: Vector2 = Vector2.INF) -> bool:
+	var target := target_world_position
+	if not target.is_finite():
+		target = get_local_hand_item_swing_target_position()
+	return spawn_angelic_sword_hit_at(target, player_facing_direction)
+
+
+func is_void_saber_source_tool(source_tool: String = "", allow_equipped_fallback: bool = true) -> bool:
+	var clean_tool := source_tool.strip_edges().to_lower()
+	if clean_tool != "" or not allow_equipped_fallback:
+		return clean_tool == "void_saber"
+	if str(equipped_tool).strip_edges().to_lower() == "void_saber":
+		return true
+	return selected_item_category == "tool" and str(selected_item_type).strip_edges().to_lower() == "void_saber"
+
+
+func spawn_void_saber_hit_at(world_position: Vector2, facing_direction: int = 1) -> bool:
+	if not world_position.is_finite():
+		return false
+	var effect := VOID_SABER_HIT_FX.instantiate()
+	effect.preview_emitting = false
+	effect.auto_restart_preview = false
+	add_child(effect)
+	effect.global_position = world_position
+	effect.play_once(facing_direction)
+	return true
+
+
+func spawn_void_saber_hit_particles(target_world_position: Vector2 = Vector2(INF, INF)) -> bool:
+	var target := target_world_position
+	if not target.is_finite():
+		target = get_local_hand_item_swing_target_position()
+	return spawn_void_saber_hit_at(target, player_facing_direction)
+
+
+func is_void_trident_source_tool(source_tool: String = "", allow_equipped_fallback: bool = true) -> bool:
+	var clean_tool := source_tool.strip_edges().to_lower()
+	if clean_tool != "" or not allow_equipped_fallback:
+		return clean_tool == "void_trident"
+	if str(equipped_tool).strip_edges().to_lower() == "void_trident":
+		return true
+	return selected_item_category == "tool" and str(selected_item_type).strip_edges().to_lower() == "void_trident"
+
+
+func spawn_void_trident_hit_at(world_position: Vector2, facing_direction: int = 1) -> bool:
+	if not world_position.is_finite():
+		return false
+	var effect := VOID_TRIDENT_HIT_FX.instantiate()
+	effect.preview_emitting = false
+	effect.auto_restart_preview = false
+	add_child(effect)
+	effect.global_position = world_position
+	effect.play_once(facing_direction)
+	return true
+
+
+func spawn_void_trident_hit_particles(target_world_position: Vector2 = Vector2(INF, INF)) -> bool:
+	var target := target_world_position
+	if not target.is_finite():
+		target = get_local_hand_item_swing_target_position()
+	return spawn_void_trident_hit_at(target, player_facing_direction)
 
 
 func get_sword_fire_hit_fx_scene() -> PackedScene:
@@ -4604,7 +4829,7 @@ func spawn_blood_battleaxe_throw_at(start: Vector2, target: Vector2, facing: int
 	var axe_texture: Texture2D = get_inventory_icon_texture("blood_battleaxe", "tool")
 	if axe_texture == null:
 		return false
-	var effect := preload("res://Scripts/item_throw_fx.gd").new()
+	var effect := preload("res://Scripts/blood_battleaxe_throw_fx.gd").new()
 	effect.item_texture = axe_texture
 	add_child(effect)
 	effect.launch_to(start, target, facing)

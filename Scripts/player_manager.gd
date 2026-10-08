@@ -757,6 +757,10 @@ func play_animation_on_player(animation_player, animation_name: String) -> bool:
 		else:
 			return false
 
+	if actual_animation == "punch_sword":
+		var slash_trail = animation_player.get_parent().get_node_or_null("PlayerVisual/SwordSlashTrail")
+		if is_instance_valid(slash_trail):
+			slash_trail.request_swing()
 	animation_player.stop()
 	animation_player.play(actual_animation)
 	return true

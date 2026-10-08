@@ -1,6 +1,6 @@
 [gd_resource type="SpriteFrames" format=3 uid="uid://cxog1jcflqo84"]
 
-[ext_resource type="Texture2D" path="res://Assets/player/expressions/emotes.png" id="1_atlas"]
+[ext_resource type="Texture2D" uid="uid://c47hjv2oag6xn" path="res://Assets/player/expressions/emotes.png" id="1_atlas"]
 
 [sub_resource type="AtlasTexture" id="Atlas_punch"]
 atlas = ExtResource("1_atlas")
@@ -44,24 +44,6 @@ region = Rect2(96, 7, 32, 25)
 margin = Rect2(0, 0, 0, 7)
 filter_clip = true
 
-[sub_resource type="AtlasTexture" id="Atlas_underwater"]
-atlas = ExtResource("1_atlas")
-region = Rect2(224, 39, 32, 25)
-margin = Rect2(0, 0, 0, 7)
-filter_clip = true
-
-[sub_resource type="AtlasTexture" id="Atlas_talk_1"]
-atlas = ExtResource("1_atlas")
-region = Rect2(160, 39, 32, 25)
-margin = Rect2(0, 0, 0, 7)
-filter_clip = true
-
-[sub_resource type="AtlasTexture" id="Atlas_talk_2"]
-atlas = ExtResource("1_atlas")
-region = Rect2(192, 39, 32, 25)
-margin = Rect2(0, 0, 0, 7)
-filter_clip = true
-
 [sub_resource type="AtlasTexture" id="Atlas_smile"]
 atlas = ExtResource("1_atlas")
 region = Rect2(160, 71, 32, 25)
@@ -83,6 +65,24 @@ filter_clip = true
 [sub_resource type="AtlasTexture" id="Atlas_sad"]
 atlas = ExtResource("1_atlas")
 region = Rect2(64, 71, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_underwater"]
+atlas = ExtResource("1_atlas")
+region = Rect2(224, 39, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_talk_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(160, 39, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_talk_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(192, 39, 32, 25)
 margin = Rect2(0, 0, 0, 7)
 filter_clip = true
 
@@ -148,11 +148,33 @@ animations = [{
 "speed": 1.0
 }, {
 "frames": [{
+"duration": 0.22,
+"texture": SubResource("Atlas_smile")
+}, {
+"duration": 0.22,
+"texture": SubResource("Atlas_laugh_2")
+}, {
+"duration": 0.22,
+"texture": SubResource("Atlas_laugh_3")
+}],
+"loop": 1,
+"name": &"laugh",
+"speed": 1.0
+}, {
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("Atlas_punch")
 }],
 "loop": 0,
 "name": &"punch",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_sad")
+}],
+"loop": 1,
+"name": &"sad",
 "speed": 1.0
 }, {
 "frames": [{
@@ -182,18 +204,11 @@ animations = [{
 "name": &"underwater",
 "speed": 1.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("Atlas_smile")}],
-"loop": true,
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_smile")
+}],
+"loop": 1,
 "name": &"wave",
-"speed": 1.0
-}, {
-"frames": [{"duration": 0.22, "texture": SubResource("Atlas_smile")}, {"duration": 0.22, "texture": SubResource("Atlas_laugh_2")}, {"duration": 0.22, "texture": SubResource("Atlas_laugh_3")}],
-"loop": true,
-"name": &"laugh",
-"speed": 1.0
-}, {
-"frames": [{"duration": 1.0, "texture": SubResource("Atlas_sad")}],
-"loop": true,
-"name": &"sad",
 "speed": 1.0
 }]

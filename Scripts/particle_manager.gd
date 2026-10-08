@@ -31,6 +31,7 @@ var oil_refinery_smoke_texture: Texture2D = null
 var blue_hit_particles_scene: PackedScene = null
 var thunder_particles_scene: PackedScene = null
 var water_surge_beam_scene: PackedScene = null
+var active_water_jets: Dictionary = {}
 var epic_fishing_reward_confetti_scene: PackedScene = null
 var legendary_fishing_reward_confetti_scene: PackedScene = null
 
@@ -157,10 +158,20 @@ func spawn_thunder_arc(start_world_position: Vector2, end_world_position: Vector
 		effect.restart()
 
 
-func spawn_water_surge_beam(start_world_position: Vector2, end_world_position: Vector2, _mirror_direction: bool = false):
+func spawn_water_surge_beam(start_world_position: Vector2, end_world_position: Vector2, _mirror_direction: bool = false, source_actor: Node2D = null, source_id: String = "", source_provider: Callable = Callable()):
 	if not _can_emit():
 		return
+	if not start_world_position.is_finite() or not end_world_position.is_finite():
+		return
 	if not _should_emit_at_world_position(start_world_position) and not _should_emit_at_world_position(end_world_position):
+		return
+
+	# Held attacks refresh one stream per actor. Never reset its water phase or
+	# merge separate players just because their projectiles share a target.
+	var key := str(source_actor.get_instance_id()) if is_instance_valid(source_actor) else source_id
+	var current = active_water_jets.get(key)
+	if key != "" and is_instance_valid(current) and not current.is_queued_for_deletion() and current.can_refresh():
+		current.refresh_jet(start_world_position, end_world_position, source_actor, source_provider)
 		return
 
 	var scene := get_water_surge_beam_scene()
@@ -171,24 +182,17 @@ func spawn_water_surge_beam(start_world_position: Vector2, end_world_position: V
 	if effect == null:
 		return
 
-	var start_local := to_local(start_world_position)
-	var end_local := to_local(end_world_position)
-	var target_offset := end_local - start_local
 	effect.set("preview_emitting", false)
 	effect.set("auto_preview_splash", true)
 	effect.set("loop_in_game", false)
-	effect.position = start_local
-	if effect.has_method("set_target_offset"):
-		effect.set_target_offset(target_offset)
-	else:
-		effect.rotation = target_offset.angle()
-		effect.set("beam_length_px", target_offset.length())
 	add_child(effect)
-
-	if effect.has_method("play_once"):
-		effect.play_once()
-	elif effect.has_method("start"):
-		effect.start()
+	effect.refresh_jet(start_world_position, end_world_position, source_actor, source_provider)
+	if key != "":
+		active_water_jets[key] = effect
+		effect.tree_exiting.connect(func():
+			if active_water_jets.get(key) == effect:
+				active_water_jets.erase(key)
+		)
 
 
 func spawn_fishing_reward_confetti(world_position: Vector2, rarity: String):
@@ -339,6 +343,11 @@ func spawn_oil_refinery_smoke(world_position: Vector2, count: int = 5, texture_p
 
 
 func clear_particles():
+	for child in get_children():
+		if child.get_script() != null and child.get_script().resource_path == "res://Scripts/water_surge_beam_fx.gd":
+			child.stop()
+			child.queue_free()
+	active_water_jets.clear()
 	particles.clear()
 	queue_redraw()
 	set_process(false)

@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/angelic_sword_hit_fx.gd" id="1"]
+
+[sub_resource type="CanvasItemMaterial" id="AngelicGlow"]
+blend_mode = 1
+
+[node name="AngelicSwordHitFX" type="Node2D"]
+material = SubResource("AngelicGlow")
+script = ExtResource("1")

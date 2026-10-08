@@ -2,6 +2,7 @@ extends Node
 
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 const SelectedHandPreview = preload("res://Scripts/selected_hand_preview.gd")
+const SwordSlashTrail = preload("res://Scripts/sword_slash_trail.gd")
 
 var world = null
 var player = null
@@ -25,6 +26,7 @@ var right_hand_item_animated = null
 var left_sleeve_animated = null
 var left_hand_item_animated = null
 var hand_item_animated = null
+var sword_slash_trail = null
 var selected_hand_preview: Sprite2D = null
 var selected_hand_preview_key := ""
 var body_accessory_item_animated = null
@@ -224,6 +226,7 @@ func update_selected_hand_preview():
 
 
 func clear_player_references():
+	clear_sword_slash_trail()
 	if is_instance_valid(selected_hand_preview):
 		selected_hand_preview.queue_free()
 	selected_hand_preview = null
@@ -852,8 +855,39 @@ func update_equipped_tool_visual(equipped_tool: String, facing_direction: int):
 		return
 
 	apply_hand_item_transform(equipped_tool, texture, item_data, facing_direction)
+	update_sword_slash_trail(equipped_tool)
 	if selected_hand_preview_key != "" and is_instance_valid(selected_hand_preview) and selected_hand_preview.visible:
 		hand_item_animated.hide()
+
+
+func update_sword_slash_trail(equipped_tool: String) -> void:
+	if not SwordSlashTrail.supports_weapon(equipped_tool) or not is_instance_valid(hand_item_animated):
+		clear_sword_slash_trail()
+		return
+	if is_instance_valid(sword_slash_trail):
+		if sword_slash_trail.weapon_id == equipped_tool:
+			return
+		clear_sword_slash_trail()
+	var visual = player.get_node_or_null("PlayerVisual")
+	var animation_player = player.get_node_or_null("AnimationPlayer") as AnimationPlayer
+	if visual == null or animation_player == null:
+		return
+	sword_slash_trail = SwordSlashTrail.new()
+	sword_slash_trail.name = "SwordSlashTrail"
+	# Share the player's visibility/fade and sit immediately behind the weapon.
+	sword_slash_trail.z_index = hand_item_animated.get_parent().z_index - 1
+	visual.add_child(sword_slash_trail)
+	sword_slash_trail.setup(hand_item_animated, animation_player, equipped_tool)
+
+
+func clear_sword_slash_trail() -> void:
+	if is_instance_valid(sword_slash_trail):
+		sword_slash_trail.clear()
+		sword_slash_trail.hide()
+		# Free the named socket immediately so same-frame re-equips can bind it.
+		sword_slash_trail.get_parent().remove_child(sword_slash_trail)
+		sword_slash_trail.queue_free()
+	sword_slash_trail = null
 
 
 func get_safe_back_socket_editor_position() -> Vector2:
@@ -1591,6 +1625,8 @@ func restart_back_item_jump_animation() -> void:
 	part.play("jump")
 	part.set_frame_and_progress(0, 0.0)
 	back_flap_pose_hold_timer = float(back_item_data.get("flap_pose_hold_time", 0.0))
+	if is_instance_valid(back_item_fx) and back_item_fx.has_method("trigger_flap"):
+		back_item_fx.trigger_flap()
 
 
 func update_back_item_animation(delta):
@@ -1642,6 +1678,8 @@ func update_back_item_fx(_back_item: String, item_data: Dictionary, facing_direc
 		back_socket.add_child(effect)
 
 	back_item_fx = effect
+	if effect.has_method("bind_wings"):
+		effect.bind_wings(back_sprite)
 	update_back_item_fx_facing(facing_direction)
 	update_back_item_fx_mode()
 
@@ -2024,6 +2062,7 @@ func save_lobby_equipment_state_if_changed(tool_item: String, back_item: String)
 
 
 func hide_tool():
+	clear_sword_slash_trail()
 	hide_wearable_part("hand_item")
 
 

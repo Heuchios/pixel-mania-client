@@ -780,6 +780,7 @@ func update_movement_animation_player(animation_name: String):
 		current_movement_animation_player = target_player
 		if current_movement_animation != actual_animation:
 			current_movement_animation = actual_animation
+			request_sword_slash_swing(actual_animation)
 			target_player.play(actual_animation)
 			if actual_animation == "fall":
 				target_player.advance(0.0)
@@ -797,8 +798,17 @@ func update_movement_animation_player(animation_name: String):
 func restart_current_action_animation() -> void:
 	if current_movement_animation_player == null or current_movement_animation == "":
 		return
+	request_sword_slash_swing(current_movement_animation)
 	current_movement_animation_player.play(current_movement_animation)
 	current_movement_animation_player.seek(0.0, true)
+
+
+func request_sword_slash_swing(animation_name: String) -> void:
+	if animation_name != "punch_sword" or not is_instance_valid(player):
+		return
+	var slash_trail = player.get_node_or_null("PlayerVisual/SwordSlashTrail")
+	if is_instance_valid(slash_trail):
+		slash_trail.request_swing()
 
 
 func get_active_punch_animation_name() -> String:

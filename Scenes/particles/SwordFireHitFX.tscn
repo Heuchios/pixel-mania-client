@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://Scripts/sword_fire_hit_fx.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://Assets/effects/fire_wisp.svg" id="2_wisp"]
@@ -10,6 +10,27 @@
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_additive"]
 blend_mode = 1
 
+[sub_resource type="Gradient" id="Gradient_fire_fade"]
+offsets = PackedFloat32Array(0, 0.10, 0.48, 0.78, 1)
+colors = PackedColorArray(1, 1, 0.85, 0.95, 1, 0.95, 0.68, 1, 1, 0.62, 0.25, 0.80, 0.95, 0.25, 0.05, 0.28, 0.6, 0.08, 0.01, 0)
+
+[sub_resource type="GradientTexture1D" id="Ramp_fire_fade"]
+gradient = SubResource("Gradient_fire_fade")
+
+[sub_resource type="Gradient" id="Gradient_smoke_fade"]
+offsets = PackedFloat32Array(0, 0.20, 0.65, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.55, 1, 1, 1, 0.2, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="Ramp_smoke_fade"]
+gradient = SubResource("Gradient_smoke_fade")
+
+[sub_resource type="Curve" id="Curve_flame_shrink"]
+_data = [Vector2(0, 0.55), 0.0, 0.0, 0, 0, Vector2(0.12, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.05), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="Scale_flame_shrink"]
+curve = SubResource("Curve_flame_shrink")
+
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_flame_wisps"]
 particle_flag_disable_z = true
 emission_shape = 3
@@ -17,27 +38,29 @@ emission_box_extents = Vector3(7, 6, 0)
 angle_min = -18.0
 angle_max = 18.0
 direction = Vector3(0, -1, 0)
-spread = 150.0
-initial_velocity_min = 42.0
-initial_velocity_max = 118.0
+spread = 85.0
+initial_velocity_min = 24.0
+initial_velocity_max = 65.0
 angular_velocity_min = -30.0
 angular_velocity_max = 30.0
-gravity = Vector3(0, -34, 0)
+gravity = Vector3(0, -22, 0)
 damping_min = 1.1
 damping_max = 2.5
-scale_min = 0.3
-scale_max = 0.7
-color = Color(1, 0.55, 0.12, 0.88)
+scale_min = 0.28
+scale_max = 0.52
+scale_curve = SubResource("Scale_flame_shrink")
+color_ramp = SubResource("Ramp_fire_fade")
+color = Color(1, 0.75, 0.38, 0.88)
 hue_variation_min = -0.05
 hue_variation_max = 0.08
 turbulence_enabled = true
-turbulence_noise_strength = 1.4
+turbulence_noise_strength = 0.55
 turbulence_noise_scale = 1.6
 turbulence_noise_speed = Vector3(0.6, -0.9, 0)
 turbulence_influence_min = 0.35
 turbulence_influence_max = 0.65
 turbulence_initial_displacement_min = 0.0
-turbulence_initial_displacement_max = 8.0
+turbulence_initial_displacement_max = 3.0
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_phoenix_feathers"]
 particle_flag_disable_z = true
@@ -46,27 +69,29 @@ emission_box_extents = Vector3(9, 5, 0)
 angle_min = -20.0
 angle_max = 20.0
 direction = Vector3(0, -1, 0)
-spread = 118.0
-initial_velocity_min = 78.0
-initial_velocity_max = 178.0
+spread = 100.0
+initial_velocity_min = 45.0
+initial_velocity_max = 100.0
 angular_velocity_min = -95.0
 angular_velocity_max = 95.0
-gravity = Vector3(0, -48, 0)
+gravity = Vector3(0, -28, 0)
 damping_min = 1.8
 damping_max = 4.2
-scale_min = 0.38
-scale_max = 0.92
-color = Color(1, 0.68, 0.16, 0.86)
+scale_min = 0.26
+scale_max = 0.50
+scale_curve = SubResource("Scale_flame_shrink")
+color_ramp = SubResource("Ramp_fire_fade")
+color = Color(1, 0.85, 0.42, 0.84)
 hue_variation_min = -0.04
 hue_variation_max = 0.1
 turbulence_enabled = true
-turbulence_noise_strength = 1.9
+turbulence_noise_strength = 0.6
 turbulence_noise_scale = 1.2
 turbulence_noise_speed = Vector3(0.85, -1.15, 0)
 turbulence_influence_min = 0.42
 turbulence_influence_max = 0.78
-turbulence_initial_displacement_min = 2.0
-turbulence_initial_displacement_max = 11.0
+turbulence_initial_displacement_min = 0.0
+turbulence_initial_displacement_max = 3.0
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ember_sparks"]
 particle_flag_disable_z = true
@@ -76,15 +101,17 @@ angle_min = -180.0
 angle_max = 180.0
 direction = Vector3(0, -1, 0)
 spread = 180.0
-initial_velocity_min = 70.0
-initial_velocity_max = 240.0
+initial_velocity_min = 65.0
+initial_velocity_max = 155.0
 angular_velocity_min = -400.0
 angular_velocity_max = 400.0
-gravity = Vector3(0, 140, 0)
+gravity = Vector3(0, 90, 0)
 damping_min = 2.2
 damping_max = 4.8
-scale_min = 0.28
-scale_max = 0.75
+scale_min = 0.20
+scale_max = 0.48
+scale_curve = SubResource("Scale_flame_shrink")
+color_ramp = SubResource("Ramp_fire_fade")
 color = Color(1, 0.85, 0.35, 0.95)
 hue_variation_min = -0.03
 hue_variation_max = 0.04
@@ -104,8 +131,10 @@ angular_velocity_max = 50.0
 gravity = Vector3(0, -10, 0)
 damping_min = 0.3
 damping_max = 0.9
-scale_min = 0.3
-scale_max = 0.62
+scale_min = 0.24
+scale_max = 0.44
+scale_curve = SubResource("Scale_flame_shrink")
+color_ramp = SubResource("Ramp_fire_fade")
 color = Color(1, 0.5, 0.1, 0.82)
 hue_variation_min = -0.02
 hue_variation_max = 0.05
@@ -130,9 +159,10 @@ angular_velocity_max = 25.0
 gravity = Vector3(0, -6, 0)
 damping_min = 0.4
 damping_max = 1.0
-scale_min = 0.45
-scale_max = 0.85
-color = Color(0.22, 0.2, 0.19, 0.36)
+scale_min = 0.32
+scale_max = 0.55
+color_ramp = SubResource("Ramp_smoke_fade")
+color = Color(0.3, 0.24, 0.2, 0.20)
 turbulence_enabled = true
 turbulence_noise_strength = 0.7
 turbulence_noise_scale = 1.4
@@ -158,12 +188,12 @@ shadow_enabled = false
 [node name="FlameWisps" type="GPUParticles2D" parent="."]
 z_index = 3
 material = SubResource("CanvasItemMaterial_additive")
-amount = 20
+amount = 10
 texture = ExtResource("2_wisp")
-lifetime = 0.68
+lifetime = 0.44
 lifetime_randomness = 0.4
 one_shot = true
-explosiveness = 0.82
+explosiveness = 0.96
 randomness = 0.6
 visibility_rect = Rect2(-80, -100, 160, 150)
 process_material = SubResource("ParticleProcessMaterial_flame_wisps")
@@ -172,9 +202,9 @@ process_material = SubResource("ParticleProcessMaterial_flame_wisps")
 z_index = 5
 material = SubResource("CanvasItemMaterial_additive")
 position = Vector2(0, -3)
-amount = 14
+amount = 7
 texture = ExtResource("2_wisp")
-lifetime = 0.52
+lifetime = 0.38
 lifetime_randomness = 0.35
 one_shot = true
 explosiveness = 0.96
@@ -185,12 +215,12 @@ process_material = SubResource("ParticleProcessMaterial_phoenix_feathers")
 [node name="EmberSparks" type="GPUParticles2D" parent="."]
 z_index = 4
 material = SubResource("CanvasItemMaterial_additive")
-amount = 32
+amount = 20
 texture = ExtResource("3_spark")
 lifetime = 0.32
 lifetime_randomness = 0.45
 one_shot = true
-explosiveness = 0.92
+explosiveness = 1.0
 randomness = 0.6
 visibility_rect = Rect2(-70, -70, 140, 130)
 process_material = SubResource("ParticleProcessMaterial_ember_sparks")
@@ -198,24 +228,24 @@ process_material = SubResource("ParticleProcessMaterial_ember_sparks")
 [node name="GlowEmbers" type="GPUParticles2D" parent="."]
 z_index = 2
 material = SubResource("CanvasItemMaterial_additive")
-amount = 13
+amount = 8
 texture = ExtResource("4_ember")
-lifetime = 0.95
+lifetime = 0.62
 lifetime_randomness = 0.4
 one_shot = true
-explosiveness = 0.7
+explosiveness = 0.92
 randomness = 0.78
 visibility_rect = Rect2(-60, -90, 120, 110)
 process_material = SubResource("ParticleProcessMaterial_glow_embers")
 
 [node name="SmokePuff" type="GPUParticles2D" parent="."]
 z_index = 1
-amount = 6
+amount = 3
 texture = ExtResource("5_smoke")
-lifetime = 1.05
+lifetime = 0.64
 lifetime_randomness = 0.4
 one_shot = true
-explosiveness = 0.65
+explosiveness = 0.8
 randomness = 0.6
 visibility_rect = Rect2(-45, -100, 90, 110)
 process_material = SubResource("ParticleProcessMaterial_smoke")
