@@ -7,6 +7,52 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Production 1.2.19 pickup/loadout fixes and builds (2026-10-08)
+
+All requested fixes passed checks and were committed before deployment. Backend
+commit `0e00d0e9deb84` and client source `c6c159465df1` are released as
+`20261008-pickup-loadout-0e00d0e`. Production and staging have the identical backend
+archive SHA-256 `36842af7cf226c054b3602a4a6afc1c1fa74fa99300dff8617a2de4c2d425eb1`.
+Main (8080) and world routes (18091, 18092) each report this release, version 1.2.19,
+minimum 1.2.14, and healthy PostgreSQL/Redis. Production API smoke checks passed.
+Rollback target is `20261008-world-entry-fixes-9df7bb6`. Verified pre-release backup:
+`shared/backups/before-production-1219-1791503145874.dump` (62,174,957 bytes).
+
+The deployed read-only identity audit found 5,596 active drops across 95 worlds,
+78 requiring identities, and ZERO mismatches after the 50 snow and two staff
+recoveries. Legacy provenance remains explicitly unknown; identities were repaired
+with audit records, without changing drop counts, positions or player inventory.
+The audit/recovery history and commands are in the backend's
+`docs/drop_identity_recovery.md`.
+
+The complete backend `check:security` passed before commit and again in production
+promotion. All 19 pickup checks, the real SQL/PGlite recovery/history/partial-stack
+tests, harvest weapon/race/rollback tests, and four client state/loadout suites
+passed. This closes the identified creation, partial repair and partial player
+update failure paths; it is not a claim that arbitrary future bugs are impossible.
+
+Version 1.2.19 artifacts are in
+`D:/Pixelmania/PixelMania/release_artifacts/client-1.2.19/`:
+
+- `PixelMania-desktop-1.2.19.zip` (47,602,055 bytes), published to production.
+- `PixelMania-1.2.19-build41.apk` (101,794,620 bytes).
+- `PixelMania-1.2.19-build41.aab` (49,537,968 bytes).
+- `build-manifest.json` records committed source and artifact SHA-256 values.
+
+Staging and production launcher tests downloaded, checksum-verified and installed
+1.2.19. Production desktop minimum is 1.2.19; Windows package SHA-256 is
+`3be6979f0121720cb98a7e94d422830ffcfafa567dbe31adfaa3b2568d280ba0`.
+Packaged debug startup connected to staging; packaged release startup connected to
+production and ignored staging overrides. Isolated source import/startup had no
+script or resource-load errors. Windows file version is 1.2.19.0. APK/AAB signatures
+and embedded version 1.2.19/code 41 were verified, and APK signing identity matches
+1.2.18. Temporary export credentials were removed from the isolated build source.
+
+Android artifacts are built and signed, not uploaded to Google Play. Android
+manifest/minimum remains unchanged, and the global server floor remains 1.2.14.
+No physical Android-device or authenticated multiplayer gameplay test was run.
+No GitHub push was needed or attempted. Unrelated temporary files remain untracked.
+
 ### Global drop audit and release 1.2.19 preparation (2026-10-08)
 
 The user's follow-up authorized a game-wide pickup audit, Serpent Staff recovery,
