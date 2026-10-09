@@ -20,5 +20,5 @@ func _initialize() -> void:
 		printerr("Baby Hair must remain a 0.1% reward")
 		quit(1)
 		return
-	print("[hair-pack-catalog] All 12 rewards have equipped art and icons; Baby Hair is 0.1%")
+	print("[hair-pack-catalog] All 18 rewards have equipped art and icons; Baby Hair is 0.1%")
 	quit(0)

@@ -371,12 +371,373 @@ const HAIR_PACK_REWARDS = [
 	{"item_id": "blonde_hair", "weight": 999},
 	{"item_id": "brunette_hair", "weight": 999},
 	{"item_id": "crazy_hair", "weight": 999},
-	{"item_id": "baby_hair", "weight": 11}
+	{"item_id": "black_spiky_hair", "weight": 999},
+	{"item_id": "chestnut_curtains", "weight": 999},
+	{"item_id": "supernova_hair", "weight": 999},
+	{"item_id": "chestnut_bob", "weight": 999},
+	{"item_id": "ginger_ponytail", "weight": 999},
+	{"item_id": "ginger_pigtails", "weight": 999},
+	{"item_id": "baby_hair", "weight": 17}
 ]
 
 const PRESTIGE_COLOURED_BLOCK_PACK_REWARDS = ["ps_blue_block", "ps_green_block", "ps_purple_block", "ps_red_block", "ps_yellow_block"]
 
 const ITEMS = {
+	"black_spiky_hair": {
+		"category": "hair",
+		"display_name": "Black Spiky Hair",
+		"rarity": "common",
+		"texture": "black_spiky_hair",
+		"inventory_icon": "black_spiky_hair_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hair",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 213
+	},
+
+	"chestnut_curtains": {
+		"category": "hair",
+		"display_name": "Chestnut Curtains",
+		"rarity": "common",
+		"texture": "chestnut_curtains",
+		"inventory_icon": "chestnut_curtains_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hair",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 214
+	},
+
+	"supernova_hair": {
+		"category": "hair",
+		"display_name": "Supernova Hair",
+		"rarity": "common",
+		"texture": "supernova_hair_1",
+		"inventory_icon": "supernova_hair_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hair",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"animation_fps": 5,
+		"hair_animations": {
+			"idle": {
+				"frames": [
+					"supernova_hair_1",
+					"supernova_hair_2",
+					"supernova_hair_3"
+				],
+				"fps": 5,
+				"loop": true
+			}
+		},
+		"order": 215
+	},
+
+	"chestnut_bob": {
+		"category": "hair",
+		"display_name": "Chestnut Bob",
+		"rarity": "common",
+		"texture": "chestnut_bob",
+		"inventory_icon": "chestnut_bob_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hair",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 216
+	},
+
+	"ginger_ponytail": {
+		"category": "hair",
+		"display_name": "Ginger Ponytail",
+		"rarity": "common",
+		"texture": "ginger_ponytail",
+		"inventory_icon": "ginger_ponytail_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hair",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 217
+	},
+
+	"ginger_pigtails": {
+		"category": "hair",
+		"display_name": "Ginger Pigtails",
+		"rarity": "common",
+		"texture": "ginger_pigtails",
+		"inventory_icon": "ginger_pigtails_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hair",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 218
+	},
+
+	"scrub_hat": {
+		"category": "hat",
+		"display_name": "Scrub Hat",
+		"rarity": "common",
+		"texture": "scrub_hat",
+		"inventory_icon": "scrub_hat_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 219
+	},
+
+	"ruby_bow": {
+		"category": "hat",
+		"display_name": "Ruby Bow",
+		"rarity": "common",
+		"texture": "ruby_bow",
+		"inventory_icon": "ruby_bow_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 220
+	},
+
+	"violet_bow": {
+		"category": "hat",
+		"display_name": "Violet Bow",
+		"rarity": "common",
+		"texture": "violet_bow",
+		"inventory_icon": "violet_bow_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 221
+	},
+
+	"sunflower_cap": {
+		"category": "hat",
+		"display_name": "Sunflower Cap",
+		"rarity": "common",
+		"texture": "sunflower_cap",
+		"inventory_icon": "sunflower_cap_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 222
+	},
+
+	"wizards_hat": {
+		"category": "hat",
+		"display_name": "Wizard's Hat",
+		"rarity": "common",
+		"texture": "wizards_hat",
+		"inventory_icon": "wizards_hat_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 223
+	},
+
+	"witch_hat": {
+		"category": "hat",
+		"display_name": "Witch Hat",
+		"rarity": "common",
+		"texture": "witch_hat_1",
+		"inventory_icon": "witch_hat_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"animation_fps": 5,
+		"hat_animations": {
+			"idle": {
+				"frames": [
+					"witch_hat_1",
+					"witch_hat_2",
+					"witch_hat_3",
+					"witch_hat_4"
+				],
+				"fps": 5,
+				"loop": true
+			}
+		},
+		"order": 224
+	},
+
+	"cone_hat": {
+		"category": "hat",
+		"display_name": "Cone Hat",
+		"rarity": "common",
+		"texture": "cone_hat",
+		"inventory_icon": "cone_hat_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 225
+	},
+
+	"pirate_hat": {
+		"category": "hat",
+		"display_name": "Pirate Hat",
+		"rarity": "common",
+		"texture": "pirate_hat",
+		"inventory_icon": "pirate_hat_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 226
+	},
+
+	"go_green_hat": {
+		"category": "hat",
+		"display_name": "Go Green Hat",
+		"rarity": "common",
+		"texture": "go_green_hat",
+		"inventory_icon": "go_green_hat_icon",
+		"starting_count": 0,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 227
+	},
+
 "password_door_seed": {"category":"seed","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"password_door","seed_box_icon":true,"plantable":true,"display_name":"Password Door Seed","generated_from_block":true,"recipe_tier":11,"grow_time":216000,"max_grow_time":216000},
 
 "blue_portal_seed": {"category":"seed","rarity":"rare","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"equipment_slot":"","gem_value":0,"sell_value":0,"shop_price":0,"permissions":{},"grows_into":"blue_portal","seed_box_icon":true,"plantable":true,"display_name":"Blue Portal Seed","generated_from_block":true,"recipe_tier":11,"grow_time":216000,"max_grow_time":216000},
