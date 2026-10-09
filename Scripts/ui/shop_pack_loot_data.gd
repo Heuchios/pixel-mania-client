@@ -153,57 +153,87 @@ const PACKS = {
       {
         "item_id": "black_afro",
         "category": "hair",
-        "chance": 0.09081818181818181
+        "chance": 0.05876470588235294
       },
       {
         "item_id": "black_slick_hair",
         "category": "hair",
-        "chance": 0.09081818181818181
+        "chance": 0.05876470588235294
       },
       {
         "item_id": "black_combed_hair",
         "category": "hair",
-        "chance": 0.09081818181818181
+        "chance": 0.05876470588235294
       },
       {
         "item_id": "frosty_hair",
         "category": "hair",
-        "chance": 0.09081818181818181
+        "chance": 0.05876470588235294
       },
       {
         "item_id": "flaming_hair",
         "category": "hair",
-        "chance": 0.09081818181818181
+        "chance": 0.05876470588235294
       },
       {
         "item_id": "old_men_hair",
         "category": "hair",
-        "chance": 0.09081818181818181
+        "chance": 0.05876470588235294
       },
       {
         "item_id": "brown_fringe",
         "category": "hair",
-        "chance": 0.09081818181818181
+        "chance": 0.05876470588235294
       },
       {
         "item_id": "brown_combed_hair",
         "category": "hair",
-        "chance": 0.09081818181818181
+        "chance": 0.05876470588235294
       },
       {
         "item_id": "blonde_hair",
         "category": "hair",
-        "chance": 0.09081818181818181
+        "chance": 0.05876470588235294
       },
       {
         "item_id": "brunette_hair",
         "category": "hair",
-        "chance": 0.09081818181818181
+        "chance": 0.05876470588235294
       },
       {
         "item_id": "crazy_hair",
         "category": "hair",
-        "chance": 0.09081818181818181
+        "chance": 0.05876470588235294
+      },
+      {
+        "item_id": "black_spiky_hair",
+        "category": "hair",
+        "chance": 0.05876470588235294
+      },
+      {
+        "item_id": "chestnut_curtains",
+        "category": "hair",
+        "chance": 0.05876470588235294
+      },
+      {
+        "item_id": "supernova_hair",
+        "category": "hair",
+        "chance": 0.05876470588235294
+      },
+      {
+        "item_id": "chestnut_bob",
+        "category": "hair",
+        "chance": 0.05876470588235294
+      },
+      {
+        "item_id": "ginger_ponytail",
+        "category": "hair",
+        "chance": 0.05876470588235294
+      },
+      {
+        "item_id": "ginger_pigtails",
+        "category": "hair",
+        "chance": 0.05876470588235294
       },
       {
         "item_id": "baby_hair",
