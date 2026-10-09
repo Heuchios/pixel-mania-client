@@ -7,6 +7,26 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Production 1.2.21 wearables verified (2026-10-09 UTC)
+
+Client build source `0f747b51` and backend `a4de8670af2a` shipped as
+`20261009-wearables-a4de867`. Added six Hair Pack styles and nine hats from the
+requested wearable atlas cells; Police Hat already existed. Supernova Hair has
+three frames and Witch Hat four. Baby Hair remains at 0.1%, and shop odds match.
+
+Production desktop 1.2.21 is published; the actual launcher download, checksum
+and installation test passed. Main/route health and all 16 item IDs were verified.
+The server minimum stays 1.2.14; Android remains 1.2.6. Signed Android 1.2.21/code
+43 APK/AAB are ready, not uploaded to Play. Artifacts are in
+`D:/Pixelmania/PixelMania/release_artifacts/client-1.2.21-verified/`.
+
+Full backend security and focused client tests passed. Normal packaged Windows
+startup connected to production without script/resource errors. Staging upload
+was rejected by automatic review; only the authorized production deployment ran.
+Unrelated pending fishing edits were excluded and remain local. Complete item
+names, cells, commits, hashes, validation and limits:
+[Wearables release 1.2.21](wearables_release_1_2_21.md).
+
 ### Production 1.2.20 verified and published (2026-10-08 local / 2026-10-09 UTC)
 
 Backend `214da3427bc6024cb546b529c689dafea15e16ee` and client build source
