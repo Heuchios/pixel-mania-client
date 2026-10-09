@@ -146,6 +146,10 @@ var _item_scroll_layout_sync_queued := false
 
 
 func _ready() -> void:
+	# This window and its detached category rail are one layout. Scaling each
+	# branch independently moves the window over the tabs on phones.
+	set_meta("ignore_mobile_ui_scale", true)
+	MobileUIScale.scale_changed.connect(_on_mobile_scale_changed)
 	_sidebar_buttons.assign(sidebar.get_children())
 	_category_grids.assign(item_scroll.get_children())
 	# Detached inventory-style rail; it shares the window's scale and fit budget.
@@ -593,6 +597,10 @@ func _refresh_detail_affordability() -> void:
 	detail_buy_button.tooltip_text = "" if affordable else "You can keep browsing or use Get Gems to add gems."
 
 
+func _on_mobile_scale_changed(_value: float) -> void:
+	_fit_shop_window()
+
+
 func _fit_shop_window() -> void:
 	if shop_window == null:
 		return
@@ -600,14 +608,15 @@ func _fit_shop_window() -> void:
 		if tween != null and tween.is_valid():
 			tween.kill()
 	_panel_open_tweens.clear()
-	for panel in [shop_window, detail_card, reward_card]:
+	for panel in [shop_window, category_rail, detail_card, reward_card]:
 		panel.modulate.a = 1.0
 	# Reflow product columns before applying any last-resort fit scale.
 	var rail_space := CATEGORY_RAIL_WIDTH + CATEGORY_RAIL_GAP
-	var available := Vector2(maxf(772.0, size.x - 24.0), maxf(300.0, size.y - 24.0))
+	var preferred_scale := MobileUIScale.get_layout_scale()
+	var available := Vector2(maxf(772.0, (size.x - 24.0) / preferred_scale), maxf(300.0, (size.y - 24.0) / preferred_scale))
 	var group_size := Vector2(minf(1100.0, available.x), minf(700.0, available.y))
 	shop_window.size = Vector2(group_size.x - rail_space, group_size.y)
-	_shop_fit_scale = minf(1.0, minf(maxf(1.0, size.x - 24.0) / group_size.x, maxf(1.0, size.y - 24.0) / group_size.y))
+	_shop_fit_scale = minf(preferred_scale, minf(maxf(1.0, size.x - 24.0) / group_size.x, maxf(1.0, size.y - 24.0) / group_size.y))
 	var origin := (size - group_size * _shop_fit_scale) * 0.5
 	shop_window.pivot_offset = Vector2.ZERO
 	shop_window.scale = Vector2.ONE * _shop_fit_scale
@@ -620,7 +629,7 @@ func _fit_shop_window() -> void:
 	_reflow_product_grid.call_deferred()
 	for popup in [detail_card, reward_card]:
 		popup.pivot_offset = popup.size * 0.5
-		popup.scale = Vector2.ONE * minf(1.0, minf(maxf(1.0, size.x - 24.0) / popup.size.x, maxf(1.0, size.y - 24.0) / popup.size.y))
+		popup.scale = Vector2.ONE * minf(preferred_scale, minf(maxf(1.0, size.x - 24.0) / popup.size.x, maxf(1.0, size.y - 24.0) / popup.size.y))
 
 
 func _reflow_product_grid() -> void:
@@ -734,8 +743,17 @@ func _play_panel_open(panel: Control, start_scale: Vector2 = Vector2(0.96, 0.96)
 	var previous: Tween = _panel_open_tweens.get(panel)
 	if previous != null and previous.is_valid():
 		previous.kill()
+	if panel == shop_window:
+		# Keep the whole shop's fitted geometry during opening as well.
+		panel.modulate.a = 0.0
+		category_rail.modulate.a = 0.0
+		var fade := create_tween().set_parallel(true)
+		_panel_open_tweens[panel] = fade
+		fade.tween_property(panel, "modulate:a", 1.0, duration)
+		fade.tween_property(category_rail, "modulate:a", 1.0, duration)
+		return
 	panel.pivot_offset = panel.size * 0.5
-	var fit := minf(1.0, minf(maxf(1.0, size.x - 24.0) / panel.size.x, maxf(1.0, size.y - 24.0) / panel.size.y))
+	var fit := minf(MobileUIScale.get_layout_scale(), minf(maxf(1.0, size.x - 24.0) / panel.size.x, maxf(1.0, size.y - 24.0) / panel.size.y))
 	panel.scale = start_scale * fit
 	panel.modulate = Color(1.0, 1.0, 1.0, 0.0)
 	var tween := panel.create_tween()

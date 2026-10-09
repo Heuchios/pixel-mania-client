@@ -22,6 +22,7 @@ const LOGIN_LOOP_SOUND_VOLUME_DB := -12.0
 const LOGIN_LOOP_MODE := AudioStreamWAV.LOOP_FORWARD
 
 var _player: AudioStreamPlayer = null
+var _start_pending := false
 
 
 func start_login_loop() -> void:
@@ -29,12 +30,20 @@ func start_login_loop() -> void:
 	if _player == null:
 		print("[MusicManager] start_login_loop: _player is null after _ensure_player(), aborting.")
 		return
-	if _player.playing:
+	if _player.playing or _start_pending:
 		print("[MusicManager] start_login_loop: already playing, no-op.")
 		return
 	print("[MusicManager] start_login_loop: stream=%s bus=%s volume_db=%.1f -- calling play()." % [_player.stream, _player.bus, _player.volume_db])
-	_player.call_deferred("play")
-	call_deferred("_log_playback_state")
+	_start_pending = true
+	call_deferred("_start_pending_player")
+
+
+func _start_pending_player() -> void:
+	if not _start_pending:
+		return
+	_start_pending = false
+	if is_instance_valid(_player) and not _player.playing:
+		_player.play()
 
 
 func _log_playback_state() -> void:
@@ -55,6 +64,7 @@ func _log_playback_state() -> void:
 
 
 func stop_login_loop() -> void:
+	_start_pending = false
 	if _player != null and is_instance_valid(_player):
 		_player.stop()
 

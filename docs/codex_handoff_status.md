@@ -7,6 +7,39 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### 1.2.20 mobile/music/inventory fixes prepared (2026-10-08)
+
+Mobile gameplay control panels are transparent, zoom buttons are 64 instead of
+96 authored pixels, and pressed icons retain feedback. The detached shop category
+rail and main panel now share a fit/scale calculation and opening fade; the global
+mobile scaler no longer separately positions them. Rendered phone checks confirm
+visible tabs and transparent controls. Layout tests cover five viewport sizes and
+four UI scale settings, including opening and category switching.
+
+Login audio is imported as lossless stereo PCM. Legacy menu helpers share the
+MusicManager player; duplicate deferred starts and cancelled starts are guarded.
+The regression compares every imported PCM sample with the source WAV and checks
+loop bounds, single-player reuse, stop-before-start and no restart on scene reuse.
+
+The global production inventory audit found one 400-unit Super World Lock stack
+with 250 usable identities. A historical fixed 250 cap in startup reconciliation
+had retired 150 original IDs. Backend reconciliation and non-strict ledger sync
+now use the actual item stack limit. Exact original IDs were restored with a
+verified backup and transactional audit, without quantity changes. The repeat
+audit covered 5,692 players/1,057 stacks/222 tracked stacks and found zero issues.
+See backend `docs/inventory_identity_recovery.md` for evidence and recovery IDs.
+
+Full backend security and real SQL drop/inventory tests pass. Client menu music,
+mobile shop, mobile controls, zoom, connected layout, touch scrolling and shop
+pack detail checks pass. The old `ui_typography_test` fails its first assertion
+even in isolated published 1.2.19 source (legacy font opt-out expectation); it is
+not a regression introduced here. The unchanged old `ui_atlas_migration_test`
+also references a retired `shop_card_normal.tres` absent from published 1.2.19;
+current rendered shop and focused pack/layout checks pass. No physical Android
+device test is available.
+Release target is 1.2.20 / Android code 42. Deployment results are recorded after
+verification below; do not assume this preparation note means it is published.
+
 ### Production 1.2.19 pickup/loadout fixes and builds (2026-10-08)
 
 All requested fixes passed checks and were committed before deployment. Backend

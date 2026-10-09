@@ -9,6 +9,13 @@ static func start_menu_loop_sound(host_node: Node, stream_path: String = DEFAULT
 		push_warning("MenuLoopSoundHelper: owner is null.")
 		return null
 
+	# Legacy lobby scenes must share the login autoload too. A second player
+	# doubles the song with a small offset and sounds like distortion/echo.
+	var music := host_node.get_node_or_null("/root/MusicManager")
+	if stream_path == DEFAULT_LOGIN_SOUND_PATH and music != null:
+		music.start_login_loop()
+		return music.get_node_or_null("LoginLoopSound") as AudioStreamPlayer
+
 	var player := host_node.get_node_or_null(player_name) as AudioStreamPlayer
 	if player == null:
 		player = AudioStreamPlayer.new()
@@ -42,7 +49,7 @@ static func start_menu_loop_sound(host_node: Node, stream_path: String = DEFAULT
 		if wav_stream != null:
 			wav_stream.loop_mode = MENU_SOUND_LOOP_MODE
 			wav_stream.loop_begin = 0
-			wav_stream.loop_end = -1
+			wav_stream.loop_end = int(round(wav_stream.get_length() * wav_stream.mix_rate))
 
 	var replay_callable := Callable(player, "play")
 	if not player.finished.is_connected(replay_callable):

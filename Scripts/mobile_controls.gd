@@ -20,7 +20,8 @@ const PUNCH_HOLD_REPEAT_RATE := 0.30
 const GAMEPLAY_CONTROLS_Z_INDEX := 190
 const MOVE_BUTTON_SIZE := Vector2(96.0, 96.0)
 const ACTION_BUTTON_SIZE := Vector2(104.0, 96.0)
-const ZOOM_BUTTON_SIZE := Vector2(96.0, 96.0)
+const ZOOM_BUTTON_SIZE := Vector2(64.0, 64.0)
+const ZOOM_ICON_PADDING := 12.0
 const ZOOM_TAP_STEP := 0.30
 const ZOOM_HOLD_DELAY := 0.16
 const ZOOM_HOLD_SPEED := 2.4
@@ -263,8 +264,8 @@ func _layout_controls():
 	_apply_layout_rect("move_right", Vector2(move_x + move_size.x + gap, bottom_y), move_size, icon_padding, safe_layout_rect, inventory_drawer_offset)
 	_apply_layout_rect("jump", Vector2(action_x, bottom_y), action_size, icon_padding, safe_layout_rect, inventory_drawer_offset)
 	_apply_layout_rect("punch", Vector2(action_x + action_size.x + gap, bottom_y), action_size, icon_padding, safe_layout_rect, inventory_drawer_offset)
-	_apply_layout_rect("zoom_in", Vector2(zoom_x, zoom_y), zoom_size, icon_padding, safe_layout_rect)
-	_apply_layout_rect("zoom_out", Vector2(zoom_x, zoom_y + zoom_size.y + zoom_gap), zoom_size, icon_padding, safe_layout_rect)
+	_apply_layout_rect("zoom_in", Vector2(zoom_x, zoom_y), zoom_size, ZOOM_ICON_PADDING * scale_value, safe_layout_rect)
+	_apply_layout_rect("zoom_out", Vector2(zoom_x, zoom_y + zoom_size.y + zoom_gap), zoom_size, ZOOM_ICON_PADDING * scale_value, safe_layout_rect)
 	_layout_editor_ui(safe_layout_rect)
 
 
@@ -1237,8 +1238,13 @@ func _flash_button(action: String):
 func _apply_button_style(button: Panel, pressed: bool):
 	var action := str(button.get_meta("mobile_control_action", ""))
 	var is_selected := layout_customization_active and action == selected_layout_action
-	var style := UIAtlasDB.get_stylebox("pink_button" if is_selected else "inner_panel").duplicate() as StyleBoxTexture
-	style.modulate_color = Color(0.72, 0.72, 0.72) if pressed else Color.WHITE
+	var style: StyleBox = StyleBoxEmpty.new()
+	if is_selected:
+		var outline := StyleBoxFlat.new()
+		outline.draw_center = false
+		outline.border_color = Color(1.0, 0.8, 1.0)
+		outline.set_border_width_all(3)
+		style = outline
 	button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	button.add_theme_stylebox_override("panel", style)
 	_apply_button_icon(button, action, pressed)
@@ -1250,6 +1256,7 @@ func _apply_button_icon(button: Panel, action: String, pressed: bool) -> void:
 		return
 
 	icon.texture = _get_action_icon_texture(action, pressed and not layout_customization_active)
+	icon.modulate = Color(0.65, 0.65, 0.65) if pressed else Color.WHITE
 
 
 func _get_action_icon_texture(action: String, pressed: bool) -> Texture2D:
