@@ -7,6 +7,47 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Production 1.2.20 verified and published (2026-10-08 local / 2026-10-09 UTC)
+
+Backend `214da3427bc6024cb546b529c689dafea15e16ee` and client build source
+`b1cf65a9fd938c0f613528ad5b34c7705477709f` shipped as
+`20261008-mobile-inventory-214da34`. Staging and production backend archives match
+SHA-256 `bd37d101e7e70721b0e65f70f43434f9d820eec870ab928a4ac9cab8f3023878`.
+The full security gate passed again during promotion, and staging/production API
+smokes passed. Main 8080 and routes 18091/18092 report this release, 1.2.20,
+minimum 1.2.14, PostgreSQL ready and Redis ready.
+
+After production restart, all 5,692 players / 1,057 inventory stacks / 222 tracked
+stacks still have ZERO identity mismatches. All 5,596 active drops in 95 worlds
+(78 tracked drops) also have ZERO mismatches. This confirms the restored original
+IDs survived startup with the cap correction. Previous FISHING snow/staff,
+BUYSEED staff and partial player-state/loadout fixes are included.
+
+Artifacts: `D:/Pixelmania/PixelMania/release_artifacts/client-1.2.20/`:
+
+- `PixelMania-desktop-1.2.20.zip` — 52,077,576 bytes, published to production.
+- `PixelMania-1.2.20-build42.apk` — 106,259,282 bytes, signed, non-debuggable.
+- `PixelMania-1.2.20-build42.aab` — 54,003,108 bytes, signed.
+- `build-manifest.json` records exact source and artifact SHA-256 values.
+
+Desktop production minimum is 1.2.20 and ZIP hash is
+`229ab10d7727f285dcb89c91a034b7d1a64a2d0b02f82b62a400eab091a7268c`.
+Real launcher downloads on both staging and production verified and installed
+1.2.20. The packaged debug client connected to staging; the packaged release
+connected to production and ignored staging overrides. Both started without
+script/resource-load errors. Windows embedded version is 1.2.20.0. The isolated
+release import passed the sample-for-sample lossless music regression. Android
+APK and AAB embedded version 1.2.20/code 42 and signatures were verified; APK
+signing identity matches 1.2.19. Temporary build credentials were removed.
+
+Android builds are ready, not uploaded to Google Play. The Android manifest and
+global compatibility floor were preserved. No physical-device or authenticated
+multiplayer gameplay test was run. Two stale legacy UI test limitations are
+documented in the preparation note below; focused changed-path checks passed.
+Rollback target: `20261008-pickup-loadout-0e00d0e`. Inventory repair backup and audit
+records are in backend `docs/inventory_identity_recovery.md`. No GitHub push was
+needed or performed. Unrelated untracked temporary files remain untouched.
+
 ### 1.2.20 mobile/music/inventory fixes prepared (2026-10-08)
 
 Mobile gameplay control panels are transparent, zoom buttons are 64 instead of
