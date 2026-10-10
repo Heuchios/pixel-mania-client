@@ -7,6 +7,20 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Production 1.2.22 wearable names verified (2026-10-09)
+
+Five requested display names are now Construction Hat, Brown Pigtails, Brown
+Ponytail, Black Stylish Hair and Black Mid Hair. Existing IDs, assets, animations,
+owned items and Hair Pack odds are preserved. Client build source `1a7b34e9`
+and backend `6acf01a` shipped as `20261009-wearable-names-6acf01a`.
+
+Full backend security and focused catalog/wearable checks passed. All five names
+and healthy main/route instances were verified on production. PC 1.2.22 is live;
+the real launcher download/checksum/install test passed. Desktop minimum remains
+1.2.21 and global minimum remains 1.2.14. Signed Android 1.2.22/code 44 builds are
+ready but not uploaded; Android policy remains 1.2.6. Pending fishing changes
+remain excluded. [Release evidence](wearable_names_release_1_2_22.md).
+
 ### Production 1.2.21 wearables verified (2026-10-09 UTC)
 
 Client build source `0f747b51` and backend `a4de8670af2a` shipped as
