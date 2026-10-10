@@ -1,11 +1,28 @@
 # PixelMania Codex Handoff Status
 
-Last updated: 2026-10-08
+Last updated: 2026-10-09 local / 2026-10-10 UTC
 
 This document exists so a fresh Codex chat can continue from the current
 backend/security state without relying on chat memory.
 
 ## Latest Verified Status
+
+### Production 1.2.24 remote hand visuals verified
+
+Backend `33256ff` and client build `4577519` shipped as
+`20261010-hand-visuals-33256ff`. Remote rigs no longer inherit the observer's
+runtime sword trail; each actor owns its effect. Free-swing particles now reach
+observers through bounded cosmetic movement presence, with server-derived
+equipment/facing, join baselines and duplicate suppression. Both players need
+1.2.24 for the complete fix.
+
+189 real-rig/cosmetic checks, existing hand-effect regressions and full backend
+security passed. A synthetic remote-player scene was rendered and inspected.
+Main and both route instances are healthy; deployed regressions, packaged
+Windows startup and real launcher 1.2.24 download/checksum/install passed.
+Signed Android 1.2.24/code 46 APK/AAB are ready, not uploaded to Play.
+Compatibility floors are unchanged. Rollback: `20261010-fishing-5a59e28`.
+[Release evidence](remote_hand_visuals_1_2_24.md).
 
 ### Production 1.2.23 fishing fixes verified (2026-10-09 local / 2026-10-10 UTC)
 

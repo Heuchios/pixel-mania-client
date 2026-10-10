@@ -33,5 +33,37 @@ Both players need 1.2.24 for the complete fix. Legacy clients remain compatible.
 - Backend route/presence checks cover stationary events, authoritative tool and
   facing, malformed/non-finite/out-of-range inputs, rejected movement and joins.
 
-Physical two-device testing has not been performed. Production deployment and
-artifact verification are recorded below after the release completes.
+Full backend `npm run check:security` passed, including type checks, security,
+deployment and dependency gates. A rendered synthetic remote-player scene was
+visually inspected for Neptune Trident, Serpent Staff, Void Trident, Phoenix
+Sword, Fire Staff and Blood Battleaxe. Physical two-device testing has not
+been performed.
+
+## Verified production release
+
+Released 2026-10-09 local / 2026-10-10 UTC. Client build source `4577519` and
+backend `33256ff` shipped as `20261010-hand-visuals-33256ff`. Rollback target:
+`20261010-fishing-5a59e28`.
+
+- Main port 8080 and routes 18091/18092 report 1.2.24 and ready PostgreSQL/Redis.
+- Post-deploy smoke checks and deployed route/presence regressions pass.
+- The actual packaged Windows client starts with normal rendering and connects
+  to production without script/resource errors.
+- Public manifest checksum matches the Windows ZIP; the real launcher
+  downloaded, verified and installed 1.2.24.
+- Android APK/AAB signatures are verified, code 46, non-debuggable APK, same
+  signing certificate as 1.2.23. Temporary export credentials were removed.
+  These Android builds have not been uploaded to Google Play.
+- Global minimum remains 1.2.14, desktop minimum 1.2.21; Android publication
+  policy is unchanged. All prior production content/fixes are included.
+
+Artifacts, logs, preview and exact checksums are in
+`D:/Pixelmania/PixelMania/release_artifacts/client-1.2.24/`.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Windows ZIP | `8e7d8c7da8bc043e52a33a110917f7a207a3102dccd718d9530a27a6b5f8ccab` |
+| Android APK | `9d2a02844a53bb8ee69757a8692d9f3f7bf8d950884a9c7bcc63c118eb126c55` |
+| Android AAB | `0c47a30c8794b78549f3a3bacba2d6491b5f295e737815f96e9c3d13cce23140` |
+
+Unrelated local wearable/temporary work was excluded. No GitHub push was made.
