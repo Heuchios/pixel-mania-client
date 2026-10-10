@@ -7,6 +7,23 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Production 1.2.23 fishing fixes verified (2026-10-09 local / 2026-10-10 UTC)
+
+Backend `5a59e28` and client build `654bba8` shipped as
+`20261010-fishing-5a59e28`. Natural ponds are now included in authoritative
+fishing validation, expired casts permit retries, and client cancellations
+replace misleading casting messages. Full security and 248 client fishing
+checks passed. Target (33), completion (80), start recovery and visual sync
+regressions pass against deployed code. Main/route health and real launcher
+1.2.23 download/checksum/install pass. Signed Android 1.2.23/code 45 APK/AAB
+are ready, not uploaded to Play. Compatibility floors remain unchanged.
+
+FREEZE has a valid wooden rod/bait setup; its saved ponds are currently ice.
+The exact reported S22 attempt remains unconfirmed without a live open-water
+retry. No player/world data was modified during diagnosis. Artifacts:
+`D:/Pixelmania/PixelMania/release_artifacts/client-1.2.23/`.
+[Full evidence and limits](fishing_release_1_2_23.md).
+
 ### Production 1.2.22 wearable names verified (2026-10-09)
 
 Five requested display names are now Construction Hat, Brown Pigtails, Brown
@@ -41,7 +58,7 @@ Unrelated pending fishing edits were excluded and remain local. Complete item
 names, cells, commits, hashes, validation and limits:
 [Wearables release 1.2.21](wearables_release_1_2_21.md).
 
-### Fishing fixes prepared for 1.2.23 (2026-10-09)
+### Fishing investigation and preparation for 1.2.23 (2026-10-09)
 
 The affected account/world is FREEZE, using a wooden rod on a Samsung S22
 (correcting the earlier tentative Z Flip report). Read-only production boolean
@@ -74,8 +91,8 @@ loss. Physical S22 testing is unavailable; the reported exact attempt is not
 proven by the account snapshot.
 
 Release preparation is based on production 1.2.22, including wearable renames.
-Version target 1.2.23 / Android code 45. Publication is not confirmed until a
-verified release note is added. Earlier pickup/loadout/mobile/shop/music and
+Released as 1.2.23 / Android code 45; verification is recorded above.
+Earlier pickup/loadout/mobile/shop/music and
 identity-recovery work is already in production. Do not overwrite existing
 version packages or change Android/global compatibility floors.
 
