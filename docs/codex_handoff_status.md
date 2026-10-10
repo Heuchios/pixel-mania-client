@@ -41,6 +41,44 @@ Unrelated pending fishing edits were excluded and remain local. Complete item
 names, cells, commits, hashes, validation and limits:
 [Wearables release 1.2.21](wearables_release_1_2_21.md).
 
+### Fishing fixes prepared for 1.2.23 (2026-10-09)
+
+The affected account/world is FREEZE, using a wooden rod on a Samsung S22
+(correcting the earlier tentative Z Flip report). Read-only production boolean
+checks confirm valid rod ownership/tracking, usable bait and a compatible reward
+pool. The latest recorded client includes 1.2.20 fixes. No accepted fishing start
+or catch was found in this account's item-transaction history. Account records
+remain on production; automatic review blocked detailed record export.
+
+Found and fixed a separate concrete server defect: fishing validated only saved
+foreground placements, so naturally generated ponds were rejected. It now uses
+the effective authoritative terrain, including generated ponds, player edits,
+removals and snow/ice overrides. Actual FREEZE terrain generation reproduced the
+failure before the patch. Production replay also found FREEZE's natural ponds
+currently replaced by ice with no remaining fishable water. Do not claim the
+current world is open water, undo legitimate ice, or claim a Samsung-specific
+root cause. The user was asked for an open-water retry in FISHING.
+
+Two earlier fixes remain included: remove expired server casts before retrying
+(live casts still prevent duplicate bait spending), and show an explicit client
+cancellation reason when selection/rod/water/reach/menu/keyboard changes before
+an accepted cast reply. Late responses still cancel only their own session.
+
+Validation passed: 33 target checks using actual generated terrain for FREEZE,
+FISHING, START and POND, including removal/ice/cleared-world/reach rejection;
+start recovery and 80 completion checks; fishing visual synchronization; full
+backend check:security; 248 isolated client fishing checks, catalog and mobile
+single-tap tests. Client checks include wooden rod and bait selection on phone
+viewports, resize/low-frame-rate behavior, late replies and acknowledgement
+loss. Physical S22 testing is unavailable; the reported exact attempt is not
+proven by the account snapshot.
+
+Release preparation is based on production 1.2.22, including wearable renames.
+Version target 1.2.23 / Android code 45. Publication is not confirmed until a
+verified release note is added. Earlier pickup/loadout/mobile/shop/music and
+identity-recovery work is already in production. Do not overwrite existing
+version packages or change Android/global compatibility floors.
+
 ### Production 1.2.20 verified and published (2026-10-08 local / 2026-10-09 UTC)
 
 Backend `214da3427bc6024cb546b529c689dafea15e16ee` and client build source

@@ -1152,10 +1152,15 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 			world.show_notification(str(data.get("message", "Could not start fishing.")))
 			return true
 		var target_grid = Vector2i(int(data.get("target_x", 0)), int(data.get("target_y", 0)))
-		if not is_current or not _is_cast_context_valid(context, target_grid):
+		var context_error := _get_cast_context_error(context, target_grid) if is_current else ""
+		if not is_current or context_error != "":
 			if is_current:
 				awaiting_cast_ack = false
+				cast_ack_timer = 0.0
 				cast_request_id = ""
+				# A valid server reply can arrive after movement, a selection change
+				# or a menu opening. Do not leave the old "Casting..." notice behind.
+				world.show_notification(context_error)
 			if bool(data.get("ok", false)) and str(data.get("session_id", "")) != "":
 				request_server_fishing_complete(false, str(data.session_id), str(context.get("world", world.current_world_name)), false)
 			return true
@@ -1226,15 +1231,20 @@ func handle_inventory_transaction_result(data: Dictionary) -> bool:
 	return false
 
 
-func _is_cast_context_valid(context: Dictionary, target: Vector2i) -> bool:
-	return (
-		world != null and bool(world.in_world) and not context.is_empty()
-		and str(world.current_world_name) == str(context.get("world", ""))
-		and _cast_selection_matches(str(context.get("item", "")), str(context.get("category", "")))
-		and get_active_fishing_rod_id() != ""
-		and can_reach_fishing_grid(target) and is_fishable_water(target)
-		and not _is_blocking_ui_open_for_fishing()
-	)
+func _get_cast_context_error(context: Dictionary, target: Vector2i) -> String:
+	if world == null or not bool(world.in_world) or context.is_empty() or str(world.current_world_name) != str(context.get("world", "")):
+		return "Fishing cancelled because the world changed."
+	if not _cast_selection_matches(str(context.get("item", "")), str(context.get("category", ""))):
+		return "Selected item changed. Cast again."
+	if get_active_fishing_rod_id() == "":
+		return "Equip a fishing rod and cast again."
+	if not can_reach_fishing_grid(target):
+		return "Move closer to the water and cast again."
+	if not is_fishable_water(target):
+		return "That water changed. Cast again."
+	if _is_blocking_ui_open_for_fishing():
+		return "Close the menu or keyboard and cast again."
+	return ""
 
 
 func _cast_selection_matches(item: String, category: String) -> bool:

@@ -65,6 +65,9 @@ func _run() -> void:
 	await _test_cast_and_inputs()
 	await _test_cleanup()
 	await _test_network_lifecycle()
+	await _test_wooden_rod_phone_cast()
+	_test_cast_context_changes()
+	await _test_cast_viewport_changes()
 	await _test_last_lure()
 	await _test_layout()
 	world.catch_confetti.clear()
@@ -310,6 +313,95 @@ func _test_network_lifecycle() -> void:
 	check(manager.state == "casting" and manager.fishing_ui.waiting_panel.visible, "Late reward hid the new cast")
 	manager.cancel_fishing()
 	manager.handle_inventory_transaction_result({"action":"fishing_complete", "ok":true, "request_id": manager.catch_request_id})
+
+func _test_wooden_rod_phone_cast() -> void:
+	world.equipped_tool = "wooden_fishing_rod"
+	for dimensions in [Vector2i(1080, 2340), Vector2i(2340, 1080)]:
+		root.size = dimensions
+		await process_frame
+		for selection in ["wooden_fishing_rod", "bait"]:
+			world.selected_item_type = selection
+			world.selected_item_category = "lure" if selection == "bait" else "tool"
+			if selection == "bait":
+				manager.use_selected_lure_at_mouse()
+			else:
+				manager.use_fishing_rod_at_mouse()
+			var request: String = manager.cast_request_id
+			check(manager.awaiting_cast_ack and network.requests.back().rod_id == "wooden_fishing_rod", "Wooden rod must send an authoritative cast from rod or bait selection")
+			manager.update_fishing(0.8)
+			manager.handle_inventory_transaction_result(cast_reply(request, "wooden-" + request))
+			manager.update_fishing(0.4)
+			check(manager.state == "waiting" and manager.bobber != null and manager.fishing_line.visible, "Accepted wooden rod cast must show its line on a phone viewport")
+			manager.cancel_fishing()
+			manager.handle_inventory_transaction_result({"action":"fishing_complete", "ok":true, "request_id":manager.catch_request_id})
+	world.selected_item_type = "wooden_fishing_rod"
+	world.selected_item_category = "tool"
+	manager.use_fishing_rod_at_mouse()
+	manager.handle_inventory_transaction_result({"action":"fishing_start", "ok":false, "request_id":manager.cast_request_id, "message":"Cast the fishing rod on water."})
+	check(not manager.is_fishing_active() and world.notifications.back() == "Cast the fishing rod on water.", "Rejected wooden rod cast must replace the casting notice and allow a retry")
+	world.selected_item_type = "bamboo_fishing_rod"
+	world.equipped_tool = "bamboo_fishing_rod"
+	root.size = Vector2i(1280, 720)
+	await process_frame
+
+
+func _test_cast_context_changes() -> void:
+	for reason in ["menu", "keyboard", "selection", "distance", "water", "rod"]:
+		world.menu_open = false
+		world.text_focused = false
+		world.selected_item_type = "bait"
+		world.selected_item_category = "lure"
+		world.equipped_tool = "bamboo_fishing_rod"
+		world.lure_inventory.bait = 20
+		world.player.position = Vector2(32, 32)
+		world.blocks[world.target] = {"type": "water"}
+		manager.start_cast(world.target, "bait")
+		var request: String = manager.cast_request_id
+		check(world.notifications.back().begins_with("Casting"), "Cast did not announce pending response")
+		match reason:
+			"menu": world.menu_open = true
+			"keyboard": world.text_focused = true
+			"selection": world.selected_item_type = "different_bait"
+			"distance": world.player.position = Vector2(900, 900)
+			"water": world.blocks.clear()
+			"rod": world.equipped_tool = "punch"
+		manager.handle_inventory_transaction_result(cast_reply(request, reason + "-session"))
+		check(not manager.is_fishing_active(), "Rejected context left fishing busy: " + reason)
+		check(not world.notifications.back().begins_with("Casting"), "Cancelled cast left misleading Casting notice: " + reason)
+		check(network.requests.back().action == "fishing_complete" and network.requests.back().success == false, "Cancelled context did not release paid session: " + reason)
+		check(world.lure_inventory.bait == 20, "Client charged/refunded bait on context cancellation")
+	world.menu_open = false
+	world.text_focused = false
+	world.selected_item_type = "bamboo_fishing_rod"
+	world.selected_item_category = "tool"
+	world.equipped_tool = "bamboo_fishing_rod"
+	world.player.position = Vector2(32, 32)
+	world.blocks[world.target] = {"type": "water"}
+
+
+func _test_cast_viewport_changes() -> void:
+	# Foldable/multi-window changes can resize the viewport between request and
+	# acknowledgement. World-space fishing targets must survive those changes.
+	for dimensions in [Vector2i(1080, 2640), Vector2i(2640, 1080), Vector2i(720, 900), Vector2i(900, 720)]:
+		manager.start_cast(world.target, "bait")
+		var request: String = manager.cast_request_id
+		root.size = dimensions
+		await process_frame
+		manager.update_fishing(0.2)
+		manager.handle_inventory_transaction_result(cast_reply(request, "resize-session-" + request))
+		check(world.fishing_active and manager.bobber != null, "Viewport change discarded accepted cast")
+		for _frame in range(6):
+			manager.update_fishing(1.0 / 15.0)
+		check(manager.state == "waiting", "15 FPS cast never reached waiting state")
+		root.size = Vector2i(dimensions.y, dimensions.x)
+		await process_frame
+		manager.update_fishing(0.1)
+		check(world.fishing_active and manager.fishing_line.visible, "Active fishing lost its line after resize")
+		manager.cancel_fishing()
+		manager.handle_inventory_transaction_result({"action":"fishing_complete", "ok":true, "request_id": manager.catch_request_id})
+	root.size = Vector2i(1280, 720)
+	await process_frame
+
 
 func _test_layout() -> void:
 	var ui = manager.fishing_ui
