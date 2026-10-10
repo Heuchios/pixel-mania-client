@@ -407,7 +407,7 @@ const ITEMS = {
 
 	"chestnut_curtains": {
 		"category": "hair",
-		"display_name": "Chestnut Curtains",
+		"display_name": "Black Stylish Hair",
 		"rarity": "common",
 		"texture": "chestnut_curtains",
 		"inventory_icon": "chestnut_curtains_icon",
@@ -463,7 +463,7 @@ const ITEMS = {
 
 	"chestnut_bob": {
 		"category": "hair",
-		"display_name": "Chestnut Bob",
+		"display_name": "Black Mid Hair",
 		"rarity": "common",
 		"texture": "chestnut_bob",
 		"inventory_icon": "chestnut_bob_icon",
@@ -485,7 +485,7 @@ const ITEMS = {
 
 	"ginger_ponytail": {
 		"category": "hair",
-		"display_name": "Ginger Ponytail",
+		"display_name": "Brown Ponytail",
 		"rarity": "common",
 		"texture": "ginger_ponytail",
 		"inventory_icon": "ginger_ponytail_icon",
@@ -507,7 +507,7 @@ const ITEMS = {
 
 	"ginger_pigtails": {
 		"category": "hair",
-		"display_name": "Ginger Pigtails",
+		"display_name": "Brown Pigtails",
 		"rarity": "common",
 		"texture": "ginger_pigtails",
 		"inventory_icon": "ginger_pigtails_icon",
@@ -595,7 +595,7 @@ const ITEMS = {
 
 	"sunflower_cap": {
 		"category": "hat",
-		"display_name": "Sunflower Cap",
+		"display_name": "Construction Hat",
 		"rarity": "common",
 		"texture": "sunflower_cap",
 		"inventory_icon": "sunflower_cap_icon",
