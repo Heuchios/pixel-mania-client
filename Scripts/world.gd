@@ -4410,6 +4410,23 @@ func spawn_neptune_trident_block_hit_particles(grid_pos: Vector2i, _block_type: 
 
 
 func spawn_hand_item_swing_particles(target_world_position: Vector2 = Vector2(INF, INF), source_tool: String = "") -> bool:
+	var spawned := spawn_local_hand_item_swing_particles(target_world_position, source_tool)
+	if spawned and is_instance_valid(player):
+		var target := target_world_position
+		if not target.is_finite():
+			target = get_local_hand_item_swing_target_position()
+		var offset: Vector2 = (target - player.global_position).limit_length(256.0)
+		var previous: Dictionary = player.get_meta("hand_swing_visual", {})
+		# Only free-swing effects use this event. Block-hit effects already have
+		# their own authoritative network delivery and must not be emitted twice.
+		player.set_meta("hand_swing_visual", {
+			"sequence": (int(previous.get("sequence", 0)) % 2147483646) + 1,
+			"offset_x": offset.x, "offset_y": offset.y
+		})
+	return spawned
+
+
+func spawn_local_hand_item_swing_particles(target_world_position: Vector2, source_tool: String) -> bool:
 	if is_angelic_sword_source_tool(source_tool):
 		return spawn_angelic_sword_hit_particles(target_world_position)
 
@@ -4494,8 +4511,14 @@ func spawn_ant_sword_actor_swing_particles(actor: Node2D, facing_direction: int 
 
 
 func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type: String = "", _layer: String = "foreground", source_tool: String = "", source_data: Dictionary = {}):
+	spawn_network_hand_item_particles(get_block_center_world_position(grid_pos), source_tool, source_data)
+
+
+func spawn_network_hand_item_particles(target_world_position: Vector2, source_tool: String, source_data: Dictionary) -> void:
+	if not target_world_position.is_finite():
+		return
 	if is_angelic_sword_source_tool(source_tool, false):
-		var angelic_target := get_block_center_world_position(grid_pos)
+		var angelic_target := target_world_position
 		var angelic_actor = get_network_actor_node(source_data)
 		var angelic_now := Time.get_ticks_msec()
 		if is_instance_valid(angelic_actor):
@@ -4508,7 +4531,7 @@ func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type
 		return
 
 	if is_serpent_staff_source_tool(source_tool, false):
-		var serpent_target := get_block_center_world_position(grid_pos)
+		var serpent_target := target_world_position
 		var serpent_actor = get_network_actor_node(source_data)
 		var serpent_now := Time.get_ticks_msec()
 		if is_instance_valid(serpent_actor):
@@ -4521,7 +4544,7 @@ func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type
 		return
 
 	if is_void_saber_source_tool(source_tool, false):
-		var saber_target := get_block_center_world_position(grid_pos)
+		var saber_target := target_world_position
 		var saber_actor = get_network_actor_node(source_data)
 		var saber_now := Time.get_ticks_msec()
 		if is_instance_valid(saber_actor):
@@ -4534,7 +4557,7 @@ func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type
 		return
 
 	if is_void_trident_source_tool(source_tool, false):
-		var void_target := get_block_center_world_position(grid_pos)
+		var void_target := target_world_position
 		var void_actor = get_network_actor_node(source_data)
 		var void_now := Time.get_ticks_msec()
 		if is_instance_valid(void_actor):
@@ -4547,7 +4570,7 @@ func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type
 		return
 
 	if is_blood_battleaxe_source_tool(source_tool, false):
-		var axe_target := get_block_center_world_position(grid_pos)
+		var axe_target := target_world_position
 		var axe_actor = get_network_actor_node(source_data)
 		var axe_now := Time.get_ticks_msec()
 		if is_instance_valid(axe_actor) and axe_actor.has_meta("last_battleaxe_throw_fx_msec"):
@@ -4557,7 +4580,7 @@ func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type
 			axe_actor.set_meta("last_battleaxe_throw_fx_msec", axe_now)
 		return
 	if is_ant_sword_source_tool(source_tool, false):
-		var ant_target_position := get_block_center_world_position(grid_pos)
+		var ant_target_position := target_world_position
 		var ant_actor_facing := get_network_actor_facing(source_data)
 		var ant_actor = get_network_actor_node(source_data)
 		var now_msec := Time.get_ticks_msec()
@@ -4576,7 +4599,7 @@ func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type
 		return
 
 	if is_phoenix_sword_source_tool(source_tool, false):
-		var phoenix_target_position := get_block_center_world_position(grid_pos)
+		var phoenix_target_position := target_world_position
 		var phoenix_actor_facing := get_network_actor_facing(source_data)
 		var phoenix_actor = get_network_actor_node(source_data)
 		var phoenix_now_msec := Time.get_ticks_msec()
@@ -4591,7 +4614,7 @@ func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type
 		return
 
 	if is_fire_staff_source_tool(source_tool, false):
-		var fire_staff_target_position := get_block_center_world_position(grid_pos)
+		var fire_staff_target_position := target_world_position
 		var fire_staff_actor_facing := get_network_actor_facing(source_data)
 		var fire_staff_actor = get_network_actor_node(source_data)
 		var fire_staff_now_msec := Time.get_ticks_msec()
@@ -4610,7 +4633,7 @@ func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type
 		return
 
 	if is_wizards_staff_source_tool(source_tool, false):
-		var wizards_staff_target_position := get_block_center_world_position(grid_pos)
+		var wizards_staff_target_position := target_world_position
 		var wizards_staff_actor_facing := get_network_actor_facing(source_data)
 		var wizards_staff_actor = get_network_actor_node(source_data)
 		var wizards_staff_now_msec := Time.get_ticks_msec()
@@ -4631,7 +4654,7 @@ func spawn_neptune_trident_network_hit_particles(grid_pos: Vector2i, _block_type
 	if not is_neptune_trident_source_tool(source_tool, false):
 		return
 
-	var target_position := get_block_center_world_position(grid_pos)
+	var target_position := target_world_position
 	var actor_facing := get_network_actor_facing(source_data)
 	var source_id := str(source_data.get("player_id", source_data.get("source_player_id", source_data.get("username", ""))))
 	spawn_water_surge_beam_particles(get_network_actor_weapon_edge_world_position(source_data, target_position), target_position, actor_facing < 0, get_network_actor_node(source_data), source_id)

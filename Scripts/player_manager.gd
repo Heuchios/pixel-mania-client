@@ -2372,7 +2372,8 @@ func get_local_action_visual_key() -> String:
 	var network = world.get_node_or_null("/root/NetworkManager")
 	if network != null and network.has_method("get_equipment_slots"):
 		selection += "|" + network.get_equipment_slots_debug_key(network.get_equipment_slots())
-	return "%d:%d:%s" % [int(world.player.get_meta("jump_visual_sequence", 0)), int(world.player.get_meta("punch_visual_sequence", 0)), selection]
+	var hand_swing: Dictionary = world.player.get_meta("hand_swing_visual", {})
+	return "%d:%d:%d:%s" % [int(world.player.get_meta("jump_visual_sequence", 0)), int(world.player.get_meta("punch_visual_sequence", 0)), int(hand_swing.get("sequence", 0)), selection]
 
 
 func flush_multiplayer_position(allow_join: bool = false, bypass_rate_limit: bool = false) -> bool:
@@ -2961,6 +2962,8 @@ func handle_network_player_position(player_data: Dictionary):
 				remote_equipment.restart_back_item_jump_animation()
 		if punch_restarted:
 			apply_remote_player_action_animation(remote_id, "punch", safe_facing)
+	consume_remote_hand_swing_visual(remote_player, player_data, had_position, remote_visual_active)
+	if remote_visual_active:
 		update_remote_shared_player_animation(remote_player, 0.0)
 		update_remote_fishing_visual(remote_player, 0.0)
 		queue_remote_visual_stabilization(remote_player)
@@ -3389,8 +3392,8 @@ func send_player_punch_request(target_data: Dictionary) -> bool:
 		world.set_player_facing_direction(facing, false)
 	if world.has_method("play_player_punch_animation"):
 		world.play_player_punch_animation()
-	if str(world.get("equipped_tool")).strip_edges().to_lower() == "ant_sword" and world.has_method("spawn_hand_item_swing_particles"):
-		world.spawn_hand_item_swing_particles(target_position, "ant_sword")
+	if world.has_method("spawn_hand_item_swing_particles"):
+		world.spawn_hand_item_swing_particles(target_position, str(world.get("equipped_tool")))
 
 	var network = world.get_node_or_null("/root/NetworkManager")
 	if network == null or not network.has_method("send_player_punch"):
@@ -3497,6 +3500,23 @@ func consume_remote_action_sequence(remote_player: Node, data: Dictionary, key: 
 	var previous := int(remote_player.get_meta(key, sequence))
 	remote_player.set_meta(key, sequence)
 	return had_position and sequence > 0 and sequence != previous
+
+
+func consume_remote_hand_swing_visual(remote_player, player_data: Dictionary, had_position: bool, visual_active: bool) -> void:
+	var swing = player_data.get("hand_swing_visual", {})
+	if not (swing is Dictionary) or not swing.has("sequence"):
+		if not remote_player.has_meta("hand_swing_visual_sequence"):
+			remote_player.set_meta("hand_swing_visual_sequence", 0)
+		return
+	var restarted := consume_remote_action_sequence(remote_player, {"hand_swing_visual_sequence": swing.sequence}, "hand_swing_visual_sequence", had_position)
+	# Consume hidden/initial snapshots too, so old swings never replay on world entry.
+	if not restarted or not visual_active or world == null:
+		return
+	var offset := Vector2(_safe_float(swing.get("offset_x", 0.0), 0.0, -256.0, 256.0), _safe_float(swing.get("offset_y", 0.0), 0.0, -256.0, 256.0)).limit_length(256.0)
+	world.spawn_network_hand_item_particles(remote_player.global_position + offset, str(swing.get("tool", "")), {
+		"player_id": str(remote_player.get_meta("remote_id", "")),
+		"actor_facing": int(swing.get("facing", remote_player.get_meta("facing", 1)))
+	})
 
 
 func apply_remote_player_action_animation(remote_id: String, animation_state: String, facing: int, duration_msec: int = PLAYER_PUNCH_REQUEST_COOLDOWN_MSEC) -> void:
@@ -3847,6 +3867,12 @@ func ensure_remote_player_shared_visual_pipeline(remote_player) -> bool:
 
 		player_visual = local_visual.duplicate()
 		player_visual.name = "PlayerVisual"
+		# Runtime trails hold actor-specific blade/animation bindings. Let the
+		# remote equipment manager build its own instead of cloning the observer's.
+		for child in player_visual.get_children():
+			if child.get_script() == EquipmentManagerScript.SwordSlashTrail:
+				player_visual.remove_child(child)
+				child.free()
 		remote_player.add_child(player_visual)
 		if player_visual is Node2D:
 			var base_scale_x = abs(player_visual.scale.x)

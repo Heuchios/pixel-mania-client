@@ -170,7 +170,7 @@ var WORLD_ROUTE_WS_URLS: Array[String] = [
 ]
 # Keep in sync with export_presets.cfg "version/name" on every release build.
 # The server gates packets against this value via MIN_CLIENT_VERSION.
-const CLIENT_VERSION := "1.2.23"
+const CLIENT_VERSION := "1.2.24"
 const CLIENT_PLATFORM := "godot"
 const DEBUG_SERVER_PACKETS := false
 const DEBUG_ACTION_POSITION_FLOW := false
@@ -4224,6 +4224,7 @@ func _build_player_position_payload(position: Vector2, safe_facing: int, clean_w
 		"animation_state": animation_state,
 		"jump_visual_sequence": int(motion_state.get("jump_visual_sequence", 0)),
 		"punch_visual_sequence": int(motion_state.get("punch_visual_sequence", 0)),
+		"hand_swing_visual": motion_state.get("hand_swing_visual", {}),
 		"selected_hand_item": str(motion_state.get("selected_hand_item", "")),
 		"selected_hand_category": str(motion_state.get("selected_hand_category", "")),
 		"velocity_x": float(motion_state.get("velocity_x", 0.0)),
@@ -7573,6 +7574,7 @@ func get_player_motion_state() -> Dictionary:
 	if player_node != null:
 		result["jump_visual_sequence"] = int(player_node.get_meta("jump_visual_sequence", 0))
 		result["punch_visual_sequence"] = int(player_node.get_meta("punch_visual_sequence", 0))
+		result["hand_swing_visual"] = player_node.get_meta("hand_swing_visual", {})
 	if player_node is CharacterBody2D:
 		result["velocity_x"] = float(player_node.velocity.x)
 		result["velocity_y"] = float(player_node.velocity.y)
