@@ -2434,7 +2434,10 @@ func _position_bubble_on_screen(anchor_screen_pos: Vector2):
 		chat_bubble_node.size,
 		chat_bubble_node.get_viewport()
 	)
-	chat_bubble_node.position = CHAT_BUBBLE_COMPONENT.stable_screen_position(clamped_position, chat_bubble_node.position, chat_bubble_node.get_viewport())
+	var previous = chat_bubble_node.desired_screen_position
+	if not previous.is_finite():
+		previous = clamped_position
+	chat_bubble_node.set_screen_position(CHAT_BUBBLE_COMPONENT.stable_screen_position(clamped_position, previous, chat_bubble_node.get_viewport()))
 
 
 func _get_local_chat_anchor_world_position() -> Vector2:

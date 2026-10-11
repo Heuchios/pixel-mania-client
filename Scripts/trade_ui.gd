@@ -37,6 +37,7 @@ extends Control
 
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 const SLOT_COUNT := 6
+const FINAL_REVIEW_MSEC := 5000
 
 ## Master switch for the automatic PixelUIStyle look. Turn off to keep
 ## whatever button/label styling you set up by hand in TradeScene.tscn.
@@ -85,6 +86,8 @@ var current_trade := {}
 var pending_requests_by_name := {}
 var selected_picker_slot := -1
 var selected_picker_item := {}
+var final_review_key := ""
+var final_review_until_msec := 0
 
 
 func _ready() -> void:
@@ -210,6 +213,7 @@ func _style_slot(slot: Button, is_local: bool) -> void:
 func _process(_delta: float) -> void:
 	if visible:
 		update_position()
+		update_final_accept_button()
 
 
 func update_position():
@@ -358,6 +362,8 @@ func _close_trade_ui(end_inventory_trade_select: bool) -> void:
 	if final_overlay != null:
 		final_overlay.visible = false
 	current_trade.clear()
+	final_review_key = ""
+	final_review_until_msec = 0
 
 
 func cancel_trade_ui():
@@ -447,14 +453,33 @@ func refresh_final_popup(status: String, local_final_done: bool, remote_final_do
 
 	final_overlay.visible = status == "final_pending"
 	if not final_overlay.visible:
+		final_review_key = ""
+		final_review_until_msec = 0
 		return
+	var review_key := str(current_trade.get("trade_id", "")) + ":" + str(current_trade.get("final_confirm_available_at", 0))
+	if review_key != final_review_key:
+		final_review_key = review_key
+		# Start when this window is visible, independently of device clock skew.
+		final_review_until_msec = Time.get_ticks_msec() + FINAL_REVIEW_MSEC
 
 	if final_summary_label != null:
 		final_summary_label.text = build_final_summary(local_final_done, remote_final_done)
 
-	if final_confirm_button != null:
-		final_confirm_button.disabled = local_final_done
-		final_confirm_button.text = "Accepted" if local_final_done else "Final Accept"
+	update_final_accept_button()
+
+
+func get_final_review_seconds() -> int:
+	return maxi(0, ceili(float(final_review_until_msec - Time.get_ticks_msec()) / 1000.0))
+
+
+func update_final_accept_button() -> void:
+	if final_confirm_button == null or str(current_trade.get("status", "")) != "final_pending":
+		return
+	var seconds := get_final_review_seconds()
+	var accepted = current_trade.get("final_accepted", {})
+	var local_done := accepted is Dictionary and bool(accepted.get(get_local_player_id(), false))
+	final_confirm_button.disabled = local_done or seconds > 0
+	final_confirm_button.text = "Accepted" if local_done else ("Review (%ds)" % seconds if seconds > 0 else "Final Accept")
 
 
 func build_final_summary(local_final_done: bool, remote_final_done: bool) -> String:
@@ -626,7 +651,9 @@ func _on_accept_pressed():
 
 
 func _on_final_confirm_pressed():
-	if current_trade.is_empty():
+	if current_trade.is_empty() or str(current_trade.get("status", "")) != "final_pending" or get_final_review_seconds() > 0:
+		return
+	if final_confirm_button != null and final_confirm_button.disabled:
 		return
 
 	var network = get_node_or_null("/root/NetworkManager")

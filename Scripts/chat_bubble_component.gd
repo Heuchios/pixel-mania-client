@@ -19,6 +19,86 @@ const NOTIFICATION_ENTRY_LIFETIME_MSEC := 4000
 const BUBBLE_MODE_NONE := ""
 const BUBBLE_MODE_CHAT := "chat"
 const BUBBLE_MODE_NOTIFICATION := "notification"
+const BUBBLE_LAYOUT_GROUP := &"pixelmania_chat_bubbles"
+const BUBBLE_LAYOUT_QUEUED := &"pixelmania_chat_layout_queued"
+const BUBBLE_LAYOUT_GAP := 6.0
+
+var desired_screen_position := Vector2.INF
+
+
+func set_screen_position(desired: Vector2) -> void:
+	desired_screen_position = desired
+	queue_viewport_layout(get_viewport())
+
+
+static func queue_viewport_layout(viewport: Viewport) -> void:
+	if not is_instance_valid(viewport) or bool(viewport.get_meta(BUBBLE_LAYOUT_QUEUED, false)):
+		return
+	viewport.set_meta(BUBBLE_LAYOUT_QUEUED, true)
+	layout_viewport_bubbles.call_deferred(viewport)
+
+
+static func find_clear_screen_position(desired: Vector2, bubble_size: Vector2, bounds: Rect2, occupied: Array[Rect2]) -> Vector2:
+	if bubble_size.x > bounds.size.x or bubble_size.y > bounds.size.y:
+		return Vector2.INF
+	var base := Vector2(clampf(desired.x, bounds.position.x, bounds.end.x - bubble_size.x), clampf(desired.y, bounds.position.y, bounds.end.y - bubble_size.y))
+	var xs := [base.x, bounds.position.x, bounds.end.x - bubble_size.x]
+	var ys := [base.y, bounds.position.y, bounds.end.y - bubble_size.y]
+	for rect in occupied:
+		xs.append(rect.position.x - bubble_size.x - BUBBLE_LAYOUT_GAP)
+		xs.append(rect.end.x + BUBBLE_LAYOUT_GAP)
+		ys.append(rect.position.y - bubble_size.y - BUBBLE_LAYOUT_GAP)
+		ys.append(rect.end.y + BUBBLE_LAYOUT_GAP)
+	var best := Vector2.INF
+	var best_cost := INF
+	for x in xs:
+		for y in ys:
+			var candidate := Vector2(x, y)
+			# Prefer a nearby vertical stack, preserving the speaker's horizontal position.
+			var cost := absf(candidate.x - base.x) * 2.0 + absf(candidate.y - base.y)
+			if candidate.y > base.y:
+				# Exhaust space above/beside the speaker before placing text below
+				# its anchor, where usernames and the player are drawn.
+				cost += bounds.size.y
+			if cost >= best_cost:
+				continue
+			var rect := Rect2(candidate, bubble_size)
+			if not bounds.encloses(rect):
+				continue
+			var clear := true
+			for other in occupied:
+				if rect.grow(BUBBLE_LAYOUT_GAP * 0.5).intersects(other.grow(BUBBLE_LAYOUT_GAP * 0.5)):
+					clear = false
+					break
+			if clear:
+				best = candidate
+				best_cost = cost
+	return best
+
+
+static func layout_viewport_bubbles(viewport: Viewport) -> void:
+	if not is_instance_valid(viewport):
+		return
+	viewport.set_meta(BUBBLE_LAYOUT_QUEUED, false)
+	if not viewport.is_inside_tree():
+		return
+	var bubbles := viewport.get_tree().get_nodes_in_group(BUBBLE_LAYOUT_GROUP)
+	bubbles.sort_custom(func(a, b): return a.get_instance_id() < b.get_instance_id())
+	var occupied: Array[Rect2] = []
+	var bounds := viewport.get_visible_rect().grow(-2.0)
+	for bubble in bubbles:
+		if bubble.get_viewport() != viewport or not bubble.is_visible_in_tree() or not bubble.desired_screen_position.is_finite():
+			continue
+		var placed := find_clear_screen_position(bubble.desired_screen_position, bubble.size, bounds, occupied)
+		var fits := placed.is_finite()
+		# Keep the timer and anchor active when the screen is full. The bubble
+		# becomes visible again as soon as another expires or the camera moves.
+		bubble.background.visible = fits
+		bubble.label.visible = fits and bubble.bubble_mode == BUBBLE_MODE_CHAT
+		bubble.notification_stack.visible = fits and bubble.bubble_mode == BUBBLE_MODE_NOTIFICATION
+		if fits:
+			bubble.position = placed.round()
+			occupied.append(Rect2(bubble.position, bubble.size))
 
 # Width wrapping measures text with CHAT_FONT_PATH at CHAT_BUBBLE_FONT_SIZE and
 # then sizes the panel/label to match. That measurement only stays correct if
@@ -222,6 +302,7 @@ func apply_chat_font_to_label() -> void:
 
 
 func _ready():
+	add_to_group(BUBBLE_LAYOUT_GROUP)
 	_configure_root()
 	_build_bubble_ui()
 	if label != null and str(label.text).strip_edges() != "":
@@ -655,3 +736,5 @@ func hide_chat_bubble() -> void:
 	if notification_stack != null:
 		notification_stack.visible = false
 	visible = false
+	if is_inside_tree():
+		queue_viewport_layout(get_viewport())

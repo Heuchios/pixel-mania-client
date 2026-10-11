@@ -5056,11 +5056,11 @@ func _position_remote_chat_bubble(remote_id: String):
 		round(anchor_screen_pos.x - bubble.size.x / 2.0),
 		round(anchor_screen_pos.y - bubble.size.y)
 	)
-	bubble.position = CHAT_BUBBLE_COMPONENT.clamp_screen_position(
+	bubble.set_screen_position(CHAT_BUBBLE_COMPONENT.clamp_screen_position(
 		bubble_position,
 		bubble.size,
 		bubble.get_viewport()
-	)
+	))
 
 
 func _get_remote_chat_anchor_world_position(remote_player) -> Vector2:
