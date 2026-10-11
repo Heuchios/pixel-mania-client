@@ -44,6 +44,8 @@ func setup(world_ref):
 
 
 func use_selected_item_at_mouse():
+	if world.has_method("is_daily_rewards_open") and world.is_daily_rewards_open():
+		return
 	if world.is_magnet_machine_open():
 		return
 	if world.has_method("is_quest_board_open") and world.is_quest_board_open():

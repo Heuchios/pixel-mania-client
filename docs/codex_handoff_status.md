@@ -7,6 +7,17 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Daily rewards prepared for staging
+
+Added a gift button below the left gem counter and a compact charcoal daily-box
+window that keeps the surrounding world visible. User selected 250 / 1,000 / 5,000
+gems; server odds are 75% / 20% / 5%, once
+per account per UTC day. PostgreSQL stores unique daily receipts and commits gems,
+all economy ledgers, and inventory hashes atomically. Client retries recover the
+saved prize. The user requested commit/push and staging deployment; production,
+client version floors, and distribution remain unchanged. See [daily rewards](daily_rewards.md) for
+implementation and focused verification commands.
+
 ### Prepared 1.2.25 trade review and chat layout — not deployed
 
 Client `d140368` and backend `1a64150` are committed. The final trade window

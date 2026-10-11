@@ -437,6 +437,7 @@ var leaderboard_ui = null
 var display_ui = null
 var fish_monger_ui = null
 var quest_board_ui = null
+var daily_rewards_ui = null
 var cctv_ui = null
 var oil_refinery_ui = null
 var battery_charger_ui = null
@@ -2686,6 +2687,7 @@ func is_item_action_popup_event(event: InputEvent) -> bool:
 
 func is_floating_hud_button_at_point(point: Vector2) -> bool:
 	var button_sources: Array = [
+		{"node": inventory_manager, "property": "daily_rewards_button"},
 		{"node": inventory_manager, "property": "inventory_button"},
 		{"node": notification_ui, "property": "notification_button"},
 		{"node": game_menu_ui, "property": "menu_button"},
@@ -2719,6 +2721,7 @@ func activate_floating_hud_button_at_point(point: Vector2) -> bool:
 		return false
 
 	var button_actions: Array = [
+		{"node": inventory_manager, "property": "daily_rewards_button", "action": "open_daily_rewards"},
 		{"node": developer_panel_ui, "property": "dev_button", "action": "toggle_developer_panel"},
 		{"node": game_menu_ui, "property": "menu_button", "action": "toggle_game_menu"},
 		{"node": notification_ui, "property": "notification_button", "action": "toggle_notification_panel"},
@@ -2742,6 +2745,8 @@ func activate_floating_hud_button_at_point(point: Vector2) -> bool:
 
 
 func is_panel_ui_at_point(point: Vector2) -> bool:
+	if is_daily_rewards_open():
+		return true
 	var ui_nodes: Array = [
 		notification_ui,
 		player_menu_ui,
@@ -2758,6 +2763,7 @@ func is_panel_ui_at_point(point: Vector2) -> bool:
 		display_ui,
 		fish_monger_ui,
 		quest_board_ui,
+		daily_rewards_ui,
 		cctv_ui,
 		oil_refinery_ui,
 		battery_charger_ui,
@@ -8329,6 +8335,8 @@ func handle_inventory_transaction_result(data: Dictionary):
 		reject_pending_authoritative_seed_place(transaction_data)
 
 	var handled := false
+	if daily_rewards_ui != null and str(transaction_data.get("action", "")).begins_with("daily_reward_"):
+		handled = bool(daily_rewards_ui.handle_inventory_transaction_result(transaction_data))
 	if quest_board_ui != null and str(transaction_data.get("action", "")).begins_with("quest_"):
 		handled = bool(quest_board_ui.handle_inventory_transaction_result(transaction_data))
 
@@ -8510,6 +8518,8 @@ func is_chat_typing() -> bool:
 
 
 func is_major_ui_open() -> bool:
+	if is_daily_rewards_open():
+		return true
 	if is_quest_board_open():
 		return true
 	if is_wooden_entrance_confirm_open():
@@ -8596,6 +8606,8 @@ func close_fishing_journal() -> void:
 
 
 func is_movement_blocking_ui_open() -> bool:
+	if is_daily_rewards_open():
+		return true
 	if is_fishing_journal_open():
 		return true
 	if is_quest_board_open():
@@ -9664,6 +9676,31 @@ func close_quest_board() -> void:
 
 func is_quest_board_open() -> bool:
 	return quest_board_ui != null and quest_board_ui.is_quest_board_open()
+
+
+func setup_daily_rewards() -> void:
+	if is_instance_valid(daily_rewards_ui):
+		return
+	daily_rewards_ui = preload("res://Scripts/ui/daily_rewards_ui.gd").new()
+	get_ui_modal_layer().add_child(daily_rewards_ui)
+	daily_rewards_ui.setup(self)
+
+
+func open_daily_rewards() -> void:
+	if not in_world or is_player_dead_or_respawning():
+		return
+	if is_daily_rewards_open():
+		daily_rewards_ui.close_rewards()
+		return
+	if is_major_ui_open():
+		return
+	setup_daily_rewards()
+	clear_mobile_pointer_screen_position()
+	daily_rewards_ui.open_rewards()
+
+
+func is_daily_rewards_open() -> bool:
+	return is_instance_valid(daily_rewards_ui) and daily_rewards_ui.is_rewards_open()
 
 func close_crafting():
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("close_crafting"):

@@ -2277,6 +2277,7 @@ func _should_cancel_for_cleanup_rule() -> bool:
 func _is_blocking_ui_open_for_fishing() -> bool:
 	if world == null:
 		return true
+	if world.has_method("is_daily_rewards_open") and world.is_daily_rewards_open(): return true
 	if world.has_method("is_chat_input_focused") and world.is_chat_input_focused(): return true
 	if world.has_method("is_any_text_input_focused") and world.is_any_text_input_focused(): return true
 	if fishing_ui != null and fishing_ui.journal_ui != null and fishing_ui.journal_ui.visible: return true

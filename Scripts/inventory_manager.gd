@@ -124,6 +124,7 @@ var inventory_button = null
 var gem_panel = null
 var gem_icon = null
 var gem_count_label = null
+var daily_rewards_button: Button
 
 var inventory_window = null
 var inventory_upgrade_popup = null
@@ -913,6 +914,7 @@ func setup(world_node, ui_node):
 	setup_hotbar()
 	setup_inventory_button()
 	setup_gem_counter()
+	setup_daily_rewards_button()
 	setup_inventory_window()
 	_ensure_item_action_popup()
 	update_all_ui()
@@ -3155,6 +3157,40 @@ func update_gem_counter_position():
 	if not counter_visible:
 		return
 	gem_panel.position = Vector2(16.0, 16.0)
+	if is_instance_valid(daily_rewards_button):
+		var factor := MobileUIScale.get_layout_scale()
+		daily_rewards_button.scale = Vector2.ONE * factor
+		var gem_bounds: Rect2 = gem_panel.get_global_rect()
+		daily_rewards_button.global_position = Vector2(gem_bounds.position.x, gem_bounds.end.y + 8.0)
+		daily_rewards_button.visible = counter_visible and bool(world.in_world)
+
+
+func setup_daily_rewards_button() -> void:
+	if is_instance_valid(daily_rewards_button) or get_hud_layer() == null:
+		return
+	daily_rewards_button = preload("res://Scripts/ui/daily_rewards_button.gd").new()
+	daily_rewards_button.name = "DailyRewardsButton"
+	daily_rewards_button.set_meta("ignore_mobile_ui_scale", true)
+	daily_rewards_button.text = "DAILY REWARDS"
+	daily_rewards_button.size = Vector2(232, 48)
+	daily_rewards_button.position = Vector2(16, 60)
+	daily_rewards_button.z_index = 80
+	daily_rewards_button.add_theme_font_size_override("font_size", 17)
+	daily_rewards_button.set_meta("pixelmania_font_size", 17)
+	daily_rewards_button.add_theme_constant_override("outline_size", 0)
+	daily_rewards_button.add_theme_color_override("font_color", Color("fff2d2"))
+	for state in ["normal", "hover", "pressed", "focus"]:
+		var box := StyleBoxFlat.new()
+		box.bg_color = Color("392248") if state == "normal" else Color("5a3671")
+		box.border_color = Color("d2a6df")
+		box.set_border_width_all(2)
+		box.content_margin_left = 44
+		box.content_margin_right = 8
+		daily_rewards_button.add_theme_stylebox_override(state, box)
+	get_hud_layer().add_child(daily_rewards_button)
+	daily_rewards_button.pressed.connect(world.open_daily_rewards)
+	world.setup_daily_rewards()
+	world.daily_rewards_ui.hud_button = daily_rewards_button
 
 
 func update_gem_counter():

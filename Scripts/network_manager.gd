@@ -319,6 +319,7 @@ const WORLD_INTERACTION_ACTIONS := [
 ]
 
 const INVENTORY_TRANSACTION_ACTIONS := [
+	"daily_reward_status", "daily_reward_claim",
 	"magnet_get_state", "magnet_select", "magnet_update", "magnet_toggle",
 	"magnet_deposit", "magnet_withdraw", "magnet_remote", "magnet_place", "magnet_remove",
 	"quest_board_get", "quest_accept", "quest_refresh", "quest_inspect", "quest_hint",
