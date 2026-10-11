@@ -1,11 +1,31 @@
 # PixelMania Codex Handoff Status
 
-Last updated: 2026-10-09 local / 2026-10-10 UTC
+Last updated: 2026-10-11 local
 
 This document exists so a fresh Codex chat can continue from the current
 backend/security state without relying on chat memory.
 
 ## Latest Verified Status
+
+### Prepared 1.2.25 trade review and chat layout — not deployed
+
+Client `d140368` and backend `1a64150` are committed. The final trade window
+has a five-second review enforced by both the server and client. Nearby local
+and remote chat bubbles share collision-aware placement. Version parsing now
+rejects malformed numeric cores. Full backend security, trade timing, chat
+layout, update gate, remote hand and partial-state regressions pass; actual
+phone-sized trade/chat panels were rendered and inspected.
+
+Windows ZIP and signed Android 1.2.25/code 47 APK/AAB are verified under
+`D:/Pixelmania/PixelMania/release_artifacts/client-1.2.25/`. Packaged Windows
+startup and Android signature/version checks pass. Production remains 1.2.24.
+The user was asked whether Android is distributed through current Google Play
+or direct APKs; no answer yet. Android's update UI opens Play and its manifest
+still advertises 1.2.6. Do not deploy the incomplete coordinated release or
+raise the live minimum until the installable Android update path is established;
+do not assert Play availability. The new request to reject old clients
+supersedes previous compatibility-floor preservation instructions once this
+distribution detail is resolved. [Release evidence](trade_chat_release_1_2_25.md).
 
 ### Production 1.2.24 remote hand visuals verified
 

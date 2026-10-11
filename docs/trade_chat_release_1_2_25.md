@@ -41,6 +41,35 @@ update distribution target is known.
 - Actual phone-sized chat and trade panels were rendered and visually inspected.
 - Full backend `npm run check:security` passed.
 
-Release source version is 1.2.25 / Android code 47. Deployment and final artifact
-verification are recorded after completion; this document is not evidence that
-production has been updated.
+## Prepared release — not deployed
+
+Client source `d14036891545c20512b666c402e08d78ec375d52` and backend
+`1a64150e7bd1ad1edcf43df4309e0c22bd81c9ca` are committed. Windows 1.2.25 and
+signed Android 1.2.25/code 47 APK/AAB builds are complete in
+`D:/Pixelmania/PixelMania/release_artifacts/client-1.2.25/`.
+
+The packaged Windows release starts with the normal renderer, connects to
+production and exits successfully without script/resource errors. APK metadata
+confirms the release version, code and non-debuggable flag; its signing
+certificate matches 1.2.24. APK and AAB signature verification passes. Temporary
+export credentials were removed. The earlier 1.2.24 test source was restored
+from its original archive after isolated regression testing.
+
+Artifact SHA-256:
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Windows ZIP | `1489e780c81a215e0eabbaa576d5e6ac9e746fb4f5936cc3f578aae640ca55cb` |
+| Android APK | `32f6c8d3580c71cb96dc0412bc7c6abcd2d1c1dd1fc17fb4bfb59d0f9c8c7275` |
+| Android AAB | `f54141d3f9eaa18233284e3c8512cbb55b9dde8e8bf906b9c7ebac3ca9faa7f4` |
+
+`build-manifest.json`, `release-verification.json`, test/build/signature logs and
+the two rendered previews are stored beside the packages. No physical Android
+device or live two-player trade test was performed for this release.
+
+Production remains `20261010-hand-visuals-33256ff` / 1.2.24; no deployment,
+manifest publication, minimum-version change or player-data mutation occurred
+for 1.2.25. Android distribution is still awaiting a user answer. Once an
+installable 1.2.25 update path is established, deploy both repositories and
+publish synchronized required minimums, then verify old versions are rejected
+on production. A Play release must actually be available before advertising it.
