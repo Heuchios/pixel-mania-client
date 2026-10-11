@@ -1,6 +1,6 @@
 # Daily rewards
 
-Implemented on 2026-10-11 for staging testing. The client and backend must be
+Deployed to staging on 2026-10-11 for testing. The client and backend must be
 released together. This feature is not included in the published production build.
 
 The HUD gift button sits directly below the gem counter at the top left. It follows
@@ -41,11 +41,30 @@ The database test covers rollback after partial writes, all reward boundaries,
 duplicate and simultaneous requests, account case normalization, recovery after
 module restart, UTC rollover, stale-day rejection, capacity, and database outages.
 
-Verified: 34 client checks passed; rendered desktop/mobile/HUD/prize screens were
-inspected. Route and PostgreSQL tests passed. The existing backend security chain
-passed in resumed segments (the initial dependency advisory request was blocked
-by network restrictions; the separate npm audit succeeded at the configured high
-severity threshold, reporting five existing moderate advisories). TypeScript,
-lint, failed-ledger coverage, economy checks, and runtime checks passed. Godot
-reported environment certificate-store/shader-cache warnings; no script errors
-remained. No authenticated live-server or physical-device test was performed.
+Verified: 34 client checks passed; desktop/mobile/HUD/prize renders were inspected,
+including the compact window over a world screenshot. Route and isolated
+PostgreSQL tests passed. The full backend `check:security` chain passed in the
+isolated staging checkout, including TypeScript, lint, economy, and runtime checks.
+Deployed route tests and a read-only query confirmed the daily receipt primary
+key `(player_id, reward_day)`. Public health and smoke checks passed with PostgreSQL
+and Redis ready. No real-account claim or physical-device test was performed.
+
+## Staging release
+
+- Client implementation: `592025e0`; staging merge: `f798c048`.
+- Backend implementation: `ef9bf28`; staging merge/deployed commit: `0a7e3097b90e`.
+- Active release: `20261011-daily-rewards-v2-0a7e309`.
+- API: `https://staging-api.pixelmaniagame.com`; WebSocket: same host at `/ws`.
+- Existing staging compatibility retained: current 1.2.20, minimum 1.2.14.
+- The usual local client project already targets staging in editor/debug builds.
+  Restart its game session to use the changed UI; no new published client binary.
+- Previous pre-feature release: `20261008-mobile-inventory-214da34`.
+
+Deployment caveat: `-SkipClientVersionLock` omitted the old release's version
+overrides and temporarily fell back to the shared environment's 1.0.4/1.0.0 values.
+The final immutable release explicitly restored 1.2.20/1.2.14 using the existing
+deploy script with staging user, host, URL, and port 8180. It reused the successful
+full gate for the identical backend commit and reran the reduced release checks
+and public smoke checks. The automatic `previous` pointer is the first daily
+rewards release; use the named pre-feature release above for a feature rollback.
+Production was not deployed or reconfigured.
