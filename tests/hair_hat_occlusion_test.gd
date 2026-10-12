@@ -92,11 +92,11 @@ func run():
 				equipment.update_equipped_hat_visual("", facing)
 				check(hair.visible and hair.material == null and hair.sprite_frames == original, "Unequip must restore full hair")
 				pairs += 1
-	var cached_bounds := Occlusion.texture_bounds.size()
+	var cached_bounds := Occlusion.texture_profiles.size()
 	for i in 5:
 		equipment.update_equipped_hat_visual("red_baseball_cap", 1)
 		equipment.update_equipped_hat_visual("witch_hat", 1)
-	check(Occlusion.texture_bounds.size() == cached_bounds, "Repeated swaps must reuse cached hat texture bounds")
+	check(Occlusion.texture_profiles.size() == cached_bounds, "Repeated swaps must reuse cached hat texture profiles")
 	# Future catalog entries inherit the behavior without an item-ID allowlist.
 	world.item_database["future_hat"] = world.item_database.red_baseball_cap.duplicate(true)
 	world.item_database["future_hair"] = world.item_database.chestnut_curtains.duplicate(true)
@@ -132,6 +132,7 @@ func freeze_parts(equipment):
 func check_rendered(viewport: SubViewport, actor: Node2D, equipment):
 	var examples := [
 		["messy_brown_hair", "red_baseball_cap"],
+		["crazy_hair", "royal_crown"],
 		["black_spiky_hair", "royal_crown"],
 		["chestnut_curtains", "neptune_crown"],
 		["ginger_pigtails", "witch_hat"],
@@ -140,8 +141,11 @@ func check_rendered(viewport: SubViewport, actor: Node2D, equipment):
 	]
 	var preview := Image.create(480, examples.size() * 160, false, Image.FORMAT_RGBA8)
 	preview.fill(Color("40364c"))
+	var correction_preview := Image.create(480, 640, false, Image.FORMAT_RGBA8)
+	correction_preview.fill(Color("40364c"))
 	var removed_pixels := 0
 	var preserved_pixels := 0
+	var restored_corner_pixels := 0
 	var visual: Node2D = actor.get_node("PlayerVisual")
 	for row in examples.size():
 		var pair: Array = examples[row]
@@ -156,10 +160,32 @@ func check_rendered(viewport: SubViewport, actor: Node2D, equipment):
 			var hair: AnimatedSprite2D = equipment.hair_item_animated
 			var hat: AnimatedSprite2D = equipment.hat_item_animated
 			var clipped_material: Material = hair.material
+			var profile := Occlusion.get_hat_profile(hat)
+			var flat_bottom: float = profile.edge[0]
+			for edge in profile.edge: flat_bottom = maxf(flat_bottom, edge)
 			hair.material = null
 			var before := await picture(viewport)
 			hair.material = clipped_material
 			var after := await picture(viewport)
+			if row < 2:
+				# Render the previous, flat cutoff as a negative control. The actual
+				# portrait must regain temple/corner hair and the central front fringe.
+				var flat_image := Image.create(profile.edge.size(), 1, false, Image.FORMAT_RF)
+				flat_image.fill(Color(flat_bottom, 0.0, 0.0))
+				clipped_material.set_shader_parameter("brim_profile", ImageTexture.create_from_image(flat_image))
+				var old_flat := await picture(viewport)
+				clipped_material.set_shader_parameter("brim_profile", profile.texture)
+				var regained := 0
+				for y in after.get_height():
+					for x in after.get_width():
+						var local := hat.to_local(Vector2(x + 0.5, y + 0.5)) - hat.offset
+						var in_region := absf(local.x) > 7.0 if row == 0 else absf(local.x) <= 7.0
+						if in_region and after.get_pixel(x, y) != old_flat.get_pixel(x, y): regained += 1
+				check(regained > 0, "%s facing %d must visibly restore %s" % [pair[1], facing, "corner hair" if row == 0 else "front fringe"])
+				var preview_y := (row * 2 + (1 if facing < 0 else 0)) * 160
+				correction_preview.blend_rect(old_flat, Rect2i(0, 0, 160, 160), Vector2i(0, preview_y))
+				correction_preview.blend_rect(after, Rect2i(0, 0, 160, 160), Vector2i(160, preview_y))
+				correction_preview.blend_rect(full_portrait, Rect2i(0, 0, 160, 160), Vector2i(320, preview_y))
 			if facing == 1:
 				preview.blend_rect(before, Rect2i(0, 0, 160, 160), Vector2i(0, row * 160))
 				preview.blend_rect(after, Rect2i(0, 0, 160, 160), Vector2i(160, row * 160))
@@ -175,16 +201,23 @@ func check_rendered(viewport: SubViewport, actor: Node2D, equipment):
 			var clipped := await picture(viewport)
 			hair.material = null
 			var full := await picture(viewport)
-			var brim_y: float = (hat.global_transform * Vector2(0, Occlusion.get_hat_bottom(hat) + hat.offset.y)).y
+			var raised_edge_pixels := 0
 			for y in full.get_height():
 				for x in full.get_width():
 					var pixel := full.get_pixel(x, y)
-					if y + 0.5 < brim_y:
+					var hat_pixel := hat.to_local(Vector2(x + 0.5, y + 0.5)) - hat.offset
+					var column := clampi(floori(hat_pixel.x - profile.left), 0, profile.edge.size() - 1)
+					if hat_pixel.y < profile.edge[column]:
 						check(clipped.get_pixel(x, y).a == 0.0, "%s hair protrudes above hat" % pair[0])
 						if pixel.a > 0: removed_pixels += 1
 					else:
 						check(clipped.get_pixel(x, y).is_equal_approx(pixel), "%s lower hair changed" % pair[0])
 						if pixel.a > 0: preserved_pixels += 1
+						if pixel.a > 0 and hat_pixel.y < flat_bottom:
+							raised_edge_pixels += 1
+			if pair[1] in ["red_baseball_cap", "royal_crown"]:
+				check(raised_edge_pixels > 0, "%s/%s must preserve hair under the raised brim that the flat cutoff removed" % pair)
+			restored_corner_pixels += raised_edge_pixels
 			hair.material = clipped_material
 			for child in hidden: child.show()
 			equipment.update_equipped_hat_visual("", facing)
@@ -193,4 +226,5 @@ func check_rendered(viewport: SubViewport, actor: Node2D, equipment):
 	check(removed_pixels > 0 and preserved_pixels > 0, "Render test must exercise both upper and lower hair")
 	var preview_path := "user://hair_hat_preview.png"
 	preview.save_png(preview_path)
-	print("HAIR_HAT_RENDER: removed=", removed_pixels, "; preserved=", preserved_pixels, "; preview=", ProjectSettings.globalize_path(preview_path))
+	correction_preview.save_png("user://hair_hat_corner_correction.png")
+	print("HAIR_HAT_RENDER: removed=", removed_pixels, "; preserved=", preserved_pixels, "; restored_corner_pixels=", restored_corner_pixels, "; preview=", ProjectSettings.globalize_path(preview_path))
