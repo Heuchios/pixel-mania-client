@@ -89,6 +89,9 @@ var session_authenticated := false
 var server_session_authenticated := false
 var pending_saved_refresh_token := ""
 var saved_refresh_login_in_flight := false
+var pending_account_auth_request_id := ""
+var pending_account_auth_request_type := ""
+var pending_account_auth_started_ms := 0
 var developer_pin_required := false
 var developer_pin_unlocked := false
 var current_world_name := "START"
@@ -930,6 +933,7 @@ func _process_connection_health() -> bool:
 
 
 func _close_unresponsive_connection(reason: String) -> void:
+	_finish_account_auth_request(reason)
 	_prepare_transport_recovery(reason)
 	last_connection_error = reason
 	connection_health.phase = "DISCONNECTED"
@@ -1101,6 +1105,7 @@ func connect_to_server(force: bool = false) -> void:
 		return
 
 	# Automatic reconnects also replace the snapshot/ready lifecycle.
+	_finish_account_auth_request("transport_replaced")
 	_invalidate_active_join_request_for_transport_change("transport_replaced")
 	_clear_local_position_payload_queue()
 	socket_generation += 1
@@ -1896,6 +1901,9 @@ func send_message(data: Dictionary) -> bool:
 		return false
 	var send_error = socket.send_text(payload_text)
 	if send_error == OK and str(outgoing.get("type", "")) in ["account_login", "account_register", "account_token_login", "account_refresh_token_login", "dev_backend_login"]:
+		pending_account_auth_request_id = str(outgoing.get("request_id", ""))
+		pending_account_auth_request_type = str(outgoing.get("type", ""))
+		pending_account_auth_started_ms = Time.get_ticks_msec()
 		connection_health.authenticating(Time.get_ticks_msec())
 	if send_error == OK and RuntimeProfiler.enabled:
 		RuntimeProfiler.sent(outgoing, payload_text.to_utf8_buffer().size())
@@ -4897,20 +4905,7 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 		"account_auth_ok":
 			handle_account_auth_ok(data)
 		"account_auth_error":
-			connection_health.phase = "FAILED"
-			var had_session_before_auth_error := has_active_session()
-			var saved_refresh_login_failed := saved_refresh_login_in_flight
-			saved_refresh_login_in_flight = false
-			server_session_authenticated = false
-			if saved_refresh_login_failed and _auth_error_invalidates_saved_login(data):
-				_clear_saved_session_token()
-			server_auth_finished.emit(data)
-			if had_session_before_auth_error and not _is_login_scene_active():
-				_end_authenticated_session(
-					str(data.get("message", "Sign on again.")),
-					true,
-					false
-				)
+			handle_account_auth_error(data)
 		"account_session_replaced":
 			handle_account_session_replaced(data)
 		"landfill_instance_redirect":
@@ -5185,12 +5180,16 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 		"fishing_reward_fx":
 			handle_fishing_reward_fx(data)
 		"action_rejected":
+			if _route_rejection_as_account_auth(data):
+				return
 			if _route_action_rejected_as_player_state_lookup(data):
 				return
 			if str(data.get("reason", "")).strip_edges().to_lower() == "world_route_redirect" and handle_world_route_redirect(data):
 				return
 			handle_action_rejected(data)
 		"rate_limited":
+			if _route_rejection_as_account_auth(data):
+				return
 			if _route_action_rejected_as_player_state_lookup(data):
 				return
 			handle_action_rejected(data)
@@ -5530,7 +5529,55 @@ func _apply_drop_pickup_transaction_world_result(data: Dictionary, inventory_upd
 	return false
 
 
+func _finish_account_auth_request(outcome: String) -> void:
+	if pending_account_auth_request_id != "":
+		print("[LOGIN_AUTH_PROFILE] ", JSON.stringify({
+			"type": pending_account_auth_request_type,
+			"elapsed_ms": maxi(0, Time.get_ticks_msec() - pending_account_auth_started_ms),
+			"outcome": outcome,
+		}))
+	pending_account_auth_request_id = ""
+	pending_account_auth_request_type = ""
+	pending_account_auth_started_ms = 0
+
+
+func _route_rejection_as_account_auth(data: Dictionary) -> bool:
+	if pending_account_auth_request_id == "":
+		return false
+	var action := str(data.get("action", "")).strip_edges().to_lower()
+	if action != pending_account_auth_request_type:
+		return false
+	var request_id := str(data.get("request_id", "")).strip_edges()
+	# Older servers omitted request IDs on generic rate-limit warnings. Only
+	# accept that fallback for the exact account action currently outstanding.
+	if request_id != "" and request_id != pending_account_auth_request_id:
+		return false
+	var response := data.duplicate(true)
+	response["type"] = "account_auth_error"
+	response["ok"] = false
+	response["request_id"] = pending_account_auth_request_id
+	if str(response.get("reason", "")) == "":
+		response["reason"] = "rate_limited" if str(data.get("type", "")) == "rate_limited" else "request_rejected"
+	handle_account_auth_error(response)
+	return true
+
+
+func handle_account_auth_error(data: Dictionary) -> void:
+	_finish_account_auth_request(str(data.get("reason", "authentication_failed")))
+	connection_health.phase = "FAILED"
+	var had_session_before_auth_error := has_active_session()
+	var saved_refresh_login_failed := saved_refresh_login_in_flight
+	saved_refresh_login_in_flight = false
+	server_session_authenticated = false
+	if saved_refresh_login_failed and _auth_error_invalidates_saved_login(data):
+		_clear_saved_session_token()
+	server_auth_finished.emit(data)
+	if had_session_before_auth_error and not _is_login_scene_active():
+		_end_authenticated_session(str(data.get("message", "Sign on again.")), true, false)
+
+
 func handle_account_auth_ok(data: Dictionary) -> void:
+	_finish_account_auth_request("success")
 	var username = _safe_string(data.get("username", ""), "", MAX_USERNAME_LENGTH)
 	var email = _safe_string(data.get("email", ""), "", 256)
 	var token = _safe_string(data.get("session_token", session_token), "", 512)
