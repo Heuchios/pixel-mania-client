@@ -202,6 +202,25 @@ func check_hud(viewport: SubViewport) -> void:
 	var fixture_script := GDScript.new()
 	fixture_script.source_code = "extends 'res://Scripts/world.gd'\nfunc _ready(): pass\nfunc _process(_delta): pass\nfunc _physics_process(_delta): pass\n"
 	check(fixture_script.reload() == OK, "World HUD fixture parses")
+	# Startup may close every popup before the UI branch enters the scene tree.
+	var startup_world = fixture_script.new()
+	var startup_rewards = Rewards.new()
+	startup_world.daily_rewards_ui = startup_rewards
+	startup_rewards.setup(startup_world)
+	var closed_before_ready := true
+	for attempt in range(2):
+		startup_world.mobile_pointer_override_active = true
+		startup_world.close_daily_rewards()
+		closed_before_ready = closed_before_ready and not startup_world.mobile_pointer_override_active
+	check(closed_before_ready and not startup_rewards.visible and startup_rewards.tick_player == null, "Repeated startup closes finish pointer cleanup before the sound player exists")
+	viewport.add_child(startup_rewards)
+	check(is_instance_valid(startup_rewards.tick_player) and not startup_rewards.visible, "An early-closed rewards window initializes normally and stays hidden")
+	startup_rewards.show()
+	startup_rewards.tick_player.play()
+	startup_world.close_daily_rewards()
+	check(not startup_rewards.visible and not startup_rewards.tick_player.playing, "Closing an initialized rewards window still stops its sound")
+	startup_rewards.free()
+	startup_world.free()
 	var scene := Node.new()
 	viewport.add_child(scene)
 	var layer := Control.new()
