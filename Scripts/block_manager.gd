@@ -3627,6 +3627,11 @@ func get_stateful_block_atlas_data(base_block_id: String, grid_pos: Vector2i, ba
 				"atlas_coords": parse_block_vector2i(item_data.get(duck_atlas_key), Vector2i.ZERO)
 			}
 
+	if item_data.has("timed_provider_reward"):
+		var machine_frames := get_timed_machine_frames(base_block_id, grid_pos)
+		if not machine_frames.is_empty():
+			return {"atlas_coords": parse_block_vector2i(machine_frames[0].get("cell", []), Vector2i.ZERO)}
+
 	if bool(item_data.get("tackle_box_block", false)) and item_data.has("tackle_box_state_atlas_coords"):
 		return {"atlas_coords": parse_block_vector2i(item_data.tackle_box_state_atlas_coords[get_tackle_box_visual_state_frame(grid_pos)], Vector2i(15, 15))}
 
@@ -4159,7 +4164,8 @@ func update_tackle_box_timer_hover() -> void:
 		tackle_box_timer_label.text = get_atm_machine_timer_text(player_grid)
 	else:
 		var remaining_ms := get_tackle_box_remaining_ms(player_grid)
-		tackle_box_timer_label.text = "Bait Box Ready" if remaining_ms <= 0 else "Bait Box " + format_tackle_box_remaining_time(remaining_ms)
+		var provider_name := str(world.item_database.get(block_type, {}).get("display_name", "Bait Box"))
+		tackle_box_timer_label.text = provider_name + " Ready" if remaining_ms <= 0 else provider_name + " " + format_tackle_box_remaining_time(remaining_ms)
 	tackle_box_timer_label.size = Vector2(TACKLE_BOX_TIMER_LABEL_WIDTH, TACKLE_BOX_TIMER_LABEL_HEIGHT)
 
 	var canvas_transform = world.get_viewport().get_canvas_transform()
@@ -5462,6 +5468,35 @@ func update_vending_machine_visual(grid_pos: Vector2i):
 			var refreshed_node = refreshed_data.get("node", null)
 			if refreshed_node != null and is_instance_valid(refreshed_node):
 				set_block_texture(refreshed_node, block_type, grid_pos, false)
+
+
+func get_timed_machine_frames(block_type: String, grid_pos: Vector2i) -> Array:
+	var item_data := get_block_item_data(block_type)
+	var state_name := "ready" if tackle_box_is_ready(grid_pos) else "running"
+	var states: Dictionary = item_data.get("visual_states", {})
+	return states.get(state_name, {}).get("frames", [])
+
+
+func refresh_timed_machine_animation(grid_pos: Vector2i, block_type: String, block_node: Node) -> void:
+	if block_node == null or not is_instance_valid(block_node):
+		return
+	var visual := block_node.get_node_or_null("Visual") as Sprite2D
+	if visual == null:
+		return
+	var frames: Array[Texture2D] = []
+	for spec in get_timed_machine_frames(block_type, grid_pos):
+		var texture := AtlasTextureFactory.load_texture(spec)
+		if texture != null:
+			frames.append(texture)
+	clear_block_animation(block_node, visual)
+	if frames.is_empty():
+		return
+	visual.texture = frames[0]
+	if frames.size() > 1:
+		visual.set_meta("animation_frames", frames)
+		visual.set_meta("animation_frame_index", -1)
+		animated_block_visuals[visual.get_instance_id()] = {"visual": visual, "frames": frames, "frame_seconds": 0.2, "block_type": block_type}
+		apply_synced_block_animation_frame(visual, frames, 0.2, true, block_type)
 
 
 func update_tackle_box_visual(grid_pos: Vector2i, clear_pending := true):
@@ -6860,6 +6895,8 @@ func refresh_stateful_block_animation_after_texture_refresh(grid_pos: Vector2i, 
 		refresh_anti_gravity_animation_after_texture_refresh(grid_pos, block_type, block_node)
 	elif is_theme_machine_block_type(block_type):
 		update_theme_machine_visual(grid_pos)
+	elif get_block_item_data(block_type).has("timed_provider_reward"):
+		refresh_timed_machine_animation(grid_pos, block_type, block_node)
 
 
 func refresh_anti_control_animation_after_texture_refresh(grid_pos: Vector2i, block_type: String, block_node: Node, punch_control: bool) -> void:
@@ -13092,7 +13129,7 @@ func try_harvest_tackle_box(grid_pos: Vector2i) -> bool:
 		spawn_hand_item_swing_particles_at_grid(grid_pos)
 		if world.has_method("play_sound_punch"):
 			world.play_sound_punch(get_block_sound_position(grid_pos))
-		world.show_notification("Harvesting Bait Box...")
+		world.show_notification("Harvesting " + str(world.item_database.get(block_type, {}).get("display_name", "Bait Box")) + "...")
 	else:
 		world.show_notification("Almost ready. Try again in a moment.")
 	return true

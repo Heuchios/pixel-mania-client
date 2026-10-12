@@ -14388,7 +14388,7 @@
     "recipe_tier": 14
   },
   "gem_driller": {
-    "description": "Finds gems underground.",
+    "description": "Produces 1–100 gems every 12 hours. Punch to harvest collectible gem drops.",
     "recipe_tier": 14,
     "block_health": 6,
     "sheet_type": "block",
@@ -14466,7 +14466,48 @@
       ]
     },
     "farming_balance_version": 2,
-    "break_xp": 250
+    "break_xp": 250,
+    "tackle_box_block": true,
+    "tackle_box_cooldown_seconds": 43200,
+    "timed_provider_reward": "gems",
+    "timed_provider_gem_amount_range": [
+      1,
+      100
+    ],
+    "visual_states": {
+      "running": {
+        "frames": [
+          {
+            "atlas": "res://image.png",
+            "cell": [
+              6,
+              16
+            ],
+            "cell_size": [
+              32,
+              32
+            ]
+          }
+        ],
+        "loop": false
+      },
+      "ready": {
+        "frames": [
+          {
+            "atlas": "res://image.png",
+            "cell": [
+              5,
+              16
+            ],
+            "cell_size": [
+              32,
+              32
+            ]
+          }
+        ],
+        "loop": false
+      }
+    }
   },
   "colored_block_maker_seed": {
     "grow_time": 604800,
@@ -14474,7 +14515,7 @@
     "recipe_tier": 13
   },
   "colored_block_maker": {
-    "description": "Makes colored blocks.",
+    "description": "Produces one coloured block every 2 hours. Punch to harvest. Each harvest has a 1% chance to produce an RGB Block.",
     "recipe_tier": 13,
     "block_health": 6,
     "sheet_type": "block",
@@ -14558,7 +14599,40 @@
       ]
     },
     "farming_balance_version": 2,
-    "break_xp": 220
+    "break_xp": 220,
+    "tackle_box_block": true,
+    "tackle_box_cooldown_seconds": 7200,
+    "timed_provider_reward": "colored_block",
+    "colored_block_rewards": [
+      "red_block",
+      "blue_block",
+      "green_block",
+      "purple_block",
+      "yellow_block",
+      "aqua_block",
+      "black_block",
+      "blue_pastel_block",
+      "brown_block",
+      "dark_aqua_block",
+      "dark_blue_block",
+      "dark_brown_block",
+      "dark_green_block",
+      "dark_pink_block",
+      "dark_purple_block",
+      "maroon_block",
+      "dark_yellow_block",
+      "green_pastel_block",
+      "grey_block",
+      "dark_orange_block",
+      "orange_block",
+      "orange_pastel_block",
+      "pink_block",
+      "pink_pastel_block",
+      "purple_pastel_block",
+      "red_pastel_block",
+      "white_block",
+      "yellow_pastel_block"
+    ]
   },
   "electrical_box_seed": {
     "grow_time": 60300,
@@ -25094,7 +25168,13 @@
     "farming_balance_version": 2,
     "break_return_to_inventory": true,
     "break_return_item_id": "atm_machine",
-    "drops_self": false
+    "drops_self": false,
+    "timed_provider_reward": "gems",
+    "timed_provider_gem_amount_range": [
+      1,
+      100
+    ],
+    "description": "Produces 1–100 gems every 12 hours. Punch to harvest collectible gem drops."
   },
   "battery_charger": {
     "authored_drop_rules": true,
