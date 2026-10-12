@@ -2,18 +2,17 @@ extends Control
 
 const Style = preload("res://Scripts/ui/pixel_ui_style.gd")
 const Backdrop = preload("res://Scripts/ui/daily_reward_backdrop.gd")
+const Roulette = preload("res://Scripts/ui/daily_reward_roulette.gd")
 const GEM_TEXTURES = [preload("res://Assets/currency/medium_gem.png"), preload("res://Assets/currency/large_gem.png"), preload("res://Assets/currency/huge_gem.png")]
 const GOLD = Color("ffda79")
 const INK = Color("281336")
 const BASE_SIZE = Vector2(900, 550)
-const CARD_SIZE = Vector2(150, 174)
-const CARD_STEP = 164.0
+const SPIN_DURATION := 6.2
 
 var world = null
 var panel: Control
 var backdrop: Control
-var reel_clip: Control
-var reel: Control
+var wheel: Control
 var status: Label
 var countdown: Label
 var action_button: Button
@@ -21,8 +20,6 @@ var close_button: Button
 var prize_icon: TextureRect
 var prize_name: Label
 var prize_note: Label
-var reel_frame: Panel
-var marker: Label
 var snapshot: Dictionary = {}
 var pending_id := ""
 var pending_action := ""
@@ -41,8 +38,8 @@ var collection_tween: Tween
 var collection_fx: Control
 var prize_rarity: Label
 var prize_stage: Panel
-var spin_index := -1
-var visual_rng := RandomNumberGenerator.new()
+var wheel_legend: Label
+var tick_player: AudioStreamPlayer
 
 func _ready() -> void:
 	name = "DailyRewards"
@@ -51,7 +48,6 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	set_meta("pixelmania_text_shadow", false)
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	visual_rng.randomize()
 	panel = Panel.new()
 	panel.set_meta("ignore_mobile_ui_scale", true)
 	panel.size = BASE_SIZE
@@ -59,59 +55,44 @@ func _ready() -> void:
 	panel.add_theme_stylebox_override("panel", Style.panel_style())
 	add_child(panel)
 	_label(panel, "DAILY REWARDS", Rect2(80, 18, 740, 55), INK, "header")
-	_label(panel, "A FREE BOX. A LITTLE LUCK. EVERY DAY.", Rect2(60, 76, 780, 34), INK)
+	_label(panel, "ONE FREE SPIN. A LITTLE LUCK. EVERY DAY.", Rect2(60, 76, 780, 34), INK)
 	close_button = _button(panel, "X", Rect2(836, 18, 48, 48), close_rewards)
 	Style.apply_close_button(close_button)
-	reel_frame = Panel.new()
-	reel_frame.position = Vector2(40, 140)
-	reel_frame.size = Vector2(820, 202)
-	reel_frame.add_theme_stylebox_override("panel", Style.atlas_style("input_field"))
-	panel.add_child(reel_frame)
-	reel_clip = Control.new()
-	reel_clip.position = Vector2(8, 10)
-	reel_clip.size = Vector2(804, 182)
-	reel_clip.clip_contents = true
-	reel_frame.add_child(reel_clip)
-	reel = Control.new()
-	reel_clip.add_child(reel)
-	marker = _label(panel, "▼", Rect2(425, 110, 50, 38), GOLD, "icon")
-	marker.add_theme_font_size_override("font_size", 34)
-	var line := Panel.new()
-	var selection_style := Style.atlas_style("inv_slot_selected_1")
-	# Keep the atlas corners at pixel size so they do not cover the prize text.
-	for side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
-		selection_style.set_texture_margin(side, 8)
-	line.add_theme_stylebox_override("panel", selection_style)
-	line.position = Vector2(450 - CARD_SIZE.x * 0.5 - 3, 150)
-	line.size = CARD_SIZE + Vector2(6, 8)
-	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_child(line)
-	line.name = "SelectionLine"
-	status = _label(panel, "CHECKING YOUR DAILY BOX...", Rect2(30, 363, 840, 40), INK)
-	action_button = _button(panel, "PLEASE WAIT", Rect2(290, 428, 320, 60), _activate)
-	countdown = _label(panel, "Free once a day · Resets at 00:00 UTC", Rect2(40, 499, 820, 36), INK)
+	wheel = Roulette.new()
+	wheel.position = Vector2(28, 108)
+	wheel.size = Vector2(440, 388)
+	wheel.scale = Vector2.ONE * 0.95
+	panel.add_child(wheel)
+	_create_tick_player()
+	wheel.pocket_tick.connect(_on_pocket_tick)
+	wheel_legend = _label(panel, "250 / 1,000 / 5,000 GEMS", Rect2(28, 478, 420, 30), INK)
+	status = _label(panel, "CHECKING YOUR DAILY SPIN...", Rect2(474, 350, 388, 65), INK)
+	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	action_button = _button(panel, "PLEASE WAIT", Rect2(500, 423, 340, 60), _activate)
+	countdown = _label(panel, "Free once a day · Resets at 00:00 UTC", Rect2(40, 511, 820, 32), INK)
 	prize_stage = Panel.new()
-	prize_stage.position = reel_frame.position
-	prize_stage.size = reel_frame.size
-	prize_stage.add_theme_stylebox_override("panel", Style.atlas_style("input_field"))
+	prize_stage.position = Vector2(480, 130)
+	prize_stage.size = Vector2(376, 216)
+	prize_stage.add_theme_stylebox_override("panel", Style.slot_style("legendary"))
 	prize_stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_child(prize_stage)
 	backdrop = Backdrop.new()
 	panel.add_child(backdrop)
-	backdrop.position = Vector2(32, 120)
-	backdrop.size = Vector2(836, 300)
+	backdrop.position = Vector2(470, 84)
+	backdrop.size = Vector2(398, 304)
 	backdrop.clip_contents = true
-	prize_rarity = _label(panel, "", Rect2(40, 110, 820, 36), INK)
+	prize_rarity = _label(panel, "DAILY JACKPOT", Rect2(486, 144, 364, 36), GOLD)
 	prize_icon = TextureRect.new()
-	prize_icon.position = Vector2(354, 148)
-	prize_icon.size = Vector2(192, 176)
+	prize_icon.position = Vector2(616, 184)
+	prize_icon.size = Vector2(104, 104)
 	prize_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	prize_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	prize_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	prize_icon.pivot_offset = prize_icon.size * 0.5
 	panel.add_child(prize_icon)
-	prize_name = _label(panel, "", Rect2(40, 340, 820, 54), INK, "header")
-	prize_note = _label(panel, "Added to your gems", Rect2(40, 390, 820, 34), INK)
+	prize_name = _label(panel, "5,000 GEMS", Rect2(486, 286, 364, 50), Color.WHITE, "header")
+	prize_note = _label(panel, "Added to your gems", Rect2(474, 350, 388, 65), INK)
+	_show_preview_prize()
 	collection_fx = Backdrop.new()
 	add_child(collection_fx)
 	collection_fx.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -123,6 +104,30 @@ func _ready() -> void:
 
 func setup(parent_world) -> void:
 	world = parent_world
+
+func _create_tick_player() -> void:
+	# A short, soft wooden click; build once and share the game's SFX volume policy.
+	var samples := PackedByteArray()
+	samples.resize(1600)
+	for i in range(800):
+		var t := i / 22050.0
+		var sample := int((sin(TAU * 1600.0 * t) * 0.75 + sin(TAU * 4200.0 * t) * 0.25) * exp(-t * 190.0) * 12000.0)
+		samples[i * 2] = sample & 255
+		samples[i * 2 + 1] = (sample >> 8) & 255
+	var sound := AudioStreamWAV.new()
+	sound.format = AudioStreamWAV.FORMAT_16_BITS
+	sound.mix_rate = 22050
+	sound.data = samples
+	tick_player = AudioStreamPlayer.new()
+	tick_player.stream = sound
+	add_child(tick_player)
+
+func _on_pocket_tick() -> void:
+	if not visible or world == null or not is_instance_valid(world.sound_manager): return
+	tick_player.volume_db = world.sound_manager.get_scaled_sfx_volume_db(-12.0)
+	if tick_player.volume_db <= -79.0: return
+	tick_player.pitch_scale = lerpf(1.15, 0.85, wheel.progress)
+	tick_player.play()
 
 func _label(parent: Node, text: String, rect: Rect2, color: Color, role: String = "body") -> Label:
 	var label := Label.new()
@@ -170,6 +175,7 @@ func open_rewards() -> void:
 
 func close_rewards() -> void:
 	hide()
+	tick_player.stop()
 	if phase == "collecting":
 		if collection_tween != null: collection_tween.kill()
 		_set_phase("claimed")
@@ -188,12 +194,8 @@ func _process(_delta: float) -> void:
 	if visible and world != null and (not world.in_world or str(world.current_world_name) != opened_world):
 		close_rewards()
 	if visible and phase == "spinning":
-		var selected := roundi((reel_clip.size.x * 0.5 - reel.position.x - CARD_SIZE.x * 0.5) / CARD_STEP)
-		if selected != spin_index:
-			spin_index = selected
-			backdrop.tick()
-			marker.scale = Vector2(1.18, 1.18)
-		marker.scale = marker.scale.lerp(Vector2.ONE, minf(1, _delta * 14))
+		var spin_status := "THE BALL IS SETTLING..." if wheel.progress > 0.78 else "GOOD LUCK!"
+		if status.text != spin_status: status.text = spin_status
 	if not pending_id.is_empty() and Time.get_ticks_msec() - pending_at > 12000:
 		pending_id = ""
 		_set_phase("error")
@@ -201,7 +203,7 @@ func _process(_delta: float) -> void:
 	if snapshot.is_empty(): return
 	var seconds := maxi(0, ceili((int(snapshot.get("reset_at", 0)) - Time.get_ticks_msec() - clock_offset) / 1000.0))
 	if not bool(snapshot.get("can_claim", false)):
-		countdown.text = "Next free box in %02d:%02d:%02d" % [int(seconds / 3600.0), int(seconds / 60.0) % 60, seconds % 60]
+		countdown.text = "Next free spin in %02d:%02d:%02d" % [int(seconds / 3600.0), int(seconds / 60.0) % 60, seconds % 60]
 	if visible and seconds == 0 and pending_id.is_empty() and phase in ["ready", "claimed"] and Time.get_ticks_msec() >= refresh_at:
 		refresh_at = Time.get_ticks_msec() + 15000
 		_request("daily_reward_status")
@@ -214,13 +216,13 @@ func _request(action: String) -> void:
 	pending_action = action
 	pending_at = Time.get_ticks_msec()
 	_set_phase("loading")
-	status.text = "OPENING YOUR DAILY BOX..." if action == "daily_reward_claim" else "CHECKING YOUR DAILY BOX..."
+	status.text = "GETTING YOUR DAILY SPIN..." if action == "daily_reward_claim" else "CHECKING YOUR DAILY SPIN..."
 	var packet := {"action": action, "request_id": pending_id, "reward_day": int(snapshot.get("day", -1))}
 	var network = get_node_or_null("/root/NetworkManager")
 	if network == null or not network.send_inventory_transaction_request(packet):
 		pending_id = ""
 		_set_phase("error")
-		status.text = "Connect to the game server to open your box."
+		status.text = "Connect to the game server to spin."
 
 func handle_inventory_transaction_result(data: Dictionary) -> bool:
 	if not str(data.get("action", "")).begins_with("daily_reward_"): return false
@@ -241,11 +243,16 @@ func load_snapshot(data: Dictionary) -> void:
 	snapshot = data.duplicate(true)
 	clock_offset = int(snapshot.get("server_time", 0)) - Time.get_ticks_msec()
 	var rewards: Array = snapshot.get("rewards", [])
-	_build_reel(rewards)
+	wheel.configure(rewards)
+	_show_preview_prize()
 	_set_phase("ready" if bool(snapshot.get("can_claim", false)) and not rewards.is_empty() else "claimed")
 	if phase == "claimed":
 		var reward = snapshot.get("reward", {})
-		status.text = "TODAY'S REWARD: " + str(reward.get("name", "CLAIMED")) if reward is Dictionary else "TODAY'S REWARD CLAIMED"
+		status.text = "TODAY'S REWARD CLAIMED"
+		if reward is Dictionary and not reward.is_empty():
+			winning_reward = reward.duplicate(true)
+			wheel.show_saved_reward(reward)
+			_show_saved_prize(reward)
 	countdown.text = "Free once a day · Resets at 00:00 UTC"
 	_update_hud()
 
@@ -253,45 +260,19 @@ func _texture(reward: Dictionary) -> Texture2D:
 	var amount := int(reward.get("gems", 0))
 	return GEM_TEXTURES[2 if amount >= 5000 else (1 if amount >= 1000 else 0)]
 
-func _build_reel(rewards: Array, winner: Dictionary = {}) -> void:
-	for child in reel.get_children():
-		reel.remove_child(child)
-		child.queue_free()
-	if rewards.is_empty(): return
-	var count := 42 if not winner.is_empty() else 7
-	for i in range(count):
-		var reward: Dictionary = rewards[(i * 7 + int(i / 3.0)) % rewards.size()]
-		if not winner.is_empty(): reward = _visual_reward(rewards)
-		if i == 36 and not winner.is_empty(): reward = winner
-		var card := Panel.new()
-		card.position = Vector2(i * CARD_STEP, 4)
-		card.size = CARD_SIZE
-		var rarity := "common"
-		if int(reward.get("gems", 0)) >= 1000: rarity = "rare"
-		if int(reward.get("gems", 0)) >= 5000: rarity = "legendary"
-		card.add_theme_stylebox_override("panel", Style.slot_style(rarity))
-		card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		reel.add_child(card)
-		_label(card, str(reward.get("rarity", "")), Rect2(3, 8, 144, 32), Color("e6d9f4"))
-		var icon := TextureRect.new()
-		icon.texture = _texture(reward)
-		icon.position = Vector2((CARD_SIZE.x - 72) * 0.5, 46)
-		icon.size = Vector2(72, 72)
-		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		card.add_child(icon)
-		_label(card, str(reward.get("name", "")), Rect2(3, 130, 144, 32), Color.WHITE)
-	reel.position = Vector2(reel_clip.size.x * 0.5 - CARD_SIZE.x * 0.5 - CARD_STEP * 2.0, 0)
+func _show_preview_prize() -> void:
+	prize_icon.texture = GEM_TEXTURES[2]
+	prize_icon.scale = Vector2.ONE
+	prize_rarity.text = "DAILY JACKPOT"
+	prize_name.text = "5,000 GEMS"
+	prize_stage.add_theme_stylebox_override("panel", Style.slot_style("legendary"))
 
-func _visual_reward(rewards: Array) -> Dictionary:
-	var total := 0.0
-	for reward in rewards: total += maxf(0, float(reward.get("chance", 0)))
-	var roll := visual_rng.randf() * total
-	for reward in rewards:
-		roll -= maxf(0, float(reward.get("chance", 0)))
-		if roll < 0: return reward
-	return rewards[0]
+func _show_saved_prize(reward: Dictionary) -> void:
+	prize_icon.texture = _texture(reward)
+	prize_rarity.text = str(reward.get("rarity", "")) + " REWARD"
+	_show_prize_amount(int(reward.get("gems", 0)))
+	var amount := int(reward.get("gems", 0))
+	prize_stage.add_theme_stylebox_override("panel", Style.slot_style("legendary" if amount >= 5000 else ("rare" if amount >= 1000 else "common")))
 
 func _start_spin(reward: Dictionary) -> void:
 	if reward.is_empty():
@@ -299,21 +280,22 @@ func _start_spin(reward: Dictionary) -> void:
 		status.text = "Check your saved reward."
 		return
 	winning_reward = reward.duplicate(true)
-	_build_reel(snapshot.get("rewards", []), reward)
+	if not wheel.begin_spin(reward):
+		_set_phase("error")
+		status.text = "Check your saved reward."
+		return
+	_show_preview_prize()
 	_set_phase("spinning")
-	spin_index = -1
+	if spin_tween != null: spin_tween.kill()
 	spin_tween = create_tween()
-	var target := reel_clip.size.x * 0.5 - CARD_SIZE.x * 0.5 - CARD_STEP * 36.0
-	spin_tween.tween_property(reel, "position:x", target + CARD_STEP * 3.25, 2.3).set_trans(Tween.TRANS_LINEAR)
-	spin_tween.tween_property(reel, "position:x", target, 2.2).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	spin_tween.tween_method(wheel.set_spin_progress, 0.0, 1.0, SPIN_DURATION)
 	spin_tween.tween_callback(_finish_spin)
 
 func _finish_spin() -> void:
+	wheel.finish_spin()
 	_set_phase("result")
 	status.text = "YOU WON " + str(winning_reward.get("name", "GEMS")) + "!"
-	var winner = reel.get_child(36) if reel.get_child_count() > 36 else null
-	if winner != null:
-		winner.add_theme_stylebox_override("panel", Style.slot_style("legendary"))
+	_show_saved_prize(winning_reward)
 	reveal_tween = create_tween()
 	reveal_tween.tween_interval(0.55)
 	reveal_tween.tween_callback(_reveal_reward)
@@ -321,8 +303,7 @@ func _finish_spin() -> void:
 func _reveal_reward() -> void:
 	if phase != "result": return
 	if reveal_tween != null: reveal_tween.kill()
-	prize_icon.texture = _texture(winning_reward)
-	prize_rarity.text = str(winning_reward.get("rarity", "")) + " REWARD!"
+	_show_saved_prize(winning_reward)
 	_set_phase("reveal")
 	prize_icon.scale = Vector2.ONE * 0.45
 	prize_tween = create_tween().set_parallel(true)
@@ -353,29 +334,23 @@ func _set_phase(value: String) -> void:
 	panel.visible = phase != "collecting"
 	collection_fx.visible = phase == "collecting"
 	var reveal := phase == "reveal"
-	prize_icon.visible = reveal
-	prize_name.visible = reveal
 	prize_note.visible = reveal
-	prize_rarity.visible = reveal
-	prize_stage.visible = reveal
-	reel_frame.visible = not reveal
-	marker.visible = not reveal
-	panel.get_node("SelectionLine").visible = not reveal
 	status.visible = not reveal
-	marker.scale = Vector2.ONE
 	backdrop.set_mode("celebrate" if phase == "reveal" else ("spin" if phase == "spinning" else "idle"), winning_reward, _texture(winning_reward))
 	action_button.disabled = phase in ["loading", "spinning"]
 	match phase:
 		"ready":
-			status.text = "YOUR FREE DAILY BOX IS READY!"
-			action_button.text = "OPEN DAILY BOX"
+			status.text = "YOUR FREE DAILY SPIN IS READY!"
+			action_button.text = "SPIN THE WHEEL"
 		"loading": action_button.text = "PLEASE WAIT"
 		"spinning":
 			status.text = "GOOD LUCK!"
-			action_button.text = "OPENING..."
+			action_button.text = "SPINNING..."
 		"result": action_button.text = "REVEAL REWARD"
 		"reveal": action_button.text = "COLLECT"
-		"claimed": action_button.text = "COME BACK TOMORROW"
+		"claimed":
+			action_button.text = "COME BACK TOMORROW"
+			status.text = "TODAY'S REWARD CLAIMED"
 		"error": action_button.text = "CHECK REWARD"
 
 func _activate() -> void:
@@ -391,4 +366,4 @@ func _activate() -> void:
 func _update_hud(seconds: int = -1) -> void:
 	if not is_instance_valid(hud_button): return
 	var ready := bool(snapshot.get("can_claim", false)) or seconds == 0
-	hud_button.tooltip_text = "Your free daily box is ready!" if ready else "Open daily rewards to see your next free box."
+	hud_button.tooltip_text = "Your free daily spin is ready!" if ready else "Open daily rewards to see your next free spin."

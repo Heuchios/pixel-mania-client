@@ -44,6 +44,23 @@ func run() -> void:
 	await process_frame
 	check(ui.phase == "ready" and not ui.action_button.disabled, "Ready claim button")
 	await capture(viewport, "daily-rewards-ready")
+	# Exercise different starting rotations and every tier without rolling locally.
+	for reward in snapshot.rewards:
+		for rotation in [0.0, 1.37, -9.2]:
+			ui.wheel.angle = rotation
+			check(ui.wheel.begin_spin(reward), "Every offered reward has a destination pocket")
+			var previous_angle: float = ui.wheel.angle
+			var previous_ball: float = ui.wheel.ball_angle
+			var moves_forward := true
+			for step in range(1, 101):
+				ui.wheel.set_spin_progress(step / 100.0)
+				moves_forward = moves_forward and ui.wheel.angle >= previous_angle and ui.wheel.ball_angle <= previous_ball
+				previous_angle = ui.wheel.angle
+				previous_ball = ui.wheel.ball_angle
+			ui.wheel.finish_spin()
+			check(moves_forward, "Wheel and ball coast in opposite directions without a reversal")
+			check(int(ui.wheel.pockets[ui.wheel.pointed_index()].gems) == int(reward.gems), "Every tier settles on its confirmed prize")
+	ui.load_snapshot(snapshot)
 	for dimensions in [Vector2i(640, 360), Vector2i(360, 640), Vector2i(2340,1080)]:
 		viewport.size = dimensions
 		await process_frame
@@ -63,11 +80,13 @@ func run() -> void:
 	claimed.reward = snapshot.rewards[1]
 	ui.handle_inventory_transaction_result({"action":"daily_reward_claim","request_id":"real-claim","ok":true,"daily_reward":claimed})
 	check(ui.phase == "spinning" and ui.action_button.disabled, "Only confirmed rewards start a spin")
-	ui.spin_tween.custom_step(6.0)
+	ui.spin_tween.custom_step(2.0)
+	await capture(viewport, "daily-rewards-spinning")
+	ui.spin_tween.custom_step(7.0)
 	check(ui.phase == "result", "Spin completes")
-	var winner: Control = ui.reel.get_child(36)
-	var selected_center: float = winner.position.x + winner.size.x * 0.5 + ui.reel.position.x
-	check(absf(selected_center - ui.reel_clip.size.x * 0.5) < 1, "Reel lands on server prize")
+	var winning_index: int = ui.wheel.pointed_index()
+	check(winning_index == ui.wheel.winner_index and int(ui.wheel.pockets[winning_index].gems) == 1000, "Wheel lands on the server prize")
+	check(absf(angle_difference(ui.wheel.ball_angle, -PI * 0.5)) < 0.001, "Ball settles under the fixed pointer")
 	ui.reveal_tween.custom_step(1.0)
 	ui.prize_tween.custom_step(1.0)
 	check(ui.phase == "reveal" and ui.prize_name.text == "1,000 GEMS", "Automatic reveal counts up to the same server prize")
@@ -98,7 +117,7 @@ func run() -> void:
 	await capture(viewport, "daily-rewards-claimed")
 	ui._start_spin(snapshot.rewards[2])
 	ui.close_rewards()
-	ui.spin_tween.custom_step(6.0)
+	ui.spin_tween.custom_step(7.0)
 	ui.reveal_tween.custom_step(1.0)
 	ui.prize_tween.custom_step(1.0)
 	check(ui.phase == "reveal" and not ui.backdrop.is_processing(), "Closing during spin preserves the prize and pauses hidden effects")
@@ -116,7 +135,7 @@ func run() -> void:
 	check(ui.phase == "claimed" and not ui.collection_fx.is_processing(), "Back during collection cancels cosmetic effects safely")
 	ui.show()
 	ui._start_spin(snapshot.rewards[0])
-	ui.spin_tween.custom_step(6.0)
+	ui.spin_tween.custom_step(7.0)
 	ui.reveal_tween.custom_step(1.0)
 	ui.prize_tween.custom_step(1.0)
 	await create_timer(0.25).timeout

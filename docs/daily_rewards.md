@@ -1,23 +1,30 @@
 # Daily rewards
 
-Deployed to staging on 2026-10-11 for testing. The client and backend must be
-released together. This feature is not included in the published production build.
+Initially deployed to staging on 2026-10-11 for testing. The roulette upgrade is
+client-only and uses the existing deployed daily-reward endpoints. This feature
+is not included in the published production build.
 
 The HUD button pairs a small pixel gift with "DAILY REWARDS", directly below the
 gem counter at the top left. Its 272-by-48 layout uses the shared font and scales
 to 80% (about 218-by-38 on desktop), including the icon, text and frame. Mobile UI
 scaling still applies. It follows the counter's scaled bounds and keeps claim
 status in its tooltip. The compact window uses the shared game UI atlas:
-outer panel, inventory slots, selected slot frame, and green action buttons.
+outer panel, a rarity-colored prize display, and green action buttons.
 The surrounding world stays visible with no full-screen tint or backdrop.
 The window uses the shared game font and typography roles: 38 for
 headings and 26 for body text and buttons. The panel uses full scale when it fits,
-with responsive shrinking only on smaller viewports. Prize cards reserve space
-for the standard text sizes.
-The 4.5-second reel slows onto the server-confirmed prize, then automatically
-reveals it with an animated gem count. Collect closes the panel and sends cosmetic
-gems toward the actual HUD counter. The next UTC reset remains visible; reward
-percentages are not displayed, and the window is shorter without that row.
+with responsive shrinking only on smaller viewports.
+A 6.2-second roulette animation accelerates, cruises, and coasts to rest. The
+gold-rimmed wheel has concentric rings and twelve equally spaced pockets, with
+gems and labels placed identically inside each rotating sector. Stationary rim
+lights chase around the wheel; a spring-loaded pointer ticks across the pockets.
+A ball circles in the opposite direction, drops inward, and settles under the
+pointer on the server-confirmed prize. Soft clicks slow with the wheel and respect
+the game's SFX volume. The selected pocket lights up and the prize display reveals
+the reward with an animated gem count. The decorative pockets preview prize tiers;
+they do not determine or represent the backend probability distribution.
+Collect closes the panel and sends cosmetic gems toward the actual HUD counter.
+The next UTC reset remains visible; reward percentages are not displayed.
 
 The reveal reuses the game's fishing reward confetti scenes and textures:
 spinning squares, ribbons, and star glints thrown upward before falling. Jackpot
@@ -64,9 +71,10 @@ The database test covers rollback after partial writes, all reward boundaries,
 duplicate and simultaneous requests, account case normalization, recovery after
 module restart, UTC rollover, stale-day rejection, capacity, and database outages.
 
-Verified: 42 client checks passed; desktop/mobile/HUD/prize renders were inspected,
+Verified: 70 client checks passed; desktop/mobile/HUD/prize renders were inspected,
 including all three confetti tiers and the collection flight over a world screenshot.
-Client checks cover automatic reveal, duplicate collect, GPU confetti pause/resume,
+Client checks cover all reward tiers from multiple starting rotations, monotonic
+counter-rotation, exact ball/pointer landing, automatic reveal, duplicate collect, GPU confetti pause/resume,
 effect cleanup, and closing during collection. Route and isolated
 PostgreSQL tests passed. The full backend `check:security` chain passed in the
 isolated staging checkout, including TypeScript, lint, economy, and runtime checks.
