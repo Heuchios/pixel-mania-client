@@ -4,6 +4,8 @@ extends Control
 signal pocket_tick
 
 const Style = preload("res://Scripts/ui/pixel_ui_style.gd")
+const LAMP_SHADER = preload("res://Assets/shaders/daily_roulette_lamp.gdshader")
+const LAMP_COUNT := 48
 const GEM_TEXTURES = [preload("res://Assets/currency/medium_gem.png"), preload("res://Assets/currency/large_gem.png"), preload("res://Assets/currency/huge_gem.png")]
 const TOP := -PI * 0.5
 const POCKET_COUNT := 12
@@ -43,13 +45,59 @@ var target_angle := 0.0
 var ball_start := TOP
 var ball_target := TOP
 var rng := RandomNumberGenerator.new()
+var lamp_mesh: MultiMesh
+var lamp_layer: MultiMeshInstance2D
+var lamp_material: ShaderMaterial
+var lamp_tint := Color.TRANSPARENT
+var foreground: Control
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	rng.randomize()
+	_setup_lamps()
+	foreground = Control.new()
+	foreground.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(foreground)
+	foreground.draw.connect(_draw_foreground)
+	resized.connect(_redraw_wheel)
 	visibility_changed.connect(_sync_processing)
 	_sync_processing()
+
+func _setup_lamps() -> void:
+	lamp_mesh = MultiMesh.new()
+	lamp_mesh.transform_format = MultiMesh.TRANSFORM_2D
+	lamp_mesh.use_custom_data = true
+	var quad := QuadMesh.new()
+	quad.size = Vector2(16, 16)
+	lamp_mesh.mesh = quad
+	lamp_mesh.instance_count = LAMP_COUNT
+	lamp_mesh.custom_aabb = AABB(Vector3(-177, -177, -1), Vector3(354, 354, 2))
+	for i in range(LAMP_COUNT):
+		var point := (Vector2.from_angle(TOP + i * TAU / LAMP_COUNT) * 169.0).round()
+		lamp_mesh.set_instance_transform_2d(i, Transform2D(0.0, point))
+	lamp_material = ShaderMaterial.new()
+	lamp_material.shader = LAMP_SHADER
+	lamp_layer = MultiMeshInstance2D.new()
+	lamp_layer.multimesh = lamp_mesh
+	lamp_layer.material = lamp_material
+	lamp_layer.position = size * 0.5
+	add_child(lamp_layer)
+	_update_lamps()
+
+func _update_lamps() -> void:
+	if lamp_mesh == null: return
+	var tint := _lamp_color()
+	if tint != lamp_tint:
+		lamp_tint = tint
+		lamp_material.set_shader_parameter("lamp_color", tint)
+	for i in range(LAMP_COUNT):
+		lamp_mesh.set_instance_custom_data(i, Color(lamp_strength(i), 0, 0, 1))
+
+func _redraw_wheel() -> void:
+	queue_redraw()
+	if foreground != null: foreground.queue_redraw()
+	if lamp_layer != null: lamp_layer.position = size * 0.5
 
 func _sync_processing() -> void:
 	set_process(is_visible_in_tree())
@@ -66,13 +114,15 @@ func configure(rewards: Array) -> void:
 	ball_visible = false
 	pockets.clear()
 	if rewards.is_empty():
-		queue_redraw()
+		_redraw_wheel()
+		_update_lamps()
 		return
 	# Decorative pockets are a prize preview, never an odds table or a local roll.
 	for tier in [0, 0, 1, 0, 0, 1, 0, 0, 2, 0, 1, 0]:
 		pockets.append(rewards[mini(tier, rewards.size() - 1)].duplicate(true))
 	angle = STEP * 0.15
-	queue_redraw()
+	_redraw_wheel()
+	_update_lamps()
 
 func show_saved_reward(reward: Dictionary) -> void:
 	var matches := _matching_pockets(reward)
@@ -85,7 +135,8 @@ func show_saved_reward(reward: Dictionary) -> void:
 	selected = winner_index
 	animation_stage = "saved"
 	win_age = -1.0
-	queue_redraw()
+	_redraw_wheel()
+	_update_lamps()
 
 func begin_spin(reward: Dictionary) -> bool:
 	var matches := _matching_pockets(reward)
@@ -159,7 +210,7 @@ func set_spin_progress(value: float) -> void:
 		if is_visible_in_tree() and progress - last_tick_time >= 0.012:
 			last_tick_time = progress
 			pocket_tick.emit()
-	queue_redraw()
+	_redraw_wheel()
 
 func finish_spin() -> void:
 	set_spin_progress(1.0)
@@ -168,7 +219,8 @@ func finish_spin() -> void:
 	landing_flash = 1.0
 	win_age = 0.0
 	animation_stage = "landed"
-	queue_redraw()
+	_redraw_wheel()
+	_update_lamps()
 
 func pointed_index() -> int:
 	return posmod(roundi(-angle / STEP), pockets.size()) if not pockets.is_empty() else -1
@@ -178,11 +230,16 @@ func _process(delta: float) -> void:
 	pointer_age += delta
 	pointer_kick = sin(pointer_age * 38.0) * exp(-pointer_age * 16.0)
 	if win_age >= 0.0: win_age += delta
-	landing_flash = exp(-win_age * 3.0) if win_age >= 0.0 else 0.0
-	queue_redraw()
+	landing_flash = exp(-win_age * 3.0) if win_age >= 0.0 and win_age < 3.0 else 0.0
+	_update_lamps()
+	# Retain the wheel's canvas commands once motion and the landing flash finish.
+	if spinning or (win_age >= 0.0 and win_age < 3.0 + delta):
+		_redraw_wheel()
+	elif pointer_age < 0.6 + delta and foreground != null:
+		foreground.queue_redraw()
 
 func lamp_strength(index: int) -> float:
-	var position := index / 48.0
+	var position := index / float(LAMP_COUNT)
 	if spinning:
 		if progress < WINDUP_END:
 			var charge := progress / WINDUP_END
@@ -230,8 +287,9 @@ func _tier(reward: Dictionary) -> int:
 func _point(center: Vector2, radius: float, radians: float) -> Vector2:
 	return center + Vector2.from_angle(radians) * radius
 
-func _disc(center: Vector2, radius: float, color: Color) -> void:
-	draw_circle(center, radius, color, true, -1.0, true)
+func _disc(center: Vector2, radius: float, color: Color, canvas: CanvasItem = null) -> void:
+	if canvas == null: canvas = self
+	canvas.draw_circle(center, radius, color, true, -1.0, true)
 
 func _sector(center: Vector2, inner: float, outer: float, from: float, to: float, color: Color) -> void:
 	var points := PackedVector2Array()
@@ -239,11 +297,12 @@ func _sector(center: Vector2, inner: float, outer: float, from: float, to: float
 	for i in range(12, -1, -1): points.append(_point(center, inner, lerpf(from, to, i / 12.0)))
 	draw_colored_polygon(points, color)
 
-func _text(text: String, point: Vector2, color: Color, font_size: int = Style.DEFAULT_TEXT_FONT_SIZE) -> void:
+func _text(text: String, point: Vector2, color: Color, font_size: int = Style.DEFAULT_TEXT_FONT_SIZE, canvas: CanvasItem = null) -> void:
+	if canvas == null: canvas = self
 	var font := Style.get_game_font()
 	var width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
 	var baseline := point + Vector2(-width * 0.5, (font.get_ascent(font_size) - font.get_descent(font_size)) * 0.5)
-	draw_string(font, baseline.round(), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
+	canvas.draw_string(font, baseline.round(), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
 
 func _draw() -> void:
 	var center := size * 0.5
@@ -280,16 +339,9 @@ func _draw() -> void:
 		_sector(center, 51, 55, middle - STEP * 0.5, middle + STEP * 0.5, GOLD)
 		for edge in [-0.5, 0.5]:
 			draw_line(_point(center, 54, middle + STEP * edge), _point(center, 143, middle + STEP * edge), GOLD, 3, true)
-	# Continuous light tails turn into a ball-following spotlight, then a win wave.
-	var lamp_color := _lamp_color()
-	for i in range(48):
-		var point := _point(center, 169, TOP + i * TAU / 48.0)
-		var strength := lamp_strength(i)
-		draw_rect(Rect2((point - Vector2(8, 8)).round(), Vector2(16, 16)), Color(lamp_color, strength * strength * 0.15))
-		draw_rect(Rect2((point - Vector2(5, 5)).round(), Vector2(10, 10)), Color(lamp_color, strength * 0.22))
-		draw_rect(Rect2((point - Vector2(4, 4)).round(), Vector2(8, 8)), Color("69402d"))
-		draw_rect(Rect2((point - Vector2(3, 3)).round(), Vector2(6, 6)), Color("72452b").lerp(lamp_color, strength))
-		draw_rect(Rect2((point - Vector2(1, 2)).round(), Vector2(3, 3)), Color("ffe6a4").lerp(Color.WHITE, strength) * Color(1, 1, 1, strength * strength))
+
+func _draw_foreground() -> void:
+	var center := size * 0.5
 	var hub_scale := 1.0
 	if spinning and progress < WINDUP_END:
 		hub_scale -= 0.065 * smoothstep(0.0, WINDUP_END, progress)
@@ -298,34 +350,34 @@ func _draw() -> void:
 		hub_scale += -0.065 * cos(launch * 18.0) * exp(-launch * 7.0)
 	elif win_age >= 0.0:
 		hub_scale += sin(win_age * 13.0) * exp(-win_age * 5.0) * 0.06
-	draw_set_transform(center, 0.0, Vector2.ONE * hub_scale)
-	_disc(Vector2.ZERO, 56, Color("110b20"))
-	_disc(Vector2.ZERO, 54, Color("a05c2b"))
-	_disc(Vector2.ZERO, 50, GOLD.lerp(Color.WHITE, landing_flash * 0.3))
-	_disc(Vector2.ZERO, 43, Color("43204f"))
-	_disc(Vector2.ZERO, 36, Color("4e285d"))
+	foreground.draw_set_transform(center, 0.0, Vector2.ONE * hub_scale)
+	_disc(Vector2.ZERO, 56, Color("110b20"), foreground)
+	_disc(Vector2.ZERO, 54, Color("a05c2b"), foreground)
+	_disc(Vector2.ZERO, 50, GOLD.lerp(Color.WHITE, landing_flash * 0.3), foreground)
+	_disc(Vector2.ZERO, 43, Color("43204f"), foreground)
+	_disc(Vector2.ZERO, 36, Color("4e285d"), foreground)
 	var landed := win_age >= 0.0 and win_age < 1.8
-	_text("YOU" if landed else ("GOOD" if spinning else "DAILY"), Vector2(0, -11), Color("fff0ca"))
-	_text("WIN!" if landed else ("LUCK" if spinning else "SPIN"), Vector2(0, 14), GOLD)
-	draw_set_transform(Vector2.ZERO)
+	_text("YOU" if landed else ("GOOD" if spinning else "DAILY"), Vector2(0, -11), Color("fff0ca"), Style.DEFAULT_TEXT_FONT_SIZE, foreground)
+	_text("WIN!" if landed else ("LUCK" if spinning else "SPIN"), Vector2(0, 14), GOLD, Style.DEFAULT_TEXT_FONT_SIZE, foreground)
+	foreground.draw_set_transform(Vector2.ZERO)
 	if ball_visible:
 		if spinning and progress < CATCH_AT:
 			for i in range(14, 0, -1):
 				var point := _point(center, ball_radius, ball_angle + i * motion_energy * 0.033)
 				var alpha := (1.0 - i / 15.0) * motion_energy
-				_disc(point, lerpf(1.5, 4.0, alpha), Color(1, 0.9, 0.66, alpha * 0.36))
+				_disc(point, lerpf(1.5, 4.0, alpha), Color(1, 0.9, 0.66, alpha * 0.36), foreground)
 		var ball := _point(center, ball_radius, ball_angle)
-		_disc(ball + Vector2(2, 3), 8 - ball_lift * 0.3, Color(0.035, 0.025, 0.08, 1.0 - ball_lift * 0.06))
+		_disc(ball + Vector2(2, 3), 8 - ball_lift * 0.3, Color(0.035, 0.025, 0.08, 1.0 - ball_lift * 0.06), foreground)
 		ball.y -= ball_lift
-		_disc(ball, 10, Color(1.0, 0.88, 0.55, 0.10 + landing_flash * 0.3))
-		_disc(ball, 7, Color("c6af87"))
-		_disc(ball - Vector2(1, 1), 5, Color("fff6da"))
-		draw_rect(Rect2(ball - Vector2(3, 3), Vector2(3, 3)), Color.WHITE)
+		_disc(ball, 10, Color(1.0, 0.88, 0.55, 0.10 + landing_flash * 0.3), foreground)
+		_disc(ball, 7, Color("c6af87"), foreground)
+		_disc(ball - Vector2(1, 1), 5, Color("fff6da"), foreground)
+		foreground.draw_rect(Rect2(ball - Vector2(3, 3), Vector2(3, 3)), Color.WHITE)
 	# Spring-loaded pointer stays fixed while the wheel rotates beneath it.
 	var pivot := center + Vector2(0, -184)
 	var preload_angle := -0.12 * smoothstep(0.0, WINDUP_END, progress) if spinning and progress < WINDUP_END else 0.0
-	draw_set_transform(pivot, preload_angle - pointer_kick * 0.3)
-	draw_colored_polygon(PackedVector2Array([Vector2(-17, -2), Vector2(17, -2), Vector2(14, 15), Vector2(0, 29), Vector2(-14, 15)]), INK)
-	draw_colored_polygon(PackedVector2Array([Vector2(-12, 1), Vector2(12, 1), Vector2(10, 12), Vector2(0, 23), Vector2(-10, 12)]), GOLD)
-	draw_rect(Rect2(-8, 2, 16, 5), Color("fff6d2"))
-	draw_set_transform(Vector2.ZERO)
+	foreground.draw_set_transform(pivot, preload_angle - pointer_kick * 0.3)
+	foreground.draw_colored_polygon(PackedVector2Array([Vector2(-17, -2), Vector2(17, -2), Vector2(14, 15), Vector2(0, 29), Vector2(-14, 15)]), INK)
+	foreground.draw_colored_polygon(PackedVector2Array([Vector2(-12, 1), Vector2(12, 1), Vector2(10, 12), Vector2(0, 23), Vector2(-10, 12)]), GOLD)
+	foreground.draw_rect(Rect2(-8, 2, 16, 5), Color("fff6d2"))
+	foreground.draw_set_transform(Vector2.ZERO)
