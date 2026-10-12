@@ -2,11 +2,8 @@ extends Node2D
 
 const TILE_SIZE := 32.0
 const HALF_TILE := TILE_SIZE * 0.5
-const DASH_LENGTH := 5.5
-const DASH_GAP := 4.5
-const DASH_WIDTH := 1.35
-const DASH_SPEED := 4.0
-const DASH_AMPLITUDE := 2.5
+const DOT_SPACING := 8.0
+const DOT_SIZE := 2.0
 const COLOR_ACCESS := Color(0.25, 1.0, 0.35, 0.90)
 const COLOR_PUBLIC := Color(1.0, 0.86, 0.16, 0.92)
 const COLOR_DENIED := Color(1.0, 0.20, 0.18, 0.92)
@@ -17,6 +14,7 @@ var area_lock: Dictionary = {}
 var last_draw_signature: String = ""
 var dash_segments: Array = []
 var animation_time: float = 0.0
+var dot_lookup := {}
 
 
 func _ready() -> void:
@@ -56,21 +54,16 @@ func _process(delta: float) -> void:
 	if dash_segments.is_empty():
 		set_process(false)
 		return
-	var wave: float = sin(animation_time * DASH_SPEED) * DASH_AMPLITUDE
-	for raw_entry in dash_segments:
-		if not (raw_entry is Dictionary):
-			continue
-		var entry: Dictionary = raw_entry
-		var line: Line2D = entry.get("line", null)
-		if line == null or not is_instance_valid(line):
-			continue
-		var base_start: Vector2 = entry.get("start", Vector2.ZERO)
-		var direction: Vector2 = entry.get("direction", Vector2.RIGHT)
-		var edge_length: float = float(entry.get("edge_length", 0.0))
-		var base_offset: float = float(entry.get("offset", 0.0))
-		var max_offset: float = max(0.0, edge_length - DASH_LENGTH)
-		var animated_offset: float = clamp(base_offset + wave, 0.0, max_offset)
-		line.position = base_start + direction * animated_offset
+	# A gentle brightness pulse keeps the exact boundary still and readable.
+	modulate.a = 0.9 + 0.1 * sin(animation_time * 2.0)
+
+
+func _draw() -> void:
+	for dot in dash_segments:
+		var point: Vector2 = dot.position
+		# A one-pixel dark keyline keeps dots legible over bright blocks too.
+		draw_rect(Rect2(point - Vector2(2, 2), Vector2(4, 4)), Color(0.08, 0.04, 0.12, 0.8))
+		draw_rect(Rect2(point - Vector2.ONE, Vector2.ONE * DOT_SIZE), dot.color)
 
 
 func _get_locks_to_draw() -> Array:
@@ -124,6 +117,7 @@ func _rebuild_dash_segments() -> void:
 	for child in get_children():
 		child.queue_free()
 	dash_segments.clear()
+	queue_redraw()
 	if lock_manager == null:
 		set_process(false)
 		return
@@ -135,6 +129,7 @@ func _rebuild_dash_segments() -> void:
 		var lock_data: Dictionary = raw_lock
 		var color: Color = _get_highlight_color(lock_data)
 		var positions: Array = lock_manager.get_area_lock_positions(lock_data)
+		dot_lookup.clear()
 		var position_lookup: Dictionary = {}
 		for raw_pos in positions:
 			if not (raw_pos is Vector2i):
@@ -148,6 +143,7 @@ func _rebuild_dash_segments() -> void:
 			_add_tile_outline_dashes(grid_pos, color, position_lookup)
 
 	set_process(not dash_segments.is_empty())
+	queue_redraw()
 
 
 func _has_locked_neighbor(position_lookup: Dictionary, grid_pos: Vector2i, offset: Vector2i) -> bool:
@@ -180,21 +176,9 @@ func _add_dashed_edge(start: Vector2, end: Vector2, color: Color) -> void:
 		return
 	var direction: Vector2 = edge / edge_length
 	var cursor: float = 0.0
-	while cursor < edge_length:
-		var dash_end: float = min(cursor + DASH_LENGTH, edge_length)
-		var dash_length: float = max(0.0, dash_end - cursor)
-		if dash_length > 0.0:
-			var line: Line2D = Line2D.new()
-			line.width = DASH_WIDTH
-			line.default_color = color
-			line.points = PackedVector2Array([Vector2.ZERO, direction * dash_length])
-			line.position = start + direction * cursor
-			add_child(line)
-			dash_segments.append({
-				"line": line,
-				"start": start,
-				"direction": direction,
-				"edge_length": edge_length,
-				"offset": cursor
-			})
-		cursor += DASH_LENGTH + DASH_GAP
+	while cursor <= edge_length:
+		var point := (start + direction * cursor).round()
+		if not dot_lookup.has(point):
+			dot_lookup[point] = true
+			dash_segments.append({"position": point, "color": color})
+		cursor += DOT_SPACING

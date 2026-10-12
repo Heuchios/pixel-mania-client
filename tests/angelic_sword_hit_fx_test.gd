@@ -1,7 +1,7 @@
 extends "res://tests/sword_slash_trail_test.gd"
 
 const AngelicHit := preload("res://Scenes/particles/AngelicSwordHitFX.tscn")
-const ANGELIC_OUTPUT := "D:/Pixelmania/angelic-sword-preview"
+const ANGELIC_OUTPUT := "D:/Pixelmania/angelic-sword-ruby-preview"
 
 class RemoteActors extends RefCounted:
 	var remote_players := {}
@@ -22,11 +22,11 @@ func make_hit(at: Vector2, facing: int = 1, size: float = 1.0) -> Node2D:
 func run() -> void:
 	var right = make_hit(Vector2.ZERO)
 	var left = make_hit(Vector2.ZERO, -1)
-	assert(right.particles.size() == 28 and left.particles.size() == 28)
-	assert(right.particles.filter(func(p: Dictionary) -> bool: return p.kind == "feather").size() == 4)
+	assert(right.particles.size() == 36 and left.particles.size() == 36)
+	assert(right.particles.filter(func(p: Dictionary) -> bool: return p.kind == "gem").size() == 8)
 	for index in range(right.particles.size()):
 		var particle: Dictionary = right.particles[index]
-		assert(particle.delay + particle.lifetime < right.LIFETIME, "Cleanup must allow the final sparkle and feather to fade")
+		assert(particle.delay + particle.lifetime < right.LIFETIME, "Cleanup must allow the final ruby shard to fade")
 		assert(right._particle_position(particle, 0.0).is_zero_approx(), "The burst must originate at the impact")
 		var p: Vector2 = right._particle_position(particle, 0.25)
 		var mirrored: Vector2 = left._particle_position(left.particles[index], 0.25)
@@ -35,17 +35,17 @@ func run() -> void:
 	for i in range(20):
 		right.play_once(1)
 		right._process(0.1)
-		assert(right.particles.size() == 28, "Restarting must not accumulate particles")
+		assert(right.particles.size() == 36, "Restarting must not accumulate particles")
 	right.stop()
 	assert(right.particles.is_empty() and not right.is_processing())
 	right.start()
-	assert(right.particles.size() == 28 and right.is_processing())
+	assert(right.particles.size() == 36 and right.is_processing())
 	right.free()
 	left._process(left.LIFETIME + 0.01)
 	await process_frame
 	assert(not is_instance_valid(left), "One-shot effects must free themselves")
 	await check_world_routes()
-	print("ANGELIC_SWORD_PASS: mirrored impact, feather/sparkle lifecycle, restart cap, local and remote hit routes, duplicate suppression, unrelated weapon isolation")
+	print("ANGELIC_SWORD_PASS: mirrored impact, ruby shard lifecycle, restart cap, local and remote hit routes, duplicate suppression, unrelated weapon isolation")
 	if "--render-angelic-sword" in OS.get_cmdline_user_args():
 		await render_angelic_preview()
 	quit()
@@ -130,9 +130,9 @@ func render_angelic_preview() -> void:
 	block.position = Vector2(855, 300)
 	block.scale = Vector2.ONE * 3.4
 	root.add_child(block)
-	add_label("ANGELIC SWORD", Vector2(30, 25), 1060, Color("fff0c8"), 29)
-	add_label("WHITE SPARKLE / SLASH", Vector2(40, 92), 480, Color("d8e5ff"))
-	add_label("ANGELIC IMPACT", Vector2(610, 92), 480, Color("d8e5ff"))
+	add_label("ANGELIC SWORD", Vector2(30, 25), 1060, Color("ffd0d9"), 29)
+	add_label("RUBY SHARDS / SLASH", Vector2(40, 92), 480, Color("f2a6b7"))
+	add_label("RUBY SHATTER", Vector2(610, 92), 480, Color("f2a6b7"))
 	add_label("Single strike, then rapid attacks", Vector2(30, 480), 1060, Color("b3c3d7"), 19)
 	var effects: Array[Node2D] = []
 	for frame in range(114):

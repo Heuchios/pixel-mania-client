@@ -1,14 +1,14 @@
 @tool
 extends Node2D
-## A short pearl-white cut that disperses into glints, dust and ivory feathers.
+## A brilliant ruby impact that shatters into tumbling, faceted crystal shards.
 
-const LIFETIME := 1.05
-const PARTICLE_COUNT := 28
-const SPARKLE_TEXTURE := preload("res://Assets/effects/angel_wing_sparkle.svg")
+const LIFETIME := 1.15
+const PARTICLE_COUNT := 36
+const RubyGem := preload("res://Scripts/ruby_gem_particle.gd")
 
 @export var preview_emitting := true
 @export var auto_restart_preview := true
-@export_range(1.1, 3.0, 0.05) var preview_interval := 1.35
+@export_range(1.2, 3.0, 0.05) var preview_interval := 1.45
 
 var age := LIFETIME
 var facing := 1.0
@@ -57,18 +57,18 @@ func restart() -> void:
 	preview_age = 0.0
 	particles.clear()
 	for index in range(PARTICLE_COUNT):
-		var kind := "feather" if index < 4 else ("sparkle" if index < 12 else "dust")
-		var angle := float(index) * TAU / 4.0 if kind == "feather" else (float(index - 4) * TAU / 8.0 if kind == "sparkle" else float(index - 12) * TAU / 16.0)
-		angle += rng.randf_range(-0.18, 0.18)
-		var speed := rng.randf_range(32.0, 52.0) if kind == "feather" else rng.randf_range(45.0, 95.0)
+		var kind := "gem" if index < 8 else ("chip" if index < 22 else "spark")
+		var angle := float(index) * TAU / 8.0 if kind == "gem" else (float(index - 8) * TAU / 14.0 if kind == "chip" else float(index - 22) * TAU / 14.0)
+		angle += rng.randf_range(-0.15, 0.15)
+		var speed := rng.randf_range(140.0, 190.0) if kind == "gem" else rng.randf_range(95.0, 170.0)
 		particles.append({
 			"kind": kind, "velocity": Vector2.from_angle(angle) * speed,
-			"delay": rng.randf_range(0.0, 0.055),
-			"lifetime": rng.randf_range(0.72, 0.90) if kind == "feather" else rng.randf_range(0.42, 0.78),
-			"size": rng.randf_range(5.0, 7.0) if kind == "feather" else rng.randf_range(0.6, 1.55),
-			"drag": 2.5 if kind == "feather" else 3.5,
-			"phase": rng.randf_range(0.0, TAU), "angle": rng.randf_range(-0.65, 0.65),
-			"warmth": rng.randf()
+			"delay": rng.randf_range(0.0, 0.025),
+			"lifetime": rng.randf_range(0.78, 1.02) if kind == "gem" else rng.randf_range(0.48, 0.82),
+			"size": rng.randf_range(3.0, 4.4) if kind == "gem" else (rng.randf_range(1.2, 2.4) if kind == "chip" else rng.randf_range(0.6, 1.1)),
+			"drag": 4.5 if kind == "gem" else 4.0,
+			"phase": rng.randf_range(0.0, TAU), "angle": rng.randf_range(-PI, PI),
+			"spin": rng.randf_range(-4.0, 4.0)
 		})
 	set_process(true)
 	queue_redraw()
@@ -92,8 +92,7 @@ func _process(delta: float) -> void:
 func _particle_position(particle: Dictionary, elapsed: float) -> Vector2:
 	var travel := (1.0 - exp(-float(particle.drag) * elapsed)) / float(particle.drag)
 	var point: Vector2 = particle.velocity * travel
-	point.y += (9.0 if particle.kind == "feather" else -6.0) * elapsed * elapsed
-	point.x += (sin(elapsed * 4.0 + float(particle.phase)) - sin(float(particle.phase))) * 2.0
+	point.y += (22.0 if particle.kind == "gem" else 12.0) * elapsed * elapsed
 	point.x *= facing
 	return point
 
@@ -107,55 +106,45 @@ func _draw() -> void:
 		var t := elapsed / float(particle.lifetime)
 		if t <= 0.0 or t >= 1.0:
 			continue
-		var alpha := smoothstep(0.0, 0.08, t) * (1.0 - smoothstep(0.38, 1.0, t))
+		var alpha := smoothstep(0.0, 0.045, t) * (1.0 - smoothstep(0.48, 1.0, t))
 		var point := _particle_position(particle, elapsed)
-		var size := float(particle.size) * lerpf(1.0, 0.55, t)
-		if particle.kind == "feather":
-			var flutter := sin(elapsed * 5.0 + float(particle.phase)) * 0.35
-			_draw_feather(point, size, (float(particle.angle) + flutter) * facing, alpha)
-		elif particle.kind == "sparkle":
-			var twinkle := 0.65 + 0.35 * pow(sin(elapsed * 8.0 + float(particle.phase)), 2.0)
-			_draw_glint(point, size, alpha * twinkle)
+		var size := float(particle.size) * lerpf(1.0, 0.65, t)
+		if particle.kind != "spark":
+			var angle := (float(particle.angle) + elapsed * float(particle.spin)) * facing
+			var glint := pow(maxf(0.0, sin(elapsed * 8.0 + float(particle.phase))), 4.0)
+			RubyGem.draw_gem(self, point, size, angle, alpha, glint)
 		else:
-			var tint := Color("dfeaff").lerp(Color("fff3ce"), float(particle.warmth))
-			draw_rect(Rect2(point - Vector2.ONE * size * 0.4, Vector2.ONE * size * 0.8), Color(tint, alpha * 0.85))
+			_draw_glint(point, size, alpha)
 
 
 func _draw_contact() -> void:
-	var t := clampf(age / 0.16, 0.0, 1.0)
+	var t := clampf(age / 0.30, 0.0, 1.0)
 	if t >= 1.0:
 		return
-	var alpha := pow(1.0 - t, 1.35)
+	var alpha := 1.0 - smoothstep(0.18, 1.0, t)
 	var axis := Vector2(0.72 * facing, -0.694).normalized()
 	var normal := axis.orthogonal()
-	var length := lerpf(9.0, 27.0, 1.0 - pow(1.0 - t, 3.0))
-	var width := lerpf(2.3, 0.25, t)
-	draw_circle(Vector2.ZERO, 8.0 + t * 8.0, Color(0.82, 0.88, 1.0, alpha * 0.07))
-	for layer in range(3):
-		var radius: float = width * [2.5, 1.0, 0.4][layer]
-		var tint: Color = [Color(0.78, 0.86, 1.0, alpha * 0.12), Color(1.0, 0.92, 0.68, alpha * 0.8), Color(1.0, 1.0, 1.0, alpha)][layer]
-		draw_colored_polygon(PackedVector2Array([-axis * length, normal * radius, axis * length, -normal * radius]), tint)
-	_draw_glint(Vector2.ZERO, 3.0 + t * 4.0, alpha)
+	var bloom := 1.0 - pow(1.0 - clampf(t / 0.35, 0.0, 1.0), 3.0)
+	# A broad ruby flash stays legible against both pale blocks and dark caves.
+	RubyGem.draw_glow(self, Vector2.ZERO, 18.0 + bloom * 17.0, alpha * 0.60)
+	var cut_t := clampf(age / 0.23, 0.0, 1.0)
+	if cut_t < 1.0:
+		var cut_alpha := pow(1.0 - cut_t, 1.1)
+		var length := lerpf(14.0, 37.0, 1.0 - pow(1.0 - cut_t, 3.0))
+		var width := lerpf(4.2, 0.65, cut_t)
+		for layer in range(3):
+			var radius: float = width * [2.2, 1.0, 0.26][layer]
+			var tint: Color = [Color(0.68, 0.015, 0.16, cut_alpha * 0.22), Color(1.0, 0.055, 0.23, cut_alpha), Color(1.0, 0.82, 0.87, cut_alpha)][layer]
+			draw_colored_polygon(PackedVector2Array([-axis * length, normal * radius, axis * length, -normal * radius]), tint)
+	var size := lerpf(5.0, 11.0, bloom) * (1.0 - smoothstep(0.3, 1.0, t) * 0.55)
+	RubyGem.draw_gem(self, Vector2.ZERO, size, (PI * 0.25 + t * 0.15) * facing, alpha, 1.0 - t)
+	_draw_glint(Vector2.ZERO, 4.0, maxf(0.0, 1.0 - age / 0.09))
 
 
 func _draw_glint(point: Vector2, size: float, alpha: float) -> void:
-	draw_texture_rect(SPARKLE_TEXTURE, Rect2(point - Vector2.ONE * size * 2.0, Vector2.ONE * size * 4.0), false, Color(1.0, 1.0, 1.0, alpha * 0.22))
 	draw_colored_polygon(PackedVector2Array([
 		point + Vector2(0, -size), point + Vector2(size * 0.2, -size * 0.2),
 		point + Vector2(size, 0), point + Vector2(size * 0.2, size * 0.2),
 		point + Vector2(0, size), point + Vector2(-size * 0.2, size * 0.2),
 		point + Vector2(-size, 0), point + Vector2(-size * 0.2, -size * 0.2)
-	]), Color(1.0, 0.99, 0.93, alpha))
-
-
-func _draw_feather(point: Vector2, size: float, angle: float, alpha: float) -> void:
-	var axis := Vector2(sin(angle), cos(angle)) * size * 0.5
-	var side := axis.orthogonal() * 0.36
-	draw_colored_polygon(PackedVector2Array([
-		point - axis, point - axis * 0.4 + side, point + axis * 0.45 + side * 0.7,
-		point + axis, point + axis * 0.3 - side * 0.8, point - axis * 0.5 - side * 0.8
-	]), Color(1.0, 0.96, 0.83, alpha * 0.8))
-	draw_line(point - axis * 0.75, point + axis * 1.1, Color(1.0, 1.0, 1.0, alpha), 0.35, false)
-	for step in [-0.25, 0.2]:
-		var center := point + axis * float(step)
-		draw_line(center - axis * 0.15 + side * 0.7, center, Color(1.0, 1.0, 0.94, alpha * 0.8), 0.25, false)
+	]), Color(1.0, 0.52, 0.63, alpha))

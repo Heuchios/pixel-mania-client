@@ -223,6 +223,26 @@ func _run() -> void:
 	network_manager.cancel_pending_account_authentication()
 	assert(network_manager.socket_generation == old_generation + 1, "Never cancel a completed authentication")
 
+	var rejected_auth: Array[Dictionary] = []
+	network_manager.server_auth_finished.connect(func(data): rejected_auth.append(data))
+	for auth_type in ["account_login", "account_token_login"]:
+		network_manager.pending_account_auth_request_id = "current-request"
+		network_manager.pending_account_auth_request_type = auth_type
+		network_manager.pending_account_auth_started_ms = Time.get_ticks_msec()
+		network_manager.connection_health.authenticating(Time.get_ticks_msec())
+		assert(not network_manager._route_rejection_as_account_auth({"type": "rate_limited", "action": "chat"}))
+		assert(not network_manager._route_rejection_as_account_auth({"type": "rate_limited", "action": auth_type, "request_id": "retired-request"}))
+		# Legacy servers do not echo IDs on these warnings. They must still end
+		# this exact account request promptly instead of waiting for a timeout.
+		assert(network_manager._route_rejection_as_account_auth({"type": "rate_limited", "action": auth_type, "message": "Slow down a little."}))
+		assert(rejected_auth.back().get("request_id") == "current-request")
+		assert(rejected_auth.back().get("reason") == "rate_limited")
+		assert(not login._saved_login_error_requires_clear(rejected_auth.back()))
+		assert(network_manager.connection_health.phase == "FAILED")
+		assert(network_manager.pending_account_auth_request_id == "")
+		assert(not network_manager._route_rejection_as_account_auth({"type": "rate_limited", "action": auth_type}))
+	assert(rejected_auth.size() == 2)
+
 	network_mock.free()
 	network_manager.free()
 	login.free()

@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://Scripts/angelic_sword_hit_fx.gd" id="1"]
 
-[sub_resource type="CanvasItemMaterial" id="AngelicGlow"]
-blend_mode = 1
+[sub_resource type="CanvasItemMaterial" id="RubyCrystal"]
+blend_mode = 0
 
 [node name="AngelicSwordHitFX" type="Node2D"]
-material = SubResource("AngelicGlow")
+material = SubResource("RubyCrystal")
 script = ExtResource("1")

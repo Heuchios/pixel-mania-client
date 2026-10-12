@@ -1,5 +1,6 @@
 extends SceneTree
 class World extends Node:
+	func get_item_count(_id, _category): return 1145
 	func get_item_display_name(id, _category): return id.capitalize()
 	func get_item_texture(_id, _category): return load("res://Assets/items/fish/crystal_fish.png")
 func _init(): call_deferred("run")
@@ -21,6 +22,13 @@ func run():
 	ui.apply_vend_state({"listing":listing,"can_manage":false})
 	ui.refresh_ui()
 	await capture(viewport,"vending-buyer")
+	ui._on_buy_pressed()
+	await capture(viewport,"vending-confirmation")
+	ui.purchase_confirmation.hide()
+	listing.stock = 0
+	ui.apply_vend_state({"listing":listing,"can_manage":false})
+	ui.refresh_ui()
+	await capture(viewport,"vending-sold-out")
 	ui.apply_vend_state({"listing":{},"can_manage":true,"pending_wls":0})
 	ui.refresh_ui()
 	await capture(viewport,"vending-empty")

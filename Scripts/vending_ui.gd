@@ -36,6 +36,7 @@ var purchase_quote := {}
 var refreshing_fields := false
 var mutation_pending := false
 var price_draft_key := ""
+var owner_layout := {}
 
 
 func setup(parent_world, ui_node):
@@ -101,6 +102,7 @@ func bind_scene_ui() -> bool:
 	_connect_button(panel.get_node("PriceCard/MaxQuantity"), _on_max_quantity_pressed)
 	_connect_button(list_button, _on_list_pressed)
 	_connect_button(buy_button, _on_buy_pressed)
+	PixelUIStyle.apply_atlas_button(buy_button, "green_button")
 	_connect_button(collect_button, _on_collect_pressed)
 	_connect_button(log_button, _on_log_pressed)
 	_connect_button(cancel_button, _on_cancel_listing_pressed)
@@ -120,7 +122,52 @@ func bind_scene_ui() -> bool:
 	purchase_confirmation = get_node("PurchaseConfirmation")
 	if not purchase_confirmation.confirmed.is_connected(_confirm_purchase):
 		purchase_confirmation.confirmed.connect(_confirm_purchase)
+	if owner_layout.is_empty():
+		for path in [".", "PanelBack", "ItemCard", "ItemCard/ItemCardSkin", "ItemCard/Hint", "PriceCard", "PriceCard/PriceCardSkin", "PriceCard/PriceReadout", "PriceCard/StockLabel", "PriceCard/StockSpin", "PriceCard/MaxQuantity", "PriceCard/Formula", "ActionBack", "ActionHint", "BuyButton"]:
+			var control = panel.get_node_or_null(path)
+			if control != null:
+				owner_layout[path] = Rect2(control.position, control.size)
 	return true
+
+
+func apply_role_layout(owner: bool) -> void:
+	for path in owner_layout:
+		var control = panel.get_node(path)
+		control.position = owner_layout[path].position
+		control.size = owner_layout[path].size
+	for path in ["SummaryFrame", "SummaryInset", "SummaryTitle"]:
+		panel.get_node("PriceCard/" + path).visible = owner
+	if owner:
+		return
+	panel.size.y = 570
+	panel.get_node("PanelBack").size.y = 570
+	for path in ["ItemCard", "PriceCard", "PriceCard/PriceCardSkin"]:
+		panel.get_node(path).size.y = 310
+	var item_skin = panel.get_node_or_null("ItemCard/ItemCardSkin")
+	if item_skin != null:
+		item_skin.size.y = 310
+	panel.get_node("ItemCard/Hint").size.y = 76
+	var rects := {
+		"PriceCard/PriceReadout": Rect2(20, 58, 494, 64),
+		"PriceCard/Formula": Rect2(20, 126, 494, 82),
+		"PriceCard/StockLabel": Rect2(20, 232, 190, 48),
+		"PriceCard/StockSpin": Rect2(210, 232, 160, 48),
+		"PriceCard/MaxQuantity": Rect2(384, 232, 130, 48),
+		"ActionBack": Rect2(20, 444, 880, 106),
+		"ActionHint": Rect2(36, 454, 848, 30),
+		"BuyButton": Rect2(36, 492, 848, 42)
+	}
+	for path in rects:
+		var control = panel.get_node(path)
+		control.position = rects[path].position
+		control.size = rects[path].size
+	panel.get_node("PriceCard/MaxQuantity").text = "MAX"
+
+
+func get_buyer_world_locks() -> int:
+	if world != null and world.has_method("get_item_count"):
+		return int(world.get_item_count("world_lock", "block"))
+	return -1
 
 
 func _connect_button(button, callback: Callable) -> void:
@@ -910,15 +957,16 @@ func refresh_ui():
 	var listing = get_listing()
 	var pending = int(current_state.get("pending_wls", 0))
 	var can_manage = can_manage_current_vend()
+	apply_role_layout(can_manage)
 
 	if mutation_pending:
 		status_label.text = "PLEASE WAIT"
 	elif not listing.is_empty():
-		status_label.text = "RESTOCK NEEDED" if int(listing.get("stock", 0)) < int(listing.get("amount_per_sale", 1)) else "FOR SALE"
+		status_label.text = "OUT OF STOCK" if int(listing.get("stock", 0)) < int(listing.get("amount_per_sale", 1)) else "FOR SALE"
 	elif pending > 0:
-		status_label.text = "SOLD OUT"
+		status_label.text = "OUT OF STOCK"
 	else:
-		status_label.text = "EMPTY"
+		status_label.text = "EMPTY" if can_manage else "OUT OF STOCK"
 	panel.get_node("Subtitle").text = "OWNER / Manage stock and pricing" if can_manage else "SHOP / Choose your quantity"
 	panel.get_node("ItemCard/ItemTitle").text = "YOUR STOCK" if can_manage else "BUY ITEM"
 	panel.get_node("PriceCard/SetupTitle").text = "PRICING & STOCK" if can_manage else "YOUR PURCHASE"
@@ -927,6 +975,10 @@ func refresh_ui():
 	refresh_price_controls(listing)
 	refresh_buttons(listing, pending, can_manage)
 	refresh_log_text()
+	if not purchase_quote.is_empty() and not purchase_quote_is_current():
+		purchase_quote.clear()
+		purchase_confirmation.hide()
+	update_position()
 
 
 func refresh_item_slot(listing: Dictionary):
@@ -988,6 +1040,7 @@ func refresh_price_controls(listing: Dictionary):
 	panel.get_node("PriceCard/PerSaleLabel").visible = can_manage
 	panel.get_node("PriceCard/PriceReadout").visible = not can_manage
 	panel.get_node("PriceCard/MaxQuantity").visible = not can_manage and not listing.is_empty()
+	panel.get_node("PriceCard/MaxQuantity").disabled = mutation_pending or int(listing.get("stock", 0)) < maxi(1, int(listing.get("amount_per_sale", 1)))
 	if can_manage:
 		stock_spin.step = 1
 		stock_spin.min_value = 0
@@ -1002,9 +1055,10 @@ func refresh_price_controls(listing: Dictionary):
 	else:
 		var bundle = max(1, int(listing.get("amount_per_sale", 1)))
 		var available = int(listing.get("stock", 0))
-		stock_spin.min_value = bundle
+		stock_spin.min_value = bundle if available >= bundle else 0
 		stock_spin.step = bundle
-		stock_spin.max_value = max(bundle, (available / bundle as int) * bundle)
+		stock_spin.max_value = (available / bundle as int) * bundle
+		stock_spin.editable = available >= bundle and not mutation_pending
 		price_mode.select(1 if bundle > 1 else 0)
 		price_spin.value = bundle if bundle > 1 else int(listing.get("price_wls", 1))
 	refreshing_fields = false
@@ -1039,8 +1093,10 @@ func refresh_price_summary():
 		var count = int(stock_spin.value) / bundle as int
 		var total = count * int(listing.get("price_wls", 1))
 		var available = int(listing.get("stock", 0))
-		panel.get_node("PriceCard/PriceReadout").text = "PRICE\n%d %s for %d WL" % [bundle, "item" if bundle == 1 else "items", int(listing.get("price_wls", 1))] if not listing.is_empty() else "No active listing"
-		summary.text = "YOU RECEIVE: %d %s\nTOTAL: %d WL" % [count * bundle, "item" if count * bundle == 1 else "items", total]
+		panel.get_node("PriceCard/PriceReadout").text = "FOR %d WORLD LOCKS\nYOU GET %d %s" % [int(listing.get("price_wls", 1)), bundle, "ITEM" if bundle == 1 else "ITEMS"] if not listing.is_empty() else "OUT OF STOCK"
+		var wallet := get_buyer_world_locks()
+		var units := "ITEM" if count * bundle == 1 else "ITEMS"
+		summary.text = "YOU HAVE: %d WORLD LOCKS\nTOTAL: %d WL / %d %s" % [wallet, total, count * bundle, units] if wallet >= 0 else "TOTAL: %d WORLD LOCKS\nYOU RECEIVE: %d %s" % [total, count * bundle, units]
 		if available < bundle:
 			summary.text = "Waiting for the owner to restock." if not listing.is_empty() else "Check back when this machine is stocked."
 		elif bundle > 1:
@@ -1057,15 +1113,23 @@ func refresh_buttons(listing: Dictionary, pending: int, can_manage: bool):
 	panel.get_node("ActionHint").text = "EARNINGS / %d WL READY TO COLLECT" % pending if can_manage else "Pay with World Locks. Review the total before confirming."
 	list_button.visible = can_manage
 	list_button.disabled = mutation_pending or (selected_item.is_empty() and listing.is_empty()) or (listing.is_empty() and int(stock_spin.value) <= 0)
-	list_button.text = "SAVING..." if mutation_pending else ("SAVE CHANGES" if not listing.is_empty() else "START SELLING")
-	buy_button.visible = not can_manage and not listing.is_empty()
+	list_button.text = "SAVING..." if mutation_pending else ("UPDATE" if not listing.is_empty() else "START SELLING")
+	buy_button.visible = not can_manage
 	buy_button.disabled = mutation_pending or listing.is_empty() or int(listing.get("stock", 0)) < int(listing.get("amount_per_sale", 1))
 	if mutation_pending:
 		buy_button.text = "PLEASE WAIT..."
+	elif buy_button.disabled:
+		buy_button.text = "OUT OF STOCK"
+	elif not can_manage:
+		var total := int(stock_spin.value) / maxi(1, int(listing.get("amount_per_sale", 1))) * int(listing.get("price_wls", 1))
+		var wallet := get_buyer_world_locks()
+		if wallet >= 0 and total > wallet:
+			buy_button.disabled = true
+			buy_button.text = "NOT ENOUGH WORLD LOCKS"
 	collect_button.visible = can_manage
 	collect_button.disabled = mutation_pending or pending <= 0
-	collect_button.text = "COLLECT %d WL" % pending
-	cancel_button.text = "REMOVE STOCK"
+	collect_button.text = "WITHDRAW %d WL" % pending
+	cancel_button.text = "EMPTY MACHINE"
 	cancel_button.visible = can_manage and not listing.is_empty()
 	cancel_button.disabled = mutation_pending
 	log_button.visible = can_manage
@@ -1144,7 +1208,7 @@ func _on_list_pressed():
 
 func _on_buy_pressed():
 	var listing = get_listing()
-	if listing.is_empty():
+	if listing.is_empty() or can_manage_current_vend() or mutation_pending:
 		return
 	var bundle = max(1, int(listing.get("amount_per_sale", 1)))
 	var quantity = read_spin_box_int(stock_spin, bundle)
@@ -1161,14 +1225,28 @@ func _on_buy_pressed():
 		"expected_amount_per_sale": bundle,
 		"expected_price_wls": int(listing.get("price_wls", 1))
 	}
-	purchase_confirmation.dialog_text = "Buy %d %s for %d World Locks?" % [count * bundle, get_item_name(str(listing.item_id), str(listing.item_category)), count * int(listing.get("price_wls", 1))]
+	var cost: int = count * int(listing.get("price_wls", 1))
+	if get_buyer_world_locks() >= 0 and cost > get_buyer_world_locks():
+		purchase_quote.clear()
+		return
+	purchase_confirmation.dialog_text = "YOU'LL GIVE\n%d World Locks\n\nYOU'LL GET\n%d %s\n\nMake this purchase?" % [cost, count * bundle, get_item_name(str(listing.item_id), str(listing.item_category))]
 	purchase_confirmation.popup_centered(Vector2i(460, 180))
 
 
 func _confirm_purchase():
-	if not purchase_quote.is_empty():
+	if not purchase_quote.is_empty() and purchase_quote_is_current() and not can_manage_current_vend() and not mutation_pending:
 		send_vend_request(purchase_quote)
-		purchase_quote.clear()
+	purchase_quote.clear()
+
+
+func purchase_quote_is_current() -> bool:
+	var listing := get_listing()
+	if purchase_quote.is_empty() or listing.is_empty():
+		return false
+	for pair in [["expected_listing_id", "listing_id"], ["expected_item_id", "item_id"], ["expected_amount_per_sale", "amount_per_sale"], ["expected_price_wls", "price_wls"]]:
+		if purchase_quote.get(pair[0]) != listing.get(pair[1]):
+			return false
+	return int(purchase_quote.get("sale_count", 0)) * int(listing.get("amount_per_sale", 1)) <= int(listing.get("stock", 0))
 
 
 func _on_collect_pressed():

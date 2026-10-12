@@ -27,6 +27,55 @@ const PLAYER_WORLD_FADE_FX_NODE_NAME := "PlayerWorldFadeFX"
 var respawn_sequence_running := false
 var respawn_sequence_id := 0
 var movement_sync_debug_enabled := false
+var health_recovery = preload("res://Scripts/player_health_recovery.gd").new()
+var local_health_bar: Control
+var remote_health_bars := {}
+
+func _process(delta: float) -> void:
+	if not is_instance_valid(world) or not MovementMode or not MovementMode.is_websocket():
+		return
+	if world.get("in_world") != true:
+		health_recovery.damaged()
+		if is_instance_valid(local_health_bar):
+			local_health_bar.reset()
+		return
+	var enabled := bool(world.in_world) and is_instance_valid(world.player) and not respawn_sequence_running
+	var next: int = health_recovery.advance(delta, int(world.player_health), enabled)
+	if next != int(world.player_health):
+		world.player_health = next
+		flush_multiplayer_position(false, true)
+	if is_instance_valid(local_health_bar):
+		if not enabled:
+			local_health_bar.reset()
+		else:
+			local_health_bar.set_health(int(world.player_health))
+
+func health_bar_anchor(actor, remote_id: String = "") -> Vector2:
+	if not is_instance_valid(world) or not world.in_world or not is_instance_valid(actor) or not actor.is_visible_in_tree():
+		return Vector2(INF, INF)
+	if remote_id != "":
+		var name_label = remote_name_labels.get(remote_id)
+		if is_instance_valid(name_label):
+			if not name_label.is_visible_in_tree():
+				return Vector2(INF, INF)
+			return name_label.global_position + Vector2(name_label.size.x * 0.5, 0)
+		return _get_remote_chat_anchor_screen_position(actor, remote_id)
+	var labels = world.get("username_label_manager")
+	if is_instance_valid(labels) and is_instance_valid(labels.label):
+		if not labels.label.is_visible_in_tree():
+			return Vector2(INF, INF)
+		return labels.label.global_position + Vector2(labels.label.size.x * 0.5, 0)
+	return get_viewport().get_canvas_transform() * (actor.global_position + Vector2(0, -96))
+
+func create_health_bar(actor, remote_id: String = "") -> Control:
+	var layer = get_overhead_layer()
+	if layer == null:
+		return null
+	var bar = preload("res://Scripts/ui/player_health_bar.gd").new()
+	layer.add_child(bar)
+	bar.anchor = health_bar_anchor.bind(actor, remote_id)
+	actor.tree_exiting.connect(bar.queue_free, CONNECT_ONE_SHOT)
+	return bar
 
 
 func _resolve_movement_mode_singleton() -> void:
@@ -73,6 +122,12 @@ func debug_remote_appearance_flow(message: String, data: Dictionary = {}) -> voi
 
 func setup(world_ref):
 	world = world_ref
+	var activity = get_node_or_null("ActivityBubbles")
+	if activity == null:
+		activity = preload("res://Scripts/player_activity_bubbles.gd").new()
+		activity.name = "ActivityBubbles"
+		add_child(activity)
+	activity.world = world
 	_resolve_movement_mode_singleton()
 	movement_sync_debug_enabled = MovementMode.has_method("has_launch_arg") and bool(MovementMode.has_launch_arg(MOVEMENT_SYNC_DEBUG_ARG))
 	remote_position_snapshot_generation += 1
@@ -607,10 +662,16 @@ func damage_player(amount: int):
 	if not MovementMode.is_websocket():
 		return
 
-	if respawn_sequence_running or world.player_health <= 0:
+	if amount <= 0 or respawn_sequence_running or world.player_health <= 0:
 		return
 
+	health_recovery.damaged()
 	world.player_health -= amount
+	if is_instance_valid(world.player):
+		if not is_instance_valid(local_health_bar):
+			local_health_bar = create_health_bar(world.player)
+		if is_instance_valid(local_health_bar):
+			local_health_bar.set_health(maxi(0, int(world.player_health)))
 
 	if world.player_health <= 0:
 		world.player_health = 0
@@ -1022,6 +1083,7 @@ var network_heartbeat_timer := 0.0
 var last_sent_network_animation_state := ""
 var last_sent_network_lava_fire_state := false
 var last_sent_network_chat_typing := false
+var last_sent_network_activity_bubble := ""
 var last_sent_network_position := Vector2(999999, 999999)
 var last_sent_network_facing := 0
 var last_sent_network_fishing_key := ""
@@ -2341,6 +2403,8 @@ func update_multiplayer_movement(delta: float, from_physics_step: bool = false):
 	var lava_fire_changed: bool = current_lava_fire_state != last_sent_network_lava_fire_state
 	var current_chat_typing := bool(current_motion_state.get("chat_typing", false))
 	var chat_typing_changed := current_chat_typing != last_sent_network_chat_typing
+	var activity_bubble := str(current_motion_state.get("activity_bubble", ""))
+	var activity_changed := activity_bubble != last_sent_network_activity_bubble
 	var current_facing: int = -1 if int(world.player_facing_direction) < 0 else 1
 	var facing_changed: bool = current_facing != last_sent_network_facing
 	var current_fishing_key := get_local_fishing_sync_key()
@@ -2348,7 +2412,7 @@ func update_multiplayer_movement(delta: float, from_physics_step: bool = false):
 	var current_damage_key := get_local_damage_flash_sync_key()
 	var damage_changed: bool = current_damage_key != last_sent_network_damage_key
 
-	if not moved_enough and not should_send_heartbeat and not animation_changed and not lava_fire_changed and not facing_changed and not fishing_changed and not damage_changed and not chat_typing_changed:
+	if not moved_enough and not should_send_heartbeat and not animation_changed and not lava_fire_changed and not facing_changed and not fishing_changed and not damage_changed and not chat_typing_changed and not activity_changed:
 		return
 
 	var sent := bool(network.send_player_position(current_position, current_facing, world.current_world_name, true))
@@ -2364,6 +2428,7 @@ func update_multiplayer_movement(delta: float, from_physics_step: bool = false):
 		last_sent_network_fishing_key = current_fishing_key
 		last_sent_network_damage_key = current_damage_key
 		last_sent_network_chat_typing = current_chat_typing
+		last_sent_network_activity_bubble = activity_bubble
 
 
 func get_local_action_visual_key() -> String:
@@ -2896,6 +2961,17 @@ func handle_network_player_position(player_data: Dictionary):
 	remote_player.set_meta("network_noclip_enabled", bool(player_data.get("noclip_enabled", false)))
 	remote_player.set_meta("animation_state", animation_state)
 	remote_player.set_meta("remote_chat_typing", remote_chat_typing)
+	if player_data.has("activity_bubble"):
+		var activity_bubble := str(player_data.get("activity_bubble", ""))
+		remote_player.set_meta("remote_activity_bubble", activity_bubble if activity_bubble in ["edit", "afk", "shop", "trade"] else "")
+	if player_data.has("health_preview"):
+		var health := clampi(int(player_data.get("health_preview", 10)), 0, 10)
+		var bar = remote_health_bars.get(remote_id)
+		if not is_instance_valid(bar) and health > 0 and health < 10:
+			bar = create_health_bar(remote_player, remote_id)
+			remote_health_bars[remote_id] = bar
+		if is_instance_valid(bar):
+			bar.set_health(health)
 	remote_player.set_meta("network_in_lava_fire", network_in_lava_fire)
 	remote_player.set_meta("remote_debug_version", MovementMode.get_websocket_movement_version())
 	remote_player.set_meta("remote_latest_snapshot_position", next_target_position)
@@ -3016,6 +3092,7 @@ func clear_remote_player_ui(remote_id: String) -> void:
 			bubble.queue_free()
 
 	_clear_remote_debug_label(remote_id)
+	remote_health_bars.erase(remote_id)
 
 
 func update_remote_debug_labels():
@@ -3788,6 +3865,7 @@ func get_or_create_remote_player(remote_id: String, remote_name: String, remote_
 	remote_player.set_meta("authoritative_position", Vector2.ZERO)
 	remote_player.set_meta("remote_debug_version", MovementMode.get_websocket_movement_version())
 	remote_player.set_meta("remote_chat_typing", false)
+	remote_player.set_meta("remote_activity_bubble", "")
 	remote_player.set_meta("equipment_slots", {})
 	remote_player.set_meta("equipment_slots_debug_key", "")
 	remote_players_root.add_child(remote_player)
@@ -4180,6 +4258,7 @@ func reset_multiplayer_sync_state():
 	last_sent_network_animation_state = ""
 	last_sent_network_lava_fire_state = false
 	last_sent_network_chat_typing = false
+	last_sent_network_activity_bubble = ""
 	last_sent_network_position = Vector2(999999, 999999)
 	last_sent_network_facing = 0
 	last_sent_network_fishing_key = ""
@@ -5695,6 +5774,7 @@ func clear_remote_players():
 			bubble.queue_free()
 
 	remote_chat_bubbles.clear()
+	remote_health_bars.clear()
 	remote_chat_pending_messages.clear()
 	clear_legacy_websocket_remote_visual_nodes()
 

@@ -635,7 +635,7 @@ func refresh_inventory_window_for_viewport():
 	var screen_size = get_inventory_viewport_size()
 	if is_inventory_scene_window():
 		inventory_window_layout_size = screen_size
-		update_inventory_window_position()
+		# _process positions the drawer after advancing its animation and hotbar.
 		return
 
 	if inventory_window_layout_size == Vector2.ZERO:
@@ -3145,6 +3145,17 @@ func setup_gem_counter():
 	gem_count_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	gem_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	apply_gem_counter_shared_style()
+	var counter_fx = gem_panel.get_node_or_null("GemCounterFX")
+	if counter_fx == null:
+		counter_fx = preload("res://Scripts/ui/gem_counter_fx.gd").new()
+		counter_fx.name = "GemCounterFX"
+		gem_panel.add_child(counter_fx)
+		gem_panel.move_child(counter_fx, 2)
+	counter_fx.position = Vector2(2, 2)
+	counter_fx.size = gem_panel.size - Vector2(4, 4)
+	counter_fx.label = gem_count_label
+	if world != null:
+		counter_fx.set_amount(int(str(world.get_currency_display_text("gem")).replace(",", "")))
 	update_gem_counter_position()
 	update_gem_counter()
 
@@ -3201,7 +3212,10 @@ func update_gem_counter():
 		var gem_texture: Texture2D = world.currency_textures["gem"] as Texture2D
 		if gem_texture != null and gem_icon.texture != gem_texture:
 			gem_icon.texture = gem_texture
-	if gem_count_label != null and gem_count_label.text != hud_text:
+	var counter_fx = gem_panel.get_node_or_null("GemCounterFX")
+	if counter_fx != null:
+		counter_fx.set_amount(int(gem_text.replace(",", "")))
+	elif gem_count_label != null and gem_count_label.text != hud_text:
 		gem_count_label.text = hud_text
 
 	if not inventory_refresh_active:
@@ -3397,6 +3411,9 @@ func play_gem_counter_pickup_feedback() -> void:
 	if gem_counter_last_feedback_ms > 0 and now_ms - gem_counter_last_feedback_ms < GEM_COUNTER_FEEDBACK_MIN_INTERVAL_MS:
 		return
 	gem_counter_last_feedback_ms = now_ms
+	var counter_fx = gem_panel.get_node_or_null("GemCounterFX")
+	if counter_fx != null:
+		counter_fx.pickup()
 	apply_gem_counter_shared_style()
 	gem_panel.pivot_offset = gem_panel.size * 0.5
 	if gem_counter_feedback_tween != null:

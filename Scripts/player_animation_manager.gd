@@ -344,7 +344,8 @@ func update_player_animation(delta: float, facing_direction: int):
 
 func update_face_expression_animation(movement_state: String):
 	var expression_name = get_face_expression_animation_name(movement_state)
-	update_chat_typing_indicator(is_chat_typing_for_face_expression() and not expression_name in ["hurt", "dead", "dead_spirit"])
+	var suppress_bubble: bool = expression_name in ["hurt", "dead", "dead_spirit"]
+	update_chat_typing_indicator(is_chat_typing_for_face_expression() and not suppress_bubble, "" if suppress_bubble else get_activity_bubble())
 	if update_dead_spirit_visual(expression_name):
 		if face_expression_animated != null:
 			face_expression_animated.visible = false
@@ -359,24 +360,39 @@ func update_face_expression_animation(movement_state: String):
 	play_face_expression_animation(expression_name)
 
 
-func update_chat_typing_indicator(typing: bool) -> void:
+func get_activity_bubble() -> String:
+	if not is_instance_valid(player) or (world != null and world.get("in_world") == false):
+		return ""
+	if player.has_meta("remote_activity_bubble"):
+		if Time.get_ticks_msec() - int(player.get_meta("remote_last_receive_msec", 0)) >= 15000:
+			return ""
+		return str(player.get_meta("remote_activity_bubble", ""))
+	return str(player.get_meta("activity_bubble", ""))
+
+func update_chat_typing_indicator(typing: bool, activity: String = "") -> void:
 	if not is_instance_valid(player):
 		return
+	var animation := "typing" if typing else activity
+	if not animation in ["typing", "edit", "afk", "shop", "trade"]:
+		animation = ""
 	if not is_instance_valid(chat_typing_indicator):
 		var head = player.get_node_or_null("PlayerVisual/Head")
 		if head == null:
 			return
 		chat_typing_indicator = head.get_node_or_null("ChatTypingIndicator") as AnimatedSprite2D
 		if chat_typing_indicator == null:
-			if not typing:
+			if animation == "":
 				return
 			chat_typing_indicator = TYPING_INDICATOR_SCENE.instantiate()
+			chat_typing_indicator.sprite_frames = preload("res://Scripts/player_activity_bubbles.gd").add_animations(chat_typing_indicator.sprite_frames)
 			head.add_child(chat_typing_indicator)
 	# Head parenting follows bobbing and mirrors the bubble/tail with facing.
-	if typing:
-		if not chat_typing_indicator.visible:
+	if not chat_typing_indicator.sprite_frames.has_animation("edit"):
+		chat_typing_indicator.sprite_frames = preload("res://Scripts/player_activity_bubbles.gd").add_animations(chat_typing_indicator.sprite_frames)
+	if animation != "":
+		if not chat_typing_indicator.visible or str(chat_typing_indicator.animation) != animation:
 			chat_typing_indicator.show()
-			chat_typing_indicator.play(&"typing")
+			chat_typing_indicator.play(animation)
 	else:
 		chat_typing_indicator.hide()
 		chat_typing_indicator.stop()

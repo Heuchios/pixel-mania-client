@@ -7,6 +7,54 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Multiplayer activity bubbles (2026-10-12, local)
+
+Added three-frame edit (10..12,2), AFK (13..15,2), shop (16..18,2), and trade
+(19..21,2) animations from UI_3.0, reusing the typing indicator's head anchor,
+scale, mirror behavior and 3fps loop. Local input/movement resets the 60-second
+AFK timer; open interaction panels select edit, shop and trade have dedicated
+states. Priority is typing, AFK, trade, shop, edit. Hurt/death hides the indicator.
+Movement presence carries activity_bubble through an explicit server allowlist,
+including join snapshots and change-triggered sends; stale remote activity expires.
+No durable storage changes. Client activity/typing/health suites and server movement
+checks pass. Matching client/server changes are local, not deployed.
+
+### Temporary player health bars and recovery (2026-10-12, local)
+
+Damage reveals a 160px screen-space bar (without text) above the username, with a
+smooth dark-green to yellow/orange to red health gradient. Existing 10 HP
+remains the maximum. After 3 seconds without damage, recover 1 HP every 0.5s;
+hits restart the delay. The bar shows full health briefly then fades, and hides
+on death/world exit. Remote bars follow optional health_preview in movement
+presence. Server clamps this cosmetic field to 0..10; it never writes reported
+preview values into durable health. Existing player_health save behavior remains.
+Client recovery/bar and typing/network regressions pass, as does the server
+standard-movement build/check including preview propagation and bounds. Client
+and matching generated server changes are local; remote display needs deployment.
+
+### Vending owner/buyer flow (2026-10-12, local)
+
+Owner controls retain server-backed restock, two price modes, empty-machine,
+earnings withdrawal, update and sales history. Buyers get a shorter layout with
+stock, unit/bundle price, World Lock balance, quantity and total. Insufficient
+funds disable buying; zero stock, empty machines and incomplete bundles show
+OUT OF STOCK. Confirmation separates payment and receipt and closes if the
+listing quote becomes stale. Existing expected-listing/price fields and server
+transaction validation remain in use; no backend or schema changes.
+Client vending_flow and external_styles tests and server check_vending_flow pass.
+Rendered owner, buyer, confirmation and sold-out layouts inspected. Local only.
+
+### Animated gem HUD (2026-10-12, local)
+
+The gem bar adds a clipped periodic shine and colored pixel glints on existing
+pickup-flight arrival feedback. Gem increases ease toward the confirmed wallet
+balance, retargeting from the displayed value during rapid pickups. Initial load,
+hidden HUD and balance decreases snap immediately. Wallet data is unchanged.
+`tests/gem_counter_fx_test.gd` passes and loads the HUD after autoload startup.
+The older pickup_hud_flight_test cannot bootstrap directly with --script because
+its preload resolves MobileUIScale before autoload registration; no pass claimed.
+Changes are local, not deployed.
+
 ### Continuous dance and emote commands deployed to staging
 
 Client `ce36eb96` adds `/dance`, `/sad`, `/wave` and `/lol`, the Dance menu

@@ -52,6 +52,7 @@ var pending_auth_request_id := ""
 var pending_auth_response := {}
 var server_status_refresh_timer := 0.0
 var netfox_launch_scene_change_in_progress := false
+var lobby_preload_started := false
 
 
 func _ready() -> void:
@@ -67,6 +68,9 @@ func _ready() -> void:
 	if _try_dev_test_login_bypass():
 		return
 
+	# Start the next screen before the world warmup. Loading it synchronously on
+	# auth success can block networking while shared resources load in workers.
+	_start_lobby_preload()
 	WorldScenePreloader.start()
 	# Start visual/texture warmup (ALWAYS_WARM_VISUAL_PATHS + every item's STARTUP_TEXTURE_KEYS
 	# textures) right away instead of waiting for a world join to finish once, like this
@@ -1008,7 +1012,7 @@ func _on_register_pressed() -> void:
 	_save_active_account(server_username, server_email, session_token, role, refresh_token)
 	password_input.text = ""
 	_show_message("Account registered.")
-	get_tree().change_scene_to_file(LOBBY_SCENE)
+	await _enter_lobby()
 
 
 func _on_sign_on_pressed() -> void:
@@ -1103,7 +1107,41 @@ func _on_sign_on_pressed() -> void:
 			"role": role,
 		})
 		return
-	get_tree().change_scene_to_file(LOBBY_SCENE)
+	await _enter_lobby()
+
+
+func _start_lobby_preload() -> Error:
+	if lobby_preload_started:
+		return OK
+	var error := ResourceLoader.load_threaded_request(LOBBY_SCENE, "PackedScene")
+	lobby_preload_started = error == OK
+	return error
+
+
+func _enter_lobby() -> void:
+	auth_busy = true
+	_show_message("Opening lobby...")
+	var started_ms := Time.get_ticks_msec()
+	if _start_lobby_preload() != OK:
+		auth_busy = false
+		_show_message("Could not load the lobby. Please try again.")
+		return
+	while is_inside_tree():
+		var status := ResourceLoader.load_threaded_get_status(LOBBY_SCENE)
+		if status == ResourceLoader.THREAD_LOAD_LOADED:
+			var scene := ResourceLoader.load_threaded_get(LOBBY_SCENE) as PackedScene
+			if scene != null:
+				var error := get_tree().change_scene_to_packed(scene)
+				print("[LOGIN_LOBBY_PROFILE] ", JSON.stringify({"elapsed_ms": Time.get_ticks_msec() - started_ms, "error": error}))
+				if error == OK:
+					return
+			break
+		if status in [ResourceLoader.THREAD_LOAD_FAILED, ResourceLoader.THREAD_LOAD_INVALID_RESOURCE]:
+			break
+		await get_tree().process_frame
+	lobby_preload_started = false
+	auth_busy = false
+	_show_message("Could not load the lobby. Please try again.")
 
 
 func _save_active_account(username: String, email: String, token: String, role: String = "player", refresh_token: String = "") -> void:

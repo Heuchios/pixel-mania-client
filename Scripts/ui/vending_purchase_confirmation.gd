@@ -13,17 +13,17 @@ func _ready():
 	shade.color = Color(0, 0, 0, 0.65)
 	add_child(shade)
 	card = Panel.new()
-	card.size = Vector2(620, 320)
+	card.size = Vector2(620, 440)
 	card.add_theme_stylebox_override("panel", PixelStyle.panel_style())
 	add_child(card)
 	var inner := Panel.new()
 	inner.position = Vector2(16, 16)
-	inner.size = Vector2(588, 218)
+	inner.size = Vector2(588, 328)
 	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	inner.add_theme_stylebox_override("panel", PixelStyle.section_style())
 	card.add_child(inner)
 	var title := Label.new()
-	title.text = "CONFIRM PURCHASE"
+	title.text = "PURCHASE CONFIRMATION"
 	title.position = Vector2(32, 30)
 	title.size = Vector2(550, 34)
 	title.set_meta("pixelmania_font_size", 24)
@@ -31,7 +31,7 @@ func _ready():
 	card.add_child(title)
 	message = Label.new()
 	message.position = Vector2(32, 88)
-	message.size = Vector2(550, 126)
+	message.size = Vector2(550, 242)
 	message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	message.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	message.set_meta("pixelmania_font_size", 20)
@@ -40,8 +40,8 @@ func _ready():
 	for index in range(2):
 		var button := Button.new()
 		button.name = "CancelButton" if index == 0 else "BuyButton"
-		button.text = "CANCEL" if index == 0 else "BUY"
-		button.position = Vector2(32 + index * 284, 254)
+		button.text = "CANCEL" if index == 0 else "CONFIRM"
+		button.position = Vector2(32 + index * 284, 370)
 		button.size = Vector2(268, 46)
 		PixelStyle.apply_atlas_button(button, "blue_button" if index == 0 else "green_button")
 		if index == 0: button.pressed.connect(hide)

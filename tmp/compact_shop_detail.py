@@ -1,0 +1,2 @@
+from pathlib import Path
+p=Path('Scenes/ui/shop/ShopSceneRedesign.tscn');s=p.read_text(encoding='utf-8');a=s.index('[node name="DetailCard"');b=s.index('[node name="PurchaseRewardOverlay"',a);t=s[a:b].replace('offset_top = -340.0','offset_top = -300.0').replace('offset_bottom = 340.0','offset_bottom = 300.0').replace('offset_bottom = 664.0','offset_bottom = 584.0').replace('Vector2(0, 112)','Vector2(0, 72)');s=s[:a]+t+s[b:];p.write_text(s,encoding='utf-8')

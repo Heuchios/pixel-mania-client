@@ -68,5 +68,3 @@ func _draw():
 	for i in range(1, trail.size()):
 		var strength := float(i) / float(trail.size())
 		draw_line(trail[i - 1], trail[i], Color(tint, strength * 0.55), 1.0 + strength * 3.0, true)
-	if is_instance_valid(icon):
-		draw_circle(icon.position, 21.0, Color(tint, 0.12 * icon.modulate.a))

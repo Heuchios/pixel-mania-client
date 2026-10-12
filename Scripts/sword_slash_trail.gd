@@ -6,6 +6,7 @@ const TRAIL_LIFETIME := 0.105
 const SAMPLE_RATE := 240.0
 const MAX_SAMPLES := 32
 const MAX_PARTICLES := 64
+const RubyGem := preload("res://Scripts/ruby_gem_particle.gd")
 # Coordinates are measured in each centered 64x64 equipped atlas frame.
 const STYLES := {
 	"blue_saber": {"base": Vector2(-14, -1), "tip": Vector2(17, -1), "colors": [Color("0a4dff"), Color("0badff"), Color("33f5ff"), Color("d1ffff")], "particles": "", "rate": 0.0},
@@ -13,7 +14,7 @@ const STYLES := {
 	"green_saber": {"base": Vector2(-14, -1), "tip": Vector2(17, -1), "colors": [Color("118c25"), Color("3ef51a"), Color("9dff4c"), Color("ecffce")], "particles": "", "rate": 0.0},
 	"void_saber": {"base": Vector2(-14, -1), "tip": Vector2(20, -1), "colors": [Color("401286"), Color("903fe0"), Color("db85ff"), Color("f9dfff")], "particles": "void_ember", "rate": 90.0},
 	"phoenix_sword": {"base": Vector2(-10, -1), "tip": Vector2(27, -1), "colors": [Color("ca2510"), Color("ff5c0b"), Color("ffb82e"), Color("fff2a6")], "particles": "flame", "rate": 100.0},
-	"angelic_sword": {"base": Vector2(-7, -1), "tip": Vector2(28, -1), "colors": [Color("baccea"), Color("e0eaff"), Color("f7f7ef"), Color.WHITE], "particles": "sparkle", "rate": 90.0},
+	"angelic_sword": {"base": Vector2(-7, -1), "tip": Vector2(28, -1), "colors": [Color("62071e"), Color("c90931"), Color("ff244c"), Color("ffc0ca")], "particles": "ruby", "rate": 66.0},
 	"sakura_sword": {"base": Vector2(-14, -1), "tip": Vector2(15, -1), "colors": [Color("773ad1"), Color("c361e4"), Color("ffa5de"), Color("ffe8f6")], "particles": "flower", "rate": 34.0},
 	"void_trident": {"base": Vector2(-4, -1), "tip": Vector2(28, -1), "colors": [Color("250c48"), Color("7623ce"), Color("ce52ff"), Color("edd4ff")], "particles": "void", "rate": 72.0},
 	"blood_battleaxe": {"base": Vector2(-8, -1), "tip": Vector2(8, -1), "colors": [Color("490c20"), Color("b60b31"), Color("f3314e"), Color("ffb9b5")], "particles": "crimson", "rate": 72.0},
@@ -325,6 +326,10 @@ func _emit_particles(delta: float, strength: float, facing: float) -> void:
 		var lifetime := rng.randf_range(0.24, 0.42)
 		var size := rng.randf_range(1.5, 2.5)
 		match particle_kind:
+			"ruby":
+				velocity = tangent * rng.randf_range(8.0, 20.0) + radial * rng.randf_range(5.0, 14.0)
+				lifetime = rng.randf_range(0.34, 0.58)
+				size = rng.randf_range(1.2, 2.25)
 			"flame":
 				velocity += Vector2(rng.randf_range(-5.0, 5.0), -rng.randf_range(14.0, 28.0))
 			"sparkle":
@@ -369,7 +374,10 @@ func _update_particles(delta: float) -> void:
 		if particle.age >= particle.lifetime:
 			particles.remove_at(index)
 			continue
-		if particle_kind == "flower":
+		if particle_kind == "ruby":
+			particle.velocity *= exp(-delta * 2.2)
+			particle.velocity.y += 25.0 * float(particle.scale) * delta
+		elif particle_kind == "flower":
 			particle.velocity.y += 13.0 * float(particle.scale) * delta
 			particle.position.x += sin(float(particle.age) * 10.0 + float(particle.seed)) * 7.0 * float(particle.scale) * delta
 		elif particle_kind == "void":
@@ -394,6 +402,10 @@ func _draw_particles() -> void:
 		var point := to_local(particle.position)
 		var size := float(particle.size)
 		match particle_kind:
+			"ruby":
+				var radius := size * (1.0 - t * 0.3)
+				var glint := pow(maxf(0.0, sin(float(particle.age) * 9.0 + float(particle.seed))), 4.0)
+				RubyGem.draw_gem(self, point, radius, float(particle.rotation), alpha, glint)
 			"venom":
 				var radius := size * (1.0 - t * 0.4)
 				if float(particle.accent) < 0.65:

@@ -1,5 +1,9 @@
 extends SceneTree
 
+class WalletStub extends Node:
+	var locks := 1
+	func get_item_count(_id, _category): return locks
+
 func _init():
 	call_deferred("run")
 
@@ -22,12 +26,31 @@ func run():
 	ui._on_buy_pressed()
 	assert(ui.purchase_quote.sale_count == 2)
 	assert(ui.purchase_quote.expected_price_wls == 1)
-	assert(ui.purchase_confirmation.dialog_text.contains("20 Dirt for 2 World Locks"))
+	assert(ui.purchase_confirmation.dialog_text.contains("20 Dirt"))
+	assert(ui.purchase_confirmation.dialog_text.contains("2 World Locks"))
+	assert(ui.purchase_confirmation.dialog_text.contains("YOU'LL GIVE"))
+	var wallet := WalletStub.new()
+	ui.world = wallet
+	ui.refresh_ui()
+	assert(ui.buy_button.disabled and ui.buy_button.text == "NOT ENOUGH WORLD LOCKS")
+	wallet.locks = 50
+	ui.refresh_ui()
+	assert(not ui.buy_button.disabled)
+	assert(ui.panel.get_node("PriceCard/Formula").text.contains("50 WORLD LOCKS"))
+	ui.world = null
+	wallet.free()
 	ui.purchase_confirmation.hide()
 	listing.stock = 5
 	ui.apply_vend_state({"listing": listing, "can_manage": false})
 	ui.refresh_ui()
 	assert(ui.buy_button.disabled)
+	assert(ui.buy_button.text == "OUT OF STOCK")
+	assert(not ui.purchase_confirmation.visible)
+	assert(ui.purchase_quote.is_empty())
+	ui.apply_vend_state({"listing": {}, "can_manage": false})
+	ui.refresh_ui()
+	assert(ui.buy_button.visible and ui.buy_button.disabled)
+	assert(ui.buy_button.text == "OUT OF STOCK")
 	ui.apply_vend_state({"listing": listing, "can_manage": true, "pending_wls": 8})
 	ui.refresh_ui()
 	assert(not ui.list_button.disabled)
@@ -38,7 +61,7 @@ func run():
 	assert(ui.add_inventory_item_to_vend("dirt", "block", 50))
 	assert(ui.price_spin.value == 15, "Selecting stock must preserve the draft price")
 	assert(ui.stock_spin.value == 50)
-	assert(ui.collect_button.text == "COLLECT 8 WL")
+	assert(ui.collect_button.text == "WITHDRAW 8 WL")
 	assert(ui.panel.get_node("ItemCard/SelectItem").text == "ADD STOCK")
 	ui.mutation_pending = true
 	ui.refresh_buttons(ui.get_listing(), 8, true)
