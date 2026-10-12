@@ -19,6 +19,7 @@ boot_splash/show_image=false
 
 [autoload]
 
+WindowTransitions="*res://Scripts/ui/window_transitions.gd"
 MobileScrollPolicy="*res://Scripts/ui/mobile_scroll_policy.gd"
 MobileUIScale="*res://Scripts/ui/mobile_ui_scale.gd"
 MovementMode="*res://Scripts/networking/movement_mode.gd"

@@ -1,7 +1,5 @@
 extends SceneTree
 
-const GameMenuScript := preload("res://Scripts/game_menu_ui.gd")
-
 
 class MockWorld:
 	extends Node
@@ -47,6 +45,9 @@ func _init() -> void:
 
 
 func _run() -> void:
+	# Autoload identifiers are available after SceneTree startup, not while
+	# this command-line test script's dependencies are being preloaded.
+	var GameMenuScript = load("res://Scripts/game_menu_ui.gd")
 	root.size = Vector2i(1280, 720)
 	await process_frame
 

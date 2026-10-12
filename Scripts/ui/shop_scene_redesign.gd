@@ -131,7 +131,6 @@ var category_rail: Panel
 var category_scroll: ScrollContainer
 const CATEGORY_RAIL_WIDTH := 164.0
 const CATEGORY_RAIL_GAP := 16.0
-var _panel_open_tweens: Dictionary = {}
 
 # Custom scrollbar drag state (see "item scroll slider" section below) - one
 # Track+Handle pair lives outside ItemScroll's own ScrollContainer, as a
@@ -209,15 +208,7 @@ func _ready() -> void:
 # ------------------------------------------------------------- header ----
 
 func _on_close_pressed() -> void:
-	var tween: Tween = create_tween()
-	tween.tween_property(self, "modulate:a", 0.0, 0.12)
-	tween.tween_callback(func():
-		# Restore full opacity before handing off - shop_ui.gd's close_shop()
-		# only sets visible = false, it never touches modulate, so leaving
-		# this at 0 would make the panel invisible the next time it's shown.
-		modulate.a = 1.0
-		close_requested.emit()
-	)
+	close_requested.emit()
 
 
 func _on_get_gems_pressed() -> void:
@@ -552,18 +543,13 @@ func _open_detail(card: Button) -> void:
 
 
 func _close_detail() -> void:
-	var tween := detail_card.create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(detail_card, "modulate:a", 0.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-	tween.tween_property(detail_card, "scale", Vector2(0.92, 0.92), 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-	tween.chain().tween_callback(_on_detail_closed)
+	_on_detail_closed()
 
 
 func _on_detail_closed() -> void:
 	pack_info.close()
 	detail_overlay.visible = false
-	detail_card.modulate = Color(1, 1, 1, 1)
-	detail_card.scale = Vector2.ONE
+	# Preserve the fitted geometry throughout the shared exit animation.
 
 
 func _on_dim_gui_input(event: InputEvent) -> void:
@@ -604,10 +590,6 @@ func _on_mobile_scale_changed(_value: float) -> void:
 func _fit_shop_window() -> void:
 	if shop_window == null:
 		return
-	for tween in _panel_open_tweens.values():
-		if tween != null and tween.is_valid():
-			tween.kill()
-	_panel_open_tweens.clear()
 	for panel in [shop_window, category_rail, detail_card, reward_card]:
 		panel.modulate.a = 1.0
 	# Reflow product columns before applying any last-resort fit scale.
@@ -714,16 +696,9 @@ func show_reward_popup(subtitle_text: String, can_buy_again: bool, buy_again_dis
 	reward_overlay.visible = true
 	reward_card.pivot_offset = reward_card.size * 0.5
 	var reward_fit := minf(1.0, minf(maxf(1.0, size.x - 24.0) / reward_card.size.x, maxf(1.0, size.y - 24.0) / reward_card.size.y))
-	reward_card.scale = Vector2(0.84, 0.84) * reward_fit
-	reward_card.modulate = Color(1.0, 1.0, 1.0, 0.0)
-	reward_glow_back.modulate = Color(1.0, 1.0, 1.0, 0.0)
-
-	var tween := create_tween()
-	tween.set_parallel(true)
-	_panel_open_tweens[reward_card] = tween
-	tween.tween_property(reward_card, "scale", Vector2.ONE * reward_fit, 0.26).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.tween_property(reward_card, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.16).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	tween.tween_property(reward_glow_back, "modulate", Color(1.0, 1.0, 1.0, 0.72), 0.24).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	reward_card.scale = Vector2.ONE * reward_fit
+	reward_card.modulate = Color.WHITE
+	reward_glow_back.modulate = Color(1.0, 1.0, 1.0, 0.72)
 
 
 func hide_reward_popup() -> void:
@@ -739,28 +714,15 @@ func _on_reward_buy_again_pressed() -> void:
 # toast, panel pop-in/out. None of it reads or sets art/text content, so
 # none of it fights with whatever you customize in the editor.
 
-func _play_panel_open(panel: Control, start_scale: Vector2 = Vector2(0.96, 0.96), duration: float = 0.16) -> void:
-	var previous: Tween = _panel_open_tweens.get(panel)
-	if previous != null and previous.is_valid():
-		previous.kill()
+func _play_panel_open(panel: Control, _start_scale: Vector2 = Vector2(0.96, 0.96), _duration: float = 0.16) -> void:
+	# WindowTransitions owns motion; this only establishes the fitted layout.
+	panel.modulate = Color.WHITE
 	if panel == shop_window:
-		# Keep the whole shop's fitted geometry during opening as well.
-		panel.modulate.a = 0.0
-		category_rail.modulate.a = 0.0
-		var fade := create_tween().set_parallel(true)
-		_panel_open_tweens[panel] = fade
-		fade.tween_property(panel, "modulate:a", 1.0, duration)
-		fade.tween_property(category_rail, "modulate:a", 1.0, duration)
+		category_rail.modulate = Color.WHITE
 		return
 	panel.pivot_offset = panel.size * 0.5
 	var fit := minf(MobileUIScale.get_layout_scale(), minf(maxf(1.0, size.x - 24.0) / panel.size.x, maxf(1.0, size.y - 24.0) / panel.size.y))
-	panel.scale = start_scale * fit
-	panel.modulate = Color(1.0, 1.0, 1.0, 0.0)
-	var tween := panel.create_tween()
-	_panel_open_tweens[panel] = tween
-	tween.set_parallel(true)
-	tween.tween_property(panel, "scale", Vector2.ONE * fit, duration).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.tween_property(panel, "modulate", Color(1.0, 1.0, 1.0, 1.0), min(duration, 0.12)).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	panel.scale = Vector2.ONE * fit
 
 
 func _wire_hover_lift(control: Control) -> void:

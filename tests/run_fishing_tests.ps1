@@ -17,6 +17,7 @@ $files = @(
     'Scripts/ui/fishing_minigame_ui.gd', 'Scripts/ui/fishing_journal_ui.gd',
     'Scripts/ui/fishing_catch_spotlight.gd', 'Scripts/ui/atlas_progress_visual.gd',
     'Scripts/ui/pixel_ui_style.gd', 'Scripts/ui/panel_drop_shadow.gd',
+    'Scripts/ui/window_transitions.gd',
     'Scripts/ui/global_font_manager.gd', 'Scenes/fishing_bobber.tscn',
     'Assets/ui/UI_3.0.png', 'Assets/items/material.png',
     'Assets/font/font.ttf', 'tests/fishing_minigame_test.gd',
@@ -54,6 +55,7 @@ $ErrorActionPreference = 'Stop'
 if ($LASTEXITCODE -ne 0) { Get-Content (Join-Path $testRoot 'import-output.log'); exit $LASTEXITCODE }
 @'
 [autoload]
+WindowTransitions="*res://Scripts/ui/window_transitions.gd"
 GlobalFontManager="*res://Scripts/ui/global_font_manager.gd"
 [gui]
 theme/custom="res://Assets/ui/atlas/theme.tres"

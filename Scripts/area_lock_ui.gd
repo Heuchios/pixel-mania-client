@@ -434,7 +434,7 @@ func clear_access_remove_confirmation() -> void:
 		if overlay != null and is_instance_valid(overlay):
 			overlay.queue_free()
 	if access_remove_confirm_panel != null and is_instance_valid(access_remove_confirm_panel):
-		access_remove_confirm_panel.queue_free()
+		get_node("/root/WindowTransitions").dismiss_and_free(access_remove_confirm_panel)
 		access_remove_confirm_panel = null
 
 
@@ -530,7 +530,7 @@ func clear_ignore_empty_space_confirmation() -> void:
 		if overlay != null and is_instance_valid(overlay):
 			overlay.queue_free()
 	if ignore_empty_space_confirm_panel != null and is_instance_valid(ignore_empty_space_confirm_panel):
-		ignore_empty_space_confirm_panel.queue_free()
+		get_node("/root/WindowTransitions").dismiss_and_free(ignore_empty_space_confirm_panel)
 		ignore_empty_space_confirm_panel = null
 
 
@@ -674,7 +674,7 @@ func clear_access_confirmation() -> void:
 		if overlay != null and is_instance_valid(overlay):
 			overlay.queue_free()
 	if access_confirm_panel != null and is_instance_valid(access_confirm_panel):
-		access_confirm_panel.queue_free()
+		get_node("/root/WindowTransitions").dismiss_and_free(access_confirm_panel)
 		access_confirm_panel = null
 
 
@@ -684,7 +684,7 @@ func clear_public_build_confirmation() -> void:
 		if overlay != null and is_instance_valid(overlay):
 			overlay.queue_free()
 	if public_build_confirm_panel != null and is_instance_valid(public_build_confirm_panel):
-		public_build_confirm_panel.queue_free()
+		get_node("/root/WindowTransitions").dismiss_and_free(public_build_confirm_panel)
 		public_build_confirm_panel = null
 
 

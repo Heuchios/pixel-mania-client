@@ -612,7 +612,7 @@ func hide_withdraw_popup():
 	withdraw_amount_input = null
 	withdraw_amount_slider = null
 	if withdraw_popup != null:
-		withdraw_popup.queue_free()
+		get_node("/root/WindowTransitions").dismiss_and_free(withdraw_popup)
 		withdraw_popup = null
 
 

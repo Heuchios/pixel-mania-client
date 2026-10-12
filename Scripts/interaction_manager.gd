@@ -1020,7 +1020,7 @@ func close_door_editor():
 	door_editor_overlay = null
 
 	if door_editor_panel != null and is_instance_valid(door_editor_panel):
-		door_editor_panel.queue_free()
+		get_node("/root/WindowTransitions").dismiss_and_free(door_editor_panel)
 	door_editor_panel = null
 	door_name_input = null
 	door_id_input = null
@@ -1349,7 +1349,7 @@ func close_password_door_entry():
 	password_door_overlay = null
 
 	if password_door_panel != null and is_instance_valid(password_door_panel):
-		password_door_panel.queue_free()
+		get_node("/root/WindowTransitions").dismiss_and_free(password_door_panel)
 	password_door_panel = null
 	password_door_input = null
 	password_door_grid = Vector2i(999999, 999999)
@@ -1779,7 +1779,7 @@ func close_wooden_entrance_confirm():
 	wooden_entrance_confirm_overlay = null
 
 	if wooden_entrance_confirm_panel != null and is_instance_valid(wooden_entrance_confirm_panel):
-		wooden_entrance_confirm_panel.queue_free()
+		get_node("/root/WindowTransitions").dismiss_and_free(wooden_entrance_confirm_panel)
 	wooden_entrance_confirm_panel = null
 	wooden_entrance_confirm_grid = Vector2i(999999, 999999)
 	wooden_entrance_confirm_locked = false
@@ -1795,7 +1795,7 @@ func close_theme_machine_confirm():
 	theme_machine_confirm_overlay = null
 
 	if theme_machine_confirm_panel != null and is_instance_valid(theme_machine_confirm_panel):
-		theme_machine_confirm_panel.queue_free()
+		get_node("/root/WindowTransitions").dismiss_and_free(theme_machine_confirm_panel)
 	theme_machine_confirm_panel = null
 	theme_machine_confirm_grid = Vector2i(999999, 999999)
 	theme_machine_confirm_enabled = false

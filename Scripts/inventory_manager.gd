@@ -936,7 +936,7 @@ func _process(delta):
 		return
 	refresh_inventory_window_for_viewport()
 	if not drag_handle_active:
-		var drawer_ease = clamp(delta * INVENTORY_OPEN_SPEED, 0.0, 1.0)
+		var drawer_ease = 1.0 - exp(-delta * INVENTORY_OPEN_SPEED)
 		inventory_drawer_amount = lerp(inventory_drawer_amount, inventory_drawer_target, drawer_ease)
 		if abs(inventory_drawer_amount - inventory_drawer_target) <= INVENTORY_SETTLE_EPSILON:
 			inventory_drawer_amount = inventory_drawer_target
@@ -973,7 +973,7 @@ func is_inventory_open() -> bool:
 	if inventory_gameplay_passthrough_call:
 		return false
 	if is_inventory_scene_window():
-		return inventory_drawer_amount > 0.05 or inventory_drawer_target > 0.05 or inventory_window.visible
+		return inventory_drawer_target > 0.05 or (drag_handle_active and inventory_drawer_amount > 0.05)
 	return inventory_drawer_amount > 0.05 or inventory_drawer_target > 0.05
 
 
@@ -6658,9 +6658,9 @@ func update_inventory_window_position():
 		return
 	inventory_window.set_meta("ignore_mobile_ui_scale", true)
 	if is_inventory_scene_window():
-		var scene_should_be_visible: bool = inventory_drawer_target > 0.0 or inventory_drawer_amount > 0.01
+		var scene_should_be_visible: bool = inventory_drawer_target > 0.0
 		inventory_window.visible = scene_should_be_visible
-		if not scene_should_be_visible:
+		if not scene_should_be_visible and inventory_drawer_amount <= 0.01:
 			return
 		var scene_screen_size: Vector2 = get_inventory_viewport_size()
 		var scene_window_size: Vector2 = get_inventory_window_size_for_viewport(scene_screen_size)
@@ -7132,7 +7132,7 @@ func close_inventory_window():
 		inventory_upgrade_popup.visible = false
 	if is_inventory_scene_window():
 		inventory_drawer_target = 0.0
-		inventory_window.visible = true
+		inventory_window.visible = false
 		if inventory_search_input != null:
 			inventory_search_input.release_focus()
 		update_inventory_window_position()
@@ -7146,7 +7146,7 @@ func close_inventory_window():
 func toggle_inventory_window():
 	if inventory_window == null:
 		return
-	if inventory_drawer_target > 0.5 or inventory_drawer_amount > 0.5:
+	if inventory_drawer_target > 0.5:
 		close_inventory_window()
 	else:
 		open_inventory_window()

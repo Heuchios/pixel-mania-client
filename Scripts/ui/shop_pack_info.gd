@@ -81,6 +81,8 @@ func _build_panel() -> void:
 	# Keep temporary wrapped-text minimums from stretching the window on first open.
 	# The content lays itself out inside the viewport-sized panel instead.
 	panel = Panel.new()
+	panel.name = "PackInfoPanel"
+	overlay.set_meta("popup_window_path", NodePath("PackInfoPanel"))
 	panel.add_theme_stylebox_override("panel", Style.panel_style())
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	overlay.add_child(panel)

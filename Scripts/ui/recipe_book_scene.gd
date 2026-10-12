@@ -198,6 +198,10 @@ func is_open() -> bool:
 # --- Public API -------------------------------------------------------------
 
 func open(tier: int = -1) -> void:
+	if visible:
+		if tier >= 0:
+			select_tier(tier)
+		return
 	_open_revision += 1
 	var revision := _open_revision
 	if _open_tween != null:
@@ -206,6 +210,7 @@ func open(tier: int = -1) -> void:
 	# temporary wrapped-text minimum size while fonts and rows settle.
 	if window != null:
 		window.modulate.a = 0.0
+		window.set_meta("window_layout_pending", true)
 	refresh_from_world()
 	visible = true
 	var target_tier: int = tier if tier >= 0 else (_current_tier if _current_tier >= 0 else start_tier)
@@ -227,10 +232,7 @@ func _settle_open_layout(revision: int) -> void:
 		if stable_frames >= 2:
 			break
 	if window != null:
-		if play_open_animation:
-			_play_open_animation()
-		else:
-			window.modulate.a = 1.0
+		_play_open_animation()
 
 
 func close() -> void:
@@ -777,7 +779,10 @@ func _fit_window_to_screen() -> void:
 
 
 func _play_open_animation() -> void:
-	# Fade only: scaling here races screen fitting and mobile UI scaling,
-	# and makes the book visibly grow each time it opens.
-	_open_tween = window.create_tween()
-	_open_tween.tween_property(window, "modulate:a", 1.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	# Apply the final mobile fit before revealing any content. The scale policy
+	# otherwise runs later in this frame, exposing one frame at the base scale.
+	if MobileUIScale.is_processing():
+		MobileUIScale.apply_branch(self, get_viewport_rect().size)
+	window.modulate.a = 1.0
+	window.remove_meta("window_layout_pending")
+	get_node("/root/WindowTransitions").present(window)

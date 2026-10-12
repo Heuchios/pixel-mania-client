@@ -3,7 +3,7 @@ extends Control
 const PixelUIStyle = preload("res://Scripts/ui/pixel_ui_style.gd")
 
 const CHAT_PANEL_HEIGHT = 448.0
-const CHAT_OPEN_SPEED = 9.0
+const CHAT_OPEN_RESPONSE = 14.0
 const TYPING_IDLE_TIMEOUT_MSEC := 2200
 const MAX_CHAT_MESSAGES = 50
 const CHAT_SCROLL_BOTTOM_THRESHOLD := 24
@@ -180,11 +180,13 @@ func _ready():
 
 func _process(delta):
 	if not chat_drag_active:
-		chat_panel_amount = move_toward(
+		chat_panel_amount = lerpf(
 			chat_panel_amount,
 			chat_panel_target,
-			delta * CHAT_OPEN_SPEED
+			1.0 - exp(-CHAT_OPEN_RESPONSE * delta)
 		)
+		if absf(chat_panel_amount - chat_panel_target) < 0.001:
+			chat_panel_amount = chat_panel_target
 	clear_notification_bubble_if_chat_active()
 	update_chat_position()
 
@@ -1632,7 +1634,7 @@ func close_chat_panel():
 
 
 func toggle_chat_panel():
-	if chat_panel_target > 0.5 or chat_panel_amount > 0.5:
+	if chat_panel_target > 0.5:
 		close_chat_panel()
 	else:
 		open_chat_panel()

@@ -830,10 +830,11 @@ func _fit_fixed_panel(panel: Control, design_size: Vector2, centered: bool) -> v
 	panel.position = top_left - panel.pivot_offset * (1.0 - factor)
 
 
-func _open_fitted_panel(panel: Control, duration: float) -> void:
-	panel.modulate = Color(1, 1, 1, 0)
-	var tween := panel.create_tween()
-	tween.tween_property(panel, "modulate", Color.WHITE, duration)
+func _open_fitted_panel(panel: Control, _duration: float) -> void:
+	panel.modulate = Color.WHITE
+	# Reflex inputs are timed by the fishing state, not the presentation.
+	panel.set_meta("window_allow_immediate_input", true)
+	get_node("/root/WindowTransitions").present(panel)
 
 
 func _layout_reeling_panel() -> void:
@@ -947,10 +948,7 @@ func _on_reel_pressed() -> void:
 func _fade_out(node: Control) -> void:
 	if node == null or not node.visible:
 		return
-	var tween: Tween = node.create_tween()
-	node.set_meta("fishing_fade", tween)
-	tween.tween_property(node, "modulate", Color(1.0, 1.0, 1.0, 0.0), 0.16).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	tween.tween_callback(Callable(node, "hide"))
+	node.hide()
 
 
 func _stop_panel_fade(node: Control) -> void:

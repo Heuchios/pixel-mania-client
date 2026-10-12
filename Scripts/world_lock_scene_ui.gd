@@ -1337,7 +1337,7 @@ func clear_confirmation_popup() -> void:
 		confirm_blocker.queue_free()
 	confirm_blocker = null
 	if confirm_panel != null and is_instance_valid(confirm_panel):
-		confirm_panel.queue_free()
+		get_node("/root/WindowTransitions").dismiss_and_free(confirm_panel)
 	confirm_panel = null
 
 

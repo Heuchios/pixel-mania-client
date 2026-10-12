@@ -524,19 +524,7 @@ func _center_menu_window(target_size: Vector2) -> void:
 func _play_authored_panel_open() -> void:
 	if menu_window == null:
 		return
-
-	menu_window.pivot_offset = menu_window.size * 0.5
-	menu_window.scale = _authored_window_scale * 0.96
-	menu_window.modulate = Color(
-		_authored_window_modulate.r,
-		_authored_window_modulate.g,
-		_authored_window_modulate.b,
-		0.0
-	)
-	var tween := menu_window.create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(menu_window, "scale", _authored_window_scale, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.tween_property(menu_window, "modulate", _authored_window_modulate, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	get_node("/root/WindowTransitions").present(menu_window)
 
 
 func _connect_static_buttons() -> void:

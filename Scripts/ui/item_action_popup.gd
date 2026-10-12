@@ -7,12 +7,9 @@ const WINDOW_BASE_SIZE := Vector2(430.0, 366.0)
 const WINDOW_RENDER_SCALE := 1.35
 const VIEWPORT_MARGIN := 12.0
 const ANCHOR_GAP := 12.0
-const OPEN_ANIMATION_SECONDS := 0.14
-const CLOSE_ANIMATION_SECONDS := 0.10
 
 var item_data: Dictionary = {}
 var amount_limit := 1
-var popup_tween: Tween = null
 var window_base_scale := Vector2(WINDOW_RENDER_SCALE, WINDOW_RENDER_SCALE)
 var last_anchor_position := Vector2.ZERO
 
@@ -51,7 +48,6 @@ func _ready() -> void:
 
 func _on_viewport_resized() -> void:
 	if is_open():
-		_kill_popup_tween()
 		window.modulate.a = 1.0
 		_position_window(last_anchor_position)
 
@@ -88,9 +84,10 @@ func open_popup(item: Dictionary, icon_texture: Texture2D = null, anchor_positio
 	amount_limit = maxi(1, int(item_data.get("count", item_data.get("available_count", 1))))
 	_update_item_preview(icon_texture)
 	_update_item_facts()
+	_position_window(anchor_position)
 	_set_popup_visible(true)
 	move_to_front()
-	call_deferred("_position_window_and_play_open", anchor_position)
+	get_node("/root/WindowTransitions").present(window)
 
 
 func close_popup(emit_closed: bool = true) -> void:
@@ -98,7 +95,9 @@ func close_popup(emit_closed: bool = true) -> void:
 	if not visible:
 		_hide_popup_immediate(true)
 		return
-	_play_close_animation(should_emit_closed)
+	_hide_popup_immediate(true)
+	if should_emit_closed:
+		closed.emit()
 
 
 func is_open() -> bool:
@@ -144,20 +143,12 @@ func _set_popup_visible(should_show: bool) -> void:
 
 
 func _hide_popup_immediate(clear_item_data: bool = false) -> void:
-	_kill_popup_tween()
 	_set_popup_visible(false)
 	if window != null:
 		window.scale = window_base_scale
 		window.modulate.a = 1.0
 	if clear_item_data:
 		item_data.clear()
-
-
-func _kill_popup_tween() -> void:
-	if popup_tween != null:
-		if popup_tween.is_valid():
-			popup_tween.kill()
-		popup_tween = null
 
 
 func _try_handle_close_pointer_event(event: InputEvent) -> bool:
@@ -238,13 +229,6 @@ func _on_modal_gui_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 
-func _position_window_and_play_open(anchor_position: Vector2) -> void:
-	if not visible or item_data.is_empty():
-		return
-	_position_window(anchor_position)
-	_play_open_animation()
-
-
 func _position_window(anchor_position: Vector2) -> void:
 	if window == null:
 		return
@@ -266,44 +250,6 @@ func _position_window(anchor_position: Vector2) -> void:
 	target_position.x = clampf(target_position.x, VIEWPORT_MARGIN, maxf(VIEWPORT_MARGIN, viewport_size.x - rendered_size.x - VIEWPORT_MARGIN))
 	target_position.y = clampf(target_position.y, VIEWPORT_MARGIN, maxf(VIEWPORT_MARGIN, viewport_size.y - rendered_size.y - VIEWPORT_MARGIN))
 	window.position = target_position
-
-
-func _play_open_animation() -> void:
-	if window == null:
-		return
-	_kill_popup_tween()
-	window.scale = window_base_scale * 0.9
-	window.modulate.a = 0.0
-	popup_tween = create_tween()
-	popup_tween.set_parallel(true)
-	popup_tween.tween_property(window, "scale", window_base_scale, OPEN_ANIMATION_SECONDS).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	popup_tween.tween_property(window, "modulate:a", 1.0, OPEN_ANIMATION_SECONDS * 0.75).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-
-
-func _play_close_animation(emit_closed: bool) -> void:
-	if window == null:
-		item_data.clear()
-		_set_popup_visible(false)
-		if emit_closed:
-			closed.emit()
-		return
-	_kill_popup_tween()
-	popup_tween = create_tween()
-	var closing_tween: Tween = popup_tween
-	closing_tween.set_parallel(true)
-	closing_tween.tween_property(window, "scale", window_base_scale * 0.92, CLOSE_ANIMATION_SECONDS).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	closing_tween.tween_property(window, "modulate:a", 0.0, CLOSE_ANIMATION_SECONDS).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	closing_tween.finished.connect(func() -> void:
-		if popup_tween != closing_tween:
-			return
-		popup_tween = null
-		item_data.clear()
-		_set_popup_visible(false)
-		window.scale = window_base_scale
-		window.modulate.a = 1.0
-		if emit_closed:
-			closed.emit()
-	)
 
 
 func _update_item_preview(icon_texture: Texture2D) -> void:

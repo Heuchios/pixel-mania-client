@@ -524,17 +524,12 @@ static func _apply_window_shadow(node: Node) -> void:
 	node.add_child(shadow)
 
 
-static func play_panel_open(panel: Control, start_scale: Vector2 = Vector2(0.96, 0.96), duration: float = 0.16) -> void:
+static func play_panel_open(panel: Control, _start_scale: Vector2 = Vector2(0.96, 0.96), _duration: float = 0.16) -> void:
 	if panel == null:
 		return
-
-	panel.pivot_offset = panel.size * 0.5
-	panel.scale = start_scale
-	panel.modulate = Color(1.0, 1.0, 1.0, 0.0)
-	var tween = panel.create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(panel, "scale", Vector2.ONE, duration).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.tween_property(panel, "modulate", Color(1.0, 1.0, 1.0, 1.0), min(duration, 0.12)).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	var policy := panel.get_node_or_null("/root/WindowTransitions")
+	if policy != null:
+		policy.present(panel)
 
 
 static func apply_input(line_edit: LineEdit, font_size: int = DEFAULT_TEXT_FONT_SIZE) -> void:

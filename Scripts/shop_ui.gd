@@ -1846,6 +1846,8 @@ func open_shop():
 		return
 	if shop_panel == null:
 		return
+	if shop_panel.visible:
+		return
 
 	if world != null and world.has_method("is_inventory_open") and world.is_inventory_open():
 		if world.has_method("close_inventory_window"):

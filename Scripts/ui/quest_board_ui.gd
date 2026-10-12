@@ -596,12 +596,17 @@ func _submit_answer(tier: String) -> void:
 	_active_request("quest_solve", tier, {"answer": answer.duplicate()})
 
 func _confirm_abandon(tier: String) -> void:
-	var dialog := ConfirmationDialog.new()
+	if get_node_or_null("QuestAbandonConfirm") != null:
+		return
+	var dialog := preload("res://Scripts/ui/vending_purchase_confirmation.gd").new()
+	dialog.name = "QuestAbandonConfirm"
+	dialog.title = "ABANDON QUEST?"
+	dialog.ok_button_text = "ABANDON"
 	dialog.dialog_text = "Abandon this quest? Its objective progress will reset. Your own items and earned rewards are kept."
 	dialog.confirmed.connect(func():
 		_active_request("quest_abandon", tier)
-		dialog.queue_free())
-	dialog.canceled.connect(dialog.queue_free)
+		get_node("/root/WindowTransitions").dismiss_and_free(dialog))
+	dialog.canceled.connect(func(): get_node("/root/WindowTransitions").dismiss_and_free(dialog))
 	add_child(dialog)
 	dialog.popup_centered(Vector2i(480, 180))
 

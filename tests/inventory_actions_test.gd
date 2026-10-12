@@ -21,6 +21,7 @@ func run() -> void:
 	inventory.primary_action_requested.connect(func(item): actions.append(["use", item]))
 	inventory.info_requested.connect(func(item): actions.append(["info", item]))
 	await process_frame
+	await create_timer(0.30).timeout
 	assert(inventory.use_button.visible and inventory.use_button.disabled, "Actions stay visible but disabled until selection")
 	assert(inventory.action_skin.visible)
 	inventory.set_selected_item("dirt", "block")

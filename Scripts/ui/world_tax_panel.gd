@@ -8,7 +8,7 @@ var message_label: Label
 var pay_button: Button
 var refresh_button: Button
 var card: PanelContainer
-var confirmation: ConfirmationDialog
+var confirmation: Control
 var info: Dictionary = {}
 var pending_id := ""
 var pending_action := ""
@@ -60,7 +60,7 @@ func _ready() -> void:
 	pay_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	actions.add_child(pay_button)
 	pay_button.pressed.connect(_confirm_payment)
-	confirmation = ConfirmationDialog.new()
+	confirmation = preload("res://Scripts/ui/vending_purchase_confirmation.gd").new()
 	confirmation.title = "Pay world tax"
 	confirmation.ok_button_text = "PAY GEMS"
 	add_child(confirmation)
