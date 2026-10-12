@@ -635,7 +635,7 @@ func refresh_inventory_window_for_viewport():
 	var screen_size = get_inventory_viewport_size()
 	if is_inventory_scene_window():
 		inventory_window_layout_size = screen_size
-		update_inventory_window_position()
+		# _process positions the drawer after advancing its animation and hotbar.
 		return
 
 	if inventory_window_layout_size == Vector2.ZERO:

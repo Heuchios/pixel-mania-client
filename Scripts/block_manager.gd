@@ -10056,7 +10056,8 @@ func get_anchor_grid_for_block_area(grid_pos: Vector2i) -> Vector2i:
 		Vector2(block_size - 0.02, block_size - 0.02)
 	)
 
-	for existing_grid_pos in world.blocks.keys():
+	# This is a read-only hit/placement query; avoid copying every world key.
+	for existing_grid_pos in world.blocks:
 		var block_type = str(world.blocks[existing_grid_pos].get("type", ""))
 		if not block_occupies_collision_area(block_type):
 			continue
@@ -10072,7 +10073,7 @@ func does_rect_overlap_reserved_object(rect: Rect2, ignore_grid_pos: Vector2i = 
 	if world == null:
 		return false
 
-	for existing_grid_pos in world.blocks.keys():
+	for existing_grid_pos in world.blocks:
 		if existing_grid_pos == ignore_grid_pos:
 			continue
 

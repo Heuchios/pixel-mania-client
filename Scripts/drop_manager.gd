@@ -1821,7 +1821,8 @@ func _rebuild_drop_visuals(drop_data: Dictionary) -> void:
 		var base_sprite = visual_parts[visual_parts.size() - 1]
 		if base_sprite is Sprite2D:
 			update_seed_drop_preview_sprite(base_sprite, item_type, item_category)
-			apply_drop_colour_cycle_visual(drop_data)
+			if bool(drop_data.get("colour_cycle_drop", true)):
+				apply_drop_colour_cycle_visual(drop_data)
 
 
 func remove_seed_drop_preview_sprite(base_sprite: Sprite2D):
@@ -2765,7 +2766,7 @@ func cancel_queued_drop_pickup(drop_data: Dictionary, cooldown_seconds: float = 
 	restore_drop_pickup_visual(drop_data)
 
 
-func try_send_queued_drop_pickup(drop_data: Dictionary) -> bool:
+func try_send_queued_drop_pickup(drop_data: Dictionary, known_in_flight_count: int = -1) -> bool:
 	if world == null or not should_use_server_authoritative_world_actions():
 		return false
 	if not bool(drop_data.get("pickup_requested", false)):
@@ -2779,7 +2780,8 @@ func try_send_queued_drop_pickup(drop_data: Dictionary) -> bool:
 		record_drop_pickup_debug("queued_unreachable", drop_data, player_position, pickup_range_sq)
 		cancel_queued_drop_pickup(drop_data, DROP_PICKUP_UNREACHABLE_RETRY_COOLDOWN)
 		return false
-	if get_server_pickups_in_flight() >= DROP_MAX_SERVER_PICKUPS_IN_FLIGHT:
+	var in_flight_count := known_in_flight_count if known_in_flight_count >= 0 else get_server_pickups_in_flight()
+	if in_flight_count >= DROP_MAX_SERVER_PICKUPS_IN_FLIGHT:
 		record_drop_pickup_debug("in_flight_limit", drop_data, player_position, pickup_range_sq)
 		return false
 	if not try_consume_drop_pickup_send_token():
@@ -2852,36 +2854,41 @@ func process_queued_drop_pickups(force: bool = false) -> int:
 		return 0
 	drop_queued_pickup_next_process_ms = now_ms + DROP_QUEUE_PROCESS_INTERVAL_MS
 
-	cancel_unreachable_queued_drop_pickups()
+	# Snapshot only pending entries for this synchronous drain. Re-scanning every
+	# world drop after each send made pickup CPU grow with unrelated distant drops.
+	var pending_drops: Array[Dictionary] = []
+	var in_flight_count := 0
+	for raw_drop_data in world.dropped_items:
+		if not (raw_drop_data is Dictionary):
+			continue
+		var drop_data: Dictionary = raw_drop_data
+		if bool(drop_data.get("pickup_in_progress", false)) or bool(drop_data.get("pickup_request_sent", false)):
+			in_flight_count += 1
+		elif bool(drop_data.get("pickup_requested", false)):
+			if not is_queued_drop_pickup_still_reachable(drop_data):
+				var player_position: Vector2 = world.player.global_position if world.player != null else Vector2.ZERO
+				record_drop_pickup_debug("queued_unreachable", drop_data, player_position, float(world.PICKUP_RANGE * world.PICKUP_RANGE))
+				cancel_queued_drop_pickup(drop_data, DROP_PICKUP_UNREACHABLE_RETRY_COOLDOWN)
+			else:
+				pending_drops.append(drop_data)
 	if Time.get_ticks_msec() < drop_pickup_busy_until_ms:
 		return 0
 
 	var sent_count := 0
-	var in_flight_count := get_server_pickups_in_flight()
-	while in_flight_count < DROP_MAX_SERVER_PICKUPS_IN_FLIGHT:
-		var queued_drop: Dictionary = {}
-		for raw_drop_data in world.dropped_items:
-			if not (raw_drop_data is Dictionary):
-				continue
-
-			var drop_data: Dictionary = raw_drop_data
-			if not bool(drop_data.get("pickup_requested", false)):
-				continue
-			if bool(drop_data.get("pickup_in_progress", false)) or bool(drop_data.get("pickup_request_sent", false)):
-				continue
-			if not is_queued_drop_pickup_still_reachable(drop_data):
-				cancel_queued_drop_pickup(drop_data, DROP_PICKUP_UNREACHABLE_RETRY_COOLDOWN)
-				continue
-
-			queued_drop = drop_data
+	var initial_in_flight_count := in_flight_count
+	for queued_drop in pending_drops:
+		if in_flight_count >= DROP_MAX_SERVER_PICKUPS_IN_FLIGHT:
 			break
-
-		if queued_drop.is_empty():
-			break
-		if not try_send_queued_drop_pickup(queued_drop):
+		# A previous same-tile bulk send may already include this entry.
+		if not bool(queued_drop.get("pickup_requested", false)) or bool(queued_drop.get("pickup_in_progress", false)) or bool(queued_drop.get("pickup_request_sent", false)):
+			continue
+		if not try_send_queued_drop_pickup(queued_drop, in_flight_count):
 			break
 		sent_count += 1
-		in_flight_count = get_server_pickups_in_flight()
+		in_flight_count = initial_in_flight_count
+		for pending_drop in pending_drops:
+			if bool(pending_drop.get("pickup_in_progress", false)) or bool(pending_drop.get("pickup_request_sent", false)):
+				in_flight_count += 1
 
 	return sent_count
 
@@ -3718,7 +3725,7 @@ func update_drops(delta):
 	var nearby_pickup_candidate_ids: Dictionary = {}
 	var now_msec := Time.get_ticks_msec()
 	var use_server_authoritative_pickups := should_use_server_authoritative_world_actions()
-	var server_pickup_request_count := get_server_pickup_request_count() if use_server_authoritative_pickups else 0
+	var server_pickup_request_count := get_server_pickup_request_count() if use_server_authoritative_pickups and should_scan_pickups else 0
 	var visible_world_rect: Rect2 = get_visible_world_rect(DROP_VISIBILITY_MARGIN_SCREEN_PX)
 	visible_drop_nodes = 0
 	if should_scan_pickups:
@@ -3768,7 +3775,8 @@ func update_drops(delta):
 		set_drop_visual_active(drop_data, drop_node, visual_active, update_amount)
 		if visual_active:
 			visible_drop_nodes += 1
-			apply_drop_colour_cycle_visual(drop_data)
+			if bool(drop_data.get("colour_cycle_drop", true)):
+				apply_drop_colour_cycle_visual(drop_data)
 
 		if pickup_requested:
 			var pickup_requested_age: float = _safe_float(drop_data.get("pickup_requested_age", 0.0), 0.0, 0.0, DROP_PICKUP_REQUEST_TIMEOUT * 2.0) + delta

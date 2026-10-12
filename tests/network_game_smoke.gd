@@ -57,7 +57,7 @@ func run():
 	if not require(world != null and world.has_method("create_or_switch_profile"), "actual World node available"):
 		return
 	world.create_or_switch_profile(username)
-	world.enter_world_by_name("NETWORK_AUDIT")
+	world.enter_world_by_name("NETWORKAUDIT")
 	if not await until(func(): return network.world_entry_active and world.in_world and not world.is_movement_locked(), "world initialized, spawned and controls ready", 45):
 		return
 	mark("ready")
@@ -102,14 +102,14 @@ func run():
 	var grid := Vector2i(roundi(world.player.global_position.x / 32.0), roundi(world.player.global_position.y / 32.0)) + Vector2i(2, -1)
 	var quantity_before := int(world.inventory.get("dirt", 0))
 	var place_started := Time.get_ticks_msec()
-	network.send_world_block_update("place", "foreground", grid, "dirt", "NETWORK_AUDIT")
+	network.send_world_block_update("place", "foreground", grid, "dirt", "NETWORKAUDIT")
 	if not await until(func(): return world.blocks.has(grid), "placement visible"):
 		return
 	results["place_visible_ms"] = Time.get_ticks_msec() - place_started
 	if not await until(func(): return int(world.inventory.get("dirt", 0)) == quantity_before - 1, "placement charged once"):
 		return
 	for hit in range(10):
-		network.send_world_block_update("break", "foreground", grid, "dirt", "NETWORK_AUDIT", {"source_tool": "punch"})
+		network.send_world_block_update("break", "foreground", grid, "dirt", "NETWORKAUDIT", {"source_tool": "punch"})
 		await create_timer(0.4).timeout
 		if not world.blocks.has(grid):
 			break
@@ -117,10 +117,10 @@ func run():
 		return
 	results["block_actions"] = "placed, charged once, multi-hit break rendered"
 	var lock_grid := grid + Vector2i(-1, 0)
-	network.send_world_block_update("place", "foreground", lock_grid, "world_lock", "NETWORK_AUDIT")
+	network.send_world_block_update("place", "foreground", lock_grid, "world_lock", "NETWORKAUDIT")
 	if not await until(func(): return world.blocks.has(lock_grid), "world lock placement"):
 		return
-	network.send_world_block_update("place", "foreground", grid, "display_case", "NETWORK_AUDIT")
+	network.send_world_block_update("place", "foreground", grid, "display_case", "NETWORKAUDIT")
 	if not await until(func(): return world.blocks.has(grid) and str(world.blocks[grid].get("type", "")) == "display_case", "display case placement"):
 		return
 	await create_timer(0.4).timeout

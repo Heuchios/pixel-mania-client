@@ -81,6 +81,8 @@ const TAB_CATEGORIES := {
 @export var slot_columns: int = 10
 var _compact_layout_saved: Dictionary = {}
 var _compact_inventory := false
+var _last_fit_viewport_size := Vector2(-1, -1)
+var _last_fit_slot_columns := -1
 var _desktop_tab_separation := 0
 
 var inventory_items: Array[Dictionary] = []
@@ -2635,6 +2637,12 @@ func _layout_action_rail() -> void:
 func _fit_compact_inventory(viewport_size: Vector2) -> bool:
 	if window == null:
 		return false
+	# Drawer motion changes only the window transform. Reapplying every child
+	# rectangle also queues container sorts and deferred tab layouts each frame.
+	if viewport_size == _last_fit_viewport_size and slot_columns == _last_fit_slot_columns:
+		return _compact_inventory
+	_last_fit_viewport_size = viewport_size
+	_last_fit_slot_columns = slot_columns
 	if viewport_size.x >= 1100 and viewport_size.y >= 600:
 		if _compact_inventory:
 			for control in _compact_layout_saved:
