@@ -2701,6 +2701,12 @@
           "item_category": "currency",
           "amount": 1,
           "chance": 0.6
+        },
+        {
+          "item_id": "stick",
+          "item_category": "material",
+          "amount": 1,
+          "chance": 0.05
         }
       ]
     },
@@ -12096,6 +12102,12 @@
           "item_category": "currency",
           "amount": 1,
           "chance": 0.5
+        },
+        {
+          "item_id": "star_fragment",
+          "item_category": "material",
+          "amount": 1,
+          "chance": 0.01
         }
       ]
     },

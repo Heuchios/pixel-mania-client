@@ -729,5 +729,121 @@
     "equipable": false,
     "consume_on_world_entry": "landfill",
     "description": "Required to enter a Landfill world. One ticket is consumed when you join."
+  },
+  "star_fragment": {
+    "category": "material",
+    "display_name": "Star Fragment",
+    "texture": {
+      "atlas": "res://Assets/items/material.png",
+      "cell": [
+        6,
+        2
+      ],
+      "cell_size": [
+        32,
+        32
+      ]
+    },
+    "inventory_icon": {
+      "atlas": "res://Assets/items/material.png",
+      "cell": [
+        6,
+        2
+      ],
+      "cell_size": [
+        32,
+        32
+      ]
+    },
+    "consumable": false,
+    "item_type": "material",
+    "equipable": false
+  },
+  "fish_drill": {
+    "category": "material",
+    "display_name": "Fish Drill",
+    "texture": {
+      "atlas": "res://Assets/items/material.png",
+      "cell": [
+        5,
+        2
+      ],
+      "cell_size": [
+        32,
+        32
+      ]
+    },
+    "inventory_icon": {
+      "atlas": "res://Assets/items/material.png",
+      "cell": [
+        5,
+        2
+      ],
+      "cell_size": [
+        32,
+        32
+      ]
+    },
+    "consumable": false,
+    "item_type": "material",
+    "equipable": false
+  },
+  "empty_portrait": {
+    "category": "material",
+    "display_name": "Empty Portrait",
+    "texture": {
+      "atlas": "res://Assets/items/material.png",
+      "cell": [
+        5,
+        3
+      ],
+      "cell_size": [
+        32,
+        32
+      ]
+    },
+    "inventory_icon": {
+      "atlas": "res://Assets/items/material.png",
+      "cell": [
+        5,
+        3
+      ],
+      "cell_size": [
+        32,
+        32
+      ]
+    },
+    "consumable": false,
+    "item_type": "material",
+    "equipable": false
+  },
+  "stick": {
+    "category": "material",
+    "display_name": "Stick",
+    "texture": {
+      "atlas": "res://Assets/items/material.png",
+      "cell": [
+        7,
+        1
+      ],
+      "cell_size": [
+        32,
+        32
+      ]
+    },
+    "inventory_icon": {
+      "atlas": "res://Assets/items/material.png",
+      "cell": [
+        7,
+        1
+      ],
+      "cell_size": [
+        32,
+        32
+      ]
+    },
+    "consumable": false,
+    "item_type": "material",
+    "equipable": false
   }
 }

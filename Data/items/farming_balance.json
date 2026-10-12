@@ -3657,7 +3657,14 @@
       "grow_seconds": 23100,
       "growth_source": "Imported splice sheet, row 272",
       "gem_mean": 7.5,
-      "extra_break_drops": [],
+      "extra_break_drops": [
+        {
+          "item_id": "star_fragment",
+          "item_category": "material",
+          "amount": 1,
+          "chance": 0.01
+        }
+      ],
       "extra_tree_drops": [],
       "tree_gem_mean": 6,
       "break_xp": 70,
@@ -5165,7 +5172,14 @@
       "grow_seconds": 100,
       "growth_source": "Imported splice sheet, row 14",
       "gem_mean": 0.6,
-      "extra_break_drops": [],
+      "extra_break_drops": [
+        {
+          "item_id": "stick",
+          "item_category": "material",
+          "amount": 1,
+          "chance": 0.05
+        }
+      ],
       "extra_tree_drops": [],
       "tree_gem_mean": 0.8,
       "break_xp": 5,

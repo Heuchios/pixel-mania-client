@@ -383,6 +383,160 @@ const HAIR_PACK_REWARDS = [
 const PRESTIGE_COLOURED_BLOCK_PACK_REWARDS = ["ps_blue_block", "ps_green_block", "ps_purple_block", "ps_red_block", "ps_yellow_block"]
 
 const ITEMS = {
+  "star_fragment": {
+	"category": "material",
+	"display_name": "Star Fragment",
+	"description": "A rare material found when breaking Star Blocks.",
+	"rarity": "rare",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false,
+	"equipable": false,
+	"consumable": false,
+	"placeable": false,
+	"item_type": "material",
+	"instance_tracked": true,
+	"texture": {
+	  "atlas": "res://Assets/items/material.png",
+	  "cell": [
+		6,
+		2
+	  ],
+	  "cell_size": [
+		32,
+		32
+	  ]
+	},
+	"inventory_icon": {
+	  "atlas": "res://Assets/items/material.png",
+	  "cell": [
+		6,
+		2
+	  ],
+	  "cell_size": [
+		32,
+		32
+	  ]
+	}
+  },
+  "fish_drill": {
+	"category": "material",
+	"display_name": "Fish Drill",
+	"description": "A rare material caught while fishing.",
+	"rarity": "rare",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false,
+	"equipable": false,
+	"consumable": false,
+	"placeable": false,
+	"item_type": "material",
+	"instance_tracked": true,
+	"fishing_reward": true,
+	"fishing_material": true,
+	"texture": {
+	  "atlas": "res://Assets/items/material.png",
+	  "cell": [
+		5,
+		2
+	  ],
+	  "cell_size": [
+		32,
+		32
+	  ]
+	},
+	"inventory_icon": {
+	  "atlas": "res://Assets/items/material.png",
+	  "cell": [
+		5,
+		2
+	  ],
+	  "cell_size": [
+		32,
+		32
+	  ]
+	}
+  },
+  "empty_portrait": {
+	"category": "material",
+	"display_name": "Empty Portrait",
+	"description": "An empty portrait used as a crafting material.",
+	"rarity": "common",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false,
+	"equipable": false,
+	"consumable": false,
+	"placeable": false,
+	"item_type": "material",
+	"instance_tracked": true,
+	"texture": {
+	  "atlas": "res://Assets/items/material.png",
+	  "cell": [
+		5,
+		3
+	  ],
+	  "cell_size": [
+		32,
+		32
+	  ]
+	},
+	"inventory_icon": {
+	  "atlas": "res://Assets/items/material.png",
+	  "cell": [
+		5,
+		3
+	  ],
+	  "cell_size": [
+		32,
+		32
+	  ]
+	}
+  },
+  "stick": {
+	"category": "material",
+	"display_name": "Stick",
+	"description": "A material sometimes found when breaking Wood Blocks.",
+	"rarity": "uncommon",
+	"stack_limit": 400,
+	"tradeable": true,
+	"dropable": true,
+	"admin_grantable": true,
+	"hidden": false,
+	"equipable": false,
+	"consumable": false,
+	"placeable": false,
+	"item_type": "material",
+	"instance_tracked": false,
+	"texture": {
+	  "atlas": "res://Assets/items/material.png",
+	  "cell": [
+		7,
+		1
+	  ],
+	  "cell_size": [
+		32,
+		32
+	  ]
+	},
+	"inventory_icon": {
+	  "atlas": "res://Assets/items/material.png",
+	  "cell": [
+		7,
+		1
+	  ],
+	  "cell_size": [
+		32,
+		32
+	  ]
+	}
+  },
 	"black_spiky_hair": {
 		"category": "hair",
 		"display_name": "Black Spiky Hair",
