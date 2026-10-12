@@ -28,7 +28,10 @@ func run():
 	var base = "CenterContainer/LeaderboardWindow/"
 	assert(ui.apply_exported_styles_on_ready)
 	assert(not ui.show_sample_data_when_empty)
-	assert(ui.get_node(base + "HeaderPanel/TitleLabel").horizontal_alignment == HORIZONTAL_ALIGNMENT_CENTER)
+	assert(ui.get_node(base + "HeaderPanel/TitleLabel").horizontal_alignment == HORIZONTAL_ALIGNMENT_LEFT)
+	assert(ui.get_node(base + "HeaderPanel/TitleLabel").text == "LANDFILL LEADERBOARD")
+	assert(ui.get_node(base + "HeaderPanel/SubtitleLabel").horizontal_alignment == HORIZONTAL_ALIGNMENT_LEFT)
+	assert(not ui.get_node(base + "HeaderPanel/BadgeBack").visible)
 	var find_button = ui.get_node(base + "SideColumn/SideArtPanel/FindMeButton")
 	assert(find_button.disabled)
 	assert(ui.get_node(base + "TablePanel/EmptyState").visible)
