@@ -401,6 +401,24 @@ func spawn_hand_item_swing_particles_at_grid(grid_pos: Vector2i, source_tool: St
 	return bool(world.spawn_hand_item_swing_particles(get_block_sound_position(grid_pos), resolved_tool))
 
 
+func play_protected_block_punch_feedback(grid_pos: Vector2i) -> void:
+	# A denied hit is still a swing. Use the movement-synced cosmetic event,
+	# without damage, cracks, drops, or a rejected break request/lock notice.
+	if not world.can_reach_grid(grid_pos) or not try_consume_block_break_input_cadence():
+		return
+	face_grid_for_block_punch(grid_pos)
+	spawn_hand_item_swing_particles_at_grid(grid_pos)
+	play_block_hit_sound(grid_pos)
+
+
+func handle_protected_electrical_punch(grid_pos: Vector2i) -> bool:
+	if world.has_method("has_visible_electrical_tile_at") and world.has_visible_electrical_tile_at(grid_pos):
+		if world.has_method("can_current_player_build_at") and not world.can_current_player_build_at(grid_pos):
+			play_protected_block_punch_feedback(grid_pos)
+			return true
+	return false
+
+
 func get_current_block_hit_source_tool() -> String:
 	if world == null:
 		return ""
@@ -9213,9 +9231,16 @@ func handle_rejected_block_update(data: Dictionary) -> bool:
 		world.end_fast_block_place_hold(-1)
 	var rejection_grid := Vector2i(int(data.get("x", data.get("target_x", 0))), int(data.get("y", data.get("target_y", 0))))
 	var rejection_key := get_authoritative_break_key(str(data.get("layer", "foreground")), rejection_grid)
+	var silent_protected_hit := str(data.get("block_action", "")) in ["hit", "break"] and reason in [
+		"world_locked", "area_lock_permission_denied", "lock_not_decayed",
+		"world_lock_owner_required", "area_lock_owner_required", "fish_monger_permission_denied",
+		"vending_owner_required", "safe_owner_required", "donation_box_owner_required", "display_owner_required"]
 	if authoritative_break_request_keys.has(rejection_key):
 		# An older hit rejection cannot cancel a newer in-flight break.
-		return false
+		return silent_protected_hit
+	if silent_protected_hit:
+		clear_authoritative_break_state_for_grid(rejection_grid, str(data.get("layer", "")))
+		return true
 	if reason != "break_rate_limited" and reason != "rate_limited" and not message.contains("slow down"):
 		return false
 
@@ -9363,7 +9388,7 @@ func hit_background_block_grid(grid_pos: Vector2i):
 	var block_type = str(background_blocks[grid_pos]["type"])
 
 	if world.has_method("can_current_player_break_block_at") and not world.can_current_player_break_block_at(block_type, grid_pos):
-		world.show_notification(world.get_world_locked_message())
+		play_protected_block_punch_feedback(grid_pos)
 		return
 
 	if world.item_database.has(block_type) and bool(world.item_database[block_type].get("unbreakable", false)):
@@ -12470,7 +12495,10 @@ func break_block_at_mouse():
 			return
 
 		if world.has_method("can_current_player_build_at") and not world.can_current_player_build_at(clicked_seed_grid):
-			world.show_notification("This area is locked.")
+			if world.selected_item_category == "seed":
+				world.show_notification("This area is locked.")
+			else:
+				play_protected_block_punch_feedback(clicked_seed_grid)
 			return
 
 		if world.selected_item_category == "seed":
@@ -12504,6 +12532,8 @@ func break_block_at_mouse():
 		hit_background_block_grid(grid_pos)
 		return
 
+	if handle_protected_electrical_punch(grid_pos):
+		return
 	if world.has_method("try_break_electrical_tile_at") and bool(world.try_break_electrical_tile_at(grid_pos)):
 		face_grid_for_block_punch(grid_pos)
 		spawn_hand_item_swing_particles_at_grid(grid_pos)
@@ -12553,6 +12583,15 @@ func hit_block_grid(grid_pos: Vector2i, force_punch_action: bool = false):
 
 	var block_type = world.blocks[grid_pos]["type"]
 	var is_punch_action := force_punch_action or is_current_block_hit_punch_action()
+	var break_allowed: bool = not world.has_method("can_current_player_break_block_at") or bool(world.can_current_player_break_block_at(str(block_type), grid_pos))
+	var check_lock_decay := (is_world_lock_block_type(str(block_type)) or is_area_lock_block_type(str(block_type))) and should_use_server_authoritative_world_actions()
+	# Public punch uses (doors/dice/exit) keep their existing behavior. Actual
+	# locks still ask the server whether they have decayed; all other denied
+	# hits stop before machine toggles, storage withdrawals or harvest requests.
+	var public_punch_use: bool = is_password_door_block_type(str(block_type)) or is_dice_block_type(str(block_type)) or (world.has_method("is_entrance_gate_block") and world.is_entrance_gate_block(block_type))
+	if not break_allowed and not check_lock_decay and not public_punch_use:
+		play_protected_block_punch_feedback(grid_pos)
+		return
 
 	var is_state_toggle_machine := (
 		is_anti_punch_block_type(str(block_type))
@@ -12560,7 +12599,8 @@ func hit_block_grid(grid_pos: Vector2i, force_punch_action: bool = false):
 		or is_anti_gravity_block_type(str(block_type))
 		or is_theme_machine_block_type(str(block_type))
 	)
-	if is_punch_action and is_state_toggle_machine and world.has_method("try_punch_toggle_machine_at"):
+	var toggle_allowed: bool = is_state_toggle_machine and (not world.has_method("can_current_player_interact_with_block_at") or bool(world.can_current_player_interact_with_block_at(str(block_type), grid_pos)))
+	if is_punch_action and is_state_toggle_machine and toggle_allowed and world.has_method("try_punch_toggle_machine_at"):
 		var toggle_succeeded := bool(world.try_punch_toggle_machine_at(grid_pos))
 		spawn_hand_item_swing_particles_at_grid(grid_pos, "punch")
 		if not toggle_succeeded:
@@ -12632,37 +12672,15 @@ func hit_block_grid(grid_pos: Vector2i, force_punch_action: bool = false):
 		if not world.can_reach_grid(grid_pos) or not try_consume_block_break_input_cadence():
 			return
 		if send_network_block_update("hit", "foreground", grid_pos, str(block_type), {"source_tool": get_current_block_hit_source_tool()}):
-			spawn_block_hit_particles(grid_pos, str(block_type), "foreground")
+			if break_allowed:
+				spawn_block_hit_particles(grid_pos, str(block_type), "foreground")
+			else:
+				spawn_hand_item_swing_particles_at_grid(grid_pos)
 			play_block_hit_sound(grid_pos)
 		return
 
-	if world.has_method("can_current_player_break_block_at") and not world.can_current_player_break_block_at(str(block_type), grid_pos):
-		if is_world_lock_block_type(str(block_type)):
-			if world.world_lock_manager != null and world.world_lock_manager.has_method("has_world_lock_break_blockers") and world.world_lock_manager.has_world_lock_break_blockers():
-				world.show_notification("Remove all Safes, vending machines, Fish Mongers, and displays before breaking the World Lock.")
-			else:
-				world.show_notification("Only the world owner can break the World Lock.")
-		elif world.has_method("is_area_lock_block_type") and world.is_area_lock_block_type(str(block_type)):
-			world.show_notification("Only the area lock owner can break this lock.")
-		elif str(block_type) == "fish_monger":
-			world.show_notification("Only the world owner or players with access can break the Fish Monger.")
-		elif world.world_lock_manager != null and world.world_lock_manager.has_method("is_vending_machine_block") and world.world_lock_manager.is_vending_machine_block(str(block_type)):
-			if world.world_lock_manager.is_locked:
-				world.show_notification("Only the world owner can break vending machines.")
-			else:
-				world.show_notification("Lock this world before breaking vending machines.")
-		elif world.world_lock_manager != null and world.world_lock_manager.has_method("is_safe_block") and world.world_lock_manager.is_safe_block(str(block_type)):
-			if world.world_lock_manager.is_locked:
-				world.show_notification("Only the world owner can break safes.")
-			else:
-				world.show_notification("Lock this world before breaking safes.")
-		elif world.has_method("is_display_block_type") and world.is_display_block_type(str(block_type)):
-			if world.world_lock_manager != null and world.world_lock_manager.is_locked:
-				world.show_notification("Only the world owner can break displays.")
-			else:
-				world.show_notification("Lock this world before breaking displays.")
-		else:
-			world.show_notification(world.get_world_locked_message())
+	if not break_allowed:
+		play_protected_block_punch_feedback(grid_pos)
 		return
 
 	if block_type == "bedrock":
@@ -13559,7 +13577,7 @@ func punch_grid_position(grid_pos: Vector2i, force_punch_action: bool = false):
 
 	if world.has_planted_seed(grid_pos):
 		if world.has_method("can_current_player_build_at") and not world.can_current_player_build_at(grid_pos):
-			world.show_notification("This area is locked.")
+			play_protected_block_punch_feedback(grid_pos)
 			return
 
 		face_grid_for_block_punch(grid_pos)
@@ -13579,6 +13597,8 @@ func punch_grid_position(grid_pos: Vector2i, force_punch_action: bool = false):
 		hit_background_block_grid(grid_pos)
 		return
 
+	if handle_protected_electrical_punch(grid_pos):
+		return
 	if world.has_method("try_break_electrical_tile_at") and bool(world.try_break_electrical_tile_at(grid_pos)):
 		face_grid_for_block_punch(grid_pos)
 		spawn_hand_item_swing_particles_at_grid(grid_pos)

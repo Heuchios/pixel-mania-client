@@ -3,6 +3,11 @@ extends SceneTree
 
 const TEST_GRID := Vector2i(4, 5)
 
+# This suite checks permissions and effects, not wall-clock input cadence.
+func hit_machine(block_manager, force_punch_action: bool) -> void:
+	block_manager.last_block_break_input_at_msec = 0
+	block_manager.hit_block_grid(TEST_GRID, force_punch_action)
+
 
 class MockWorld:
 	extends Node2D
@@ -230,7 +235,7 @@ func _run() -> void:
 	}
 	for block_type: String in expected_actions:
 		reset_machine_state(world, block_type)
-		block_manager.hit_block_grid(TEST_GRID, true)
+		hit_machine(block_manager, true)
 		assert(
 			world.applied_actions == [expected_actions[block_type]],
 			block_type + " did not toggle from a forced/mobile punch."
@@ -242,38 +247,34 @@ func _run() -> void:
 		assert(world.hit_particle_count == 1, block_type + " did not show block-hit particles.")
 
 	reset_machine_state(world, "anti_punch")
-	block_manager.hit_block_grid(TEST_GRID, false)
+	hit_machine(block_manager, false)
 	assert(world.applied_actions == ["anti_punch:true"], "Selected bare punch did not toggle anti-punch.")
 	assert(int(world.block_hit_progress.get(TEST_GRID, 0)) == 1, "Selected bare punch did not damage anti-punch.")
 
 	reset_machine_state(world, "anti_talk")
 	world.allow_toggle = false
 	world.allow_break = false
-	block_manager.hit_block_grid(TEST_GRID, true)
+	hit_machine(block_manager, true)
 	assert(world.applied_actions.is_empty(), "Permission denial still changed anti-talk state.")
 	assert(world.block_hit_progress.is_empty(), "Permission denial allowed machine damage.")
-	assert(
-		not world.notifications.is_empty()
-		and str(world.notifications.back()).contains("Only the world owner or world admins"),
-		"Permission denial did not explain who can toggle the machine."
-	)
+	assert(world.notifications.is_empty(), "A denied machine punch should stay silent.")
+	assert(world.swing_particle_count == 1, "A denied machine punch must keep its weapon effect.")
+	world.interaction_manager.interact_with_grid(TEST_GRID)
+	assert(str(world.notifications.back()).contains("Only the world owner or world admins"), "Wrench must still explain restricted access.")
 
 	reset_machine_state(world, "anti_talk")
 	world.allow_build_at = false
 	world.allow_break = false
-	block_manager.hit_block_grid(TEST_GRID, true)
+	hit_machine(block_manager, true)
 	assert(world.applied_actions.is_empty(), "A player without tile access changed anti-talk state.")
 	assert(world.block_hit_progress.is_empty(), "A player without tile access damaged anti-talk.")
-	assert(
-		not world.notifications.is_empty()
-		and str(world.notifications.back()) == "This area is locked.",
-		"Tile access denial did not explain why the machine could not be toggled."
-	)
+	assert(world.notifications.is_empty(), "A protected tile punch should stay silent.")
+	assert(world.swing_particle_count == 1, "A protected tile punch must keep its weapon effect.")
 
 	reset_machine_state(world, "anti_talk")
 	world.allow_toggle = false
 	world.allow_break = true
-	block_manager.hit_block_grid(TEST_GRID, true)
+	hit_machine(block_manager, true)
 	assert(world.applied_actions.is_empty(), "Break-only access changed anti-talk state.")
 	assert(int(world.block_hit_progress.get(TEST_GRID, 0)) == 1, "Break-only access could not damage anti-talk.")
 
@@ -295,7 +296,7 @@ func _run() -> void:
 		reset_machine_state(world, block_type)
 		seed_machine_enabled_state(world, block_type)
 		for _hit_index in range(4):
-			block_manager.hit_block_grid(TEST_GRID, true)
+			hit_machine(block_manager, true)
 		assert(not world.blocks.has(TEST_GRID), block_type + " did not break after four punches.")
 		assert(int(world.inventory.get(block_type, 0)) == 1, block_type + " was not returned to inventory after breaking.")
 		assert(not has_machine_state(world, block_type), block_type + " left stale enabled state after breaking.")

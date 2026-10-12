@@ -616,6 +616,8 @@ func handle_unhandled_input(event):
 			if world.selected_item_category == "tool" and world.selected_item_type == "wrench":
 				world.interact_with_facing_tile()
 			else:
+				if world.has_method("play_player_punch_animation"):
+					world.play_player_punch_animation()
 				world.punch_facing_block()
 			return
 
