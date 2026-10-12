@@ -55,6 +55,19 @@ Yellow Shoes retains its existing `basic_yellow_shoes` ID, with the requested ro
 | Sack Mask | `sack_mask` | Mask (face/beard) | 49,5 | base 50,5 | 1 | New |
 | Bag on the Head | `bag_on_the_head` | Mask (face/beard) | 49,6 | base 50,6 | 1 | New |
 
+## Deployed release
+
+- Staging release: `20261012-wearables-a22bc8b`.
+- Backend commit: `a22bc8b5503dbb45ba0b6fdb52df97a91950ee78`.
+- Client commit: `b43a1a590658a53f136262ef5c186ddc70c80eae`.
+- API: `https://staging-api.pixelmaniagame.com`; current/minimum client 1.2.25.
+- Immutable archive validation, remote release checks, public smoke checks and the 44-item catalog check on the active staging server all passed. PostgreSQL and Redis are ready.
+- Prior staging release / rollback: `20261012-machine-return-bcd7c18`.
+- Production remains `20261010-hand-visuals-33256ff`.
+- Deployment log: `D:/Pixelmania/work/wearables-20261012-deploy.log`.
+
+The release used a clean checkout of the client commit at `D:/Pixelmania/releases/wearables-staging-20261012/pixel-mania`. Concurrent UI-transition edits in the main workspace were left outside these commits and this release's client metadata.
+
 ## Verification
 
 - Godot `tests/wearable_expansion_test.gd`: all 44 definitions, exact atlas regions, visible art, preview separation, split limb attachment, both facings, all animation states, outfit alignment/restoration, and unequip.
