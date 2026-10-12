@@ -7,6 +7,22 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Username jump/fall jitter corrected (2026-10-12, client)
+
+The local screen-space username used the camera transform from `_process`,
+before the final render-time pixel alignment. A rendered jump/fall regression
+reproduced 0.972 viewport pixels of relative drift; it is now 0.000. The camera
+emits `canvas_aligned` after its final transform, and the username and growth
+text reproject then without advancing fades twice. Repeated world setup cleans
+up the old callback; UI/world-exit hiding remains intact.
+
+Rendered regression passes at 144 fixed FPS with physics/idle cameras, three
+zooms and fractional viewport stretch/resizes. Existing rendered camera pixel
+alignment, remote name layering and health-bar suites also pass. Logs are in
+`D:/Pixelmania/work/username-jitter/`. This is a client-only change; restart the
+updated editor/debug client against staging. Backend releases and published
+Windows/Android binaries are unchanged.
+
 ### Special item break recovery deployed to staging (2026-10-12)
 
 Snow Repellent and CCTV no longer use spreadsheet farming break rewards.

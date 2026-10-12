@@ -1,5 +1,7 @@
 extends Node
 
+signal canvas_aligned
+
 # Align the world translation at the final render scale, not in world units.
 # A fractional camera offset otherwise changes which texels nearest filtering
 # samples on every frame, making stationary tiles appear to ripple while scrolling.
@@ -59,3 +61,6 @@ func _align_camera() -> void:
 	var pixel_origin := to_pixels * canvas.origin
 	canvas.origin = to_pixels.affine_inverse() * pixel_origin.round()
 	viewport.canvas_transform = canvas
+	# Screen-space overlays must project through the same final camera transform
+	# that renders the player, including pixel alignment and resize/zoom changes.
+	canvas_aligned.emit()

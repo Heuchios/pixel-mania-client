@@ -12,6 +12,7 @@ const GROWTH_LABEL_HEIGHT = 46.0
 const LABEL_MARGIN_ABOVE_HEAD_WORLD_PX = 18.0
 const FALLBACK_OFFSET_ABOVE_PLAYER_WORLD_PX = 66.0
 const USERNAME_STYLE = preload("res://Scripts/ui/pixel_ui_style.gd")
+const CameraPixelAlignment = preload("res://Scripts/camera_pixel_alignment.gd")
 const USERNAME_FONT_SIZE_META := &"pixelmania_font_size"
 const FONT_SIZE = 32
 const OUTLINE_SIZE = 2
@@ -45,6 +46,7 @@ var label: Label = null
 var growth_label: Label = null
 var rainbow_time := 0.0
 var growth_label_alpha := 0.0
+var camera_alignment: Node
 
 
 func get_network_manager():
@@ -72,9 +74,43 @@ func apply_username_font_to_label(target_label: Label) -> void:
 
 
 func setup(world_ref):
+	_disconnect_camera_alignment()
 	world = world_ref
 	_create_label()
 	update_text()
+	if world != null and world.has_method("get_player_camera"):
+		var camera = world.get_player_camera()
+		if camera is Camera2D:
+			camera_alignment = CameraPixelAlignment.install(camera)
+			camera_alignment.connect("canvas_aligned", _refresh_render_position)
+
+
+func _exit_tree() -> void:
+	_disconnect_camera_alignment()
+
+
+func _disconnect_camera_alignment() -> void:
+	if is_instance_valid(camera_alignment) and camera_alignment.is_connected("canvas_aligned", _refresh_render_position):
+		camera_alignment.disconnect("canvas_aligned", _refresh_render_position)
+	camera_alignment = null
+
+
+func _refresh_render_position() -> void:
+	if not is_instance_valid(label) or not label.visible or not is_instance_valid(world) or not is_instance_valid(world.player):
+		return
+	# Camera2D and pixel alignment finish after _process. Only reproject here;
+	# advancing growth-text fades twice per frame would change their timing.
+	_place_labels(_get_label_anchor_screen_position())
+
+
+func _place_labels(anchor_pos: Vector2) -> void:
+	var username_pos := anchor_pos - Vector2(LABEL_WIDTH / 2.0, LABEL_HEIGHT)
+	label.position = username_pos
+	if is_instance_valid(growth_label):
+		growth_label.position = Vector2(
+			anchor_pos.x - GROWTH_LABEL_WIDTH / 2.0,
+			username_pos.y - GROWTH_LABEL_HEIGHT + GROWTH_LABEL_GAP
+		)
 
 
 func get_overhead_layer():
@@ -390,25 +426,20 @@ func update_position(delta: float = 0.0):
 		_hide_labels()
 		return
 
-	var anchor_pos = _get_label_anchor_screen_position()
-	var username_pos = Vector2(
-		anchor_pos.x - LABEL_WIDTH / 2.0,
-		anchor_pos.y - LABEL_HEIGHT
-	)
+	_place_labels(_get_label_anchor_screen_position())
 
 	label.size = Vector2(LABEL_WIDTH, LABEL_HEIGHT)
 	label.z_index = LOCAL_USERNAME_Z_INDEX
-	label.position = username_pos
 
 	if _any_ui_open():
 		_hide_labels()
 		return
 
 	label.visible = true
-	update_growth_label(anchor_pos, username_pos, delta)
+	update_growth_label(delta)
 
 
-func update_growth_label(anchor_pos: Vector2, username_pos: Vector2, delta: float = 0.0):
+func update_growth_label(delta: float = 0.0):
 	if growth_label == null or not is_instance_valid(growth_label):
 		return
 
@@ -430,10 +461,6 @@ func update_growth_label(anchor_pos: Vector2, username_pos: Vector2, delta: floa
 	growth_label.text = "\n".join(display_lines)
 	growth_label.size = Vector2(GROWTH_LABEL_WIDTH, GROWTH_LABEL_HEIGHT)
 	growth_label.z_index = LOCAL_GROWTH_LABEL_Z_INDEX
-	growth_label.position = Vector2(
-		anchor_pos.x - GROWTH_LABEL_WIDTH / 2.0,
-		username_pos.y - GROWTH_LABEL_HEIGHT + GROWTH_LABEL_GAP
-	)
 	if bool(hover_info.get("mature", false)) or growth_text == "Ready to harvest":
 		growth_label.add_theme_color_override("font_color", GROWTH_READY_COLOR)
 	else:
