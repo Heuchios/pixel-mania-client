@@ -257,7 +257,9 @@ func handle_trade_message(data: Dictionary):
 		var message = str(data.get("message", "Trade failed."))
 		if status_label != null:
 			status_label.text = message
-		if world != null and world.has_method("show_notification"):
+		if world != null and world.has_method("show_action_error"):
+			world.show_action_error(message)
+		elif world != null and world.has_method("show_notification"):
 			world.show_notification(message)
 		return
 

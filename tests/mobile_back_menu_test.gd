@@ -10,6 +10,12 @@ class MockWorld:
 	var open_states: Dictionary = {}
 	var calls: Array[String] = []
 
+	func is_magnet_machine_open() -> bool:
+		return false
+
+	func is_quest_board_open() -> bool:
+		return false
+
 	func is_chat_input_focused() -> bool:
 		return bool(open_states.get("chat", false))
 

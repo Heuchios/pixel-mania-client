@@ -1829,6 +1829,12 @@ func can_show_notification_bubble() -> bool:
 	return true
 
 
+func prepare_action_notification() -> void:
+	close_chat_panel()
+	if active_bubble_kind == BUBBLE_KIND_CHAT:
+		hide_active_bubble()
+
+
 func _on_chat_input_submitted(_text: String):
 	send_chat_message()
 

@@ -89,3 +89,16 @@ fix requires no client rebuild. The existing artifact verification remains a
 record of the original candidate. Production deployment and the Android
 distribution decision remain pending. Backend details:
 `D:/Pixelmania/PixelMania/PixelManiaServer/docs/item_display_names.md`.
+
+## Follow-up: UI warning visibility (2026-10-12)
+
+The client now closes gameplay popups for action errors/warnings so the overhead
+message can be read, including nested world-lock confirmations, inventory
+selection, daily rewards and emotes. Active trades are canceled on dismissal.
+Success/progress feedback keeps its existing behavior. The 29 warning-flow
+checks and related trade/chat/menu regressions pass. See
+[UI warning visibility](ui_action_warning_visibility.md).
+
+This follow-up requires a new client build. The existing 1.2.25 packages predate
+it and remain unchanged; do not deliver them as containing this fix. Include
+the follow-up when preparing the combined release with a new artifact version.

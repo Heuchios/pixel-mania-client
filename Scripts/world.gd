@@ -8302,6 +8302,13 @@ func apply_server_door_spawn(data: Dictionary):
 
 
 func handle_inventory_transaction_result(data: Dictionary):
+	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("run_with_notification_kind"):
+		gameplay_ui_manager.run_with_notification_kind(_apply_inventory_transaction_result.bind(data), "" if bool(data.get("ok", false)) else "error")
+	else:
+		_apply_inventory_transaction_result(data)
+
+
+func _apply_inventory_transaction_result(data: Dictionary):
 	var transaction_data: Dictionary = data
 	var progression_value = data.get("progression", {})
 	if progression_value is Dictionary:
@@ -8784,6 +8791,11 @@ func show_notification(message: String):
 		return gameplay_ui_manager.show_notification(message)
 
 	return
+
+
+func show_action_error(message: String):
+	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("show_notification"):
+		return gameplay_ui_manager.show_notification(message, "error")
 
 
 func open_notification_panel():
@@ -9701,6 +9713,11 @@ func open_daily_rewards() -> void:
 
 func is_daily_rewards_open() -> bool:
 	return is_instance_valid(daily_rewards_ui) and daily_rewards_ui.is_rewards_open()
+
+
+func close_daily_rewards() -> void:
+	if is_instance_valid(daily_rewards_ui):
+		daily_rewards_ui.close_rewards()
 
 func close_crafting():
 	if gameplay_ui_manager != null and gameplay_ui_manager.has_method("close_crafting"):

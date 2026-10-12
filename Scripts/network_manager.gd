@@ -5836,7 +5836,10 @@ func handle_action_rejected(data: Dictionary) -> void:
 			if bool(world_node.block_manager.handle_rejected_block_update(data)):
 				return
 	if world_node != null and is_world_node_active() and world_node.has_method("show_notification"):
-		world_node.show_notification(message)
+		if world_node.has_method("show_action_error"):
+			world_node.show_action_error(message)
+		else:
+			world_node.show_notification(message)
 	else:
 		var chat_ui = get_chat_ui_node()
 		if chat_ui != null:

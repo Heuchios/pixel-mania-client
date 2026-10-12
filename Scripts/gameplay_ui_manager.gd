@@ -31,6 +31,8 @@ const NOTIFICATION_BUBBLE_COOLDOWN := 0.42
 
 var last_notification_bubble_time := -999.0
 var last_emote_msec := -1000
+var notification_kind_context := ""
+var closing_notification_popups := false
 
 
 func setup_emotes_ui() -> void:
@@ -353,8 +355,15 @@ func remove_notification_child(parent: Node, child_name: String) -> void:
 		child.queue_free()
 
 
-func show_notification(message: String):
-	return show_notification_bubble(message)
+func show_notification(message: String, kind: String = ""):
+	return show_notification_bubble(message, kind if kind != "" else notification_kind_context)
+
+
+func run_with_notification_kind(callback: Callable, kind: String) -> void:
+	var previous_kind := notification_kind_context
+	notification_kind_context = kind
+	callback.call()
+	notification_kind_context = previous_kind
 
 
 func show_level_up(progression_data: Dictionary):
@@ -372,8 +381,12 @@ func show_level_up(progression_data: Dictionary):
 
 
 func show_notification_bubble(message: String, forced_kind: String = ""):
+	if closing_notification_popups:
+		return
 	var clean_message: String = normalize_notification_message(message)
-	if should_ignore_notification(clean_message):
+	if clean_message == "" and forced_kind in ["error", "warning"]:
+		clean_message = message.strip_edges()
+	if clean_message == "" or (should_ignore_notification(clean_message) and forced_kind not in ["error", "warning"]):
 		return
 
 	var kind := get_effective_notification_kind(clean_message, forced_kind)
@@ -384,6 +397,11 @@ func show_notification_bubble(message: String, forced_kind: String = ""):
 	var chat_ui_node = get_notification_chat_ui()
 	if chat_ui_node == null or not chat_ui_node.has_method("show_chat_bubble"):
 		return
+
+	if kind in ["error", "warning"]:
+		close_popups_for_notification()
+		if chat_ui_node.has_method("prepare_action_notification"):
+			chat_ui_node.prepare_action_notification()
 	if chat_ui_node.has_method("can_show_notification_bubble") and not bool(chat_ui_node.can_show_notification_bubble()):
 		return
 
@@ -396,6 +414,24 @@ func show_notification_bubble(message: String, forced_kind: String = ""):
 
 	if notification_shown:
 		last_notification_bubble_time = now
+
+
+func close_popups_for_notification() -> void:
+	if world == null or closing_notification_popups:
+		return
+	closing_notification_popups = true
+	# Closing an active trade must also release its server-side reservation.
+	if "trade_ui" in world and is_instance_valid(world.trade_ui):
+		if "current_trade" in world.trade_ui and not world.trade_ui.current_trade.is_empty():
+			if world.has_method("cancel_trade_ui"):
+				world.cancel_trade_ui()
+	if world.has_method("close_all_gameplay_popups"):
+		world.close_all_gameplay_popups()
+	if world.is_inside_tree():
+		var focused_control: Control = world.get_viewport().gui_get_focus_owner()
+		if focused_control != null:
+			focused_control.release_focus()
+	closing_notification_popups = false
 
 
 func get_notification_chat_ui():
@@ -588,17 +624,20 @@ func get_effective_notification_kind(message: String, forced_kind: String = "") 
 func infer_notification_kind(message: String) -> String:
 	var lower := message.to_lower()
 
+	# Failure wording takes priority over item names and the action's subject.
+	for phrase in ["cannot", "can't", "could not", "couldn't", "not enough", "don't have", "do not have", "denied", "failed", "missing", "not ready", "invalid", "not allowed", "not permitted", "only the", "only world", "only players", "nothing to", "out of stock", "try again", "no longer", "not available", "timed out", "unavailable", "rejected", "inventory is full"]:
+		if lower.contains(phrase):
+			return "error"
+
+	for phrase in [" is locked", "too far", "required", "remove ", "please wait", "wait ", "update to", "please update", "verify", "already"]:
+		if lower.contains(phrase):
+			return "warning"
+
 	if lower.find("trade") != -1:
 		return "trade"
 
 	if lower.find("gem") != -1 or lower.find("world lock") != -1 or lower.find(" wl") != -1 or lower.find("caught") != -1 or lower.find("opened lure") != -1:
 		return "reward"
-
-	if lower.find("cannot") != -1 or lower.find("can't") != -1 or lower.find("not enough") != -1 or lower.find("denied") != -1 or lower.find("failed") != -1 or lower.find("missing") != -1 or lower.find("not ready") != -1:
-		return "error"
-
-	if lower.find("locked") != -1 or lower.find("too far") != -1 or lower.find("required") != -1 or lower.find("remove") != -1 or lower.find("wait") != -1 or lower.find("update") != -1 or lower.find("verify") != -1 or lower.find("already") != -1:
-		return "warning"
 
 	if lower.find("equipped") != -1 or lower.find("unequipped") != -1 or lower.find("saved") != -1 or lower.find("completed") != -1 or lower.find("crafted") != -1 or lower.find("smelted") != -1 or lower.find("purchased") != -1 or lower.find("moved") != -1 or lower.find("opened") != -1 or lower.find("entered") != -1 or lower.find("planted") != -1 or lower.find("returned") != -1 or lower.find("respawned") != -1 or lower.find("reconnected") != -1:
 		return "success"

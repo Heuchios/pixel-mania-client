@@ -1209,7 +1209,9 @@ func show_result(result: Dictionary):
 	if message == "":
 		return
 
-	if world.has_method("show_notification"):
+	if not bool(result.get("ok", false)) and world.has_method("show_action_error"):
+		world.show_action_error(message)
+	elif world.has_method("show_notification"):
 		world.show_notification(message)
 
 
@@ -1217,7 +1219,8 @@ func _show_confirm_loading(message: String):
 	if world == null:
 		return
 
-	show_result({"ok": false, "message": message})
+	if world.has_method("show_notification"):
+		world.show_notification(message)
 
 
 func _show_confirm_panel(message: String, on_confirm: Callable, confirm_text: String = "CONFIRM", on_cancel: Callable = Callable()):
