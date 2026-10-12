@@ -43,6 +43,7 @@ func run() -> void:
 	ui.show()
 	await process_frame
 	check(ui.phase == "ready" and not ui.action_button.disabled, "Ready claim button")
+	check_ambient_lights(ui.wheel, "Before spinning")
 	await capture(viewport, "daily-rewards-ready")
 	# Exercise different starting rotations and every tier without rolling locally.
 	for reward in snapshot.rewards:
@@ -77,6 +78,8 @@ func run() -> void:
 	var first_wave: float = ui.wheel.lamp_strength(8)
 	ui.wheel._process(0.35)
 	check(absf(first_wave - ui.wheel.lamp_strength(8)) > 0.05, "Win lights sweep outward instead of freezing on one pattern")
+	ui.wheel._process(8.0)
+	check_ambient_lights(ui.wheel, "After the win celebration finishes")
 	ui.load_snapshot(snapshot)
 	for dimensions in [Vector2i(640, 360), Vector2i(360, 640), Vector2i(2340,1080)]:
 		viewport.size = dimensions
@@ -131,6 +134,7 @@ func run() -> void:
 	ui.load_snapshot(claimed)
 	ui._process(0)
 	check(ui.countdown.text.contains("12:00:00"), "Countdown uses server time")
+	check_ambient_lights(ui.wheel, "Reopening today's claimed reward")
 	await capture(viewport, "daily-rewards-claimed")
 	ui._start_spin(snapshot.rewards[2])
 	ui.close_rewards()
@@ -164,6 +168,17 @@ func run() -> void:
 	await check_hud(viewport)
 	print("DAILY_REWARDS_UI_%s: %d checks, %d failures" % ["PASS" if failures == 0 else "FAIL", checks, failures])
 	quit(0 if failures == 0 else 1)
+
+func check_ambient_lights(wheel: Control, state: String) -> void:
+	var original_angle: float = wheel.angle
+	var lights: Array[float] = []
+	# Sample away from the winning pointer: its small pulse alone is not a chase.
+	for bulb in range(12, 37): lights.append(wheel.lamp_strength(bulb))
+	wheel._process(0.75)
+	var moving_lights := 0
+	for bulb in range(12, 37):
+		if absf(wheel.lamp_strength(bulb) - lights[bulb - 12]) > 0.1: moving_lights += 1
+	check(wheel.is_processing() and moving_lights >= 4 and wheel.angle == original_angle, state + ": rim lights keep chasing while the wheel stays still")
 
 func check_hud(viewport: SubViewport) -> void:
 	# Run the actual world/HUD methods with world streaming disabled.
