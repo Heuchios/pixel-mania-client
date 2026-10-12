@@ -1,8 +1,30 @@
 # Multiplayer smoothing — 2026-10-12
 
-Prepared for staging in isolated client and `PixelManiaServer` checkouts.
+Committed and deployed to staging from isolated client and server checkouts.
 No saved-data format, database schema, protocol, or gameplay balance changes.
-Deployment verification is recorded below after staging activation.
+
+## Staging release
+
+- Release: `20261012-multiplayer-17e7b89`.
+- Client source: `fc41d15fb54459ed6a0e693765d95a20da7c6dd5`.
+- Backend: `17e7b89dbd90dfb643273d7012aaecbda7e3de5e`.
+- Both commits were pushed to their `staging` branches. The client also includes
+  the preceding daily-reward typography commit `3d081c5a`.
+- Full `npm run check:security`, TypeScript/build checks, remote release checks,
+  public health and post-deploy smoke checks passed. PostgreSQL is ready and
+  authoritative; Redis is ready. Staging version 1.2.20/minimum 1.2.14 is retained.
+- Deployed socket-delivery/movement-queue checks, all 19 pickup item-loss checks,
+  drop-capacity conservation checks, and all 39 movement rollback scenarios passed.
+- The manifest reports a clean client package. Deployed client file SHA-256
+  hashes match the isolated checkout; the deployed helper matches the committed
+  source with the archive's CRLF conversion.
+- Previous release/rollback: `20261012-daily-confetti-acf332c`.
+  Use the staging account's `~/PixelManiaServer/bin/rollback_release.sh --yes`.
+- Production, published client binaries, and player/world data were not changed
+  by this release. The server receives client metadata for its validation; client
+  optimizations run in a restarted local/debug client using the committed source.
+- Release logs: `D:/Pixelmania/work/multiplayer-staging-deploy-20261012.log`
+  and `D:/Pixelmania/work/multiplayer-staging-verified-20261012.log`.
 
 ## Changes
 

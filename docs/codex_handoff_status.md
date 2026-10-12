@@ -7,6 +7,24 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Multiplayer smoothing deployed to staging
+
+Client `fc41d15f` removes repeated full-world pickup scans and redundant inventory
+layout work, and avoids copying block keys during placement/break targeting.
+Backend `17e7b89` drains congested movement queues in linear time, preserving packet
+order, coalescing and backpressure. Neither commit changes saved formats, gameplay
+rules, inventory transactions or protocol fields. Both were pushed to staging.
+
+Active release `20261012-multiplayer-17e7b89` includes the earlier daily-reward
+typography update. Full security/TypeScript preflight, 30 network audit checks,
+20 focused client tests, 60 network-condition combinations and a two-client
+250 ms RTT/reconnect smoke passed. Deployed pickup, drop-capacity and 39 movement
+regressions passed; public PostgreSQL/Redis health is ready. Staging retains
+1.2.20/minimum 1.2.14. Rollback is `20261012-daily-confetti-acf332c`.
+Production and published client binaries are unchanged; restart the local/debug
+client to test the client optimizations. Physical mobile FPS was not measured.
+See [release evidence](multiplayer_smoothing_20261012.md).
+
 ### Continuous dance and emote commands deployed to staging
 
 Client `ce36eb96` adds `/dance`, `/sad`, `/wave` and `/lol`, the Dance menu
