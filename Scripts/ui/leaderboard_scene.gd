@@ -31,7 +31,7 @@ const SOFT_TEXT := Color("d9bce5")
 			return
 		badge_text = value
 		_queue_refresh()
-@export var subtitle_text: String = "Compete in the Landfill Race and earn points!":
+@export var subtitle_text: String = "Compete in the Landfill Race and collect KG!":
 	set(value):
 		if subtitle_text == value:
 			return
@@ -49,7 +49,7 @@ const SOFT_TEXT := Color("d9bce5")
 			return
 		player_header_text = value
 		_queue_refresh()
-@export var points_header_text: String = "TOTAL POINTS":
+@export var points_header_text: String = "TOTAL KG":
 	set(value):
 		if points_header_text == value:
 			return
@@ -99,7 +99,7 @@ const SOFT_TEXT := Color("d9bce5")
 			return
 		summary_rank_label = value
 		_queue_refresh()
-@export var summary_points_label: String = "YOUR POINTS":
+@export var summary_points_label: String = "YOUR KG":
 	set(value):
 		if summary_points_label == value:
 			return
@@ -807,6 +807,11 @@ func _apply_entry_to_row(row: Panel, entry: Resource, visual_index: int) -> void
 		avatar_texture = default_avatar_texture
 
 	_set_child_label_text(row, "RankNumber", str(rank))
+	var podium := rank >= 1 and rank <= 3
+	row.get_node("RankNumber").visible = not podium
+	var cup := row.get_node("RankCup")
+	cup.rank = rank if podium else 0
+	cup.tooltip_text = "Position %d" % rank
 	_set_child_label_text(row, "PlayerName", player_name)
 	_set_child_label_text(row, "Points", _format_number(points) + points_suffix)
 	row.get_node("PlayerName").tooltip_text = player_name
@@ -817,9 +822,9 @@ func _apply_entry_to_row(row: Panel, entry: Resource, visual_index: int) -> void
 	var left_laurel := row.get_node_or_null("LeftLaurel") as CanvasItem
 	var right_laurel := row.get_node_or_null("RightLaurel") as CanvasItem
 	if left_laurel != null:
-		left_laurel.visible = rank <= 3
+		left_laurel.visible = false
 	if right_laurel != null:
-		right_laurel.visible = rank <= 3
+		right_laurel.visible = false
 
 	var avatar_icon := row.get_node_or_null("AvatarBack/Avatar") as TextureRect
 	if avatar_icon != null:
@@ -827,10 +832,12 @@ func _apply_entry_to_row(row: Panel, entry: Resource, visual_index: int) -> void
 		avatar_icon.visible = avatar_texture != null
 	var initials := row.get_node_or_null("AvatarBack/Initials") as Label
 	if initials != null:
-		initials.visible = avatar_texture == null
+		initials.visible = false
+	row.get_node("PlayerName").position.x = 108.0 if avatar_texture == null else 152.0
 
 	var avatar_back := row.get_node_or_null("AvatarBack") as Panel
 	if avatar_back != null:
+		avatar_back.visible = avatar_texture != null
 		var avatar_color := _color_from_value(_resource_value(entry, "avatar_color", Color(0.45, 0.62, 0.84, 1.0)), Color(0.45, 0.62, 0.84, 1.0))
 		avatar_back.add_theme_stylebox_override("panel", _style(_with_alpha(avatar_color, 0.86), Color(0.04, 0.05, 0.05, 1.0), 2, 5, 0))
 

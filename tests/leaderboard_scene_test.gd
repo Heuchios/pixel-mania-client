@@ -42,6 +42,22 @@ func _run() -> void:
 	if first_row.get_node("Points").text != "12,450":
 		fail_test("Sample first row points were not formatted.")
 		return
+	for position in range(1, 4):
+		var row = leaderboard.rows_root.get_child(position - 1)
+		var cup = row.get_node("RankCup")
+		assert(cup.visible and not row.get_node("RankNumber").visible)
+		assert(cup.rank == position)
+		for frame in range(5):
+			cup.frame_index = frame
+			assert(cup.get_frame_region() == Rect2((7 + frame) * 32, (position + 4) * 32, 32, 32))
+		cup.frame_index = 0
+		cup.elapsed = 0.0
+		cup._process(1.0 / cup.FPS)
+		assert(cup.frame_index == 1, "Cup shine advances through atlas frames")
+		cup._process(4.0 / cup.FPS)
+		assert(cup.frame_index == 0, "Cup animation loops")
+	leaderboard.summary_rank_value = "1"
+	assert(leaderboard._has_personal_row(), "Find Me still recognizes a hidden numeric rank")
 	if leaderboard.get_node_or_null("CenterContainer/LeaderboardWindow/CloseButton") == null:
 		fail_test("CloseButton editable node is missing.")
 		return
@@ -66,6 +82,7 @@ func _run() -> void:
 	if custom_row.get_node("RankNumber").text != "9":
 		fail_test("Custom row rank did not render.")
 		return
+	assert(custom_row.get_node("RankNumber").visible and not custom_row.get_node("RankCup").visible, "Recycled podium rows return to normal ranks")
 	if custom_row.get_node("PlayerName").text != "EditMe":
 		fail_test("Custom row name did not render.")
 		return

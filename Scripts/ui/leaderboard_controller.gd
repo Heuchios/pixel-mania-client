@@ -547,7 +547,7 @@ func _build_entry_dicts() -> Array:
 			"rank": int(raw_entry.get("rank", entry_dicts.size() + 1)),
 			"player_name": username,
 			# The server reports Landfill score as kilograms of trash; the UI column is
-			# "TOTAL POINTS" and they are 1:1, so no conversion.
+			# "TOTAL KG" and they are 1:1, so no conversion.
 			"points": int(raw_entry.get("kilograms", 0)),
 			"highlighted": local_name != "" and username.to_upper() == local_name.to_upper(),
 		})

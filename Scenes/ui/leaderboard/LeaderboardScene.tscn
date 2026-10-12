@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://ccgfwxd0ehwas"]
 
+[ext_resource type="Script" path="res://Scripts/ui/leaderboard_rank_cup.gd" id="rank_cup_script"]
+
 [ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/outer_panel_26aea83603.tres" id="panel_role_0"]
 [ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_1"]
 [ext_resource type="StyleBoxTexture" path="res://Assets/ui/atlas/styles/inner_panel_26aea83603.tres" id="panel_role_2"]
@@ -282,7 +284,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 19
-text = "Compete in the Landfill Race and earn points!"
+text = "Compete in the Landfill Race and collect KG!"
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
@@ -525,7 +527,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
 
-offset_left = 152.0
+offset_left = 108.0
 offset_top = 0.0
 offset_right = 430.0
 offset_bottom = 44.0
@@ -538,7 +540,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 15
-text = "TOTAL POINTS"
+text = "TOTAL KG"
 horizontal_alignment = 2
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
@@ -572,6 +574,20 @@ custom_minimum_size = Vector2(722, 52)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_5")
+
+[node name="RankCup" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow1"]
+visible = true
+layout_mode = 0
+offset_left = 28.0
+offset_top = 2.0
+offset_right = 76.0
+offset_bottom = 50.0
+mouse_filter = 2
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("rank_cup_script")
+rank = 1
 
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow1" unique_id=1798358734]
 layout_mode = 0
@@ -625,6 +641,7 @@ metadata/pixelmania_font_role = "preserve"
 offset_top = 0.0
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow1" unique_id=410254521]
+visible = false
 layout_mode = 0
 offset_left = 108.0
 offset_top = 8.0
@@ -666,7 +683,7 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow1" unique_id=1887200964]
 layout_mode = 0
-offset_left = 152.0
+offset_left = 108.0
 offset_right = 430.0
 offset_bottom = 52.0
 theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
@@ -746,6 +763,20 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_6")
 
+[node name="RankCup" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow2"]
+visible = true
+layout_mode = 0
+offset_left = 28.0
+offset_top = 2.0
+offset_right = 76.0
+offset_bottom = 50.0
+mouse_filter = 2
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("rank_cup_script")
+rank = 2
+
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow2" unique_id=1771337489]
 layout_mode = 0
 offset_right = 96.0
@@ -798,6 +829,7 @@ metadata/pixelmania_font_role = "preserve"
 offset_top = 0.0
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow2" unique_id=1246445338]
+visible = false
 layout_mode = 0
 offset_left = 108.0
 offset_top = 8.0
@@ -839,7 +871,7 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow2" unique_id=2048599956]
 layout_mode = 0
-offset_left = 152.0
+offset_left = 108.0
 offset_right = 430.0
 offset_bottom = 52.0
 theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
@@ -919,6 +951,20 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_7")
 
+[node name="RankCup" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow3"]
+visible = true
+layout_mode = 0
+offset_left = 28.0
+offset_top = 2.0
+offset_right = 76.0
+offset_bottom = 50.0
+mouse_filter = 2
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("rank_cup_script")
+rank = 3
+
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow3" unique_id=2117267223]
 layout_mode = 0
 offset_right = 96.0
@@ -971,6 +1017,7 @@ metadata/pixelmania_font_role = "preserve"
 offset_top = 0.0
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow3" unique_id=466690009]
+visible = false
 layout_mode = 0
 offset_left = 108.0
 offset_top = 8.0
@@ -1012,7 +1059,7 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow3" unique_id=702861866]
 layout_mode = 0
-offset_left = 152.0
+offset_left = 108.0
 offset_right = 430.0
 offset_bottom = 52.0
 theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
@@ -1092,6 +1139,20 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_8")
 
+[node name="RankCup" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow4"]
+visible = false
+layout_mode = 0
+offset_left = 28.0
+offset_top = 2.0
+offset_right = 76.0
+offset_bottom = 50.0
+mouse_filter = 2
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("rank_cup_script")
+rank = 0
+
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow4" unique_id=49473991]
 layout_mode = 0
 offset_right = 96.0
@@ -1146,6 +1207,7 @@ metadata/pixelmania_font_role = "preserve"
 offset_top = 0.0
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow4" unique_id=1647286715]
+visible = false
 layout_mode = 0
 offset_left = 108.0
 offset_top = 8.0
@@ -1187,7 +1249,7 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow4" unique_id=1248343721]
 layout_mode = 0
-offset_left = 152.0
+offset_left = 108.0
 offset_right = 430.0
 offset_bottom = 52.0
 theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
@@ -1267,6 +1329,20 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_9")
 
+[node name="RankCup" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow5"]
+visible = false
+layout_mode = 0
+offset_left = 28.0
+offset_top = 2.0
+offset_right = 76.0
+offset_bottom = 50.0
+mouse_filter = 2
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("rank_cup_script")
+rank = 0
+
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow5" unique_id=1892169341]
 layout_mode = 0
 offset_right = 96.0
@@ -1321,6 +1397,7 @@ metadata/pixelmania_font_role = "preserve"
 offset_top = 0.0
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow5" unique_id=1984153228]
+visible = false
 layout_mode = 0
 offset_left = 108.0
 offset_top = 8.0
@@ -1362,7 +1439,7 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow5" unique_id=1591193108]
 layout_mode = 0
-offset_left = 152.0
+offset_left = 108.0
 offset_right = 430.0
 offset_bottom = 52.0
 theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
@@ -1442,6 +1519,20 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_10")
 
+[node name="RankCup" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow6"]
+visible = false
+layout_mode = 0
+offset_left = 28.0
+offset_top = 2.0
+offset_right = 76.0
+offset_bottom = 50.0
+mouse_filter = 2
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("rank_cup_script")
+rank = 0
+
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow6" unique_id=1410910298]
 layout_mode = 0
 offset_right = 96.0
@@ -1496,6 +1587,7 @@ metadata/pixelmania_font_role = "preserve"
 offset_top = 0.0
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow6" unique_id=1189794930]
+visible = false
 layout_mode = 0
 offset_left = 108.0
 offset_top = 8.0
@@ -1537,7 +1629,7 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow6" unique_id=186735503]
 layout_mode = 0
-offset_left = 152.0
+offset_left = 108.0
 offset_right = 430.0
 offset_bottom = 52.0
 theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
@@ -1617,6 +1709,20 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("panel_role_11")
 
+[node name="RankCup" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow7"]
+visible = false
+layout_mode = 0
+offset_left = 28.0
+offset_top = 2.0
+offset_right = 76.0
+offset_bottom = 50.0
+mouse_filter = 2
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("rank_cup_script")
+rank = 0
+
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow7" unique_id=260337161]
 layout_mode = 0
 offset_right = 96.0
@@ -1671,6 +1777,7 @@ metadata/pixelmania_font_role = "preserve"
 offset_top = 0.0
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow7" unique_id=1779344859]
+visible = false
 layout_mode = 0
 offset_left = 108.0
 offset_top = 8.0
@@ -1712,7 +1819,7 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow7" unique_id=1694823200]
 layout_mode = 0
-offset_left = 152.0
+offset_left = 108.0
 offset_right = 430.0
 offset_bottom = 52.0
 theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
@@ -1792,6 +1899,20 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_e674c")
 
+[node name="RankCup" type="TextureRect" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow8"]
+visible = false
+layout_mode = 0
+offset_left = 28.0
+offset_top = 2.0
+offset_right = 76.0
+offset_bottom = 50.0
+mouse_filter = 2
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("rank_cup_script")
+rank = 0
+
 [node name="RankNumber" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow8" unique_id=918876690]
 layout_mode = 0
 offset_right = 96.0
@@ -1846,6 +1967,7 @@ metadata/pixelmania_font_role = "preserve"
 offset_top = 0.0
 
 [node name="AvatarBack" type="Panel" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow8" unique_id=2044957063]
+visible = false
 layout_mode = 0
 offset_left = 108.0
 offset_top = 8.0
@@ -1886,7 +2008,7 @@ metadata/pixelmania_font_role = "preserve"
 
 [node name="PlayerName" type="Label" parent="CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot/LeaderboardRow8" unique_id=1206758574]
 layout_mode = 0
-offset_left = 152.0
+offset_left = 108.0
 offset_right = 430.0
 offset_bottom = 52.0
 theme_override_colors/font_color = Color(0.96, 0.96, 1, 1)
@@ -2043,7 +2165,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 15
-text = "YOUR POINTS"
+text = "YOUR KG"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/pixelmania_font_role = "preserve"
@@ -2166,7 +2288,7 @@ offset_bottom = 128.0
 autowrap_mode = 2
 metadata/pixelmania_font_role = "preserve"
 theme_override_font_sizes/font_size = 14
-text = "Earn points.
+text = "Collect KG.
 Climb ranks."
 horizontal_alignment = 1
 vertical_alignment = 1
