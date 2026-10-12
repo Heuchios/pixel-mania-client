@@ -55,6 +55,43 @@ The older pickup_hud_flight_test cannot bootstrap directly with --script because
 its preload resolves MobileUIScale before autoload registration; no pass claimed.
 Changes are local, not deployed.
 
+### Login latency fixes deployed to staging
+
+Client `7b13dbb1` handles generic authentication rejections immediately and loads
+the lobby asynchronously ahead of world warmup. Backend `b8a4133` sends correlated
+authentication rate-limit replies, removes redundant identity writes for matching
+accounts, and runs independent Redis auth-limit checks concurrently. Saved formats,
+schema, gameplay and authentication limits are unchanged. Both commits are pushed
+to staging; active release is `20261012-login-b8a4133`.
+
+An ignored rejection reproduced a 20-second login timeout; fixed responses take
+39–46 ms locally. Real Godot password/remembered-login tests reach the initialized
+lobby in 540–574 ms, and a deliberate 8.2-second reply succeeds on the first attempt.
+Real SQL tests verify legacy identity repair, unchanged IDs/world, token rotation,
+revocation and disconnect rollback. Full security/TypeScript checks, deployed auth
+regressions and public PostgreSQL/Redis health passed. Staging retains 1.2.20/minimum
+1.2.14; rollback is `20261012-multiplayer-17e7b89`. Production and published binaries
+are unchanged. Physical mobile and production login timing were not measured.
+See [release evidence](login_latency_20261012.md).
+
+### Multiplayer smoothing deployed to staging
+
+Client `fc41d15f` removes repeated full-world pickup scans and redundant inventory
+layout work, and avoids copying block keys during placement/break targeting.
+Backend `17e7b89` drains congested movement queues in linear time, preserving packet
+order, coalescing and backpressure. Neither commit changes saved formats, gameplay
+rules, inventory transactions or protocol fields. Both were pushed to staging.
+
+Active release `20261012-multiplayer-17e7b89` includes the earlier daily-reward
+typography update. Full security/TypeScript preflight, 30 network audit checks,
+20 focused client tests, 60 network-condition combinations and a two-client
+250 ms RTT/reconnect smoke passed. Deployed pickup, drop-capacity and 39 movement
+regressions passed; public PostgreSQL/Redis health is ready. Staging retains
+1.2.20/minimum 1.2.14. Rollback is `20261012-daily-confetti-acf332c`.
+Production and published client binaries are unchanged; restart the local/debug
+client to test the client optimizations. Physical mobile FPS was not measured.
+See [release evidence](multiplayer_smoothing_20261012.md).
+
 ### Continuous dance and emote commands deployed to staging
 
 Client `ce36eb96` adds `/dance`, `/sad`, `/wave` and `/lol`, the Dance menu
