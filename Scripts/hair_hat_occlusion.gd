@@ -5,6 +5,7 @@ extends RefCounted
 const CLIP_SHADER = preload("res://Assets/shaders/hair_hat_clip.gdshader")
 const MATERIAL_META := &"hair_hat_clip_material"
 const ORIGINAL_MATERIAL_META := &"hair_hat_original_material"
+const SOLID_HAT_ALPHA := 0.99
 static var texture_profiles := {}
 
 static func apply(hair: AnimatedSprite2D, hat: AnimatedSprite2D, hat_data: Dictionary) -> void:
@@ -38,7 +39,7 @@ static func get_hat_profile(hat: AnimatedSprite2D) -> Dictionary:
 	var frames := hat.sprite_frames
 	if frames == null:
 		return {}
-	var key := &"hair_hat_profile_centered" if hat.centered else &"hair_hat_profile"
+	var key := &"hair_hat_solid_profile_centered" if hat.centered else &"hair_hat_solid_profile"
 	if frames.has_meta(key):
 		return frames.get_meta(key)
 	var sources := {}
@@ -103,7 +104,9 @@ static func _read_lower_edge(texture: Texture2D) -> PackedFloat32Array:
 	edge.fill(-INF)
 	for x in image.get_width():
 		for y in range(image.get_height() - 1, -1, -1):
-			if image.get_pixel(x, y).a > 0.0:
+			# The translucent brim shadow belongs over the fringe. Trimming at
+			# that shadow's bottom instead of the opaque hat leaves a bare seam.
+			if image.get_pixel(x, y).a >= SOLID_HAT_ALPHA:
 				edge[x] = float(y + 1)
 				break
 	return edge

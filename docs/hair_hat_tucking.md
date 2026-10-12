@@ -5,6 +5,9 @@ edge in each pixel column. It preserves hair below the brim, including the
 front fringe, raised corners, long sides and pigtails. The initial flat cutoff
 used the deepest brim everywhere and removed hair under the raised corners and
 crown band; the contour mask corrects those gaps.
+Only opaque hat pixels define that edge. Translucent brim shadows and glows
+render over the hair underneath; including them in the cutoff left a thin bare
+seam at the front of the red cap.
 Unequipping the hat restores the original material and full hair immediately;
 equipped IDs, source textures, inventory icons and animation frames never change.
 The same equipment path handles local and remote players.
@@ -24,13 +27,18 @@ atlas UVs and texture size. See the [Godot CanvasItem shader reference](https://
 - `hair_hat_occlusion_test.gd`: all 19 hairstyles and 27 head items, both facings,
   1,026 pair/facing cases; remote cached snapshots, animation changes, future IDs,
   accessory exceptions, full covers and unequip restoration.
-- Rendered checks passed with Compatibility/OpenGL and Mobile/D3D12. Seven
-  example pairs in both facings removed 18,324 upper hair pixels, preserved
-  6,408 lower hair pixels and restored the exact original portraits after unequip.
-  The contour retains 1,458 hair pixels previously lost to the flat cutoff.
+- Rendered checks passed with Compatibility/OpenGL and Mobile/D3D12. Eight
+  example pairs in both facings removed 19,890 upper hair pixels, preserved
+  8,928 lower hair pixels and restored the exact original portraits after unequip.
+  The contour retains 2,952 hair pixels previously lost to the flat cutoff.
   Rendered negative controls specifically verify visible corner-hair recovery
   with Messy Brown Hair/Red Baseball Cap and front-fringe recovery with Crazy
   Hair/Royal Crown, in both directions.
+- The Crazy Hair/Red Baseball Cap/Electric Goggles regression reproduced the
+  remaining front seam: 81 hair pixels per facing were incorrectly cut beneath
+  translucent brim pixels. All 162 now match the original untrimmed layering;
+  fully opaque hat coverage and upper-hair clipping still pass. The failing
+  control is saved in `front-shadow-before.log` / `.err` in the evidence folder.
 - Existing helmet layering, hair/hat expansion and remote equipment performance
   tests passed. Evidence and before/tucked/unequipped previews are under
   `D:/Pixelmania/work/hair-tuck/`.

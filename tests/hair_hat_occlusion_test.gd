@@ -133,6 +133,7 @@ func check_rendered(viewport: SubViewport, actor: Node2D, equipment):
 	var examples := [
 		["messy_brown_hair", "red_baseball_cap"],
 		["crazy_hair", "royal_crown"],
+		["crazy_hair", "red_baseball_cap"],
 		["black_spiky_hair", "royal_crown"],
 		["chestnut_curtains", "neptune_crown"],
 		["ginger_pigtails", "witch_hat"],
@@ -146,6 +147,7 @@ func check_rendered(viewport: SubViewport, actor: Node2D, equipment):
 	var removed_pixels := 0
 	var preserved_pixels := 0
 	var restored_corner_pixels := 0
+	var fringe_under_shadow_pixels := 0
 	var visual: Node2D = actor.get_node("PlayerVisual")
 	for row in examples.size():
 		var pair: Array = examples[row]
@@ -153,6 +155,7 @@ func check_rendered(viewport: SubViewport, actor: Node2D, equipment):
 			visual.scale.x = facing
 			equipment.update_equipped_hat_visual("", facing)
 			equipment.update_equipped_hair_visual(pair[0], facing)
+			equipment.update_equipped_eyewear_visual("electric_goggles" if row == 2 else "", facing)
 			freeze_parts(equipment)
 			var full_portrait := await picture(viewport)
 			equipment.update_equipped_hat_visual(pair[1], facing)
@@ -167,6 +170,26 @@ func check_rendered(viewport: SubViewport, actor: Node2D, equipment):
 			var before := await picture(viewport)
 			hair.material = clipped_material
 			var after := await picture(viewport)
+			if row == 2:
+				# The reported cap has translucent pixels along the front brim.
+				# Hair must remain behind them, matching the original layering.
+				var hat_image: Image = hat.sprite_frames.get_frame_texture(hat.animation, hat.frame).get_image()
+				var hair_image: Image = hair.sprite_frames.get_frame_texture(hair.animation, hair.frame).get_image()
+				var shadow_hair := 0
+				var fringe_mismatches := 0
+				for y in after.get_height():
+					for x in after.get_width():
+						var point := Vector2(x + 0.5, y + 0.5)
+						var hat_texel := Vector2i((hat.to_local(point) - hat.offset + Vector2(hat_image.get_size()) * 0.5).floor())
+						var hair_texel := Vector2i((hair.to_local(point) - hair.offset + Vector2(hair_image.get_size()) * 0.5).floor())
+						if not Rect2i(Vector2i.ZERO, hat_image.get_size()).has_point(hat_texel) or not Rect2i(Vector2i.ZERO, hair_image.get_size()).has_point(hair_texel): continue
+						var alpha := hat_image.get_pixelv(hat_texel).a
+						if alpha > 0.0 and alpha < 0.99 and hair_image.get_pixelv(hair_texel).a > 0.0:
+							shadow_hair += 1
+							if after.get_pixel(x, y) != before.get_pixel(x, y): fringe_mismatches += 1
+				check(shadow_hair > 0, "Cap regression must cover actual hair under the translucent brim")
+				check(fringe_mismatches == 0, "Cap facing %d clips %d hair pixels under the front shadow" % [facing, fringe_mismatches])
+				fringe_under_shadow_pixels += shadow_hair
 			if row < 2:
 				# Render the previous, flat cutoff as a negative control. The actual
 				# portrait must regain temple/corner hair and the central front fringe.
@@ -227,4 +250,4 @@ func check_rendered(viewport: SubViewport, actor: Node2D, equipment):
 	var preview_path := "user://hair_hat_preview.png"
 	preview.save_png(preview_path)
 	correction_preview.save_png("user://hair_hat_corner_correction.png")
-	print("HAIR_HAT_RENDER: removed=", removed_pixels, "; preserved=", preserved_pixels, "; restored_corner_pixels=", restored_corner_pixels, "; preview=", ProjectSettings.globalize_path(preview_path))
+	print("HAIR_HAT_RENDER: removed=", removed_pixels, "; preserved=", preserved_pixels, "; restored_corner_pixels=", restored_corner_pixels, "; fringe_under_shadow_pixels=", fringe_under_shadow_pixels, "; preview=", ProjectSettings.globalize_path(preview_path))
