@@ -80,7 +80,10 @@ and Redis ready. No real-account claim or physical-device test was performed.
 - The usual local client project already targets staging in editor/debug builds.
   Restart its game session to use the changed UI; no new published client binary.
 - Previous pre-feature release: `20261008-mobile-inventory-214da34`.
-- Current rollback/previous release: `20261011-daily-rewards-v2-0a7e309`.
+- Current rollback/previous release: `20261012-emotes-c3d1790`, following
+  reconciliation of the overlapping emote deployment. This previous release
+  contains emotes but predates the 0.5% jackpot update; the active release above
+  retains both. See [player emotes](player_emotes.md).
 - The full security release gate and post-deployment smoke checks passed for the
   new backend. Its deployed tests exhaustively checked 795 common, 200 rare, and
   5 jackpot results out of 1,000. A read-only receipt-schema check and public

@@ -7,6 +7,19 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Continuous dance and emote commands deployed to staging
+
+Client `ce36eb96` adds `/dance`, `/sad`, `/wave` and `/lol`, the Dance menu
+entry, and an editable full-body Godot animation. Dance loops until movement,
+actions or damage interrupt it. Backend `c3d1790` permits authenticated dance
+broadcasts. Both commits are included in the final combined staging release
+`20261012-daily-confetti-acf332c` (backend `acf332c570a7`, client `7168f9b4`).
+The full emote release gate, client/rig regressions, rendered preview, deployed
+emote/daily-reward tests and public PostgreSQL/Redis health passed. An overlapping
+deployment was reconciled to retain the newer daily-rewards changes; the previous
+pointer is now `20261012-emotes-c3d1790`. Production and published binaries remain
+unchanged. See [player emotes](player_emotes.md) for verification and release details.
+
 ### Daily rewards deployed to staging
 
 Added a gift button below the left gem counter and a compact daily-box window
