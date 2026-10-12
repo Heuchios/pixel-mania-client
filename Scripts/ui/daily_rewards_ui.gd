@@ -3,6 +3,7 @@ extends Control
 const Style = preload("res://Scripts/ui/pixel_ui_style.gd")
 const Backdrop = preload("res://Scripts/ui/daily_reward_backdrop.gd")
 const Roulette = preload("res://Scripts/ui/daily_reward_roulette.gd")
+const RewardCard = preload("res://Scripts/ui/daily_reward_card.gd")
 const GEM_TEXTURES = [preload("res://Assets/currency/medium_gem.png"), preload("res://Assets/currency/large_gem.png"), preload("res://Assets/currency/huge_gem.png")]
 const GOLD = Color("ffda79")
 const INK = Color("281336")
@@ -66,14 +67,13 @@ func _ready() -> void:
 	_create_tick_player()
 	wheel.pocket_tick.connect(_on_pocket_tick)
 	wheel_legend = _label(panel, "250 / 1,000 / 5,000 GEMS", Rect2(28, 478, 420, 30), INK)
-	status = _label(panel, "CHECKING YOUR DAILY SPIN...", Rect2(474, 350, 388, 65), INK)
+	status = _label(panel, "CHECKING YOUR DAILY SPIN...", Rect2(474, 365, 388, 48), INK)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	action_button = _button(panel, "PLEASE WAIT", Rect2(500, 423, 340, 60), _activate)
 	countdown = _label(panel, "Free once a day · Resets at 00:00 UTC", Rect2(40, 511, 820, 32), INK)
-	prize_stage = Panel.new()
-	prize_stage.position = Vector2(480, 130)
-	prize_stage.size = Vector2(376, 216)
-	prize_stage.add_theme_stylebox_override("panel", Style.slot_style("legendary"))
+	prize_stage = RewardCard.new()
+	prize_stage.position = Vector2(480, 126)
+	prize_stage.size = Vector2(376, 238)
 	prize_stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_child(prize_stage)
 	backdrop = Backdrop.new()
@@ -81,17 +81,17 @@ func _ready() -> void:
 	backdrop.position = Vector2(470, 84)
 	backdrop.size = Vector2(398, 304)
 	backdrop.clip_contents = true
-	prize_rarity = _label(panel, "DAILY JACKPOT", Rect2(486, 144, 364, 36), GOLD)
+	prize_rarity = _label(panel, "DAILY JACKPOT", Rect2(504, 138, 328, 36), GOLD)
 	prize_icon = TextureRect.new()
-	prize_icon.position = Vector2(616, 184)
-	prize_icon.size = Vector2(104, 104)
+	prize_icon.position = Vector2(600, 167)
+	prize_icon.size = Vector2(136, 136)
 	prize_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	prize_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	prize_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	prize_icon.pivot_offset = prize_icon.size * 0.5
 	panel.add_child(prize_icon)
-	prize_name = _label(panel, "5,000 GEMS", Rect2(486, 286, 364, 50), Color.WHITE, "header")
-	prize_note = _label(panel, "Added to your gems", Rect2(474, 350, 388, 65), INK)
+	prize_name = _label(panel, "5,000 GEMS", Rect2(500, 305, 336, 46), Color.WHITE, "header")
+	prize_note = _label(panel, "Added to your gems", Rect2(474, 365, 388, 48), INK)
 	_show_preview_prize()
 	collection_fx = Backdrop.new()
 	add_child(collection_fx)
@@ -269,14 +269,16 @@ func _show_preview_prize() -> void:
 	prize_icon.scale = Vector2.ONE
 	prize_rarity.text = "DAILY JACKPOT"
 	prize_name.text = "5,000 GEMS"
-	prize_stage.add_theme_stylebox_override("panel", Style.slot_style("legendary"))
+	prize_stage.set_reward(5000)
+	prize_rarity.add_theme_color_override("font_color", prize_stage.accent)
 
 func _show_saved_prize(reward: Dictionary) -> void:
 	prize_icon.texture = _texture(reward)
 	prize_rarity.text = str(reward.get("rarity", "")) + " REWARD"
 	_show_prize_amount(int(reward.get("gems", 0)))
 	var amount := int(reward.get("gems", 0))
-	prize_stage.add_theme_stylebox_override("panel", Style.slot_style("legendary" if amount >= 5000 else ("rare" if amount >= 1000 else "common")))
+	prize_stage.set_reward(amount)
+	prize_rarity.add_theme_color_override("font_color", prize_stage.accent)
 
 func _start_spin(reward: Dictionary) -> void:
 	if reward.is_empty():
