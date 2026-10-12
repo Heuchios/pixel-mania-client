@@ -63,16 +63,21 @@ func run():
 	remote_label.add_theme_font_size_override("font_size", 32)
 	var worst_machine_drift := 0.0
 	var changed_shapes := 0
-	for size_pair in [[Vector2i(721,405), Vector2i(960,540)], [Vector2i(637,359), Vector2i(521,294)], [Vector2i(960,540), Vector2i(960,540)]]:
+	for size_pair in [[Vector2i(721,405), Vector2i(960,540), false], [Vector2i(637,359), Vector2i(521,294), false], [Vector2i(960,540), Vector2i(960,540), false], [Vector2i(721,405), Vector2i(960,540), true]]:
 		viewport.size = size_pair[0]
 		viewport.size_2d_override = size_pair[1]
 		Alignment.configure_zoom(world.camera, 5.0 if viewport.size.x == 960 else 3.0, 1.5, 7.0)
 		for kind in ["username", "remote", "tackle_box", "colored_block_maker"]:
+			if size_pair[2]:
+				Alignment.configure_zoom(world.camera, 3.0, 1.5, 7.0)
+				Alignment.configure_zoom(world.camera, 4.0, 1.5, 7.0, true)
 			var kind_changes := 0
 			var first_shape := PackedByteArray()
 			var first_size := Vector2i.ZERO
 			for frame in range(20):
 				await process_frame
+				if size_pair[2]:
+					world.camera.get_node(Alignment.NODE_NAME)._process(1.0 / 60.0)
 				world.camera.position = Vector2(128.173 + frame * 0.113, 100.037 + frame * 0.071)
 				# Exercise player ascent/descent as well as a slow camera pan.
 				world.player.position = Vector2(128, 160)
@@ -102,7 +107,7 @@ func run():
 				elif first_shape != crop.get_data() or first_size != rect.size:
 					changed_shapes += 1
 					kind_changes += 1
-			print("OVERHEAD kind=%s width=%s changes=%s" % [kind, viewport.size.x, kind_changes])
+			print("OVERHEAD kind=%s width=%s zooming=%s changes=%s" % [kind, viewport.size.x, size_pair[2], kind_changes])
 	check(worst_machine_drift < 0.01, "Machine text used an outdated camera transform: %.3f" % worst_machine_drift)
 	check(changed_shapes == 0, "Text glyphs vibrated while scrolling: %s changed crops" % changed_shapes)
 	var alignment: Node = world.camera.get_node(Alignment.NODE_NAME)

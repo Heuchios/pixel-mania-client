@@ -138,9 +138,10 @@ func check_uniform_pixel_zoom(viewport: SubViewport, camera: Camera2D, sprite: S
 	print("[camera-alignment] live-size texel widths: before=%s after=%s" % [uneven, uniform])
 	var old_zoom := camera.zoom.y
 	world.manager.zoom_camera(0.12)
-	check(camera.zoom.y > old_zoom, "One wheel click must visibly zoom in")
+	check(Alignment.target_zoom(camera).y > old_zoom, "One wheel click must request a visible zoom step")
+	check(is_equal_approx(camera.zoom.y, old_zoom), "Wheel zoom must ease from the current view")
 	world.manager.zoom_camera(-0.12)
-	check(is_equal_approx(camera.zoom.y, old_zoom), "Opposite wheel clicks must return to the same zoom")
+	check(is_equal_approx(Alignment.target_zoom(camera).y, old_zoom), "Opposite wheel clicks must return to the same zoom destination")
 	world.manager.set_default_camera_zoom_silent()
 	for pair in [[Vector2i(1920,1080), Vector2i(1920,1080)], [Vector2i(1280,720), Vector2i(1920,1080)], [Vector2i(1601,901), Vector2i(1920,1080)]]:
 		viewport.size = pair[0]
@@ -155,6 +156,7 @@ func check_uniform_pixel_zoom(viewport: SubViewport, camera: Camera2D, sprite: S
 	# Both ends of the zoom range remain reachable and repeated clicks stay bounded.
 	for direction in [1.0, -1.0]:
 		for i in range(15): world.manager.zoom_camera(direction * 0.12)
+		for i in range(120): camera.get_node(Alignment.NODE_NAME)._process(1.0 / 60.0)
 		check(camera.zoom.y >= world.CAMERA_ZOOM_MIN and camera.zoom.y <= world.CAMERA_ZOOM_MAX, "Zoom escaped bounds")
 	world.queue_free()
 

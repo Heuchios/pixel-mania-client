@@ -524,28 +524,33 @@ func apply_camera_zoom():
 	CameraPixelAlignment.configure_zoom(camera, world.current_camera_zoom, world.CAMERA_ZOOM_MIN, world.CAMERA_ZOOM_MAX)
 
 func zoom_camera(amount: float, show_feedback: bool = true):
+	if is_zero_approx(amount):
+		return
 	var camera = world.get_player_camera()
-	if show_feedback and camera != null and not is_zero_approx(amount):
-		# A wheel/key click always advances one visible scale step; continuous
-		# touch zoom still accumulates its small deltas before crossing a step.
+	if show_feedback and camera != null:
+		# Accumulate clicks from the destination, so rapid scrolling or reversing
+		# direction does not lose input while the previous step is still easing.
 		var step := CameraPixelAlignment.screen_pixel_zoom_step(camera)
-		world.current_camera_zoom = camera.zoom.y + signf(amount) * maxf(absf(amount), step)
+		world.current_camera_zoom = CameraPixelAlignment.target_zoom(camera).y + signf(amount) * maxf(absf(amount), step)
 	else:
 		world.current_camera_zoom += amount
 	world.current_camera_zoom = clamp(world.current_camera_zoom, world.CAMERA_ZOOM_MIN, world.CAMERA_ZOOM_MAX)
-	world.apply_camera_zoom()
+	if camera != null:
+		CameraPixelAlignment.configure_zoom(camera, world.current_camera_zoom, world.CAMERA_ZOOM_MIN, world.CAMERA_ZOOM_MAX, true, not show_feedback)
 
 	if not show_feedback:
 		return
 
 	if amount > 0.0:
-		world.show_notification("Zoom In: " + str(snapped(camera.zoom.y if camera != null else world.current_camera_zoom, 0.01)) + "x")
+		world.show_notification("Zoom In: " + str(snapped(CameraPixelAlignment.target_zoom(camera).y if camera != null else world.current_camera_zoom, 0.01)) + "x")
 	else:
-		world.show_notification("Zoom Out: " + str(snapped(camera.zoom.y if camera != null else world.current_camera_zoom, 0.01)) + "x")
+		world.show_notification("Zoom Out: " + str(snapped(CameraPixelAlignment.target_zoom(camera).y if camera != null else world.current_camera_zoom, 0.01)) + "x")
 
 func reset_camera_zoom():
 	world.current_camera_zoom = world.CAMERA_ZOOM_DEFAULT
-	world.apply_camera_zoom()
+	var camera = world.get_player_camera()
+	if camera != null:
+		CameraPixelAlignment.configure_zoom(camera, world.current_camera_zoom, world.CAMERA_ZOOM_MIN, world.CAMERA_ZOOM_MAX, true)
 	world.show_notification("Zoom Reset")
 
 func set_default_camera_zoom_silent():

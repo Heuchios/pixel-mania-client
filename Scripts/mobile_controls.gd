@@ -1,5 +1,7 @@
 extends Control
 
+const CameraPixelAlignment = preload("res://Scripts/camera_pixel_alignment.gd")
+
 signal layout_customization_finished(saved: bool)
 
 const SETTINGS_SAVE_PATH := "user://pixelmania_settings.cfg"
@@ -1044,6 +1046,10 @@ func _begin_zoom_hold(action: String, touch_index: int, use_mouse: bool = false)
 func _end_zoom_hold():
 	if zoom_hold_action != "":
 		_set_button_pressed(zoom_hold_action, false)
+		if is_instance_valid(world) and world.has_method("get_player_camera"):
+			var camera = world.get_player_camera()
+			if camera is Camera2D:
+				CameraPixelAlignment.finish_zoom(camera)
 	zoom_hold_action = ""
 	zoom_hold_touch = -1
 	zoom_hold_mouse = false
