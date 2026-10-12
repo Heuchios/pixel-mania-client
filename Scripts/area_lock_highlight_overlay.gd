@@ -2,8 +2,9 @@ extends Node2D
 
 const TILE_SIZE := 32.0
 const HALF_TILE := TILE_SIZE * 0.5
-const DOT_SPACING := 8.0
-const DOT_SIZE := 2.0
+const DASH_LENGTH := 8.0
+const DASH_PERIOD := 16.0
+const DASH_SPEED := 14.0
 const COLOR_ACCESS := Color(0.25, 1.0, 0.35, 0.90)
 const COLOR_PUBLIC := Color(1.0, 0.86, 0.16, 0.92)
 const COLOR_DENIED := Color(1.0, 0.20, 0.18, 0.92)
@@ -14,7 +15,6 @@ var area_lock: Dictionary = {}
 var last_draw_signature: String = ""
 var dash_segments: Array = []
 var animation_time: float = 0.0
-var dot_lookup := {}
 
 
 func _ready() -> void:
@@ -54,16 +54,30 @@ func _process(delta: float) -> void:
 	if dash_segments.is_empty():
 		set_process(false)
 		return
-	# A gentle brightness pulse keeps the exact boundary still and readable.
-	modulate.a = 0.9 + 0.1 * sin(animation_time * 2.0)
+	queue_redraw()
 
 
 func _draw() -> void:
-	for dot in dash_segments:
-		var point: Vector2 = dot.position
-		# A one-pixel dark keyline keeps dots legible over bright blocks too.
-		draw_rect(Rect2(point - Vector2(2, 2), Vector2(4, 4)), Color(0.08, 0.04, 0.12, 0.8))
-		draw_rect(Rect2(point - Vector2.ONE, Vector2.ONE * DOT_SIZE), dot.color)
+	var phase := fposmod(animation_time * DASH_SPEED, DASH_PERIOD)
+	for edge in dash_segments:
+		for span in get_dash_spans(edge, phase):
+			draw_line(span[0], span[1], Color(0.06, 0.025, 0.10, 0.55), 3.0, false)
+			draw_line(span[0], span[1], edge.color, 1.5, false)
+
+
+func get_dash_spans(edge: Dictionary, phase: float) -> Array:
+	var spans := []
+	var start: Vector2 = edge.start
+	var direction: Vector2 = (edge.end - start).normalized()
+	var length: float = start.distance_to(edge.end)
+	var cursor := fposmod(phase, DASH_PERIOD) - DASH_PERIOD
+	while cursor < length:
+		var from := maxf(cursor, 0.0)
+		var to := minf(cursor + DASH_LENGTH, length)
+		if to > from:
+			spans.append(PackedVector2Array([start + direction * from, start + direction * to]))
+		cursor += DASH_PERIOD
+	return spans
 
 
 func _get_locks_to_draw() -> Array:
@@ -129,7 +143,6 @@ func _rebuild_dash_segments() -> void:
 		var lock_data: Dictionary = raw_lock
 		var color: Color = _get_highlight_color(lock_data)
 		var positions: Array = lock_manager.get_area_lock_positions(lock_data)
-		dot_lookup.clear()
 		var position_lookup: Dictionary = {}
 		for raw_pos in positions:
 			if not (raw_pos is Vector2i):
@@ -162,23 +175,15 @@ func _add_tile_outline_dashes(grid_pos: Vector2i, color: Color, position_lookup:
 	if draw_top:
 		_add_dashed_edge(top_left, top_left + Vector2(TILE_SIZE, 0.0), color)
 	if draw_bottom:
-		_add_dashed_edge(top_left + Vector2(0.0, TILE_SIZE), top_left + Vector2(TILE_SIZE, TILE_SIZE), color)
+		_add_dashed_edge(top_left + Vector2(TILE_SIZE, TILE_SIZE), top_left + Vector2(0.0, TILE_SIZE), color)
 	if draw_left:
-		_add_dashed_edge(top_left, top_left + Vector2(0.0, TILE_SIZE), color)
+		_add_dashed_edge(top_left + Vector2(0.0, TILE_SIZE), top_left, color)
 	if draw_right:
 		_add_dashed_edge(top_left + Vector2(TILE_SIZE, 0.0), top_left + Vector2(TILE_SIZE, TILE_SIZE), color)
 
 
 func _add_dashed_edge(start: Vector2, end: Vector2, color: Color) -> void:
-	var edge: Vector2 = end - start
-	var edge_length: float = edge.length()
-	if edge_length <= 0.0:
-		return
-	var direction: Vector2 = edge / edge_length
-	var cursor: float = 0.0
-	while cursor <= edge_length:
-		var point := (start + direction * cursor).round()
-		if not dot_lookup.has(point):
-			dot_lookup[point] = true
-			dash_segments.append({"position": point, "color": color})
-		cursor += DOT_SPACING
+	# Clockwise edges keep the protected area on their right. Every tile edge
+	# is exactly two dash periods, so phase stays continuous through corners,
+	# concave steps, holes, and the closing seam without clamping or bunching.
+	dash_segments.append({"start": start, "end": end, "color": color})

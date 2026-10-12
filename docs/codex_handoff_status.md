@@ -7,6 +7,22 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Combined update committed and deployed to staging (2026-10-12)
+
+User requested committing everything and deploying to staging. Backend
+`036f3b0c8b46` is active as `20261012-combined-036f3b0`; client release metadata
+is `42f642ff`, with subsequent client-only visual polish included in the staging
+branch. All earlier local features below are included in the combined staging
+source. Restart the local/editor client to use the latest UI changes.
+
+Full security checks, nineteen targeted client suites, isolated SQL/login
+transport tests, remote release checks and public smoke checks passed.
+Staging now requires 1.2.25; live Windows/Android-labelled handshake probes reject
+old, missing and malformed versions and accept 1.2.25. PostgreSQL and Redis are
+ready. Production remains `20261010-hand-visuals-33256ff` / 1.2.24; published
+binaries are unchanged. Rollback is `20261012-login-b8a4133`.
+See [combined release evidence](combined_staging_20261012.md).
+
 ### Multiplayer activity bubbles (2026-10-12, local)
 
 Added three-frame edit (10..12,2), AFK (13..15,2), shop (16..18,2), and trade
