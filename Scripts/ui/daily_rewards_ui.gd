@@ -391,5 +391,4 @@ func _activate() -> void:
 func _update_hud(seconds: int = -1) -> void:
 	if not is_instance_valid(hud_button): return
 	var ready := bool(snapshot.get("can_claim", false)) or seconds == 0
-	hud_button.text = "DAILY REWARDS  !" if ready else "DAILY REWARDS"
 	hud_button.tooltip_text = "Your free daily box is ready!" if ready else "Open daily rewards to see your next free box."

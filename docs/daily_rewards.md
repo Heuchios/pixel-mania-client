@@ -3,14 +3,15 @@
 Deployed to staging on 2026-10-11 for testing. The client and backend must be
 released together. This feature is not included in the published production build.
 
-The HUD gift button sits directly below the gem counter at the top left. It follows
-the counter's scaled bounds. The compact window uses the shared game UI atlas:
+The 72-by-72 HUD button shows only a centered pixel gift, directly below the gem
+counter at the top left. It follows the counter's scaled bounds and keeps claim
+status in its tooltip. The compact window uses the shared game UI atlas:
 outer panel, inventory slots, selected slot frame, and green action buttons.
 The surrounding world stays visible with no full-screen tint or backdrop.
-The window and HUD button use the shared game font and typography roles: 38 for
+The window uses the shared game font and typography roles: 38 for
 headings and 26 for body text and buttons. The panel uses full scale when it fits,
-with responsive shrinking only on smaller viewports. Prize cards and the HUD
-button reserve space for the standard text sizes and the claim-ready indicator.
+with responsive shrinking only on smaller viewports. Prize cards reserve space
+for the standard text sizes.
 The 4.5-second reel slows onto the server-confirmed prize, then automatically
 reveals it with an animated gem count. Collect closes the panel and sends cosmetic
 gems toward the actual HUD counter. The next UTC reset remains visible; reward
