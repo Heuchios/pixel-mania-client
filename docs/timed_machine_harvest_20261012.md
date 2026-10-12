@@ -29,3 +29,21 @@ a controlled clock, RNG and commit boundary. It covers the exact two-hour limit,
 punches, access/tile changes, first-cycle initialization, drop failure and SQL
 failure rollback. `tests/timed_machine_harvest_test.gd` verifies matching client
 cooldowns, provider recognition, artwork, running animation and ready cleanup.
+
+## Verified staging release
+
+Active release: `20261012-timed-machines`, backend
+`865a59357bf57f438ad9843582f77f84c175ce97`, client metadata
+`5d89706e454f6170d3131e8d1a68f30711ff982f`. Client version and minimum remain
+1.2.25. The full security gate, farming balance check, machine server regression,
+machine client regression, protected punch and authoritative placement checks pass.
+The machine regression also passes against the deployed immutable server files.
+Public deployment smoke checks pass, with PostgreSQL authoritative/ready and
+Redis ready. Rollback points to `20261012-hair-odds-08f1942`.
+
+The older `bait_box_visual_test.gd` has an existing hard-coded health assertion
+of 4, while the already-committed balance override specifies 6. It fails that
+assertion before testing visuals; no pass is claimed for that older suite.
+
+This deployment targets staging only. Published client binaries were not replaced;
+restart the updated Godot editor/debug client to use the new client visuals.
