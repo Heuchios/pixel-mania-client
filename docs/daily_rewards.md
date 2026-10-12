@@ -26,6 +26,9 @@ All 48 rounded glass bulbs share one instanced mesh with a small shader. Soft
 circular halos and warm bezels replace the square sockets; their positions
 are cached and only brightness changes each frame. Idle lights do not rebuild the
 wheel geometry, labels, ball, or pointer. Hidden windows pause light updates.
+The bulbs keep a brighter resting glow and bloom more strongly during the chase.
+Antialiased pocket rims and a rounded pointer soften the wheel's geometric edges
+while gem sprites and text retain their pixel styling.
 A ball circles in the opposite direction with a fading trail,
 bounces inward, and rides the confirmed winning pocket through the final turn
 before settling under the pointer. Soft clicks slow with the wheel and respect
