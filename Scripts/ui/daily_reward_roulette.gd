@@ -50,6 +50,8 @@ var lamp_layer: MultiMeshInstance2D
 var lamp_material: ShaderMaterial
 var lamp_tint := Color.TRANSPARENT
 var foreground: Control
+var pointer_outline := _rounded_outline(PackedVector2Array([Vector2(-17, -2), Vector2(17, -2), Vector2(14, 15), Vector2(0, 29), Vector2(-14, 15)]), 3.0)
+var pointer_face := _rounded_outline(PackedVector2Array([Vector2(-12, 1), Vector2(12, 1), Vector2(10, 12), Vector2(0, 23), Vector2(-10, 12)]), 2.5)
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -292,10 +294,31 @@ func _disc(center: Vector2, radius: float, color: Color, canvas: CanvasItem = nu
 	canvas.draw_circle(center, radius, color, true, -1.0, true)
 
 func _sector(center: Vector2, inner: float, outer: float, from: float, to: float, color: Color) -> void:
+	# Thin pocket rims use antialiased strokes so their outer edges stay smooth.
+	if outer - inner <= 6.0:
+		draw_arc(center, (inner + outer) * 0.5, from, to, 25, color, outer - inner, true)
+		return
 	var points := PackedVector2Array()
 	for i in range(13): points.append(_point(center, outer, lerpf(from, to, i / 12.0)))
 	for i in range(12, -1, -1): points.append(_point(center, inner, lerpf(from, to, i / 12.0)))
 	draw_colored_polygon(points, color)
+
+static func _rounded_outline(corners: PackedVector2Array, radius: float) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	for i in range(corners.size()):
+		var corner := corners[i]
+		var before := corner.move_toward(corners[posmod(i - 1, corners.size())], radius)
+		var after := corner.move_toward(corners[(i + 1) % corners.size()], radius)
+		for step in range(6):
+			var t := step / 5.0
+			points.append(before.lerp(corner, t).lerp(corner.lerp(after, t), t))
+	return points
+
+func _draw_pointer_shape(points: PackedVector2Array, color: Color) -> void:
+	foreground.draw_colored_polygon(points, color)
+	var outline := points.duplicate()
+	outline.append(points[0])
+	foreground.draw_polyline(outline, color, 1.0, true)
 
 func _text(text: String, point: Vector2, color: Color, font_size: int = Style.DEFAULT_TEXT_FONT_SIZE, canvas: CanvasItem = null) -> void:
 	if canvas == null: canvas = self
@@ -327,7 +350,7 @@ func _draw() -> void:
 		var fill: Color = FILLS[tier].lightened(0.13 + landing_flash * 0.18) if chosen else FILLS[tier]
 		_sector(center, 49, 143, middle - STEP * 0.5 + 0.008, middle + STEP * 0.5 - 0.008, fill)
 		_sector(center, 137, 143, middle - STEP * 0.5 + 0.01, middle + STEP * 0.5 - 0.01, GOLD if chosen else EDGES[tier])
-		draw_line(_point(center, 53, middle - STEP * 0.5), _point(center, 144, middle - STEP * 0.5), Color("a77491"), 2, true)
+		draw_line(_point(center, 53, middle - STEP * 0.5), _point(center, 142, middle - STEP * 0.5), Color("a77491"), 2, true)
 		# Identical local placement in every pocket, rotating with the actual wheel.
 		draw_set_transform(center, middle - TOP)
 		draw_texture_rect(GEM_TEXTURES[tier], Rect2(Vector2(-18, -142), Vector2(36, 36)), false)
@@ -338,7 +361,7 @@ func _draw() -> void:
 		var middle := TOP + angle + selected * STEP
 		_sector(center, 51, 55, middle - STEP * 0.5, middle + STEP * 0.5, GOLD)
 		for edge in [-0.5, 0.5]:
-			draw_line(_point(center, 54, middle + STEP * edge), _point(center, 143, middle + STEP * edge), GOLD, 3, true)
+			draw_line(_point(center, 54, middle + STEP * edge), _point(center, 140, middle + STEP * edge), GOLD, 3, true)
 
 func _draw_foreground() -> void:
 	var center := size * 0.5
@@ -377,7 +400,9 @@ func _draw_foreground() -> void:
 	var pivot := center + Vector2(0, -184)
 	var preload_angle := -0.12 * smoothstep(0.0, WINDUP_END, progress) if spinning and progress < WINDUP_END else 0.0
 	foreground.draw_set_transform(pivot, preload_angle - pointer_kick * 0.3)
-	foreground.draw_colored_polygon(PackedVector2Array([Vector2(-17, -2), Vector2(17, -2), Vector2(14, 15), Vector2(0, 29), Vector2(-14, 15)]), INK)
-	foreground.draw_colored_polygon(PackedVector2Array([Vector2(-12, 1), Vector2(12, 1), Vector2(10, 12), Vector2(0, 23), Vector2(-10, 12)]), GOLD)
-	foreground.draw_rect(Rect2(-8, 2, 16, 5), Color("fff6d2"))
+	_draw_pointer_shape(pointer_outline, INK)
+	_draw_pointer_shape(pointer_face, GOLD)
+	foreground.draw_line(Vector2(-6, 4.5), Vector2(6, 4.5), Color("fff6d2"), 4.0, true)
+	_disc(Vector2(-6, 4.5), 2, Color("fff6d2"), foreground)
+	_disc(Vector2(6, 4.5), 2, Color("fff6d2"), foreground)
 	foreground.draw_set_transform(Vector2.ZERO)
