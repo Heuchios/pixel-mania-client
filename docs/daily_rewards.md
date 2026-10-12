@@ -3,8 +3,10 @@
 Deployed to staging on 2026-10-11 for testing. The client and backend must be
 released together. This feature is not included in the published production build.
 
-The 72-by-72 HUD button shows only a centered pixel gift, directly below the gem
-counter at the top left. It follows the counter's scaled bounds and keeps claim
+The HUD button pairs a small pixel gift with "DAILY REWARDS", directly below the
+gem counter at the top left. Its 272-by-48 layout uses the shared font and scales
+to 80% (about 218-by-38 on desktop), including the icon, text and frame. Mobile UI
+scaling still applies. It follows the counter's scaled bounds and keeps claim
 status in its tooltip. The compact window uses the shared game UI atlas:
 outer panel, inventory slots, selected slot frame, and green action buttons.
 The surrounding world stays visible with no full-screen tint or backdrop.
