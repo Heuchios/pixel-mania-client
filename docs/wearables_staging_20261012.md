@@ -55,6 +55,25 @@ Yellow Shoes retains its existing `basic_yellow_shoes` ID, with the requested ro
 | Sack Mask | `sack_mask` | Mask (face/beard) | 49,5 | base 50,5 | 1 | New |
 | Bag on the Head | `bag_on_the_head` | Mask (face/beard) | 49,6 | base 50,6 | 1 | New |
 
+## Full-head covers
+
+Horse Mask, Welding Mask, Space Mask, Skull Mask, Burning Skull, Sack Mask,
+Bag on the Head and the existing Flaming Skull hat use head layer 4, above
+eyewear and small face accessories on layer 3. The shared local/remote equipment
+renderer now honors the configured head layer when equipping or swapping items.
+
+These eight items also set `hides_hair: true`. Hair stays equipped and keeps its
+sprite/animation data, but is invisible while either the hat or face slot contains
+a full-head cover. Removing the last cover restores the hair. Swapping to ordinary
+headwear restores normal layering; actually unequipping hair keeps it hidden.
+
+`tests/helmet_layering_test.gd` checks both facings, local and remote appearance,
+all movement states, equipment order, overlapping covers, swaps and unequips.
+Its GPU regression checked 30 animation-frame/facing combinations and 47,968
+fully opaque helmet pixels, with zero accessory pixels drawn over them. Lowering
+the helmet layer reproduced the bug in 6,680 pixels. Authored transparent pixels
+remain transparent. Existing wearable and remote-equipment checks also pass.
+
 ## Deployed release
 
 - Staging release: `20261012-wearables-a22bc8b`.

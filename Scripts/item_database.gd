@@ -12454,7 +12454,8 @@ const ITEMS = {
 		"dropable": true,
 		"slot_offset": [0, 0],
 		"slot_scale": 1.0,
-		"slot_z_index": 3,
+		"slot_z_index": 4,
+		"hides_hair": true,
 		"animation_fps": 5.0,
 		"hat_animations": {
 			"idle": {
@@ -14796,7 +14797,8 @@ const ITEMS = {
 			0
 		],
 		"slot_scale": 1,
-		"slot_z_index": 3,
+		"slot_z_index": 4,
+		"hides_hair": true,
 		"order": 337,
 		"display_category": "Mask",
 		"animation_fps": 6,
@@ -14827,7 +14829,8 @@ const ITEMS = {
 			0
 		],
 		"slot_scale": 1,
-		"slot_z_index": 3,
+		"slot_z_index": 4,
+		"hides_hair": true,
 		"order": 338,
 		"display_category": "Mask"
 	},
@@ -14847,7 +14850,8 @@ const ITEMS = {
 			0
 		],
 		"slot_scale": 1,
-		"slot_z_index": 3,
+		"slot_z_index": 4,
+		"hides_hair": true,
 		"order": 339,
 		"display_category": "Mask"
 	},
@@ -14867,7 +14871,8 @@ const ITEMS = {
 			0
 		],
 		"slot_scale": 1,
-		"slot_z_index": 3,
+		"slot_z_index": 4,
+		"hides_hair": true,
 		"order": 340,
 		"display_category": "Mask"
 	},
@@ -14887,7 +14892,8 @@ const ITEMS = {
 			0
 		],
 		"slot_scale": 1,
-		"slot_z_index": 3,
+		"slot_z_index": 4,
+		"hides_hair": true,
 		"order": 341,
 		"display_category": "Mask",
 		"animation_fps": 6,
@@ -14920,7 +14926,8 @@ const ITEMS = {
 			0
 		],
 		"slot_scale": 1,
-		"slot_z_index": 3,
+		"slot_z_index": 4,
+		"hides_hair": true,
 		"order": 342,
 		"display_category": "Mask"
 	},
@@ -14940,7 +14947,8 @@ const ITEMS = {
 			0
 		],
 		"slot_scale": 1,
-		"slot_z_index": 3,
+		"slot_z_index": 4,
+		"hides_hair": true,
 		"order": 343,
 		"display_category": "Mask"
 	},

@@ -513,6 +513,8 @@ func hide_wearable_part(part_key: String):
 
 	part.visible = false
 	wearable_part_item_ids.erase(part_key)
+	if part_key in ["hat", "beard", "hair"]:
+		refresh_head_cover_visibility()
 
 
 func hide_wearable_parts(part_keys: Array):
@@ -544,9 +546,31 @@ func set_wearable_part(
 		part.sprite_frames = sprite_frames
 		wearable_part_item_ids[part_key] = item_id
 
+	# Head items share one parent. Honor their layer on every equip/swap so
+	# full-head covers stay above glasses and smaller face accessories.
+	if part_key in ["hair", "hat", "eyewear", "beard"]:
+		part.z_index = _z_value
 	part.visible = true
+	if part_key in ["hat", "beard", "hair"]:
+		refresh_head_cover_visibility()
 	play_wearable_part_animation(part, get_current_wearable_animation_name())
 	return true
+
+
+func refresh_head_cover_visibility() -> void:
+	var hair = wearable_part_nodes.get("hair")
+	if hair == null:
+		return
+	var covered := false
+	if world != null:
+		for slot in ["hat", "beard"]:
+			var item_id: String = str(wearable_part_item_ids.get(slot, ""))
+			var data: Dictionary = world.item_database.get(item_id, {})
+			if bool(data.get("hides_hair", false)):
+				covered = true
+	# This changes only the sprite. Preserve the equipped ID and its animation
+	# so it reappears immediately after the last full-head cover is removed.
+	hair.visible = wearable_part_item_ids.has("hair") and not covered
 
 
 func get_wearable_part_base_scale(part_key: String) -> Vector2:
