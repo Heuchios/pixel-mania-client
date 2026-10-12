@@ -7239,7 +7239,9 @@
         "seeds"
       ],
       "base_item": "",
-      "mode": "farm"
+      "mode": "return",
+      "break_mode_override": "return",
+      "break_override_reason": "User correction 2026-10-12; sheet break block/seed ranges are superseded. Existing seed growth and tree harvest rules are retained."
     },
     {
       "id": "night_theme_machine",
@@ -7365,7 +7367,9 @@
         "seeds"
       ],
       "base_item": "",
-      "mode": "farm"
+      "mode": "return",
+      "break_mode_override": "return",
+      "break_override_reason": "User correction 2026-10-12; sheet break block/seed ranges are superseded. Existing seed growth and tree harvest rules are retained."
     },
     {
       "id": "oil_refinery",

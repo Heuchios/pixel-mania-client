@@ -3702,8 +3702,8 @@
       "tier": null,
       "balance_tier": 7,
       "seed_id": "snow_repellent_seed",
-      "mode": "farm",
-      "source": "Tier-derived gem average",
+      "mode": "return",
+      "source": "User correction 2026-10-12: return one item to inventory on break; no break seeds or gems",
       "profile": "advanced",
       "grow_seconds": 21600,
       "growth_source": "Tier default replaces generic 150-second placeholder",
@@ -3720,7 +3720,37 @@
       ],
       "sheet_rows": [
         464
-      ]
+      ],
+      "tree_rules": {
+        "seed_chance": 0,
+        "gem_range": [
+          0,
+          0
+        ],
+        "fixed_drops": [
+          {
+            "item_id": "snow_repellent_seed",
+            "item_category": "seed",
+            "amount_range": [
+              0,
+              1
+            ]
+          },
+          {
+            "item_id": "snow_repellent",
+            "item_category": "block",
+            "amount_range": [
+              0,
+              3
+            ]
+          },
+          {
+            "item_id": "gem",
+            "item_category": "currency",
+            "amount": 7
+          }
+        ]
+      }
     },
     "night_theme_machine": {
       "name": "Night Theme Machine",
@@ -3751,8 +3781,8 @@
       "tier": null,
       "balance_tier": 8,
       "seed_id": "cctv_seed",
-      "mode": "farm",
-      "source": "Tier-derived gem average",
+      "mode": "return",
+      "source": "User correction 2026-10-12: return one item to inventory on break; no break seeds or gems",
       "profile": "advanced",
       "grow_seconds": 43200,
       "growth_source": "Tier default replaces generic 150-second placeholder",
@@ -3769,7 +3799,37 @@
       ],
       "sheet_rows": [
         462
-      ]
+      ],
+      "tree_rules": {
+        "seed_chance": 0,
+        "gem_range": [
+          0,
+          0
+        ],
+        "fixed_drops": [
+          {
+            "item_id": "cctv_seed",
+            "item_category": "seed",
+            "amount_range": [
+              0,
+              1
+            ]
+          },
+          {
+            "item_id": "cctv",
+            "item_category": "block",
+            "amount_range": [
+              0,
+              3
+            ]
+          },
+          {
+            "item_id": "gem",
+            "item_category": "currency",
+            "amount": 9
+          }
+        ]
+      }
     },
     "oil_refinery": {
       "name": "Oil Refinery",

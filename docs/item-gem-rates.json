@@ -207,11 +207,6 @@
       "source": "Live ITEM DATA gem average, rows 12"
     },
     {
-      "id": "cctv",
-      "average": 4.5,
-      "source": "Tier-derived gem average"
-    },
-    {
       "id": "ceiling_lamp",
       "average": 3,
       "source": "Live ITEM DATA gem average, rows 380"
@@ -1045,11 +1040,6 @@
       "id": "snow_leaf",
       "average": 0.5,
       "source": "Imported sheet gem average, row 182"
-    },
-    {
-      "id": "snow_repellent",
-      "average": 3.5,
-      "source": "Tier-derived gem average"
     },
     {
       "id": "snow_stone",

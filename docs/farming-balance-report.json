@@ -2960,27 +2960,27 @@
       "name": "CCTV",
       "tier": null,
       "balance_tier": 8,
-      "mode": "farm",
+      "mode": "return",
       "base_item": "",
       "seed_id": "cctv_seed",
       "grow_seconds": 43200,
       "break_blocks": {
-        "min": 0,
-        "max": 3,
-        "mean": 1.5,
-        "chance": 0.75
+        "min": 1,
+        "max": 1,
+        "mean": 1,
+        "chance": 1
       },
       "break_seeds": {
         "min": 0,
-        "max": 1,
-        "mean": 0.5,
-        "chance": 0.5
+        "max": 0,
+        "mean": 0,
+        "chance": 0
       },
       "break_gems": {
-        "min": 4,
-        "max": 5,
-        "mean": 4.5,
-        "chance": 1
+        "min": 0,
+        "max": 0,
+        "mean": 0,
+        "chance": 0
       },
       "tree_blocks": {
         "min": 0,
@@ -3004,11 +3004,11 @@
       "tree_xp": 3,
       "seeds_per_cycle": null,
       "gems_per_cycle": null,
-      "break_details": "cctv_seed: 0–1 at 100.00%; cctv: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 50.00%",
+      "break_details": "1 item returned directly to inventory",
       "tree_details": "cctv_seed: 0–1 at 100.00%; cctv: 0–3 at 100.00%; gem: 9 at 100.00%",
-      "source": "Tier-derived gem average",
+      "source": "User correction 2026-10-12: return one item to inventory on break; no break seeds or gems",
       "growth_source": "Tier default replaces generic 150-second placeholder",
-      "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
+      "notes": "Guaranteed recovery; no break gems or seeds."
     },
     {
       "id": "ceiling_lamp",
@@ -13960,27 +13960,27 @@
       "name": "Snow Repellent",
       "tier": null,
       "balance_tier": 7,
-      "mode": "farm",
+      "mode": "return",
       "base_item": "",
       "seed_id": "snow_repellent_seed",
       "grow_seconds": 21600,
       "break_blocks": {
-        "min": 0,
-        "max": 3,
-        "mean": 1.5,
-        "chance": 0.75
+        "min": 1,
+        "max": 1,
+        "mean": 1,
+        "chance": 1
       },
       "break_seeds": {
         "min": 0,
-        "max": 1,
-        "mean": 0.5,
-        "chance": 0.5
+        "max": 0,
+        "mean": 0,
+        "chance": 0
       },
       "break_gems": {
-        "min": 3,
-        "max": 4,
-        "mean": 3.5,
-        "chance": 1
+        "min": 0,
+        "max": 0,
+        "mean": 0,
+        "chance": 0
       },
       "tree_blocks": {
         "min": 0,
@@ -14004,11 +14004,11 @@
       "tree_xp": 3,
       "seeds_per_cycle": null,
       "gems_per_cycle": null,
-      "break_details": "snow_repellent_seed: 0–1 at 100.00%; snow_repellent: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 50.00%",
+      "break_details": "1 item returned directly to inventory",
       "tree_details": "snow_repellent_seed: 0–1 at 100.00%; snow_repellent: 0–3 at 100.00%; gem: 7 at 100.00%",
-      "source": "Tier-derived gem average",
+      "source": "User correction 2026-10-12: return one item to inventory on break; no break seeds or gems",
       "growth_source": "Tier default replaces generic 150-second placeholder",
-      "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
+      "notes": "Guaranteed recovery; no break gems or seeds."
     },
     {
       "id": "snow_stone",
