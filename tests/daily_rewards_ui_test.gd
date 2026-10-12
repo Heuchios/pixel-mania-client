@@ -51,15 +51,32 @@ func run() -> void:
 			check(ui.wheel.begin_spin(reward), "Every offered reward has a destination pocket")
 			var previous_angle: float = ui.wheel.angle
 			var previous_ball: float = ui.wheel.ball_angle
-			var moves_forward := true
+			var moves_cleanly := true
+			var lights_bounded := true
+			var caught_in_pocket := true
 			for step in range(1, 101):
-				ui.wheel.set_spin_progress(step / 100.0)
-				moves_forward = moves_forward and ui.wheel.angle >= previous_angle and ui.wheel.ball_angle <= previous_ball
+				var progress := step / 100.0
+				ui.wheel.set_spin_progress(progress)
+				if progress >= ui.wheel.WINDUP_END + 0.01:
+					moves_cleanly = moves_cleanly and ui.wheel.angle >= previous_angle
+				if progress <= ui.wheel.CATCH_AT:
+					moves_cleanly = moves_cleanly and ui.wheel.ball_angle <= previous_ball
+				else:
+					var pocket_angle: float = -PI * 0.5 + ui.wheel.angle + ui.wheel.winner_index * ui.wheel.STEP
+					caught_in_pocket = caught_in_pocket and absf(angle_difference(ui.wheel.ball_angle, pocket_angle)) < ui.wheel.STEP * 0.45
+				for bulb in range(48):
+					var strength: float = ui.wheel.lamp_strength(bulb)
+					lights_bounded = lights_bounded and is_finite(strength) and strength >= 0.0 and strength <= 1.0
 				previous_angle = ui.wheel.angle
 				previous_ball = ui.wheel.ball_angle
 			ui.wheel.finish_spin()
-			check(moves_forward, "Wheel and ball coast in opposite directions without a reversal")
-			check(int(ui.wheel.pockets[ui.wheel.pointed_index()].gems) == int(reward.gems), "Every tier settles on its confirmed prize")
+			check(moves_cleanly and caught_in_pocket, "After wind-up the wheel coasts forward and the caught ball stays inside its winning pocket")
+			check(int(ui.wheel.pockets[ui.wheel.pointed_index()].gems) == int(reward.gems) and absf(angle_difference(ui.wheel.ball_angle, -PI * 0.5)) < 0.001, "Every tier and ball settle on the confirmed prize")
+			check(lights_bounded, "Animated lamp brightness stays bounded throughout the spin")
+	ui.wheel._process(0.18)
+	var first_wave: float = ui.wheel.lamp_strength(8)
+	ui.wheel._process(0.35)
+	check(absf(first_wave - ui.wheel.lamp_strength(8)) > 0.05, "Win lights sweep outward instead of freezing on one pattern")
 	ui.load_snapshot(snapshot)
 	for dimensions in [Vector2i(640, 360), Vector2i(360, 640), Vector2i(2340,1080)]:
 		viewport.size = dimensions
@@ -120,7 +137,7 @@ func run() -> void:
 	ui.spin_tween.custom_step(7.0)
 	ui.reveal_tween.custom_step(1.0)
 	ui.prize_tween.custom_step(1.0)
-	check(ui.phase == "reveal" and not ui.backdrop.is_processing(), "Closing during spin preserves the prize and pauses hidden effects")
+	check(ui.phase == "reveal" and not ui.backdrop.is_processing() and not ui.wheel.is_processing(), "Closing during spin preserves the prize and pauses hidden effects and lamps")
 	check(ui.backdrop.confetti_effect.particle_layers.all(func(layer): return layer.speed_scale == 0), "Hidden GPU confetti is paused")
 	ui.show()
 	await process_frame
