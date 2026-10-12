@@ -129,6 +129,8 @@ func get_selected_item_text() -> String:
 
 	if world.selected_item_category == "eyewear":
 		return "EYEWEAR: " + display_name
+	if world.selected_item_category == "beard":
+		return str(world.item_database.get(world.selected_item_type, {}).get("display_category", "Beard")).to_upper() + ": " + display_name
 
 	if world.selected_item_category == "shirt":
 		return "SHIRT: " + display_name
@@ -213,6 +215,8 @@ func toggle_equip_item(item_type: String, category: String):
 		equip_hair_item(item_type)
 	elif category == "eyewear":
 		equip_eyewear_item(item_type)
+	elif category == "beard":
+		equip_beard_item(item_type)
 	elif category == "shirt":
 		equip_shirt_item(item_type)
 	elif category == "pants":
@@ -329,6 +333,16 @@ func get_equipped_eyewear_text() -> String:
 		return "None"
 
 	return get_item_display_name(world.equipped_eyewear_item, "eyewear")
+
+
+func equip_beard_item(item_type: String):
+	if int(world.beard_inventory.get(item_type, 0)) <= 0:
+		world.show_notification("You do not have " + get_item_display_name(item_type, "beard") + ".")
+		return
+	world.equipped_beard_item = "" if world.equipped_beard_item == item_type else item_type
+	world.update_equipment_visual()
+	world.update_all_ui()
+	save_equipment_state()
 
 
 func equip_shirt_item(item_type: String):
@@ -882,6 +896,8 @@ func get_item_count(item_type: String, category: String) -> int:
 
 	if category == "eyewear" and world.eyewear_inventory.has(item_type):
 		return int(world.eyewear_inventory[item_type])
+	if category == "beard" and world.beard_inventory.has(item_type):
+		return int(world.beard_inventory[item_type])
 
 	if category == "shirt" and world.shirt_inventory.has(item_type):
 		return int(world.shirt_inventory[item_type])
@@ -932,6 +948,7 @@ func get_local_equipment_debug_snapshot() -> Dictionary:
 		"hat": str(world.equipped_hat_item),
 		"hair": str(world.equipped_hair_item),
 		"eyewear": str(world.equipped_eyewear_item),
+		"beard": str(world.equipped_beard_item),
 		"shirt": str(world.equipped_shirt_item),
 		"pants": str(world.equipped_pants_item),
 		"shoes": str(world.equipped_shoes_item),

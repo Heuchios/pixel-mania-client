@@ -12960,23 +12960,32 @@ const ITEMS = {
 		"category": "eyewear",
 		"display_name": "Void Visor",
 		"rarity": "common",
-		"texture": "res://Assets/clothes/eye_ware/void_visor_1.png",
-		"inventory_icon": "res://Assets/clothes/eye_ware/void_visor_1.png",
+		"texture": "void_visor",
+		"inventory_icon": "void_visor_icon",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "eyewear",
-		"slot_offset": [0, 0],
-		"slot_scale": 1.0,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
 		"slot_z_index": 3,
-		"animation_fps": 6.0,
+		"animation_fps": 6,
 		"eyewear_animations": {
 			"idle": {
-				"frames": ["res://Assets/clothes/eye_ware/void_visor_1.png", "res://Assets/clothes/eye_ware/void_visor_2.png", "res://Assets/clothes/eye_ware/void_visor_3.png", "res://Assets/clothes/eye_ware/void_visor_4.png", "res://Assets/clothes/eye_ware/void_visor_3.png", "res://Assets/clothes/eye_ware/void_visor_2.png", "res://Assets/clothes/eye_ware/void_visor_1.png"],
-				"fps": 6.0,
+				"frames": [
+					"void_visor",
+					"void_visor_2",
+					"void_visor_3",
+					"void_visor_4"
+				],
+				"fps": 6,
 				"loop": true
 			}
 		},
-		"order": 205
+		"order": 205,
+		"instance_tracked": true
 	},
 
 	"electric_goggles": {
@@ -13795,18 +13804,29 @@ const ITEMS = {
 		"category": "shoes",
 		"display_name": "Yellow Shoes",
 		"rarity": "common",
-		"texture": "yellow_shoes_icon",
-		"inventory_icon": "yellow_shoes_icon",
-		"left_shoe_texture": "yellow_shoes_left",
-		"right_shoe_texture": "yellow_shoes_right",
+		"texture": "basic_yellow_shoes_icon",
+		"inventory_icon": "basic_yellow_shoes_icon",
+		"left_shoe_texture": "basic_yellow_shoes_left",
+		"right_shoe_texture": "basic_yellow_shoes_right",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "shoes",
-		"left_shoe_offset": [0, 0],
-		"right_shoe_offset": [0, 0],
-		"slot_scale": 1.0,
+		"left_shoe_offset": [
+			0,
+			0
+		],
+		"right_shoe_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
 		"slot_z_index": 2,
-		"order": 255
+		"order": 255,
+		"instance_tracked": true,
+		"slot_offset": [
+			0,
+			0
+		]
 	},
 
 "red_tractor": {
@@ -13848,39 +13868,1134 @@ const ITEMS = {
 		"order": 210
 	},
 
+	"scrub_top": {
+		"category": "shirt",
+		"display_name": "Scrub Top",
+		"rarity": "common",
+		"texture": "scrub_top_body",
+		"inventory_icon": "scrub_top_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 1,
+		"order": 300,
+		"shirt_body_texture": "scrub_top_body",
+		"arm_texture": "scrub_top_arm",
+		"right_arm_texture": "scrub_top_arm",
+		"left_arm_texture": "scrub_top_arm_left"
+	},
+
+	"space_suit": {
+		"category": "shirt",
+		"display_name": "Space Suit",
+		"rarity": "common",
+		"texture": "space_suit_body",
+		"inventory_icon": "space_suit_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 1,
+		"order": 301,
+		"shirt_body_texture": "space_suit_body",
+		"arm_texture": "space_suit_arm",
+		"right_arm_texture": "space_suit_arm",
+		"left_arm_texture": "space_suit_arm_left"
+	},
+
+	"scrub_bottoms": {
+		"category": "pants",
+		"display_name": "Scrub Bottoms",
+		"rarity": "common",
+		"texture": "scrub_bottoms",
+		"inventory_icon": "scrub_bottoms_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "pants",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 1,
+		"order": 303,
+		"left_pants_texture": "scrub_bottoms_left_leg",
+		"right_pants_texture": "scrub_bottoms_right_leg",
+		"pants_follow_feet": true,
+		"left_pants_offset": [
+			0,
+			11
+		],
+		"right_pants_offset": [
+			0,
+			11
+		]
+	},
+
+	"space_pants": {
+		"category": "pants",
+		"display_name": "Space Pants",
+		"rarity": "common",
+		"texture": "space_pants",
+		"inventory_icon": "space_pants_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "pants",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 1,
+		"order": 304,
+		"left_pants_texture": "space_pants_left_leg",
+		"right_pants_texture": "space_pants_right_leg",
+		"pants_follow_feet": true,
+		"left_pants_offset": [
+			0,
+			11
+		],
+		"right_pants_offset": [
+			0,
+			11
+		]
+	},
+
+	"scrub_mask": {
+		"category": "beard",
+		"display_name": "Scrub Mask",
+		"rarity": "common",
+		"texture": "scrub_mask",
+		"inventory_icon": "scrub_mask_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "beard",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 306,
+		"display_category": "Mask"
+	},
+
+	"duck_beak": {
+		"category": "beard",
+		"display_name": "Duck Beak",
+		"rarity": "common",
+		"texture": "duck_beak",
+		"inventory_icon": "duck_beak_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "beard",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 307,
+		"display_category": "Mask"
+	},
+
+	"cat_face_mask": {
+		"category": "beard",
+		"display_name": "Cat Face Mask",
+		"rarity": "common",
+		"texture": "cat_face_mask",
+		"inventory_icon": "cat_face_mask_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "beard",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 308,
+		"display_category": "Mask"
+	},
+
+	"rat_face_mask": {
+		"category": "beard",
+		"display_name": "Rat Face Mask",
+		"rarity": "common",
+		"texture": "rat_face_mask",
+		"inventory_icon": "rat_face_mask_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "beard",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 309,
+		"display_category": "Mask"
+	},
+
+	"clown_nose": {
+		"category": "beard",
+		"display_name": "Clown Nose",
+		"rarity": "common",
+		"texture": "clown_nose",
+		"inventory_icon": "clown_nose_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "beard",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 310,
+		"display_category": "Mask",
+		"animation_fps": 6,
+		"beard_animations": {
+			"idle": {
+				"frames": [
+					"clown_nose",
+					"clown_nose_2"
+				],
+				"fps": 6,
+				"loop": true
+			}
+		}
+	},
+
+	"cigar": {
+		"category": "beard",
+		"display_name": "Cigar",
+		"rarity": "common",
+		"texture": "cigar",
+		"inventory_icon": "cigar_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "beard",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 311,
+		"display_category": "Mask",
+		"animation_fps": 6,
+		"beard_animations": {
+			"idle": {
+				"frames": [
+					"cigar",
+					"cigar_2",
+					"cigar_3"
+				],
+				"fps": 6,
+				"loop": true
+			}
+		}
+	},
+
+	"red_headphones": {
+		"category": "hat",
+		"display_name": "Red Headphones",
+		"rarity": "common",
+		"texture": "red_headphones",
+		"inventory_icon": "red_headphones_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 312,
+		"animation_fps": 6,
+		"hat_animations": {
+			"idle": {
+				"frames": [
+					"red_headphones",
+					"red_headphones_2",
+					"red_headphones_3"
+				],
+				"fps": 6,
+				"loop": true
+			}
+		}
+	},
+
+	"meowphones": {
+		"category": "hat",
+		"display_name": "Meowphones",
+		"rarity": "common",
+		"texture": "meowphones",
+		"inventory_icon": "meowphones_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "hat",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 313,
+		"animation_fps": 6,
+		"hat_animations": {
+			"idle": {
+				"frames": [
+					"meowphones",
+					"meowphones_2",
+					"meowphones_3"
+				],
+				"fps": 6,
+				"loop": true
+			}
+		}
+	},
+
+	"floral_circlet": {
+		"category": "beard",
+		"display_name": "Floral Circlet",
+		"rarity": "common",
+		"texture": "floral_circlet",
+		"inventory_icon": "floral_circlet_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "beard",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 314,
+		"display_category": "Mask"
+	},
+
+	"eye_patch": {
+		"category": "eyewear",
+		"display_name": "Eye Patch",
+		"rarity": "common",
+		"texture": "eye_patch",
+		"inventory_icon": "eye_patch_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "eyewear",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 315
+	},
+
+	"golden_shoes": {
+		"category": "shoes",
+		"display_name": "Golden Shoes",
+		"rarity": "common",
+		"texture": "golden_shoes_icon",
+		"inventory_icon": "golden_shoes_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shoes",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 317,
+		"left_shoe_texture": "golden_shoes_left",
+		"right_shoe_texture": "golden_shoes_right",
+		"left_shoe_offset": [
+			0,
+			0
+		],
+		"right_shoe_offset": [
+			0,
+			0
+		]
+	},
+
+	"green_sneakers": {
+		"category": "shoes",
+		"display_name": "Green Sneakers",
+		"rarity": "common",
+		"texture": "green_sneakers_icon",
+		"inventory_icon": "green_sneakers_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shoes",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 318,
+		"left_shoe_texture": "green_sneakers_left",
+		"right_shoe_texture": "green_sneakers_right",
+		"left_shoe_offset": [
+			0,
+			0
+		],
+		"right_shoe_offset": [
+			0,
+			0
+		]
+	},
+
+	"white_shoes": {
+		"category": "shoes",
+		"display_name": "White Shoes",
+		"rarity": "common",
+		"texture": "white_shoes_icon",
+		"inventory_icon": "white_shoes_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shoes",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 320,
+		"left_shoe_texture": "white_shoes_left",
+		"right_shoe_texture": "white_shoes_right",
+		"left_shoe_offset": [
+			0,
+			0
+		],
+		"right_shoe_offset": [
+			0,
+			0
+		]
+	},
+
+	"diamond_shoes": {
+		"category": "shoes",
+		"display_name": "Diamond Shoes",
+		"rarity": "common",
+		"texture": "diamond_shoes_icon",
+		"inventory_icon": "diamond_shoes_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shoes",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 321,
+		"left_shoe_texture": "diamond_shoes_left",
+		"right_shoe_texture": "diamond_shoes_right",
+		"left_shoe_offset": [
+			0,
+			0
+		],
+		"right_shoe_offset": [
+			0,
+			0
+		]
+	},
+
+	"slippers": {
+		"category": "shoes",
+		"display_name": "Slippers",
+		"rarity": "common",
+		"texture": "slippers_icon",
+		"inventory_icon": "slippers_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shoes",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 322,
+		"left_shoe_texture": "slippers_left",
+		"right_shoe_texture": "slippers_right",
+		"left_shoe_offset": [
+			0,
+			0
+		],
+		"right_shoe_offset": [
+			0,
+			0
+		]
+	},
+
+	"black_slippers": {
+		"category": "shoes",
+		"display_name": "Black Slippers",
+		"rarity": "common",
+		"texture": "black_slippers_icon",
+		"inventory_icon": "black_slippers_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shoes",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 323,
+		"left_shoe_texture": "black_slippers_left",
+		"right_shoe_texture": "black_slippers_right",
+		"left_shoe_offset": [
+			0,
+			0
+		],
+		"right_shoe_offset": [
+			0,
+			0
+		]
+	},
+
+	"bunny_slippers": {
+		"category": "shoes",
+		"display_name": "Bunny Slippers",
+		"rarity": "common",
+		"texture": "bunny_slippers_icon",
+		"inventory_icon": "bunny_slippers_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shoes",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 324,
+		"left_shoe_texture": "bunny_slippers_left",
+		"right_shoe_texture": "bunny_slippers_right",
+		"left_shoe_offset": [
+			0,
+			0
+		],
+		"right_shoe_offset": [
+			0,
+			0
+		]
+	},
+
+	"duck_slippers": {
+		"category": "shoes",
+		"display_name": "Duck Slippers",
+		"rarity": "common",
+		"texture": "duck_slippers_icon",
+		"inventory_icon": "duck_slippers_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shoes",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 325,
+		"left_shoe_texture": "duck_slippers_left",
+		"right_shoe_texture": "duck_slippers_right",
+		"left_shoe_offset": [
+			0,
+			0
+		],
+		"right_shoe_offset": [
+			0,
+			0
+		]
+	},
+
+	"green_slippers": {
+		"category": "shoes",
+		"display_name": "Green Slippers",
+		"rarity": "common",
+		"texture": "green_slippers_icon",
+		"inventory_icon": "green_slippers_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shoes",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 326,
+		"left_shoe_texture": "green_slippers_left",
+		"right_shoe_texture": "green_slippers_right",
+		"left_shoe_offset": [
+			0,
+			0
+		],
+		"right_shoe_offset": [
+			0,
+			0
+		]
+	},
+
+	"grey_sneakers": {
+		"category": "shoes",
+		"display_name": "Grey Sneakers",
+		"rarity": "common",
+		"texture": "grey_sneakers_icon",
+		"inventory_icon": "grey_sneakers_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shoes",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 327,
+		"left_shoe_texture": "grey_sneakers_left",
+		"right_shoe_texture": "grey_sneakers_right",
+		"left_shoe_offset": [
+			0,
+			0
+		],
+		"right_shoe_offset": [
+			0,
+			0
+		]
+	},
+
+	"void_slippers": {
+		"category": "shoes",
+		"display_name": "Void Slippers",
+		"rarity": "common",
+		"texture": "void_slippers_icon",
+		"inventory_icon": "void_slippers_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shoes",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 2,
+		"order": 328,
+		"left_shoe_texture": "void_slippers_left",
+		"right_shoe_texture": "void_slippers_right",
+		"left_shoe_offset": [
+			0,
+			0
+		],
+		"right_shoe_offset": [
+			0,
+			0
+		]
+	},
+
+	"coveralls": {
+		"category": "shirt",
+		"display_name": "Coveralls",
+		"rarity": "common",
+		"texture": "coveralls_body",
+		"inventory_icon": "coveralls_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 1,
+		"order": 329,
+		"shirt_body_texture": "coveralls_body",
+		"arm_texture": "coveralls_arm",
+		"right_arm_texture": "coveralls_arm",
+		"left_arm_texture": "coveralls_arm_left",
+		"display_category": "Outfit",
+		"shirt_offset": [
+			-2,
+			4
+		],
+		"right_sleeve_offset": [
+			0,
+			4
+		],
+		"left_sleeve_offset": [
+			-8,
+			4
+		]
+	},
+
+	"white_skirt": {
+		"category": "shirt",
+		"display_name": "White Skirt",
+		"rarity": "common",
+		"texture": "white_skirt_body",
+		"inventory_icon": "white_skirt_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 1,
+		"order": 330,
+		"shirt_body_texture": "white_skirt_body",
+		"arm_texture": "white_skirt_arm",
+		"right_arm_texture": "white_skirt_arm",
+		"left_arm_texture": "white_skirt_arm_left",
+		"display_category": "Outfit",
+		"shirt_offset": [
+			-2,
+			4
+		],
+		"right_sleeve_offset": [
+			0,
+			4
+		],
+		"left_sleeve_offset": [
+			-8,
+			4
+		]
+	},
+
+	"purple_skirt": {
+		"category": "shirt",
+		"display_name": "Purple Skirt",
+		"rarity": "common",
+		"texture": "purple_skirt_body",
+		"inventory_icon": "purple_skirt_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 1,
+		"order": 331,
+		"shirt_body_texture": "purple_skirt_body",
+		"arm_texture": "purple_skirt_arm",
+		"right_arm_texture": "purple_skirt_arm",
+		"left_arm_texture": "purple_skirt_arm_left",
+		"display_category": "Outfit",
+		"shirt_offset": [
+			-2,
+			4
+		],
+		"right_sleeve_offset": [
+			0,
+			4
+		],
+		"left_sleeve_offset": [
+			-8,
+			4
+		]
+	},
+
+	"black_skirt": {
+		"category": "shirt",
+		"display_name": "Black Skirt",
+		"rarity": "common",
+		"texture": "black_skirt_body",
+		"inventory_icon": "black_skirt_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 1,
+		"order": 332,
+		"shirt_body_texture": "black_skirt_body",
+		"arm_texture": "black_skirt_arm",
+		"right_arm_texture": "black_skirt_arm",
+		"left_arm_texture": "black_skirt_arm_left",
+		"display_category": "Outfit",
+		"shirt_offset": [
+			-2,
+			4
+		],
+		"right_sleeve_offset": [
+			0,
+			4
+		],
+		"left_sleeve_offset": [
+			-8,
+			4
+		]
+	},
+
+	"red_skirt": {
+		"category": "shirt",
+		"display_name": "Red Skirt",
+		"rarity": "common",
+		"texture": "red_skirt_body",
+		"inventory_icon": "red_skirt_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 1,
+		"order": 333,
+		"shirt_body_texture": "red_skirt_body",
+		"display_category": "Outfit",
+		"shirt_offset": [
+			-2,
+			4
+		]
+	},
+
+	"wizards_robe": {
+		"category": "shirt",
+		"display_name": "Wizard's Robe",
+		"rarity": "common",
+		"texture": "wizards_robe_body",
+		"inventory_icon": "wizards_robe_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 1,
+		"order": 334,
+		"shirt_body_texture": "wizards_robe_body",
+		"display_category": "Outfit",
+		"shirt_offset": [
+			-2,
+			4
+		]
+	},
+
+	"purple_dress": {
+		"category": "shirt",
+		"display_name": "Purple Dress",
+		"rarity": "common",
+		"texture": "purple_dress_body",
+		"inventory_icon": "purple_dress_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 1,
+		"order": 335,
+		"shirt_body_texture": "purple_dress_body",
+		"display_category": "Outfit",
+		"shirt_offset": [
+			-2,
+			4
+		]
+	},
+
+	"black_coat": {
+		"category": "shirt",
+		"display_name": "Black Coat",
+		"rarity": "common",
+		"texture": "black_coat_body",
+		"inventory_icon": "black_coat_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "shirt",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 1,
+		"order": 336,
+		"shirt_body_texture": "black_coat_body",
+		"display_category": "Outfit",
+		"shirt_offset": [
+			-2,
+			4
+		]
+	},
+
+	"horse_mask": {
+		"category": "beard",
+		"display_name": "Horse Mask",
+		"rarity": "common",
+		"texture": "horse_mask",
+		"inventory_icon": "horse_mask_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "beard",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 337,
+		"display_category": "Mask",
+		"animation_fps": 6,
+		"beard_animations": {
+			"idle": {
+				"frames": [
+					"horse_mask",
+					"horse_mask_2"
+				],
+				"fps": 6,
+				"loop": true
+			}
+		}
+	},
+
+	"welding_mask": {
+		"category": "beard",
+		"display_name": "Welding Mask",
+		"rarity": "common",
+		"texture": "welding_mask",
+		"inventory_icon": "welding_mask_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "beard",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 338,
+		"display_category": "Mask"
+	},
+
+	"space_mask": {
+		"category": "beard",
+		"display_name": "Space Mask",
+		"rarity": "common",
+		"texture": "space_mask",
+		"inventory_icon": "space_mask_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "beard",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 339,
+		"display_category": "Mask"
+	},
+
+	"skull_mask": {
+		"category": "beard",
+		"display_name": "Skull Mask",
+		"rarity": "common",
+		"texture": "skull_mask",
+		"inventory_icon": "skull_mask_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "beard",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 340,
+		"display_category": "Mask"
+	},
+
+	"burning_skull": {
+		"category": "beard",
+		"display_name": "Burning Skull",
+		"rarity": "common",
+		"texture": "burning_skull",
+		"inventory_icon": "burning_skull_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "beard",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 341,
+		"display_category": "Mask",
+		"animation_fps": 6,
+		"beard_animations": {
+			"idle": {
+				"frames": [
+					"burning_skull",
+					"burning_skull_2",
+					"burning_skull_3",
+					"burning_skull_4"
+				],
+				"fps": 6,
+				"loop": true
+			}
+		}
+	},
+
+	"sack_mask": {
+		"category": "beard",
+		"display_name": "Sack Mask",
+		"rarity": "common",
+		"texture": "sack_mask",
+		"inventory_icon": "sack_mask_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "beard",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 342,
+		"display_category": "Mask"
+	},
+
+	"bag_on_the_head": {
+		"category": "beard",
+		"display_name": "Bag on the Head",
+		"rarity": "common",
+		"texture": "bag_on_the_head",
+		"inventory_icon": "bag_on_the_head_icon",
+		"starting_count": 0,
+		"equipable": true,
+		"instance_tracked": true,
+		"equipment_slot": "beard",
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
+		"slot_z_index": 3,
+		"order": 343,
+		"display_category": "Mask"
+	},
+
 "void_shirt": {
 		"category": "shirt",
 		"display_name": "Void Shirt",
 		"rarity": "common",
-		"texture": "res://Assets/clothes/shirts/void_shirt_body.png",
-		"shirt_body_texture": "res://Assets/clothes/shirts/void_shirt_body.png",
-		"inventory_icon": "res://Assets/clothes/shirts/void_shirt_icon.png",
-		"arm_texture": "res://Assets/clothes/shirts/void_shirt_arm.png",
-		"right_arm_texture": "res://Assets/clothes/shirts/void_shirt_arm.png",
-		"left_arm_texture": "res://Assets/clothes/shirts/void_shirt_arm_left.png",
+		"texture": "void_shirt_body",
+		"shirt_body_texture": "void_shirt_body",
+		"inventory_icon": "void_shirt_icon",
+		"arm_texture": "void_shirt_arm",
+		"right_arm_texture": "void_shirt_arm",
+		"left_arm_texture": "void_shirt_arm_left",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "shirt",
-		"slot_offset": [0, 0],
-		"slot_scale": 1.0,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
 		"slot_z_index": 1,
-		"order": 219
+		"order": 219,
+		"instance_tracked": true
 	},
 
 "void_pants": {
 		"category": "pants",
 		"display_name": "Void Pants",
 		"rarity": "common",
-		"texture": "res://Assets/clothes/pants/void_pants.png",
-		"left_pants_texture": "res://Assets/clothes/pants/void_leg_left.png",
-		"right_pants_texture": "res://Assets/clothes/pants/void_leg_right.png",
+		"texture": "void_pants",
+		"left_pants_texture": "void_pants_left_leg",
+		"right_pants_texture": "void_pants_right_leg",
 		"starting_count": 0,
 		"equipable": true,
 		"equipment_slot": "pants",
-		"slot_offset": [0, 0],
-		"slot_scale": 1.0,
+		"slot_offset": [
+			0,
+			0
+		],
+		"slot_scale": 1,
 		"slot_z_index": 1,
-		"order": 236
+		"order": 236,
+		"inventory_icon": "void_pants_icon",
+		"instance_tracked": true,
+		"pants_follow_feet": true,
+		"left_pants_offset": [
+			0,
+			11
+		],
+		"right_pants_offset": [
+			0,
+			11
+		]
 	},
 
 "void_shoes": {

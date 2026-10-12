@@ -2499,6 +2499,8 @@ func get_inventory_target_for_drop(item_type: String, item_category: String) -> 
 		return {"inventory": world.hair_inventory, "category": "hair"}
 	if world.eyewear_inventory.has(safe_item_type):
 		return {"inventory": world.eyewear_inventory, "category": "eyewear"}
+	if world.beard_inventory.has(safe_item_type):
+		return {"inventory": world.beard_inventory, "category": "beard"}
 	if world.shirt_inventory.has(safe_item_type):
 		return {"inventory": world.shirt_inventory, "category": "shirt"}
 	if world.pants_inventory.has(safe_item_type):
@@ -2535,6 +2537,8 @@ func _inventory_target_for_category(category: String) -> Dictionary:
 			return {"inventory": world.hair_inventory, "category": "hair"}
 		"eyewear":
 			return {"inventory": world.eyewear_inventory, "category": "eyewear"}
+		"beard":
+			return {"inventory": world.beard_inventory, "category": "beard"}
 		"shirt":
 			return {"inventory": world.shirt_inventory, "category": "shirt"}
 		"pants":

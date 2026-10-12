@@ -1218,6 +1218,10 @@ func update_equipped_shirt_visual(shirt_item, facing_direction: int):
 	var front_scale_value = float(item_data.get("slot_scale", 1.0))
 	var front_z_value = int(item_data.get("front_z_index", item_data.get("slot_z_index", 1)))
 	set_wearable_part("shirt", shirt_item, item_data, [texture], body_position, is_facing_left, bool(item_data.get("front_flip_with_facing", true)), front_scale_value, front_z_value)
+	# Outfit atlas cells have a different canvas origin from the basic shirts.
+	# Keep offsets local to the animated body and restore the editor anchor on swap.
+	if shirt_item_animated != null:
+		shirt_item_animated.position = get_wearable_part_base_position("shirt", Vector2.ZERO) + get_vector_from_data(item_data.get("shirt_offset", [0, 0]), Vector2.ZERO)
 	update_shirt_arm_items(item_data, is_facing_left, shirt_item)
 
 
@@ -1430,6 +1434,11 @@ func update_shirt_arm_items(item_data: Dictionary, is_facing_left: bool, shirt_i
 
 	set_wearable_part("right_sleeve", shirt_item, item_data, [right_arm_texture], Vector2.ZERO, is_facing_left, true, scale_value, z_value)
 	set_wearable_part("left_sleeve", shirt_item, item_data, [left_arm_texture], Vector2.ZERO, not is_facing_left, true, scale_value, z_value)
+	for side in ["right", "left"]:
+		var part_key: String = side + "_sleeve"
+		var sleeve = get_wearable_part(part_key)
+		if sleeve != null:
+			sleeve.position = get_wearable_part_base_position(part_key, Vector2.ZERO) + get_vector_from_data(item_data.get(part_key + "_offset", [0, 0]), Vector2.ZERO)
 
 
 func load_shirt_body_texture(shirt_item: String, item_data: Dictionary):

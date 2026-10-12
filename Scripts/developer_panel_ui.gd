@@ -30,7 +30,7 @@ const INVENTORY_LOOKUP_FIELDS = [
 	{"field": "hat_inventory", "category": "hat", "label": "Hats"},
 	{"field": "hair_inventory", "category": "hair", "label": "Hair"},
 	{"field": "eyewear_inventory", "category": "eyewear", "label": "Eyewear"},
-	{"field": "beard_inventory", "category": "beard", "label": "Beard"},
+	{"field": "beard_inventory", "category": "beard", "label": "Masks / Beards"},
 	{"field": "body_accessory_inventory", "category": "body_accessory", "label": "Necklace"},
 	{"field": "shirt_inventory", "category": "shirt", "label": "Shirts"},
 	{"field": "pants_inventory", "category": "pants", "label": "Pants"},

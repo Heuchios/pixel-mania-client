@@ -1,0 +1,754 @@
+[
+  {
+    "id": "scrub_top",
+    "name": "Scrub Top",
+    "slot": "shirt",
+    "icon": [
+      0,
+      13
+    ],
+    "body": [
+      1,
+      13
+    ],
+    "frames": 1,
+    "right_arm": [
+      5,
+      13
+    ],
+    "left_arm": [
+      6,
+      13
+    ]
+  },
+  {
+    "id": "space_suit",
+    "name": "Space Suit",
+    "slot": "shirt",
+    "icon": [
+      0,
+      14
+    ],
+    "body": [
+      1,
+      14
+    ],
+    "frames": 1,
+    "right_arm": [
+      5,
+      14
+    ],
+    "left_arm": [
+      6,
+      14
+    ]
+  },
+  {
+    "id": "void_shirt",
+    "name": "Void Shirt",
+    "slot": "shirt",
+    "icon": [
+      0,
+      15
+    ],
+    "body": [
+      1,
+      15
+    ],
+    "frames": 1,
+    "right_arm": [
+      5,
+      15
+    ],
+    "left_arm": [
+      6,
+      15
+    ]
+  },
+  {
+    "id": "scrub_bottoms",
+    "name": "Scrub Bottoms",
+    "slot": "pants",
+    "icon": [
+      7,
+      13
+    ],
+    "body": [
+      8,
+      13
+    ],
+    "frames": 1,
+    "left_leg": [
+      9,
+      13
+    ],
+    "right_leg": [
+      10,
+      13
+    ]
+  },
+  {
+    "id": "space_pants",
+    "name": "Space Pants",
+    "slot": "pants",
+    "icon": [
+      7,
+      14
+    ],
+    "body": [
+      8,
+      14
+    ],
+    "frames": 1,
+    "left_leg": [
+      9,
+      14
+    ],
+    "right_leg": [
+      10,
+      14
+    ]
+  },
+  {
+    "id": "void_pants",
+    "name": "Void Pants",
+    "slot": "pants",
+    "icon": [
+      7,
+      15
+    ],
+    "body": [
+      8,
+      15
+    ],
+    "frames": 1,
+    "left_leg": [
+      9,
+      15
+    ],
+    "right_leg": [
+      10,
+      15
+    ]
+  },
+  {
+    "id": "scrub_mask",
+    "name": "Scrub Mask",
+    "slot": "beard",
+    "icon": [
+      22,
+      13
+    ],
+    "body": [
+      23,
+      13
+    ],
+    "frames": 1
+  },
+  {
+    "id": "duck_beak",
+    "name": "Duck Beak",
+    "slot": "beard",
+    "icon": [
+      22,
+      14
+    ],
+    "body": [
+      23,
+      14
+    ],
+    "frames": 1
+  },
+  {
+    "id": "cat_face_mask",
+    "name": "Cat Face Mask",
+    "slot": "beard",
+    "icon": [
+      22,
+      15
+    ],
+    "body": [
+      23,
+      15
+    ],
+    "frames": 1
+  },
+  {
+    "id": "rat_face_mask",
+    "name": "Rat Face Mask",
+    "slot": "beard",
+    "icon": [
+      22,
+      16
+    ],
+    "body": [
+      23,
+      16
+    ],
+    "frames": 1
+  },
+  {
+    "id": "clown_nose",
+    "name": "Clown Nose",
+    "slot": "beard",
+    "icon": [
+      22,
+      17
+    ],
+    "body": [
+      23,
+      17
+    ],
+    "frames": 2
+  },
+  {
+    "id": "cigar",
+    "name": "Cigar",
+    "slot": "beard",
+    "icon": [
+      22,
+      18
+    ],
+    "body": [
+      23,
+      18
+    ],
+    "frames": 3
+  },
+  {
+    "id": "red_headphones",
+    "name": "Red Headphones",
+    "slot": "hat",
+    "icon": [
+      22,
+      19
+    ],
+    "body": [
+      23,
+      19
+    ],
+    "frames": 3
+  },
+  {
+    "id": "meowphones",
+    "name": "Meowphones",
+    "slot": "hat",
+    "icon": [
+      22,
+      20
+    ],
+    "body": [
+      23,
+      20
+    ],
+    "frames": 3
+  },
+  {
+    "id": "floral_circlet",
+    "name": "Floral Circlet",
+    "slot": "beard",
+    "icon": [
+      22,
+      21
+    ],
+    "body": [
+      23,
+      21
+    ],
+    "frames": 1
+  },
+  {
+    "id": "eye_patch",
+    "name": "Eye Patch",
+    "slot": "eyewear",
+    "icon": [
+      22,
+      22
+    ],
+    "body": [
+      23,
+      22
+    ],
+    "frames": 1
+  },
+  {
+    "id": "void_visor",
+    "name": "Void Visor",
+    "slot": "eyewear",
+    "icon": [
+      22,
+      23
+    ],
+    "body": [
+      23,
+      23
+    ],
+    "frames": 4
+  },
+  {
+    "id": "golden_shoes",
+    "name": "Golden Shoes",
+    "slot": "shoes",
+    "icon": [
+      33,
+      5
+    ],
+    "body": [
+      34,
+      5
+    ],
+    "frames": 1,
+    "right_foot": [
+      38,
+      5
+    ]
+  },
+  {
+    "id": "green_sneakers",
+    "name": "Green Sneakers",
+    "slot": "shoes",
+    "icon": [
+      33,
+      6
+    ],
+    "body": [
+      34,
+      6
+    ],
+    "frames": 1,
+    "right_foot": [
+      38,
+      6
+    ]
+  },
+  {
+    "id": "basic_yellow_shoes",
+    "name": "Yellow Shoes",
+    "slot": "shoes",
+    "icon": [
+      33,
+      7
+    ],
+    "body": [
+      34,
+      7
+    ],
+    "frames": 1,
+    "right_foot": [
+      38,
+      7
+    ]
+  },
+  {
+    "id": "white_shoes",
+    "name": "White Shoes",
+    "slot": "shoes",
+    "icon": [
+      33,
+      8
+    ],
+    "body": [
+      34,
+      8
+    ],
+    "frames": 1,
+    "right_foot": [
+      38,
+      8
+    ]
+  },
+  {
+    "id": "diamond_shoes",
+    "name": "Diamond Shoes",
+    "slot": "shoes",
+    "icon": [
+      33,
+      9
+    ],
+    "body": [
+      34,
+      9
+    ],
+    "frames": 1,
+    "right_foot": [
+      38,
+      9
+    ]
+  },
+  {
+    "id": "slippers",
+    "name": "Slippers",
+    "slot": "shoes",
+    "icon": [
+      33,
+      10
+    ],
+    "body": [
+      34,
+      10
+    ],
+    "frames": 1,
+    "right_foot": [
+      38,
+      10
+    ]
+  },
+  {
+    "id": "black_slippers",
+    "name": "Black Slippers",
+    "slot": "shoes",
+    "icon": [
+      33,
+      11
+    ],
+    "body": [
+      34,
+      11
+    ],
+    "frames": 1,
+    "right_foot": [
+      38,
+      11
+    ]
+  },
+  {
+    "id": "bunny_slippers",
+    "name": "Bunny Slippers",
+    "slot": "shoes",
+    "icon": [
+      33,
+      12
+    ],
+    "body": [
+      34,
+      12
+    ],
+    "frames": 1,
+    "right_foot": [
+      38,
+      12
+    ]
+  },
+  {
+    "id": "duck_slippers",
+    "name": "Duck Slippers",
+    "slot": "shoes",
+    "icon": [
+      33,
+      13
+    ],
+    "body": [
+      34,
+      13
+    ],
+    "frames": 1,
+    "right_foot": [
+      38,
+      13
+    ]
+  },
+  {
+    "id": "green_slippers",
+    "name": "Green Slippers",
+    "slot": "shoes",
+    "icon": [
+      33,
+      14
+    ],
+    "body": [
+      34,
+      14
+    ],
+    "frames": 1,
+    "right_foot": [
+      38,
+      14
+    ]
+  },
+  {
+    "id": "grey_sneakers",
+    "name": "Grey Sneakers",
+    "slot": "shoes",
+    "icon": [
+      33,
+      15
+    ],
+    "body": [
+      34,
+      15
+    ],
+    "frames": 1,
+    "right_foot": [
+      38,
+      15
+    ]
+  },
+  {
+    "id": "void_slippers",
+    "name": "Void Slippers",
+    "slot": "shoes",
+    "icon": [
+      33,
+      16
+    ],
+    "body": [
+      34,
+      16
+    ],
+    "frames": 1,
+    "right_foot": [
+      38,
+      16
+    ]
+  },
+  {
+    "id": "coveralls",
+    "name": "Coveralls",
+    "slot": "shirt",
+    "icon": [
+      42,
+      0
+    ],
+    "body": [
+      43,
+      0
+    ],
+    "frames": 1,
+    "outfit": true,
+    "right_arm": [
+      47,
+      0
+    ],
+    "left_arm": [
+      48,
+      0
+    ]
+  },
+  {
+    "id": "white_skirt",
+    "name": "White Skirt",
+    "slot": "shirt",
+    "icon": [
+      42,
+      1
+    ],
+    "body": [
+      43,
+      1
+    ],
+    "frames": 1,
+    "outfit": true,
+    "right_arm": [
+      47,
+      1
+    ],
+    "left_arm": [
+      48,
+      1
+    ]
+  },
+  {
+    "id": "purple_skirt",
+    "name": "Purple Skirt",
+    "slot": "shirt",
+    "icon": [
+      42,
+      2
+    ],
+    "body": [
+      43,
+      2
+    ],
+    "frames": 1,
+    "outfit": true,
+    "right_arm": [
+      47,
+      2
+    ],
+    "left_arm": [
+      48,
+      2
+    ]
+  },
+  {
+    "id": "black_skirt",
+    "name": "Black Skirt",
+    "slot": "shirt",
+    "icon": [
+      42,
+      3
+    ],
+    "body": [
+      43,
+      3
+    ],
+    "frames": 1,
+    "outfit": true,
+    "right_arm": [
+      47,
+      3
+    ],
+    "left_arm": [
+      48,
+      3
+    ]
+  },
+  {
+    "id": "red_skirt",
+    "name": "Red Skirt",
+    "slot": "shirt",
+    "icon": [
+      42,
+      4
+    ],
+    "body": [
+      43,
+      4
+    ],
+    "frames": 1,
+    "outfit": true
+  },
+  {
+    "id": "wizards_robe",
+    "name": "Wizard's Robe",
+    "slot": "shirt",
+    "icon": [
+      42,
+      5
+    ],
+    "body": [
+      43,
+      5
+    ],
+    "frames": 1,
+    "outfit": true
+  },
+  {
+    "id": "purple_dress",
+    "name": "Purple Dress",
+    "slot": "shirt",
+    "icon": [
+      42,
+      6
+    ],
+    "body": [
+      43,
+      6
+    ],
+    "frames": 1,
+    "outfit": true
+  },
+  {
+    "id": "black_coat",
+    "name": "Black Coat",
+    "slot": "shirt",
+    "icon": [
+      42,
+      7
+    ],
+    "body": [
+      43,
+      7
+    ],
+    "frames": 1,
+    "outfit": true
+  },
+  {
+    "id": "horse_mask",
+    "name": "Horse Mask",
+    "slot": "beard",
+    "icon": [
+      49,
+      0
+    ],
+    "body": [
+      50,
+      0
+    ],
+    "frames": 2
+  },
+  {
+    "id": "welding_mask",
+    "name": "Welding Mask",
+    "slot": "beard",
+    "icon": [
+      49,
+      1
+    ],
+    "body": [
+      50,
+      1
+    ],
+    "frames": 1
+  },
+  {
+    "id": "space_mask",
+    "name": "Space Mask",
+    "slot": "beard",
+    "icon": [
+      49,
+      2
+    ],
+    "body": [
+      50,
+      2
+    ],
+    "frames": 1
+  },
+  {
+    "id": "skull_mask",
+    "name": "Skull Mask",
+    "slot": "beard",
+    "icon": [
+      49,
+      3
+    ],
+    "body": [
+      50,
+      3
+    ],
+    "frames": 1
+  },
+  {
+    "id": "burning_skull",
+    "name": "Burning Skull",
+    "slot": "beard",
+    "icon": [
+      49,
+      4
+    ],
+    "body": [
+      50,
+      4
+    ],
+    "frames": 4
+  },
+  {
+    "id": "sack_mask",
+    "name": "Sack Mask",
+    "slot": "beard",
+    "icon": [
+      49,
+      5
+    ],
+    "body": [
+      50,
+      5
+    ],
+    "frames": 1
+  },
+  {
+    "id": "bag_on_the_head",
+    "name": "Bag on the Head",
+    "slot": "beard",
+    "icon": [
+      49,
+      6
+    ],
+    "body": [
+      50,
+      6
+    ],
+    "frames": 1
+  }
+]

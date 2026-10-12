@@ -571,6 +571,7 @@ func _build_world_inventory_item(source: Object, item_id: String, category: Stri
 	var payload: Dictionary = {
 		"id": item_id,
 		"display_name": str(database_entry.get("display_name", item_id.capitalize())),
+		"display_category": str(database_entry.get("display_category", category.capitalize())),
 		"category": category,
 		"count": count,
 		"rarity": _normalized_rarity(str(database_entry.get("rarity", "common"))),
@@ -671,6 +672,7 @@ func _append_world_inventory(output: Array, source: Object, property_name: Strin
 		var payload: Dictionary = {
 			"id": item_id,
 			"display_name": str(database_entry.get("display_name", item_id.capitalize())),
+			"display_category": str(database_entry.get("display_category", category.capitalize())),
 			"category": category,
 			"count": count,
 			"rarity": _normalized_rarity(str(database_entry.get("rarity", "common"))),
@@ -1239,7 +1241,7 @@ func _update_detail() -> void:
 	detail_title.text = _item_display_name(selected_item) if has_selection else "No Item"
 	detail_rarity.text = _rarity_display(str(selected_item.get("rarity", ""))) if has_selection else ""
 	detail_rarity.add_theme_color_override("font_color", _rarity_color(str(selected_item.get("rarity", "common"))))
-	detail_category.text = str(selected_item.get("category", "")).to_upper() if has_selection else ""
+	detail_category.text = str(selected_item.get("display_category", selected_item.get("category", ""))).to_upper() if has_selection else ""
 	detail_description.text = _item_description(selected_item) if has_selection else ""
 
 	var icon_texture: Texture2D = _item_icon_texture(selected_item) if has_selection else null
@@ -2409,7 +2411,7 @@ func _item_description(item: Dictionary) -> String:
 		return description
 	if _is_empty_capacity_slot(item):
 		return "Inventory space."
-	var category: String = str(item.get("category", "item")).capitalize()
+	var category: String = str(item.get("display_category", item.get("category", "item"))).capitalize()
 	return category + " item ready for the active inventory action."
 
 

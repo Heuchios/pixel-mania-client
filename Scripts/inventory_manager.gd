@@ -375,6 +375,8 @@ func _is_equipable_hotbar_category(category: String) -> bool:
 			return true
 		"eyewear":
 			return true
+		"beard":
+			return true
 		"shirt":
 			return true
 		"pants":
@@ -2257,6 +2259,8 @@ func get_item_count(item_type: String, category: String) -> int:
 		return int(world.hair_inventory[item_type])
 	if category == "eyewear" and world.eyewear_inventory.has(item_type):
 		return int(world.eyewear_inventory[item_type])
+	if category == "beard" and world.beard_inventory.has(item_type):
+		return int(world.beard_inventory[item_type])
 	if category == "shirt" and world.shirt_inventory.has(item_type):
 		return int(world.shirt_inventory[item_type])
 	if category == "pants" and world.pants_inventory.has(item_type):
@@ -3599,6 +3603,7 @@ func get_inventory_scene_signature() -> String:
 	_append_inventory_scene_signature_parts(parts, "hat_inventory", "hat")
 	_append_inventory_scene_signature_parts(parts, "hair_inventory", "hair")
 	_append_inventory_scene_signature_parts(parts, "eyewear_inventory", "eyewear")
+	_append_inventory_scene_signature_parts(parts, "beard_inventory", "beard")
 	_append_inventory_scene_signature_parts(parts, "shirt_inventory", "shirt")
 	_append_inventory_scene_signature_parts(parts, "pants_inventory", "pants")
 	_append_inventory_scene_signature_parts(parts, "shoes_inventory", "shoes")
@@ -3879,7 +3884,8 @@ func _build_item_action_payload(item_type: String, category: String, base_item: 
 	payload["item_type"] = item_type
 	payload["category"] = category
 	payload["item_category"] = category
-	payload["type_label"] = "Material / Consumable" if category == "material" and bool(database_entry.get("consumable", false)) else ("Consumable" if bool(database_entry.get("consumable", false)) else category)
+	payload["display_category"] = str(database_entry.get("display_category", category.capitalize()))
+	payload["type_label"] = "Material / Consumable" if category == "material" and bool(database_entry.get("consumable", false)) else ("Consumable" if bool(database_entry.get("consumable", false)) else payload["display_category"])
 	payload["display_name"] = get_item_display_name(item_type, category)
 	payload["count"] = maxi(1, available_count)
 	payload["available_count"] = maxi(1, available_count)
@@ -4367,7 +4373,7 @@ func get_item_description(item_type: String, category: String) -> String:
 			return "A caught fish."
 		"currency":
 			return "A currency item."
-		"back", "hat", "hair", "eyewear", "shirt", "pants", "shoes", "ride":
+		"back", "hat", "hair", "eyewear", "beard", "shirt", "pants", "shoes", "ride":
 			return "Wearable equipment."
 		_:
 			return "Inventory item."
@@ -6602,6 +6608,14 @@ func remove_inventory_item(item_type: String, category: String, amount: float) -
 				world.update_equipment_visual()
 		notify_inventory_item_changed(item_type, category)
 		return true
+	if category == "beard" and world.beard_inventory.has(item_type):
+		world.spend_item_from_inventory_stack(world.beard_inventory, item_type, category, whole_amount)
+		if world.equipped_beard_item == item_type and int(world.beard_inventory.get(item_type, 0)) <= 0:
+			world.equipped_beard_item = ""
+			if world.has_method("update_equipment_visual"):
+				world.update_equipment_visual()
+		notify_inventory_item_changed(item_type, category)
+		return true
 	if category == "pants" and world.pants_inventory.has(item_type):
 		world.spend_item_from_inventory_stack(world.pants_inventory, item_type, category, whole_amount)
 		if world.equipped_pants_item == item_type and int(world.pants_inventory[item_type]) <= 0:
@@ -6770,6 +6784,7 @@ func build_visible_inventory_items() -> Array:
 		append_visible_inventory_items_for_keys(visible_items, get_sorted_inventory_keys(world.hat_inventory), "hat", true)
 		append_visible_inventory_items_for_keys(visible_items, get_sorted_inventory_keys(world.hair_inventory), "hair", true)
 		append_visible_inventory_items_for_keys(visible_items, get_sorted_inventory_keys(world.eyewear_inventory), "eyewear", true)
+		append_visible_inventory_items_for_keys(visible_items, get_sorted_inventory_keys(world.beard_inventory), "beard", true)
 		append_visible_inventory_items_for_keys(visible_items, get_sorted_inventory_keys(world.shirt_inventory), "shirt", true)
 		append_visible_inventory_items_for_keys(visible_items, get_sorted_inventory_keys(world.pants_inventory), "pants", true)
 		append_visible_inventory_items_for_keys(visible_items, get_sorted_inventory_keys(world.shoes_inventory), "shoes", true)
@@ -7024,7 +7039,7 @@ func should_inventory_item_be_visible(item_type: String, category: String) -> bo
 			if category != "material" and category != "lure" and category != "fish":
 				return false
 		"back":
-			if category != "back" and category != "hat" and category != "hair" and category != "eyewear" and category != "shirt" and category != "pants" and category != "shoes" and category != "ride":
+			if category != "back" and category != "hat" and category != "hair" and category != "eyewear" and category != "beard" and category != "shirt" and category != "pants" and category != "shoes" and category != "ride":
 				return false
 		_:
 			return false
@@ -7272,6 +7287,7 @@ func update_inventory_window():
 			if count > 0:
 				visible_items.append({"type": eyewear_name, "category": "eyewear", "count": count})
 		var shirt_items = []
+		append_visible_inventory_items_for_keys(visible_items, get_sorted_inventory_keys(world.beard_inventory), "beard", true)
 		for shirt_name in world.shirt_inventory.keys():
 			shirt_items.append(shirt_name)
 		shirt_items.sort_custom(Callable(self, "sort_item_ids_by_order"))
