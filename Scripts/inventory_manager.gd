@@ -3159,7 +3159,7 @@ func update_gem_counter_position():
 	gem_panel.position = Vector2(16.0, 16.0)
 	if is_instance_valid(daily_rewards_button):
 		var factor := MobileUIScale.get_layout_scale()
-		daily_rewards_button.scale = Vector2.ONE * factor
+		daily_rewards_button.scale = Vector2.ONE * factor * 0.8
 		var gem_bounds: Rect2 = gem_panel.get_global_rect()
 		daily_rewards_button.global_position = Vector2(gem_bounds.position.x, gem_bounds.end.y + 8.0)
 		daily_rewards_button.visible = counter_visible and bool(world.in_world)
@@ -3172,7 +3172,7 @@ func setup_daily_rewards_button() -> void:
 	daily_rewards_button.name = "DailyRewardsButton"
 	daily_rewards_button.set_meta("ignore_mobile_ui_scale", true)
 	daily_rewards_button.tooltip_text = "Daily rewards"
-	daily_rewards_button.size = Vector2(72, 72)
+	daily_rewards_button.size = Vector2(272, 48)
 	daily_rewards_button.position = Vector2(16, 60)
 	daily_rewards_button.z_index = 80
 	daily_rewards_button.add_theme_constant_override("outline_size", 0)
