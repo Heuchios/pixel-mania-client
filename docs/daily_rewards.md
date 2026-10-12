@@ -9,21 +9,27 @@ outer panel, inventory slots, selected slot frame, and green action buttons.
 The surrounding world stays visible with no full-screen tint or backdrop.
 The 4.5-second reel slows onto the server-confirmed prize, then automatically
 reveals it with an animated gem count. Collect closes the panel and sends cosmetic
-gems toward the actual HUD counter. Odds and the next UTC reset remain visible.
+gems toward the actual HUD counter. The next UTC reset remains visible; reward
+percentages are not displayed, and the window is shorter without that row.
 
-Native pixel effects include rarity-colored spark trails, gem fragments, star
-glints, expanding rings, and orbiting sparkles. Burst sizes are 54 / 96 / 138 for
-common / rare / jackpot rewards, with a hard cap of 180 particles. Effects pause
-when hidden and stay clipped to the prize area. The one-second collection flight
-is cosmetic and does not grant currency. It respects Back/close, and reopening
-during a spin recovers the same confirmed prize. The reveal sound uses the existing
-sound manager and its SFX volume setting.
+The reveal reuses the game's fishing reward confetti scenes and textures:
+spinning squares, ribbons, and star glints thrown upward before falling. Jackpot
+uses the full legendary effect (164 particles, 1.45x UI scale); rare uses the epic
+effect (78 particles); common reduces the epic effect to 22 smaller, slower,
+shorter-lived pieces. Shared scene resources are duplicated before tuning.
+Confetti fires once on reveal, stays clipped inside the window, pauses its GPU
+simulation and lifetime timer when hidden, and frees itself after completion.
+The one-second collection flight is cosmetic and does not grant currency. It
+respects Back/close, and reopening during a spin recovers the same confirmed
+prize. The reveal sound uses the existing sound manager and its SFX volume setting.
 The panel blocks movement, item use, fishing starts, and gameplay/chat shortcuts.
 Escape, Android Back, and the close button dismiss it. Closing never cancels or
 re-grants a saved reward.
 
-User-approved prizes are 250, 1,000, and 5,000 gems. Server weights are 75%, 20%,
-and 5%. Each account may claim once per UTC calendar day. Reset is 00:00 UTC.
+User-approved prizes are 250, 1,000, and 5,000 gems. The requested jackpot chance
+is 0.5%; rare stays at 20% and common receives the remaining 79.5%. Integer server
+weights are 795 / 200 / 5, sampled with `crypto.randomInt(1000)` and verified across
+all 1,000 outcomes. Each account may claim once per UTC calendar day. Reset is 00:00 UTC.
 Client values are display data only; `server_daily_rewards.ts` owns the rewards,
 cryptographic random choice, database clock, and claim eligibility.
 
@@ -51,10 +57,10 @@ The database test covers rollback after partial writes, all reward boundaries,
 duplicate and simultaneous requests, account case normalization, recovery after
 module restart, UTC rollover, stale-day rejection, capacity, and database outages.
 
-Verified: 40 client checks passed; desktop/mobile/HUD/prize renders were inspected,
-including jackpot particles and the collection flight over a world screenshot.
-Client checks cover automatic reveal, duplicate collect, bounded effects, hidden
-animation pause/resume, and closing during collection. Route and isolated
+Verified: 42 client checks passed; desktop/mobile/HUD/prize renders were inspected,
+including all three confetti tiers and the collection flight over a world screenshot.
+Client checks cover automatic reveal, duplicate collect, GPU confetti pause/resume,
+effect cleanup, and closing during collection. Route and isolated
 PostgreSQL tests passed. The full backend `check:security` chain passed in the
 isolated staging checkout, including TypeScript, lint, economy, and runtime checks.
 Deployed route tests and a read-only query confirmed the daily receipt primary
@@ -64,8 +70,9 @@ and Redis ready. No real-account claim or physical-device test was performed.
 ## Staging release
 
 - Client implementation: `592025e0`; staging merge: `f798c048`.
-- Follow-up client polish uses the shared atlas and tiered particle/reveal flow;
-  it requires no backend or reward-odds change.
+- Follow-up polish uses the shared atlas and the game's existing tiered confetti;
+  the 2026-10-12 update also removes displayed percentages and lowers jackpot odds
+  to 0.5% in the authoritative backend.
 - Backend implementation: `ef9bf28`; staging merge/deployed commit: `0a7e3097b90e`.
 - Active release: `20261011-daily-rewards-v2-0a7e309`.
 - API: `https://staging-api.pixelmaniagame.com`; WebSocket: same host at `/ws`.

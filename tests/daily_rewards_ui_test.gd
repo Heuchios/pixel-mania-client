@@ -36,14 +36,13 @@ func run() -> void:
 	viewport.add_child(ui)
 	var now := 1770000000000
 	var snapshot := {"day": 20486, "server_time": now, "reset_at": now + 43200000, "can_claim": true,
-		"rewards": [{"id":"gems_250","gems":250,"name":"250 GEMS","rarity":"COMMON","chance":75},
+		"rewards": [{"id":"gems_250","gems":250,"name":"250 GEMS","rarity":"COMMON","chance":79.5},
 			{"id":"gems_1000","gems":1000,"name":"1,000 GEMS","rarity":"RARE","chance":20},
-			{"id":"gems_5000","gems":5000,"name":"5,000 GEMS","rarity":"JACKPOT","chance":5}]}
+			{"id":"gems_5000","gems":5000,"name":"5,000 GEMS","rarity":"JACKPOT","chance":0.5}]}
 	ui.load_snapshot(snapshot)
 	ui.show()
 	await process_frame
 	check(ui.phase == "ready" and not ui.action_button.disabled, "Ready claim button")
-	check(ui.odds.text.contains("75%") and ui.odds.text.contains("5%"), "Server odds displayed")
 	await capture(viewport, "daily-rewards-ready")
 	for dimensions in [Vector2i(640, 360), Vector2i(360, 640), Vector2i(2340,1080)]:
 		viewport.size = dimensions
@@ -72,7 +71,8 @@ func run() -> void:
 	ui.reveal_tween.custom_step(1.0)
 	ui.prize_tween.custom_step(1.0)
 	check(ui.phase == "reveal" and ui.prize_name.text == "1,000 GEMS", "Automatic reveal counts up to the same server prize")
-	check(ui.backdrop.particles.size() > 54 and ui.backdrop.particles.size() <= ui.backdrop.MAX_PARTICLES, "Rare prize has a bounded particle burst")
+	check(is_instance_valid(ui.backdrop.confetti_effect), "Prize reveal starts the shared game confetti")
+	await create_timer(0.35).timeout
 	await capture(viewport, "daily-rewards-winner")
 	ui._activate()
 	check(ui.phase == "collecting" and not ui.panel.visible and ui.collection_fx.visible, "Collect sends gems toward the HUD over the visible world")
@@ -102,16 +102,27 @@ func run() -> void:
 	ui.reveal_tween.custom_step(1.0)
 	ui.prize_tween.custom_step(1.0)
 	check(ui.phase == "reveal" and not ui.backdrop.is_processing(), "Closing during spin preserves the prize and pauses hidden effects")
+	check(ui.backdrop.confetti_effect.particle_layers.all(func(layer): return layer.speed_scale == 0), "Hidden GPU confetti is paused")
 	ui.show()
 	await process_frame
 	check(ui.backdrop.is_processing() and ui.prize_name.text == "5,000 GEMS", "Reopening resumes the saved jackpot reveal")
-	await create_timer(0.25).timeout
+	check(ui.backdrop.confetti_effect.particle_layers.all(func(layer): return layer.speed_scale == 1), "Reopened GPU confetti resumes")
+	await create_timer(0.4).timeout
 	await capture(viewport, "daily-rewards-jackpot")
 	ui._activate()
 	ui.collection_fx._process(0.3)
 	await capture(viewport, "daily-rewards-collect")
 	ui.close_rewards()
 	check(ui.phase == "claimed" and not ui.collection_fx.is_processing(), "Back during collection cancels cosmetic effects safely")
+	ui.show()
+	ui._start_spin(snapshot.rewards[0])
+	ui.spin_tween.custom_step(6.0)
+	ui.reveal_tween.custom_step(1.0)
+	ui.prize_tween.custom_step(1.0)
+	await create_timer(0.25).timeout
+	await capture(viewport, "daily-rewards-common")
+	await create_timer(2.0).timeout
+	check(not is_instance_valid(ui.backdrop.confetti_effect), "Confetti completes and frees itself without an endless celebration loop")
 	ui.queue_free()
 	await process_frame
 	await check_hud(viewport)

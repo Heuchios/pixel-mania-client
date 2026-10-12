@@ -5,7 +5,7 @@ const Backdrop = preload("res://Scripts/ui/daily_reward_backdrop.gd")
 const GEM_TEXTURES = [preload("res://Assets/currency/medium_gem.png"), preload("res://Assets/currency/large_gem.png"), preload("res://Assets/currency/huge_gem.png")]
 const GOLD = Color("ffda79")
 const INK = Color("281336")
-const BASE_SIZE = Vector2(900, 590)
+const BASE_SIZE = Vector2(900, 550)
 const CARD_SIZE = Vector2(142, 174)
 const CARD_STEP = 156.0
 
@@ -16,7 +16,6 @@ var reel_clip: Control
 var reel: Control
 var status: Label
 var countdown: Label
-var odds: Label
 var action_button: Button
 var close_button: Button
 var prize_icon: TextureRect
@@ -84,9 +83,8 @@ func _ready() -> void:
 	panel.add_child(line)
 	line.name = "SelectionLine"
 	status = _label(panel, "CHECKING YOUR DAILY BOX...", Rect2(30, 363, 840, 40), 24, INK)
-	odds = _label(panel, "", Rect2(20, 410, 860, 36), 18, INK)
-	action_button = _button(panel, "PLEASE WAIT", Rect2(290, 468, 320, 60), _activate)
-	countdown = _label(panel, "Free once a day · Resets at 00:00 UTC", Rect2(40, 545, 820, 28), 17, INK)
+	action_button = _button(panel, "PLEASE WAIT", Rect2(290, 428, 320, 60), _activate)
+	countdown = _label(panel, "Free once a day · Resets at 00:00 UTC", Rect2(40, 505, 820, 28), 17, INK)
 	prize_stage = Panel.new()
 	prize_stage.position = reel_frame.position
 	prize_stage.size = reel_frame.size
@@ -95,8 +93,8 @@ func _ready() -> void:
 	panel.add_child(prize_stage)
 	backdrop = Backdrop.new()
 	panel.add_child(backdrop)
-	backdrop.position = Vector2(32, 144)
-	backdrop.size = Vector2(836, 194)
+	backdrop.position = Vector2(32, 120)
+	backdrop.size = Vector2(836, 300)
 	backdrop.clip_contents = true
 	prize_rarity = _label(panel, "", Rect2(40, 116, 820, 30), 22, INK)
 	prize_icon = TextureRect.new()
@@ -108,7 +106,7 @@ func _ready() -> void:
 	prize_icon.pivot_offset = prize_icon.size * 0.5
 	panel.add_child(prize_icon)
 	prize_name = _label(panel, "", Rect2(40, 340, 820, 54), 36, INK)
-	prize_note = _label(panel, "Added to your gems", Rect2(40, 403, 820, 30), 20, INK)
+	prize_note = _label(panel, "Added to your gems", Rect2(40, 392, 820, 28), 20, INK)
 	collection_fx = Backdrop.new()
 	add_child(collection_fx)
 	collection_fx.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -239,10 +237,6 @@ func load_snapshot(data: Dictionary) -> void:
 	snapshot = data.duplicate(true)
 	clock_offset = int(snapshot.get("server_time", 0)) - Time.get_ticks_msec()
 	var rewards: Array = snapshot.get("rewards", [])
-	var parts := PackedStringArray()
-	for reward in rewards:
-		parts.append("%s  %s%%" % [str(reward.get("name", "")), str(reward.get("chance", 0))])
-	odds.text = "   ·   ".join(parts)
 	_build_reel(rewards)
 	_set_phase("ready" if bool(snapshot.get("can_claim", false)) and not rewards.is_empty() else "claimed")
 	if phase == "claimed":
@@ -364,9 +358,8 @@ func _set_phase(value: String) -> void:
 	marker.visible = not reveal
 	panel.get_node("SelectionLine").visible = not reveal
 	status.visible = not reveal
-	odds.visible = not reveal
 	marker.scale = Vector2.ONE
-	backdrop.set_mode("celebrate" if phase in ["result", "reveal"] else ("spin" if phase == "spinning" else "idle"), winning_reward, _texture(winning_reward))
+	backdrop.set_mode("celebrate" if phase == "reveal" else ("spin" if phase == "spinning" else "idle"), winning_reward, _texture(winning_reward))
 	action_button.disabled = phase in ["loading", "spinning"]
 	match phase:
 		"ready":
