@@ -20,6 +20,7 @@
 
 [ext_resource type="SpriteFrames" path="res://Assets/player/expressions/face_expressions.tres" id="90_face_atlas"]
 [ext_resource type="SpriteFrames" path="res://Assets/player/expressions/dead_spirit.tres" id="91_spirit_atlas"]
+[ext_resource type="AnimationLibrary" path="res://Assets/player/animations/dance.tres" id="92_dance"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player_main"]
 size = Vector2(17, 24)
@@ -4030,6 +4031,10 @@ libraries/ = SubResource("AnimationLibrary_jkdf5")
 
 [node name="idle" type="AnimationPlayer" parent="Player" unique_id=2119836559]
 libraries/ = SubResource("AnimationLibrary_h1bgf")
+
+[node name="EmoteAnimationPlayer" type="AnimationPlayer" parent="Player"]
+callback_mode_process = 2
+libraries/ = ExtResource("92_dance")
 
 [node name="Players" type="Node2D" parent="." unique_id=541320274]
 z_index = 3900

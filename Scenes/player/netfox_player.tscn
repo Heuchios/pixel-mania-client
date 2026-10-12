@@ -15,6 +15,7 @@
 
 [ext_resource type="SpriteFrames" path="res://Assets/player/expressions/face_expressions.tres" id="90_face_atlas"]
 [ext_resource type="SpriteFrames" path="res://Assets/player/expressions/dead_spirit.tres" id="91_spirit_atlas"]
+[ext_resource type="AnimationLibrary" path="res://Assets/player/animations/dance.tres" id="92_dance"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
 size = Vector2(16, 32)
@@ -892,6 +893,10 @@ libraries/ = SubResource("AnimationLibrary_jump")
 
 [node name="idle" type="AnimationPlayer" parent="." unique_id=2098663202]
 libraries/ = SubResource("AnimationLibrary_idle")
+
+[node name="EmoteAnimationPlayer" type="AnimationPlayer" parent="."]
+callback_mode_process = 2
+libraries/ = ExtResource("92_dance")
 
 [node name="DebugLabel" type="Label" parent="." unique_id=1572945553]
 offset_left = -54.0

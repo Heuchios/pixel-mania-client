@@ -4,7 +4,7 @@ signal emote_selected(emote_id: String)
 const EMOTES = preload("res://Scripts/player_emotes.gd")
 const FACES = preload("res://Assets/player/expressions/face_expressions.tres")
 const UI_ATLAS = preload("res://Scripts/UIAtlasDB.gd")
-const PANEL_SIZE := Vector2(244, 256)
+const PANEL_SIZE := Vector2(244, 322)
 var world = null
 var is_panel_open := false
 var last_selection_msec := -1000
@@ -20,11 +20,12 @@ func _ready() -> void:
 	set_meta("pixelmania_text_shadow", false)
 	emotes_panel.add_theme_stylebox_override("panel", UI_ATLAS.get_stylebox("outer_panel"))
 	emotes_button.pressed.connect(toggle_emotes_panel)
-	for id in ["wave", "laugh", "sad"]:
+	for id in EMOTES.DURATIONS:
 		var button := Button.new()
 		button.name = id.capitalize()
 		button.custom_minimum_size = Vector2(212, 60)
 		button.text = "      " + id.capitalize()
+		button.tooltip_text = "/" + str(EMOTES.COMMANDS.find_key(id))
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button.focus_mode = Control.FOCUS_NONE
 		button.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -35,7 +36,7 @@ func _ready() -> void:
 		button.add_theme_stylebox_override("pressed", UI_ATLAS.get_stylebox("pink_button"))
 		var icon := TextureRect.new()
 		icon.name = "Face"
-		icon.texture = FACES.get_frame_texture(id, 1 if id == "laugh" else 0)
+		icon.texture = FACES.get_frame_texture(EMOTES.face_for_emote(id), 1 if id == "laugh" else 0)
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.position = Vector2(10, 7)
@@ -55,7 +56,8 @@ func _process(_delta: float) -> void:
 		var available: bool = world.in_world and not world.is_gameplay_hud_blocked() and not world.is_player_dead_or_respawning()
 		if not available:
 			set_emotes_panel_open(false)
-			EMOTES.cancel(world.player)
+			var keep_dancing: bool = world.in_world and not world.is_player_dead_or_respawning() and is_instance_valid(world.player) and str(world.player.get_meta("player_emote_id", "")) == "dance"
+			if not keep_dancing: EMOTES.cancel(world.player)
 		visible = available
 	update_emotes_layout()
 

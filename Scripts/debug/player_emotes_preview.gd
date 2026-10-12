@@ -19,11 +19,11 @@ func _ready() -> void:
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
 	add_label("PLAYER EMOTES", Vector2(60, 35), 36)
-	add_label("Wave, laugh or look sad using the original sprite sheet.", Vector2(60, 95), 22)
+	add_label("/wave   /lol   /sad   /dance - full-body gestures", Vector2(60, 95), 22)
 	var template: Node = load("res://Scenes/player/netfox_player.tscn").instantiate()
-	for i in 4:
+	for i in 5:
 		var actor := Node2D.new()
-		actor.position = Vector2(230 + i * 400, 440)
+		actor.position = Vector2(180 + i * 310, 440)
 		actor.scale = Vector2(5, 5)
 		var visual := template.get_node("PlayerVisual").duplicate()
 		actor.add_child(visual)
@@ -38,11 +38,11 @@ func _ready() -> void:
 			if sprite.sprite_frames != null and sprite.sprite_frames.has_animation("idle"): sprite.play("idle")
 		actors.append(actor)
 		managers.append(manager)
-		add_label(["WAVE", "LAUGH", "SAD", "TRY IT"][i], Vector2(170 + i * 400, 510), 27)
+		add_label(["WAVE", "LAUGH", "SAD", "DANCE", "TRY IT"][i], Vector2(120 + i * 310, 510), 27)
 	template.free()
-	interactive = actors[3]
+	interactive = actors[4]
 	status = add_label("Click the smile button beneath chat.", Vector2(60, 650), 24)
-	add_label("Gestures end automatically. In-game movement and damage cancel them.", Vector2(60, 695), 20)
+	add_label("Dance loops until you move, attack or get hit. Other gestures end automatically.", Vector2(60, 695), 20)
 	add_label("Atlas reference: Assets/player/expressions/emotes.png", Vector2(60, 790), 20)
 	var sheet := TextureRect.new()
 	sheet.texture = preload("res://Assets/player/expressions/emotes.png")
@@ -79,6 +79,7 @@ func add_label(text: String, pos: Vector2, font_size: int) -> Label:
 
 func loop_examples() -> void:
 	for i in 3: EMOTES.play(actors[i], ["wave", "laugh", "sad"][i])
+	if str(actors[3].get_meta("player_emote_id", "")) != "dance": EMOTES.play(actors[3], "dance")
 
 func _selected(id: String) -> void:
 	EMOTES.play(interactive, id)
@@ -88,7 +89,7 @@ func _process(delta: float) -> void:
 	for i in hud_icons.size():
 		MobileUIScale.layout_corner_button(hud_icons[i], i, get_viewport_rect().size)
 	repeat_timer += delta
-	if repeat_timer > 3.5:
+	if repeat_timer > 5.2:
 		repeat_timer = 0.0
 		loop_examples()
 	for manager in managers: manager.update_face_expression_animation("idle")

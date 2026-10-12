@@ -45,15 +45,17 @@ func setup_emotes_ui() -> void:
 		world.emotes_ui.emote_selected.connect(play_local_emote)
 
 
-func play_local_emote(id: String) -> void:
-	if not is_instance_valid(world) or not world.in_world or world.is_gameplay_hud_blocked() or world.is_player_dead_or_respawning(): return
-	if Time.get_ticks_msec() - last_emote_msec < 1000: return
+func play_local_emote(id: String) -> bool:
+	if not is_instance_valid(world) or not world.in_world or world.is_gameplay_hud_blocked() or world.is_player_dead_or_respawning(): return false
+	if Time.get_ticks_msec() - last_emote_msec < 1000: return false
 	var actor = world.player
-	if not is_instance_valid(actor): return
-	if actor is CharacterBody2D and (not actor.is_on_floor() or actor.velocity.length() > 6.0): return
+	if not is_instance_valid(actor): return false
+	if actor is CharacterBody2D and (not actor.is_on_floor() or actor.velocity.length() > 6.0): return false
 	if preload("res://Scripts/player_emotes.gd").play(actor, id):
 		last_emote_msec = Time.get_ticks_msec()
 		NetworkManager.send_player_emote(id)
+		return true
+	return false
 
 
 func handle_player_emote(data: Dictionary) -> void:

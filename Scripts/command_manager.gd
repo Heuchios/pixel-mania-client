@@ -3,6 +3,7 @@ extends Node
 const DEVELOPER_USERNAME := "USO"
 const SERVER_CONFIRMATION_TIMEOUT := 3.0
 const ALLOW_LOCAL_DEVELOPER_FALLBACK := false
+const EMOTES = preload("res://Scripts/player_emotes.gd")
 
 var world = null
 var developer_command_request_counter := 0
@@ -281,10 +282,18 @@ func is_moderator_account_active() -> bool:
 
 
 func is_player_command(command: String) -> bool:
-	return ["where", "warp", "trade", "bc", "player", "profile", "pull", "honors", "top"].has(command)
+	return EMOTES.COMMANDS.has(command) or ["where", "warp", "trade", "bc", "player", "profile", "pull", "honors", "top"].has(command)
 
 
 func execute_player_command(command: String, parts: Array):
+	if EMOTES.COMMANDS.has(command):
+		if parts.size() != 1:
+			respond("Use: /" + command)
+		elif not is_instance_valid(world.gameplay_ui_manager):
+			respond("Emotes are not ready.")
+		elif not world.gameplay_ui_manager.play_local_emote(EMOTES.COMMANDS[command]):
+			respond("Stand still in a world to use emotes. Wait a moment between emotes.")
+		return
 	match command:
 		"honors", "top":
 			var network = get_node_or_null("/root/NetworkManager")
@@ -960,6 +969,7 @@ func build_give_world_command_text(give_world_data: Dictionary) -> String:
 
 func show_player_help():
 	respond("Player commands: /help, /where, /warp world_name, /player username, /trade player_name, /pull username, /bc message")
+	respond("Emotes: /dance, /sad, /wave, /lol")
 	respond("World Honors: /honors [today|yesterday|overall] (or /top)")
 
 

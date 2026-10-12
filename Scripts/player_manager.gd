@@ -3867,6 +3867,7 @@ func ensure_remote_player_shared_visual_pipeline(remote_player) -> bool:
 
 		player_visual = local_visual.duplicate()
 		player_visual.name = "PlayerVisual"
+		preload("res://Scripts/player_emotes.gd").restore_cloned_visual(world.player, player_visual)
 		# Runtime trails hold actor-specific blade/animation bindings. Let the
 		# remote equipment manager build its own instead of cloning the observer's.
 		for child in player_visual.get_children():

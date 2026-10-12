@@ -12,7 +12,7 @@ func run() -> void:
 	var preview: Node = load("res://Scenes/debug/player_emotes_preview.tscn").instantiate()
 	viewport.add_child(preview)
 	await create_timer(0.45).timeout
-	if preview.actors.size() != 4 or not is_instance_valid(preview.menu):
+	if preview.actors.size() != 5 or not is_instance_valid(preview.menu):
 		push_error("Preview failed to assemble avatars and menu")
 		quit(1)
 		return
