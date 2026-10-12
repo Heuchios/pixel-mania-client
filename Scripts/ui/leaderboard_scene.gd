@@ -19,13 +19,13 @@ const SOFT_TEXT := Color("d9bce5")
 @export_multiline var editor_note: String = "This scene is intentionally made from real child nodes. Edit labels, panels, rows, buttons, textures, positions, and sizes directly in the Scene tree. Keep Apply Exported Content/Styles enabled for data-driven previews, or turn them off when you want direct node edits to stay untouched."
 
 @export_category("Content")
-@export var title_text: String = "LANDFILL":
+@export var title_text: String = "LANDFILL LEADERBOARD":
 	set(value):
 		if title_text == value:
 			return
 		title_text = value
 		_queue_refresh()
-@export var badge_text: String = "EVENT LEADERBOARD":
+@export var badge_text: String = "":
 	set(value):
 		if badge_text == value:
 			return
@@ -485,6 +485,7 @@ func refresh_preview() -> void:
 func apply_exported_content() -> void:
 	_set_label_text("CenterContainer/LeaderboardWindow/HeaderPanel/TitleLabel", title_text)
 	_set_label_text("CenterContainer/LeaderboardWindow/HeaderPanel/BadgeBack/BadgeLabel", badge_text)
+	get_node("CenterContainer/LeaderboardWindow/HeaderPanel/BadgeBack").visible = not badge_text.is_empty()
 	_set_label_text("CenterContainer/LeaderboardWindow/HeaderPanel/SubtitleLabel", subtitle_text)
 	_set_label_text("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow/RankHeader", rank_header_text)
 	_set_label_text("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow/PlayerHeader", player_header_text)
@@ -528,9 +529,9 @@ func apply_exported_styles() -> void:
 
 	header_panel.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	get_node("CenterContainer/LeaderboardWindow/HeaderPanel/BadgeBack").add_theme_stylebox_override("panel", StyleBoxEmpty.new())
-	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/TitleLabel", title_font_size, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/TitleLabel", title_font_size, INK, HORIZONTAL_ALIGNMENT_LEFT)
 	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/BadgeBack/BadgeLabel", badge_font_size, INK, HORIZONTAL_ALIGNMENT_CENTER)
-	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/SubtitleLabel", subtitle_font_size, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/SubtitleLabel", subtitle_font_size, INK, HORIZONTAL_ALIGNMENT_LEFT)
 	_style_label("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow/RankHeader", header_font_size, SOFT_TEXT, HORIZONTAL_ALIGNMENT_CENTER)
 	_style_label("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow/PlayerHeader", header_font_size, SOFT_TEXT, HORIZONTAL_ALIGNMENT_LEFT)
 	_style_label("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow/PointsHeader", header_font_size, SOFT_TEXT, HORIZONTAL_ALIGNMENT_RIGHT)

@@ -236,18 +236,19 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 52
-text = "LANDFILL"
-horizontal_alignment = 1
+text = "LANDFILL LEADERBOARD"
+horizontal_alignment = 0
 vertical_alignment = 1
 clip_text = true
 metadata/pixelmania_font_role = "preserve"
 
-offset_left = 64.0
+offset_left = 0.0
 offset_top = 0.0
 offset_right = 920.0
 offset_bottom = 46.0
 
 [node name="BadgeBack" type="Panel" parent="CenterContainer/LeaderboardWindow/HeaderPanel" unique_id=1662832151]
+visible = false
 layout_mode = 0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("atlas_StyleBoxFlat_3cei8")
@@ -270,7 +271,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 23
-text = "EVENT LEADERBOARD"
+text = ""
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
@@ -285,13 +286,13 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("7_vxc2b")
 theme_override_font_sizes/font_size = 19
 text = "Compete in the Landfill Race and collect KG!"
-horizontal_alignment = 1
+horizontal_alignment = 0
 vertical_alignment = 1
 clip_text = true
 metadata/pixelmania_font_role = "preserve"
 
-offset_left = 24.0
-offset_top = 82.0
+offset_left = 0.0
+offset_top = 56.0
 offset_right = 960.0
 offset_bottom = 112.0
 
