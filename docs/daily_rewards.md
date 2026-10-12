@@ -22,7 +22,8 @@ follow the ball as it slows. The ambient chase runs continuously while the windo
 is visible, including before spinning and after reopening a claimed reward.
 Landing layers a tier-colored wave over the chase, with a longer celebration for
 jackpots. The pointer and center hub use damped spring motion.
-All 48 bulbs share one instanced mesh with a small pixel shader; their positions
+All 48 rounded glass bulbs share one instanced mesh with a small shader. Soft
+circular halos and warm bezels replace the square sockets; their positions
 are cached and only brightness changes each frame. Idle lights do not rebuild the
 wheel geometry, labels, ball, or pointer. Hidden windows pause light updates.
 A ball circles in the opposite direction with a fading trail,
