@@ -131,7 +131,7 @@ func _process(_delta: float) -> void:
 		var remaining := maxi(0, int(board.get("reset_at", 0)) - Time.get_ticks_msec() - clock_offset)
 		var seconds := int(remaining / 1000.0)
 		reset_label.text = "New daily quests in %02dh %02dm" % [int(seconds / 3600.0), int(seconds / 60.0) % 60]
-		footer.text = "%d / 5 DAYS  |  +100 XP WEEKLY BONUS" % int(board.get("week_days", 0))
+		_update_weekly_footer()
 		if remaining == 0 and pending_id.is_empty() and last_refresh_day != int(board.get("day", -1)):
 			last_refresh_day = int(board.get("day", -1))
 			_request("quest_board_get")
@@ -239,6 +239,17 @@ func _box(parent: Node) -> VBoxContainer:
 	margin.add_child(column)
 	return column
 
+func _update_weekly_footer() -> void:
+	var weekly: Dictionary = board.get("weekly", {})
+	if weekly.is_empty():
+		footer.text = "%d / 5 DAYS  |  +100 XP WEEKLY BONUS" % int(board.get("week_days", 0))
+		return
+	footer.text = "%d QUEST GEMS / WEEK  +  %d BONUS\n%d / %d QUESTS CLAIMED  |  %s" % [
+		int(weekly.get("quest_gems", 0)), int(weekly.get("bonus_gems", 0)),
+		int(weekly.get("claimed_quests", 0)), int(weekly.get("total_quests", 28)),
+		"BONUS CLAIMED" if weekly.get("bonus_claimed", false) else "FINISH ALL 7 DAYS"]
+	footer.tooltip_text = "Complete and claim all four daily quests every day. The final claim automatically includes the weekly bonus. Weeks reset Monday at 04:00 UTC."
+
 func _render() -> void:
 	if not is_instance_valid(content):
 		return
@@ -265,9 +276,11 @@ func _render() -> void:
 		tab.add_theme_color_override("font_color", GOLD if current_tab == pair[1] else Color.WHITE)
 	if board.is_empty():
 		reset_label.text = ""
+		footer.text = ""
 		_label(_box(content), "DAILY QUESTS", GOLD, 32)
 		_label(_box(content), "Loading your objectives and rewards...")
 		return
+	_update_weekly_footer()
 	if not selected_tier.is_empty() and selected_tier != "story":
 		_render_active(selected_tier)
 	else:

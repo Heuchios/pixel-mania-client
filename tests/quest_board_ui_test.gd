@@ -30,6 +30,12 @@ func run() -> void:
 	root.add_child(panel)
 	var fixture = JSON.parse_string(FileAccess.get_file_as_string("D:/Pixelmania/PixelMania/PixelManiaServer/test-output/quest_board_snapshot.json"))
 	panel.load_snapshot(fixture)
+	assert(panel.footer.text.contains("5000 QUEST GEMS / WEEK  +  1000 BONUS"))
+	assert(panel.footer.text.contains("0 / 28 QUESTS CLAIMED"))
+	var completed_fixture = JSON.parse_string(FileAccess.get_file_as_string("D:/Pixelmania/PixelMania/PixelManiaServer/test-output/quest_weekly_complete.json"))
+	panel.load_snapshot(completed_fixture)
+	assert(panel.footer.text.contains("28 / 28 QUESTS CLAIMED  |  BONUS CLAIMED"))
+	panel.load_snapshot(fixture)
 	panel.show()
 	await create_timer(0.5).timeout
 	assert(panel.is_quest_board_open())
@@ -37,6 +43,11 @@ func run() -> void:
 	panel.pending_id = "reward-confirmation"
 	panel.handle_inventory_transaction_result({"ok":true,"action":"quest_choose","request_id":"reward-confirmation","quest_receipts":[{"gems":10,"xp":50}],"progression":{"xp_gained":50},"quest_board":fixture})
 	assert(panel.status.text == "Reward claimed: +10 gems  +50 XP")
+	panel.pending_id = "weekly-confirmation"
+	panel.handle_inventory_transaction_result({"ok":true,"action":"quest_choose","request_id":"weekly-confirmation","quest_receipts":[{"gems":300,"xp":175},{"gems":1000,"xp":100}],"progression":{"xp_gained":275},"quest_board":completed_fixture})
+	assert(panel.status.text == "Reward claimed: +1300 gems  +275 XP")
+	assert(panel.footer.text.contains("BONUS CLAIMED"))
+	panel.load_snapshot(fixture)
 	assert(panel.get_node_or_null("Panel/Margin/Layout/Tabs/Storybook") == null)
 	assert(panel.get_node_or_null("Panel/Margin/Layout/Tabs/Rewards") == null)
 	assert(panel.title.get_theme_color("font_shadow_color").a == 0.0)
@@ -71,9 +82,14 @@ func run() -> void:
 	await create_timer(0.2).timeout
 	panel._fit()
 	assert(panel.panel.size.x <= 624)
+	assert(panel.footer.get_minimum_size().x <= panel.panel.size.x - 40)
+	if DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+		root.get_texture().get_image().save_png("D:/Pixelmania/work/quest-weekly-mobile.png")
 	root.size = Vector2i(1487, 935)
 	panel.load_snapshot(fixture)
 	panel._change_tab("today")
+	panel.status.text = "Complete your daily quests, then return to claim your rewards."
 	panel.close_quest_board()
 	assert(not panel.visible)
 	panel.show()
