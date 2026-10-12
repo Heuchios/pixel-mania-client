@@ -3175,8 +3175,6 @@ func setup_daily_rewards_button() -> void:
 	daily_rewards_button.size = Vector2(232, 48)
 	daily_rewards_button.position = Vector2(16, 60)
 	daily_rewards_button.z_index = 80
-	daily_rewards_button.add_theme_font_size_override("font_size", 17)
-	daily_rewards_button.set_meta("pixelmania_font_size", 17)
 	daily_rewards_button.add_theme_constant_override("outline_size", 0)
 	PixelUIStyle.apply_atlas_button(daily_rewards_button, "pink_button")
 	for state in ["normal", "hover", "pressed", "focus"]:
