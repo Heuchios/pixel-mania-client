@@ -551,6 +551,7 @@ const ITEMS = {
 
 	"ruby_bow": {
 		"category": "hat",
+		"tucks_hair": false,
 		"display_name": "Ruby Bow",
 		"rarity": "common",
 		"texture": "ruby_bow",
@@ -573,6 +574,7 @@ const ITEMS = {
 
 	"violet_bow": {
 		"category": "hat",
+		"tucks_hair": false,
 		"display_name": "Violet Bow",
 		"rarity": "common",
 		"texture": "violet_bow",
@@ -12643,6 +12645,7 @@ const ITEMS = {
 
 	"red_headband": {
 		"category": "hat",
+		"tucks_hair": false,
 		"display_name": "Red Headband",
 		"rarity": "common",
 		"texture": "red_headband",
@@ -14120,6 +14123,7 @@ const ITEMS = {
 
 	"red_headphones": {
 		"category": "hat",
+		"tucks_hair": false,
 		"display_name": "Red Headphones",
 		"rarity": "common",
 		"texture": "red_headphones",
@@ -14151,6 +14155,7 @@ const ITEMS = {
 
 	"meowphones": {
 		"category": "hat",
+		"tucks_hair": false,
 		"display_name": "Meowphones",
 		"rarity": "common",
 		"texture": "meowphones",

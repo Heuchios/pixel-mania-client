@@ -3,6 +3,7 @@ extends Node
 const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 const SelectedHandPreview = preload("res://Scripts/selected_hand_preview.gd")
 const SwordSlashTrail = preload("res://Scripts/sword_slash_trail.gd")
+const HairHatOcclusion = preload("res://Scripts/hair_hat_occlusion.gd")
 
 var world = null
 var player = null
@@ -571,6 +572,8 @@ func refresh_head_cover_visibility() -> void:
 	# This changes only the sprite. Preserve the equipped ID and its animation
 	# so it reappears immediately after the last full-head cover is removed.
 	hair.visible = wearable_part_item_ids.has("hair") and not covered
+	var hat_data: Dictionary = world.item_database.get(str(wearable_part_item_ids.get("hat", "")), {}) if world != null else {}
+	HairHatOcclusion.apply(hair, wearable_part_nodes.get("hat"), hat_data)
 
 
 func get_wearable_part_base_scale(part_key: String) -> Vector2:
