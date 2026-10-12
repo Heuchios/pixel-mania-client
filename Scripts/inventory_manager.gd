@@ -3171,17 +3171,12 @@ func setup_daily_rewards_button() -> void:
 	daily_rewards_button = preload("res://Scripts/ui/daily_rewards_button.gd").new()
 	daily_rewards_button.name = "DailyRewardsButton"
 	daily_rewards_button.set_meta("ignore_mobile_ui_scale", true)
-	daily_rewards_button.text = "DAILY REWARDS"
-	daily_rewards_button.size = Vector2(232, 48)
+	daily_rewards_button.tooltip_text = "Daily rewards"
+	daily_rewards_button.size = Vector2(72, 72)
 	daily_rewards_button.position = Vector2(16, 60)
 	daily_rewards_button.z_index = 80
 	daily_rewards_button.add_theme_constant_override("outline_size", 0)
 	PixelUIStyle.apply_atlas_button(daily_rewards_button, "pink_button")
-	for state in ["normal", "hover", "pressed", "focus"]:
-		var box := daily_rewards_button.get_theme_stylebox(state).duplicate() as StyleBoxTexture
-		box.content_margin_left = 44
-		box.content_margin_right = 8
-		daily_rewards_button.add_theme_stylebox_override(state, box)
 	get_hud_layer().add_child(daily_rewards_button)
 	daily_rewards_button.pressed.connect(world.open_daily_rewards)
 	world.setup_daily_rewards()
