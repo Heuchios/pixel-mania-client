@@ -27,3 +27,20 @@ harvest tables are preserved; no player inventory or world records are migrated.
 Checks: `npm run check:machine-break-return`, `npm run check:farming-balance`,
 `npm run check:security`, and Godot headless
 `--script res://tests/machine_break_return_test.gd`.
+
+## Verified staging deployment — 2026-10-12
+
+- Release: `20261012-machine-return-bcd7c18`.
+- Backend: `bcd7c183a6832f6a9f5ec92697a0ececb578a829`.
+- Client source: `afec650ad3977c9a050ff2d356e72c37aea90e59` (clean release metadata).
+- Full backend security checks and the 332-row farming rebuild/check passed.
+  Actual client recovery checks passed for all 11 requested catalog items.
+  The deployed server test passed for 13 recoverable machine states, including
+  existing Leaderboard and Fish Monger coverage.
+- Public staging health and PostgreSQL/Redis checks passed; current/minimum
+  client version remains 1.2.25. Rollback: `20261012-combined-036f3b0`.
+- Production remains `20261010-hand-visuals-33256ff`. Published binaries and
+  player data were not changed.
+- Logs: `D:/Pixelmania/work/machine-break-20261012-security.log`,
+  `machine-break-20261012-deploy.log`, `machine-break-20261012-live-check.log`,
+  and `D:/Pixelmania/work/machine-break-tests/client.log`.

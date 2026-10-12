@@ -7,6 +7,21 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Special item break recovery deployed to staging (2026-10-12)
+
+Snow Repellent and CCTV no longer use spreadsheet farming break rewards.
+They return one item directly to inventory with zero break seeds, gems or
+world drops. All other requested machines, World Lock, anti-action blocks and
+every theme machine are covered by the same client/server regressions. The
+farming generator preserves recovery flags; existing seeds and tree harvest
+behavior remain unchanged. Full security, farming data and client tests passed,
+as did the regression on the deployed server.
+
+Staging runs `20261012-machine-return-bcd7c18` (backend `bcd7c183a683`, client
+source `afec650ad397`), with PostgreSQL and Redis ready and minimum 1.2.25.
+Rollback is `20261012-combined-036f3b0`. Production is unchanged.
+See [special item recovery](special_item_break_recovery.md).
+
 ### Combined update committed and deployed to staging (2026-10-12)
 
 User requested committing everything and deploying to staging. Backend
