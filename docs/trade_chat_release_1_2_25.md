@@ -73,3 +73,19 @@ for 1.2.25. Android distribution is still awaiting a user answer. Once an
 installable 1.2.25 update path is established, deploy both repositories and
 publish synchronized required minimums, then verify old versions are rejected
 on production. A Play release must actually be available before advertising it.
+
+## Follow-up: readable item messages (2026-10-12)
+
+Backend commit `15343ee9464b034c8427be86516dce89fa8b768e` replaces raw item IDs
+in gameplay text with catalog display names. Display withdrawal now sends
+`Took Blue Tang.`. The same lookup covers storage, pickup/drop, shop, crafting,
+fishing, planting, trade and inventory failure messages, including newly added
+catalog entries. The actual withdrawal handler and all 701 configured display
+names were checked; full backend security passes. IDs and amounts are unchanged.
+
+Include this backend follow-up when preparing the combined production release;
+the original backend candidate listed above does not contain it. This message
+fix requires no client rebuild. The existing artifact verification remains a
+record of the original candidate. Production deployment and the Android
+distribution decision remain pending. Backend details:
+`D:/Pixelmania/PixelMania/PixelManiaServer/docs/item_display_names.md`.
