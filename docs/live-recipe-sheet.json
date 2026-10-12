@@ -2,7 +2,7 @@
   "spreadsheet_id": "1PJLhG99ik5hVTQNTC29gizhC1nSvb3enpCMKma2uumU",
   "sheet": "SPLICING",
   "sheet_id": 862678959,
-  "read_date": "2026-09-18",
+  "read_date": "2026-10-12",
   "rows": [
     {
       "row": 6,
@@ -12,7 +12,8 @@
         "Leaf block",
         "Big Vine"
       ],
-      "crafting": false,
+      "duration": "1m 40s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -29,6 +30,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "hanging_vine",
+        "leaf",
+        "vines_2"
       ]
     },
     {
@@ -39,7 +52,8 @@
         "Dirt",
         "Grass"
       ],
-      "crafting": false,
+      "duration": "1m 40s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -56,6 +70,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "leaf",
+        "dirt",
+        "grass"
       ]
     },
     {
@@ -66,7 +92,8 @@
         "Grass",
         "Bush"
       ],
-      "crafting": false,
+      "duration": "1m 40s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -83,6 +110,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "leaf",
+        "grass",
+        "bush"
       ]
     },
     {
@@ -93,7 +132,8 @@
         "Tree trunk",
         "Mushroom"
       ],
-      "crafting": false,
+      "duration": "1m 40s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -110,6 +150,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "leaf",
+        "wood",
+        "mushroom"
       ]
     },
     {
@@ -120,7 +172,8 @@
         "Dirt",
         "Wood block"
       ],
-      "crafting": false,
+      "duration": "1m 40s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -137,6 +190,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wood",
+        "dirt",
+        "wooden_block"
       ]
     },
     {
@@ -147,7 +212,8 @@
         "Cave Wall",
         "Wood wall"
       ],
-      "crafting": false,
+      "duration": "1m 40s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -164,6 +230,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_block",
+        "cave_background",
+        "wooden_wallpaper"
       ]
     },
     {
@@ -174,7 +252,8 @@
         "Lava",
         "Red brick"
       ],
-      "crafting": false,
+      "duration": "1m 40s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -191,6 +270,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "stone",
+        "lava",
+        "red_brick"
       ]
     },
     {
@@ -201,7 +292,8 @@
         "Dirt",
         "Stone brick"
       ],
-      "crafting": false,
+      "duration": "1m 40s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -218,6 +310,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "stone",
+        "dirt",
+        "stone_brick"
       ]
     },
     {
@@ -228,7 +332,8 @@
         "Lava",
         "Glass pane"
       ],
-      "crafting": false,
+      "duration": "1m 40s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -245,6 +350,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "sand",
+        "lava",
+        "glass_panel"
       ]
     },
     {
@@ -255,7 +372,8 @@
         "Lava",
         "Dried hay"
       ],
-      "crafting": false,
+      "duration": "1m 40s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -272,6 +390,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "grass",
+        "lava",
+        "hay"
       ]
     },
     {
@@ -282,7 +412,8 @@
         "Big Vine",
         "Wooden platform"
       ],
-      "crafting": false,
+      "duration": "4m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -299,6 +430,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_block",
+        "vines_2",
+        "wood_platform"
       ]
     },
     {
@@ -309,7 +452,8 @@
         "Mushroom",
         "Wooden sign"
       ],
-      "crafting": false,
+      "duration": "4m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -326,6 +470,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_block",
+        "mushroom",
+        "sign"
       ]
     },
     {
@@ -336,7 +492,8 @@
         "Glass pane",
         "Wooden window"
       ],
-      "crafting": false,
+      "duration": "6m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -353,6 +510,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_block",
+        "glass_panel",
+        "wooden_window"
       ]
     },
     {
@@ -363,7 +532,8 @@
         "Dirt",
         "Wooden door"
       ],
-      "crafting": false,
+      "duration": "4m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -380,6 +550,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_block",
+        "dirt",
+        "wooden_door"
       ]
     },
     {
@@ -390,7 +572,8 @@
         "Dried hay",
         "Wooden fence"
       ],
-      "crafting": false,
+      "duration": "4m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -407,6 +590,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_block",
+        "hay",
+        "wooden_fence"
       ]
     },
     {
@@ -417,7 +612,8 @@
         "Bush",
         "Wooden table"
       ],
-      "crafting": false,
+      "duration": "4m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -434,6 +630,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_block",
+        "bush",
+        "wooden_table"
       ]
     },
     {
@@ -444,7 +652,8 @@
         "Cave Wall",
         "Mysterious sign"
       ],
-      "crafting": false,
+      "duration": "6m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -461,6 +670,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "sign",
+        "cave_background",
+        "wooden_crappy_sign"
       ]
     },
     {
@@ -471,7 +692,8 @@
         "Lava",
         "Campfire"
       ],
-      "crafting": false,
+      "duration": "6m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -488,6 +710,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_block",
+        "lava",
+        "campfire"
       ]
     },
     {
@@ -498,7 +732,8 @@
         "Cave Wall",
         "Red brick wall"
       ],
-      "crafting": false,
+      "duration": "4m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -515,6 +750,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_brick",
+        "cave_background",
+        "red_brick_wall"
       ]
     },
     {
@@ -525,7 +772,8 @@
         "Cave Wall",
         "Stone brick wall"
       ],
-      "crafting": false,
+      "duration": "6m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -542,6 +790,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "stone_brick",
+        "cave_background",
+        "stone_brick_wall"
       ]
     },
     {
@@ -552,7 +812,8 @@
         "Lily",
         "White block"
       ],
-      "crafting": false,
+      "duration": "6m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -569,6 +830,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_brick",
+        "lily",
+        "white_block"
       ]
     },
     {
@@ -579,7 +852,8 @@
         "Rose",
         "Red block"
       ],
-      "crafting": false,
+      "duration": "4m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -596,6 +870,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_brick",
+        "rose",
+        "red_block"
       ]
     },
     {
@@ -606,7 +892,8 @@
         "Grass",
         "Green block"
       ],
-      "crafting": false,
+      "duration": "4m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -623,6 +910,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_brick",
+        "grass",
+        "green_block"
       ]
     },
     {
@@ -633,7 +932,8 @@
         "Dirt",
         "Brown block"
       ],
-      "crafting": false,
+      "duration": "6m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -650,6 +950,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_brick",
+        "dirt",
+        "brown_block"
       ]
     },
     {
@@ -660,7 +972,8 @@
         "Stone",
         "Grey block"
       ],
-      "crafting": false,
+      "duration": "4m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -677,6 +990,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_brick",
+        "stone",
+        "grey_block"
       ]
     },
     {
@@ -687,7 +1012,8 @@
         "Obsidian",
         "Black block"
       ],
-      "crafting": false,
+      "duration": "4m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -704,6 +1030,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_brick",
+        "obsidian",
+        "black_block"
       ]
     },
     {
@@ -714,7 +1052,8 @@
         "Sunflower",
         "Yellow block"
       ],
-      "crafting": false,
+      "duration": "6m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -731,6 +1070,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_brick",
+        "sun_flower",
+        "yellow_block"
       ]
     },
     {
@@ -741,7 +1092,8 @@
         "Stone",
         "Glass block"
       ],
-      "crafting": false,
+      "duration": "4m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -758,6 +1110,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "glass_panel",
+        "stone",
+        "glass"
       ]
     },
     {
@@ -768,7 +1132,8 @@
         "Dried hay",
         "Hay bales"
       ],
-      "crafting": false,
+      "duration": "6m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -785,6 +1150,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_wallpaper",
+        "hay",
+        "hay_bales"
       ]
     },
     {
@@ -795,7 +1172,8 @@
         "Stone",
         "Hellbrick"
       ],
-      "crafting": false,
+      "duration": "4m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -812,6 +1190,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "magma_stone",
+        "stone",
+        "hellbrick"
       ]
     },
     {
@@ -822,7 +1212,8 @@
         "Wooden platform",
         "Wooden ladder"
       ],
-      "crafting": false,
+      "duration": "8m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -839,6 +1230,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_block",
+        "wood_platform",
+        "wooden_ladder"
       ]
     },
     {
@@ -849,7 +1252,8 @@
         "Wooden platform",
         "Wooden entrance"
       ],
-      "crafting": false,
+      "duration": "9m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -866,6 +1270,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_door",
+        "wood_platform",
+        "wooden_entrance"
       ]
     },
     {
@@ -876,7 +1292,8 @@
         "Wooden table",
         "Wooden chair"
       ],
-      "crafting": false,
+      "duration": "9m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -893,6 +1310,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "vines_2",
+        "wooden_table",
+        "wooden_chair"
       ]
     },
     {
@@ -903,7 +1332,8 @@
         "Brown block",
         "Wooden Box"
       ],
-      "crafting": false,
+      "duration": "8m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -920,6 +1350,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_block",
+        "brown_block",
+        "wooden_box"
       ]
     },
     {
@@ -930,7 +1372,8 @@
         "Black block",
         "Grimstone"
       ],
-      "crafting": false,
+      "duration": "8m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -947,6 +1390,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "stone_brick",
+        "black_block",
+        "green_brick"
       ]
     },
     {
@@ -957,7 +1412,8 @@
         "Yellow block",
         "Orange block"
       ],
-      "crafting": false,
+      "duration": "8m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -974,6 +1430,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_block",
+        "yellow_block",
+        "orange_block"
       ]
     },
     {
@@ -984,7 +1452,8 @@
         "Solid ice block",
         "Blue block"
       ],
-      "crafting": false,
+      "duration": "8m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1001,6 +1470,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "yellow_block",
+        "ice_block",
+        "blue_block"
       ]
     },
     {
@@ -1011,7 +1492,8 @@
         "White block",
         "Pink block"
       ],
-      "crafting": false,
+      "duration": "8m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1028,6 +1510,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_block",
+        "white_block",
+        "pink_block"
       ]
     },
     {
@@ -1038,7 +1532,8 @@
         "Red brick wall",
         "White wall"
       ],
-      "crafting": false,
+      "duration": "8m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1055,6 +1550,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "white_block",
+        "red_brick_wall",
+        "white_wallpaper"
       ]
     },
     {
@@ -1065,7 +1572,8 @@
         "Red brick wall",
         "Red wall"
       ],
-      "crafting": false,
+      "duration": "8m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1082,6 +1590,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_block",
+        "red_brick_wall",
+        "red_wallpaper"
       ]
     },
     {
@@ -1092,7 +1612,8 @@
         "Red brick wall",
         "Green wall"
       ],
-      "crafting": false,
+      "duration": "9m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1109,6 +1630,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "green_block",
+        "red_brick_wall",
+        "green_wallpaper"
       ]
     },
     {
@@ -1119,7 +1652,8 @@
         "Red brick wall",
         "Brown wall"
       ],
-      "crafting": false,
+      "duration": "8m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1136,17 +1670,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "brown_block",
+        "red_brick_wall",
+        "brown_wallpaper"
       ]
     },
     {
       "row": 90,
       "tier": "4",
       "names": [
-        "Gray block",
+        "Grey block",
         "Red brick wall",
         "Gray wall"
       ],
-      "crafting": false,
+      "duration": "8m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1163,6 +1710,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "grey_block",
+        "red_brick_wall",
+        "grey_wallpaper"
       ]
     },
     {
@@ -1173,7 +1732,8 @@
         "Red brick wall",
         "Black wall"
       ],
-      "crafting": false,
+      "duration": "9m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1190,6 +1750,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "black_block",
+        "red_brick_wall",
+        "black_wallpaper"
       ]
     },
     {
@@ -1200,7 +1772,8 @@
         "Red brick wall",
         "Yellow wall"
       ],
-      "crafting": false,
+      "duration": "8m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1217,6 +1790,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "yellow_block",
+        "red_brick_wall",
+        "yellow_wallpaper"
       ]
     },
     {
@@ -1227,7 +1812,8 @@
         "Wood block",
         "Barn block"
       ],
-      "crafting": false,
+      "duration": "9m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1244,6 +1830,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "hay_bales",
+        "wooden_block",
+        "barn_block"
       ]
     },
     {
@@ -1254,7 +1852,8 @@
         "Stone brick",
         "Building brick block"
       ],
-      "crafting": false,
+      "duration": "8m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1271,6 +1870,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_brick",
+        "stone_brick",
+        "building_brick_block"
       ]
     },
     {
@@ -1281,7 +1892,8 @@
         "Stone brick",
         "Polished stone brick"
       ],
-      "crafting": false,
+      "duration": "8m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1298,6 +1910,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "stone_brick_wall",
+        "stone_brick",
+        "white_brick_block"
       ]
     },
     {
@@ -1308,7 +1932,8 @@
         "Mysterious sign",
         "Big sign"
       ],
-      "crafting": false,
+      "duration": "8m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1325,17 +1950,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "sign",
+        "wooden_crappy_sign",
+        "big_sign"
       ]
     },
     {
       "row": 104,
       "tier": "4",
       "names": [
-        "Red brick wall",
+        "Red Brick",
         "Blue block",
         "Blue strip wallpaper"
       ],
-      "crafting": false,
+      "duration": "8m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1352,7 +1990,20 @@
           "green": 1,
           "blue": 1
         }
-      ]
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_brick",
+        "blue_block",
+        "blue_stripe_wall"
+      ],
+      "user_override": "Blue Block + Red Brick -> Blue Stripe Wallpaper, clarified by user on 2026-10-12."
     },
     {
       "row": 106,
@@ -1362,7 +2013,8 @@
         "Blue strip wallpaper",
         "Red strip wallpaper"
       ],
-      "crafting": false,
+      "duration": "9m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1379,6 +2031,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_brick_wall",
+        "blue_stripe_wall",
+        "red_stripe_wall"
       ]
     },
     {
@@ -1389,7 +2053,8 @@
         "Stone brick wall",
         "Hellbrick wall"
       ],
-      "crafting": false,
+      "duration": "8m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1406,6 +2071,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "hellbrick",
+        "stone_brick_wall",
+        "hellbrick_wall"
       ]
     },
     {
@@ -1416,7 +2093,8 @@
         "Green wall",
         "Climbing vine"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1433,6 +2111,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_chair",
+        "green_wallpaper",
+        "climbing_vine"
       ]
     },
     {
@@ -1443,7 +2133,8 @@
         "Wooden Box",
         "Wooden Barrel"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1460,6 +2151,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_block",
+        "wooden_box",
+        "wooden_barrel"
       ]
     },
     {
@@ -1470,7 +2173,8 @@
         "Lava",
         "Lantern"
       ],
-      "crafting": false,
+      "duration": "25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1487,6 +2191,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_box",
+        "lava",
+        "lantern"
       ]
     },
     {
@@ -1497,7 +2213,8 @@
         "Cave Wall",
         "Grimstone wall"
       ],
-      "crafting": false,
+      "duration": "25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1514,6 +2231,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "green_brick",
+        "cave_background",
+        "green_brick_wall"
       ]
     },
     {
@@ -1524,7 +2253,8 @@
         "Red strip wallpaper",
         "Aqua block"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1541,6 +2271,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "blue_block",
+        "red_stripe_wall",
+        "aqua_block"
       ]
     },
     {
@@ -1551,7 +2293,8 @@
         "Blue strip wallpaper",
         "Purple block"
       ],
-      "crafting": false,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1568,6 +2311,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_block",
+        "blue_stripe_wall",
+        "purple_block"
       ]
     },
     {
@@ -1578,7 +2333,8 @@
         "Grimstone",
         "Dark red block"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1595,6 +2351,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_block",
+        "green_brick",
+        "maroon_block"
       ]
     },
     {
@@ -1605,7 +2373,8 @@
         "Grimstone",
         "Dark green block"
       ],
-      "crafting": false,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1622,6 +2391,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "green_block",
+        "green_brick",
+        "dark_green_block"
       ]
     },
     {
@@ -1632,7 +2413,8 @@
         "Grimstone",
         "Dark orange block"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1649,6 +2431,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "orange_block",
+        "green_brick",
+        "dark_orange_block"
       ]
     },
     {
@@ -1659,7 +2453,8 @@
         "Grimstone",
         "Dark yellow block"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1676,6 +2471,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "yellow_block",
+        "green_brick",
+        "dark_yellow_block"
       ]
     },
     {
@@ -1686,7 +2493,8 @@
         "Grimstone",
         "Dark blue block"
       ],
-      "crafting": false,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1703,6 +2511,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "blue_block",
+        "green_brick",
+        "dark_blue_block"
       ]
     },
     {
@@ -1713,7 +2533,8 @@
         "Grimstone",
         "Dark pink block"
       ],
-      "crafting": false,
+      "duration": "25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1730,6 +2551,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "pink_block",
+        "green_brick",
+        "dark_pink_block"
       ]
     },
     {
@@ -1740,7 +2573,8 @@
         "Yellow wall",
         "Star wallpaper"
       ],
-      "crafting": false,
+      "duration": "9m 30s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1757,6 +2591,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "blue_block",
+        "yellow_wallpaper",
+        "star_wall"
       ]
     },
     {
@@ -1767,7 +2613,8 @@
         "Barn block",
         "Pastel red block"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1784,6 +2631,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_block",
+        "barn_block",
+        "red_pastel_block"
       ]
     },
     {
@@ -1794,7 +2653,8 @@
         "Barn block",
         "Pastel green block"
       ],
-      "crafting": false,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1811,6 +2671,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "green_block",
+        "barn_block",
+        "green_pastel_block"
       ]
     },
     {
@@ -1821,7 +2693,8 @@
         "Barn block",
         "Pastel yellow block"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1838,6 +2711,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "yellow_block",
+        "barn_block",
+        "yellow_pastel_block"
       ]
     },
     {
@@ -1848,7 +2733,8 @@
         "Barn block",
         "Pastel orange block"
       ],
-      "crafting": false,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1865,6 +2751,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "orange_block",
+        "barn_block",
+        "orange_pastel_block"
       ]
     },
     {
@@ -1875,7 +2773,8 @@
         "Barn block",
         "Pastel pink block"
       ],
-      "crafting": false,
+      "duration": "25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1892,6 +2791,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "pink_block",
+        "barn_block",
+        "pink_pastel_block"
       ]
     },
     {
@@ -1902,7 +2813,8 @@
         "Red brick wall",
         "Orange wall"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1919,6 +2831,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "orange_block",
+        "red_brick_wall",
+        "orange_wallpaper"
       ]
     },
     {
@@ -1929,7 +2853,8 @@
         "Red brick wall",
         "Blue wall"
       ],
-      "crafting": false,
+      "duration": "25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1946,6 +2871,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "blue_block",
+        "red_brick_wall",
+        "blue_wallpaper"
       ]
     },
     {
@@ -1956,7 +2893,8 @@
         "Red brick wall",
         "Pink wall"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -1973,6 +2911,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "pink_block",
+        "red_brick_wall",
+        "pink_wallpaper"
       ]
     },
     {
@@ -1983,7 +2933,8 @@
         "Polished stone brick",
         "Metal block"
       ],
-      "crafting": false,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2000,6 +2951,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "building_brick_block",
+        "white_brick_block",
+        "steel_block"
       ]
     },
     {
@@ -2010,7 +2973,8 @@
         "Campfire",
         "Slime block"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2027,17 +2991,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "green_brick",
+        "campfire",
+        "slime"
       ]
     },
     {
       "row": 156,
       "tier": "5",
       "names": [
-        "Fish horn",
+        "Fish Drill",
         "Wooden Box",
         "Fish hanger"
       ],
-      "crafting": true,
+      "duration": "25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1
@@ -2048,6 +3025,18 @@
         {
           "red": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": true,
+      "ids": [
+        "fish_drill",
+        "wooden_box",
+        "fish_hanger"
       ]
     },
     {
@@ -2058,7 +3047,8 @@
         "Barn block",
         "Barn Window"
       ],
-      "crafting": false,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2075,6 +3065,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_window",
+        "barn_block",
+        "barn_window"
       ]
     },
     {
@@ -2085,7 +3087,8 @@
         "Wood wall",
         "Barn wall"
       ],
-      "crafting": false,
+      "duration": "25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2102,6 +3105,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "barn_block",
+        "wooden_wallpaper",
+        "barn_background"
       ]
     },
     {
@@ -2112,7 +3127,8 @@
         "Wooden fence",
         "Farm fence"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2129,6 +3145,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "barn_block",
+        "wooden_fence",
+        "white_fence"
       ]
     },
     {
@@ -2139,7 +3167,8 @@
         "Wooden door",
         "Barn door"
       ],
-      "crafting": false,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2156,6 +3185,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "barn_block",
+        "wooden_door",
+        "barn_door"
       ]
     },
     {
@@ -2166,7 +3207,8 @@
         "Grimstone",
         "Sugarcane"
       ],
-      "crafting": false,
+      "duration": "25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2183,6 +3225,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "hay",
+        "green_brick",
+        "sugar_cane"
       ]
     },
     {
@@ -2193,7 +3247,8 @@
         "Wooden table",
         "House table"
       ],
-      "crafting": false,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2210,6 +3265,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "building_brick_block",
+        "wooden_table",
+        "side_table"
       ]
     },
     {
@@ -2220,7 +3287,8 @@
         "Wooden door",
         "House door"
       ],
-      "crafting": false,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2237,6 +3305,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "building_brick_block",
+        "wooden_door",
+        "royal_door"
       ]
     },
     {
@@ -2247,7 +3327,8 @@
         "Barn window",
         "White window"
       ],
-      "crafting": false,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2264,6 +3345,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_window",
+        "barn_window",
+        "royal_window"
       ]
     },
     {
@@ -2274,7 +3367,8 @@
         "Cave wall",
         "Building brick wall"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2291,6 +3385,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "building_brick_block",
+        "cave_background",
+        "building_brick_wall"
       ]
     },
     {
@@ -2301,7 +3407,8 @@
         "House door",
         "Fireplace"
       ],
-      "crafting": true,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1
@@ -2312,6 +3419,18 @@
         {
           "red": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": true,
+      "ids": [
+        "wooden_chair",
+        "royal_door",
+        "fireplace"
       ]
     },
     {
@@ -2322,7 +3441,8 @@
         "Building brick wall",
         "Building brick platform"
       ],
-      "crafting": true,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1
@@ -2333,6 +3453,18 @@
         {
           "red": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": true,
+      "ids": [
+        "building_brick_block",
+        "building_brick_wall",
+        "red_brick_platform"
       ]
     },
     {
@@ -2343,7 +3475,8 @@
         "Stone brick wall",
         "Polished stone wall"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2360,6 +3493,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "white_brick_block",
+        "stone_brick_wall",
+        "white_brick_wall"
       ]
     },
     {
@@ -2370,7 +3515,8 @@
         "Polished stone brick",
         "Polished stone platform"
       ],
-      "crafting": true,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1
@@ -2381,6 +3527,18 @@
         {
           "red": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": true,
+      "ids": [
+        "white_brick_wall",
+        "white_brick_block",
+        "white_brick_platform"
       ]
     },
     {
@@ -2391,7 +3549,8 @@
         "Wooden chair",
         "Park bench"
       ],
-      "crafting": false,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2408,6 +3567,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_ladder",
+        "wooden_chair",
+        "park_bench"
       ]
     },
     {
@@ -2418,7 +3589,8 @@
         "Big sign",
         "Right directional sign"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2435,6 +3607,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "sign",
+        "big_sign",
+        "right_directional_sign"
       ]
     },
     {
@@ -2445,7 +3629,8 @@
         "Big sign",
         "Left directional sign"
       ],
-      "crafting": false,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2462,6 +3647,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "right_directional_sign",
+        "big_sign",
+        "left_directional_sign"
       ]
     },
     {
@@ -2472,7 +3669,8 @@
         "Blue strip wallpaper",
         "Aquatic line wallpaper"
       ],
-      "crafting": true,
+      "duration": "28m 45s",
+      "quantity": "",
       "colors": [
         {
           "red": 1
@@ -2483,6 +3681,18 @@
         {
           "red": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": true,
+      "ids": [
+        "water_bucket",
+        "blue_stripe_wall",
+        "aquatic_line_wall"
       ]
     },
     {
@@ -2493,7 +3703,8 @@
         "Blue strip wallpaper",
         "Complementary line wallpaper"
       ],
-      "crafting": false,
+      "duration": "25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2510,6 +3721,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_stripe_wall",
+        "blue_stripe_wall",
+        "complementary_line_wall"
       ]
     },
     {
@@ -2520,7 +3743,8 @@
         "White wall",
         "Checkered wallpaper"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2537,6 +3761,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "black_wallpaper",
+        "white_wallpaper",
+        "checkered_wall"
       ]
     },
     {
@@ -2547,7 +3783,8 @@
         "Yellow block",
         "Pencil Block"
       ],
-      "crafting": false,
+      "duration": "30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2564,6 +3801,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_box",
+        "yellow_block",
+        "pencil_block"
       ]
     },
     {
@@ -2574,7 +3823,8 @@
         "House door",
         "Dungeon Door"
       ],
-      "crafting": false,
+      "duration": "2h 40m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2591,6 +3841,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "steel_block",
+        "royal_door",
+        "dungeon_door"
       ]
     },
     {
@@ -2601,7 +3863,8 @@
         "Wooden box",
         "Sturdy box"
       ],
-      "crafting": false,
+      "duration": "1h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2618,6 +3881,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "steel_block",
+        "wooden_box",
+        "sturdy_box"
       ]
     },
     {
@@ -2628,7 +3903,8 @@
         "Wooden box",
         "Wagon Wheel"
       ],
-      "crafting": false,
+      "duration": "2h 10m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2645,6 +3921,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "white_fence",
+        "wooden_box",
+        "wagon_wheel"
       ]
     },
     {
@@ -2655,7 +3943,8 @@
         "Dark green block",
         "Dark aqua block"
       ],
-      "crafting": false,
+      "duration": "2h 40m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2672,6 +3961,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "dark_yellow_block",
+        "dark_green_block",
+        "dark_aqua_block"
       ]
     },
     {
@@ -2682,7 +3983,8 @@
         "Dark blue block",
         "Dark purple block"
       ],
-      "crafting": false,
+      "duration": "1h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2699,6 +4001,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "maroon_block",
+        "dark_blue_block",
+        "dark_purple_block"
       ]
     },
     {
@@ -2709,7 +4023,8 @@
         "Pastel red block",
         "Pastel purple block"
       ],
-      "crafting": false,
+      "duration": "1h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2726,6 +4041,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "blue_block",
+        "red_pastel_block",
+        "purple_pastel_block"
       ]
     },
     {
@@ -2736,7 +4063,8 @@
         "Blue block",
         "Pastel blue block"
       ],
-      "crafting": false,
+      "duration": "2h 10m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2753,6 +4081,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "yellow_pastel_block",
+        "blue_block",
+        "blue_pastel_block"
       ]
     },
     {
@@ -2763,7 +4103,8 @@
         "Pastel red block",
         "Pastel bunny block"
       ],
-      "crafting": false,
+      "duration": "2h 40m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2780,6 +4121,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "yellow_pastel_block",
+        "red_pastel_block",
+        "happy_block"
       ]
     },
     {
@@ -2790,7 +4143,8 @@
         "Lily",
         "Pastel lily block"
       ],
-      "crafting": false,
+      "duration": "1h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2807,6 +4161,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "blue_pastel_block",
+        "lily",
+        "pastel_flower_block"
       ]
     },
     {
@@ -2817,7 +4183,8 @@
         "Red block",
         "Rainbow block"
       ],
-      "crafting": false,
+      "duration": "2h 10m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2834,6 +4201,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "dark_purple_block",
+        "red_block",
+        "rainbow_block"
       ]
     },
     {
@@ -2844,7 +4223,8 @@
         "Aqua block",
         "Aqua wall"
       ],
-      "crafting": false,
+      "duration": "2h 40m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2861,6 +4241,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "building_brick_wall",
+        "aqua_block",
+        "aqua_wallpaper"
       ]
     },
     {
@@ -2871,7 +4263,8 @@
         "Building brick wall",
         "Purple wall"
       ],
-      "crafting": false,
+      "duration": "1h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2888,6 +4281,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "purple_block",
+        "building_brick_wall",
+        "purple_wallpaper"
       ]
     },
     {
@@ -2898,7 +4303,8 @@
         "Metal block",
         "Metal wall"
       ],
-      "crafting": false,
+      "duration": "1h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2915,6 +4321,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "grey_wallpaper",
+        "steel_block",
+        "steel_background"
       ]
     },
     {
@@ -2925,7 +4343,8 @@
         "Metal block",
         "Metal sign"
       ],
-      "crafting": false,
+      "duration": "2h 10m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2942,6 +4361,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "big_sign",
+        "steel_block",
+        "steel_sign"
       ]
     },
     {
@@ -2952,7 +4383,8 @@
         "Metal block",
         "Metal door"
       ],
-      "crafting": false,
+      "duration": "2h 40m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2969,6 +4401,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "barn_door",
+        "steel_block",
+        "steel_door"
       ]
     },
     {
@@ -2979,7 +4423,8 @@
         "House door",
         "Screen door"
       ],
-      "crafting": false,
+      "duration": "1h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -2996,6 +4441,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "barn_door",
+        "royal_door",
+        "screen_door"
       ]
     },
     {
@@ -3006,7 +4463,8 @@
         "Campfire",
         "Ceiling lamp"
       ],
-      "crafting": false,
+      "duration": "2h 10m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3023,6 +4481,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "steel_block",
+        "campfire",
+        "ceiling_lamp"
       ]
     },
     {
@@ -3033,7 +4503,8 @@
         "Metal block",
         "Metal ladder"
       ],
-      "crafting": false,
+      "duration": "1h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3050,6 +4521,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_ladder",
+        "steel_block",
+        "steel_ladder"
       ]
     },
     {
@@ -3060,7 +4543,8 @@
         "Metal block",
         "Metal platform"
       ],
-      "crafting": false,
+      "duration": "2h 10m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3077,6 +4561,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wood_platform",
+        "steel_block",
+        "steel_platform"
       ]
     },
     {
@@ -3087,7 +4583,8 @@
         "Metal block",
         "Spike"
       ],
-      "crafting": false,
+      "duration": "2h 40m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3104,6 +4601,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "left_directional_sign",
+        "steel_block",
+        "spike"
       ]
     },
     {
@@ -3114,7 +4623,8 @@
         "Grimstone",
         "Dark Spike"
       ],
-      "crafting": false,
+      "duration": "2h 10m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3131,6 +4641,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "spike",
+        "green_brick",
+        "big_spike"
       ]
     },
     {
@@ -3141,7 +4663,8 @@
         "Wooden sign",
         "Wooden shelf"
       ],
-      "crafting": false,
+      "duration": "2h 10m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3158,6 +4681,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_barrel",
+        "sign",
+        "wooden_shelf"
       ]
     },
     {
@@ -3168,7 +4703,8 @@
         "Pencil block",
         "Mailbox"
       ],
-      "crafting": false,
+      "duration": "1h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3185,6 +4721,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "big_sign",
+        "pencil_block",
+        "mail_box"
       ]
     },
     {
@@ -3195,7 +4743,8 @@
         "Metal block",
         "Electrical pole"
       ],
-      "crafting": false,
+      "duration": "2h 10m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3212,6 +4761,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "sign",
+        "steel_block",
+        "electric_pole"
       ]
     },
     {
@@ -3222,7 +4783,8 @@
         "Wooden barrel",
         "Composer 0%-49%"
       ],
-      "crafting": false,
+      "duration": "2h 10m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3239,6 +4801,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "barn_block",
+        "wooden_barrel",
+        "composer"
       ]
     },
     {
@@ -3249,7 +4823,8 @@
         "Right directional sign",
         "Weathervane"
       ],
-      "crafting": false,
+      "duration": "1h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3266,6 +4841,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "barn_block",
+        "right_directional_sign",
+        "weathervane"
       ]
     },
     {
@@ -3276,7 +4863,8 @@
         "Wooden barrel",
         "Pillar block"
       ],
-      "crafting": false,
+      "duration": "1h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3293,6 +4881,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "white_brick_block",
+        "wooden_barrel",
+        "pillar"
       ]
     },
     {
@@ -3303,7 +4903,8 @@
         "Polished stone wall",
         "Modern Chair"
       ],
-      "crafting": false,
+      "duration": "1h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3320,6 +4921,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_chair",
+        "white_brick_wall",
+        "modern_chair"
       ]
     },
     {
@@ -3330,7 +4943,8 @@
         "Polished stone wall",
         "Dresser"
       ],
-      "crafting": false,
+      "duration": "2h 10m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3347,6 +4961,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "big_sign",
+        "white_brick_wall",
+        "dresser"
       ]
     },
     {
@@ -3357,7 +4983,8 @@
         "Polished stone wall",
         "Toilet"
       ],
-      "crafting": false,
+      "duration": "2h 40m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3374,6 +5001,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "white_block",
+        "white_brick_wall",
+        "toilet"
       ]
     },
     {
@@ -3384,7 +5023,8 @@
         "Barn Window",
         "Sink"
       ],
-      "crafting": false,
+      "duration": "1h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3401,6 +5041,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "white_block",
+        "barn_window",
+        "sink"
       ]
     },
     {
@@ -3411,7 +5063,8 @@
         "Blue block",
         "Bed"
       ],
-      "crafting": false,
+      "duration": "2h 10m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3428,6 +5081,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "side_table",
+        "blue_block",
+        "bed"
       ]
     },
     {
@@ -3438,7 +5103,8 @@
         "Left directional sign",
         "Sale sign"
       ],
-      "crafting": false,
+      "duration": "2h 40m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3455,6 +5121,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "red_wallpaper",
+        "left_directional_sign",
+        "sale_sign"
       ]
     },
     {
@@ -3465,7 +5143,8 @@
         "Building brick platform",
         "Hellbrick platform"
       ],
-      "crafting": false,
+      "duration": "1h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3482,6 +5161,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "hellbrick",
+        "red_brick_platform",
+        "hellbrick_platform"
       ]
     },
     {
@@ -3492,7 +5183,8 @@
         "House door",
         "Portcullis"
       ],
-      "crafting": false,
+      "duration": "7h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3509,6 +5201,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "spike",
+        "royal_door",
+        "portcullis"
       ]
     },
     {
@@ -3519,7 +5223,8 @@
         "Metal sign",
         "Metal entrance"
       ],
-      "crafting": false,
+      "duration": "8h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3536,17 +5241,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "steel_door",
+        "steel_sign",
+        "mechanical_entrance"
       ]
     },
     {
       "row": 270,
       "tier": "7",
       "names": [
-        "Wooden barrel",
-        "Dark spike",
-        "Toxic barrel"
+        "Star wallpaper",
+        "Slime block",
+        "Pinball"
       ],
-      "crafting": false,
+      "duration": "7h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3563,17 +5281,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "star_wall",
+        "slime",
+        "pinball"
       ]
     },
     {
       "row": 272,
       "tier": "7",
       "names": [
-        "Star wallpaper",
-        "Rainbow block",
-        "Starry block"
+        "Wooden barrel",
+        "Dark spike",
+        "Toxic barrel"
       ],
-      "crafting": false,
+      "duration": "7h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3590,17 +5321,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "wooden_barrel",
+        "big_spike",
+        "biohazard_barrel"
       ]
     },
     {
       "row": 274,
       "tier": "7",
       "names": [
-        "Mailbox",
-        "Blue block",
-        "Blue mailbox"
+        "Star wallpaper",
+        "Rainbow block",
+        "Starry block"
       ],
-      "crafting": false,
+      "duration": "7h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3617,17 +5361,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "star_wall",
+        "rainbow_block",
+        "star_block"
       ]
     },
     {
       "row": 276,
       "tier": "7",
       "names": [
-        "Wooden sign",
-        "Wooden shelf",
-        "Donation box"
+        "Mailbox",
+        "Blue block",
+        "Blue mailbox"
       ],
-      "crafting": false,
+      "duration": "7h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3644,17 +5401,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "mail_box",
+        "blue_block",
+        "blue_mail_box"
       ]
     },
     {
       "row": 278,
       "tier": "7",
       "names": [
-        "Metal wall",
-        "Electrical pole",
-        "Metal pad"
+        "Wooden sign",
+        "Wooden shelf",
+        "Donation box"
       ],
-      "crafting": false,
+      "duration": "8h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3671,17 +5441,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "sign",
+        "wooden_shelf",
+        "donation_box"
       ]
     },
     {
       "row": 280,
       "tier": "7",
       "names": [
-        "Glass block",
-        "Dresser",
-        "Empty Jar"
+        "Metal wall",
+        "Electrical pole",
+        "Metal pad"
       ],
-      "crafting": false,
+      "duration": "7h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3698,17 +5481,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "steel_background",
+        "electric_pole",
+        "metal_pad"
       ]
     },
     {
       "row": 282,
       "tier": "7",
       "names": [
-        "Polished stone brick",
-        "Sink",
-        "Well"
+        "Glass block",
+        "Dresser",
+        "Empty Jar"
       ],
-      "crafting": false,
+      "duration": "6h 25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3725,17 +5521,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "glass",
+        "dresser",
+        "empty_jar"
       ]
     },
     {
       "row": 284,
       "tier": "7",
       "names": [
-        "Grass",
-        "Weathervane",
-        "Chicken"
+        "Polished stone brick",
+        "Sink",
+        "Well"
       ],
-      "crafting": false,
+      "duration": "8h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3752,17 +5561,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "white_brick_block",
+        "sink",
+        "water_well"
       ]
     },
     {
       "row": 286,
       "tier": "7",
       "names": [
-        "Ceiling lamp",
-        "Building brick block",
-        "House lamp"
+        "Grass",
+        "Weathervane",
+        "Chicken"
       ],
-      "crafting": false,
+      "duration": "8h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3779,17 +5601,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "grass",
+        "weathervane",
+        "chicken"
       ]
     },
     {
       "row": 288,
       "tier": "7",
       "names": [
-        "Sink",
-        "Glass pane",
-        "Fishbowl"
+        "Ceiling lamp",
+        "Building brick block",
+        "House lamp"
       ],
-      "crafting": false,
+      "duration": "8h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3806,17 +5641,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "ceiling_lamp",
+        "building_brick_block",
+        "lamp"
       ]
     },
     {
       "row": 290,
       "tier": "7",
       "names": [
-        "Park bench",
-        "Bed",
-        "Couch"
+        "Sink",
+        "Glass pane",
+        "Fishbowl"
       ],
-      "crafting": false,
+      "duration": "6h 25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3833,17 +5681,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "sink",
+        "glass_panel",
+        "fish_bowl"
       ]
     },
     {
       "row": 292,
       "tier": "7",
       "names": [
-        "House door",
-        "Dungeon door",
-        "House entrance"
+        "Park bench",
+        "Bed",
+        "Couch"
       ],
-      "crafting": false,
+      "duration": "6h 25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3860,17 +5721,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "park_bench",
+        "bed",
+        "blue_couch"
       ]
     },
     {
       "row": 294,
       "tier": "7",
       "names": [
-        "White window",
-        "Pastel lily block",
-        "Purple curtained window"
+        "House door",
+        "Dungeon door",
+        "House entrance"
       ],
-      "crafting": false,
+      "duration": "8h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3887,6 +5761,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "royal_door",
+        "dungeon_door",
+        "royal_entrance"
       ]
     },
     {
@@ -3894,10 +5780,11 @@
       "tier": "7",
       "names": [
         "White window",
-        "Pastel bunny block",
-        "Pink curtained window"
+        "Pastel lily block",
+        "Purple curtained window"
       ],
-      "crafting": false,
+      "duration": "6h 25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3914,17 +5801,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "royal_window",
+        "pastel_flower_block",
+        "purple_curtains"
       ]
     },
     {
       "row": 298,
       "tier": "7",
       "names": [
-        "Toilet",
-        "Park bench",
-        "Bathub"
+        "White window",
+        "Pastel bunny block",
+        "Pink curtained window"
       ],
-      "crafting": false,
+      "duration": "8h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3941,17 +5841,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "royal_window",
+        "happy_block",
+        "pink_curtains"
       ]
     },
     {
       "row": 300,
       "tier": "7",
       "names": [
-        "Sale sign",
-        "Aqua block",
-        "Street Sign"
+        "Toilet",
+        "Park bench",
+        "Bathub"
       ],
-      "crafting": false,
+      "duration": "8h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3968,17 +5881,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "toilet",
+        "park_bench",
+        "bathtub"
       ]
     },
     {
       "row": 302,
       "tier": "7",
       "names": [
-        "Metal ladder",
-        "House door",
-        "Ventilation"
+        "Sale sign",
+        "Aqua block",
+        "Street Sign"
       ],
-      "crafting": false,
+      "duration": "6h 25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -3995,17 +5921,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "sale_sign",
+        "aqua_block",
+        "street_sign"
       ]
     },
     {
       "row": 304,
       "tier": "7",
       "names": [
-        "Pencil block",
-        "Wooden shelf",
-        "Cozy chalkboard"
+        "Metal ladder",
+        "House door",
+        "Ventilation"
       ],
-      "crafting": false,
+      "duration": "6h 25m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4022,17 +5961,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "steel_ladder",
+        "royal_door",
+        "ventilation"
       ]
     },
     {
       "row": 306,
       "tier": "7",
       "names": [
-        "Black block",
-        "Ceiling lamp",
-        "Neon Block"
+        "Pencil block",
+        "Wooden shelf",
+        "Cozy chalkboard"
       ],
-      "crafting": false,
+      "duration": "7h 30m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4049,17 +6001,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "pencil_block",
+        "wooden_shelf",
+        "cozy_chalkboard"
       ]
     },
     {
       "row": 308,
-      "tier": "8",
+      "tier": "7",
       "names": [
-        "Metal entrance",
-        "Metal block",
-        "Metal gate"
+        "Black block",
+        "Ceiling lamp",
+        "Neon Block"
       ],
-      "crafting": false,
+      "duration": "8h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4076,17 +6041,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "black_block",
+        "ceiling_lamp",
+        "neon_block"
       ]
     },
     {
       "row": 310,
       "tier": "8",
       "names": [
-        "Empty jar",
-        "Glass pane",
-        "Display wall"
+        "Metal entrance",
+        "Metal block",
+        "Metal gate"
       ],
-      "crafting": false,
+      "duration": "16h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4103,17 +6081,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "mechanical_entrance",
+        "steel_block",
+        "metal_gate"
       ]
     },
     {
       "row": 312,
       "tier": "8",
       "names": [
-        "Cozy chalkboard",
-        "Mailbox",
-        "Bulletin Board"
+        "Empty jar",
+        "Glass pane",
+        "Display wall"
       ],
-      "crafting": false,
+      "duration": "16h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4130,17 +6121,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "empty_jar",
+        "glass_panel",
+        "display_case"
       ]
     },
     {
       "row": 314,
       "tier": "8",
       "names": [
-        "Dungeon door",
-        "House lamp",
-        "Checkpoint"
+        "Cozy chalkboard",
+        "Mailbox",
+        "Bulletin Board"
       ],
-      "crafting": false,
+      "duration": "16h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4157,17 +6161,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "cozy_chalkboard",
+        "mail_box",
+        "bulletin_board"
       ]
     },
     {
       "row": 316,
       "tier": "8",
       "names": [
-        "Fishbowl",
-        "House table",
-        "Sashimi table"
+        "Dungeon door",
+        "House lamp",
+        "Checkpoint"
       ],
-      "crafting": false,
+      "duration": "16h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4184,17 +6201,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "dungeon_door",
+        "lamp",
+        "checkpoint"
       ]
     },
     {
       "row": 318,
       "tier": "8",
       "names": [
-        "Metal pad",
-        "Metal block",
-        "Electrical box"
+        "Fishbowl",
+        "House table",
+        "Sashimi table"
       ],
-      "crafting": false,
+      "duration": "16h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4211,17 +6241,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "fish_bowl",
+        "side_table",
+        "sashimi_table"
       ]
     },
     {
       "row": 320,
       "tier": "8",
       "names": [
-        "Well",
-        "Chicken",
-        "Cow"
+        "Metal pad",
+        "Metal block",
+        "Electrical box"
       ],
-      "crafting": false,
+      "duration": "16h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4238,17 +6281,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "metal_pad",
+        "steel_block",
+        "electrical_box"
       ]
     },
     {
       "row": 322,
       "tier": "8",
       "names": [
-        "Electrical pole",
-        "Neon block",
-        "Modern TV"
+        "Well",
+        "Chicken",
+        "Cow"
       ],
-      "crafting": false,
+      "duration": "16h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4265,65 +6321,104 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "water_well",
+        "chicken",
+        "cow"
       ]
     },
     {
       "row": 324,
       "tier": "8",
       "names": [
-        "Star fragment",
-        "House door",
-        "Grand house door"
+        "Electrical pole",
+        "Neon block",
+        "Modern TV"
       ],
-      "crafting": true,
+      "duration": "16h 45m",
+      "quantity": "",
       "colors": [
         {
-          "red": 1
+          "red": 1,
+          "green": 1,
+          "blue": 1
         },
         {
-          "red": 1
+          "red": 1,
+          "green": 1,
+          "blue": 1
         },
         {
-          "red": 1
+          "red": 1,
+          "green": 1,
+          "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "electric_pole",
+        "neon_block",
+        "tv"
       ]
     },
     {
       "row": 326,
       "tier": "8",
       "names": [
-        "Slime block",
-        "Chicken",
-        "Rubber duck"
+        "Star fragment",
+        "House door",
+        "Grand house door"
       ],
-      "crafting": false,
+      "duration": "16h 45m",
+      "quantity": "",
       "colors": [
         {
-          "red": 1,
-          "green": 1,
-          "blue": 1
+          "red": 1
         },
         {
-          "red": 1,
-          "green": 1,
-          "blue": 1
+          "red": 1
         },
         {
-          "red": 1,
-          "green": 1,
-          "blue": 1
+          "red": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": true,
+      "ids": [
+        "star_fragment",
+        "royal_door",
+        "grand_house_door"
       ]
     },
     {
       "row": 328,
       "tier": "8",
       "names": [
-        "Toxic barrel",
-        "Metal sign",
-        "Hazard sign"
+        "Slime block",
+        "Chicken",
+        "Rubber duck"
       ],
-      "crafting": false,
+      "duration": "16h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4340,17 +6435,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "slime",
+        "chicken",
+        "rubber_duck"
       ]
     },
     {
       "row": 330,
       "tier": "8",
       "names": [
-        "Street Sign",
-        "Sale sign",
-        "Open sign"
+        "Toxic barrel",
+        "Metal sign",
+        "Hazard sign"
       ],
-      "crafting": false,
+      "duration": "16h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4367,17 +6475,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "biohazard_barrel",
+        "steel_sign",
+        "hazard_sign"
       ]
     },
     {
       "row": 332,
       "tier": "8",
       "names": [
-        "Ceiling lamp",
-        "Street sign",
-        "Street lamp"
+        "Street Sign",
+        "Sale sign",
+        "Open sign"
       ],
-      "crafting": false,
+      "duration": "16h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4394,17 +6515,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "street_sign",
+        "sale_sign",
+        "open_sign"
       ]
     },
     {
       "row": 334,
       "tier": "8",
       "names": [
-        "Cozy chalkboard",
-        "Blue mailbox",
-        "Almanac"
+        "Ceiling lamp",
+        "Street sign",
+        "Street lamp"
       ],
-      "crafting": false,
+      "duration": "16h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4421,17 +6555,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "ceiling_lamp",
+        "street_sign",
+        "street_lamp"
       ]
     },
     {
       "row": 336,
-      "tier": "9",
+      "tier": "8",
       "names": [
-        "Bush",
-        "Display wall",
-        "Cloud Block"
+        "Cozy chalkboard",
+        "Blue mailbox",
+        "Almanac"
       ],
-      "crafting": false,
+      "duration": "16h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4448,17 +6595,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "cozy_chalkboard",
+        "blue_mail_box",
+        "almanac"
       ]
     },
     {
       "row": 338,
       "tier": "9",
       "names": [
-        "Metal block",
+        "Bush",
         "Display wall",
-        "Display block"
+        "Cloud Block"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4475,17 +6635,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "bush",
+        "display_case",
+        "cloud_block"
       ]
     },
     {
       "row": 340,
       "tier": "9",
       "names": [
-        "Checkpoint",
-        "Star fragment",
-        "Blink checkpoint"
+        "Metal block",
+        "Display wall",
+        "Display block"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4502,17 +6675,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "steel_block",
+        "display_case",
+        "display_box"
       ]
     },
     {
       "row": 342,
       "tier": "9",
       "names": [
-        "Dark spike",
-        "Hazard sign",
-        "Bomb"
+        "Checkpoint",
+        "Star fragment",
+        "Blink checkpoint"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4529,17 +6715,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "checkpoint",
+        "star_fragment",
+        "blink_checkpoint"
       ]
     },
     {
       "row": 344,
       "tier": "9",
       "names": [
-        "Sashimi table",
-        "Rubber duck",
-        "Duck"
+        "Dark spike",
+        "Hazard sign",
+        "Bomb"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4556,17 +6755,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "big_spike",
+        "hazard_sign",
+        "bomb"
       ]
     },
     {
       "row": 346,
       "tier": "9",
       "names": [
-        "Couch",
-        "Dirt",
-        "Potato Couch"
+        "Sashimi table",
+        "Rubber duck",
+        "Duck"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4583,17 +6795,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "sashimi_table",
+        "rubber_duck",
+        "duck"
       ]
     },
     {
       "row": 348,
       "tier": "9",
       "names": [
-        "Modern tv",
-        "Solid ice block",
-        "Refrigerator"
+        "Couch",
+        "Dirt",
+        "Potato Couch"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4610,17 +6835,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "blue_couch",
+        "dirt",
+        "green_couch"
       ]
     },
     {
       "row": 350,
       "tier": "9",
       "names": [
-        "Electrical box",
-        "Weathervane",
-        "Fan"
+        "Modern tv",
+        "Solid ice block",
+        "Refrigerator"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4637,17 +6875,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "tv",
+        "ice_block",
+        "refrigerator"
       ]
     },
     {
       "row": 352,
       "tier": "9",
       "names": [
-        "Big sign",
         "Electrical box",
-        "Digital Sign"
+        "Weathervane",
+        "Fan"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4664,38 +6915,70 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "electrical_box",
+        "weathervane",
+        "fan"
       ]
     },
     {
       "row": 354,
       "tier": "9",
       "names": [
-        "Small vines",
-        "Empty potrait",
-        "Vines painting"
+        "Big sign",
+        "Electrical box",
+        "Digital Sign"
       ],
-      "crafting": true,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
-          "red": 1
+          "red": 1,
+          "green": 1,
+          "blue": 1
         },
         {
-          "red": 1
+          "red": 1,
+          "green": 1,
+          "blue": 1
         },
         {
-          "red": 1
+          "red": 1,
+          "green": 1,
+          "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "big_sign",
+        "electrical_box",
+        "digital_sign"
       ]
     },
     {
       "row": 356,
       "tier": "9",
       "names": [
-        "Pastel yellow block",
+        "Small vines",
         "Empty potrait",
-        "Scratched banana painting"
+        "Vines painting"
       ],
-      "crafting": true,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1
@@ -4706,17 +6989,30 @@
         {
           "red": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": true,
+      "ids": [
+        "hanging_vine",
+        "empty_portrait",
+        "vines_painting"
       ]
     },
     {
       "row": 358,
       "tier": "9",
       "names": [
-        "Dark red block",
+        "Pastel yellow block",
         "Empty potrait",
-        "Heartbreak painting"
+        "Scratched banana painting"
       ],
-      "crafting": true,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1
@@ -4727,17 +7023,30 @@
         {
           "red": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": true,
+      "ids": [
+        "yellow_pastel_block",
+        "empty_portrait",
+        "scratched_banana_painting"
       ]
     },
     {
       "row": 360,
       "tier": "9",
       "names": [
-        "Rose",
+        "Dark red block",
         "Empty potrait",
-        "Love painting"
+        "Heartbreak painting"
       ],
-      "crafting": true,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1
@@ -4748,44 +7057,64 @@
         {
           "red": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": true,
+      "ids": [
+        "maroon_block",
+        "empty_portrait",
+        "heartbreak_painting"
       ]
     },
     {
       "row": 362,
       "tier": "9",
       "names": [
-        "Metal platform",
-        "Street lamp",
-        "Fire escape"
+        "Rose",
+        "Empty potrait",
+        "Love painting"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
-          "red": 1,
-          "green": 1,
-          "blue": 1
+          "red": 1
         },
         {
-          "red": 1,
-          "green": 1,
-          "blue": 1
+          "red": 1
         },
         {
-          "red": 1,
-          "green": 1,
-          "blue": 1
+          "red": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": true,
+      "ids": [
+        "rose",
+        "empty_portrait",
+        "love_painting"
       ]
     },
     {
       "row": 364,
       "tier": "9",
       "names": [
+        "Metal platform",
         "Street lamp",
-        "Farm fence",
-        "Gothic fence"
+        "Fire escape"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4802,17 +7131,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "steel_platform",
+        "street_lamp",
+        "fire_escape"
       ]
     },
     {
       "row": 366,
       "tier": "9",
       "names": [
-        "Rubber duck",
-        "Red block",
-        "Fire Hydrant"
+        "Street lamp",
+        "Farm fence",
+        "Gothic fence"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4829,17 +7171,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "street_lamp",
+        "white_fence",
+        "city_fence"
       ]
     },
     {
       "row": 368,
       "tier": "9",
       "names": [
-        "House lamp",
-        "Street lamp",
-        "Sirene lamp (on)"
+        "Rubber duck",
+        "Red block",
+        "Fire Hydrant"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4856,17 +7211,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "rubber_duck",
+        "red_block",
+        "fire_hydrant"
       ]
     },
     {
       "row": 370,
       "tier": "9",
       "names": [
-        "Polished stone brick",
-        "Cloud block",
-        "Water fountain"
+        "House lamp",
+        "Street lamp",
+        "Sirene lamp (on)"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4883,17 +7251,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "lamp",
+        "street_lamp",
+        "sirene_lamp_on"
       ]
     },
     {
       "row": 372,
       "tier": "9",
       "names": [
-        "Hellbrick",
-        "Metal gate",
-        "Hell entrance"
+        "Polished stone brick",
+        "Cloud block",
+        "Water fountain"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4910,17 +7291,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "white_brick_block",
+        "cloud_block",
+        "water_fountain"
       ]
     },
     {
       "row": 374,
-      "tier": "10",
+      "tier": "9",
       "names": [
-        "Potato couch",
-        "Toxic barrel",
-        "Recycler bin"
+        "Hellbrick",
+        "Metal gate",
+        "Hell entrance"
       ],
-      "crafting": false,
+      "duration": "22h 45m",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4937,38 +7331,70 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "hellbrick",
+        "metal_gate",
+        "hell_entrance"
       ]
     },
     {
       "row": 376,
       "tier": "10",
       "names": [
-        "Scratched banana painting",
-        "Vines painting",
-        "Melter"
+        "Potato couch",
+        "Toxic barrel",
+        "Recycler bin"
       ],
-      "crafting": true,
+      "duration": "1d 12h",
+      "quantity": "",
       "colors": [
         {
-          "red": 1
+          "red": 1,
+          "green": 1,
+          "blue": 1
         },
         {
-          "red": 1
+          "red": 1,
+          "green": 1,
+          "blue": 1
         },
         {
-          "red": 1
+          "red": 1,
+          "green": 1,
+          "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "green_couch",
+        "biohazard_barrel",
+        "recycle_bin"
       ]
     },
     {
       "row": 378,
       "tier": "10",
       "names": [
-        "Bomb",
-        "White block",
-        "Dice Block"
+        "Sirene lamp (on)",
+        "Refrigerator",
+        "Melter"
       ],
-      "crafting": false,
+      "duration": "1d 12h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -4985,17 +7411,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "sirene_lamp_on",
+        "refrigerator",
+        "melter"
       ]
     },
     {
       "row": 380,
       "tier": "10",
       "names": [
-        "Blink checkpoint",
-        "Metal pad",
-        "Battery assambler"
+        "Bomb",
+        "White block",
+        "Dice Block"
       ],
-      "crafting": false,
+      "duration": "1d 12h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -5012,17 +7451,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "bomb",
+        "white_block",
+        "dice_block"
       ]
     },
     {
       "row": 382,
       "tier": "10",
       "names": [
-        "Water fountain",
-        "Street lamp",
-        "Chandelier"
+        "Blink checkpoint",
+        "Metal pad",
+        "Battery assambler"
       ],
-      "crafting": false,
+      "duration": "1d 12h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -5039,17 +7491,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "blink_checkpoint",
+        "metal_pad",
+        "battery_assembler"
       ]
     },
     {
       "row": 384,
-      "tier": "11",
+      "tier": "10",
       "names": [
-        "Orange block",
-        "Chandelier",
-        "Orange Portal"
+        "Water fountain",
+        "Street lamp",
+        "Chandelier"
       ],
-      "crafting": false,
+      "duration": "1d 12h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -5066,17 +7531,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "water_fountain",
+        "street_lamp",
+        "chandelier"
       ]
     },
     {
       "row": 386,
       "tier": "11",
       "names": [
-        "Blue block",
+        "Orange block",
         "Chandelier",
-        "Blue portal"
+        "Orange Portal"
       ],
-      "crafting": false,
+      "duration": "2d 12h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -5093,17 +7571,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "orange_block",
+        "chandelier",
+        "yellow_portal"
       ]
     },
     {
       "row": 388,
       "tier": "11",
       "names": [
-        "House door",
-        "Dice block",
-        "Password door"
+        "Blue block",
+        "Chandelier",
+        "Blue portal"
       ],
-      "crafting": false,
+      "duration": "2d 12h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -5120,17 +7611,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "blue_block",
+        "chandelier",
+        "blue_portal"
       ]
     },
     {
       "row": 390,
       "tier": "11",
       "names": [
-        "Starry block",
-        "Moon fragment",
-        "Moon"
+        "House door",
+        "Dice block",
+        "Password door"
       ],
-      "crafting": false,
+      "duration": "2d 12h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -5147,6 +7651,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "royal_door",
+        "dice_block",
+        "password_door"
       ]
     },
     {
@@ -5154,10 +7670,11 @@
       "tier": "11",
       "names": [
         "Starry block",
-        "Earth fragment",
-        "Earth"
+        "Moon fragment",
+        "Moon"
       ],
-      "crafting": false,
+      "duration": "2d 12h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -5174,6 +7691,18 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "star_block",
+        null,
+        "moon"
       ]
     },
     {
@@ -5181,10 +7710,11 @@
       "tier": "11",
       "names": [
         "Starry block",
-        "Sun fragment",
-        "Sun"
+        "Earth fragment",
+        "Earth"
       ],
-      "crafting": false,
+      "duration": "2d 12h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -5201,17 +7731,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "star_block",
+        null,
+        "earth"
       ]
     },
     {
       "row": 396,
       "tier": "11",
       "names": [
-        "Chandelier",
-        "Hell entrance",
-        "Hell portal"
+        "Starry block",
+        "Sun fragment",
+        "Sun"
       ],
-      "crafting": false,
+      "duration": "2d 12h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -5228,17 +7771,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "star_block",
+        null,
+        "sun"
       ]
     },
     {
       "row": 398,
-      "tier": "13",
+      "tier": "11",
       "names": [
-        "Melter",
-        "Bomb",
-        "Oil refinery"
+        "Chandelier",
+        "Hell entrance",
+        "Hell portal"
       ],
-      "crafting": false,
+      "duration": "2d 12h",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -5255,17 +7811,30 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "chandelier",
+        "hell_entrance",
+        "hell_portal"
       ]
     },
     {
       "row": 400,
       "tier": "13",
       "names": [
-        "Rainbow block",
         "Melter",
-        "Colored block maker"
+        "Bomb",
+        "Oil refinery"
       ],
-      "crafting": false,
+      "duration": "7d",
+      "quantity": "",
       "colors": [
         {
           "red": 1,
@@ -5282,17 +7851,70 @@
           "green": 1,
           "blue": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "melter",
+        "bomb",
+        "oil_refinery"
       ]
     },
     {
       "row": 402,
+      "tier": "13",
+      "names": [
+        "Rainbow block",
+        "Melter",
+        "Colored block maker"
+      ],
+      "duration": "7d",
+      "quantity": "",
+      "colors": [
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": false,
+      "ids": [
+        "rainbow_block",
+        "melter",
+        "colored_block_maker"
+      ]
+    },
+    {
+      "row": 404,
       "tier": "14",
       "names": [
         "Oil refinery",
         "Gem block",
         "Gem driller"
       ],
-      "crafting": true,
+      "duration": "7d 30h",
+      "quantity": "",
       "colors": [
         {
           "red": 1
@@ -5303,6 +7925,18 @@
         {
           "red": 1
         }
+      ],
+      "texts": [
+        {},
+        {},
+        {}
+      ],
+      "note": "",
+      "crafting": true,
+      "ids": [
+        "oil_refinery",
+        "amethyst_block",
+        "gem_driller"
       ]
     }
   ]

@@ -232,6 +232,11 @@ func use_selected_item_at_mouse():
 		return
 
 
+	if world.selected_item_category == "material":
+		world.splice_material_at_mouse()
+		return
+
+
 func place_selected_item_at_mouse():
 	use_selected_item_at_mouse()
 

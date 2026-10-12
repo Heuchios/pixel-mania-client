@@ -6552,6 +6552,17 @@ func get_clicked_planted_seed_grid() -> Vector2i:
 	return INVALID_GRID_POS
 
 
+func splice_material_at_mouse() -> void:
+	if int(material_inventory.get(selected_item_type, 0)) <= 0:
+		return
+	var grid_pos = get_clicked_planted_seed_grid()
+	if grid_pos == INVALID_GRID_POS or not can_reach_grid(grid_pos):
+		return
+	if has_method("can_current_player_build") and not can_current_player_build():
+		show_notification(get_world_locked_message())
+		return
+	try_splice_seed_tree(grid_pos)
+
 func try_splice_seed_tree(grid_pos: Vector2i) -> bool:
 	if seed_system != null and bool(seed_system.planted_seeds.get(grid_pos, {}).get("spliced", false)):
 		show_notification("This tree has already been spliced. Harvest it and plant a new seed first.")
@@ -6560,8 +6571,8 @@ func try_splice_seed_tree(grid_pos: Vector2i) -> bool:
 		return false
 
 	if should_use_server_authoritative_world_actions():
-		if selected_item_category != "seed":
-			show_notification("Select a seed from the Seeds tab first.")
+		if selected_item_category != "seed" and selected_item_category != "material":
+			show_notification("Select a seed or a splicing material first.")
 		elif request_server_seed_splice(grid_pos):
 			show_notification("Splicing " + get_item_display_name(selected_item_type, selected_item_category) + "...")
 		else:
@@ -6575,7 +6586,7 @@ func try_splice_seed_tree(grid_pos: Vector2i) -> bool:
 		grid_pos,
 		selected_item_type,
 		selected_item_category,
-		seed_inventory
+		material_inventory if selected_item_category == "material" else seed_inventory
 	):
 		if has_method("refresh_ui_after_item_change"):
 			refresh_ui_after_item_change(selected_item_type, selected_item_category)
@@ -6600,7 +6611,7 @@ func request_server_seed_splice(grid_pos: Vector2i) -> bool:
 	if not network.has_method("send_inventory_transaction_request"):
 		return false
 
-	if selected_item_category != "seed":
+	if selected_item_category != "seed" and selected_item_category != "material":
 		return false
 
 	return bool(network.send_inventory_transaction_request({
@@ -6608,7 +6619,8 @@ func request_server_seed_splice(grid_pos: Vector2i) -> bool:
 		"world": current_world_name,
 		"x": grid_pos.x,
 		"y": grid_pos.y,
-		"seed_type": selected_item_type
+		"seed_type": selected_item_type,
+		"item_category": selected_item_category
 	}))
 
 

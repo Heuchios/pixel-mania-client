@@ -262,6 +262,11 @@
       "source": "Live ITEM DATA gem average, rows 726"
     },
     {
+      "id": "composer",
+      "average": 3,
+      "source": "Live ITEM DATA row 572"
+    },
+    {
       "id": "copper_block",
       "average": 5,
       "source": "Live ITEM DATA gem average, rows 532"

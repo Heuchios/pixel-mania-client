@@ -24,97 +24,241 @@ const CATEGORY_CURRENCY = "currency"
 
 const RECIPES = {
 	STATION_CRAFTING: [
-		{"id":"gasoline_from_crude_oil","output":{"item_id":"gasoline","category":"material","amount":5},"cost":[{"item_id":"crude_oil","category":"material","amount":1}]},
-{"id":"sheet_melter","output":{"item_id":"melter","category":"block","amount":1},"cost":[{"item_id":"scratched_banana_painting","category":"block","amount":1},{"item_id":"vines_painting","category":"block","amount":1}]},
-{"id":"sheet_gem_driller","output":{"item_id":"gem_driller","category":"block","amount":1},"cost":[{"item_id":"oil_refinery","category":"block","amount":1},{"item_id":"amethyst_block","category":"block","amount":1}]},
-	{
-		"id": "sheet_fireplace",
-		"output": {
-			"item_id": "fireplace",
-			"category": "block",
-			"amount": 1
-		},
-		"cost": [
-			{
-				"item_id": "wooden_chair",
-				"category": "block",
-				"amount": 1
-			},
-			{
-				"item_id": "royal_door",
-				"category": "block",
-				"amount": 1
-			}
-		],
-		"name": "Fireplace",
-		"type": "block"
+  {
+	"id": "gasoline_from_crude_oil",
+	"output": {
+	  "item_id": "gasoline",
+	  "category": "material",
+	  "amount": 5
 	},
-	{
-		"id": "sheet_red_brick_platform",
-		"output": {
-			"item_id": "red_brick_platform",
-			"category": "block",
-			"amount": 1
-		},
-		"cost": [
-			{
-				"item_id": "building_brick_block",
-				"category": "block",
-				"amount": 1
-			},
-			{
-				"item_id": "building_brick_wall",
-				"category": "block",
-				"amount": 1
-			}
-		],
-		"name": "Building Brick Platform",
-		"type": "block"
+	"cost": [
+	  {
+		"item_id": "crude_oil",
+		"category": "material",
+		"amount": 1
+	  }
+	]
+  },
+  {
+	"id": "sheet_fish_hanger",
+	"output": {
+	  "item_id": "fish_hanger",
+	  "category": "block",
+	  "amount": 1
 	},
-	{
-		"id": "sheet_white_brick_platform",
-		"output": {
-			"item_id": "white_brick_platform",
-			"category": "block",
-			"amount": 1
-		},
-		"cost": [
-			{
-				"item_id": "white_brick_wall",
-				"category": "block",
-				"amount": 1
-			},
-			{
-				"item_id": "white_brick_block",
-				"category": "block",
-				"amount": 1
-			}
-		],
-		"name": "Polished Stone Platform",
-		"type": "block"
+	"cost": [
+	  {
+		"item_id": "fish_drill",
+		"category": "material",
+		"amount": 1
+	  },
+	  {
+		"item_id": "wooden_box",
+		"category": "block",
+		"amount": 1
+	  }
+	]
+  },
+  {
+	"id": "sheet_fireplace",
+	"output": {
+	  "item_id": "fireplace",
+	  "category": "block",
+	  "amount": 1
 	},
-	{
-		"id": "sheet_aquatic_line_wall",
-		"output": {
-			"item_id": "aquatic_line_wall",
-			"category": "block",
-			"amount": 1
-		},
-		"cost": [
-			{
-				"item_id": "water_bucket",
-				"category": "block",
-				"amount": 1
-			},
-			{
-				"item_id": "blue_stripe_wall",
-				"category": "block",
-				"amount": 1
-			}
-		],
-		"name": "Aquatic Line Wall",
-		"type": "block"
-	}
+	"cost": [
+	  {
+		"item_id": "wooden_chair",
+		"category": "block",
+		"amount": 1
+	  },
+	  {
+		"item_id": "royal_door",
+		"category": "block",
+		"amount": 1
+	  }
+	]
+  },
+  {
+	"id": "sheet_red_brick_platform",
+	"output": {
+	  "item_id": "red_brick_platform",
+	  "category": "block",
+	  "amount": 1
+	},
+	"cost": [
+	  {
+		"item_id": "building_brick_block",
+		"category": "block",
+		"amount": 1
+	  },
+	  {
+		"item_id": "building_brick_wall",
+		"category": "block",
+		"amount": 1
+	  }
+	]
+  },
+  {
+	"id": "sheet_white_brick_platform",
+	"output": {
+	  "item_id": "white_brick_platform",
+	  "category": "block",
+	  "amount": 1
+	},
+	"cost": [
+	  {
+		"item_id": "white_brick_wall",
+		"category": "block",
+		"amount": 1
+	  },
+	  {
+		"item_id": "white_brick_block",
+		"category": "block",
+		"amount": 1
+	  }
+	]
+  },
+  {
+	"id": "sheet_aquatic_line_wall",
+	"output": {
+	  "item_id": "aquatic_line_wall",
+	  "category": "block",
+	  "amount": 1
+	},
+	"cost": [
+	  {
+		"item_id": "water_bucket",
+		"category": "material",
+		"amount": 1
+	  },
+	  {
+		"item_id": "blue_stripe_wall",
+		"category": "block",
+		"amount": 1
+	  }
+	]
+  },
+  {
+	"id": "sheet_grand_house_door",
+	"output": {
+	  "item_id": "grand_house_door",
+	  "category": "block",
+	  "amount": 1
+	},
+	"cost": [
+	  {
+		"item_id": "star_fragment",
+		"category": "material",
+		"amount": 1
+	  },
+	  {
+		"item_id": "royal_door",
+		"category": "block",
+		"amount": 1
+	  }
+	]
+  },
+  {
+	"id": "sheet_vines_painting",
+	"output": {
+	  "item_id": "vines_painting",
+	  "category": "block",
+	  "amount": 1
+	},
+	"cost": [
+	  {
+		"item_id": "hanging_vine",
+		"category": "block",
+		"amount": 1
+	  },
+	  {
+		"item_id": "empty_portrait",
+		"category": "material",
+		"amount": 1
+	  }
+	]
+  },
+  {
+	"id": "sheet_scratched_banana_painting",
+	"output": {
+	  "item_id": "scratched_banana_painting",
+	  "category": "block",
+	  "amount": 1
+	},
+	"cost": [
+	  {
+		"item_id": "yellow_pastel_block",
+		"category": "block",
+		"amount": 1
+	  },
+	  {
+		"item_id": "empty_portrait",
+		"category": "material",
+		"amount": 1
+	  }
+	]
+  },
+  {
+	"id": "sheet_heartbreak_painting",
+	"output": {
+	  "item_id": "heartbreak_painting",
+	  "category": "block",
+	  "amount": 1
+	},
+	"cost": [
+	  {
+		"item_id": "maroon_block",
+		"category": "block",
+		"amount": 1
+	  },
+	  {
+		"item_id": "empty_portrait",
+		"category": "material",
+		"amount": 1
+	  }
+	]
+  },
+  {
+	"id": "sheet_love_painting",
+	"output": {
+	  "item_id": "love_painting",
+	  "category": "block",
+	  "amount": 1
+	},
+	"cost": [
+	  {
+		"item_id": "rose",
+		"category": "block",
+		"amount": 1
+	  },
+	  {
+		"item_id": "empty_portrait",
+		"category": "material",
+		"amount": 1
+	  }
+	]
+  },
+  {
+	"id": "sheet_gem_driller",
+	"output": {
+	  "item_id": "gem_driller",
+	  "category": "block",
+	  "amount": 1
+	},
+	"cost": [
+	  {
+		"item_id": "oil_refinery",
+		"category": "block",
+		"amount": 1
+	  },
+	  {
+		"item_id": "amethyst_block",
+		"category": "block",
+		"amount": 1
+	  }
+	]
+  }
 ],
 
 	STATION_FURNACE: []

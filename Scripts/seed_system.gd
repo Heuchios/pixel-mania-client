@@ -284,15 +284,15 @@ func try_splice_seed_tree(
 	if not planted_seeds.has(grid_pos):
 		return false
 
-	if selected_item_category != "seed":
-		notify("Select a seed from the Seeds tab first.")
+	if selected_item_category != "seed" and selected_item_category != "material":
+		notify("Select a seed or a splicing material first.")
 		return false
 
 	if not seed_inventory.has(selected_item_type):
 		return false
 
 	if int(seed_inventory[selected_item_type]) <= 0:
-		notify("You do not have that seed.")
+		notify("You do not have that ingredient.")
 		return false
 
 	var seed_data = planted_seeds[grid_pos]

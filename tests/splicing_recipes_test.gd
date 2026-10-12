@@ -2,13 +2,14 @@ extends SceneTree
 
 const DB = preload("res://Scripts/item_database.gd")
 const ATLAS = preload("res://Scripts/ItemAtlasDB.gd")
+const CONTRACT = preload("res://Scripts/item_data_contract.gd")
 const STATIONS = preload("res://Scripts/station_recipes.gd")
 
 func _init() -> void:
 	var database = DB.new()
 	var rows = JSON.parse_string(FileAccess.get_file_as_string("res://docs/splicing-recipe-status.json"))
 	var seed_to_block: Dictionary = {}
-	var items: Dictionary = ATLAS.merge_item_database(DB.ITEMS.duplicate(true))
+	var items: Dictionary = CONTRACT.apply(ATLAS.merge_item_database(DB.ITEMS.duplicate(true)))
 	for id in items:
 		var item: Dictionary = items[id]
 		if item.get("category") == "block" and not str(item.get("seed", "")).is_empty():
@@ -21,13 +22,16 @@ func _init() -> void:
 		assert(database.get_splice_result(seeds[0], seeds[1]) == seeds[2], str(row.names))
 		assert(database.get_splice_result(seeds[1], seeds[0]) == seeds[2], str(row.names))
 		for i in range(3):
-			assert(seed_to_block.get(seeds[i], "") == row.ids[i], str(row.names))
+			if items.get(seeds[i], {}).get("category", "") == "material":
+				assert(seeds[i] == row.ids[i] and i < 2, str(row.names))
+			else:
+				assert(items.get(row.ids[i], {}).get("seed", "") == seeds[i], str(row.names))
 		count += 1
 	for key in DB.SPLICE_RECIPES:
 		var pair: PackedStringArray = key.split("+")
 		assert(database.get_splice_key(pair[0], pair[1]) == key)
 		for seed_id in [pair[0], pair[1], DB.SPLICE_RECIPES[key]]:
-			assert(seed_to_block.has(seed_id), seed_id)
+			assert(seed_to_block.has(seed_id) or (seed_id == "star_fragment" and seed_id != DB.SPLICE_RECIPES[key]), seed_id)
 	assert(database.get_splice_result("unknown_seed", "dirt_seed") == "")
 	var crafting = JSON.parse_string(FileAccess.get_file_as_string("res://docs/live-crafting-recipes.json"))
 	assert(STATIONS.validate_recipes().is_empty())

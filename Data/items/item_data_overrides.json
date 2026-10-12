@@ -2031,8 +2031,8 @@
     "break_xp": 5
   },
   "wood_platform_seed": {
-    "grow_time": 240,
-    "max_grow_time": 240,
+    "grow_time": 270,
+    "max_grow_time": 270,
     "recipe_tier": 3
   },
   "wood_platform": {
@@ -2368,8 +2368,8 @@
     "equipable": false
   },
   "wooden_ladder_seed": {
-    "grow_time": 480,
-    "max_grow_time": 480,
+    "grow_time": 510,
+    "max_grow_time": 510,
     "recipe_tier": 4
   },
   "wooden_ladder": {
@@ -2466,8 +2466,8 @@
     "break_xp": 20
   },
   "sign_seed": {
-    "grow_time": 360,
-    "max_grow_time": 360,
+    "grow_time": 240,
+    "max_grow_time": 240,
     "recipe_tier": 3
   },
   "sign": {
@@ -2559,8 +2559,8 @@
     "break_xp": 10
   },
   "wooden_entrance_seed": {
-    "grow_time": 510,
-    "max_grow_time": 510,
+    "grow_time": 570,
+    "max_grow_time": 570,
     "recipe_tier": 4
   },
   "wooden_entrance": {
@@ -2838,8 +2838,8 @@
     "break_xp": 5
   },
   "wooden_frame_seed": {
-    "grow_time": 270,
-    "max_grow_time": 270,
+    "grow_time": 360,
+    "max_grow_time": 360,
     "recipe_tier": 3
   },
   "wooden_window": {
@@ -2930,8 +2930,8 @@
     "break_xp": 10
   },
   "wooden_door_seed": {
-    "grow_time": 240,
-    "max_grow_time": 240,
+    "grow_time": 270,
+    "max_grow_time": 270,
     "recipe_tier": 3
   },
   "wooden_door": {
@@ -3022,8 +3022,8 @@
     "break_xp": 10
   },
   "wooden_fence_seed": {
-    "grow_time": 360,
-    "max_grow_time": 360,
+    "grow_time": 240,
+    "max_grow_time": 240,
     "recipe_tier": 3
   },
   "wooden_fence": {
@@ -3115,8 +3115,8 @@
     "break_xp": 10
   },
   "wooden_chair_seed": {
-    "grow_time": 510,
-    "max_grow_time": 510,
+    "grow_time": 570,
+    "max_grow_time": 570,
     "recipe_tier": 4
   },
   "wooden_chair": {
@@ -3207,8 +3207,8 @@
     "break_xp": 20
   },
   "wooden_table_seed": {
-    "grow_time": 240,
-    "max_grow_time": 240,
+    "grow_time": 270,
+    "max_grow_time": 270,
     "recipe_tier": 3
   },
   "wooden_table": {
@@ -3386,8 +3386,8 @@
     "break_xp": 1
   },
   "climbing_vine_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "climbing_vine": {
@@ -3555,8 +3555,8 @@
     "farming_balance_version": 2
   },
   "wooden_crappy_sign_seed": {
-    "grow_time": 270,
-    "max_grow_time": 270,
+    "grow_time": 360,
+    "max_grow_time": 360,
     "recipe_tier": 3
   },
   "wooden_crappy_sign": {
@@ -5096,8 +5096,8 @@
     "break_xp": 1
   },
   "wooden_barrel_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "wooden_barrel": {
@@ -5188,8 +5188,8 @@
     "break_xp": 35
   },
   "wooden_box_seed": {
-    "grow_time": 480,
-    "max_grow_time": 480,
+    "grow_time": 510,
+    "max_grow_time": 510,
     "recipe_tier": 4
   },
   "wooden_box": {
@@ -5286,8 +5286,8 @@
     "break_xp": 20
   },
   "lantern_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1500,
+    "max_grow_time": 1500,
     "recipe_tier": 5
   },
   "lantern": {
@@ -5378,8 +5378,8 @@
     "break_xp": 35
   },
   "campfire_seed": {
-    "grow_time": 270,
-    "max_grow_time": 270,
+    "grow_time": 360,
+    "max_grow_time": 360,
     "recipe_tier": 3
   },
   "campfire": {
@@ -5470,8 +5470,8 @@
     "break_xp": 10
   },
   "dungeon_door_seed": {
-    "grow_time": 5400,
-    "max_grow_time": 5400,
+    "grow_time": 9600,
+    "max_grow_time": 9600,
     "recipe_tier": 6
   },
   "dungeon_door": {
@@ -5568,8 +5568,8 @@
     "break_xp": 50
   },
   "sturdy_box_seed": {
-    "grow_time": 7800,
-    "max_grow_time": 7800,
+    "grow_time": 5400,
+    "max_grow_time": 5400,
     "recipe_tier": 6
   },
   "sturdy_box": {
@@ -5660,8 +5660,8 @@
     "break_xp": 50
   },
   "wagon_wheel_seed": {
-    "grow_time": 9600,
-    "max_grow_time": 9600,
+    "grow_time": 7800,
+    "max_grow_time": 7800,
     "recipe_tier": 6
   },
   "wagon_wheel": {
@@ -5746,8 +5746,8 @@
     "break_xp": 50
   },
   "portcullis_seed": {
-    "grow_time": 23100,
-    "max_grow_time": 23100,
+    "grow_time": 27000,
+    "max_grow_time": 27000,
     "recipe_tier": 7
   },
   "portcullis": {
@@ -6023,8 +6023,8 @@
     "break_xp": 5
   },
   "red_brick_wall_seed": {
-    "grow_time": 240,
-    "max_grow_time": 240,
+    "grow_time": 270,
+    "max_grow_time": 270,
     "recipe_tier": 3
   },
   "red_brick_wall": {
@@ -6208,8 +6208,8 @@
     "break_xp": 5
   },
   "stone_brick_wall_seed": {
-    "grow_time": 270,
-    "max_grow_time": 270,
+    "grow_time": 360,
+    "max_grow_time": 360,
     "recipe_tier": 3
   },
   "stone_brick_wall": {
@@ -6300,8 +6300,8 @@
     "break_xp": 10
   },
   "green_brick_seed": {
-    "grow_time": 480,
-    "max_grow_time": 480,
+    "grow_time": 510,
+    "max_grow_time": 510,
     "recipe_tier": 4
   },
   "green_brick": {
@@ -6398,8 +6398,8 @@
     "break_xp": 20
   },
   "green_brick_wall_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1500,
+    "max_grow_time": 1500,
     "recipe_tier": 5
   },
   "green_brick_wall": {
@@ -6490,8 +6490,8 @@
     "break_xp": 35
   },
   "white_block_seed": {
-    "grow_time": 270,
-    "max_grow_time": 270,
+    "grow_time": 360,
+    "max_grow_time": 360,
     "recipe_tier": 3
   },
   "white_block": {
@@ -6582,8 +6582,8 @@
     "break_xp": 10
   },
   "red_block_seed": {
-    "grow_time": 240,
-    "max_grow_time": 240,
+    "grow_time": 270,
+    "max_grow_time": 270,
     "recipe_tier": 3
   },
   "red_block": {
@@ -6674,8 +6674,8 @@
     "break_xp": 10
   },
   "green_block_seed": {
-    "grow_time": 360,
-    "max_grow_time": 360,
+    "grow_time": 240,
+    "max_grow_time": 240,
     "recipe_tier": 3
   },
   "green_block": {
@@ -6767,8 +6767,8 @@
     "break_xp": 10
   },
   "brown_block_seed": {
-    "grow_time": 270,
-    "max_grow_time": 270,
+    "grow_time": 360,
+    "max_grow_time": 360,
     "recipe_tier": 3
   },
   "brown_block": {
@@ -6859,8 +6859,8 @@
     "break_xp": 10
   },
   "grey_block_seed": {
-    "grow_time": 240,
-    "max_grow_time": 240,
+    "grow_time": 270,
+    "max_grow_time": 270,
     "recipe_tier": 3
   },
   "grey_block": {
@@ -6951,8 +6951,8 @@
     "break_xp": 10
   },
   "orange_block_seed": {
-    "grow_time": 570,
-    "max_grow_time": 570,
+    "grow_time": 480,
+    "max_grow_time": 480,
     "recipe_tier": 4
   },
   "orange_block": {
@@ -7049,8 +7049,8 @@
     "break_xp": 20
   },
   "aqua_block_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "aqua_block": {
@@ -7141,8 +7141,8 @@
     "break_xp": 35
   },
   "purple_block_seed": {
-    "grow_time": 1500,
-    "max_grow_time": 1500,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "purple_block": {
@@ -7233,8 +7233,8 @@
     "break_xp": 35
   },
   "black_block_seed": {
-    "grow_time": 360,
-    "max_grow_time": 360,
+    "grow_time": 240,
+    "max_grow_time": 240,
     "recipe_tier": 3
   },
   "black_block": {
@@ -7326,8 +7326,8 @@
     "break_xp": 10
   },
   "yellow_block_seed": {
-    "grow_time": 270,
-    "max_grow_time": 270,
+    "grow_time": 360,
+    "max_grow_time": 360,
     "recipe_tier": 3
   },
   "yellow_block": {
@@ -7418,8 +7418,8 @@
     "break_xp": 10
   },
   "blue_block_seed": {
-    "grow_time": 480,
-    "max_grow_time": 480,
+    "grow_time": 510,
+    "max_grow_time": 510,
     "recipe_tier": 4
   },
   "blue_block": {
@@ -7516,8 +7516,8 @@
     "break_xp": 20
   },
   "pink_block_seed": {
-    "grow_time": 570,
-    "max_grow_time": 570,
+    "grow_time": 480,
+    "max_grow_time": 480,
     "recipe_tier": 4
   },
   "pink_block": {
@@ -7614,8 +7614,8 @@
     "break_xp": 20
   },
   "dark_red_block_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "maroon_block": {
@@ -7706,8 +7706,8 @@
     "break_xp": 35
   },
   "dark_green_block_seed": {
-    "grow_time": 1500,
-    "max_grow_time": 1500,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "dark_green_block": {
@@ -7889,8 +7889,8 @@
     "farming_balance_version": 2
   },
   "light_brown_block_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "dark_orange_block": {
@@ -7981,8 +7981,8 @@
     "break_xp": 35
   },
   "dark_aqua_block_seed": {
-    "grow_time": 5400,
-    "max_grow_time": 5400,
+    "grow_time": 9600,
+    "max_grow_time": 9600,
     "recipe_tier": 6
   },
   "dark_aqua_block": {
@@ -8079,8 +8079,8 @@
     "break_xp": 50
   },
   "dark_purple_block_seed": {
-    "grow_time": 7800,
-    "max_grow_time": 7800,
+    "grow_time": 5400,
+    "max_grow_time": 5400,
     "recipe_tier": 6
   },
   "dark_purple_block": {
@@ -8171,8 +8171,8 @@
     "break_xp": 50
   },
   "dark_yellow_block_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "dark_yellow_block": {
@@ -8263,8 +8263,8 @@
     "break_xp": 35
   },
   "dark_blue_block_seed": {
-    "grow_time": 1500,
-    "max_grow_time": 1500,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "dark_blue_block": {
@@ -8355,8 +8355,8 @@
     "break_xp": 35
   },
   "dark_pink_block_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1500,
+    "max_grow_time": 1500,
     "recipe_tier": 5
   },
   "dark_pink_block": {
@@ -8447,8 +8447,8 @@
     "break_xp": 35
   },
   "red_pastel_block_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "red_pastel_block": {
@@ -8539,8 +8539,8 @@
     "break_xp": 35
   },
   "green_pastel_block_seed": {
-    "grow_time": 1500,
-    "max_grow_time": 1500,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "green_pastel_block": {
@@ -8631,8 +8631,8 @@
     "break_xp": 35
   },
   "purple_pastel_block_seed": {
-    "grow_time": 7800,
-    "max_grow_time": 7800,
+    "grow_time": 5400,
+    "max_grow_time": 5400,
     "recipe_tier": 6
   },
   "purple_pastel_block": {
@@ -8723,8 +8723,8 @@
     "break_xp": 50
   },
   "yellow_pastel_block_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "yellow_pastel_block": {
@@ -8815,8 +8815,8 @@
     "break_xp": 35
   },
   "orange_pastel_block_seed": {
-    "grow_time": 1500,
-    "max_grow_time": 1500,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "orange_pastel_block": {
@@ -8907,8 +8907,8 @@
     "break_xp": 35
   },
   "pink_pastel_block_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1500,
+    "max_grow_time": 1500,
     "recipe_tier": 5
   },
   "pink_pastel_block": {
@@ -8999,8 +8999,8 @@
     "break_xp": 35
   },
   "blue_pastel_block_seed": {
-    "grow_time": 9600,
-    "max_grow_time": 9600,
+    "grow_time": 7800,
+    "max_grow_time": 7800,
     "recipe_tier": 6
   },
   "blue_pastel_block": {
@@ -9085,8 +9085,8 @@
     "break_xp": 50
   },
   "happy_block_seed": {
-    "grow_time": 5400,
-    "max_grow_time": 5400,
+    "grow_time": 9600,
+    "max_grow_time": 9600,
     "recipe_tier": 6
   },
   "happy_block": {
@@ -9183,8 +9183,8 @@
     "break_xp": 50
   },
   "pastel_flower_block_seed": {
-    "grow_time": 7800,
-    "max_grow_time": 7800,
+    "grow_time": 5400,
+    "max_grow_time": 5400,
     "recipe_tier": 6
   },
   "pastel_flower_block": {
@@ -9275,8 +9275,8 @@
     "break_xp": 50
   },
   "gem_block_seed": {
-    "grow_time": 9600,
-    "max_grow_time": 9600,
+    "grow_time": 7800,
+    "max_grow_time": 7800,
     "recipe_tier": 6
   },
   "rainbow_block": {
@@ -9415,8 +9415,8 @@
     "drops_self": false
   },
   "white_wallpaper_seed": {
-    "grow_time": 480,
-    "max_grow_time": 480,
+    "grow_time": 510,
+    "max_grow_time": 510,
     "recipe_tier": 4
   },
   "white_wallpaper": {
@@ -9513,8 +9513,8 @@
     "break_xp": 20
   },
   "red_wallpaper_seed": {
-    "grow_time": 570,
-    "max_grow_time": 570,
+    "grow_time": 480,
+    "max_grow_time": 480,
     "recipe_tier": 4
   },
   "red_wallpaper": {
@@ -9611,8 +9611,8 @@
     "break_xp": 20
   },
   "green_wallpaper_seed": {
-    "grow_time": 510,
-    "max_grow_time": 510,
+    "grow_time": 570,
+    "max_grow_time": 570,
     "recipe_tier": 4
   },
   "green_wallpaper": {
@@ -9703,8 +9703,8 @@
     "break_xp": 20
   },
   "brown_wallpaper_seed": {
-    "grow_time": 480,
-    "max_grow_time": 480,
+    "grow_time": 510,
+    "max_grow_time": 510,
     "recipe_tier": 4
   },
   "brown_wallpaper": {
@@ -9801,8 +9801,8 @@
     "break_xp": 20
   },
   "grey_wallpaper_seed": {
-    "grow_time": 570,
-    "max_grow_time": 570,
+    "grow_time": 480,
+    "max_grow_time": 480,
     "recipe_tier": 4
   },
   "grey_wallpaper": {
@@ -9899,8 +9899,8 @@
     "break_xp": 20
   },
   "orange_wallpaper_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "orange_wallpaper": {
@@ -9991,8 +9991,8 @@
     "break_xp": 35
   },
   "aqua_wallpaper_seed": {
-    "grow_time": 5400,
-    "max_grow_time": 5400,
+    "grow_time": 9600,
+    "max_grow_time": 9600,
     "recipe_tier": 6
   },
   "aqua_wallpaper": {
@@ -10089,8 +10089,8 @@
     "break_xp": 50
   },
   "purple_wallpaper_seed": {
-    "grow_time": 7800,
-    "max_grow_time": 7800,
+    "grow_time": 5400,
+    "max_grow_time": 5400,
     "recipe_tier": 6
   },
   "purple_wallpaper": {
@@ -10181,8 +10181,8 @@
     "break_xp": 50
   },
   "black_wallpaper_seed": {
-    "grow_time": 510,
-    "max_grow_time": 510,
+    "grow_time": 570,
+    "max_grow_time": 570,
     "recipe_tier": 4
   },
   "black_wallpaper": {
@@ -10273,8 +10273,8 @@
     "break_xp": 20
   },
   "yellow_wallpaper_seed": {
-    "grow_time": 480,
-    "max_grow_time": 480,
+    "grow_time": 510,
+    "max_grow_time": 510,
     "recipe_tier": 4
   },
   "yellow_wallpaper": {
@@ -10371,8 +10371,8 @@
     "break_xp": 20
   },
   "blue_wallpaper_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1500,
+    "max_grow_time": 1500,
     "recipe_tier": 5
   },
   "blue_wallpaper": {
@@ -10463,8 +10463,8 @@
     "break_xp": 35
   },
   "pink_wallpaper_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "pink_wallpaper": {
@@ -10555,8 +10555,8 @@
     "break_xp": 35
   },
   "steel_block_seed": {
-    "grow_time": 1500,
-    "max_grow_time": 1500,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "steel_block": {
@@ -10647,8 +10647,8 @@
     "break_xp": 35
   },
   "steel_background_seed": {
-    "grow_time": 7800,
-    "max_grow_time": 7800,
+    "grow_time": 5400,
+    "max_grow_time": 5400,
     "recipe_tier": 6
   },
   "steel_background": {
@@ -10739,8 +10739,8 @@
     "break_xp": 50
   },
   "steel_sign_seed": {
-    "grow_time": 9600,
-    "max_grow_time": 9600,
+    "grow_time": 7800,
+    "max_grow_time": 7800,
     "recipe_tier": 6
   },
   "steel_sign": {
@@ -10825,8 +10825,8 @@
     "break_xp": 50
   },
   "steel_door_seed": {
-    "grow_time": 5400,
-    "max_grow_time": 5400,
+    "grow_time": 9600,
+    "max_grow_time": 9600,
     "recipe_tier": 6
   },
   "steel_door": {
@@ -10923,8 +10923,8 @@
     "break_xp": 50
   },
   "screen_door_seed": {
-    "grow_time": 7800,
-    "max_grow_time": 7800,
+    "grow_time": 5400,
+    "max_grow_time": 5400,
     "recipe_tier": 6
   },
   "screen_door": {
@@ -11015,8 +11015,8 @@
     "break_xp": 50
   },
   "ceiling_lamp_seed": {
-    "grow_time": 9600,
-    "max_grow_time": 9600,
+    "grow_time": 7800,
+    "max_grow_time": 7800,
     "recipe_tier": 6
   },
   "ceiling_lamp": {
@@ -11101,8 +11101,8 @@
     "break_xp": 50
   },
   "steel_ladder_seed": {
-    "grow_time": 7800,
-    "max_grow_time": 7800,
+    "grow_time": 5400,
+    "max_grow_time": 5400,
     "recipe_tier": 6
   },
   "steel_ladder": {
@@ -11193,8 +11193,8 @@
     "break_xp": 50
   },
   "mechanical_entrance_seed": {
-    "grow_time": 27000,
-    "max_grow_time": 27000,
+    "grow_time": 28800,
+    "max_grow_time": 28800,
     "recipe_tier": 7
   },
   "mechanical_entrance": {
@@ -11279,8 +11279,8 @@
     "break_xp": 70
   },
   "glass_seed": {
-    "grow_time": 240,
-    "max_grow_time": 240,
+    "grow_time": 270,
+    "max_grow_time": 270,
     "recipe_tier": 3
   },
   "glass": {
@@ -11464,8 +11464,8 @@
     "break_xp": 5
   },
   "steel_platform_seed": {
-    "grow_time": 9600,
-    "max_grow_time": 9600,
+    "grow_time": 7800,
+    "max_grow_time": 7800,
     "recipe_tier": 6
   },
   "steel_platform": {
@@ -11645,8 +11645,8 @@
     "break_xp": 50
   },
   "big_spike_seed": {
-    "grow_time": 9600,
-    "max_grow_time": 9600,
+    "grow_time": 7800,
+    "max_grow_time": 7800,
     "recipe_tier": 6
   },
   "big_spike": {
@@ -11818,17 +11818,18 @@
     "grows_into": "pinball",
     "texture": "res://Assets/seeds/seed_box.tres",
     "seed_box_icon": true,
-    "grow_time": 23100,
-    "max_grow_time": 23100,
+    "grow_time": 27000,
+    "max_grow_time": 27000,
     "rarity": "rare",
     "stack_limit": 400,
     "tradeable": true,
     "dropable": true,
-    "admin_grantable": true
+    "admin_grantable": true,
+    "recipe_tier": 7
   },
   "slime_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "slime": {
@@ -11919,8 +11920,8 @@
     "break_xp": 35
   },
   "biohazard_barrel_seed": {
-    "grow_time": 23100,
-    "max_grow_time": 23100,
+    "grow_time": 27000,
+    "max_grow_time": 27000,
     "recipe_tier": 7
   },
   "biohazard_barrel": {
@@ -12047,8 +12048,8 @@
     "farming_balance_version": 2
   },
   "star_block_seed": {
-    "grow_time": 23100,
-    "max_grow_time": 23100,
+    "grow_time": 27000,
+    "max_grow_time": 27000,
     "recipe_tier": 7
   },
   "star_block": {
@@ -12150,8 +12151,8 @@
     "grows_into": "fish_hanger",
     "texture": "res://Assets/seeds/seed_box.tres",
     "seed_box_icon": true,
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1500,
+    "max_grow_time": 1500,
     "rarity": "rare",
     "stack_limit": 400,
     "tradeable": true,
@@ -12248,8 +12249,8 @@
     "break_xp": 35
   },
   "wooden_shelf_seed": {
-    "grow_time": 9600,
-    "max_grow_time": 9600,
+    "grow_time": 7800,
+    "max_grow_time": 7800,
     "recipe_tier": 6
   },
   "wooden_shelf": {
@@ -12708,8 +12709,8 @@
     "break_xp": 90
   },
   "mail_box_seed": {
-    "grow_time": 7800,
-    "max_grow_time": 7800,
+    "grow_time": 5400,
+    "max_grow_time": 5400,
     "recipe_tier": 6
   },
   "mail_box": {
@@ -12800,8 +12801,8 @@
     "break_xp": 50
   },
   "blue_mail_box_seed": {
-    "grow_time": 23100,
-    "max_grow_time": 23100,
+    "grow_time": 27000,
+    "max_grow_time": 27000,
     "recipe_tier": 7
   },
   "blue_mail_box": {
@@ -12892,8 +12893,8 @@
     "break_xp": 70
   },
   "donation_box_seed": {
-    "grow_time": 27000,
-    "max_grow_time": 27000,
+    "grow_time": 28800,
+    "max_grow_time": 28800,
     "recipe_tier": 7
   },
   "donation_box": {
@@ -14850,8 +14851,8 @@
     "equipable": false
   },
   "electric_pole_seed": {
-    "grow_time": 5400,
-    "max_grow_time": 5400,
+    "grow_time": 7800,
+    "max_grow_time": 7800,
     "recipe_tier": 6
   },
   "electric_pole": {
@@ -14942,8 +14943,8 @@
     "break_xp": 50
   },
   "metal_pad_seed": {
-    "grow_time": 28800,
-    "max_grow_time": 28800,
+    "grow_time": 27000,
+    "max_grow_time": 27000,
     "recipe_tier": 7
   },
   "metal_pad": {
@@ -15820,8 +15821,8 @@
     "break_xp": 1
   },
   "barn_block_seed": {
-    "grow_time": 480,
-    "max_grow_time": 480,
+    "grow_time": 570,
+    "max_grow_time": 570,
     "recipe_tier": 4
   },
   "barn_block": {
@@ -15918,8 +15919,8 @@
     "break_xp": 20
   },
   "barn_window_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "barn_window": {
@@ -16004,8 +16005,8 @@
     "break_xp": 35
   },
   "barn_background_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1500,
+    "max_grow_time": 1500,
     "recipe_tier": 5
   },
   "barn_background": {
@@ -16096,8 +16097,8 @@
     "break_xp": 35
   },
   "white_fence_seed": {
-    "grow_time": 1500,
-    "max_grow_time": 1500,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "white_fence": {
@@ -16194,8 +16195,8 @@
     "break_xp": 35
   },
   "barn_door_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "barn_door": {
@@ -16280,8 +16281,8 @@
     "break_xp": 35
   },
   "empty_jar_seed": {
-    "grow_time": 27000,
-    "max_grow_time": 27000,
+    "grow_time": 23100,
+    "max_grow_time": 23100,
     "recipe_tier": 7
   },
   "empty_jar": {
@@ -16366,8 +16367,8 @@
     "break_xp": 70
   },
   "water_well_seed": {
-    "grow_time": 23100,
-    "max_grow_time": 23100,
+    "grow_time": 28800,
+    "max_grow_time": 28800,
     "recipe_tier": 7
   },
   "water_well": {
@@ -16452,8 +16453,8 @@
     "break_xp": 70
   },
   "weathervane_seed": {
-    "grow_time": 9600,
-    "max_grow_time": 9600,
+    "grow_time": 5400,
+    "max_grow_time": 5400,
     "recipe_tier": 6
   },
   "weathervane": {
@@ -16544,8 +16545,8 @@
     "break_xp": 50
   },
   "chicken_seed": {
-    "grow_time": 23100,
-    "max_grow_time": 23100,
+    "grow_time": 28800,
+    "max_grow_time": 28800,
     "recipe_tier": 7
   },
   "chicken": {
@@ -16786,8 +16787,8 @@
     "break_xp": 115
   },
   "sugar_cane_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1500,
+    "max_grow_time": 1500,
     "recipe_tier": 5
   },
   "sugar_cane": {
@@ -17188,8 +17189,8 @@
     "break_xp": 5
   },
   "hay_bales_seed": {
-    "grow_time": 240,
-    "max_grow_time": 240,
+    "grow_time": 360,
+    "max_grow_time": 360,
     "recipe_tier": 3
   },
   "hay_bales": {
@@ -17630,8 +17631,8 @@
     "break_xp": 1
   },
   "pillar_seed": {
-    "grow_time": 9600,
-    "max_grow_time": 9600,
+    "grow_time": 5400,
+    "max_grow_time": 5400,
     "recipe_tier": 6
   },
   "pillar": {
@@ -17722,8 +17723,8 @@
     "break_xp": 50
   },
   "lamp_seed": {
-    "grow_time": 23100,
-    "max_grow_time": 23100,
+    "grow_time": 28800,
+    "max_grow_time": 28800,
     "recipe_tier": 7
   },
   "lamp": {
@@ -17808,8 +17809,8 @@
     "break_xp": 70
   },
   "fish_bowl_seed": {
-    "grow_time": 27000,
-    "max_grow_time": 27000,
+    "grow_time": 23100,
+    "max_grow_time": 23100,
     "recipe_tier": 7
   },
   "fish_bowl": {
@@ -17986,8 +17987,8 @@
     "break_xp": 90
   },
   "blue_couch_seed": {
-    "grow_time": 27000,
-    "max_grow_time": 27000,
+    "grow_time": 23100,
+    "max_grow_time": 23100,
     "recipe_tier": 7
   },
   "blue_couch": {
@@ -18164,8 +18165,8 @@
     "break_xp": 115
   },
   "side_table_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "side_table": {
@@ -18250,8 +18251,8 @@
     "break_xp": 35
   },
   "modern_chair_seed": {
-    "grow_time": 9600,
-    "max_grow_time": 9600,
+    "grow_time": 5400,
+    "max_grow_time": 5400,
     "recipe_tier": 6
   },
   "modern_chair": {
@@ -18342,8 +18343,8 @@
     "break_xp": 50
   },
   "dresser_seed": {
-    "grow_time": 5400,
-    "max_grow_time": 5400,
+    "grow_time": 7800,
+    "max_grow_time": 7800,
     "recipe_tier": 6
   },
   "dresser": {
@@ -18434,8 +18435,8 @@
     "break_xp": 50
   },
   "royal_door_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "royal_door": {
@@ -18612,8 +18613,8 @@
     "break_xp": 90
   },
   "royal_entrance_seed": {
-    "grow_time": 23100,
-    "max_grow_time": 23100,
+    "grow_time": 28800,
+    "max_grow_time": 28800,
     "recipe_tier": 7
   },
   "royal_entrance": {
@@ -18698,8 +18699,8 @@
     "break_xp": 70
   },
   "royal_window_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "royal_window": {
@@ -18784,8 +18785,8 @@
     "break_xp": 35
   },
   "purple_curtains_seed": {
-    "grow_time": 27000,
-    "max_grow_time": 27000,
+    "grow_time": 23100,
+    "max_grow_time": 23100,
     "recipe_tier": 7
   },
   "purple_curtains": {
@@ -18870,8 +18871,8 @@
     "break_xp": 70
   },
   "pink_curtains_seed": {
-    "grow_time": 23100,
-    "max_grow_time": 23100,
+    "grow_time": 28800,
+    "max_grow_time": 28800,
     "recipe_tier": 7
   },
   "pink_curtains": {
@@ -18956,8 +18957,8 @@
     "break_xp": 70
   },
   "toilet_seed": {
-    "grow_time": 7800,
-    "max_grow_time": 7800,
+    "grow_time": 9600,
+    "max_grow_time": 9600,
     "recipe_tier": 6
   },
   "toilet": {
@@ -19310,8 +19311,8 @@
     "break_xp": 115
   },
   "building_brick_block_seed": {
-    "grow_time": 510,
-    "max_grow_time": 510,
+    "grow_time": 480,
+    "max_grow_time": 480,
     "recipe_tier": 4
   },
   "building_brick_block": {
@@ -19402,8 +19403,8 @@
     "break_xp": 20
   },
   "building_brick_wall_seed": {
-    "grow_time": 1500,
-    "max_grow_time": 1500,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "building_brick_wall": {
@@ -19500,8 +19501,8 @@
     "break_xp": 35
   },
   "fireplace_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "fireplace": {
@@ -19651,8 +19652,8 @@
     "break_xp": 35
   },
   "bathtub_seed": {
-    "grow_time": 23100,
-    "max_grow_time": 23100,
+    "grow_time": 28800,
+    "max_grow_time": 28800,
     "recipe_tier": 7
   },
   "bathtub": {
@@ -19802,8 +19803,8 @@
     "break_xp": 70
   },
   "sink_seed": {
-    "grow_time": 9600,
-    "max_grow_time": 9600,
+    "grow_time": 5400,
+    "max_grow_time": 5400,
     "recipe_tier": 6
   },
   "sink": {
@@ -20051,8 +20052,8 @@
     "break_xp": 90
   },
   "red_brick_platform_seed": {
-    "grow_time": 1500,
-    "max_grow_time": 1500,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "red_brick_platform": {
@@ -20149,8 +20150,8 @@
     "break_xp": 35
   },
   "white_brick_block_seed": {
-    "grow_time": 570,
-    "max_grow_time": 570,
+    "grow_time": 510,
+    "max_grow_time": 510,
     "recipe_tier": 4
   },
   "white_brick_block": {
@@ -20247,8 +20248,8 @@
     "break_xp": 20
   },
   "white_brick_wall_seed": {
-    "grow_time": 1500,
-    "max_grow_time": 1500,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "white_brick_wall": {
@@ -20345,8 +20346,8 @@
     "break_xp": 35
   },
   "white_brick_platform_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "white_brick_platform": {
@@ -20523,8 +20524,8 @@
     "break_xp": 115
   },
   "bed_seed": {
-    "grow_time": 5400,
-    "max_grow_time": 5400,
+    "grow_time": 7800,
+    "max_grow_time": 7800,
     "recipe_tier": 6
   },
   "bed": {
@@ -20615,8 +20616,8 @@
     "break_xp": 50
   },
   "park_bench_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "park_bench": {
@@ -20701,8 +20702,8 @@
     "break_xp": 35
   },
   "big_sign_seed": {
-    "grow_time": 510,
-    "max_grow_time": 510,
+    "grow_time": 480,
+    "max_grow_time": 480,
     "recipe_tier": 4
   },
   "big_sign": {
@@ -20793,8 +20794,8 @@
     "break_xp": 20
   },
   "right_directional_sign_seed": {
-    "grow_time": 1500,
-    "max_grow_time": 1500,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "right_directional_sign": {
@@ -20891,8 +20892,8 @@
     "break_xp": 35
   },
   "left_directional_sign_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "left_directional_sign": {
@@ -21069,8 +21070,8 @@
     "break_xp": 115
   },
   "star_wall_seed": {
-    "grow_time": 480,
-    "max_grow_time": 480,
+    "grow_time": 570,
+    "max_grow_time": 570,
     "recipe_tier": 4
   },
   "star_wall": {
@@ -21167,8 +21168,8 @@
     "break_xp": 20
   },
   "blue_stripe_wall_seed": {
-    "grow_time": 570,
-    "max_grow_time": 570,
+    "grow_time": 480,
+    "max_grow_time": 480,
     "recipe_tier": 4
   },
   "blue_stripe_wall": {
@@ -21265,8 +21266,8 @@
     "break_xp": 20
   },
   "red_stripe_wall_seed": {
-    "grow_time": 510,
-    "max_grow_time": 510,
+    "grow_time": 570,
+    "max_grow_time": 570,
     "recipe_tier": 4
   },
   "red_stripe_wall": {
@@ -21357,8 +21358,8 @@
     "break_xp": 20
   },
   "aquatic_line_wall_seed": {
-    "grow_time": 1500,
-    "max_grow_time": 1500,
+    "grow_time": 1725,
+    "max_grow_time": 1725,
     "recipe_tier": 5
   },
   "aquatic_line_wall": {
@@ -21449,8 +21450,8 @@
     "break_xp": 35
   },
   "complementary_line_wall_seed": {
-    "grow_time": 1800,
-    "max_grow_time": 1800,
+    "grow_time": 1500,
+    "max_grow_time": 1500,
     "recipe_tier": 5
   },
   "complementary_line_wall": {
@@ -21541,8 +21542,8 @@
     "break_xp": 35
   },
   "checkered_wall_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "checkered_wall": {
@@ -21633,8 +21634,8 @@
     "break_xp": 35
   },
   "sale_sign_seed": {
-    "grow_time": 5400,
-    "max_grow_time": 5400,
+    "grow_time": 9600,
+    "max_grow_time": 9600,
     "recipe_tier": 6
   },
   "sale_sign": {
@@ -21915,8 +21916,8 @@
     "break_xp": 90
   },
   "street_sign_seed": {
-    "grow_time": 28800,
-    "max_grow_time": 28800,
+    "grow_time": 23100,
+    "max_grow_time": 23100,
     "recipe_tier": 7
   },
   "street_sign": {
@@ -23212,8 +23213,8 @@
     "break_xp": 115
   },
   "ventilation_seed": {
-    "grow_time": 28800,
-    "max_grow_time": 28800,
+    "grow_time": 23100,
+    "max_grow_time": 23100,
     "recipe_tier": 7
   },
   "ventilation": {
@@ -23798,8 +23799,8 @@
     "break_xp": 170
   },
   "pencil_block_seed": {
-    "grow_time": 1725,
-    "max_grow_time": 1725,
+    "grow_time": 1800,
+    "max_grow_time": 1800,
     "recipe_tier": 5
   },
   "pencil_block": {
@@ -23890,8 +23891,8 @@
     "break_xp": 35
   },
   "cozy_chalkboard_seed": {
-    "grow_time": 23100,
-    "max_grow_time": 23100,
+    "grow_time": 27000,
+    "max_grow_time": 27000,
     "recipe_tier": 7
   },
   "cozy_chalkboard": {
@@ -24074,8 +24075,8 @@
     "break_xp": 90
   },
   "neon_block_seed": {
-    "grow_time": 27000,
-    "max_grow_time": 27000,
+    "grow_time": 28800,
+    "max_grow_time": 28800,
     "recipe_tier": 7
   },
   "neon_block": {
@@ -24160,8 +24161,8 @@
     "break_xp": 70
   },
   "hellbrick_seed": {
-    "grow_time": 240,
-    "max_grow_time": 240,
+    "grow_time": 270,
+    "max_grow_time": 270,
     "recipe_tier": 3
   },
   "hellbrick": {
@@ -24252,8 +24253,8 @@
     "break_xp": 10
   },
   "hellbrick_wall_seed": {
-    "grow_time": 570,
-    "max_grow_time": 570,
+    "grow_time": 480,
+    "max_grow_time": 480,
     "recipe_tier": 4
   },
   "hellbrick_wall": {
@@ -24516,8 +24517,8 @@
     "break_xp": 170
   },
   "hellbrick_platform_seed": {
-    "grow_time": 7800,
-    "max_grow_time": 7800,
+    "grow_time": 5400,
+    "max_grow_time": 5400,
     "recipe_tier": 6
   },
   "hellbrick_platform": {
@@ -26713,11 +26714,13 @@
         }
       ]
     },
-    "farming_balance_version": 2
+    "farming_balance_version": 2,
+    "recipe_tier": 6
   },
   "spike_seed": {
-    "grow_time": 300,
-    "max_grow_time": 300
+    "grow_time": 9600,
+    "max_grow_time": 9600,
+    "recipe_tier": 6
   },
   "star_checkpoint": {
     "authored_drop_rules": true,
@@ -27089,5 +27092,76 @@
   "wood_plank_seed": {
     "grow_time": 32,
     "max_grow_time": 32
+  },
+  "composer": {
+    "recipe_tier": 6,
+    "authored_drop_rules": true,
+    "drop_rules": {
+      "seed_chance": 0,
+      "gem_range": [
+        0,
+        0
+      ],
+      "fixed_drops": [
+        {
+          "item_id": "composer_seed",
+          "item_category": "seed",
+          "amount_range": [
+            0,
+            1
+          ]
+        },
+        {
+          "item_id": "composer",
+          "item_category": "block",
+          "amount_range": [
+            0,
+            3
+          ]
+        },
+        {
+          "item_id": "gem",
+          "item_category": "currency",
+          "amount": 3
+        }
+      ]
+    },
+    "tree_drop_rules": {
+      "seed_chance": 0,
+      "gem_range": [
+        0,
+        0
+      ],
+      "fixed_drops": [
+        {
+          "item_id": "composer_seed",
+          "item_category": "seed",
+          "amount_range": [
+            0,
+            1
+          ]
+        },
+        {
+          "item_id": "composer",
+          "item_category": "block",
+          "amount_range": [
+            0,
+            3
+          ]
+        },
+        {
+          "item_id": "gem",
+          "item_category": "currency",
+          "amount": 6
+        }
+      ]
+    },
+    "farming_balance_version": 2,
+    "break_xp": 50
+  },
+  "composer_seed": {
+    "recipe_tier": 6,
+    "grow_time": 7800,
+    "max_grow_time": 7800
   }
 }

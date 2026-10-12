@@ -92,7 +92,7 @@
       "break_details": "almanac_seed: 0–1 at 100.00%; almanac: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "almanac_seed: 0–1 at 100.00%; almanac: 0–3 at 100.00%; gem: 11 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 792",
-      "growth_source": "Imported splice sheet, row 334",
+      "growth_source": "Live SPLICING sheet, row 336 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -433,7 +433,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "aqua_block_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -477,7 +477,7 @@
       "break_details": "aqua_block_seed: 0–1 at 100.00%; aqua_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "aqua_block_seed: 0–1 at 100.00%; aqua_block: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 284",
-      "growth_source": "Imported splice sheet, row 118",
+      "growth_source": "Live SPLICING sheet, row 118 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -488,7 +488,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "aqua_wallpaper_seed",
-      "grow_seconds": 5400,
+      "grow_seconds": 9600,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -532,7 +532,7 @@
       "break_details": "aqua_wallpaper_seed: 0–1 at 100.00%; aqua_wallpaper: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "aqua_wallpaper_seed: 0–1 at 100.00%; aqua_wallpaper: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 358",
-      "growth_source": "Imported splice sheet, row 218",
+      "growth_source": "Live SPLICING sheet, row 218 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -543,7 +543,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "aquatic_line_wall_seed",
-      "grow_seconds": 1500,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -587,7 +587,7 @@
       "break_details": "aquatic_line_wall_seed: 0–1 at 100.00%; aquatic_line_wall: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "aquatic_line_wall_seed: 0–1 at 100.00%; aquatic_line_wall: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 724",
-      "growth_source": "Imported splice sheet, row 190",
+      "growth_source": "Live SPLICING sheet, row 190 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -763,7 +763,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "barn_background_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1500,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -807,7 +807,7 @@
       "break_details": "barn_background_seed: 0–1 at 100.00%; barn_background: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "barn_background_seed: 0–1 at 100.00%; barn_background: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 570",
-      "growth_source": "Imported splice sheet, row 160",
+      "growth_source": "Live SPLICING sheet, row 160 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -818,7 +818,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "barn_block_seed",
-      "grow_seconds": 480,
+      "grow_seconds": 570,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -862,7 +862,7 @@
       "break_details": "barn_block_seed: 0–1 at 100.00%; barn_block: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "barn_block_seed: 0–1 at 100.00%; barn_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 566",
-      "growth_source": "Imported splice sheet, row 96",
+      "growth_source": "Live SPLICING sheet, row 96 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -873,7 +873,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "barn_door_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -917,7 +917,7 @@
       "break_details": "barn_door_seed: 0–1 at 100.00%; barn_door: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "barn_door_seed: 0–1 at 100.00%; barn_door: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 580",
-      "growth_source": "Imported splice sheet, row 164",
+      "growth_source": "Live SPLICING sheet, row 164 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -928,7 +928,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "barn_window_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -972,7 +972,7 @@
       "break_details": "barn_window_seed: 0–1 at 100.00%; barn_window: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "barn_window_seed: 0–1 at 100.00%; barn_window: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 568",
-      "growth_source": "Imported splice sheet, row 158",
+      "growth_source": "Live SPLICING sheet, row 158 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -983,7 +983,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "bathtub_seed",
-      "grow_seconds": 23100,
+      "grow_seconds": 28800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -1027,7 +1027,7 @@
       "break_details": "bathtub_seed: 0–1 at 100.00%; bathtub: 0–3 at 100.00%; gem: 4 at 100.00%",
       "tree_details": "bathtub_seed: 0–1 at 100.00%; bathtub: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 680",
-      "growth_source": "Imported splice sheet, row 298",
+      "growth_source": "Live SPLICING sheet, row 300 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -1038,7 +1038,7 @@
       "mode": "variant",
       "base_item": "bathtub",
       "seed_id": "bathtub_seed",
-      "grow_seconds": 23100,
+      "grow_seconds": 28800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -1137,7 +1137,7 @@
       "break_details": "battery_assembler_seed: 0–1 at 100.00%; battery_assembler: 0–3 at 100.00%; gem: 8 at 100.00%",
       "tree_details": "battery_assembler_seed: 0–1 at 100.00%; battery_assembler: 0–3 at 100.00%; gem: 14 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 512",
-      "growth_source": "Imported splice sheet, row 380",
+      "growth_source": "Live SPLICING sheet, row 382 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -1203,7 +1203,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "bed_seed",
-      "grow_seconds": 5400,
+      "grow_seconds": 7800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -1247,7 +1247,7 @@
       "break_details": "bed_seed: 0–1 at 100.00%; bed: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "bed_seed: 0–1 at 100.00%; bed: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 704",
-      "growth_source": "Imported splice sheet, row 260",
+      "growth_source": "Live SPLICING sheet, row 260 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -1423,7 +1423,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "big_sign_seed",
-      "grow_seconds": 510,
+      "grow_seconds": 480,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -1467,7 +1467,7 @@
       "break_details": "big_sign_seed: 0–1 at 100.00%; big_sign: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "big_sign_seed: 0–1 at 100.00%; big_sign: 0–3 at 100.00%; gem: 3 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 708",
-      "growth_source": "Imported splice sheet, row 102",
+      "growth_source": "Live SPLICING sheet, row 102 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -1478,7 +1478,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "big_spike_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 7800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -1522,7 +1522,7 @@
       "break_details": "big_spike_seed: 0–1 at 100.00%; big_spike: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "big_spike_seed: 0–1 at 100.00%; big_spike: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 398",
-      "growth_source": "Imported splice sheet, row 238",
+      "growth_source": "Live SPLICING sheet, row 238 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -1533,7 +1533,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "biohazard_barrel_seed",
-      "grow_seconds": 23100,
+      "grow_seconds": 27000,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -1577,7 +1577,7 @@
       "break_details": "biohazard_barrel_seed: 0–1 at 100.00%; biohazard_barrel: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "biohazard_barrel_seed: 0–1 at 100.00%; biohazard_barrel: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 406",
-      "growth_source": "Imported splice sheet, row 270",
+      "growth_source": "Live SPLICING sheet, row 272 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -1588,7 +1588,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "black_block_seed",
-      "grow_seconds": 360,
+      "grow_seconds": 240,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -1632,7 +1632,7 @@
       "break_details": "black_block_seed: 0–1 at 100.00%; black_block: 0–3 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "black_block_seed: 0–1 at 100.00%; black_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 288",
-      "growth_source": "Imported splice sheet, row 56",
+      "growth_source": "Live SPLICING sheet, row 56 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -1643,7 +1643,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "black_wallpaper_seed",
-      "grow_seconds": 510,
+      "grow_seconds": 570,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -1687,7 +1687,7 @@
       "break_details": "black_wallpaper_seed: 0–1 at 100.00%; black_wallpaper: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "black_wallpaper_seed: 0–1 at 100.00%; black_wallpaper: 0–3 at 100.00%; gem: 3 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 362",
-      "growth_source": "Imported splice sheet, row 92",
+      "growth_source": "Live SPLICING sheet, row 92 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -1742,7 +1742,7 @@
       "break_details": "blink_checkpoint_seed: 0–1 at 100.00%; blink_checkpoint: 0–3 at 100.00%; gem: 5 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "blink_checkpoint_seed: 0–1 at 100.00%; blink_checkpoint: 0–3 at 100.00%; gem: 13 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 456",
-      "growth_source": "Imported splice sheet, row 340",
+      "growth_source": "Live SPLICING sheet, row 342 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -1753,7 +1753,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "blue_block_seed",
-      "grow_seconds": 480,
+      "grow_seconds": 510,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -1797,7 +1797,7 @@
       "break_details": "blue_block_seed: 0–1 at 100.00%; blue_block: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "blue_block_seed: 0–1 at 100.00%; blue_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 292",
-      "growth_source": "Imported splice sheet, row 78",
+      "growth_source": "Live SPLICING sheet, row 78 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -1808,7 +1808,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "blue_couch_seed",
-      "grow_seconds": 27000,
+      "grow_seconds": 23100,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -1852,7 +1852,7 @@
       "break_details": "blue_couch_seed: 0–1 at 100.00%; blue_couch: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "blue_couch_seed: 0–1 at 100.00%; blue_couch: 0–3 at 100.00%; gem: 7 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 642",
-      "growth_source": "Imported splice sheet, row 290",
+      "growth_source": "Live SPLICING sheet, row 292 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -1863,7 +1863,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "blue_mail_box_seed",
-      "grow_seconds": 23100,
+      "grow_seconds": 27000,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -1907,7 +1907,7 @@
       "break_details": "blue_mail_box_seed: 0–1 at 100.00%; blue_mail_box: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "blue_mail_box_seed: 0–1 at 100.00%; blue_mail_box: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 442",
-      "growth_source": "Imported splice sheet, row 274",
+      "growth_source": "Live SPLICING sheet, row 276 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -1918,7 +1918,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "blue_pastel_block_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 7800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -1962,7 +1962,7 @@
       "break_details": "blue_pastel_block_seed: 0–1 at 100.00%; blue_pastel_block: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "blue_pastel_block_seed: 0–1 at 100.00%; blue_pastel_block: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 326",
-      "growth_source": "Imported splice sheet, row 210",
+      "growth_source": "Live SPLICING sheet, row 210 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -2017,7 +2017,7 @@
       "break_details": "blue_portal_seed: 0–1 at 100.00%; blue_portal: 0–3 at 100.00%; gem: 9 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "blue_portal_seed: 0–1 at 100.00%; blue_portal: 0–3 at 100.00%; gem: 18 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 476",
-      "growth_source": "Imported splice sheet, row 386",
+      "growth_source": "Live SPLICING sheet, row 388 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -2028,7 +2028,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "blue_stripe_wall_seed",
-      "grow_seconds": 570,
+      "grow_seconds": 480,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -2072,7 +2072,7 @@
       "break_details": "blue_stripe_wall_seed: 0–1 at 100.00%; blue_stripe_wall: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "blue_stripe_wall_seed: 0–1 at 100.00%; blue_stripe_wall: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 720",
-      "growth_source": "Imported splice sheet, row 104",
+      "growth_source": "Live SPLICING sheet, row 104 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -2083,7 +2083,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "blue_wallpaper_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1500,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -2127,7 +2127,7 @@
       "break_details": "blue_wallpaper_seed: 0–1 at 100.00%; blue_wallpaper: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "blue_wallpaper_seed: 0–1 at 100.00%; blue_wallpaper: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 366",
-      "growth_source": "Imported splice sheet, row 148",
+      "growth_source": "Live SPLICING sheet, row 148 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -2182,7 +2182,7 @@
       "break_details": "bomb_seed: 0–1 at 100.00%; bomb: 0–3 at 100.00%; gem: 6 at 100.00%",
       "tree_details": "bomb_seed: 0–1 at 100.00%; bomb: 0–3 at 100.00%; gem: 11 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 460",
-      "growth_source": "Imported splice sheet, row 342",
+      "growth_source": "Live SPLICING sheet, row 344 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -2523,7 +2523,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "brown_block_seed",
-      "grow_seconds": 270,
+      "grow_seconds": 360,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -2567,7 +2567,7 @@
       "break_details": "brown_block_seed: 0–1 at 100.00%; brown_block: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "brown_block_seed: 0–1 at 100.00%; brown_block: 0–3 at 100.00%; gem: 2 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 278",
-      "growth_source": "Imported splice sheet, row 52",
+      "growth_source": "Live SPLICING sheet, row 52 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -2578,7 +2578,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "brown_wallpaper_seed",
-      "grow_seconds": 480,
+      "grow_seconds": 510,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -2622,7 +2622,7 @@
       "break_details": "brown_wallpaper_seed: 0–1 at 100.00%; brown_wallpaper: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "brown_wallpaper_seed: 0–1 at 100.00%; brown_wallpaper: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 352",
-      "growth_source": "Imported splice sheet, row 88",
+      "growth_source": "Live SPLICING sheet, row 88 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -2633,7 +2633,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "building_brick_block_seed",
-      "grow_seconds": 510,
+      "grow_seconds": 480,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -2677,7 +2677,7 @@
       "break_details": "building_brick_block_seed: 0–1 at 100.00%; building_brick_block: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "building_brick_block_seed: 0–1 at 100.00%; building_brick_block: 0–3 at 100.00%; gem: 3 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 672",
-      "growth_source": "Imported splice sheet, row 98",
+      "growth_source": "Live SPLICING sheet, row 98 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -2688,7 +2688,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "building_brick_wall_seed",
-      "grow_seconds": 1500,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -2732,7 +2732,7 @@
       "break_details": "building_brick_wall_seed: 0–1 at 100.00%; building_brick_wall: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "building_brick_wall_seed: 0–1 at 100.00%; building_brick_wall: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 674",
-      "growth_source": "Imported splice sheet, row 174",
+      "growth_source": "Live SPLICING sheet, row 174 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -2787,7 +2787,7 @@
       "break_details": "bulletin_board_seed: 0–1 at 100.00%; bulletin_board: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "bulletin_board_seed: 0–1 at 100.00%; bulletin_board: 0–3 at 100.00%; gem: 11 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 450",
-      "growth_source": "Imported splice sheet, row 312",
+      "growth_source": "Live SPLICING sheet, row 314 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -2842,7 +2842,7 @@
       "break_details": "bush_seed: 0–1 at 100.00%; bush: 0–3 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "bush_seed: 0–1 at 100.00%; bush: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "source": "Live ITEM DATA gem average, rows 116",
-      "growth_source": "Imported splice sheet, row 10",
+      "growth_source": "Live SPLICING sheet, row 10 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -2853,7 +2853,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "campfire_seed",
-      "grow_seconds": 270,
+      "grow_seconds": 360,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -2897,7 +2897,7 @@
       "break_details": "campfire_seed: 0–1 at 100.00%; campfire: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "campfire_seed: 0–1 at 100.00%; campfire: 0–3 at 100.00%; gem: 2 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 248",
-      "growth_source": "Imported splice sheet, row 40",
+      "growth_source": "Live SPLICING sheet, row 40 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -3018,7 +3018,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "ceiling_lamp_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 7800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -3062,7 +3062,7 @@
       "break_details": "ceiling_lamp_seed: 0–1 at 100.00%; ceiling_lamp: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "ceiling_lamp_seed: 0–1 at 100.00%; ceiling_lamp: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 380",
-      "growth_source": "Imported splice sheet, row 230",
+      "growth_source": "Live SPLICING sheet, row 230 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -3117,7 +3117,7 @@
       "break_details": "chandelier_seed: 0–1 at 100.00%; chandelier: 0–3 at 100.00%; gem: 8 at 100.00%",
       "tree_details": "chandelier_seed: 0–1 at 100.00%; chandelier: 0–3 at 100.00%; gem: 15 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 740",
-      "growth_source": "Imported splice sheet, row 382",
+      "growth_source": "Live SPLICING sheet, row 384 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -3183,7 +3183,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "checkered_wall_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -3227,7 +3227,7 @@
       "break_details": "checkered_wall_seed: 0–1 at 100.00%; checkered_wall: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "checkered_wall_seed: 0–1 at 100.00%; checkered_wall: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 728",
-      "growth_source": "Imported splice sheet, row 194",
+      "growth_source": "Live SPLICING sheet, row 194 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -3282,7 +3282,7 @@
       "break_details": "checkpoint_seed: 0–1 at 100.00%; checkpoint: 0–3 at 100.00%; gem: 5 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "checkpoint_seed: 0–1 at 100.00%; checkpoint: 0–3 at 100.00%; gem: 10 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 452",
-      "growth_source": "Imported splice sheet, row 314",
+      "growth_source": "Live SPLICING sheet, row 316 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -3293,7 +3293,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "chicken_seed",
-      "grow_seconds": 23100,
+      "grow_seconds": 28800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -3337,7 +3337,7 @@
       "break_details": "chicken_seed: 0–1 at 100.00%; chicken: 0–3 at 100.00%; gem: 4 at 100.00%",
       "tree_details": "chicken_seed: 0–1 at 100.00%; chicken: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 590",
-      "growth_source": "Imported splice sheet, row 284",
+      "growth_source": "Live SPLICING sheet, row 286 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -3392,7 +3392,7 @@
       "break_details": "city_fence_seed: 0–1 at 100.00%; city_fence: 0–3 at 100.00%; gem: 6 at 100.00%",
       "tree_details": "city_fence_seed: 0–1 at 100.00%; city_fence: 0–3 at 100.00%; gem: 11 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 766",
-      "growth_source": "Imported splice sheet, row 364",
+      "growth_source": "Live SPLICING sheet, row 366 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -3458,7 +3458,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "climbing_vine_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -3502,7 +3502,7 @@
       "break_details": "climbing_vine_seed: 0–1 at 100.00%; climbing_vine: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "climbing_vine_seed: 0–1 at 100.00%; climbing_vine: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 152",
-      "growth_source": "Imported splice sheet, row 110",
+      "growth_source": "Live SPLICING sheet, row 110 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -3557,7 +3557,7 @@
       "break_details": "cloud_block_seed: 0–1 at 100.00%; cloud_block: 0–3 at 100.00%; gem: 5 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "cloud_block_seed: 0–1 at 100.00%; cloud_block: 0–3 at 100.00%; gem: 13 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 258",
-      "growth_source": "Imported splice sheet, row 336",
+      "growth_source": "Live SPLICING sheet, row 338 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -3612,7 +3612,7 @@
       "break_details": "colored_block_maker_seed: 0–1 at 100.00%; colored_block_maker: 0–3 at 100.00%; gem: 12 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "colored_block_maker_seed: 0–1 at 100.00%; colored_block_maker: 0–3 at 100.00%; gem: 27 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 504",
-      "growth_source": "Imported splice sheet, row 400",
+      "growth_source": "Live SPLICING sheet, row 402 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -3623,7 +3623,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "complementary_line_wall_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1500,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -3667,7 +3667,62 @@
       "break_details": "complementary_line_wall_seed: 0–1 at 100.00%; complementary_line_wall: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "complementary_line_wall_seed: 0–1 at 100.00%; complementary_line_wall: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 726",
-      "growth_source": "Imported splice sheet, row 192",
+      "growth_source": "Live SPLICING sheet, row 192 (2026-10-12)",
+      "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
+    },
+    {
+      "id": "composer",
+      "name": "Composer 0%-49%",
+      "tier": 6,
+      "balance_tier": 6,
+      "mode": "farm",
+      "base_item": "",
+      "seed_id": "composer_seed",
+      "grow_seconds": 7800,
+      "break_blocks": {
+        "min": 0,
+        "max": 3,
+        "mean": 1.5,
+        "chance": 0.75
+      },
+      "break_seeds": {
+        "min": 0,
+        "max": 1,
+        "mean": 0.5,
+        "chance": 0.5
+      },
+      "break_gems": {
+        "min": 3,
+        "max": 3,
+        "mean": 3,
+        "chance": 1
+      },
+      "tree_blocks": {
+        "min": 0,
+        "max": 3,
+        "mean": 1.5,
+        "chance": 0.75
+      },
+      "tree_seeds": {
+        "min": 0,
+        "max": 1,
+        "mean": 0.5,
+        "chance": 0.5
+      },
+      "tree_gems": {
+        "min": 6,
+        "max": 6,
+        "mean": 6,
+        "chance": 1
+      },
+      "break_xp": 50,
+      "tree_xp": 3,
+      "seeds_per_cycle": null,
+      "gems_per_cycle": null,
+      "break_details": "composer_seed: 0–1 at 100.00%; composer: 0–3 at 100.00%; gem: 3 at 100.00%",
+      "tree_details": "composer_seed: 0–1 at 100.00%; composer: 0–3 at 100.00%; gem: 6 at 100.00%",
+      "source": "Live ITEM DATA row 572",
+      "growth_source": "Live SPLICING sheet, row 246 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -3832,7 +3887,7 @@
       "break_details": "cow_seed: 0–1 at 100.00%; cow: 0–3 at 100.00%; gem: 5 at 100.00%",
       "tree_details": "cow_seed: 0–1 at 100.00%; cow: 0–3 at 100.00%; gem: 11 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 610",
-      "growth_source": "Imported splice sheet, row 320",
+      "growth_source": "Live SPLICING sheet, row 322 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -3843,7 +3898,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "cozy_chalkboard_seed",
-      "grow_seconds": 23100,
+      "grow_seconds": 27000,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -3887,7 +3942,7 @@
       "break_details": "cozy_chalkboard_seed: 0–1 at 100.00%; cozy_chalkboard: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "cozy_chalkboard_seed: 0–1 at 100.00%; cozy_chalkboard: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 790",
-      "growth_source": "Imported splice sheet, row 304",
+      "growth_source": "Live SPLICING sheet, row 306 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -4063,7 +4118,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "dark_aqua_block_seed",
-      "grow_seconds": 5400,
+      "grow_seconds": 9600,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -4107,7 +4162,7 @@
       "break_details": "dark_aqua_block_seed: 0–1 at 100.00%; dark_aqua_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "dark_aqua_block_seed: 0–1 at 100.00%; dark_aqua_block: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 304",
-      "growth_source": "Imported splice sheet, row 204",
+      "growth_source": "Live SPLICING sheet, row 204 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -4118,7 +4173,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "dark_blue_block_seed",
-      "grow_seconds": 1500,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -4162,7 +4217,7 @@
       "break_details": "dark_blue_block_seed: 0–1 at 100.00%; dark_blue_block: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "dark_blue_block_seed: 0–1 at 100.00%; dark_blue_block: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 310",
-      "growth_source": "Imported splice sheet, row 130",
+      "growth_source": "Live SPLICING sheet, row 130 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -4228,7 +4283,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "dark_green_block_seed",
-      "grow_seconds": 1500,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -4272,7 +4327,7 @@
       "break_details": "dark_green_block_seed: 0–1 at 100.00%; dark_green_block: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "dark_green_block_seed: 0–1 at 100.00%; dark_green_block: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 298",
-      "growth_source": "Imported splice sheet, row 124",
+      "growth_source": "Live SPLICING sheet, row 124 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -4283,7 +4338,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "light_brown_block_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -4327,7 +4382,7 @@
       "break_details": "light_brown_block_seed: 0–1 at 100.00%; dark_orange_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "light_brown_block_seed: 0–1 at 100.00%; dark_orange_block: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 302",
-      "growth_source": "Imported splice sheet, row 126",
+      "growth_source": "Live SPLICING sheet, row 126 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -4338,7 +4393,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "dark_pink_block_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1500,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -4382,7 +4437,7 @@
       "break_details": "dark_pink_block_seed: 0–1 at 100.00%; dark_pink_block: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "dark_pink_block_seed: 0–1 at 100.00%; dark_pink_block: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 312",
-      "growth_source": "Imported splice sheet, row 132",
+      "growth_source": "Live SPLICING sheet, row 132 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -4393,7 +4448,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "dark_purple_block_seed",
-      "grow_seconds": 7800,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -4437,7 +4492,7 @@
       "break_details": "dark_purple_block_seed: 0–1 at 100.00%; dark_purple_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "dark_purple_block_seed: 0–1 at 100.00%; dark_purple_block: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 306",
-      "growth_source": "Imported splice sheet, row 206",
+      "growth_source": "Live SPLICING sheet, row 206 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -4448,7 +4503,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "dark_yellow_block_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -4492,7 +4547,7 @@
       "break_details": "dark_yellow_block_seed: 0–1 at 100.00%; dark_yellow_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "dark_yellow_block_seed: 0–1 at 100.00%; dark_yellow_block: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 308",
-      "growth_source": "Imported splice sheet, row 128",
+      "growth_source": "Live SPLICING sheet, row 128 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -4712,7 +4767,7 @@
       "break_details": "dice_block_seed: 0–1 at 100.00%; dice_block: 0–3 at 100.00%; gem: 7 at 100.00%",
       "tree_details": "dice_block_seed: 0–1 at 100.00%; dice_block: 0–3 at 100.00%; gem: 16 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 480",
-      "growth_source": "Imported splice sheet, row 378",
+      "growth_source": "Live SPLICING sheet, row 380 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -4767,7 +4822,7 @@
       "break_details": "digital_sign_seed: 0–1 at 100.00%; digital_sign: 0–3 at 100.00%; gem: 5 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "digital_sign_seed: 0–1 at 100.00%; digital_sign: 0–3 at 100.00%; gem: 12 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 714",
-      "growth_source": "Imported splice sheet, row 352",
+      "growth_source": "Live SPLICING sheet, row 354 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -4932,7 +4987,7 @@
       "break_details": "display_box_seed: 0–1 at 100.00%; display_box: 0–3 at 100.00%; gem: 6 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "display_box_seed: 0–1 at 100.00%; display_box: 0–3 at 100.00%; gem: 12 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 434",
-      "growth_source": "Imported splice sheet, row 338",
+      "growth_source": "Live SPLICING sheet, row 340 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -4987,7 +5042,7 @@
       "break_details": "display_case_seed: 0–1 at 100.00%; display_case: 0–3 at 100.00%; gem: 5 at 100.00%",
       "tree_details": "display_case_seed: 0–1 at 100.00%; display_case: 0–3 at 100.00%; gem: 9 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 436",
-      "growth_source": "Imported splice sheet, row 310",
+      "growth_source": "Live SPLICING sheet, row 312 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -5053,7 +5108,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "donation_box_seed",
-      "grow_seconds": 27000,
+      "grow_seconds": 28800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -5097,7 +5152,7 @@
       "break_details": "donation_box_seed: 0–1 at 100.00%; donation_box: 0–3 at 100.00%; gem: 4 at 100.00%",
       "tree_details": "donation_box_seed: 0–1 at 100.00%; donation_box: 0–3 at 100.00%; gem: 7 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 446",
-      "growth_source": "Imported splice sheet, row 276",
+      "growth_source": "Live SPLICING sheet, row 278 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -5108,7 +5163,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "dresser_seed",
-      "grow_seconds": 5400,
+      "grow_seconds": 7800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -5152,7 +5207,7 @@
       "break_details": "dresser_seed: 0–1 at 100.00%; dresser: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "dresser_seed: 0–1 at 100.00%; dresser: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 650",
-      "growth_source": "Imported splice sheet, row 254",
+      "growth_source": "Live SPLICING sheet, row 254 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -5207,7 +5262,7 @@
       "break_details": "duck_seed: 0–1 at 100.00%; duck: 0–3 at 100.00%; gem: 5 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "duck_seed: 0–1 at 100.00%; duck: 0–3 at 100.00%; gem: 12 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 600",
-      "growth_source": "Imported splice sheet, row 344",
+      "growth_source": "Live SPLICING sheet, row 346 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -5218,7 +5273,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "dungeon_door_seed",
-      "grow_seconds": 5400,
+      "grow_seconds": 9600,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -5262,7 +5317,7 @@
       "break_details": "dungeon_door_seed: 0–1 at 100.00%; dungeon_door: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "dungeon_door_seed: 0–1 at 100.00%; dungeon_door: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 250",
-      "growth_source": "Imported splice sheet, row 198",
+      "growth_source": "Live SPLICING sheet, row 198 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -5317,7 +5372,7 @@
       "break_details": "earth_seed: 0–1 at 100.00%; earth: 0–3 at 100.00%; gem: 9 at 100.00%",
       "tree_details": "earth_seed: 0–1 at 100.00%; earth: 0–3 at 100.00%; gem: 17 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 784",
-      "growth_source": "Imported splice sheet, row 392",
+      "growth_source": "Live SPLICING sheet, row 394 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -5328,7 +5383,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "electric_pole_seed",
-      "grow_seconds": 5400,
+      "grow_seconds": 7800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -5372,7 +5427,7 @@
       "break_details": "electric_pole_seed: 0–1 at 100.00%; electric_pole: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "electric_pole_seed: 0–1 at 100.00%; electric_pole: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 518",
-      "growth_source": "Imported splice sheet, row 244",
+      "growth_source": "Live SPLICING sheet, row 244 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -5482,7 +5537,7 @@
       "break_details": "electrical_box_seed: 0–1 at 100.00%; electrical_box: 0–3 at 100.00%; gem: 5 at 100.00%",
       "tree_details": "electrical_box_seed: 0–1 at 100.00%; electrical_box: 0–3 at 100.00%; gem: 11 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 508",
-      "growth_source": "Imported splice sheet, row 318",
+      "growth_source": "Live SPLICING sheet, row 320 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -5548,7 +5603,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "empty_jar_seed",
-      "grow_seconds": 27000,
+      "grow_seconds": 23100,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -5592,7 +5647,7 @@
       "break_details": "empty_jar_seed: 0–1 at 100.00%; empty_jar: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "empty_jar_seed: 0–1 at 100.00%; empty_jar: 0–3 at 100.00%; gem: 7 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 582",
-      "growth_source": "Imported splice sheet, row 280",
+      "growth_source": "Live SPLICING sheet, row 282 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -5702,7 +5757,7 @@
       "break_details": "fan_seed: 0–1 at 100.00%; fan: 0–3 at 100.00%; gem: 5 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "fan_seed: 0–1 at 100.00%; fan: 0–3 at 100.00%; gem: 12 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 702",
-      "growth_source": "Imported splice sheet, row 350",
+      "growth_source": "Live SPLICING sheet, row 352 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -5757,7 +5812,7 @@
       "break_details": "fire_escape_seed: 0–1 at 100.00%; fire_escape: 0–3 at 100.00%; gem: 6 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "fire_escape_seed: 0–1 at 100.00%; fire_escape: 0–3 at 100.00%; gem: 12 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 764",
-      "growth_source": "Imported splice sheet, row 362",
+      "growth_source": "Live SPLICING sheet, row 364 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -5812,7 +5867,7 @@
       "break_details": "fire_hydrant_seed: 0–1 at 100.00%; fire_hydrant: 0–3 at 100.00%; gem: 6 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "fire_hydrant_seed: 0–1 at 100.00%; fire_hydrant: 0–3 at 100.00%; gem: 12 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 770",
-      "growth_source": "Imported splice sheet, row 366",
+      "growth_source": "Live SPLICING sheet, row 368 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -5823,7 +5878,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "fireplace_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -5867,7 +5922,7 @@
       "break_details": "fireplace_seed: 0–1 at 100.00%; fireplace: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "fireplace_seed: 0–1 at 100.00%; fireplace: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 676",
-      "growth_source": "Imported splice sheet, row 176",
+      "growth_source": "Live SPLICING sheet, row 176 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -5878,7 +5933,7 @@
       "mode": "variant",
       "base_item": "fireplace",
       "seed_id": "fireplace_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -5933,7 +5988,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "fish_bowl_seed",
-      "grow_seconds": 27000,
+      "grow_seconds": 23100,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -5977,7 +6032,7 @@
       "break_details": "fish_bowl_seed: 0–1 at 100.00%; fish_bowl: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "fish_bowl_seed: 0–1 at 100.00%; fish_bowl: 0–3 at 100.00%; gem: 7 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 636",
-      "growth_source": "Imported splice sheet, row 288",
+      "growth_source": "Live SPLICING sheet, row 290 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -5988,7 +6043,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "fish_hanger_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1500,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -6032,7 +6087,7 @@
       "break_details": "fish_hanger_seed: 0–1 at 100.00%; fish_hanger: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "fish_hanger_seed: 0–1 at 100.00%; fish_hanger: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 414",
-      "growth_source": "Imported item sheet, row 356",
+      "growth_source": "Live SPLICING sheet, row 156 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -6527,7 +6582,7 @@
       "break_details": "gem_driller_seed: 0–1 at 100.00%; gem_driller: 0–3 at 100.00%; gem: 15 at 100.00%",
       "tree_details": "gem_driller_seed: 0–1 at 100.00%; gem_driller: 0–3 at 100.00%; gem: 32 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 498",
-      "growth_source": "Imported splice sheet, row 402",
+      "growth_source": "Live SPLICING sheet, row 404 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -6593,7 +6648,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "glass_seed",
-      "grow_seconds": 240,
+      "grow_seconds": 270,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -6637,7 +6692,7 @@
       "break_details": "glass_seed: 0–1 at 100.00%; glass: 0–3 at 100.00%; gem: 1 at 100.00%",
       "tree_details": "glass_seed: 0–1 at 100.00%; glass: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 388",
-      "growth_source": "Imported splice sheet, row 60",
+      "growth_source": "Live SPLICING sheet, row 60 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -6692,7 +6747,7 @@
       "break_details": "glass_panel_seed: 0–1 at 100.00%; glass_panel: 0–3 at 100.00%; gem: 1 at 40.00%",
       "tree_details": "glass_panel_seed: 0–1 at 100.00%; glass_panel: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 390",
-      "growth_source": "Imported splice sheet, row 22",
+      "growth_source": "Live SPLICING sheet, row 22 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -6912,7 +6967,7 @@
       "break_details": "grand_house_door_seed: 0–1 at 100.00%; grand_house_door: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "grand_house_door_seed: 0–1 at 100.00%; grand_house_door: 0–3 at 100.00%; gem: 10 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 654",
-      "growth_source": "Imported splice sheet, row 324",
+      "growth_source": "Live SPLICING sheet, row 326 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -6967,7 +7022,7 @@
       "break_details": "grass_seed: 0–1 at 100.00%; grass: 0–3 at 100.00%; gem: 1 at 40.00%",
       "tree_details": "grass_seed: 0–1 at 100.00%; grass: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 108",
-      "growth_source": "Imported splice sheet, row 8",
+      "growth_source": "Live SPLICING sheet, row 8 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -6978,7 +7033,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "green_block_seed",
-      "grow_seconds": 360,
+      "grow_seconds": 240,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -7022,7 +7077,7 @@
       "break_details": "green_block_seed: 0–1 at 100.00%; green_block: 0–3 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "green_block_seed: 0–1 at 100.00%; green_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 276",
-      "growth_source": "Imported splice sheet, row 50",
+      "growth_source": "Live SPLICING sheet, row 50 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7033,7 +7088,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "green_brick_seed",
-      "grow_seconds": 480,
+      "grow_seconds": 510,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -7077,7 +7132,7 @@
       "break_details": "green_brick_seed: 0–1 at 100.00%; green_brick: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "green_brick_seed: 0–1 at 100.00%; green_brick: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 268",
-      "growth_source": "Imported splice sheet, row 74",
+      "growth_source": "Live SPLICING sheet, row 74 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7088,7 +7143,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "green_brick_wall_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1500,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -7132,7 +7187,7 @@
       "break_details": "green_brick_wall_seed: 0–1 at 100.00%; green_brick_wall: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "green_brick_wall_seed: 0–1 at 100.00%; green_brick_wall: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 270",
-      "growth_source": "Imported splice sheet, row 116",
+      "growth_source": "Live SPLICING sheet, row 116 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7187,7 +7242,7 @@
       "break_details": "green_couch_seed: 0–1 at 100.00%; green_couch: 0–3 at 100.00%; gem: 6 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "green_couch_seed: 0–1 at 100.00%; green_couch: 0–3 at 100.00%; gem: 11 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 644",
-      "growth_source": "Imported splice sheet, row 346",
+      "growth_source": "Live SPLICING sheet, row 348 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7308,7 +7363,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "green_pastel_block_seed",
-      "grow_seconds": 1500,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -7352,7 +7407,7 @@
       "break_details": "green_pastel_block_seed: 0–1 at 100.00%; green_pastel_block: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "green_pastel_block_seed: 0–1 at 100.00%; green_pastel_block: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 316",
-      "growth_source": "Imported splice sheet, row 138",
+      "growth_source": "Live SPLICING sheet, row 138 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7363,7 +7418,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "green_wallpaper_seed",
-      "grow_seconds": 510,
+      "grow_seconds": 570,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -7407,7 +7462,7 @@
       "break_details": "green_wallpaper_seed: 0–1 at 100.00%; green_wallpaper: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "green_wallpaper_seed: 0–1 at 100.00%; green_wallpaper: 0–3 at 100.00%; gem: 3 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 350",
-      "growth_source": "Imported splice sheet, row 86",
+      "growth_source": "Live SPLICING sheet, row 86 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7418,7 +7473,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "grey_block_seed",
-      "grow_seconds": 240,
+      "grow_seconds": 270,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -7462,7 +7517,7 @@
       "break_details": "grey_block_seed: 0–1 at 100.00%; grey_block: 0–3 at 100.00%; gem: 1 at 100.00%",
       "tree_details": "grey_block_seed: 0–1 at 100.00%; grey_block: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 280",
-      "growth_source": "Imported splice sheet, row 54",
+      "growth_source": "Live SPLICING sheet, row 54 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7473,7 +7528,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "grey_wallpaper_seed",
-      "grow_seconds": 570,
+      "grow_seconds": 480,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -7517,7 +7572,7 @@
       "break_details": "grey_wallpaper_seed: 0–1 at 100.00%; grey_wallpaper: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "grey_wallpaper_seed: 0–1 at 100.00%; grey_wallpaper: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 354",
-      "growth_source": "Imported splice sheet, row 90",
+      "growth_source": "Live SPLICING sheet, row 90 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7583,7 +7638,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "happy_block_seed",
-      "grow_seconds": 5400,
+      "grow_seconds": 9600,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -7627,7 +7682,7 @@
       "break_details": "happy_block_seed: 0–1 at 100.00%; happy_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "happy_block_seed: 0–1 at 100.00%; happy_block: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 328",
-      "growth_source": "Imported splice sheet, row 212",
+      "growth_source": "Live SPLICING sheet, row 212 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7682,7 +7737,7 @@
       "break_details": "hay_seed: 0–1 at 100.00%; hay: 0–3 at 100.00%; gem: 1 at 40.00%",
       "tree_details": "hay_seed: 0–1 at 100.00%; hay: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "source": "Live ITEM DATA gem average, rows 618",
-      "growth_source": "Imported splice sheet, row 24",
+      "growth_source": "Live SPLICING sheet, row 24 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7693,7 +7748,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "hay_bales_seed",
-      "grow_seconds": 240,
+      "grow_seconds": 360,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -7737,7 +7792,7 @@
       "break_details": "hay_bales_seed: 0–1 at 100.00%; hay_bales: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "hay_bales_seed: 0–1 at 100.00%; hay_bales: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 620",
-      "growth_source": "Imported splice sheet, row 62",
+      "growth_source": "Live SPLICING sheet, row 62 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7792,7 +7847,7 @@
       "break_details": "hazard_sign_seed: 0–1 at 100.00%; hazard_sign: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "hazard_sign_seed: 0–1 at 100.00%; hazard_sign: 0–3 at 100.00%; gem: 11 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 732",
-      "growth_source": "Imported splice sheet, row 328",
+      "growth_source": "Live SPLICING sheet, row 330 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7847,7 +7902,7 @@
       "break_details": "heartbreak_painting_seed: 0–1 at 100.00%; heartbreak_painting: 0–3 at 100.00%; gem: 5 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "heartbreak_painting_seed: 0–1 at 100.00%; heartbreak_painting: 0–3 at 100.00%; gem: 13 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 750",
-      "growth_source": "Imported splice sheet, row 358",
+      "growth_source": "Live SPLICING sheet, row 360 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7902,7 +7957,7 @@
       "break_details": "hell_entrance_seed: 0–1 at 100.00%; hell_entrance: 0–3 at 100.00%; gem: 6 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "hell_entrance_seed: 0–1 at 100.00%; hell_entrance: 0–3 at 100.00%; gem: 12 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 818",
-      "growth_source": "Imported splice sheet, row 372",
+      "growth_source": "Live SPLICING sheet, row 374 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7957,7 +8012,7 @@
       "break_details": "hell_portal_seed: 0–1 at 100.00%; hell_portal: 0–3 at 100.00%; gem: 9 at 100.00%",
       "tree_details": "hell_portal_seed: 0–1 at 100.00%; hell_portal: 0–3 at 100.00%; gem: 17 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 814",
-      "growth_source": "Imported splice sheet, row 396",
+      "growth_source": "Live SPLICING sheet, row 398 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -7968,7 +8023,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "hellbrick_seed",
-      "grow_seconds": 240,
+      "grow_seconds": 270,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -8012,7 +8067,7 @@
       "break_details": "hellbrick_seed: 0–1 at 100.00%; hellbrick: 0–3 at 100.00%; gem: 1 at 100.00%",
       "tree_details": "hellbrick_seed: 0–1 at 100.00%; hellbrick: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 808",
-      "growth_source": "Imported splice sheet, row 64",
+      "growth_source": "Live SPLICING sheet, row 64 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -8023,7 +8078,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "hellbrick_platform_seed",
-      "grow_seconds": 7800,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -8067,7 +8122,7 @@
       "break_details": "hellbrick_platform_seed: 0–1 at 100.00%; hellbrick_platform: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "hellbrick_platform_seed: 0–1 at 100.00%; hellbrick_platform: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 816",
-      "growth_source": "Imported splice sheet, row 264",
+      "growth_source": "Live SPLICING sheet, row 264 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -8078,7 +8133,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "hellbrick_wall_seed",
-      "grow_seconds": 570,
+      "grow_seconds": 480,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -8122,7 +8177,7 @@
       "break_details": "hellbrick_wall_seed: 0–1 at 100.00%; hellbrick_wall: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "hellbrick_wall_seed: 0–1 at 100.00%; hellbrick_wall: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 810",
-      "growth_source": "Imported splice sheet, row 108",
+      "growth_source": "Live SPLICING sheet, row 108 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -8353,7 +8408,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "lamp_seed",
-      "grow_seconds": 23100,
+      "grow_seconds": 28800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -8397,7 +8452,7 @@
       "break_details": "lamp_seed: 0–1 at 100.00%; lamp: 0–3 at 100.00%; gem: 4 at 100.00%",
       "tree_details": "lamp_seed: 0–1 at 100.00%; lamp: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 632",
-      "growth_source": "Imported splice sheet, row 286",
+      "growth_source": "Live SPLICING sheet, row 288 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -8408,7 +8463,7 @@
       "mode": "variant",
       "base_item": "lamp",
       "seed_id": "lamp_seed",
-      "grow_seconds": 23100,
+      "grow_seconds": 28800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -8463,7 +8518,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "lantern_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1500,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -8507,7 +8562,7 @@
       "break_details": "lantern_seed: 0–1 at 100.00%; lantern: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "lantern_seed: 0–1 at 100.00%; lantern: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 246",
-      "growth_source": "Imported splice sheet, row 114",
+      "growth_source": "Live SPLICING sheet, row 114 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -8683,7 +8738,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "left_directional_sign_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -8727,7 +8782,7 @@
       "break_details": "left_directional_sign_seed: 0–1 at 100.00%; left_directional_sign: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "left_directional_sign_seed: 0–1 at 100.00%; left_directional_sign: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 712",
-      "growth_source": "Imported splice sheet, row 188",
+      "growth_source": "Live SPLICING sheet, row 188 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -8837,7 +8892,7 @@
       "break_details": "love_painting_seed: 0–1 at 100.00%; love_painting: 0–3 at 100.00%; gem: 6 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "love_painting_seed: 0–1 at 100.00%; love_painting: 0–3 at 100.00%; gem: 12 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 752",
-      "growth_source": "Imported splice sheet, row 360",
+      "growth_source": "Live SPLICING sheet, row 362 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -8958,7 +9013,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "mail_box_seed",
-      "grow_seconds": 7800,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -9002,7 +9057,7 @@
       "break_details": "mail_box_seed: 0–1 at 100.00%; mail_box: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "mail_box_seed: 0–1 at 100.00%; mail_box: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 438",
-      "growth_source": "Imported splice sheet, row 242",
+      "growth_source": "Live SPLICING sheet, row 242 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -9013,7 +9068,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "dark_red_block_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -9057,7 +9112,7 @@
       "break_details": "dark_red_block_seed: 0–1 at 100.00%; maroon_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "dark_red_block_seed: 0–1 at 100.00%; maroon_block: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 296",
-      "growth_source": "Imported splice sheet, row 122",
+      "growth_source": "Live SPLICING sheet, row 122 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -9068,7 +9123,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "mechanical_entrance_seed",
-      "grow_seconds": 27000,
+      "grow_seconds": 28800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -9112,7 +9167,7 @@
       "break_details": "mechanical_entrance_seed: 0–1 at 100.00%; mechanical_entrance: 0–3 at 100.00%; gem: 4 at 100.00%",
       "tree_details": "mechanical_entrance_seed: 0–1 at 100.00%; mechanical_entrance: 0–3 at 100.00%; gem: 7 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 386",
-      "growth_source": "Imported splice sheet, row 268",
+      "growth_source": "Live SPLICING sheet, row 268 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -9222,7 +9277,7 @@
       "break_details": "melter_seed: 0–1 at 100.00%; melter: 0–3 at 100.00%; gem: 7 at 100.00%",
       "tree_details": "melter_seed: 0–1 at 100.00%; melter: 0–3 at 100.00%; gem: 16 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 468",
-      "growth_source": "Imported splice sheet, row 376",
+      "growth_source": "Live SPLICING sheet, row 378 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -9277,7 +9332,7 @@
       "break_details": "metal_gate_seed: 0–1 at 100.00%; metal_gate: 0–3 at 100.00%; gem: 5 at 100.00%",
       "tree_details": "metal_gate_seed: 0–1 at 100.00%; metal_gate: 0–3 at 100.00%; gem: 9 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 418",
-      "growth_source": "Imported splice sheet, row 308",
+      "growth_source": "Live SPLICING sheet, row 310 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -9288,7 +9343,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "metal_pad_seed",
-      "grow_seconds": 28800,
+      "grow_seconds": 27000,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -9332,7 +9387,7 @@
       "break_details": "metal_pad_seed: 0–1 at 100.00%; metal_pad: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "metal_pad_seed: 0–1 at 100.00%; metal_pad: 0–3 at 100.00%; gem: 8 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 520",
-      "growth_source": "Imported splice sheet, row 278",
+      "growth_source": "Live SPLICING sheet, row 280 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -9343,7 +9398,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "modern_chair_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -9387,7 +9442,7 @@
       "break_details": "modern_chair_seed: 0–1 at 100.00%; modern_chair: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "modern_chair_seed: 0–1 at 100.00%; modern_chair: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 648",
-      "growth_source": "Imported splice sheet, row 252",
+      "growth_source": "Live SPLICING sheet, row 252 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -9497,7 +9552,7 @@
       "break_details": "moon_seed: 0–1 at 100.00%; moon: 0–3 at 100.00%; gem: 9 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "moon_seed: 0–1 at 100.00%; moon: 0–3 at 100.00%; gem: 18 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 782",
-      "growth_source": "Imported splice sheet, row 390",
+      "growth_source": "Live SPLICING sheet, row 392 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -9552,7 +9607,7 @@
       "break_details": "mushroom_seed: 0–1 at 100.00%; mushroom: 0–3 at 100.00%; gem: 1 at 40.00%",
       "tree_details": "mushroom_seed: 0–1 at 100.00%; mushroom: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 120",
-      "growth_source": "Imported splice sheet, row 12",
+      "growth_source": "Live SPLICING sheet, row 12 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -9563,7 +9618,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "neon_block_seed",
-      "grow_seconds": 27000,
+      "grow_seconds": 28800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -9607,7 +9662,7 @@
       "break_details": "neon_block_seed: 0–1 at 100.00%; neon_block: 0–3 at 100.00%; gem: 4 at 100.00%",
       "tree_details": "neon_block_seed: 0–1 at 100.00%; neon_block: 0–3 at 100.00%; gem: 7 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 794",
-      "growth_source": "Imported splice sheet, row 306",
+      "growth_source": "Live SPLICING sheet, row 308 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -9772,7 +9827,7 @@
       "break_details": "oil_refinery_seed: 0–1 at 100.00%; oil_refinery: 0–3 at 100.00%; gem: 12 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "oil_refinery_seed: 0–1 at 100.00%; oil_refinery: 0–3 at 100.00%; gem: 29 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 492",
-      "growth_source": "Imported splice sheet, row 398",
+      "growth_source": "Live SPLICING sheet, row 400 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -9827,7 +9882,7 @@
       "break_details": "open_sign_seed: 0–1 at 100.00%; open_sign: 0–3 at 100.00%; gem: 5 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "open_sign_seed: 0–1 at 100.00%; open_sign: 0–3 at 100.00%; gem: 10 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 734",
-      "growth_source": "Imported splice sheet, row 330",
+      "growth_source": "Live SPLICING sheet, row 332 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -9893,7 +9948,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "orange_block_seed",
-      "grow_seconds": 570,
+      "grow_seconds": 480,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -9937,7 +9992,7 @@
       "break_details": "orange_block_seed: 0–1 at 100.00%; orange_block: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "orange_block_seed: 0–1 at 100.00%; orange_block: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 282",
-      "growth_source": "Imported splice sheet, row 76",
+      "growth_source": "Live SPLICING sheet, row 76 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -9948,7 +10003,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "orange_pastel_block_seed",
-      "grow_seconds": 1500,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -9992,7 +10047,7 @@
       "break_details": "orange_pastel_block_seed: 0–1 at 100.00%; orange_pastel_block: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "orange_pastel_block_seed: 0–1 at 100.00%; orange_pastel_block: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 322",
-      "growth_source": "Imported splice sheet, row 142",
+      "growth_source": "Live SPLICING sheet, row 142 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -10003,7 +10058,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "orange_wallpaper_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -10047,7 +10102,7 @@
       "break_details": "orange_wallpaper_seed: 0–1 at 100.00%; orange_wallpaper: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "orange_wallpaper_seed: 0–1 at 100.00%; orange_wallpaper: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 356",
-      "growth_source": "Imported splice sheet, row 146",
+      "growth_source": "Live SPLICING sheet, row 146 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -10058,7 +10113,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "park_bench_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -10102,7 +10157,7 @@
       "break_details": "park_bench_seed: 0–1 at 100.00%; park_bench: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "park_bench_seed: 0–1 at 100.00%; park_bench: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 706",
-      "growth_source": "Imported splice sheet, row 184",
+      "growth_source": "Live SPLICING sheet, row 184 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -10157,7 +10212,7 @@
       "break_details": "password_door_seed: 0–1 at 100.00%; password_door: 0–3 at 100.00%; gem: 9 at 100.00%",
       "tree_details": "password_door_seed: 0–1 at 100.00%; password_door: 0–3 at 100.00%; gem: 17 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 478",
-      "growth_source": "Imported splice sheet, row 388",
+      "growth_source": "Live SPLICING sheet, row 390 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -10168,7 +10223,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "pastel_flower_block_seed",
-      "grow_seconds": 7800,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -10212,7 +10267,7 @@
       "break_details": "pastel_flower_block_seed: 0–1 at 100.00%; pastel_flower_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "pastel_flower_block_seed: 0–1 at 100.00%; pastel_flower_block: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 330",
-      "growth_source": "Imported splice sheet, row 214",
+      "growth_source": "Live SPLICING sheet, row 214 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -10333,7 +10388,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "pencil_block_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -10377,7 +10432,7 @@
       "break_details": "pencil_block_seed: 0–1 at 100.00%; pencil_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "pencil_block_seed: 0–1 at 100.00%; pencil_block: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 788",
-      "growth_source": "Imported splice sheet, row 196",
+      "growth_source": "Live SPLICING sheet, row 196 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -10498,7 +10553,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "pillar_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -10542,7 +10597,7 @@
       "break_details": "pillar_seed: 0–1 at 100.00%; pillar: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "pillar_seed: 0–1 at 100.00%; pillar: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 630",
-      "growth_source": "Imported splice sheet, row 250",
+      "growth_source": "Live SPLICING sheet, row 250 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -10553,7 +10608,7 @@
       "mode": "variant",
       "base_item": "pillar",
       "seed_id": "pillar_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -10608,7 +10663,7 @@
       "mode": "variant",
       "base_item": "pillar",
       "seed_id": "pillar_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -10663,7 +10718,7 @@
       "mode": "variant",
       "base_item": "pillar",
       "seed_id": "pillar_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -10718,7 +10773,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "pinball_seed",
-      "grow_seconds": 23100,
+      "grow_seconds": 27000,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -10762,7 +10817,7 @@
       "break_details": "pinball: 1–3 at 20.00%; pinball_seed: 1 at 24.00%; gem: 3 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "pinball: 1–3 at 100.00%; pinball_seed: 1 at 25.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 400",
-      "growth_source": "Imported item sheet, row 342: 6h 25m",
+      "growth_source": "Live SPLICING sheet, row 270 (2026-10-12)",
       "notes": "Independent break rolls; block quantity 1–3 when the block roll succeeds."
     },
     {
@@ -10773,7 +10828,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "pink_block_seed",
-      "grow_seconds": 570,
+      "grow_seconds": 480,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -10817,7 +10872,7 @@
       "break_details": "pink_block_seed: 0–1 at 100.00%; pink_block: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "pink_block_seed: 0–1 at 100.00%; pink_block: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 294",
-      "growth_source": "Imported splice sheet, row 80",
+      "growth_source": "Live SPLICING sheet, row 80 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -10828,7 +10883,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "pink_curtains_seed",
-      "grow_seconds": 23100,
+      "grow_seconds": 28800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -10872,7 +10927,7 @@
       "break_details": "pink_curtains_seed: 0–1 at 100.00%; pink_curtains: 0–3 at 100.00%; gem: 4 at 100.00%",
       "tree_details": "pink_curtains_seed: 0–1 at 100.00%; pink_curtains: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 662",
-      "growth_source": "Imported splice sheet, row 296",
+      "growth_source": "Live SPLICING sheet, row 298 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -10883,7 +10938,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "pink_pastel_block_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1500,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -10927,7 +10982,7 @@
       "break_details": "pink_pastel_block_seed: 0–1 at 100.00%; pink_pastel_block: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "pink_pastel_block_seed: 0–1 at 100.00%; pink_pastel_block: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 324",
-      "growth_source": "Imported splice sheet, row 144",
+      "growth_source": "Live SPLICING sheet, row 144 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -10938,7 +10993,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "pink_wallpaper_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -10982,7 +11037,7 @@
       "break_details": "pink_wallpaper_seed: 0–1 at 100.00%; pink_wallpaper: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "pink_wallpaper_seed: 0–1 at 100.00%; pink_wallpaper: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 368",
-      "growth_source": "Imported splice sheet, row 150",
+      "growth_source": "Live SPLICING sheet, row 150 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -11048,7 +11103,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "portcullis_seed",
-      "grow_seconds": 23100,
+      "grow_seconds": 27000,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -11092,7 +11147,7 @@
       "break_details": "portcullis_seed: 0–1 at 100.00%; portcullis: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "portcullis_seed: 0–1 at 100.00%; portcullis: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 256",
-      "growth_source": "Imported splice sheet, row 266",
+      "growth_source": "Live SPLICING sheet, row 266 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -11378,7 +11433,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "purple_block_seed",
-      "grow_seconds": 1500,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -11422,7 +11477,7 @@
       "break_details": "purple_block_seed: 0–1 at 100.00%; purple_block: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "purple_block_seed: 0–1 at 100.00%; purple_block: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 286",
-      "growth_source": "Imported splice sheet, row 120",
+      "growth_source": "Live SPLICING sheet, row 120 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -11433,7 +11488,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "purple_curtains_seed",
-      "grow_seconds": 27000,
+      "grow_seconds": 23100,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -11477,7 +11532,7 @@
       "break_details": "purple_curtains_seed: 0–1 at 100.00%; purple_curtains: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "purple_curtains_seed: 0–1 at 100.00%; purple_curtains: 0–3 at 100.00%; gem: 7 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 660",
-      "growth_source": "Imported splice sheet, row 294",
+      "growth_source": "Live SPLICING sheet, row 296 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -11488,7 +11543,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "purple_pastel_block_seed",
-      "grow_seconds": 7800,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -11532,7 +11587,7 @@
       "break_details": "purple_pastel_block_seed: 0–1 at 100.00%; purple_pastel_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "purple_pastel_block_seed: 0–1 at 100.00%; purple_pastel_block: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 318",
-      "growth_source": "Imported splice sheet, row 208",
+      "growth_source": "Live SPLICING sheet, row 208 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -11543,7 +11598,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "purple_wallpaper_seed",
-      "grow_seconds": 7800,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -11587,7 +11642,7 @@
       "break_details": "purple_wallpaper_seed: 0–1 at 100.00%; purple_wallpaper: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "purple_wallpaper_seed: 0–1 at 100.00%; purple_wallpaper: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 360",
-      "growth_source": "Imported splice sheet, row 220",
+      "growth_source": "Live SPLICING sheet, row 220 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -11653,7 +11708,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "gem_block_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 7800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -11697,7 +11752,7 @@
       "break_details": "gem_block_seed: 0–1 at 100.00%; rainbow_block: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "gem_block_seed: 0–1 at 100.00%; rainbow_block: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 332",
-      "growth_source": "Imported splice sheet, row 216",
+      "growth_source": "Live SPLICING sheet, row 216 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -11752,7 +11807,7 @@
       "break_details": "recycle_bin_seed: 0–1 at 100.00%; recycle_bin: 0–3 at 100.00%; gem: 7 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "recycle_bin_seed: 0–1 at 100.00%; recycle_bin: 0–3 at 100.00%; gem: 14 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 466",
-      "growth_source": "Imported splice sheet, row 374",
+      "growth_source": "Live SPLICING sheet, row 376 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -11763,7 +11818,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "red_block_seed",
-      "grow_seconds": 240,
+      "grow_seconds": 270,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -11807,7 +11862,7 @@
       "break_details": "red_block_seed: 0–1 at 100.00%; red_block: 0–3 at 100.00%; gem: 1 at 100.00%",
       "tree_details": "red_block_seed: 0–1 at 100.00%; red_block: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 274",
-      "growth_source": "Imported splice sheet, row 48",
+      "growth_source": "Live SPLICING sheet, row 48 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -11862,7 +11917,7 @@
       "break_details": "red_brick_seed: 0–1 at 100.00%; red_brick: 0–3 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "red_brick_seed: 0–1 at 100.00%; red_brick: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "source": "Live ITEM DATA gem average, rows 260",
-      "growth_source": "Imported splice sheet, row 18",
+      "growth_source": "Live SPLICING sheet, row 18 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -11873,7 +11928,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "red_brick_platform_seed",
-      "grow_seconds": 1500,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -11917,7 +11972,7 @@
       "break_details": "red_brick_platform_seed: 0–1 at 100.00%; red_brick_platform: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "red_brick_platform_seed: 0–1 at 100.00%; red_brick_platform: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 692",
-      "growth_source": "Imported splice sheet, row 178",
+      "growth_source": "Live SPLICING sheet, row 178 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -11928,7 +11983,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "red_brick_wall_seed",
-      "grow_seconds": 240,
+      "grow_seconds": 270,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -11972,7 +12027,7 @@
       "break_details": "red_brick_wall_seed: 0–1 at 100.00%; red_brick_wall: 0–3 at 100.00%; gem: 1 at 100.00%",
       "tree_details": "red_brick_wall_seed: 0–1 at 100.00%; red_brick_wall: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 262",
-      "growth_source": "Imported splice sheet, row 42",
+      "growth_source": "Live SPLICING sheet, row 42 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -11983,7 +12038,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "red_pastel_block_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -12027,7 +12082,7 @@
       "break_details": "red_pastel_block_seed: 0–1 at 100.00%; red_pastel_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "red_pastel_block_seed: 0–1 at 100.00%; red_pastel_block: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 314",
-      "growth_source": "Imported splice sheet, row 136",
+      "growth_source": "Live SPLICING sheet, row 136 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -12038,7 +12093,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "red_stripe_wall_seed",
-      "grow_seconds": 510,
+      "grow_seconds": 570,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -12082,7 +12137,7 @@
       "break_details": "red_stripe_wall_seed: 0–1 at 100.00%; red_stripe_wall: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "red_stripe_wall_seed: 0–1 at 100.00%; red_stripe_wall: 0–3 at 100.00%; gem: 3 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 722",
-      "growth_source": "Imported splice sheet, row 106",
+      "growth_source": "Live SPLICING sheet, row 106 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -12093,7 +12148,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "red_wallpaper_seed",
-      "grow_seconds": 570,
+      "grow_seconds": 480,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -12137,7 +12192,7 @@
       "break_details": "red_wallpaper_seed: 0–1 at 100.00%; red_wallpaper: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "red_wallpaper_seed: 0–1 at 100.00%; red_wallpaper: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 348",
-      "growth_source": "Imported splice sheet, row 84",
+      "growth_source": "Live SPLICING sheet, row 84 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -12192,7 +12247,7 @@
       "break_details": "refrigerator_seed: 0–1 at 100.00%; refrigerator: 0–3 at 100.00%; gem: 6 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "refrigerator_seed: 0–1 at 100.00%; refrigerator: 0–3 at 100.00%; gem: 11 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 668",
-      "growth_source": "Imported splice sheet, row 348",
+      "growth_source": "Live SPLICING sheet, row 350 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -12258,7 +12313,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "right_directional_sign_seed",
-      "grow_seconds": 1500,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -12302,7 +12357,7 @@
       "break_details": "right_directional_sign_seed: 0–1 at 100.00%; right_directional_sign: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "right_directional_sign_seed: 0–1 at 100.00%; right_directional_sign: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 710",
-      "growth_source": "Imported splice sheet, row 186",
+      "growth_source": "Live SPLICING sheet, row 186 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -12368,7 +12423,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "royal_door_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -12412,7 +12467,7 @@
       "break_details": "royal_door_seed: 0–1 at 100.00%; royal_door: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "royal_door_seed: 0–1 at 100.00%; royal_door: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 652",
-      "growth_source": "Imported splice sheet, row 170",
+      "growth_source": "Live SPLICING sheet, row 170 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -12423,7 +12478,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "royal_entrance_seed",
-      "grow_seconds": 23100,
+      "grow_seconds": 28800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -12467,7 +12522,7 @@
       "break_details": "royal_entrance_seed: 0–1 at 100.00%; royal_entrance: 0–3 at 100.00%; gem: 4 at 100.00%",
       "tree_details": "royal_entrance_seed: 0–1 at 100.00%; royal_entrance: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 656",
-      "growth_source": "Imported splice sheet, row 292",
+      "growth_source": "Live SPLICING sheet, row 294 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -12478,7 +12533,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "royal_window_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -12522,7 +12577,7 @@
       "break_details": "royal_window_seed: 0–1 at 100.00%; royal_window: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "royal_window_seed: 0–1 at 100.00%; royal_window: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 658",
-      "growth_source": "Imported splice sheet, row 172",
+      "growth_source": "Live SPLICING sheet, row 172 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -12577,7 +12632,7 @@
       "break_details": "rubber_duck_seed: 0–1 at 100.00%; rubber_duck: 0–3 at 100.00%; gem: 5 at 100.00%",
       "tree_details": "rubber_duck_seed: 0–1 at 100.00%; rubber_duck: 0–3 at 100.00%; gem: 11 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 688",
-      "growth_source": "Imported splice sheet, row 326",
+      "growth_source": "Live SPLICING sheet, row 328 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -12753,7 +12808,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "sale_sign_seed",
-      "grow_seconds": 5400,
+      "grow_seconds": 9600,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -12797,7 +12852,7 @@
       "break_details": "sale_sign_seed: 0–1 at 100.00%; sale_sign: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "sale_sign_seed: 0–1 at 100.00%; sale_sign: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 730",
-      "growth_source": "Imported splice sheet, row 262",
+      "growth_source": "Live SPLICING sheet, row 262 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -12962,7 +13017,7 @@
       "break_details": "sashimi_table_seed: 0–1 at 100.00%; sashimi_table: 0–3 at 100.00%; gem: 5 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "sashimi_table_seed: 0–1 at 100.00%; sashimi_table: 0–3 at 100.00%; gem: 10 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 488",
-      "growth_source": "Imported splice sheet, row 316",
+      "growth_source": "Live SPLICING sheet, row 318 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -13072,7 +13127,7 @@
       "break_details": "scratched_banana_painting_seed: 0–1 at 100.00%; scratched_banana_painting: 0–3 at 100.00%; gem: 6 at 100.00%",
       "tree_details": "scratched_banana_painting_seed: 0–1 at 100.00%; scratched_banana_painting: 0–3 at 100.00%; gem: 11 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 748",
-      "growth_source": "Imported splice sheet, row 356",
+      "growth_source": "Live SPLICING sheet, row 358 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -13083,7 +13138,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "screen_door_seed",
-      "grow_seconds": 7800,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -13127,7 +13182,7 @@
       "break_details": "screen_door_seed: 0–1 at 100.00%; screen_door: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "screen_door_seed: 0–1 at 100.00%; screen_door: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 378",
-      "growth_source": "Imported splice sheet, row 228",
+      "growth_source": "Live SPLICING sheet, row 228 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -13248,7 +13303,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "side_table_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -13292,7 +13347,7 @@
       "break_details": "side_table_seed: 0–1 at 100.00%; side_table: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "side_table_seed: 0–1 at 100.00%; side_table: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 646",
-      "growth_source": "Imported splice sheet, row 168",
+      "growth_source": "Live SPLICING sheet, row 168 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -13303,7 +13358,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "sign_seed",
-      "grow_seconds": 360,
+      "grow_seconds": 240,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -13347,7 +13402,7 @@
       "break_details": "sign_seed: 0–1 at 100.00%; sign: 0–3 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "sign_seed: 0–1 at 100.00%; sign: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 132",
-      "growth_source": "Imported splice sheet, row 28",
+      "growth_source": "Live SPLICING sheet, row 28 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -13358,7 +13413,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "sink_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -13402,7 +13457,7 @@
       "break_details": "sink_seed: 0–1 at 100.00%; sink: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "sink_seed: 0–1 at 100.00%; sink: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 684",
-      "growth_source": "Imported splice sheet, row 258",
+      "growth_source": "Live SPLICING sheet, row 258 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -13413,7 +13468,7 @@
       "mode": "variant",
       "base_item": "sink",
       "seed_id": "sink_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -13567,7 +13622,7 @@
       "break_details": "sirene_lamp: 1–3 at 20.00%; sirene_lamp_seed: 1 at 24.00%; gem: 6 at 100.00%",
       "tree_details": "sirene_lamp: 1–3 at 100.00%; sirene_lamp_seed: 1 at 25.00%; gem: 12 at 100.00%",
       "source": "Same rewards as base state",
-      "growth_source": "",
+      "growth_source": "Live SPLICING sheet, row 370 (2026-10-12)",
       "notes": "Placed state of sirene_lamp; grow the base item's seed."
     },
     {
@@ -13578,7 +13633,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "slime_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -13622,7 +13677,7 @@
       "break_details": "slime_seed: 0–1 at 100.00%; slime: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "slime_seed: 0–1 at 100.00%; slime: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 404",
-      "growth_source": "Imported splice sheet, row 154",
+      "growth_source": "Live SPLICING sheet, row 154 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -14183,7 +14238,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "spike_seed",
-      "grow_seconds": 300,
+      "grow_seconds": 9600,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -14227,7 +14282,7 @@
       "break_details": "spike: 1–3 at 30.00%; spike_seed: 1 at 15.00%; gem: 1 at 80.00%",
       "tree_details": "spike: 1–3 at 100.00%; spike_seed: 1 at 35.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Tier-derived gem average",
-      "growth_source": "Tier default for missing duration",
+      "growth_source": "Live SPLICING sheet, row 236 (2026-10-12)",
       "notes": "Independent break rolls; block quantity 1–3 when the block roll succeeds."
     },
     {
@@ -14293,7 +14348,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "star_block_seed",
-      "grow_seconds": 23100,
+      "grow_seconds": 27000,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -14337,7 +14392,7 @@
       "break_details": "star_block_seed: 0–1 at 100.00%; star_block: 0–3 at 100.00%; gem: 7 at 100.00%; gem: 1 at 50.00%; star_fragment: 1 at 1.00%",
       "tree_details": "star_block_seed: 0–1 at 100.00%; star_block: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 412",
-      "growth_source": "Imported splice sheet, row 272",
+      "growth_source": "Live SPLICING sheet, row 274 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -14403,7 +14458,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "star_wall_seed",
-      "grow_seconds": 480,
+      "grow_seconds": 570,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -14447,7 +14502,7 @@
       "break_details": "star_wall_seed: 0–1 at 100.00%; star_wall: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "star_wall_seed: 0–1 at 100.00%; star_wall: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 716",
-      "growth_source": "Imported splice sheet, row 134",
+      "growth_source": "Live SPLICING sheet, row 134 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -14458,7 +14513,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "steel_background_seed",
-      "grow_seconds": 7800,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -14502,7 +14557,7 @@
       "break_details": "steel_background_seed: 0–1 at 100.00%; steel_background: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "steel_background_seed: 0–1 at 100.00%; steel_background: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 372",
-      "growth_source": "Imported splice sheet, row 222",
+      "growth_source": "Live SPLICING sheet, row 222 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -14513,7 +14568,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "steel_block_seed",
-      "grow_seconds": 1500,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -14557,7 +14612,7 @@
       "break_details": "steel_block_seed: 0–1 at 100.00%; steel_block: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "steel_block_seed: 0–1 at 100.00%; steel_block: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 370",
-      "growth_source": "Imported splice sheet, row 152",
+      "growth_source": "Live SPLICING sheet, row 152 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -14568,7 +14623,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "steel_door_seed",
-      "grow_seconds": 5400,
+      "grow_seconds": 9600,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -14612,7 +14667,7 @@
       "break_details": "steel_door_seed: 0–1 at 100.00%; steel_door: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "steel_door_seed: 0–1 at 100.00%; steel_door: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 376",
-      "growth_source": "Imported splice sheet, row 226",
+      "growth_source": "Live SPLICING sheet, row 226 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -14623,7 +14678,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "steel_ladder_seed",
-      "grow_seconds": 7800,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -14667,7 +14722,7 @@
       "break_details": "steel_ladder_seed: 0–1 at 100.00%; steel_ladder: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "steel_ladder_seed: 0–1 at 100.00%; steel_ladder: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 384",
-      "growth_source": "Imported splice sheet, row 232",
+      "growth_source": "Live SPLICING sheet, row 232 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -14678,7 +14733,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "steel_platform_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 7800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -14722,7 +14777,7 @@
       "break_details": "steel_platform_seed: 0–1 at 100.00%; steel_platform: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "steel_platform_seed: 0–1 at 100.00%; steel_platform: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 392",
-      "growth_source": "Imported splice sheet, row 234",
+      "growth_source": "Live SPLICING sheet, row 234 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -14733,7 +14788,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "steel_sign_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 7800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -14777,7 +14832,7 @@
       "break_details": "steel_sign_seed: 0–1 at 100.00%; steel_sign: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "steel_sign_seed: 0–1 at 100.00%; steel_sign: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 374",
-      "growth_source": "Imported splice sheet, row 224",
+      "growth_source": "Live SPLICING sheet, row 224 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -14887,7 +14942,7 @@
       "break_details": "stone_brick_seed: 0–1 at 100.00%; stone_brick: 0–3 at 100.00%; gem: 1 at 40.00%",
       "tree_details": "stone_brick_seed: 0–1 at 100.00%; stone_brick: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 264",
-      "growth_source": "Imported splice sheet, row 20",
+      "growth_source": "Live SPLICING sheet, row 20 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -14898,7 +14953,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "stone_brick_wall_seed",
-      "grow_seconds": 270,
+      "grow_seconds": 360,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -14942,7 +14997,7 @@
       "break_details": "stone_brick_wall_seed: 0–1 at 100.00%; stone_brick_wall: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "stone_brick_wall_seed: 0–1 at 100.00%; stone_brick_wall: 0–3 at 100.00%; gem: 2 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 266",
-      "growth_source": "Imported splice sheet, row 44",
+      "growth_source": "Live SPLICING sheet, row 44 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -14997,7 +15052,7 @@
       "break_details": "street_lamp_seed: 0–1 at 100.00%; street_lamp: 0–3 at 100.00%; gem: 4 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "street_lamp_seed: 0–1 at 100.00%; street_lamp: 0–3 at 100.00%; gem: 11 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 768",
-      "growth_source": "Imported splice sheet, row 332",
+      "growth_source": "Live SPLICING sheet, row 334 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -15008,7 +15063,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "street_sign_seed",
-      "grow_seconds": 28800,
+      "grow_seconds": 23100,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -15052,7 +15107,7 @@
       "break_details": "street_sign_seed: 0–1 at 100.00%; street_sign: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "street_sign_seed: 0–1 at 100.00%; street_sign: 0–3 at 100.00%; gem: 8 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 738",
-      "growth_source": "Imported splice sheet, row 300",
+      "growth_source": "Live SPLICING sheet, row 302 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -15063,7 +15118,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "sturdy_box_seed",
-      "grow_seconds": 7800,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -15107,7 +15162,7 @@
       "break_details": "sturdy_box_seed: 0–1 at 100.00%; sturdy_box: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "sturdy_box_seed: 0–1 at 100.00%; sturdy_box: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 252",
-      "growth_source": "Imported splice sheet, row 200",
+      "growth_source": "Live SPLICING sheet, row 200 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -15118,7 +15173,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "sugar_cane_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1500,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -15162,7 +15217,7 @@
       "break_details": "sugar_cane_seed: 0–1 at 100.00%; sugar_cane: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "sugar_cane_seed: 0–1 at 100.00%; sugar_cane: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 606",
-      "growth_source": "Imported splice sheet, row 166",
+      "growth_source": "Live SPLICING sheet, row 166 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -15217,7 +15272,7 @@
       "break_details": "sun_seed: 0–1 at 100.00%; sun: 0–3 at 100.00%; gem: 9 at 100.00%",
       "tree_details": "sun_seed: 0–1 at 100.00%; sun: 0–3 at 100.00%; gem: 18 at 100.00%",
       "source": "Tier-derived gem average",
-      "growth_source": "Imported splice sheet, row 394",
+      "growth_source": "Live SPLICING sheet, row 396 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -15723,7 +15778,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "toilet_seed",
-      "grow_seconds": 7800,
+      "grow_seconds": 9600,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -15767,7 +15822,7 @@
       "break_details": "toilet_seed: 0–1 at 100.00%; toilet: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "toilet_seed: 0–1 at 100.00%; toilet: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 664",
-      "growth_source": "Imported splice sheet, row 256",
+      "growth_source": "Live SPLICING sheet, row 256 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -15778,7 +15833,7 @@
       "mode": "variant",
       "base_item": "toilet",
       "seed_id": "toilet_seed",
-      "grow_seconds": 7800,
+      "grow_seconds": 9600,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -16097,7 +16152,7 @@
       "break_details": "tv_seed: 0–1 at 100.00%; tv: 0–3 at 100.00%; gem: 5 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "tv_seed: 0–1 at 100.00%; tv: 0–3 at 100.00%; gem: 9 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 638",
-      "growth_source": "Imported splice sheet, row 322",
+      "growth_source": "Live SPLICING sheet, row 324 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -16218,7 +16273,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "ventilation_seed",
-      "grow_seconds": 28800,
+      "grow_seconds": 23100,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -16262,7 +16317,7 @@
       "break_details": "ventilation_seed: 0–1 at 100.00%; ventilation: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "ventilation_seed: 0–1 at 100.00%; ventilation: 0–3 at 100.00%; gem: 8 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 774",
-      "growth_source": "Imported splice sheet, row 302",
+      "growth_source": "Live SPLICING sheet, row 304 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -16317,7 +16372,7 @@
       "break_details": "vines_2_seed: 0–1 at 100.00%; vines_2: 0–3 at 100.00%; gem: 1 at 60.00%",
       "tree_details": "vines_2_seed: 0–1 at 100.00%; vines_2: 0–3 at 100.00%; gem: 1 at 80.00%",
       "source": "Live ITEM DATA gem average, rows 106",
-      "growth_source": "Imported splice sheet, row 6",
+      "growth_source": "Live SPLICING sheet, row 6 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -16372,7 +16427,7 @@
       "break_details": "vines_painting_seed: 0–1 at 100.00%; vines_painting: 0–3 at 100.00%; gem: 6 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "vines_painting_seed: 0–1 at 100.00%; vines_painting: 0–3 at 100.00%; gem: 12 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 746",
-      "growth_source": "Imported splice sheet, row 354",
+      "growth_source": "Live SPLICING sheet, row 356 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -16383,7 +16438,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "wagon_wheel_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 7800,
       "break_blocks": {
         "min": 0,
         "max": 6,
@@ -16427,7 +16482,7 @@
       "break_details": "wagon_wheel_seed: 0–3 at 100.00%; wagon_wheel: 0–6 at 100.00%; gem: 4 at 100.00%",
       "tree_details": "wagon_wheel_seed: 0–3 at 100.00%; wagon_wheel: 0–6 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 254",
-      "growth_source": "Imported splice sheet, row 202",
+      "growth_source": "Live SPLICING sheet, row 202 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -16592,7 +16647,7 @@
       "break_details": "water_fountain_seed: 0–1 at 100.00%; water_fountain: 0–3 at 100.00%; gem: 5 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "water_fountain_seed: 0–1 at 100.00%; water_fountain: 0–3 at 100.00%; gem: 13 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 780",
-      "growth_source": "Imported splice sheet, row 370",
+      "growth_source": "Live SPLICING sheet, row 372 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -16603,7 +16658,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "water_well_seed",
-      "grow_seconds": 23100,
+      "grow_seconds": 28800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -16647,7 +16702,7 @@
       "break_details": "water_well_seed: 0–1 at 100.00%; water_well: 0–3 at 100.00%; gem: 4 at 100.00%",
       "tree_details": "water_well_seed: 0–1 at 100.00%; water_well: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 584",
-      "growth_source": "Imported splice sheet, row 282",
+      "growth_source": "Live SPLICING sheet, row 284 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -16658,7 +16713,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "weathervane_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 5400,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -16702,7 +16757,7 @@
       "break_details": "weathervane_seed: 0–1 at 100.00%; weathervane: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "weathervane_seed: 0–1 at 100.00%; weathervane: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 588",
-      "growth_source": "Imported splice sheet, row 248",
+      "growth_source": "Live SPLICING sheet, row 248 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -16713,7 +16768,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "white_block_seed",
-      "grow_seconds": 270,
+      "grow_seconds": 360,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -16757,7 +16812,7 @@
       "break_details": "white_block_seed: 0–1 at 100.00%; white_block: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "white_block_seed: 0–1 at 100.00%; white_block: 0–3 at 100.00%; gem: 2 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 272",
-      "growth_source": "Imported splice sheet, row 46",
+      "growth_source": "Live SPLICING sheet, row 46 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -16768,7 +16823,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "white_brick_block_seed",
-      "grow_seconds": 570,
+      "grow_seconds": 510,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -16812,7 +16867,7 @@
       "break_details": "white_brick_block_seed: 0–1 at 100.00%; white_brick_block: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "white_brick_block_seed: 0–1 at 100.00%; white_brick_block: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 694",
-      "growth_source": "Imported splice sheet, row 100",
+      "growth_source": "Live SPLICING sheet, row 100 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -16823,7 +16878,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "white_brick_platform_seed",
-      "grow_seconds": 1800,
+      "grow_seconds": 1725,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -16867,7 +16922,7 @@
       "break_details": "white_brick_platform_seed: 0–1 at 100.00%; white_brick_platform: 0–3 at 100.00%; gem: 2 at 100.00%",
       "tree_details": "white_brick_platform_seed: 0–1 at 100.00%; white_brick_platform: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 700",
-      "growth_source": "Imported splice sheet, row 182",
+      "growth_source": "Live SPLICING sheet, row 182 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -16878,7 +16933,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "white_brick_wall_seed",
-      "grow_seconds": 1500,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -16922,7 +16977,7 @@
       "break_details": "white_brick_wall_seed: 0–1 at 100.00%; white_brick_wall: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "white_brick_wall_seed: 0–1 at 100.00%; white_brick_wall: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 698",
-      "growth_source": "Imported splice sheet, row 180",
+      "growth_source": "Live SPLICING sheet, row 180 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -16933,7 +16988,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "white_fence_seed",
-      "grow_seconds": 1500,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -16977,7 +17032,7 @@
       "break_details": "white_fence_seed: 0–1 at 100.00%; white_fence: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "white_fence_seed: 0–1 at 100.00%; white_fence: 0–3 at 100.00%; gem: 3 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 578",
-      "growth_source": "Imported splice sheet, row 162",
+      "growth_source": "Live SPLICING sheet, row 162 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -16988,7 +17043,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "white_wallpaper_seed",
-      "grow_seconds": 480,
+      "grow_seconds": 510,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -17032,7 +17087,7 @@
       "break_details": "white_wallpaper_seed: 0–1 at 100.00%; white_wallpaper: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "white_wallpaper_seed: 0–1 at 100.00%; white_wallpaper: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 346",
-      "growth_source": "Imported splice sheet, row 82",
+      "growth_source": "Live SPLICING sheet, row 82 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -17153,7 +17208,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "wood_platform_seed",
-      "grow_seconds": 240,
+      "grow_seconds": 270,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -17197,7 +17252,7 @@
       "break_details": "wood_platform_seed: 0–1 at 100.00%; wood_platform: 0–3 at 100.00%; gem: 1 at 100.00%",
       "tree_details": "wood_platform_seed: 0–1 at 100.00%; wood_platform: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 118",
-      "growth_source": "Imported splice sheet, row 26",
+      "growth_source": "Live SPLICING sheet, row 26 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -17208,7 +17263,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "wooden_barrel_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -17252,7 +17307,7 @@
       "break_details": "wooden_barrel_seed: 0–1 at 100.00%; wooden_barrel: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "wooden_barrel_seed: 0–1 at 100.00%; wooden_barrel: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 242",
-      "growth_source": "Imported splice sheet, row 112",
+      "growth_source": "Live SPLICING sheet, row 112 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -17307,7 +17362,7 @@
       "break_details": "wooden_block_seed: 0–1 at 100.00%; wooden_block: 0–3 at 100.00%; gem: 1 at 60.00%; stick: 1 at 5.00%",
       "tree_details": "wooden_block_seed: 0–1 at 100.00%; wooden_block: 0–3 at 100.00%; gem: 1 at 80.00%",
       "source": "Live ITEM DATA gem average, rows 136",
-      "growth_source": "Imported splice sheet, row 14",
+      "growth_source": "Live SPLICING sheet, row 14 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -17318,7 +17373,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "wooden_box_seed",
-      "grow_seconds": 480,
+      "grow_seconds": 510,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -17362,7 +17417,7 @@
       "break_details": "wooden_box_seed: 0–1 at 100.00%; wooden_box: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "wooden_box_seed: 0–1 at 100.00%; wooden_box: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 244",
-      "growth_source": "Imported splice sheet, row 72",
+      "growth_source": "Live SPLICING sheet, row 72 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -17373,7 +17428,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "wooden_chair_seed",
-      "grow_seconds": 510,
+      "grow_seconds": 570,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -17417,7 +17472,7 @@
       "break_details": "wooden_chair_seed: 0–1 at 100.00%; wooden_chair: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "wooden_chair_seed: 0–1 at 100.00%; wooden_chair: 0–3 at 100.00%; gem: 3 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 146",
-      "growth_source": "Imported splice sheet, row 70",
+      "growth_source": "Live SPLICING sheet, row 70 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -17428,7 +17483,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "wooden_crappy_sign_seed",
-      "grow_seconds": 270,
+      "grow_seconds": 360,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -17472,7 +17527,7 @@
       "break_details": "wooden_crappy_sign_seed: 0–1 at 100.00%; wooden_crappy_sign: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "wooden_crappy_sign_seed: 0–1 at 100.00%; wooden_crappy_sign: 0–3 at 100.00%; gem: 2 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 158",
-      "growth_source": "Imported splice sheet, row 38",
+      "growth_source": "Live SPLICING sheet, row 38 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -17483,7 +17538,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "wooden_door_seed",
-      "grow_seconds": 240,
+      "grow_seconds": 270,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -17527,7 +17582,7 @@
       "break_details": "wooden_door_seed: 0–1 at 100.00%; wooden_door: 0–3 at 100.00%; gem: 1 at 100.00%",
       "tree_details": "wooden_door_seed: 0–1 at 100.00%; wooden_door: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 142",
-      "growth_source": "Imported splice sheet, row 32",
+      "growth_source": "Live SPLICING sheet, row 32 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -17538,7 +17593,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "wooden_entrance_seed",
-      "grow_seconds": 510,
+      "grow_seconds": 570,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -17582,7 +17637,7 @@
       "break_details": "wooden_entrance_seed: 0–1 at 100.00%; wooden_entrance: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "wooden_entrance_seed: 0–1 at 100.00%; wooden_entrance: 0–3 at 100.00%; gem: 3 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 134",
-      "growth_source": "Imported splice sheet, row 68",
+      "growth_source": "Live SPLICING sheet, row 68 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -17593,7 +17648,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "wooden_fence_seed",
-      "grow_seconds": 360,
+      "grow_seconds": 240,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -17637,7 +17692,7 @@
       "break_details": "wooden_fence_seed: 0–1 at 100.00%; wooden_fence: 0–3 at 100.00%; gem: 1 at 80.00%",
       "tree_details": "wooden_fence_seed: 0–1 at 100.00%; wooden_fence: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 144",
-      "growth_source": "Imported splice sheet, row 34",
+      "growth_source": "Live SPLICING sheet, row 34 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -17648,7 +17703,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "wooden_ladder_seed",
-      "grow_seconds": 480,
+      "grow_seconds": 510,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -17692,7 +17747,7 @@
       "break_details": "wooden_ladder_seed: 0–1 at 100.00%; wooden_ladder: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "wooden_ladder_seed: 0–1 at 100.00%; wooden_ladder: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 130",
-      "growth_source": "Imported splice sheet, row 66",
+      "growth_source": "Live SPLICING sheet, row 66 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -17703,7 +17758,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "wooden_shelf_seed",
-      "grow_seconds": 9600,
+      "grow_seconds": 7800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -17747,7 +17802,7 @@
       "break_details": "wooden_shelf_seed: 0–1 at 100.00%; wooden_shelf: 0–3 at 100.00%; gem: 3 at 100.00%",
       "tree_details": "wooden_shelf_seed: 0–1 at 100.00%; wooden_shelf: 0–3 at 100.00%; gem: 5 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 416",
-      "growth_source": "Imported splice sheet, row 240",
+      "growth_source": "Live SPLICING sheet, row 240 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -17758,7 +17813,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "wooden_table_seed",
-      "grow_seconds": 240,
+      "grow_seconds": 270,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -17802,7 +17857,7 @@
       "break_details": "wooden_table_seed: 0–1 at 100.00%; wooden_table: 0–3 at 100.00%; gem: 1 at 100.00%",
       "tree_details": "wooden_table_seed: 0–1 at 100.00%; wooden_table: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 148",
-      "growth_source": "Imported splice sheet, row 36",
+      "growth_source": "Live SPLICING sheet, row 36 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -17967,7 +18022,7 @@
       "break_details": "wooden_background_seed: 0–1 at 100.00%; wooden_wallpaper: 0–3 at 100.00%; gem: 1 at 40.00%",
       "tree_details": "wooden_background_seed: 0–1 at 100.00%; wooden_wallpaper: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 60.00%",
       "source": "Live ITEM DATA gem average, rows 138",
-      "growth_source": "Imported splice sheet, row 16",
+      "growth_source": "Live SPLICING sheet, row 16 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -17978,7 +18033,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "wooden_frame_seed",
-      "grow_seconds": 270,
+      "grow_seconds": 360,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -18022,7 +18077,7 @@
       "break_details": "wooden_frame_seed: 0–1 at 100.00%; wooden_window: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "wooden_frame_seed: 0–1 at 100.00%; wooden_window: 0–3 at 100.00%; gem: 2 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 140",
-      "growth_source": "Imported splice sheet, row 30",
+      "growth_source": "Live SPLICING sheet, row 30 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -18088,7 +18143,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "yellow_block_seed",
-      "grow_seconds": 270,
+      "grow_seconds": 360,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -18132,7 +18187,7 @@
       "break_details": "yellow_block_seed: 0–1 at 100.00%; yellow_block: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 20.00%",
       "tree_details": "yellow_block_seed: 0–1 at 100.00%; yellow_block: 0–3 at 100.00%; gem: 2 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 290",
-      "growth_source": "Imported splice sheet, row 58",
+      "growth_source": "Live SPLICING sheet, row 58 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -18143,7 +18198,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "yellow_pastel_block_seed",
-      "grow_seconds": 1725,
+      "grow_seconds": 1800,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -18187,7 +18242,7 @@
       "break_details": "yellow_pastel_block_seed: 0–1 at 100.00%; yellow_pastel_block: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "yellow_pastel_block_seed: 0–1 at 100.00%; yellow_pastel_block: 0–3 at 100.00%; gem: 4 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 320",
-      "growth_source": "Imported splice sheet, row 140",
+      "growth_source": "Live SPLICING sheet, row 140 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -18242,7 +18297,7 @@
       "break_details": "yellow_portal_seed: 0–1 at 100.00%; yellow_portal: 0–3 at 100.00%; gem: 8 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "yellow_portal_seed: 0–1 at 100.00%; yellow_portal: 0–3 at 100.00%; gem: 19 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 474",
-      "growth_source": "Imported splice sheet, row 384",
+      "growth_source": "Live SPLICING sheet, row 386 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     },
     {
@@ -18253,7 +18308,7 @@
       "mode": "farm",
       "base_item": "",
       "seed_id": "yellow_wallpaper_seed",
-      "grow_seconds": 480,
+      "grow_seconds": 510,
       "break_blocks": {
         "min": 0,
         "max": 3,
@@ -18297,7 +18352,7 @@
       "break_details": "yellow_wallpaper_seed: 0–1 at 100.00%; yellow_wallpaper: 0–3 at 100.00%; gem: 1 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "yellow_wallpaper_seed: 0–1 at 100.00%; yellow_wallpaper: 0–3 at 100.00%; gem: 2 at 100.00%; gem: 1 at 40.00%",
       "source": "Live ITEM DATA gem average, rows 364",
-      "growth_source": "Imported splice sheet, row 94",
+      "growth_source": "Live SPLICING sheet, row 94 (2026-10-12)",
       "notes": "Listed block/seed ranges roll uniformly, including zero. Unspecified fields retain existing behavior. Growth times and tree gems/XP are unchanged."
     }
   ]
