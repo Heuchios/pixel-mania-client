@@ -1,7 +1,9 @@
 # Login latency fixes — 2026-10-12
 
-Prepared for staging. Gameplay, credentials, saved-data formats, database schema,
-authentication deadlines, password hashing and rate-limit thresholds are unchanged.
+Deployed to staging as `20261012-login-b8a4133`, with backend `b8a413390ef9`
+and client source `7b13dbb1e709`. Both source commits are pushed to staging.
+Gameplay, credentials, saved-data formats, database schema, authentication deadlines,
+password hashing and rate-limit thresholds are unchanged.
 
 ## Reproduced problems and changes
 
@@ -34,11 +36,11 @@ credentials; these timings are not production-network or physical-phone benchmar
 
 | Scenario | Click to result |
 | --- | --- |
-| Password login to initialized lobby | 665 ms |
-| Remembered refresh-token login to initialized lobby | 529 ms |
-| Legacy generic rate-limit rejection | 42 ms |
-| Correlated account rejection | 55 ms |
-| Deliberately delayed 8.2-second success | 8,270 ms, first attempt succeeds |
+| Password login to initialized lobby | 540 ms |
+| Remembered refresh-token login to initialized lobby | 574 ms |
+| Legacy generic rate-limit rejection | 46 ms |
+| Correlated account rejection | 39 ms |
+| Deliberately delayed 8.2-second success | 8,260 ms, first attempt succeeds |
 
 Each scenario sent credentials exactly once. Full world warmup completed before
 test shutdown. Existing remembered-login and connection-health regressions pass,
@@ -60,5 +62,22 @@ Commands:
 - Client: Godot headless `res://tests/remembered_login_test.tscn` and
   `--script res://tests/connection_health_test.gd`.
 
-Evidence: `D:/Pixelmania/work/login-smoke-20261012/results.json` and
+Evidence: `D:/Pixelmania/work/login-isolated-smoke-20261012/results.json` and
 `D:/Pixelmania/work/login-latency-probe/` (initial reproduction logs).
+
+## Release verification
+
+The full `npm run check:security` and TypeScript release gate passed. Staging's
+deployed router, rate-limit, account-session and account-security regressions passed.
+The release manifest identifies the exact backend/client commits above and reports
+clean selected client files. Public health confirms PostgreSQL authoritative/ready,
+Redis ready, client version 1.2.20 and minimum 1.2.14. The email-verification guard
+smoke also passed. Deployment log:
+`D:/Pixelmania/work/login-staging-deploy-20261012.log`.
+
+Rollback release: `20261012-multiplayer-17e7b89`. Production remains
+`20261010-hand-visuals-33256ff` (client 1.2.24/minimum 1.2.14). No live account
+credentials or data were used for the tests. Published Windows/Android binaries
+were not rebuilt or distributed: the lobby/client fixes need a restarted local
+debug client or a future published build, while staging already runs the backend
+fixes. Physical mobile timing and production login latency were not measured.

@@ -7,6 +7,25 @@ backend/security state without relying on chat memory.
 
 ## Latest Verified Status
 
+### Login latency fixes deployed to staging
+
+Client `7b13dbb1` handles generic authentication rejections immediately and loads
+the lobby asynchronously ahead of world warmup. Backend `b8a4133` sends correlated
+authentication rate-limit replies, removes redundant identity writes for matching
+accounts, and runs independent Redis auth-limit checks concurrently. Saved formats,
+schema, gameplay and authentication limits are unchanged. Both commits are pushed
+to staging; active release is `20261012-login-b8a4133`.
+
+An ignored rejection reproduced a 20-second login timeout; fixed responses take
+39–46 ms locally. Real Godot password/remembered-login tests reach the initialized
+lobby in 540–574 ms, and a deliberate 8.2-second reply succeeds on the first attempt.
+Real SQL tests verify legacy identity repair, unchanged IDs/world, token rotation,
+revocation and disconnect rollback. Full security/TypeScript checks, deployed auth
+regressions and public PostgreSQL/Redis health passed. Staging retains 1.2.20/minimum
+1.2.14; rollback is `20261012-multiplayer-17e7b89`. Production and published binaries
+are unchanged. Physical mobile and production login timing were not measured.
+See [release evidence](login_latency_20261012.md).
+
 ### Multiplayer smoothing deployed to staging
 
 Client `fc41d15f` removes repeated full-world pickup scans and redundant inventory
