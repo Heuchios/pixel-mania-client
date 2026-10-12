@@ -175,7 +175,8 @@ func open_rewards() -> void:
 
 func close_rewards() -> void:
 	hide()
-	tick_player.stop()
+	# Startup world transitions can close this modal before its _ready() runs.
+	if is_instance_valid(tick_player): tick_player.stop()
 	if phase == "collecting":
 		if collection_tween != null: collection_tween.kill()
 		_set_phase("claimed")

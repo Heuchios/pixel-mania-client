@@ -47,6 +47,8 @@ prize. The reveal sound uses the existing sound manager and its SFX volume setti
 The panel blocks movement, item use, fishing starts, and gameplay/chat shortcuts.
 Escape, Android Back, and the close button dismiss it. Closing never cancels or
 re-grants a saved reward.
+Startup world transitions may close the modal before its scene-tree initialization;
+closing tolerates the uncreated sound player and still clears mobile pointer state.
 
 User-approved prizes are 250, 1,000, and 5,000 gems. The requested jackpot chance
 is 0.5%; rare stays at 20% and common receives the remaining 79.5%. Integer server
@@ -79,14 +81,15 @@ The database test covers rollback after partial writes, all reward boundaries,
 duplicate and simultaneous requests, account case normalization, recovery after
 module restart, UTC rollover, stale-day rejection, capacity, and database outages.
 
-Verified: 85 client checks passed; desktop/mobile/HUD/prize renders were inspected,
+Verified: 88 client checks passed; desktop/mobile/HUD/prize renders were inspected,
 including all three confetti tiers and the collection flight over a world screenshot.
 Client checks cover all reward tiers from multiple starting rotations, wind-up,
 forward coasting, ball counter-rotation and capture within the winning pocket,
 exact ball/pointer landing, bounded light intensity and landing waves, continuous
 ambient lights before spinning and after claiming, retained idle draw commands, automatic
 reveal, duplicate collect, hidden-wheel and GPU confetti pause/resume,
-effect cleanup, and closing during collection. Route and isolated
+effect cleanup, closing during collection, and repeated startup closes before
+the sound player exists followed by normal initialization. Route and isolated
 PostgreSQL tests passed. The full backend `check:security` chain passed in the
 isolated staging checkout, including TypeScript, lint, economy, and runtime checks.
 Deployed route tests and a read-only query confirmed the daily receipt primary
