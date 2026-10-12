@@ -76,14 +76,14 @@ remain transparent. Existing wearable and remote-equipment checks also pass.
 
 ## Deployed release
 
-- Staging release: `20261012-wearables-a22bc8b`.
-- Backend commit: `a22bc8b5503dbb45ba0b6fdb52df97a91950ee78`.
-- Client commit: `b43a1a590658a53f136262ef5c186ddc70c80eae`.
+- Staging release: `20261012-helmet-cover-72ff82f`.
+- Backend commit: `72ff82f4665da0d565ae6988172f0072b26a9aaf`.
+- Client commit: `21cb942a23d0107bdd45421b116abb42247d1bcc`.
 - API: `https://staging-api.pixelmaniagame.com`; current/minimum client 1.2.25.
 - Immutable archive validation, remote release checks, public smoke checks and the 44-item catalog check on the active staging server all passed. PostgreSQL and Redis are ready.
-- Prior staging release / rollback: `20261012-machine-return-bcd7c18`.
+- Prior staging release / rollback: `20261012-wearables-a22bc8b` (the original 44-item addition).
 - Production remains `20261010-hand-visuals-33256ff`.
-- Deployment log: `D:/Pixelmania/work/wearables-20261012-deploy.log`.
+- Helmet correction evidence: `D:/Pixelmania/work/helmet-cover-deploy.log`, `helmet-cover-security.log` and `helmet-layering-render.log`. Full security and deployed catalog checks passed again for the correction. Original item-addition deployment log: `D:/Pixelmania/work/wearables-20261012-deploy.log`.
 
 The release used a clean checkout of the client commit at `D:/Pixelmania/releases/wearables-staging-20261012/pixel-mania`. Concurrent UI-transition edits in the main workspace were left outside these commits and this release's client metadata.
 
