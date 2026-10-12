@@ -83,8 +83,31 @@ func _fit() -> void:
 	if not is_instance_valid(panel):
 		return
 	var viewport_size := get_viewport_rect().size
-	title.add_theme_font_size_override("font_size", 24 if viewport_size.x < 950 else 34)
-	title.set_meta("pixelmania_font_size", 24 if viewport_size.x < 950 else 34)
+	var compact := viewport_size.y < 500
+	var title_size := 22 if compact else (24 if viewport_size.x < 950 else 34)
+	title.add_theme_font_size_override("font_size", title_size)
+	title.set_meta("pixelmania_font_size", title_size)
+	for entry in [[status, 14, 22], [footer, 13, 20], [wallet, 18, 24], [reset_label, 14, 18]]:
+		var label: Label = entry[0]
+		var font_size: int = entry[1] if compact else entry[2]
+		label.add_theme_font_size_override("font_size", font_size)
+		label.set_meta("pixelmania_font_size", font_size)
+	$Panel/Margin/Layout.add_theme_constant_override("separation", 6 if compact else 12)
+	for side in ["top", "bottom"]:
+		$Panel/Margin.add_theme_constant_override("margin_" + side, 8 if compact else 16)
+	$Panel/Margin/Layout/Header/Close.custom_minimum_size = Vector2(36, 36) if compact else Vector2(48, 48)
+	var today: Button = $Panel/Margin/Layout/Tabs/Today
+	today.custom_minimum_size.y = 30 if compact else 48
+	today.add_theme_font_size_override("font_size", 18 if compact else 24)
+	today.set_meta("pixelmania_font_size", 18 if compact else 24)
+	var intro := content.get_node_or_null("DailyToolbar/Intro")
+	if intro != null:
+		intro.visible = not compact
+	var refresh := content.get_node_or_null("DailyToolbar/Refresh")
+	if refresh != null:
+		refresh.custom_minimum_size.y = 28 if compact else 48
+		refresh.add_theme_font_size_override("font_size", 14 if compact else 24)
+		refresh.set_meta("pixelmania_font_size", 14 if compact else 24)
 	title.clip_text = true
 	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	panel.size = Vector2(minf(1160.0, maxf(580.0, viewport_size.x - 32.0)), minf(760.0, maxf(290.0, viewport_size.y - 32.0)))
@@ -289,9 +312,13 @@ func _render() -> void:
 
 func _render_today() -> void:
 	var toolbar := HBoxContainer.new()
+	toolbar.name = "DailyToolbar"
+	toolbar.alignment = BoxContainer.ALIGNMENT_END
 	content.add_child(toolbar)
-	_label(toolbar, "All daily quests are active. Complete each to claim its rewards.", DARK, 18)
+	var intro := _label(toolbar, "All daily quests are active. Complete each to claim its rewards.", DARK, 18)
+	intro.name = "Intro"
 	var refresh := _button(toolbar, "REFRESH", _request.bind("quest_board_get"))
+	refresh.name = "Refresh"
 	refresh.size_flags_horizontal = Control.SIZE_SHRINK_END
 	refresh.custom_minimum_size.x = 165
 	if board.get("daily_mode", "") == "automatic":

@@ -83,6 +83,7 @@ func run() -> void:
 	panel._fit()
 	assert(panel.panel.size.x <= 624)
 	assert(panel.footer.get_minimum_size().x <= panel.panel.size.x - 40)
+	assert(panel.scroll.size.y >= 110, "Short screens must retain usable quest-list height")
 	if DisplayServer.get_name() != "headless":
 		await RenderingServer.frame_post_draw
 		root.get_texture().get_image().save_png("D:/Pixelmania/work/quest-weekly-mobile.png")
