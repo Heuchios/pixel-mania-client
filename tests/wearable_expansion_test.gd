@@ -91,7 +91,7 @@ func run() -> void:
 					var count: int = int(c.frames) if part_key == c.slot else 1
 					check(part.sprite_frames.get_frame_count(state) == count, c.id + " frame count " + state)
 					if count > 1:
-						check(part.sprite_frames.get_animation_loop(state) and part.sprite_frames.get_animation_speed(state) == 6.0, c.id + " loop/speed " + state)
+						check(part.sprite_frames.get_animation_loop(state) and part.sprite_frames.get_animation_speed(state) == float(c.get("fps", 6.0)), c.id + " loop/speed " + state)
 					for frame in count:
 						check_cell(part.sprite_frames.get_frame_texture(state, frame), [pieces[part_key][0] + frame, pieces[part_key][1]], c.id + " equipped " + part_key)
 				manager.play_wearable_part_animation(part, "idle")

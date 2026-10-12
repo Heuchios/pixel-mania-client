@@ -14107,7 +14107,7 @@ const ITEMS = {
 		"slot_z_index": 3,
 		"order": 311,
 		"display_category": "Mask",
-		"animation_fps": 6,
+		"animation_fps": 3,
 		"beard_animations": {
 			"idle": {
 				"frames": [
@@ -14115,7 +14115,7 @@ const ITEMS = {
 					"cigar_2",
 					"cigar_3"
 				],
-				"fps": 6,
+				"fps": 3,
 				"loop": true
 			}
 		}
@@ -14806,14 +14806,14 @@ const ITEMS = {
 		"hides_hair": true,
 		"order": 337,
 		"display_category": "Mask",
-		"animation_fps": 6,
+		"animation_fps": 3,
 		"beard_animations": {
 			"idle": {
 				"frames": [
 					"horse_mask",
 					"horse_mask_2"
 				],
-				"fps": 6,
+				"fps": 3,
 				"loop": true
 			}
 		}

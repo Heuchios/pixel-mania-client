@@ -204,6 +204,7 @@
   {
     "id": "cigar",
     "name": "Cigar",
+    "fps": 3,
     "slot": "beard",
     "icon": [
       22,
@@ -656,6 +657,7 @@
   {
     "id": "horse_mask",
     "name": "Horse Mask",
+    "fps": 3,
     "slot": "beard",
     "icon": [
       49,
