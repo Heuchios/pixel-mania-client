@@ -108,7 +108,7 @@ func setup(_host = null) -> void:
 		countdown_timer.timeout.connect(_on_countdown_tick)
 
 
-# LeaderboardScene centres its window with a CenterContainer, which centres within its OWN
+# LeaderboardScene centres its window within its full-screen layout root's own
 # rect -- so the scene root must actually BE the size of the screen. Under world.ui_layer (a
 # CanvasLayer, not a Control) that size is not inherited reliably, and a zero-sized root
 # centres the 1032x688 window on (0,0): its lower-right quadrant lands in the top-left corner
@@ -179,7 +179,7 @@ func _build_scene() -> void:
 	designed_title = str(scene_instance.get("title_text")) if "title_text" in scene_instance else "LANDFILL"
 	designed_badge = str(scene_instance.get("badge_text")) if "badge_text" in scene_instance else "EVENT LEADERBOARD"
 	designed_subtitle = str(scene_instance.get("subtitle_text")) if "subtitle_text" in scene_instance else ""
-	designed_summary_timer_label = str(scene_instance.get("summary_timer_label")) if "summary_timer_label" in scene_instance else "EVENT ENDS IN:"
+	designed_summary_timer_label = str(scene_instance.get("summary_timer_label")) if "summary_timer_label" in scene_instance else "ENDS IN"
 
 	add_child(scene_instance)
 	scene_instance.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -430,7 +430,8 @@ func _render_coming_soon() -> void:
 
 	_set_scene_text("title_text", _tab_label(selected_tab))
 	_set_scene_text("badge_text", "COMING SOON")
-	_set_scene_text("subtitle_text", _tab_label(selected_tab).capitalize() + " leaderboards aren't live yet -- check back soon!")
+	_set_scene_text("subtitle_text", "New rankings are on the way.")
+	_set_scene_text("empty_message", _tab_label(selected_tab).capitalize() + " leaderboards are coming soon.")
 
 	if scene_instance.has_method("set_entries_from_dictionaries"):
 		scene_instance.set_entries_from_dictionaries([])
@@ -456,7 +457,8 @@ func _render() -> void:
 		subtitle = claim_message
 	elif entries.is_empty():
 		subtitle = "No scores yet -- be the first to race!"
-	_set_scene_text("subtitle_text", subtitle)
+	_set_scene_text("subtitle_text", designed_subtitle if entries.is_empty() else subtitle)
+	_set_scene_text("empty_message", subtitle)
 
 	if scene_instance.has_method("set_entries_from_dictionaries"):
 		scene_instance.set_entries_from_dictionaries(_build_entry_dicts())
@@ -495,7 +497,7 @@ func _on_countdown_tick() -> void:
 func _countdown_label_text() -> String:
 	if not landfill_status_known:
 		return designed_summary_timer_label
-	return "EVENT ENDS IN:" if landfill_event_active else "EVENT STARTS IN:"
+	return "ENDS IN" if landfill_event_active else "STARTS IN"
 
 
 func _current_countdown_text() -> String:

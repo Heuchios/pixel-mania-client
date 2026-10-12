@@ -12,6 +12,8 @@ const LeaderboardTabDataScript = preload("res://Scripts/ui/leaderboard_tab_data.
 
 const DEFAULT_EVENT_ICON_PATH := "res://Assets/events/landfill/icon.png"
 const DEFAULT_HEADER_TEXTURE_PATH := "res://Assets/background/landfill/bg_4.png"
+const INK := Color("281336")
+const SOFT_TEXT := Color("d9bce5")
 
 @export_category("How To Customize")
 @export_multiline var editor_note: String = "This scene is intentionally made from real child nodes. Edit labels, panels, rows, buttons, textures, positions, and sizes directly in the Scene tree. Keep Apply Exported Content/Styles enabled for data-driven previews, or turn them off when you want direct node edits to stay untouched."
@@ -103,7 +105,7 @@ const DEFAULT_HEADER_TEXTURE_PATH := "res://Assets/background/landfill/bg_4.png"
 			return
 		summary_points_label = value
 		_queue_refresh()
-@export var summary_timer_label: String = "EVENT ENDS IN:":
+@export var summary_timer_label: String = "ENDS IN":
 	set(value):
 		if summary_timer_label == value:
 			return
@@ -420,7 +422,7 @@ const DEFAULT_HEADER_TEXTURE_PATH := "res://Assets/background/landfill/bg_4.png"
 		_queue_refresh()
 
 @onready var dimmer: ColorRect = get_node_or_null("Dimmer") as ColorRect
-@onready var center_container: CenterContainer = get_node_or_null("CenterContainer") as CenterContainer
+@onready var center_container: Control = get_node_or_null("CenterContainer") as Control
 @onready var leaderboard_window: Control = get_node_or_null("CenterContainer/LeaderboardWindow") as Control
 @onready var header_panel: Panel = get_node_or_null("CenterContainer/LeaderboardWindow/HeaderPanel") as Panel
 @onready var header_background: TextureRect = get_node_or_null("CenterContainer/LeaderboardWindow/HeaderPanel/HeaderBackground") as TextureRect
@@ -430,6 +432,10 @@ const DEFAULT_HEADER_TEXTURE_PATH := "res://Assets/background/landfill/bg_4.png"
 @onready var rows_root: Control = get_node_or_null("CenterContainer/LeaderboardWindow/TablePanel/RowsClip/RowsRoot") as Control
 
 var _refresh_queued := false
+var empty_message := "No scores yet.\nBe the first to race!":
+	set(value):
+		empty_message = value
+		_queue_refresh()
 
 
 func _queue_refresh() -> void:
@@ -448,6 +454,7 @@ func _run_queued_refresh() -> void:
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	set_meta("pixelmania_text_shadow", false)
 	_apply_window_size()
 	_connect_static_buttons()
 	if apply_exported_content_on_ready:
@@ -517,39 +524,45 @@ func apply_exported_styles() -> void:
 	_style_panel("CenterContainer/LeaderboardWindow/TablePanel", Color(0.030, 0.044, 0.045, 0.95), Color(0.18, 0.21, 0.20, 1.0), 4, 6, 4)
 	_style_panel("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow", Color(0.085, 0.110, 0.105, 0.96), Color(0.22, 0.28, 0.27, 0.96), 2, 4, 0)
 	_style_panel("CenterContainer/LeaderboardWindow/SummaryPanel", Color(0.045, 0.058, 0.058, 0.96), Color(0.18, 0.21, 0.20, 1.0), 4, 6, 4)
+	rows_clip.add_theme_stylebox_override("panel", PixelUIStyle.atlas_style("inner_panel", Color.WHITE, 0))
 
-	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/TitleLabel", title_font_size, title_color, HORIZONTAL_ALIGNMENT_LEFT)
-	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/BadgeBack/BadgeLabel", badge_font_size, badge_color, HORIZONTAL_ALIGNMENT_LEFT)
-	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/SubtitleLabel", subtitle_font_size, body_text_color, HORIZONTAL_ALIGNMENT_LEFT)
-	_style_label("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow/RankHeader", header_font_size, header_text_color, HORIZONTAL_ALIGNMENT_CENTER)
-	_style_label("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow/PlayerHeader", header_font_size, header_text_color, HORIZONTAL_ALIGNMENT_CENTER)
-	_style_label("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow/PointsHeader", header_font_size, header_text_color, HORIZONTAL_ALIGNMENT_RIGHT)
+	header_panel.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	get_node("CenterContainer/LeaderboardWindow/HeaderPanel/BadgeBack").add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/TitleLabel", title_font_size, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/BadgeBack/BadgeLabel", badge_font_size, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	_style_label("CenterContainer/LeaderboardWindow/HeaderPanel/SubtitleLabel", subtitle_font_size, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	_style_label("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow/RankHeader", header_font_size, SOFT_TEXT, HORIZONTAL_ALIGNMENT_CENTER)
+	_style_label("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow/PlayerHeader", header_font_size, SOFT_TEXT, HORIZONTAL_ALIGNMENT_LEFT)
+	_style_label("CenterContainer/LeaderboardWindow/TablePanel/HeaderRow/PointsHeader", header_font_size, SOFT_TEXT, HORIZONTAL_ALIGNMENT_RIGHT)
+	_style_label("CenterContainer/LeaderboardWindow/TablePanel/EmptyState/Message", row_font_size, body_text_color, HORIZONTAL_ALIGNMENT_CENTER)
 
 	for stat_path in [
 		"CenterContainer/LeaderboardWindow/SummaryPanel/YourRankStat",
 		"CenterContainer/LeaderboardWindow/SummaryPanel/YourPointsStat",
 		"CenterContainer/LeaderboardWindow/SummaryPanel/EventEndsStat",
 	]:
-		_style_label(stat_path + "/Label", header_font_size, header_text_color, HORIZONTAL_ALIGNMENT_CENTER)
+		_style_label(stat_path + "/Label", header_font_size, SOFT_TEXT, HORIZONTAL_ALIGNMENT_CENTER)
 		_style_label(stat_path + "/Value", summary_font_size, body_text_color, HORIZONTAL_ALIGNMENT_CENTER)
 
 	var close_button := get_node_or_null("CenterContainer/LeaderboardWindow/CloseButton") as Button
 	if close_button != null:
-		_apply_flat_button_style(close_button, close_button_color, Color(0.22, 0.03, 0.02, 1.0), 23)
+		close_button.set_meta("preserve_close_button_layout", true)
+		PixelUIStyle.apply_close_button(close_button)
 
 	var rewards_button := get_node_or_null("CenterContainer/LeaderboardWindow/SummaryPanel/RewardsButton") as Button
 	if rewards_button != null:
 		_apply_flat_button_style(rewards_button, button_green_color, Color(0.04, 0.24, 0.04, 1.0), 18)
+		rewards_button.add_theme_constant_override("icon_max_width", 28)
+		rewards_button.add_theme_constant_override("h_separation", 10)
 
 	_apply_tabs_style()
 	for index in range(_get_tab_buttons().size()):
 		var tab_button := _get_tab_buttons()[index]
 		PixelUIStyle.apply_atlas_button(tab_button, "green_button" if index == selected_tab_index else "pink_button")
-		tab_button.add_theme_font_size_override("font_size", 17)
 		tab_button.add_theme_color_override("font_color", Color(0.18, 0.08, 0.23))
 		tab_button.add_theme_color_override("font_hover_color", Color(0.3, 0.13, 0.38))
 		tab_button.add_theme_constant_override("icon_max_width", 30)
-	_style_label("CenterContainer/LeaderboardWindow/SideColumn/SideArtPanel/Guide", 14, body_text_color, HORIZONTAL_ALIGNMENT_LEFT)
+	_style_label("CenterContainer/LeaderboardWindow/SideColumn/SideArtPanel/Guide", 14, body_text_color, HORIZONTAL_ALIGNMENT_CENTER)
 	var find_button := get_node_or_null("CenterContainer/LeaderboardWindow/SideColumn/SideArtPanel/FindMeButton") as Button
 	if find_button != null:
 		_apply_flat_button_style(find_button, Color(0.2, 0.5, 1), Color.BLACK, 16)
@@ -655,7 +668,7 @@ func _apply_window_size() -> void:
 
 
 func _update_window_scale() -> void:
-	if leaderboard_window == null or not auto_fit_to_viewport or not is_inside_tree():
+	if leaderboard_window == null or not is_inside_tree():
 		return
 
 	var viewport_size := get_viewport_rect().size
@@ -666,9 +679,12 @@ func _update_window_scale() -> void:
 		max(1.0, viewport_size.x - viewport_margin.x * 2.0),
 		max(1.0, viewport_size.y - viewport_margin.y * 2.0)
 	)
-	var scale_value: float = min(1.0, min(available.x / window_size.x, available.y / window_size.y))
+	var scale_value: float = min(1.0, min(available.x / window_size.x, available.y / window_size.y)) if auto_fit_to_viewport else 1.0
 	leaderboard_window.scale = Vector2(scale_value, scale_value)
 	leaderboard_window.pivot_offset = window_size * 0.5
+	# A plain layout host avoids a Container propagating the unscaled window's
+	# minimum size to small viewports and pushing the fitted popup off-center.
+	leaderboard_window.position = (viewport_size - window_size) * 0.5
 
 
 func _update_visibility_flags() -> void:
@@ -703,9 +719,9 @@ func _connect_static_buttons() -> void:
 		var tab_button := tab_buttons[i]
 		if tab_button == null:
 			continue
-		if not tab_button.has_meta("_pixelmania_leaderboard_tab_connected"):
-			tab_button.pressed.connect(_on_tab_button_pressed.bind(i))
-			tab_button.set_meta("_pixelmania_leaderboard_tab_connected", true)
+		var tab_callable := _on_tab_button_pressed.bind(i)
+		if not tab_button.pressed.is_connected(tab_callable):
+			tab_button.pressed.connect(tab_callable)
 
 
 func _apply_tabs_content() -> void:
@@ -758,6 +774,11 @@ func _apply_rows_content() -> void:
 		if not has_entry:
 			continue
 		_apply_entry_to_row(row, effective_entries[i], i)
+	var empty_state := get_node_or_null("CenterContainer/LeaderboardWindow/TablePanel/EmptyState") as Control
+	if empty_state != null:
+		empty_state.visible = effective_entries.is_empty()
+		_set_child_label_text(empty_state, "Message", empty_message)
+		empty_state.get_node("Icon").visible = selected_tab_index == 0
 
 
 func _apply_rows_style() -> void:
@@ -769,10 +790,9 @@ func _apply_rows_style() -> void:
 			continue
 		var entry := effective_entries[i]
 		var highlighted := bool(_resource_value(entry, "highlighted", false))
-		var row_style := StyleBoxFlat.new()
-		row_style.bg_color = Color(0.25, 0.13, 0.30) if i % 2 == 0 else Color(0.20, 0.10, 0.25)
-		if highlighted:
-			row_style.bg_color = Color(0.32, 0.23, 0.18)
+		var tint := Color(1.12, 1.08, 1.15) if i % 2 == 0 else Color.WHITE
+		if highlighted: tint = Color(1.35, 1.20, 0.90)
+		var row_style := PixelUIStyle.atlas_style("inner_panel", tint, 0)
 		row.add_theme_stylebox_override("panel", row_style)
 		_style_row_labels(row, entry)
 
@@ -785,12 +805,12 @@ func _apply_entry_to_row(row: Panel, entry: Resource, visual_index: int) -> void
 	var reward_texture := _texture_from_value(_resource_value(entry, "reward_texture", null))
 	if avatar_texture == null:
 		avatar_texture = default_avatar_texture
-	if reward_texture == null:
-		reward_texture = currency_icon_texture
 
 	_set_child_label_text(row, "RankNumber", str(rank))
 	_set_child_label_text(row, "PlayerName", player_name)
 	_set_child_label_text(row, "Points", _format_number(points) + points_suffix)
+	row.get_node("PlayerName").tooltip_text = player_name
+	row.get_node("Points").tooltip_text = _format_number(points) + points_suffix
 	_set_child_label_text(row, "AvatarBack/Initials", _initials_for(player_name))
 	_set_child_label_text(row, "RewardBack/RewardLabel", str(_resource_value(entry, "reward_label", "")))
 
@@ -805,6 +825,9 @@ func _apply_entry_to_row(row: Panel, entry: Resource, visual_index: int) -> void
 	if avatar_icon != null:
 		avatar_icon.texture = avatar_texture
 		avatar_icon.visible = avatar_texture != null
+	var initials := row.get_node_or_null("AvatarBack/Initials") as Label
+	if initials != null:
+		initials.visible = avatar_texture == null
 
 	var avatar_back := row.get_node_or_null("AvatarBack") as Panel
 	if avatar_back != null:
@@ -815,6 +838,9 @@ func _apply_entry_to_row(row: Panel, entry: Resource, visual_index: int) -> void
 	if reward_icon != null:
 		reward_icon.texture = reward_texture
 		reward_icon.visible = reward_texture != null
+	var reward_back := row.get_node_or_null("RewardBack") as Control
+	if reward_back != null:
+		reward_back.visible = reward_texture != null or not str(_resource_value(entry, "reward_label", "")).is_empty()
 
 
 func _style_row_labels(row: Panel, entry: Resource) -> void:
@@ -1043,24 +1069,25 @@ func _child_label_text(parent: Node, path: NodePath, fallback: String) -> String
 	return label.text
 
 
-func _style_label(path: NodePath, font_size: int, color: Color, align: HorizontalAlignment) -> void:
+func _style_label(path: NodePath, _font_size: int, color: Color, align: HorizontalAlignment) -> void:
 	var label := get_node_or_null(path) as Label
 	if label == null:
 		return
 	label.horizontal_alignment = align
-	label.set_meta("pixelmania_font_role", "preserve")
-	PixelUIStyle.apply_label_shadow(label, font_size, color)
-	label.add_theme_font_size_override("font_size", font_size)
+	# Column headers are body text; only the window title uses the shared heading size.
+	label.set_meta(PixelUIStyle.GLOBAL_FONT_ROLE_META, "header" if str(path).ends_with("/TitleLabel") else "body")
+	label.add_theme_color_override("font_color", color)
+	PixelUIStyle.apply_global_typography_to_node(label)
 
 
-func _style_child_label(parent: Node, path: NodePath, font_size: int, color: Color, align: HorizontalAlignment) -> void:
+func _style_child_label(parent: Node, path: NodePath, _font_size: int, color: Color, align: HorizontalAlignment) -> void:
 	var label := parent.get_node_or_null(path) as Label
 	if label == null:
 		return
 	label.horizontal_alignment = align
-	label.set_meta("pixelmania_font_role", "preserve")
-	PixelUIStyle.apply_label_shadow(label, font_size, color)
-	label.add_theme_font_size_override("font_size", font_size)
+	label.set_meta(PixelUIStyle.GLOBAL_FONT_ROLE_META, "body")
+	label.add_theme_color_override("font_color", color)
+	PixelUIStyle.apply_global_typography_to_node(label)
 
 
 func _style_panel(path: NodePath, fill: Color, border: Color, border_width: int = 3, radius: int = 6, shadow_size: int = 4) -> void:
@@ -1076,10 +1103,10 @@ func _style(fill: Color, _border: Color, border_width: int = 3, _radius: int = 6
 	return PixelUIStyle.atlas_style("inner_panel", Color(1, 1, 1, fill.a), float(border_width))
 
 
-func _apply_flat_button_style(button: Button, fill: Color, _border: Color, font_size: int) -> void:
-	button.set_meta("pixelmania_font_role", "preserve")
-	PixelUIStyle.apply_button_text(button, font_size, body_text_color)
-	button.add_theme_font_size_override("font_size", font_size)
+func _apply_flat_button_style(button: Button, fill: Color, _border: Color, _font_size: int) -> void:
+	button.set_meta(PixelUIStyle.GLOBAL_FONT_ROLE_META, "body")
+	PixelUIStyle.apply_button_text(button, PixelUIStyle.DEFAULT_TEXT_FONT_SIZE, body_text_color)
+	PixelUIStyle.apply_global_typography_to_node(button)
 	var region := "blue_button"
 	if fill.r > fill.g * 1.5: region = "red_button"
 	elif fill.g > fill.b * 1.5: region = "green_button"
