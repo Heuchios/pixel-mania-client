@@ -195,6 +195,11 @@ func lamp_strength(index: int) -> float:
 		var distance := absf(wrapf(position - ball_position, -0.5, 0.5))
 		var crown := exp(-pow(distance / 0.065, 2))
 		return 0.1 + 0.9 * lerpf(chase, crown, focus)
+	# Keep the marquee moving before a spin and after the saved prize is shown.
+	var head := fposmod(elapsed * 0.16, 1.0)
+	var first := _comet(head - position)
+	var second := _comet(position + head - 0.5)
+	var ambient := 0.18 + maxf(first, second) * 0.75
 	if selected >= 0:
 		var distance := minf(position, 1.0 - position)
 		var crown := exp(-pow(distance / 0.07, 2))
@@ -205,11 +210,8 @@ func lamp_strength(index: int) -> float:
 			var wave := win_age / 0.85
 			if tier == 2: wave = fposmod(wave, 1.0)
 			celebration = exp(-pow((distance - wave * 0.5) / 0.075, 2)) * (1.0 - smoothstep(duration * 0.65, duration, win_age))
-		return clampf(0.12 + crown * (0.58 + sin(elapsed * 2.6) * 0.12) + celebration * 0.9, 0.0, 1.0)
-	var head := fposmod(elapsed * 0.09, 1.0)
-	var first := _comet(head - position)
-	var second := _comet(position + head - 0.5)
-	return 0.13 + maxf(first, second) * 0.66
+		return maxf(ambient, clampf(0.12 + crown * (0.58 + sin(elapsed * 2.6) * 0.12) + celebration * 0.9, 0.0, 1.0))
+	return ambient
 
 static func _comet(distance: float) -> float:
 	# A soft leading edge and long fading tail avoid bulbs snapping on at the head.

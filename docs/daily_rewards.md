@@ -19,8 +19,10 @@ coasts to rest. The gold-rimmed wheel has concentric rings and twelve equally
 spaced pockets, with
 gems and labels placed identically inside each rotating sector. The rim lights
 charge during wind-up, fade through opposing comet trails during the spin, and
-follow the ball as it slows. Landing sends a tier-colored wave around the rim,
-with a longer celebration for jackpots. The pointer and center hub use damped
+follow the ball as it slows. The ambient chase runs continuously while the window
+is visible, including before spinning and after reopening a claimed reward.
+Landing layers a tier-colored wave over the chase, with a longer celebration for
+jackpots. The pointer and center hub use damped
 spring motion. A ball circles in the opposite direction with a fading trail,
 bounces inward, and rides the confirmed winning pocket through the final turn
 before settling under the pointer. Soft clicks slow with the wheel and respect
@@ -75,11 +77,12 @@ The database test covers rollback after partial writes, all reward boundaries,
 duplicate and simultaneous requests, account case normalization, recovery after
 module restart, UTC rollover, stale-day rejection, capacity, and database outages.
 
-Verified: 80 client checks passed; desktop/mobile/HUD/prize renders were inspected,
+Verified: 83 client checks passed; desktop/mobile/HUD/prize renders were inspected,
 including all three confetti tiers and the collection flight over a world screenshot.
 Client checks cover all reward tiers from multiple starting rotations, wind-up,
 forward coasting, ball counter-rotation and capture within the winning pocket,
-exact ball/pointer landing, bounded light intensity and landing waves, automatic
+exact ball/pointer landing, bounded light intensity and landing waves, continuous
+ambient lights before spinning and after claiming, automatic
 reveal, duplicate collect, hidden-wheel and GPU confetti pause/resume,
 effect cleanup, and closing during collection. Route and isolated
 PostgreSQL tests passed. The full backend `check:security` chain passed in the
