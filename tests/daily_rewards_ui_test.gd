@@ -175,12 +175,17 @@ func check_ambient_lights(wheel: Control, state: String) -> void:
 	var original_angle: float = wheel.angle
 	var lights: Array[float] = []
 	# Sample away from the winning pointer: its small pulse alone is not a chase.
-	for bulb in range(12, 37): lights.append(wheel.lamp_mesh.get_instance_custom_data(bulb).r)
+	for bulb in range(12, 37): lights.append(sample_lamp(wheel, bulb))
 	wheel._process(0.75)
 	var moving_lights := 0
 	for bulb in range(12, 37):
-		if absf(wheel.lamp_mesh.get_instance_custom_data(bulb).r - lights[bulb - 12]) > 0.1: moving_lights += 1
+		if absf(sample_lamp(wheel, bulb) - lights[bulb - 12]) > 0.1: moving_lights += 1
 	check(wheel.is_processing() and moving_lights >= 4 and wheel.angle == original_angle, state + ": rim lights keep chasing while the wheel stays still")
+
+func sample_lamp(wheel: Control, bulb: int) -> float:
+	# The headless dummy renderer does not retain MultiMesh instance data.
+	if DisplayServer.get_name() == "headless": return wheel.lamp_strength(bulb)
+	return wheel.lamp_mesh.get_instance_custom_data(bulb).r
 
 func check_cached_wheel(wheel: Control, state: String) -> void:
 	# Flush state-change redraws before watching several real animation frames.
@@ -210,14 +215,14 @@ func check_hud(viewport: SubViewport) -> void:
 	var closed_before_ready := true
 	for attempt in range(2):
 		startup_world.mobile_pointer_override_active = true
-		startup_world.close_daily_rewards()
+		startup_rewards.close_rewards()
 		closed_before_ready = closed_before_ready and not startup_world.mobile_pointer_override_active
 	check(closed_before_ready and not startup_rewards.visible and startup_rewards.tick_player == null, "Repeated startup closes finish pointer cleanup before the sound player exists")
 	viewport.add_child(startup_rewards)
 	check(is_instance_valid(startup_rewards.tick_player) and not startup_rewards.visible, "An early-closed rewards window initializes normally and stays hidden")
 	startup_rewards.show()
 	startup_rewards.tick_player.play()
-	startup_world.close_daily_rewards()
+	startup_rewards.close_rewards()
 	check(not startup_rewards.visible and not startup_rewards.tick_player.playing, "Closing an initialized rewards window still stops its sound")
 	startup_rewards.free()
 	startup_world.free()
