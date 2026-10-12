@@ -3178,12 +3178,9 @@ func setup_daily_rewards_button() -> void:
 	daily_rewards_button.add_theme_font_size_override("font_size", 17)
 	daily_rewards_button.set_meta("pixelmania_font_size", 17)
 	daily_rewards_button.add_theme_constant_override("outline_size", 0)
-	daily_rewards_button.add_theme_color_override("font_color", Color("fff2d2"))
+	PixelUIStyle.apply_atlas_button(daily_rewards_button, "pink_button")
 	for state in ["normal", "hover", "pressed", "focus"]:
-		var box := StyleBoxFlat.new()
-		box.bg_color = Color("392248") if state == "normal" else Color("5a3671")
-		box.border_color = Color("d2a6df")
-		box.set_border_width_all(2)
+		var box := daily_rewards_button.get_theme_stylebox(state).duplicate() as StyleBoxTexture
 		box.content_margin_left = 44
 		box.content_margin_right = 8
 		daily_rewards_button.add_theme_stylebox_override(state, box)

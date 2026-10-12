@@ -4,10 +4,20 @@ Deployed to staging on 2026-10-11 for testing. The client and backend must be
 released together. This feature is not included in the published production build.
 
 The HUD gift button sits directly below the gem counter at the top left. It follows
-the counter's scaled bounds. A compact charcoal window leaves the surrounding
-world visible, with no full-screen tint or purple backdrop. Celebration effects
-stay inside the window. It includes a five-second reel, published odds, a
-collect/reveal screen, and a countdown.
+the counter's scaled bounds. The compact window uses the shared game UI atlas:
+outer panel, inventory slots, selected slot frame, and green action buttons.
+The surrounding world stays visible with no full-screen tint or backdrop.
+The 4.5-second reel slows onto the server-confirmed prize, then automatically
+reveals it with an animated gem count. Collect closes the panel and sends cosmetic
+gems toward the actual HUD counter. Odds and the next UTC reset remain visible.
+
+Native pixel effects include rarity-colored spark trails, gem fragments, star
+glints, expanding rings, and orbiting sparkles. Burst sizes are 54 / 96 / 138 for
+common / rare / jackpot rewards, with a hard cap of 180 particles. Effects pause
+when hidden and stay clipped to the prize area. The one-second collection flight
+is cosmetic and does not grant currency. It respects Back/close, and reopening
+during a spin recovers the same confirmed prize. The reveal sound uses the existing
+sound manager and its SFX volume setting.
 The panel blocks movement, item use, fishing starts, and gameplay/chat shortcuts.
 Escape, Android Back, and the close button dismiss it. Closing never cancels or
 re-grants a saved reward.
@@ -41,8 +51,10 @@ The database test covers rollback after partial writes, all reward boundaries,
 duplicate and simultaneous requests, account case normalization, recovery after
 module restart, UTC rollover, stale-day rejection, capacity, and database outages.
 
-Verified: 34 client checks passed; desktop/mobile/HUD/prize renders were inspected,
-including the compact window over a world screenshot. Route and isolated
+Verified: 40 client checks passed; desktop/mobile/HUD/prize renders were inspected,
+including jackpot particles and the collection flight over a world screenshot.
+Client checks cover automatic reveal, duplicate collect, bounded effects, hidden
+animation pause/resume, and closing during collection. Route and isolated
 PostgreSQL tests passed. The full backend `check:security` chain passed in the
 isolated staging checkout, including TypeScript, lint, economy, and runtime checks.
 Deployed route tests and a read-only query confirmed the daily receipt primary
@@ -52,6 +64,8 @@ and Redis ready. No real-account claim or physical-device test was performed.
 ## Staging release
 
 - Client implementation: `592025e0`; staging merge: `f798c048`.
+- Follow-up client polish uses the shared atlas and tiered particle/reveal flow;
+  it requires no backend or reward-odds change.
 - Backend implementation: `ef9bf28`; staging merge/deployed commit: `0a7e3097b90e`.
 - Active release: `20261011-daily-rewards-v2-0a7e309`.
 - API: `https://staging-api.pixelmaniagame.com`; WebSocket: same host at `/ws`.

@@ -9,14 +9,16 @@ backend/security state without relying on chat memory.
 
 ### Daily rewards deployed to staging
 
-Added a gift button below the left gem counter and a compact charcoal daily-box
-window that keeps the surrounding world visible. User selected 250 / 1,000 / 5,000
+Added a gift button below the left gem counter and a compact daily-box window
+using the game's shared UI atlas, with the surrounding world visible. The follow-up
+polish adds tiered pixel bursts, gem trails, automatic prize reveal/count-up, and
+a cosmetic collection flight to the HUD. User selected 250 / 1,000 / 5,000
 gems; server odds are 75% / 20% / 5%, once
 per account per UTC day. PostgreSQL stores unique daily receipts and commits gems,
 all economy ledgers, and inventory hashes atomically. Client retries recover the
 saved prize. Client `f798c048` and backend `0a7e3097b90e` were pushed to their staging
 branches; staging runs `20261011-daily-rewards-v2-0a7e309`. Full security checks,
-34 client checks, database tests, deployed route/receipt schema verification, and
+40 client checks, database tests, deployed route/receipt schema verification, and
 public smoke checks passed. Staging retains client version 1.2.20/minimum 1.2.14.
 Production and client distribution are unchanged. See [daily rewards](daily_rewards.md)
 for implementation, deployment details, and focused verification commands.

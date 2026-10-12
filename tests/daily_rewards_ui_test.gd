@@ -69,11 +69,17 @@ func run() -> void:
 	var winner: Control = ui.reel.get_child(36)
 	var selected_center: float = winner.position.x + winner.size.x * 0.5 + ui.reel.position.x
 	check(absf(selected_center - ui.reel_clip.size.x * 0.5) < 1, "Reel lands on server prize")
-	ui._activate()
-	check(ui.phase == "reveal" and ui.prize_name.text == "1,000 GEMS", "Collect reveals same server prize")
+	ui.reveal_tween.custom_step(1.0)
+	ui.prize_tween.custom_step(1.0)
+	check(ui.phase == "reveal" and ui.prize_name.text == "1,000 GEMS", "Automatic reveal counts up to the same server prize")
+	check(ui.backdrop.particles.size() > 54 and ui.backdrop.particles.size() <= ui.backdrop.MAX_PARTICLES, "Rare prize has a bounded particle burst")
 	await capture(viewport, "daily-rewards-winner")
 	ui._activate()
-	check(not ui.visible and ui.phase == "claimed", "Continue closes")
+	check(ui.phase == "collecting" and not ui.panel.visible and ui.collection_fx.visible, "Collect sends gems toward the HUD over the visible world")
+	ui._activate()
+	check(ui.phase == "collecting", "Repeated collect does not start a second reward")
+	ui.collection_tween.custom_step(1.2)
+	check(not ui.visible and ui.phase == "claimed", "Collection animation closes the window")
 	ui.show()
 	ui.pending_id = "retry"
 	ui.pending_action = "daily_reward_claim"
@@ -90,6 +96,22 @@ func run() -> void:
 	ui._process(0)
 	check(ui.countdown.text.contains("12:00:00"), "Countdown uses server time")
 	await capture(viewport, "daily-rewards-claimed")
+	ui._start_spin(snapshot.rewards[2])
+	ui.close_rewards()
+	ui.spin_tween.custom_step(6.0)
+	ui.reveal_tween.custom_step(1.0)
+	ui.prize_tween.custom_step(1.0)
+	check(ui.phase == "reveal" and not ui.backdrop.is_processing(), "Closing during spin preserves the prize and pauses hidden effects")
+	ui.show()
+	await process_frame
+	check(ui.backdrop.is_processing() and ui.prize_name.text == "5,000 GEMS", "Reopening resumes the saved jackpot reveal")
+	await create_timer(0.25).timeout
+	await capture(viewport, "daily-rewards-jackpot")
+	ui._activate()
+	ui.collection_fx._process(0.3)
+	await capture(viewport, "daily-rewards-collect")
+	ui.close_rewards()
+	check(ui.phase == "claimed" and not ui.collection_fx.is_processing(), "Back during collection cancels cosmetic effects safely")
 	ui.queue_free()
 	await process_frame
 	await check_hud(viewport)
