@@ -9,6 +9,7 @@ const PlayerShadowScript = preload("res://Scripts/player_shadow.gd")
 const PlayerWorldFadeFXScene = preload("res://Scenes/particles/PlayerWorldFadeFX.tscn")
 const MovementModeScript = preload("res://Scripts/networking/movement_mode.gd")
 const CameraPixelAlignment = preload("res://Scripts/camera_pixel_alignment.gd")
+const OverheadTextAlignment = preload("res://Scripts/ui/overhead_text_alignment.gd")
 
 var world = null
 var MovementMode: Node = null
@@ -30,6 +31,40 @@ var movement_sync_debug_enabled := false
 var health_recovery = preload("res://Scripts/player_health_recovery.gd").new()
 var local_health_bar: Control
 var remote_health_bars := {}
+var remote_name_camera_alignment: Node
+
+
+func _exit_tree() -> void:
+	disconnect_remote_name_camera_alignment()
+
+
+func disconnect_remote_name_camera_alignment() -> void:
+	if is_instance_valid(remote_name_camera_alignment) and remote_name_camera_alignment.is_connected("canvas_aligned", refresh_remote_name_render_positions):
+		remote_name_camera_alignment.disconnect("canvas_aligned", refresh_remote_name_render_positions)
+	remote_name_camera_alignment = null
+
+
+func connect_remote_name_camera_alignment() -> void:
+	if not is_instance_valid(world) or not world.has_method("get_player_camera"):
+		return
+	var camera = world.get_player_camera()
+	if not camera is Camera2D:
+		return
+	if is_instance_valid(remote_name_camera_alignment) and remote_name_camera_alignment.get_parent() == camera:
+		return
+	disconnect_remote_name_camera_alignment()
+	remote_name_camera_alignment = CameraPixelAlignment.install(camera)
+	remote_name_camera_alignment.connect("canvas_aligned", refresh_remote_name_render_positions)
+
+
+func refresh_remote_name_render_positions() -> void:
+	if not is_instance_valid(world):
+		return
+	for remote_id in remote_name_labels:
+		var label = remote_name_labels[remote_id]
+		var remote_player = remote_players.get(remote_id)
+		if is_instance_valid(label) and label.visible and is_instance_valid(remote_player):
+			update_remote_name_label_world_transform(label, remote_player)
 
 func _process(delta: float) -> void:
 	if not is_instance_valid(world) or not MovementMode or not MovementMode.is_websocket():
@@ -121,6 +156,7 @@ func debug_remote_appearance_flow(message: String, data: Dictionary = {}) -> voi
 
 
 func setup(world_ref):
+	disconnect_remote_name_camera_alignment()
 	world = world_ref
 	var activity = get_node_or_null("ActivityBubbles")
 	if activity == null:
@@ -4621,20 +4657,13 @@ func get_remote_name_style_key(remote_name: String) -> String:
 
 
 func get_remote_name_font() -> Font:
-	return REMOTE_NAME_STYLE.get_game_font()
+	return REMOTE_NAME_STYLE.get_pixel_game_font()
 
 
 func apply_remote_name_label_font(label: Label) -> void:
 	if label == null:
 		return
-
-	var font := get_remote_name_font()
-	if font == null:
-		return
-
-	label.add_theme_font_override("font", font)
-	if label.label_settings != null:
-		label.label_settings.font = font
+	OverheadTextAlignment.prepare_label(label)
 
 
 func update_remote_player_name(remote_player, remote_name: String):
@@ -4822,6 +4851,7 @@ func get_remote_name_world_z_index() -> int:
 func update_remote_name_label_world_transform(label: Label, remote_player: Node2D) -> void:
 	if label == null or not is_instance_valid(label) or remote_player == null or not is_instance_valid(remote_player):
 		return
+	connect_remote_name_camera_alignment()
 
 	if label.get_parent() != remote_player:
 		label.reparent(remote_player, false)
@@ -4852,6 +4882,7 @@ func update_remote_name_label_world_transform(label: Label, remote_player: Node2
 	label.set_meta(REMOTE_NAME_ABSOLUTE_Z_META, true)
 	label.z_as_relative = false
 	label.z_index = get_remote_name_world_z_index()
+	OverheadTextAlignment.snap_render_position(label)
 
 
 func get_remote_name_anchor_screen_position(remote_player) -> Vector2:

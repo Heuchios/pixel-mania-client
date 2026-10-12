@@ -6,6 +6,8 @@ const WorldTileMapRenderer = preload("res://Scripts/world_tilemap_renderer.gd")
 const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
 const ColourCycleModulation = preload("res://Scripts/colour_cycle_modulation.gd")
 const LavaVisual = preload("res://Scripts/lava_visual.gd")
+const CameraPixelAlignment = preload("res://Scripts/camera_pixel_alignment.gd")
+const OverheadTextAlignment = preload("res://Scripts/ui/overhead_text_alignment.gd")
 
 const TILEMAP_ENV_DISABLED_VALUES := ["0", "false", "no", "off"]
 const DEFAULT_BACKGROUND_TILEMAP_ONLY_ENABLED := true
@@ -52,6 +54,8 @@ var pending_display_transactions: Dictionary = {}
 var pending_display_transaction_requests: Dictionary = {}
 var display_request_sequence := 0
 var tackle_box_timer_label: Label = null
+var tackle_box_timer_grid := Vector2i.ZERO
+var tackle_box_camera_alignment: Node
 var next_tackle_box_visual_refresh_at_ms := 0
 var next_chicken_visual_refresh_at_ms := 0
 var next_cow_visual_refresh_at_ms := 0
@@ -278,6 +282,7 @@ const CAVE_BACKGROUND_TEXTURE_PATHS := [
 const DEFAULT_BLOCKS_ATLAS_PATH := "res://image.png"
 
 func setup(world_ref):
+	disconnect_tackle_box_camera_alignment()
 	world = world_ref
 	water_overlay_draw_order_refresh_pending = true
 	clear_connected_variant_component_cache()
@@ -289,6 +294,10 @@ func setup(world_ref):
 	ensure_tilemap_renderer()
 	var foreground_collision_backend := "TileMapLayer" if foreground_tilemap_collision_enabled and foreground_tilemap_collision_replaces_nodes_enabled else "BlockNodes"
 	print("[BlockManager] Foreground collision backend: ", foreground_collision_backend, " foreground_tilemap_only=", foreground_tilemap_only_enabled)
+
+
+func _exit_tree() -> void:
+	disconnect_tackle_box_camera_alignment()
 
 
 func resolve_background_tilemap_only_enabled() -> bool:
@@ -4102,6 +4111,7 @@ func setup_tackle_box_timer_label() -> void:
 	tackle_box_timer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tackle_box_timer_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	tackle_box_timer_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	OverheadTextAlignment.prepare_label(tackle_box_timer_label)
 	tackle_box_timer_label.z_index = 72
 	tackle_box_timer_label.add_theme_font_size_override("font_size", TACKLE_BOX_TIMER_FONT_SIZE)
 	tackle_box_timer_label.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 1.0))
@@ -4112,6 +4122,38 @@ func setup_tackle_box_timer_label() -> void:
 	tackle_box_timer_label.add_theme_constant_override("shadow_offset_y", 1)
 	tackle_box_timer_label.visible = false
 	world.ui_layer.add_child(tackle_box_timer_label)
+	connect_tackle_box_camera_alignment()
+
+
+func disconnect_tackle_box_camera_alignment() -> void:
+	if is_instance_valid(tackle_box_camera_alignment) and tackle_box_camera_alignment.is_connected("canvas_aligned", refresh_tackle_box_timer_render_position):
+		tackle_box_camera_alignment.disconnect("canvas_aligned", refresh_tackle_box_timer_render_position)
+	tackle_box_camera_alignment = null
+
+
+func connect_tackle_box_camera_alignment() -> void:
+	if not is_instance_valid(world) or not world.has_method("get_player_camera"):
+		return
+	var camera = world.get_player_camera()
+	if not camera is Camera2D:
+		return
+	if is_instance_valid(tackle_box_camera_alignment) and tackle_box_camera_alignment.get_parent() == camera:
+		return
+	disconnect_tackle_box_camera_alignment()
+	tackle_box_camera_alignment = CameraPixelAlignment.install(camera)
+	tackle_box_camera_alignment.connect("canvas_aligned", refresh_tackle_box_timer_render_position)
+
+
+func refresh_tackle_box_timer_render_position() -> void:
+	if not is_instance_valid(world) or not is_instance_valid(tackle_box_timer_label) or not tackle_box_timer_label.visible:
+		return
+	if "in_world" in world and not world.in_world:
+		hide_tackle_box_timer_label()
+		return
+	var world_pos: Vector2 = Vector2(tackle_box_timer_grid) * world.BLOCK_SIZE + TACKLE_BOX_TIMER_WORLD_OFFSET
+	var screen_pos: Vector2 = world.get_viewport().get_canvas_transform() * world_pos
+	tackle_box_timer_label.position = screen_pos - Vector2(TACKLE_BOX_TIMER_LABEL_WIDTH, TACKLE_BOX_TIMER_LABEL_HEIGHT) * 0.5
+	OverheadTextAlignment.snap_render_position(tackle_box_timer_label)
 
 
 func hide_tackle_box_timer_label() -> void:
@@ -4127,6 +4169,7 @@ func update_tackle_box_timer_hover() -> void:
 		setup_tackle_box_timer_label()
 	if tackle_box_timer_label == null:
 		return
+	connect_tackle_box_camera_alignment()
 	if world.player == null:
 		hide_tackle_box_timer_label()
 		return
@@ -4168,17 +4211,9 @@ func update_tackle_box_timer_hover() -> void:
 		tackle_box_timer_label.text = provider_name + " Ready" if remaining_ms <= 0 else provider_name + " " + format_tackle_box_remaining_time(remaining_ms)
 	tackle_box_timer_label.size = Vector2(TACKLE_BOX_TIMER_LABEL_WIDTH, TACKLE_BOX_TIMER_LABEL_HEIGHT)
 
-	var canvas_transform = world.get_viewport().get_canvas_transform()
-	var world_pos = Vector2(
-		player_grid.x * world.BLOCK_SIZE,
-		player_grid.y * world.BLOCK_SIZE
-	) + TACKLE_BOX_TIMER_WORLD_OFFSET
-	var screen_pos = canvas_transform * world_pos
-	tackle_box_timer_label.position = Vector2(
-		screen_pos.x - TACKLE_BOX_TIMER_LABEL_WIDTH / 2.0,
-		screen_pos.y - TACKLE_BOX_TIMER_LABEL_HEIGHT / 2.0
-	)
+	tackle_box_timer_grid = player_grid
 	tackle_box_timer_label.visible = true
+	refresh_tackle_box_timer_render_position()
 
 
 func update_due_tackle_box_visuals() -> void:

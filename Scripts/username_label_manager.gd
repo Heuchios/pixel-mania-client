@@ -13,6 +13,7 @@ const LABEL_MARGIN_ABOVE_HEAD_WORLD_PX = 18.0
 const FALLBACK_OFFSET_ABOVE_PLAYER_WORLD_PX = 66.0
 const USERNAME_STYLE = preload("res://Scripts/ui/pixel_ui_style.gd")
 const CameraPixelAlignment = preload("res://Scripts/camera_pixel_alignment.gd")
+const OverheadTextAlignment = preload("res://Scripts/ui/overhead_text_alignment.gd")
 const USERNAME_FONT_SIZE_META := &"pixelmania_font_size"
 const FONT_SIZE = 32
 const OUTLINE_SIZE = 2
@@ -57,20 +58,13 @@ func get_network_manager():
 
 
 func get_username_font() -> Font:
-	return USERNAME_STYLE.get_game_font()
+	return USERNAME_STYLE.get_pixel_game_font()
 
 
 func apply_username_font_to_label(target_label: Label) -> void:
 	if target_label == null:
 		return
-
-	var font := get_username_font()
-	if font == null:
-		return
-
-	target_label.add_theme_font_override("font", font)
-	if target_label.label_settings != null:
-		target_label.label_settings.font = font
+	OverheadTextAlignment.prepare_label(target_label)
 
 
 func setup(world_ref):
@@ -101,6 +95,9 @@ func _refresh_render_position() -> void:
 	# Camera2D and pixel alignment finish after _process. Only reproject here;
 	# advancing growth-text fades twice per frame would change their timing.
 	_place_labels(_get_label_anchor_screen_position())
+	OverheadTextAlignment.snap_render_position(label)
+	if is_instance_valid(growth_label):
+		OverheadTextAlignment.snap_render_position(growth_label)
 
 
 func _place_labels(anchor_pos: Vector2) -> void:

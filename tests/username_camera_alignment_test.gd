@@ -59,6 +59,8 @@ func run() -> void:
 	world.add_child(remote_manager)
 	remote_manager.set_process(false)
 	remote_manager.world = world
+	remote_manager.remote_players["remote"] = remote
+	remote_manager.remote_name_labels["remote"] = remote_label
 	var worst_error := 0.0
 	var remote_error := 0.0
 	for zoom in [1.5, 3.0, 5.0]:
@@ -91,7 +93,7 @@ func run() -> void:
 	manager.set_process(true)
 	# Re-entering a world must leave just one render callback.
 	manager.setup(world)
-	check(world.camera.get_node(Alignment.NODE_NAME).get_signal_connection_list("canvas_aligned").size() == 1, "Duplicate username render callback after setup")
+	check(world.camera.get_node(Alignment.NODE_NAME).get_signal_connection_list("canvas_aligned").size() == 2, "Expected one local and one remote render callback after setup")
 	world.blocked = true
 	await process_frame
 	await RenderingServer.frame_post_draw
