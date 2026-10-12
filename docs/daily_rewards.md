@@ -10,6 +10,10 @@ to 80% (about 218-by-38 on desktop), including the icon, text and frame. Mobile 
 scaling still applies. It follows the counter's scaled bounds and keeps claim
 status in its tooltip. The compact window uses the shared game UI atlas:
 outer panel, a rarity-colored prize display, and green action buttons.
+The reward card keeps the inventory atlas bevel around a shaded interior, with
+a rarity-colored title strip, a larger gem over a soft halo, and a separate
+amount band. Its frame and glow follow common, rare, and jackpot rewards.
+The card's decoration is cached; it adds no continuous processing or particles.
 The surrounding world stays visible with no full-screen tint or backdrop.
 The window uses the shared game font and typography roles: 38 for
 headings and 26 for body text and buttons. The panel uses full scale when it fits,
