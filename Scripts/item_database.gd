@@ -360,24 +360,24 @@ const TIER_1_SPLICE_BALANCE = {
 const BASIC_ITEMS_PACK_REWARDS = ["messy_brown_hair", "blue_baseball_cap", "green_baseball_cap", "red_baseball_cap", "basic_blue_shirt", "basic_red_shirt", "basic_white_shirt", "basic_black_shirt", "basic_heart_shirt", "basic_gray_shirt", "basic_maroon_shirt", "black_suit", "blue_suit", "basic_black_pants", "basic_light_gray_pants", "basic_navy_pants", "basic_brown_pants", "basic_green_pants", "basic_pink_pants", "basic_brown_shoes", "basic_black_shoes", "basic_red_shoes", "basic_blue_shoes", "basic_yellow_shoes"]
 
 const HAIR_PACK_REWARDS = [
-	{"item_id": "black_afro", "weight": 999},
-	{"item_id": "black_slick_hair", "weight": 999},
-	{"item_id": "black_combed_hair", "weight": 999},
-	{"item_id": "frosty_hair", "weight": 999},
-	{"item_id": "flaming_hair", "weight": 999},
-	{"item_id": "old_men_hair", "weight": 999},
-	{"item_id": "brown_fringe", "weight": 999},
-	{"item_id": "brown_combed_hair", "weight": 999},
-	{"item_id": "blonde_hair", "weight": 999},
-	{"item_id": "brunette_hair", "weight": 999},
-	{"item_id": "crazy_hair", "weight": 999},
-	{"item_id": "black_spiky_hair", "weight": 999},
-	{"item_id": "chestnut_curtains", "weight": 999},
-	{"item_id": "supernova_hair", "weight": 999},
-	{"item_id": "chestnut_bob", "weight": 999},
-	{"item_id": "ginger_ponytail", "weight": 999},
-	{"item_id": "ginger_pigtails", "weight": 999},
-	{"item_id": "baby_hair", "weight": 17}
+	{"item_id": "black_afro", "weight": 969},
+	{"item_id": "black_slick_hair", "weight": 969},
+	{"item_id": "black_combed_hair", "weight": 969},
+	{"item_id": "frosty_hair", "weight": 140},
+	{"item_id": "flaming_hair", "weight": 140},
+	{"item_id": "old_men_hair", "weight": 969},
+	{"item_id": "brown_fringe", "weight": 969},
+	{"item_id": "brown_combed_hair", "weight": 969},
+	{"item_id": "blonde_hair", "weight": 969},
+	{"item_id": "brunette_hair", "weight": 969},
+	{"item_id": "crazy_hair", "weight": 969},
+	{"item_id": "black_spiky_hair", "weight": 969},
+	{"item_id": "chestnut_curtains", "weight": 969},
+	{"item_id": "supernova_hair", "weight": 140},
+	{"item_id": "chestnut_bob", "weight": 969},
+	{"item_id": "ginger_ponytail", "weight": 969},
+	{"item_id": "ginger_pigtails", "weight": 969},
+	{"item_id": "baby_hair", "weight": 14}
 ]
 
 const PRESTIGE_COLOURED_BLOCK_PACK_REWARDS = ["ps_blue_block", "ps_green_block", "ps_purple_block", "ps_red_block", "ps_yellow_block"]
