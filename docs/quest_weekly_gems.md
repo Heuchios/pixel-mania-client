@@ -21,3 +21,18 @@ legacy state and reward-only migration. The isolated SQL suite verifies exactly
 6,000 gems and matching ledger totals, rollback, repeat requests and the unique
 weekly receipt. The rendered Godot journal test covers weekly progress, claimed
 state, combined reward confirmation and narrow layout.
+
+## Staging release
+
+- Active backend release: `20261012-weekly-quests-c81facd`, commit `c81facd051d4`.
+- Matching client source: `725f2fe5` (journal and short-screen layout), pushed to staging.
+- Previous backend/rollback: `20261012-helmet-cover-72ff82f`.
+- Full `npm run check:security`, quest engine/route checks, isolated PostgreSQL
+  regression and rendered journal test passed. The deployed engine independently
+  returned 5,000 regular gems plus 1,000 bonus; another board read paid zero.
+- Public staging smoke passed; PostgreSQL and Redis are ready. Current/minimum
+  client versions remain 1.2.25. Production and published binaries are unchanged.
+- Evidence: `D:/Pixelmania/work/quest-weekly-security.log`,
+  `quest-weekly-staging-deploy.log`, and `quest-weekly-mobile.png` in the same folder.
+
+Restart the updated editor/debug client to load the new journal presentation.
