@@ -69,23 +69,29 @@ and Redis ready. No real-account claim or physical-device test was performed.
 
 ## Staging release
 
-- Client implementation: `592025e0`; staging merge: `f798c048`.
+- Initial client implementation: `592025e0`; latest UI/confetti: `7168f9b4`.
 - Follow-up polish uses the shared atlas and the game's existing tiered confetti;
   the 2026-10-12 update also removes displayed percentages and lowers jackpot odds
   to 0.5% in the authoritative backend.
-- Backend implementation: `ef9bf28`; staging merge/deployed commit: `0a7e3097b90e`.
-- Active release: `20261011-daily-rewards-v2-0a7e309`.
+- Initial backend implementation: `ef9bf28`; deployed 0.5% jackpot commit: `acf332c570a7`.
+- Active release: `20261012-daily-confetti-acf332c`.
 - API: `https://staging-api.pixelmaniagame.com`; WebSocket: same host at `/ws`.
 - Existing staging compatibility retained: current 1.2.20, minimum 1.2.14.
 - The usual local client project already targets staging in editor/debug builds.
   Restart its game session to use the changed UI; no new published client binary.
 - Previous pre-feature release: `20261008-mobile-inventory-214da34`.
+- Current rollback/previous release: `20261011-daily-rewards-v2-0a7e309`.
+- The full security release gate and post-deployment smoke checks passed for the
+  new backend. Its deployed tests exhaustively checked 795 common, 200 rare, and
+  5 jackpot results out of 1,000. A read-only receipt-schema check and public
+  PostgreSQL/Redis health checks also passed.
 
-Deployment caveat: `-SkipClientVersionLock` omitted the old release's version
+Initial deployment caveat: `-SkipClientVersionLock` omitted the old release's version
 overrides and temporarily fell back to the shared environment's 1.0.4/1.0.0 values.
 The final immutable release explicitly restored 1.2.20/1.2.14 using the existing
 deploy script with staging user, host, URL, and port 8180. It reused the successful
 full gate for the identical backend commit and reran the reduced release checks
-and public smoke checks. The automatic `previous` pointer is the first daily
-rewards release; use the named pre-feature release above for a feature rollback.
+and public smoke checks. The 2026-10-12 deployment also passed explicit version
+values and the full release gate. Use the named pre-feature release above for a
+complete feature rollback.
 Production was not deployed or reconfigured.
