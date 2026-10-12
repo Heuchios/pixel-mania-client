@@ -306,6 +306,8 @@ func _ready() -> void:
 		_authored_window_scale = menu_window.scale
 		_authored_window_modulate = menu_window.modulate
 	_connect_static_buttons()
+	if center_container != null and not center_container.sort_children.is_connected(_on_center_sorted):
+		center_container.sort_children.connect(_on_center_sorted)
 	fit_overlay_to_viewport()
 	refresh_preview()
 	if start_hidden:
@@ -506,6 +508,10 @@ func _fit_full_rect_control(control: Control, target_size: Vector2) -> void:
 	control.size = target_size
 
 
+func _on_center_sorted() -> void:
+	if center_window_in_viewport:
+		_center_menu_window(get_viewport_rect().size)
+
 func _center_menu_window(target_size: Vector2) -> void:
 	if menu_window == null:
 		return
@@ -518,6 +524,10 @@ func _center_menu_window(target_size: Vector2) -> void:
 	if panel_size.x <= 0.0 or panel_size.y <= 0.0:
 		return
 
+	var authored_size := panel_size * _authored_window_scale.abs()
+	var fit := minf(1.0, minf(maxf(1.0, target_size.x - 24.0) / authored_size.x, maxf(1.0, target_size.y - 24.0) / authored_size.y))
+	menu_window.pivot_offset = panel_size * 0.5
+	menu_window.scale = _authored_window_scale * fit
 	menu_window.position = (target_size - panel_size) * 0.5
 
 

@@ -101,6 +101,10 @@ func _run() -> void:
 			var prefix := "%d-%s" % [viewport_size.x, scene_path.get_file().get_basename()]
 			await _capture(prefix + "-opening", 0.10)
 			await _capture(prefix + "-open", 0.30)
+			if ui.has_method("open_menu"):
+				var window: Control = ui.menu_window
+				var drawn := Rect2(window.get_global_transform().origin, window.size * window.get_global_transform().get_scale())
+				assert(drawn.position.x >= -0.01 and drawn.position.y >= -0.01 and drawn.end.x <= viewport_size.x + 0.01 and drawn.end.y <= viewport_size.y + 0.01, "The menu remains entirely visible on short phone screens")
 			ui.hide()
 			await _capture(prefix + "-closing", 0.08)
 			await _capture(prefix + "-closed", 0.30)

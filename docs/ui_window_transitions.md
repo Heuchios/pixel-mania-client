@@ -20,6 +20,7 @@ status is not treated as an exclusive modal.
 Legacy window tweens were removed from the style helper, menu, shop, item details
 and fishing panels. Drawer easing for inventory and chat is independent of frame
 rate, and toggles use the requested state so a quick reopen can reverse closing.
+The menu fits its authored scale to short phone screens without clipping actions.
 The recipe book applies its final mobile fit before revealing content. Tax and
 quest-abandon confirmations use the same animated in-game confirmation card as
 vending, with immediate hiding and a guard against duplicate confirmation.
