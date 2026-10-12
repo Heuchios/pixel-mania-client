@@ -14,12 +14,16 @@ The surrounding world stays visible with no full-screen tint or backdrop.
 The window uses the shared game font and typography roles: 38 for
 headings and 26 for body text and buttons. The panel uses full scale when it fits,
 with responsive shrinking only on smaller viewports.
-A 6.2-second roulette animation accelerates, cruises, and coasts to rest. The
-gold-rimmed wheel has concentric rings and twelve equally spaced pockets, with
-gems and labels placed identically inside each rotating sector. Stationary rim
-lights chase around the wheel; a spring-loaded pointer ticks across the pockets.
-A ball circles in the opposite direction, drops inward, and settles under the
-pointer on the server-confirmed prize. Soft clicks slow with the wheel and respect
+A 6.4-second roulette animation winds back, accelerates, cruises, and gradually
+coasts to rest. The gold-rimmed wheel has concentric rings and twelve equally
+spaced pockets, with
+gems and labels placed identically inside each rotating sector. The rim lights
+charge during wind-up, fade through opposing comet trails during the spin, and
+follow the ball as it slows. Landing sends a tier-colored wave around the rim,
+with a longer celebration for jackpots. The pointer and center hub use damped
+spring motion. A ball circles in the opposite direction with a fading trail,
+bounces inward, and rides the confirmed winning pocket through the final turn
+before settling under the pointer. Soft clicks slow with the wheel and respect
 the game's SFX volume. The selected pocket lights up and the prize display reveals
 the reward with an animated gem count. The decorative pockets preview prize tiers;
 they do not determine or represent the backend probability distribution.
@@ -71,10 +75,12 @@ The database test covers rollback after partial writes, all reward boundaries,
 duplicate and simultaneous requests, account case normalization, recovery after
 module restart, UTC rollover, stale-day rejection, capacity, and database outages.
 
-Verified: 70 client checks passed; desktop/mobile/HUD/prize renders were inspected,
+Verified: 80 client checks passed; desktop/mobile/HUD/prize renders were inspected,
 including all three confetti tiers and the collection flight over a world screenshot.
-Client checks cover all reward tiers from multiple starting rotations, monotonic
-counter-rotation, exact ball/pointer landing, automatic reveal, duplicate collect, GPU confetti pause/resume,
+Client checks cover all reward tiers from multiple starting rotations, wind-up,
+forward coasting, ball counter-rotation and capture within the winning pocket,
+exact ball/pointer landing, bounded light intensity and landing waves, automatic
+reveal, duplicate collect, hidden-wheel and GPU confetti pause/resume,
 effect cleanup, and closing during collection. Route and isolated
 PostgreSQL tests passed. The full backend `check:security` chain passed in the
 isolated staging checkout, including TypeScript, lint, economy, and runtime checks.

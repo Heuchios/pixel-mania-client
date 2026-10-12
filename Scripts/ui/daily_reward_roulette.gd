@@ -8,6 +8,11 @@ const GEM_TEXTURES = [preload("res://Assets/currency/medium_gem.png"), preload("
 const TOP := -PI * 0.5
 const POCKET_COUNT := 12
 const STEP := TAU / POCKET_COUNT
+const SPIN_DURATION := 6.4
+const WINDUP_END := 0.065
+const CATCH_AT := 0.84
+const STOP_AT := 0.965
+const WINDUP_ANGLE := 0.16
 const GOLD := Color("ffda79")
 const INK := Color("281336")
 const FILLS := [Color("4b285c"), Color("27215b"), Color("66311d")]
@@ -25,6 +30,12 @@ var elapsed := 0.0
 var progress := 0.0
 var pointer_kick := 0.0
 var landing_flash := 0.0
+var win_age := -1.0
+var pointer_age := 1.0
+var motion_energy := 0.0
+var ball_lift := 0.0
+var catch_wheel_angle := 0.0
+var animation_stage := "idle"
 var last_tick := -1
 var last_tick_time := -1.0
 var start_angle := 0.0
@@ -45,6 +56,11 @@ func _sync_processing() -> void:
 
 func configure(rewards: Array) -> void:
 	spinning = false
+	animation_stage = "idle"
+	win_age = -1.0
+	landing_flash = 0.0
+	motion_energy = 0.0
+	ball_lift = 0.0
 	selected = -1
 	winner_index = -1
 	ball_visible = false
@@ -67,6 +83,8 @@ func show_saved_reward(reward: Dictionary) -> void:
 	ball_radius = 137.0
 	ball_visible = true
 	selected = winner_index
+	animation_stage = "saved"
+	win_age = -1.0
 	queue_redraw()
 
 func begin_spin(reward: Dictionary) -> bool:
@@ -74,13 +92,17 @@ func begin_spin(reward: Dictionary) -> bool:
 	if matches.is_empty(): return false
 	winner_index = matches[rng.randi_range(0, matches.size() - 1)]
 	start_angle = fposmod(angle, TAU)
-	target_angle = start_angle + TAU * 6.0 + fposmod(-winner_index * STEP - start_angle, TAU)
-	ball_start = ball_angle
-	ball_target = ball_start - TAU * 8.0 - fposmod(ball_start - TOP, TAU)
+	target_angle = start_angle + TAU * 5.0 + fposmod(-winner_index * STEP - start_angle, TAU)
+	ball_start = fposmod(ball_angle - TOP, TAU) + TOP
+	catch_wheel_angle = _wheel_angle_at(CATCH_AT)
+	var catch_position := TOP + catch_wheel_angle + winner_index * STEP
+	ball_target = ball_start - TAU * 6.0 - fposmod(ball_start - catch_position, TAU)
 	selected = -1
 	last_tick = -1
 	last_tick_time = -1.0
 	landing_flash = 0.0
+	win_age = -1.0
+	pointer_age = 1.0
 	ball_visible = true
 	spinning = true
 	set_spin_progress(0.0)
@@ -94,25 +116,45 @@ func _matching_pockets(reward: Dictionary) -> Array[int]:
 	return matches
 
 static func _coast(t: float, acceleration: float, cruise_end: float) -> float:
-	# Integral of a continuous speed curve: accelerate, cruise, then coast to rest.
+	# Smooth acceleration and a longer, visible coast instead of an early near-stop.
+	t = clampf(t, 0.0, 1.0)
 	var tail := 1.0 - cruise_end
-	var area := acceleration * 0.5 + cruise_end - acceleration + tail * 0.25
-	if t < acceleration: return t * t / (2.0 * acceleration * area)
+	var area := acceleration * 0.5 + cruise_end - acceleration + tail / 3.0
+	if t < acceleration:
+		var a := t / acceleration
+		return acceleration * (a * a * a - 0.5 * pow(a, 4)) / area
 	if t < cruise_end: return (t - acceleration * 0.5) / area
 	var u := clampf((t - cruise_end) / tail, 0.0, 1.0)
-	return (cruise_end - acceleration * 0.5 + tail * (1.0 - pow(1.0 - u, 4)) * 0.25) / area
+	return (cruise_end - acceleration * 0.5 + tail * (1.0 - pow(1.0 - u, 3)) / 3.0) / area
+
+func _wheel_angle_at(t: float) -> float:
+	if t < WINDUP_END:
+		return start_angle - WINDUP_ANGLE * smoothstep(0.0, WINDUP_END, t)
+	var released := clampf((t - WINDUP_END) / (STOP_AT - WINDUP_END), 0.0, 1.0)
+	return lerpf(start_angle - WINDUP_ANGLE, target_angle, _coast(released, 0.13, 0.31))
 
 func set_spin_progress(value: float) -> void:
 	progress = clampf(value, 0.0, 1.0)
-	angle = lerpf(start_angle, target_angle, _coast(progress, 0.12, 0.38))
-	ball_angle = lerpf(ball_start, ball_target, _coast(progress, 0.08, 0.5))
-	var drop := smoothstep(0.68, 0.96, progress)
-	var bounce := sin(drop * PI * 5.0) * (1.0 - drop) * 5.0
-	ball_radius = lerpf(156.0, 137.0, drop) + bounce
+	angle = _wheel_angle_at(progress)
+	motion_energy = clampf(absf(_wheel_angle_at(progress + 0.001) - _wheel_angle_at(progress - 0.001)) / (0.002 * SPIN_DURATION * 13.0), 0.0, 1.0)
+	animation_stage = "windup" if progress < WINDUP_END else ("spin" if progress < 0.56 else ("slowdown" if progress < CATCH_AT else "settling"))
+	if progress < CATCH_AT:
+		var orbit := clampf((progress - WINDUP_END) / (CATCH_AT - WINDUP_END), 0.0, 1.0)
+		ball_angle = lerpf(ball_start, ball_target, _coast(orbit, 0.085, 0.4))
+		var drop := smoothstep(0.68, CATCH_AT, progress)
+		ball_lift = absf(sin(drop * PI * 3.0)) * (1.0 - drop) * 7.0
+		ball_radius = lerpf(156.0, 137.0, drop)
+	else:
+		# Once caught, the ball rides the confirmed pocket through the last turn.
+		var settle := clampf((progress - CATCH_AT) / (1.0 - CATCH_AT), 0.0, 1.0)
+		var bounce := sin(settle * PI * 4.0) * pow(1.0 - settle, 2)
+		ball_angle = ball_target + angle - catch_wheel_angle + bounce * 0.055
+		ball_radius = 137.0 + bounce * 2.0
+		ball_lift = absf(bounce) * 4.0
 	var tick := floori((angle + STEP * 0.5) / STEP)
-	if tick != last_tick:
+	if tick != last_tick and progress >= WINDUP_END:
 		last_tick = tick
-		pointer_kick = 1.0
+		pointer_age = 0.0
 		# Cap sound and sparkle cadence at speed; individual clicks emerge on slowdown.
 		if is_visible_in_tree() and progress - last_tick_time >= 0.012:
 			last_tick_time = progress
@@ -124,6 +166,8 @@ func finish_spin() -> void:
 	spinning = false
 	selected = winner_index
 	landing_flash = 1.0
+	win_age = 0.0
+	animation_stage = "landed"
 	queue_redraw()
 
 func pointed_index() -> int:
@@ -131,9 +175,51 @@ func pointed_index() -> int:
 
 func _process(delta: float) -> void:
 	elapsed += delta
-	pointer_kick = move_toward(pointer_kick, 0.0, delta * 9.0)
-	landing_flash = move_toward(landing_flash, 0.0, delta * 1.6)
+	pointer_age += delta
+	pointer_kick = sin(pointer_age * 38.0) * exp(-pointer_age * 16.0)
+	if win_age >= 0.0: win_age += delta
+	landing_flash = exp(-win_age * 3.0) if win_age >= 0.0 else 0.0
 	queue_redraw()
+
+func lamp_strength(index: int) -> float:
+	var position := index / 48.0
+	if spinning:
+		if progress < WINDUP_END:
+			var charge := progress / WINDUP_END
+			return 0.12 + 0.88 * smoothstep(position, position + 0.12, charge)
+		var head := fposmod(angle / TAU * 0.45, 1.0)
+		var counter_head := fposmod(ball_angle / TAU * 0.32 + 0.5, 1.0)
+		var chase := maxf(_comet(head - position), 0.8 * _comet(position - counter_head))
+		var focus := smoothstep(0.58, 0.94, progress)
+		var ball_position := fposmod((ball_angle - TOP) / TAU, 1.0)
+		var distance := absf(wrapf(position - ball_position, -0.5, 0.5))
+		var crown := exp(-pow(distance / 0.065, 2))
+		return 0.1 + 0.9 * lerpf(chase, crown, focus)
+	if selected >= 0:
+		var distance := minf(position, 1.0 - position)
+		var crown := exp(-pow(distance / 0.07, 2))
+		var celebration := 0.0
+		if win_age >= 0.0:
+			var tier := _tier(pockets[selected])
+			var duration := 1.2 + tier * 0.6
+			var wave := win_age / 0.85
+			if tier == 2: wave = fposmod(wave, 1.0)
+			celebration = exp(-pow((distance - wave * 0.5) / 0.075, 2)) * (1.0 - smoothstep(duration * 0.65, duration, win_age))
+		return clampf(0.12 + crown * (0.58 + sin(elapsed * 2.6) * 0.12) + celebration * 0.9, 0.0, 1.0)
+	var head := fposmod(elapsed * 0.09, 1.0)
+	var first := _comet(head - position)
+	var second := _comet(position + head - 0.5)
+	return 0.13 + maxf(first, second) * 0.66
+
+static func _comet(distance: float) -> float:
+	# A soft leading edge and long fading tail avoid bulbs snapping on at the head.
+	var offset := wrapf(distance, -0.5, 0.5)
+	return exp(-maxf(offset, 0.0) * 12.0 - pow(minf(offset, 0.0) / 0.04, 2))
+
+func _lamp_color() -> Color:
+	if selected >= 0:
+		return [Color("a5ffc3"), Color("acdfff"), GOLD][_tier(pockets[selected])]
+	return GOLD
 
 func _tier(reward: Dictionary) -> int:
 	var gems := int(reward.get("gems", 0))
@@ -168,6 +254,11 @@ func _draw() -> void:
 	_disc(center, 160, Color("100b20"))
 	_disc(center, 149, Color("b17b3e"))
 	_disc(center, 146, INK)
+	if spinning and motion_energy > 0.03:
+		# Short sweeps suggest momentum without smearing the gem art or labels.
+		for i in range(3):
+			var head := angle * 0.7 + i * TAU / 3.0
+			draw_arc(center, 154.0, head - motion_energy * 0.75, head, 18, Color(1.0, 0.84, 0.46, motion_energy * 0.18), 2.0, true)
 	for i in range(pockets.size()):
 		var tier := _tier(pockets[i])
 		var middle := TOP + angle + i * STEP
@@ -187,33 +278,51 @@ func _draw() -> void:
 		_sector(center, 51, 55, middle - STEP * 0.5, middle + STEP * 0.5, GOLD)
 		for edge in [-0.5, 0.5]:
 			draw_line(_point(center, 54, middle + STEP * edge), _point(center, 143, middle + STEP * edge), GOLD, 3, true)
-	# Stationary, square marquee lamps chase around the gold rim.
-	var chase := int(elapsed * (22.0 if spinning else 4.0))
+	# Continuous light tails turn into a ball-following spotlight, then a win wave.
+	var lamp_color := _lamp_color()
 	for i in range(48):
 		var point := _point(center, 169, TOP + i * TAU / 48.0)
-		var lit := posmod(i - chase, 8) < 3
-		draw_rect(Rect2((point - Vector2(3, 3)).round(), Vector2(6, 6)), Color("fff1bc") if lit else Color("b77936"))
-	_disc(center, 56, Color("110b20"))
-	_disc(center, 54, Color("a05c2b"))
-	_disc(center, 50, GOLD)
-	_disc(center, 43, Color("43204f"))
-	_disc(center, 36, Color("4e285d"))
-	_text("DAILY", center - Vector2(0, 11), Color("fff0ca"))
-	_text("SPIN", center + Vector2(0, 14), GOLD)
+		var strength := lamp_strength(i)
+		draw_rect(Rect2((point - Vector2(8, 8)).round(), Vector2(16, 16)), Color(lamp_color, strength * strength * 0.15))
+		draw_rect(Rect2((point - Vector2(5, 5)).round(), Vector2(10, 10)), Color(lamp_color, strength * 0.22))
+		draw_rect(Rect2((point - Vector2(4, 4)).round(), Vector2(8, 8)), Color("69402d"))
+		draw_rect(Rect2((point - Vector2(3, 3)).round(), Vector2(6, 6)), Color("72452b").lerp(lamp_color, strength))
+		draw_rect(Rect2((point - Vector2(1, 2)).round(), Vector2(3, 3)), Color("ffe6a4").lerp(Color.WHITE, strength) * Color(1, 1, 1, strength * strength))
+	var hub_scale := 1.0
+	if spinning and progress < WINDUP_END:
+		hub_scale -= 0.065 * smoothstep(0.0, WINDUP_END, progress)
+	elif spinning:
+		var launch := (progress - WINDUP_END) * SPIN_DURATION
+		hub_scale += -0.065 * cos(launch * 18.0) * exp(-launch * 7.0)
+	elif win_age >= 0.0:
+		hub_scale += sin(win_age * 13.0) * exp(-win_age * 5.0) * 0.06
+	draw_set_transform(center, 0.0, Vector2.ONE * hub_scale)
+	_disc(Vector2.ZERO, 56, Color("110b20"))
+	_disc(Vector2.ZERO, 54, Color("a05c2b"))
+	_disc(Vector2.ZERO, 50, GOLD.lerp(Color.WHITE, landing_flash * 0.3))
+	_disc(Vector2.ZERO, 43, Color("43204f"))
+	_disc(Vector2.ZERO, 36, Color("4e285d"))
+	var landed := win_age >= 0.0 and win_age < 1.8
+	_text("YOU" if landed else ("GOOD" if spinning else "DAILY"), Vector2(0, -11), Color("fff0ca"))
+	_text("WIN!" if landed else ("LUCK" if spinning else "SPIN"), Vector2(0, 14), GOLD)
+	draw_set_transform(Vector2.ZERO)
 	if ball_visible:
-		if spinning:
-			var speed := sin(PI * progress) * 0.7
-			for i in range(10, 0, -1):
-				var point := _point(center, ball_radius, ball_angle + i * speed * 0.035)
-				draw_rect(Rect2(point - Vector2(3, 3), Vector2(6, 6)), Color(1, 0.88, 0.57, (1.0 - i / 11.0) * 0.4))
+		if spinning and progress < CATCH_AT:
+			for i in range(14, 0, -1):
+				var point := _point(center, ball_radius, ball_angle + i * motion_energy * 0.033)
+				var alpha := (1.0 - i / 15.0) * motion_energy
+				_disc(point, lerpf(1.5, 4.0, alpha), Color(1, 0.9, 0.66, alpha * 0.36))
 		var ball := _point(center, ball_radius, ball_angle)
-		_disc(ball + Vector2(2, 3), 8, Color("090715"))
+		_disc(ball + Vector2(2, 3), 8 - ball_lift * 0.3, Color(0.035, 0.025, 0.08, 1.0 - ball_lift * 0.06))
+		ball.y -= ball_lift
+		_disc(ball, 10, Color(1.0, 0.88, 0.55, 0.10 + landing_flash * 0.3))
 		_disc(ball, 7, Color("c6af87"))
 		_disc(ball - Vector2(1, 1), 5, Color("fff6da"))
 		draw_rect(Rect2(ball - Vector2(3, 3), Vector2(3, 3)), Color.WHITE)
 	# Spring-loaded pointer stays fixed while the wheel rotates beneath it.
 	var pivot := center + Vector2(0, -184)
-	draw_set_transform(pivot, -pointer_kick * 0.15)
+	var preload_angle := -0.12 * smoothstep(0.0, WINDUP_END, progress) if spinning and progress < WINDUP_END else 0.0
+	draw_set_transform(pivot, preload_angle - pointer_kick * 0.3)
 	draw_colored_polygon(PackedVector2Array([Vector2(-17, -2), Vector2(17, -2), Vector2(14, 15), Vector2(0, 29), Vector2(-14, 15)]), INK)
 	draw_colored_polygon(PackedVector2Array([Vector2(-12, 1), Vector2(12, 1), Vector2(10, 12), Vector2(0, 23), Vector2(-10, 12)]), GOLD)
 	draw_rect(Rect2(-8, 2, 16, 5), Color("fff6d2"))

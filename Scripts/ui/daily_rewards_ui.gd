@@ -7,7 +7,7 @@ const GEM_TEXTURES = [preload("res://Assets/currency/medium_gem.png"), preload("
 const GOLD = Color("ffda79")
 const INK = Color("281336")
 const BASE_SIZE = Vector2(900, 550)
-const SPIN_DURATION := 6.2
+const SPIN_DURATION := Roulette.SPIN_DURATION
 
 var world = null
 var panel: Control
@@ -126,7 +126,7 @@ func _on_pocket_tick() -> void:
 	if not visible or world == null or not is_instance_valid(world.sound_manager): return
 	tick_player.volume_db = world.sound_manager.get_scaled_sfx_volume_db(-12.0)
 	if tick_player.volume_db <= -79.0: return
-	tick_player.pitch_scale = lerpf(1.15, 0.85, wheel.progress)
+	tick_player.pitch_scale = lerpf(0.82, 1.12, wheel.motion_energy)
 	tick_player.play()
 
 func _label(parent: Node, text: String, rect: Rect2, color: Color, role: String = "body") -> Label:
@@ -194,7 +194,10 @@ func _process(_delta: float) -> void:
 	if visible and world != null and (not world.in_world or str(world.current_world_name) != opened_world):
 		close_rewards()
 	if visible and phase == "spinning":
-		var spin_status := "THE BALL IS SETTLING..." if wheel.progress > 0.78 else "GOOD LUCK!"
+		var spin_status := "GOOD LUCK!"
+		if wheel.animation_stage == "windup": spin_status = "HERE WE GO..."
+		elif wheel.animation_stage == "slowdown": spin_status = "SLOWING DOWN..."
+		elif wheel.animation_stage == "settling": spin_status = "THE BALL IS SETTLING..."
 		if status.text != spin_status: status.text = spin_status
 	if not pending_id.is_empty() and Time.get_ticks_msec() - pending_at > 12000:
 		pending_id = ""
