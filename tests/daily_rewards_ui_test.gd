@@ -44,6 +44,7 @@ func run() -> void:
 	await process_frame
 	check(ui.phase == "ready" and not ui.action_button.disabled, "Ready claim button")
 	check_ambient_lights(ui.wheel, "Before spinning")
+	await check_cached_wheel(ui.wheel, "Before spinning")
 	await capture(viewport, "daily-rewards-ready")
 	# Exercise different starting rotations and every tier without rolling locally.
 	for reward in snapshot.rewards:
@@ -135,6 +136,7 @@ func run() -> void:
 	ui._process(0)
 	check(ui.countdown.text.contains("12:00:00"), "Countdown uses server time")
 	check_ambient_lights(ui.wheel, "Reopening today's claimed reward")
+	await check_cached_wheel(ui.wheel, "Reopening today's claimed reward")
 	await capture(viewport, "daily-rewards-claimed")
 	ui._start_spin(snapshot.rewards[2])
 	ui.close_rewards()
@@ -173,12 +175,27 @@ func check_ambient_lights(wheel: Control, state: String) -> void:
 	var original_angle: float = wheel.angle
 	var lights: Array[float] = []
 	# Sample away from the winning pointer: its small pulse alone is not a chase.
-	for bulb in range(12, 37): lights.append(wheel.lamp_strength(bulb))
+	for bulb in range(12, 37): lights.append(wheel.lamp_mesh.get_instance_custom_data(bulb).r)
 	wheel._process(0.75)
 	var moving_lights := 0
 	for bulb in range(12, 37):
-		if absf(wheel.lamp_strength(bulb) - lights[bulb - 12]) > 0.1: moving_lights += 1
+		if absf(wheel.lamp_mesh.get_instance_custom_data(bulb).r - lights[bulb - 12]) > 0.1: moving_lights += 1
 	check(wheel.is_processing() and moving_lights >= 4 and wheel.angle == original_angle, state + ": rim lights keep chasing while the wheel stays still")
+
+func check_cached_wheel(wheel: Control, state: String) -> void:
+	# Flush state-change redraws before watching several real animation frames.
+	await process_frame
+	await process_frame
+	var redraws := [0, 0]
+	var count_body := func(): redraws[0] += 1
+	var count_front := func(): redraws[1] += 1
+	wheel.draw.connect(count_body)
+	wheel.foreground.draw.connect(count_front)
+	var start_time: float = wheel.elapsed
+	for frame in range(6): await process_frame
+	check(wheel.elapsed > start_time and redraws == [0, 0], state + ": lights animate without rebuilding cached wheel or foreground")
+	wheel.draw.disconnect(count_body)
+	wheel.foreground.draw.disconnect(count_front)
 
 func check_hud(viewport: SubViewport) -> void:
 	# Run the actual world/HUD methods with world streaming disabled.
