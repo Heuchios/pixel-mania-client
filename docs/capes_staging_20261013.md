@@ -110,3 +110,14 @@ Split-collar release `20261013-collar-halves` was verified live with client
 `3d58c513a4985823deb16388beeeefec5a84fe26` and backend `bddbbab6b622` before this
 video adjustment. Its registration and smoke checks pass; PostgreSQL and Redis
 are ready, and client/minimum version remains 1.2.25.
+
+Verified video correction release: `20261013-cape-video`, backend
+`5f81b3ae93e992d9a811e71188120fb71d4aa6fc`, client
+`e5ab8c51d5f1056e17d5e52897753412bfff3df2`. The exact client commit passes the
+rendered cape lifecycle/pose regression and collar GPU pixel checks (zero
+mismatches, 242 errors for the deliberately reversed negative control). The full
+backend security gate passes for the exact backend commit. Live cape registration,
+public smoke checks and release health pass; PostgreSQL and Redis are ready.
+Rollback is `20261013-collar-halves`. Version/minimum remains 1.2.25. Production
+and downloadable client binaries were not replaced; restart the updated
+editor/debug client to see the visual correction.
