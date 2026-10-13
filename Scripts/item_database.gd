@@ -12149,16 +12149,26 @@ const ITEMS = {
 		"scan_flap_frames": false,
 		"animation_fps": 6,
 		"flap_speed": 0.2,
-		"jump_type": "none",
+		"jump_type": "double",
 		"auto_scale_back_sprite": false,
 		"back_scale": 1,
 		"back_flip_with_facing": false,
 		"cape_neck_texture": "black_hero_cape_neck",
 		"cape_neck_offset": [
 			0,
-			0
+			7
 		],
-		"order": 360
+		"order": 360,
+		"back_pose_offsets": {
+			"default": [
+				0,
+				13
+			],
+			"fall": [
+				0,
+				13
+			]
+		}
 	},
 
 	"red_hero_cape": {
@@ -12197,16 +12207,26 @@ const ITEMS = {
 		"scan_flap_frames": false,
 		"animation_fps": 6,
 		"flap_speed": 0.2,
-		"jump_type": "none",
+		"jump_type": "double",
 		"auto_scale_back_sprite": false,
 		"back_scale": 1,
 		"back_flip_with_facing": false,
 		"cape_neck_texture": "red_hero_cape_neck",
 		"cape_neck_offset": [
 			0,
-			0
+			7
 		],
-		"order": 361
+		"order": 361,
+		"back_pose_offsets": {
+			"default": [
+				0,
+				13
+			],
+			"fall": [
+				0,
+				13
+			]
+		}
 	},
 
 	"blue_hero_cape": {
@@ -12245,16 +12265,26 @@ const ITEMS = {
 		"scan_flap_frames": false,
 		"animation_fps": 6,
 		"flap_speed": 0.2,
-		"jump_type": "none",
+		"jump_type": "double",
 		"auto_scale_back_sprite": false,
 		"back_scale": 1,
 		"back_flip_with_facing": false,
 		"cape_neck_texture": "blue_hero_cape_neck",
 		"cape_neck_offset": [
 			0,
-			0
+			7
 		],
-		"order": 362
+		"order": 362,
+		"back_pose_offsets": {
+			"default": [
+				0,
+				13
+			],
+			"fall": [
+				0,
+				13
+			]
+		}
 	},
 
 	"vampire_cape": {
@@ -12293,18 +12323,28 @@ const ITEMS = {
 		"scan_flap_frames": false,
 		"animation_fps": 6,
 		"flap_speed": 0.2,
-		"jump_type": "none",
+		"jump_type": "double",
 		"auto_scale_back_sprite": false,
 		"back_scale": 1,
 		"back_flip_with_facing": false,
 		"cape_neck_texture": "vampire_cape_neck",
 		"cape_neck_offset": [
 			0,
-			0
+			7
 		],
 		"order": 363,
 		"back_fx_scene": "res://Scenes/particles/VampireCapeBatsFX.tscn",
-		"back_fx_z_index": 1
+		"back_fx_z_index": 1,
+		"back_pose_offsets": {
+			"default": [
+				0,
+				13
+			],
+			"fall": [
+				0,
+				8
+			]
+		}
 	},
 
 	"dracula_cape": {
@@ -12343,18 +12383,28 @@ const ITEMS = {
 		"scan_flap_frames": false,
 		"animation_fps": 6,
 		"flap_speed": 0.2,
-		"jump_type": "none",
+		"jump_type": "double",
 		"auto_scale_back_sprite": false,
 		"back_scale": 1,
 		"back_flip_with_facing": false,
 		"cape_neck_texture": "dracula_cape_neck",
 		"cape_neck_offset": [
 			0,
-			0
+			7
 		],
 		"order": 364,
 		"back_fx_scene": "res://Scenes/particles/DraculaCapeBatsFX.tscn",
-		"back_fx_z_index": 1
+		"back_fx_z_index": 1,
+		"back_pose_offsets": {
+			"default": [
+				0,
+				13
+			],
+			"fall": [
+				0,
+				16
+			]
+		}
 	},
 
 "devil_wings": {

@@ -368,6 +368,10 @@ func setup_wearable_part_node(part_key: String, node_name: String, parent_node, 
 
 	part.visible = false
 	part.centered = true
+	if part_key in ["back", "cape_neck"]:
+		if not part.has_meta("equipment_editor_position"):
+			part.set_meta("equipment_editor_position", part.position)
+		part.position = part.get_meta("equipment_editor_position")
 	wearable_part_nodes[part_key] = part
 	wearable_part_editor_positions[part_key] = part.position
 	wearable_part_editor_scales[part_key] = part.scale if part.scale != Vector2.ZERO else Vector2.ONE
@@ -1061,6 +1065,7 @@ func update_equipped_back_visual(back_item, facing_direction: int):
 
 	back_sprite.visible = true
 	play_wearable_part_animation(back_sprite, get_current_wearable_animation_name())
+	apply_back_item_pose_offset(get_current_back_item_animation_name())
 	update_cape_neck_visual(back_item, item_data)
 	update_back_item_fx(back_item, item_data, facing_direction)
 
@@ -1695,6 +1700,16 @@ func restart_back_item_jump_animation() -> void:
 		back_item_fx.trigger_flap()
 
 
+func apply_back_item_pose_offset(animation_name: String) -> void:
+	if back_sprite == null:
+		return
+	var offsets: Dictionary = back_item_data.get("back_pose_offsets", {})
+	var pose_offset = offsets.get(animation_name, offsets.get("default", [0, 0]))
+	# Preserve the authored canvas. Correct only its anchor, and restore the editor
+	# anchor when swapping back to wings without a cape-specific offset.
+	back_sprite.position = get_wearable_part_base_position("back", Vector2(0, -6)) + get_vector_from_data(pose_offset, Vector2.ZERO)
+
+
 func update_back_item_animation(delta):
 	if equipped_back_item == "":
 		clear_back_item_fx()
@@ -1702,7 +1717,9 @@ func update_back_item_animation(delta):
 
 	var part = get_wearable_part("back")
 	if part is AnimatedSprite2D and part.visible:
-		play_wearable_part_animation(part, get_current_back_item_animation_name(delta))
+		var animation_name := get_current_back_item_animation_name(delta)
+		play_wearable_part_animation(part, animation_name)
+		apply_back_item_pose_offset(animation_name)
 	update_back_item_fx_mode()
 
 

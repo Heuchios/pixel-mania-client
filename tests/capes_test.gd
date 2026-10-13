@@ -4,6 +4,8 @@ class WorldFixture extends Node:
 	var item_database: Dictionary = {}
 	var back_textures: Dictionary = {}
 	var body_accessory_textures: Dictionary = {}
+	var equipped_back_item := ""
+	func is_movement_locked() -> bool: return false
 
 var world: WorldFixture
 var source: Node
@@ -28,6 +30,8 @@ func run() -> void:
 	root.add_child(world)
 	world.item_database = load("res://Scripts/ItemAtlasDB.gd").merge_item_database(load("res://Scripts/item_database.gd").ITEMS.duplicate(true))
 	source = load("res://Scenes/main.tscn").instantiate()
+	var jump_probe = load("res://tests/fixtures/cape_jump_player_probe.gd").new()
+	jump_probe.fixture_world = world
 	var cases: Array = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/capes_20261013.json"))
 	root.get_viewport().size = Vector2i(1100, 1000)
 	root.content_scale_size = root.size
@@ -37,7 +41,18 @@ func run() -> void:
 		var id: String = entry.id
 		var data: Dictionary = world.item_database[id]
 		assert(data.category == "back" and data.equipment_slot == "back" and data.instance_tracked)
-		assert(data.jump_type == "none")
+		assert(data.jump_type == "double")
+		world.equipped_back_item = id
+		var real_player = source.get_node("Player")
+		real_player.cached_world_controller = world
+		assert(real_player.get_extra_air_jumps_allowed() == 1, "Each cape must grant one extra airborne jump")
+		jump_probe.air_jumps_used = 0
+		jump_probe.accepted_jumps = 0
+		jump_probe.coyote_timer = 0.1
+		assert(jump_probe.try_jump(), "Ground jump must succeed")
+		assert(jump_probe.try_jump(), "Cape must allow a second jump in the air")
+		assert(not jump_probe.try_jump(), "Cape must not allow a third jump")
+		assert(jump_probe.accepted_jumps == 2)
 		var icon := factory.load_texture(data.inventory_icon) as AtlasTexture
 		assert(icon.region == Rect2(0, (entry.row - 25) * 32, 32, 32))
 		assert(not icon.get_image().is_invisible())
@@ -67,6 +82,21 @@ func run() -> void:
 			var neck_texture := neck.sprite_frames.get_frame_texture("idle", 0) as AtlasTexture
 			assert(neck_texture.region == Rect2(0, (entry.row - 24) * 32, 32, 32))
 			assert(not neck_texture.get_image().is_invisible())
+			if id == "black_hero_cape" and facing == 1:
+				for anchor_sprite in [visual.get_node("Head/BaseHeadAnimated"), visual.get_node("Body/BaseBodyAnimated"), neck, cape]:
+					var anchor_texture: Texture2D = anchor_sprite.sprite_frames.get_frame_texture(anchor_sprite.animation, anchor_sprite.frame)
+					var used: Rect2i = anchor_texture.get_image().get_used_rect()
+					print("CAPE_ANCHOR ", anchor_sprite.name, " ", anchor_sprite.to_global(Vector2(used.position) - anchor_texture.get_size() / 2.0), " to ", anchor_sprite.to_global(Vector2(used.end) - anchor_texture.get_size() / 2.0))
+				var body_sprite: AnimatedSprite2D = visual.get_node("Body/BaseBodyAnimated")
+				var body_texture: Texture2D = body_sprite.sprite_frames.get_frame_texture(body_sprite.animation, body_sprite.frame)
+				var body_used: Rect2i = body_texture.get_image().get_used_rect()
+				var shoulder_y: float = body_sprite.to_global(Vector2(body_used.position) - body_texture.get_size() / 2.0).y
+				var collar_used: Rect2i = neck_texture.get_image().get_used_rect()
+				var collar_y: float = neck.to_global(Vector2(collar_used.position) - neck_texture.get_size() / 2.0).y
+				var cape_texture: Texture2D = cape.sprite_frames.get_frame_texture("idle", 0)
+				var cape_used: Rect2i = cape_texture.get_image().get_used_rect()
+				var cape_y: float = cape.to_global(Vector2(cape_used.position) - cape_texture.get_size() / 2.0).y
+				assert(is_equal_approx(collar_y, shoulder_y) and is_equal_approx(cape_y, shoulder_y), "The cape and collar must attach at the opaque body shoulder line")
 			var frames := cape.sprite_frames
 			for animation in ["idle", "walk", "jump", "fall"]:
 				var columns: Array = [1, 3, 5, 7] if animation in ["idle", "walk"] else ([9] if animation == "jump" else [11])
@@ -78,6 +108,8 @@ func run() -> void:
 				manager.set_forced_animation_state(animation)
 				manager.update_back_item_animation(0.016)
 				assert(cape.animation == animation)
+				var expected_offset: Array = data.back_pose_offsets.get(animation, data.back_pose_offsets.default)
+				assert(cape.position == manager.get_wearable_part_base_position("back", Vector2.ZERO) + Vector2(expected_offset[0], expected_offset[1]))
 			var fx = manager.back_item_fx
 			if id in ["vampire_cape", "dracula_cape"]:
 				assert(is_instance_valid(fx) and fx.wings == cape)
@@ -97,6 +129,7 @@ func run() -> void:
 			necklace.visible = true
 			manager.update_equipped_back_visual("devil_wings", facing)
 			assert(not neck.visible and necklace.visible)
+			assert(cape.position == manager.get_wearable_part_base_position("back", Vector2.ZERO), "Swapping to wings must restore the editor anchor")
 			assert(manager.back_item_fx == null)
 			manager.update_equipped_back_visual(id, facing)
 			manager.hide_back_item()
@@ -106,6 +139,11 @@ func run() -> void:
 			manager.update_equipped_back_visual(id, facing)
 			manager.set_forced_animation_state("idle")
 			manager.update_back_item_animation(0)
+			var positioned_cape: Vector2 = cape.position
+			var positioned_neck: Vector2 = neck.position
+			manager.setup_wearable_animated_parts()
+			manager.update_equipped_back_visual(id, facing)
+			assert(cape.position == positioned_cape and neck.position == positioned_neck, "Rebinding the player must not accumulate cape offsets")
 			cape.set_process_internal(false)
 			# Two extra pose actors make the render show idle / jump / fall for each facing.
 			for animation in ["jump", "fall"]:
@@ -114,6 +152,8 @@ func run() -> void:
 				actor.add_child(pose)
 				var pose_cape: AnimatedSprite2D = pose.get_node("BackSlot/BackItemAnimated")
 				pose_cape.play(animation)
+				var pose_offset: Array = data.back_pose_offsets.get(animation, data.back_pose_offsets.default)
+				pose_cape.position = manager.get_wearable_part_base_position("back", Vector2.ZERO) + Vector2(pose_offset[0], pose_offset[1])
 				pose_cape.set_process_internal(false)
 				var pose_fx = pose.get_node_or_null("BackSlot/BackItemFX")
 				if pose_fx != null: pose_fx.queue_free()
@@ -131,8 +171,9 @@ func run() -> void:
 		await process_frame
 		await RenderingServer.frame_post_draw
 		root.get_viewport().get_texture().get_image().save_png("D:/Pixelmania/work/capes-preview.png")
-	print("CAPES_PASS: five previews, collars, 64x64 poses, four idle frames, jump/fall, both facings, necklace coexistence, swaps/unequip, bounded purple/red bats")
+	print("CAPES_PASS: five double jumps (third jump rejected), shoulder/collar anchors, 64x64 poses, both facings, necklace coexistence, rebind/swap/unequip, bounded purple/red bats")
 	for actor in actors: actor.free()
 	source.free()
+	jump_probe.free()
 	world.free()
 	quit()

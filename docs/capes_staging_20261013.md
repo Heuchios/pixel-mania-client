@@ -16,7 +16,7 @@ preserving canvases and subtracting 25 from atlas rows in runtime aliases. This
 keeps other pending edits to the original atlas out of the cape commit.
 
 Frames 1–4 loop at 6 FPS for idle/walking, frame 5 is the jump pose, and frame 6
-is the fall pose. Capes add no extra jumps. Neck pieces render in a dedicated
+is the fall pose. Capes grant double jump (one ground jump and one air jump). Neck pieces render in a dedicated
 `Body/CapeNeckAnimated` child above shirt art, independent of necklaces. Removing
 or swapping a cape hides its collar and removes its FX, for local and remote
 players using the shared equipment manager.
@@ -50,3 +50,21 @@ Rollback is `20261013-capes-e7607b8` (same cape runtime, without the additional
 validation manifest); the pre-cape release is `20261012-recipes-5a11f5f`.
 Production was not deployed and published client binaries were not replaced.
 Restart the updated Godot editor/debug client to use the new cape artwork and FX.
+
+## Shoulder alignment and double-jump correction
+
+The first release inherited the wing sprite's centered anchor. Opaque cape pixels
+started above the shoulders, and the separately centered 32×32 collar sat inside
+the head. The corrected item data applies a 13px downward offset from the editor
+back anchor and a 7px collar offset. Lifted Vampire/Dracula fall artwork has
+separate offsets (8px/16px) to keep its attachment at the collar. Full atlas
+canvases and all six authored frames are preserved. Swapping to wings restores
+their editor anchor; rebinding the same player cannot accumulate offsets.
+
+All five items specify `jump_type = double` in both catalogs. The real player
+ability lookup and inherited jump gate are tested for two accepted jumps and
+rejection of a third. Rendered checks compare the opaque Black Hero Cape and
+collar start to the body's actual shoulder line, then cover all five capes,
+both facings and all poses, rebind, swap, and unequip. Existing wing atlas,
+repeated wing jump and remote equipment performance regressions pass. Full
+backend security and the updated cape registration check pass.
