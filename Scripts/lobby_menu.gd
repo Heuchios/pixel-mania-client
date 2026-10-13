@@ -6,6 +6,7 @@ const WORLD_SCENE := "res://Scenes/main.tscn"
 const LOGIN_SCENE := "res://Scenes/ui/login/LoginScene.tscn"
 const WORLD_LOADING_OVERLAY_SCENE_PATH := "res://Scenes/ui/WorldLoadingOverlay/WorldLoadingOverlay.tscn"
 const WORLD_LOADING_CANVAS_LAYER := 4096
+const LoadingHandoff = preload("res://Scripts/world_loading_handoff.gd")
 const WORLD_JOIN_SCENE_CHANGE_DRAW_FRAMES := 2
 const PLAYER_IDLE_TEXTURE := "res://Assets/player/body/player_idle.png"
 const BACKGROUND_TEXTURE := "res://Assets/ui/backgrounds/mountain_background.png"
@@ -1977,6 +1978,7 @@ func _show_join_world_loading_overlay(world_name: String) -> void:
 	if clean_world_name == "":
 		clean_world_name = "WORLD"
 
+	LoadingHandoff.begin(overlay_scene_instance, loading_canvas, clean_world_name)
 	var title_label := _find_loading_label(loading_canvas, "Title")
 	if title_label != null:
 		title_label.text = _format_loading_title(clean_world_name)

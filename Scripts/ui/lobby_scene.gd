@@ -9,6 +9,7 @@ const WORLD_LOADING_OVERLAY_SCENE_PATH := "res://Scenes/ui/WorldLoadingOverlay/W
 const WORLD_LOADING_OVERLAY_SCENE: PackedScene = preload(WORLD_LOADING_OVERLAY_SCENE_PATH)
 const WorldScenePreloader = preload("res://Scripts/world_scene_preloader.gd")
 const WORLD_LOADING_CANVAS_LAYER := 4096
+const LoadingHandoff = preload("res://Scripts/world_loading_handoff.gd")
 const WORLD_JOIN_SCENE_CHANGE_DRAW_FRAMES := 1
 const LOBBY_HUB_WORLD := "START"
 const PLAYER_MAX_LEVEL := 100
@@ -1216,6 +1217,7 @@ func _show_join_world_loading_overlay(world_name: String) -> void:
 	if clean_world_name == "":
 		clean_world_name = "WORLD"
 
+	LoadingHandoff.begin(overlay_scene_instance, loading_canvas, clean_world_name)
 	var title_label := _find_loading_label(loading_canvas, "Title")
 	if title_label != null:
 		title_label.text = _format_loading_title(clean_world_name)
@@ -1251,13 +1253,7 @@ func _set_join_world_loading_progress(progress_ratio: float) -> void:
 	if not (loading_canvas is Node):
 		return
 
-	var normalized_progress := clampf(progress_ratio, 0.0, 1.0)
-	var progress_bar := (loading_canvas as Node).find_child("ProgressBar", true, false) as Range
-	if progress_bar != null:
-		progress_bar.value = normalized_progress * 100.0
-	var progress_label := _find_loading_label(loading_canvas, "ProgressPercent")
-	if progress_label != null:
-		progress_label.text = str(roundi(normalized_progress * 100.0)) + "%"
+	LoadingHandoff.update_preload(overlay_scene_instance, loading_canvas, progress_ratio)
 
 
 func _hide_join_world_loading_overlay() -> void:

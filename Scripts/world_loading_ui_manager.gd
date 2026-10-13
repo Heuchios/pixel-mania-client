@@ -31,7 +31,8 @@ const WORLD_LOADING_REVEAL_FADE_SECONDS := 0.08
 const WORLD_LOADING_REVEAL_FADE_TRANS: Tween.TransitionType = Tween.TRANS_SINE
 const WORLD_LOADING_REVEAL_FADE_EASE: Tween.EaseType = Tween.EASE_IN_OUT
 const WORLD_LOADING_DOTS_INTERVAL := 0.32
-const WORLD_LOADING_INITIAL_PROGRESS := 8.0
+const LoadingHandoff = preload("res://Scripts/world_loading_handoff.gd")
+const WORLD_LOADING_INITIAL_PROGRESS := LoadingHandoff.INITIAL_PROGRESS
 const WORLD_LOADING_PASSIVE_PROGRESS_MAX := 88.0
 const WORLD_LOADING_PASSIVE_PROGRESS_PER_SECOND := 7.5
 const WORLD_LOADING_PROGRESS_APPROACH_SPEED := 42.0
@@ -195,7 +196,10 @@ func _process(delta: float) -> void:
 func setup_overlay():
 	if world_loading_overlay != null and is_instance_valid(world_loading_overlay):
 		_cache_overlay_nodes()
-		_ensure_overlay_content()
+		# Repeated begin requests must not restore opacity during the ready fade
+		# or overwrite the progress of the operation already on screen.
+		if not is_instance_valid(world_loading_root) or not is_instance_valid(world_loading_label) or not is_instance_valid(world_loading_dots_label):
+			_ensure_overlay_content()
 		return
 
 	var parent_node = world.get_parent() if world != null else null
@@ -249,6 +253,9 @@ func setup_overlay():
 		world_loading_overlay.process_mode = Node.PROCESS_MODE_ALWAYS
 
 	_cache_overlay_nodes()
+	if preserve_existing_visibility:
+		loading_progress_value = LoadingHandoff.peek_progress(world_loading_scene_instance, world_loading_overlay)
+		loading_progress_target = loading_progress_value
 	_ensure_overlay_content()
 	_set_overlay_visible(preserve_existing_visibility)
 	if preserve_existing_visibility:
@@ -624,6 +631,15 @@ func begin_smooth_world_load(world_name: String, wait_for_server_state: bool = t
 		and (is_overlay_visible() or pending_finish_smooth_load or finish_wait_running)
 	)
 	if same_active_operation:
+		if is_instance_valid(world_loading_fade_tween) and world_loading_fade_tween.is_running():
+			if not _has_authoritative_world_entry_pending():
+				_debug("Ignoring reused loading request during the ready reveal")
+				return
+			# A fresh authoritative entry can resume waiting, but the old reveal
+			# must not hide its overlay when that tween finishes.
+			world_loading_fade_tween.kill()
+			world_loading_fade_tween = null
+			world_loading_root.scale = Vector2.ONE
 		if wait_for_server_state:
 			if (pending_finish_smooth_load or finish_wait_running) and not _has_authoritative_world_entry_pending():
 				_set_loading_stage(LoadingStage.WAITING_FOR_CLIENT_READY, "reused_operation_ignored_during_finish")
@@ -684,9 +700,11 @@ func begin_smooth_world_load(world_name: String, wait_for_server_state: bool = t
 
 	if world_loading_root != null:
 		world_loading_root.modulate = Color(1, 1, 1, 1)
+		world_loading_root.scale = Vector2.ONE
 		world_loading_root.mouse_filter = Control.MOUSE_FILTER_STOP
 
-	_set_loading_progress(WORLD_LOADING_INITIAL_PROGRESS, true)
+	var initial_progress := LoadingHandoff.take_progress(world_loading_scene_instance, world_loading_overlay, clean_world_name)
+	_set_loading_progress(initial_progress, true)
 	update_title_for_world(clean_world_name)
 	update_message("Loading " + clean_world_name + "...")
 	_set_loading_dots_text("...")
