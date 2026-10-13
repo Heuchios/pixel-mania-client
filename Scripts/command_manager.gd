@@ -1493,6 +1493,11 @@ func add_item_to_correct_inventory(item_id: String, amount: int) -> bool:
 			world.ride_inventory[item_id] = 0
 		world.add_item_to_inventory_stack(world.ride_inventory, item_id, category, amount)
 		return true
+	if category == "pet":
+		if not world.pet_inventory.has(item_id):
+			world.pet_inventory[item_id] = 0
+		world.add_item_to_inventory_stack(world.pet_inventory, item_id, category, amount)
+		return true
 
 	if category == "lure":
 		if not world.lure_inventory.has(item_id):
@@ -1544,6 +1549,8 @@ func remove_item_from_correct_inventory(item_id: String, amount: int) -> bool:
 		target_inventory = world.shoes_inventory
 	elif category == "ride":
 		target_inventory = world.ride_inventory
+	elif category == "pet":
+		target_inventory = world.pet_inventory
 	elif category == "lure":
 		target_inventory = world.lure_inventory
 	elif category == "fish":

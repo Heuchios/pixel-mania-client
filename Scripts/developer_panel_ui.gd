@@ -36,6 +36,7 @@ const INVENTORY_LOOKUP_FIELDS = [
 	{"field": "pants_inventory", "category": "pants", "label": "Pants"},
 	{"field": "shoes_inventory", "category": "shoes", "label": "Shoes"},
 	{"field": "ride_inventory", "category": "ride", "label": "Rides"},
+	{"field": "pet_inventory", "category": "pet", "label": "Pets"},
 	{"field": "material_inventory", "category": "material", "label": "Materials"},
 	{"field": "lure_inventory", "category": "lure", "label": "Lures"},
 	{"field": "fish_inventory", "category": "fish", "label": "Fish"},

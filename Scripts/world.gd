@@ -346,6 +346,7 @@ var shirt_inventory = {}
 var pants_inventory = {}
 var shoes_inventory = {}
 var ride_inventory = {}
+var pet_inventory = {}
 var currency_inventory = {}
 var material_inventory = {}
 var block_textures = {}
@@ -367,6 +368,7 @@ var shirt_textures = {}
 var pants_textures = {}
 var shoes_textures = {}
 var ride_textures = {}
+var pet_textures = {}
 var currency_textures = {}
 var material_textures = {}
 var block_items = []
@@ -381,6 +383,7 @@ var shirt_items = []
 var pants_items = []
 var shoes_items = []
 var ride_items = []
+var pet_items = []
 var material_items = []
 
 # Hotbar slot 1 toggles between punch and wrench. Slots 2-6 are rotating quick-use items.
@@ -693,6 +696,8 @@ func apply_network_inventory_delta(delta: Dictionary) -> bool:
 			target_inventory = pants_inventory
 		"shoes":
 			target_inventory = shoes_inventory
+		"pet":
+			target_inventory = pet_inventory
 		"ride":
 			target_inventory = ride_inventory
 		"currency":
@@ -1451,6 +1456,7 @@ func setup_item_database():
 	pants_inventory.clear()
 	shoes_inventory.clear()
 	ride_inventory.clear()
+	pet_inventory.clear()
 	currency_inventory.clear()
 	material_inventory.clear()
 	lure_inventory.clear()
@@ -1466,6 +1472,7 @@ func setup_item_database():
 	pants_textures.clear()
 	shoes_textures.clear()
 	ride_textures.clear()
+	pet_textures.clear()
 	currency_textures.clear()
 	material_textures.clear()
 	lure_textures.clear()
@@ -1481,6 +1488,7 @@ func setup_item_database():
 	pants_items.clear()
 	shoes_items.clear()
 	ride_items.clear()
+	pet_items.clear()
 	material_items.clear()
 	lure_items.clear()
 	fish_items.clear()
@@ -1657,6 +1665,13 @@ func setup_item_database():
 			var ride_texture = load_item_texture_spec(item_data)
 			if ride_texture != null:
 				ride_textures[item_id] = ride_texture
+		elif category == "pet":
+			pet_inventory[item_id] = int(item_data.get("starting_count", 0))
+			pet_items.append(item_id)
+
+			var pet_texture = load_item_texture_spec(item_data)
+			if pet_texture != null:
+				pet_textures[item_id] = pet_texture
 
 		elif category == "currency":
 			currency_inventory[item_id] = clamp_item_stack_count(item_id, category, int(item_data.get("starting_count", 0)))

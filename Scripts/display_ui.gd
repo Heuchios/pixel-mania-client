@@ -329,6 +329,7 @@ func get_inventory_entries() -> Array:
 		{"category": "pants", "items": world.pants_inventory},
 		{"category": "shoes", "items": world.shoes_inventory},
 		{"category": "ride", "items": world.ride_inventory},
+		{"category": "pet", "items": world.pet_inventory},
 		{"category": "currency", "items": world.currency_inventory}
 	]
 

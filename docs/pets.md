@@ -11,6 +11,7 @@ All pets hatch at level 1. Hatch probabilities are Frog 40%, Blue Slime 25%,
 Caveman 18%, Fluffy Puppy 11%, Ladybug 5% and Robot 1%. Ladybug is ultra rare and
 Robot is legendary. Each species uses its row in Assets/items/pets.png.
 
+Pets have their own pet inventory and equipment slot in the Gear tab.
 Double-click/double-tap a pet in inventory, or use its Equip button. Ground pets
 walk, jump and fall behind the player. Ladybugs and robots fly. Pets also animate
 when their player punches; robots emit smoke during that animation. Other players
@@ -41,6 +42,9 @@ The initial encounter pools are shared by all six species. Equipping a different
 pet does not reset the account cooldown. Offline time stores at most one ready
 encounter, and the server grants exactly one item. Sticks and celestial fragments
 are no longer extra Wood/Star Block break rewards.
+
+Existing pets in material storage are migrated to equipment without changing their
+counts or PM-ITEM identities.
 
 Pet input/output and chunks commit with the world interaction in PostgreSQL.
 Inventory and tile locks serialize mutations. Stored pets use an Incubator item

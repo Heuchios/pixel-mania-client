@@ -7,7 +7,7 @@ class Source extends RefCounted:
 	var inventory := {"dirt": 10, "world_lock": 2, "small_lock": 1}
 	var seed_inventory := {"dirt_seed": 10}
 	var tool_inventory := {}
-	var material_inventory := {"rock": 10, "pet": 1}
+	var material_inventory := {"rock": 10}
 	var lure_inventory := {}
 	var fish_inventory := {}
 	var back_inventory := {}
@@ -19,6 +19,7 @@ class Source extends RefCounted:
 	var shirt_inventory := {}
 	var pants_inventory := {}
 	var shoes_inventory := {}
+	var pet_inventory := {"pet":1}
 	var ride_inventory := {}
 	var equipped_tool := "wear_tool"
 	var equipped_back_item := "wear_back"
@@ -68,9 +69,10 @@ func run() -> void:
 	root.add_child(scene)
 	await process_frame
 	scene.set_inventory_from_world(source)
-	var equipped_keys := ["tool:wear_tool", "material:pet"]
+	var equipped_keys := ["tool:wear_tool"]
 	for category in CATEGORIES.slice(1):
 		equipped_keys.append(category + ":wear_" + category)
+	equipped_keys.append("pet:pet")
 	check_priority(scene, equipped_keys)
 	var node_ids := {}
 	for key in scene.slot_nodes:
@@ -86,12 +88,12 @@ func run() -> void:
 	assert(not scene.slot_nodes["hat:wear_hat"].get_node("Equipped").visible)
 	assert(scene.slot_nodes["hat:spare_hat"].get_node("Equipped").visible)
 
-	# Bulk refresh covers unequipping, held tools, accessories and shared-bag pets.
+	# Bulk refresh covers unequipping, held tools, accessories and pet equipment.
 	source.equipped_tool = ""
 	source.equipped_pet_item = ""
 	source.equipped_body_accessory_item = ""
 	assert(scene.refresh_live_from_world(source))
-	for key in ["tool:wear_tool", "material:pet", "body_accessory:wear_body_accessory"]:
+	for key in ["tool:wear_tool", "pet:pet", "body_accessory:wear_body_accessory"]:
 		equipped_keys.erase(key)
 	check_priority(scene, equipped_keys)
 	var before_counts := visible_keys(scene)

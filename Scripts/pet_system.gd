@@ -35,13 +35,16 @@ func _ready() -> void:
 	var network = get_node_or_null("/root/NetworkManager")
 	last_world = str(network.current_world_name) if network != null else ""
 
-func request(action: String, extra: Dictionary = {}) -> void:
+func request(action: String, extra: Dictionary = {}) -> bool:
 	var network = get_node_or_null("/root/NetworkManager")
 	if network == null:
-		return
+		return false
 	var payload := {"action":action,"x":grid.x,"y":grid.y}
 	payload.merge(extra, true)
-	network.send_inventory_transaction_request(payload)
+	var sent: bool = network.send_inventory_transaction_request(payload)
+	if not sent and action not in ["incubator_get_state", "pet_encounter"]:
+		world.show_notification("Could not send pet request. Check your connection and try again.")
+	return sent
 
 func is_open() -> bool:
 	return is_instance_valid(overlay) and overlay.visible
@@ -154,7 +157,9 @@ func open_station(position: Vector2i, type: String) -> void:
 	station_type = type
 	current = states.get(grid, {})
 	selection.clear()
-	var inventory: Dictionary = world.fish_inventory if type == "sashimi_table" else world.material_inventory
+	var inventory: Dictionary = world.fish_inventory.duplicate() if type == "sashimi_table" else world.pet_inventory.duplicate()
+	if type == "incubator":
+		inventory["golden_egg"] = int(world.material_inventory.get("golden_egg",0))
 	for id in inventory:
 		var data: Dictionary = world.item_database.get(id, {})
 		if int(inventory[id]) <= 0:
@@ -272,7 +277,7 @@ func _process(delta: float) -> void:
 		update_incubators()
 
 func update_followers() -> void:
-	if world.equipped_pet_item != "" and int(world.material_inventory.get(world.equipped_pet_item,0)) <= 0:
+	if world.equipped_pet_item != "" and int(world.pet_inventory.get(world.equipped_pet_item,0)) <= 0:
 		world.equipped_pet_item = ""
 	var actors: Dictionary = {"local": {"actor":world.player,"item":world.equipped_pet_item}}
 	if world.player_manager != null:

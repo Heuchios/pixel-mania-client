@@ -870,6 +870,8 @@ func get_item_texture(item_type: String, category: String):
 
 
 func get_item_count(item_type: String, category: String) -> int:
+	if category == "pet":
+		return int(world.pet_inventory.get(item_type,0))
 	if category == "block" and world.inventory.has(item_type):
 		return int(world.inventory[item_type])
 

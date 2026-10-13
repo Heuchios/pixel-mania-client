@@ -322,6 +322,7 @@ const WORLD_INTERACTION_ACTIONS := [
 ]
 
 const INVENTORY_TRANSACTION_ACTIONS := [
+	"incubator_get_state", "incubator_insert", "incubator_add_chunks", "incubator_upgrade", "incubator_claim", "incubator_remove", "sashimi_chop", "pet_equip", "pet_encounter",
 	"daily_reward_status", "daily_reward_claim",
 	"magnet_get_state", "magnet_select", "magnet_update", "magnet_toggle",
 	"magnet_deposit", "magnet_withdraw", "magnet_remote", "magnet_place", "magnet_remove",

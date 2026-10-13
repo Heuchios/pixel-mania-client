@@ -5,7 +5,8 @@ const ItemDatabase = preload("res://Scripts/item_database.gd")
 class TestWorld extends Node2D:
 	var ui_layer := CanvasLayer.new()
 	var item_database: Dictionary = {}
-	var material_inventory := {"golden_egg":2,"frog_pet":1,"fish_chunk":1000}
+	var material_inventory := {"golden_egg":2,"fish_chunk":1000}
+	var pet_inventory := {"frog_pet":1}
 	var fish_inventory := {"guppy":500}
 	var equipped_pet_item := ""
 	var player := CharacterBody2D.new()
@@ -48,7 +49,7 @@ func _run() -> void:
 	world.equipped_pet_item = "frog_pet"
 	pets.update_followers()
 	assert(pets.followers.size() == 1)
-	world.material_inventory.frog_pet = 0
+	world.pet_inventory.frog_pet = 0
 	pets.update_followers()
 	assert(pets.followers.is_empty())
 	assert(world.equipped_pet_item == "")

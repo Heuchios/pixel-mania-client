@@ -973,10 +973,10 @@ func add_reward_to_inventory(item_id: String, category: String, amount: int) -> 
 
 func normalize_reward_category(category: String) -> String:
 	var safe_category := str(category).strip_edges().to_lower()
-	if safe_category in ["block", "seed", "tool", "back", "hat", "hair", "eyewear", "shirt", "pants", "shoes", "ride", "currency", "material", "lure", "fish"]:
+	if safe_category in ["block", "seed", "tool", "back", "hat", "hair", "eyewear", "shirt", "pants", "shoes", "ride", "pet", "currency", "material", "lure", "fish"]:
 		return safe_category
 	var pending_category := pending_reward_category.strip_edges().to_lower()
-	if pending_category in ["block", "seed", "tool", "back", "hat", "hair", "eyewear", "shirt", "pants", "shoes", "ride", "currency", "material", "lure", "fish"]:
+	if pending_category in ["block", "seed", "tool", "back", "hat", "hair", "eyewear", "shirt", "pants", "shoes", "ride", "pet", "currency", "material", "lure", "fish"]:
 		return pending_category
 	return "fish"
 
@@ -1009,6 +1009,8 @@ func get_inventory_field_for_reward_category(category: String) -> String:
 			return "shoes_inventory"
 		"ride":
 			return "ride_inventory"
+		"pet":
+			return "pet_inventory"
 		"currency":
 			return "currency_inventory"
 		"material":
@@ -1048,6 +1050,8 @@ func get_reward_inventory_for_category(category: String):
 			return world.shoes_inventory
 		"ride":
 			return world.ride_inventory
+		"pet":
+			return world.pet_inventory
 		"currency":
 			return world.currency_inventory
 		"material":

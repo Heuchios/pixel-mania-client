@@ -73,7 +73,7 @@ const TAB_CATEGORIES := {
 	"seeds": ["seed"],
 	"tools": ["tool"],
 	"materials": ["material", "lure", "fish", "currency"],
-	"gear": ["back", "hat", "hair", "eyewear", "beard", "body_accessory", "shirt", "pants", "shoes", "ride"]
+	"gear": ["back", "hat", "hair", "eyewear", "beard", "body_accessory", "shirt", "pants", "shoes", "ride", "pet"]
 }
 
 @export var use_preview_items: bool = false
@@ -430,6 +430,7 @@ func set_inventory_from_world(source: Object) -> void:
 	_append_world_inventory(items, source, "pants_inventory", "pants", item_database)
 	_append_world_inventory(items, source, "shoes_inventory", "shoes", item_database)
 	_append_world_inventory(items, source, "ride_inventory", "ride", item_database)
+	_append_world_inventory(items, source, "pet_inventory", "pet", item_database)
 	_append_inventory_capacity_slots(items, source)
 	set_inventory_items(items)
 
@@ -2336,6 +2337,8 @@ func _inventory_property_for_category(category: String) -> String:
 			return "pants_inventory"
 		"shoes":
 			return "shoes_inventory"
+		"pet":
+			return "pet_inventory"
 		"ride":
 			return "ride_inventory"
 		"currency":
@@ -2509,7 +2512,7 @@ func _rarity_pip_fill_color(rarity: String) -> Color:
 
 
 func _is_equipment_category(category: String) -> bool:
-	return category in ["tool", "back", "hat", "hair", "eyewear", "beard", "body_accessory", "shirt", "pants", "shoes", "ride"]
+	return category in ["tool", "back", "hat", "hair", "eyewear", "beard", "body_accessory", "shirt", "pants", "shoes", "ride", "pet"]
 
 
 func _equipped_property_for_category(category: String) -> String:
@@ -2534,6 +2537,8 @@ func _equipped_property_for_category(category: String) -> String:
 			return "equipped_pants_item"
 		"shoes":
 			return "equipped_shoes_item"
+		"pet":
+			return "equipped_pet_item"
 		"ride":
 			return "equipped_ride_item"
 		_:

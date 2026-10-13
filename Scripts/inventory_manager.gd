@@ -383,7 +383,7 @@ func _is_equipable_hotbar_category(category: String) -> bool:
 			return true
 		"shoes":
 			return true
-		"ride":
+		"ride", "pet":
 			return true
 		_:
 			return false
@@ -2237,6 +2237,8 @@ func load_hotbar_punch_icon_texture() -> Texture2D:
 
 
 func get_item_count(item_type: String, category: String) -> int:
+	if category == "pet":
+		return int(world.pet_inventory.get(item_type,0))
 	if category == "block" and world.inventory.has(item_type):
 		return int(world.inventory[item_type])
 	if category == "seed" and world.seed_inventory.has(item_type):
@@ -3608,6 +3610,7 @@ func get_inventory_scene_signature() -> String:
 	_append_inventory_scene_signature_parts(parts, "pants_inventory", "pants")
 	_append_inventory_scene_signature_parts(parts, "shoes_inventory", "shoes")
 	_append_inventory_scene_signature_parts(parts, "ride_inventory", "ride")
+	_append_inventory_scene_signature_parts(parts, "pet_inventory", "pet")
 
 	var signature := ""
 	for part in parts:
@@ -4373,7 +4376,7 @@ func get_item_description(item_type: String, category: String) -> String:
 			return "A caught fish."
 		"currency":
 			return "A currency item."
-		"back", "hat", "hair", "eyewear", "beard", "shirt", "pants", "shoes", "ride":
+		"back", "hat", "hair", "eyewear", "beard", "shirt", "pants", "shoes", "ride", "pet":
 			return "Wearable equipment."
 		_:
 			return "Inventory item."
@@ -5065,6 +5068,8 @@ func create_inventory_grid_slots():
 		if world.item_database.has(ride_name) and bool(world.item_database[ride_name].get("hidden", false)):
 			continue
 		all_slot_keys.append("ride:" + ride_name)
+	for pet_name in get_sorted_inventory_keys(world.pet_inventory):
+		all_slot_keys.append("pet:" + str(pet_name))
 	for slot_key in all_slot_keys:
 		var parts = slot_key.split(":")
 		var category = parts[0]
@@ -6632,6 +6637,13 @@ func remove_inventory_item(item_type: String, category: String, amount: float) -
 				world.update_equipment_visual()
 		notify_inventory_item_changed(item_type, category)
 		return true
+	if category == "pet" and world.pet_inventory.has(item_type):
+		world.spend_item_from_inventory_stack(world.pet_inventory, item_type, category, whole_amount)
+		if int(world.pet_inventory.get(item_type,0)) <= 0 and world.equipped_pet_item == item_type:
+			world.equipped_pet_item = ""
+		notify_inventory_item_changed(item_type, category)
+		return true
+
 	if category == "ride" and world.ride_inventory.has(item_type):
 		world.spend_item_from_inventory_stack(world.ride_inventory, item_type, category, whole_amount)
 		if world.equipped_ride_item == item_type and int(world.ride_inventory[item_type]) <= 0:
@@ -6789,6 +6801,7 @@ func build_visible_inventory_items() -> Array:
 		append_visible_inventory_items_for_keys(visible_items, get_sorted_inventory_keys(world.pants_inventory), "pants", true)
 		append_visible_inventory_items_for_keys(visible_items, get_sorted_inventory_keys(world.shoes_inventory), "shoes", true)
 		append_visible_inventory_items_for_keys(visible_items, get_sorted_inventory_keys(world.ride_inventory), "ride", true)
+		append_visible_inventory_items_for_keys(visible_items, get_sorted_inventory_keys(world.pet_inventory), "pet", true)
 
 	if inventory_search_text == "":
 		return visible_items
@@ -6870,7 +6883,7 @@ func get_inventory_slot_count_text(item_type: String, category: String, count: i
 		return format_inventory_amount(item_type, category, count)
 	if count > 1:
 		return format_stack_count(count)
-	if category == "tool" or category == "back" or category == "hat" or category == "hair" or category == "eyewear" or category == "shirt" or category == "pants" or category == "shoes" or category == "ride":
+	if category == "tool" or category == "back" or category == "hat" or category == "hair" or category == "eyewear" or category == "shirt" or category == "pants" or category == "shoes" or category == "ride" or category == "pet":
 		return str(count)
 	return ""
 
@@ -7041,7 +7054,7 @@ func should_inventory_item_be_visible(item_type: String, category: String) -> bo
 			if category != "material" and category != "lure" and category != "fish":
 				return false
 		"back":
-			if category != "back" and category != "hat" and category != "hair" and category != "eyewear" and category != "beard" and category != "shirt" and category != "pants" and category != "shoes" and category != "ride":
+			if category != "back" and category != "hat" and category != "hair" and category != "eyewear" and category != "beard" and category != "shirt" and category != "pants" and category != "shoes" and category != "ride" and category != "pet":
 				return false
 		_:
 			return false
@@ -7382,7 +7395,7 @@ func update_inventory_window():
 				count_label.text = format_inventory_amount(item_type, category, count)
 			elif count > 1:
 				count_label.text = format_stack_count(count)
-			elif category == "tool" or category == "back" or category == "hat" or category == "hair" or category == "eyewear" or category == "shirt" or category == "pants" or category == "shoes" or category == "ride":
+			elif category == "tool" or category == "back" or category == "hat" or category == "hair" or category == "eyewear" or category == "shirt" or category == "pants" or category == "shoes" or category == "ride" or category == "pet":
 				count_label.text = str(count)
 			else:
 				count_label.text = ""

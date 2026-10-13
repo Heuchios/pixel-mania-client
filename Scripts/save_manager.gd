@@ -68,6 +68,7 @@ const PLAYER_INVENTORY_SAVE_KEYS = [
 	"pants_inventory",
 	"shoes_inventory",
 	"ride_inventory",
+	"pet_inventory",
 	"currency_inventory",
 	"material_inventory",
 	"lure_inventory",
@@ -1913,6 +1914,7 @@ func get_player_save_data() -> Dictionary:
 		"pants_inventory": world.pants_inventory,
 		"shoes_inventory": world.shoes_inventory,
 		"ride_inventory": world.ride_inventory,
+		"pet_inventory": world.pet_inventory,
 		"currency_inventory": world.currency_inventory,
 		"material_inventory": world.material_inventory,
 		"lure_inventory": world.lure_inventory,
@@ -2358,6 +2360,7 @@ func reset_player_data_to_defaults():
 	world.pants_inventory.clear()
 	world.shoes_inventory.clear()
 	world.ride_inventory.clear()
+	world.pet_inventory.clear()
 	world.currency_inventory.clear()
 	world.material_inventory.clear()
 	world.lure_inventory.clear()
@@ -2397,6 +2400,8 @@ func reset_player_data_to_defaults():
 				world.shoes_inventory[item_id] = starting_count
 			"ride":
 				world.ride_inventory[item_id] = starting_count
+			"pet":
+				world.pet_inventory[item_id] = starting_count
 			"currency":
 				if world.has_method("clamp_item_stack_count"):
 					world.currency_inventory[item_id] = world.clamp_item_stack_count(item_id, category, starting_count)
@@ -2466,6 +2471,7 @@ func apply_player_data(data: Dictionary, skip_hotbar_render: bool = false):
 	apply_saved_inventory_counts(world.pants_inventory, data.get("pants_inventory", null), true)
 	apply_saved_inventory_counts(world.shoes_inventory, data.get("shoes_inventory", null), true)
 	apply_saved_inventory_counts(world.ride_inventory, data.get("ride_inventory", null), true)
+	apply_saved_inventory_counts(world.pet_inventory, data.get("pet_inventory", null), true)
 	apply_saved_inventory_counts(world.currency_inventory, data.get("currency_inventory", null), not data.has("currency_inventory"))
 	apply_saved_inventory_counts(world.material_inventory, data.get("material_inventory", null), true)
 	if data.has("shop_claims"):
@@ -2969,6 +2975,7 @@ func get_player_data_dedup_hash(player_data: Dictionary) -> int:
 		"pants_inventory": player_data.get("pants_inventory", {}) if player_data.get("pants_inventory", null) is Dictionary else {},
 		"shoes_inventory": player_data.get("shoes_inventory", {}) if player_data.get("shoes_inventory", null) is Dictionary else {},
 		"ride_inventory": player_data.get("ride_inventory", {}) if player_data.get("ride_inventory", null) is Dictionary else {},
+		"pet_inventory": player_data.get("pet_inventory", {}) if player_data.get("pet_inventory", null) is Dictionary else {},
 		"currency_inventory": player_data.get("currency_inventory", {}) if player_data.get("currency_inventory", null) is Dictionary else {},
 		"material_inventory": player_data.get("material_inventory", {}) if player_data.get("material_inventory", null) is Dictionary else {},
 		"shop_claims": player_data.get("shop_claims", []) if player_data.get("shop_claims") is Array else [],
@@ -3024,6 +3031,7 @@ func get_current_player_state_dedup_hash() -> int:
 		"pants_inventory": world.pants_inventory.duplicate(true) if world.pants_inventory is Dictionary else {},
 		"shoes_inventory": world.shoes_inventory.duplicate(true) if world.shoes_inventory is Dictionary else {},
 		"ride_inventory": world.ride_inventory.duplicate(true) if world.ride_inventory is Dictionary else {},
+		"pet_inventory": world.pet_inventory.duplicate(true) if world.pet_inventory is Dictionary else {},
 		"currency_inventory": world.currency_inventory.duplicate(true) if world.currency_inventory is Dictionary else {},
 		"material_inventory": world.material_inventory.duplicate(true) if world.material_inventory is Dictionary else {},
 		"shop_claims": world.get_meta("shop_claims", []).duplicate(),
@@ -3183,6 +3191,7 @@ func save_world():
 		"pants_inventory": world.pants_inventory,
 		"shoes_inventory": world.shoes_inventory,
 		"ride_inventory": world.ride_inventory,
+		"pet_inventory": world.pet_inventory,
 		"currency_inventory": world.currency_inventory,
 		"material_inventory": world.material_inventory,
 		"lure_inventory": world.lure_inventory,
@@ -3399,6 +3408,7 @@ func load_world():
 	apply_saved_inventory_counts(world.pants_inventory, data.get("pants_inventory", {}), true)
 	apply_saved_inventory_counts(world.shoes_inventory, data.get("shoes_inventory", {}), true)
 	apply_saved_inventory_counts(world.ride_inventory, data.get("ride_inventory", {}), true)
+	apply_saved_inventory_counts(world.pet_inventory, data.get("pet_inventory", {}), true)
 	apply_saved_inventory_counts(world.currency_inventory, data.get("currency_inventory", {}), not data.has("currency_inventory"))
 	apply_saved_inventory_counts(world.material_inventory, data.get("material_inventory", {}), true)
 	world.set_meta("shop_claims", data.get("shop_claims", []).duplicate() if data.get("shop_claims") is Array else [])

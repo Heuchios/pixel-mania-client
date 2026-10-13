@@ -1539,6 +1539,8 @@ func get_item_drop_texture(item_type: String, item_category: String):
 
 	if clean_category == "ride" and world.ride_textures.has(item_type):
 		return world.ride_textures[item_type]
+	if clean_category == "pet" and world.pet_textures.has(item_type):
+		return world.pet_textures[item_type]
 
 	if world.item_database.has(item_type):
 		var item_data: Dictionary = world.item_database[item_type]
@@ -1588,6 +1590,8 @@ func get_item_drop_texture(item_type: String, item_category: String):
 					world.shoes_textures[item_type] = loaded_texture
 				"ride":
 					world.ride_textures[item_type] = loaded_texture
+				"pet":
+					world.pet_textures[item_type] = loaded_texture
 
 			return loaded_texture
 
@@ -1676,7 +1680,7 @@ func _get_drop_visual_scale(item_category: String, item_type: String) -> Vector2
 			return Vector2(0.75, 0.75)
 		"tool":
 			return Vector2(0.55, 0.55)
-		"currency", "material", "lure", "fish", "hat", "hair", "eyewear", "shirt", "pants", "shoes", "ride":
+		"currency", "material", "lure", "fish", "hat", "hair", "eyewear", "shirt", "pants", "shoes", "ride", "pet":
 			return Vector2(0.62, 0.62)
 		"back":
 			return Vector2(0.62, 0.62)
@@ -2007,6 +2011,8 @@ func create_item_drop(
 					item_category = "shoes"
 				elif world.ride_textures.has(item_type):
 					item_category = "ride"
+				elif world.pet_textures.has(item_type):
+					item_category = "pet"
 				else:
 					item_category = "item"
 
@@ -2509,6 +2515,8 @@ func get_inventory_target_for_drop(item_type: String, item_category: String) -> 
 		return {"inventory": world.shoes_inventory, "category": "shoes"}
 	if world.ride_inventory.has(safe_item_type):
 		return {"inventory": world.ride_inventory, "category": "ride"}
+	if world.pet_inventory.has(safe_item_type):
+		return {"inventory": world.pet_inventory, "category": "pet"}
 	if world.inventory.has(safe_item_type):
 		return {"inventory": world.inventory, "category": "block"}
 
@@ -2547,6 +2555,8 @@ func _inventory_target_for_category(category: String) -> Dictionary:
 			return {"inventory": world.shoes_inventory, "category": "shoes"}
 		"ride":
 			return {"inventory": world.ride_inventory, "category": "ride"}
+		"pet":
+			return {"inventory": world.pet_inventory, "category": "pet"}
 		"block":
 			return {"inventory": world.inventory, "category": "block"}
 

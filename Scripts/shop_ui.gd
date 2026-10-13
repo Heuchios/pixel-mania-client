@@ -1340,6 +1340,7 @@ func get_inventory_snapshot() -> Dictionary:
 	add_inventory_dictionary_to_snapshot(snapshot, "pants", world.pants_inventory)
 	add_inventory_dictionary_to_snapshot(snapshot, "shoes", world.shoes_inventory)
 	add_inventory_dictionary_to_snapshot(snapshot, "ride", world.ride_inventory)
+	add_inventory_dictionary_to_snapshot(snapshot, "pet", world.pet_inventory)
 
 	return snapshot
 
@@ -1370,6 +1371,7 @@ func get_inventory_delta(before_snapshot: Dictionary) -> Array:
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "pants", world.pants_inventory)
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "shoes", world.shoes_inventory)
 	add_inventory_delta_from_dictionary(rewards, before_snapshot, "ride", world.ride_inventory)
+	add_inventory_delta_from_dictionary(rewards, before_snapshot, "pet", world.pet_inventory)
 
 	return rewards
 
@@ -1678,6 +1680,11 @@ func add_item_to_inventory(item_id: String, amount: int):
 			world.ride_inventory[item_id] = 0
 		world.add_item_to_inventory_stack(world.ride_inventory, item_id, category, amount)
 		return
+	if category == "pet":
+		if not world.pet_inventory.has(item_id):
+			world.pet_inventory[item_id] = 0
+		world.add_item_to_inventory_stack(world.pet_inventory, item_id, category, amount)
+		return
 
 	if category == "lure":
 		if not world.lure_inventory.has(item_id):
@@ -1761,6 +1768,8 @@ func get_item_texture(item_id: String):
 
 	if category == "ride" and world.ride_textures.has(item_id):
 		return world.ride_textures[item_id]
+	if category == "pet" and world.pet_textures.has(item_id):
+		return world.pet_textures[item_id]
 
 	var texture = AtlasTextureFactory.load_texture(item_data.get("texture", null))
 	if texture != null:

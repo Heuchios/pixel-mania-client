@@ -802,6 +802,7 @@ func collect_tradable_items() -> Array:
 	add_inventory_items(items, "pants", "pants_inventory")
 	add_inventory_items(items, "shoes", "shoes_inventory")
 	add_inventory_items(items, "ride", "ride_inventory")
+	add_inventory_items(items, "pet", "pet_inventory")
 	add_inventory_items(items, "material", "material_inventory")
 	add_inventory_items(items, "lure", "lure_inventory")
 	add_inventory_items(items, "fish", "fish_inventory")
