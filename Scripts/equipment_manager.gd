@@ -318,6 +318,7 @@ func setup_wearable_animated_parts():
 	left_foot_animated = setup_body_part_node("left_foot", "PlayerVisual/LeftFoot/BaseLeftFootAnimated", DEFAULT_LEFT_FOOT_ANIMATED, 0)
 
 	back_item_animated = setup_wearable_part_node("back", "PlayerVisual/BackSlot/BackItemAnimated", null, DEFAULT_BACK_IDLE_SPRITE_OFFSET_RIGHT, 0)
+	ensure_cape_neck_node()
 	hat_item_animated = setup_wearable_part_node("hat", "PlayerVisual/Head/HatAnimated", null, DEFAULT_HEAD_ITEM_OFFSET, 3)
 	hair_item_animated = setup_wearable_part_node("hair", "PlayerVisual/Head/HairAnimated", null, DEFAULT_HEAD_ITEM_OFFSET, 2)
 	eyewear_item_animated = setup_wearable_part_node("eyewear", "PlayerVisual/Head/EyewearAnimated", null, DEFAULT_HEAD_ITEM_OFFSET, 3)
@@ -505,6 +506,31 @@ func get_wearable_part(part_key: String):
 		return wearable_part_nodes[part_key]
 
 	return null
+
+
+func ensure_cape_neck_node() -> void:
+	var body = player.get_node_or_null("PlayerVisual/Body") if player != null else null
+	if body == null:
+		return
+	var neck = body.get_node_or_null("CapeNeckAnimated")
+	if neck == null:
+		neck = AnimatedSprite2D.new()
+		neck.name = "CapeNeckAnimated"
+		var necklace = body.get_node_or_null("NecklaceAnimated")
+		neck.position = necklace.position if necklace != null else Vector2(1, -4)
+		neck.z_index = 3
+		body.add_child(neck)
+	setup_wearable_part_node("cape_neck", "PlayerVisual/Body/CapeNeckAnimated", null, Vector2(1, -4), 3)
+
+
+func update_cape_neck_visual(back_item: String, item_data: Dictionary) -> void:
+	var spec = item_data.get("cape_neck_texture", null)
+	if spec == null:
+		hide_wearable_part("cape_neck")
+		return
+	if set_wearable_part("cape_neck", back_item, {}, [spec], Vector2.ZERO, false, false, 1.0, 3):
+		var neck = get_wearable_part("cape_neck")
+		neck.position = get_wearable_part_base_position("cape_neck", Vector2(1, -4)) + get_vector_from_data(item_data.get("cape_neck_offset", [0, 0]), Vector2.ZERO)
 
 
 func hide_wearable_part(part_key: String):
@@ -1000,6 +1026,7 @@ func update_equipped_back_visual(back_item, facing_direction: int):
 	if back_item == "":
 		back_socket.visible = false
 		hide_wearable_part("back")
+		hide_wearable_part("cape_neck")
 		clear_back_item_fx()
 		equipped_back_item = ""
 		loaded_back_item = ""
@@ -1010,6 +1037,7 @@ func update_equipped_back_visual(back_item, facing_direction: int):
 	if item_data.is_empty():
 		back_socket.visible = false
 		hide_wearable_part("back")
+		hide_wearable_part("cape_neck")
 		clear_back_item_fx()
 		return
 
@@ -1025,6 +1053,7 @@ func update_equipped_back_visual(back_item, facing_direction: int):
 		if sprite_frames == null:
 			back_socket.visible = false
 			hide_wearable_part("back")
+			hide_wearable_part("cape_neck")
 			clear_back_item_fx()
 			return
 		back_sprite.sprite_frames = sprite_frames
@@ -1032,6 +1061,7 @@ func update_equipped_back_visual(back_item, facing_direction: int):
 
 	back_sprite.visible = true
 	play_wearable_part_animation(back_sprite, get_current_wearable_animation_name())
+	update_cape_neck_visual(back_item, item_data)
 	update_back_item_fx(back_item, item_data, facing_direction)
 
 
@@ -2106,6 +2136,7 @@ func hide_back_item():
 	if back_socket != null:
 		back_socket.visible = false
 	hide_wearable_part("back")
+	hide_wearable_part("cape_neck")
 	clear_back_item_fx()
 
 

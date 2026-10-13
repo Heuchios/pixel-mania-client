@@ -12113,6 +12113,250 @@ const ITEMS = {
 
 		"order": 203
 	},
+	"black_hero_cape": {
+		"category": "back",
+		"display_name": "Black Hero Cape",
+		"rarity": "rare",
+		"texture": "black_hero_cape_1",
+		"inventory_icon": "black_hero_cape_icon",
+		"starting_count": 0,
+		"stack_limit": 400,
+		"instance_tracked": true,
+		"equipment_slot": "back",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"back_mode": "default_slot",
+		"idle_frames": [
+			"black_hero_cape_1",
+			"black_hero_cape_2",
+			"black_hero_cape_3",
+			"black_hero_cape_4"
+		],
+		"jump_frames": [
+			"black_hero_cape_5"
+		],
+		"fall_frames": [
+			"black_hero_cape_6"
+		],
+		"flap_frames": [
+			"black_hero_cape_5"
+		],
+		"flap_animation": true,
+		"flap_animation_loop": false,
+		"scan_flap_frames": false,
+		"animation_fps": 6,
+		"flap_speed": 0.2,
+		"jump_type": "none",
+		"auto_scale_back_sprite": false,
+		"back_scale": 1,
+		"back_flip_with_facing": false,
+		"cape_neck_texture": "black_hero_cape_neck",
+		"cape_neck_offset": [
+			0,
+			0
+		],
+		"order": 360
+	},
+
+	"red_hero_cape": {
+		"category": "back",
+		"display_name": "Red Hero Cape",
+		"rarity": "rare",
+		"texture": "red_hero_cape_1",
+		"inventory_icon": "red_hero_cape_icon",
+		"starting_count": 0,
+		"stack_limit": 400,
+		"instance_tracked": true,
+		"equipment_slot": "back",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"back_mode": "default_slot",
+		"idle_frames": [
+			"red_hero_cape_1",
+			"red_hero_cape_2",
+			"red_hero_cape_3",
+			"red_hero_cape_4"
+		],
+		"jump_frames": [
+			"red_hero_cape_5"
+		],
+		"fall_frames": [
+			"red_hero_cape_6"
+		],
+		"flap_frames": [
+			"red_hero_cape_5"
+		],
+		"flap_animation": true,
+		"flap_animation_loop": false,
+		"scan_flap_frames": false,
+		"animation_fps": 6,
+		"flap_speed": 0.2,
+		"jump_type": "none",
+		"auto_scale_back_sprite": false,
+		"back_scale": 1,
+		"back_flip_with_facing": false,
+		"cape_neck_texture": "red_hero_cape_neck",
+		"cape_neck_offset": [
+			0,
+			0
+		],
+		"order": 361
+	},
+
+	"blue_hero_cape": {
+		"category": "back",
+		"display_name": "Blue Hero Cape",
+		"rarity": "rare",
+		"texture": "blue_hero_cape_1",
+		"inventory_icon": "blue_hero_cape_icon",
+		"starting_count": 0,
+		"stack_limit": 400,
+		"instance_tracked": true,
+		"equipment_slot": "back",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"back_mode": "default_slot",
+		"idle_frames": [
+			"blue_hero_cape_1",
+			"blue_hero_cape_2",
+			"blue_hero_cape_3",
+			"blue_hero_cape_4"
+		],
+		"jump_frames": [
+			"blue_hero_cape_5"
+		],
+		"fall_frames": [
+			"blue_hero_cape_6"
+		],
+		"flap_frames": [
+			"blue_hero_cape_5"
+		],
+		"flap_animation": true,
+		"flap_animation_loop": false,
+		"scan_flap_frames": false,
+		"animation_fps": 6,
+		"flap_speed": 0.2,
+		"jump_type": "none",
+		"auto_scale_back_sprite": false,
+		"back_scale": 1,
+		"back_flip_with_facing": false,
+		"cape_neck_texture": "blue_hero_cape_neck",
+		"cape_neck_offset": [
+			0,
+			0
+		],
+		"order": 362
+	},
+
+	"vampire_cape": {
+		"category": "back",
+		"display_name": "Vampire Cape",
+		"rarity": "epic",
+		"texture": "vampire_cape_1",
+		"inventory_icon": "vampire_cape_icon",
+		"starting_count": 0,
+		"stack_limit": 400,
+		"instance_tracked": true,
+		"equipment_slot": "back",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"back_mode": "default_slot",
+		"idle_frames": [
+			"vampire_cape_1",
+			"vampire_cape_2",
+			"vampire_cape_3",
+			"vampire_cape_4"
+		],
+		"jump_frames": [
+			"vampire_cape_5"
+		],
+		"fall_frames": [
+			"vampire_cape_6"
+		],
+		"flap_frames": [
+			"vampire_cape_5"
+		],
+		"flap_animation": true,
+		"flap_animation_loop": false,
+		"scan_flap_frames": false,
+		"animation_fps": 6,
+		"flap_speed": 0.2,
+		"jump_type": "none",
+		"auto_scale_back_sprite": false,
+		"back_scale": 1,
+		"back_flip_with_facing": false,
+		"cape_neck_texture": "vampire_cape_neck",
+		"cape_neck_offset": [
+			0,
+			0
+		],
+		"order": 363,
+		"back_fx_scene": "res://Scenes/particles/VampireCapeBatsFX.tscn",
+		"back_fx_z_index": 1
+	},
+
+	"dracula_cape": {
+		"category": "back",
+		"display_name": "Dracula Cape",
+		"rarity": "legendary",
+		"texture": "dracula_cape_1",
+		"inventory_icon": "dracula_cape_icon",
+		"starting_count": 0,
+		"stack_limit": 400,
+		"instance_tracked": true,
+		"equipment_slot": "back",
+		"equipable": true,
+		"tradeable": true,
+		"vendable": true,
+		"dropable": true,
+		"admin_grantable": true,
+		"back_mode": "default_slot",
+		"idle_frames": [
+			"dracula_cape_1",
+			"dracula_cape_2",
+			"dracula_cape_3",
+			"dracula_cape_4"
+		],
+		"jump_frames": [
+			"dracula_cape_5"
+		],
+		"fall_frames": [
+			"dracula_cape_6"
+		],
+		"flap_frames": [
+			"dracula_cape_5"
+		],
+		"flap_animation": true,
+		"flap_animation_loop": false,
+		"scan_flap_frames": false,
+		"animation_fps": 6,
+		"flap_speed": 0.2,
+		"jump_type": "none",
+		"auto_scale_back_sprite": false,
+		"back_scale": 1,
+		"back_flip_with_facing": false,
+		"cape_neck_texture": "dracula_cape_neck",
+		"cape_neck_offset": [
+			0,
+			0
+		],
+		"order": 364,
+		"back_fx_scene": "res://Scenes/particles/DraculaCapeBatsFX.tscn",
+		"back_fx_z_index": 1
+	},
+
 "devil_wings": {
 		"category": "back",
 		"display_name": "Devil Wings",
