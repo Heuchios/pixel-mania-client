@@ -34,7 +34,7 @@ Validation: `check_capes.js`, full backend `check:security`, rendered
 both bat colors), wing atlas migration, helmet layering and remote equipment
 performance checks. Render: `D:/Pixelmania/work/capes-preview.png`.
 
-## Verified deployment
+## Initial verified deployment
 
 Staging runs `20261013-capes-atlas`, backend
 `d591f0c79ad6b8fe3ccfca4cac40304e9c264fa0` and client metadata
@@ -74,3 +74,11 @@ giving effective player-relative Z 45 above Head (40). This is applied when
 creating and refreshing the collar, including player rebinds. The cape body
 stays behind the player. Rendered tests verify the actual collar/head ordering
 for all five capes and both facing directions.
+
+Final correction release: `20261013-cape-collars`, backend
+`bddbbab6b622aa9efbb66116b4991ef3ba6160ee`, client
+`ff89e78bcd690bce4afa6994d504f58d64447cd8`. The deployed cape registration
+check and public smoke/health checks pass; PostgreSQL and Redis are ready.
+Client/minimum version remains 1.2.25. Rollback is
+`20261013-cape-alignment-bddbbab` (correct alignment/double jump, earlier collar
+layer). Restart the updated editor/debug client for the collar rendering change.
