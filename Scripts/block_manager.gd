@@ -6,6 +6,7 @@ const WorldTileMapRenderer = preload("res://Scripts/world_tilemap_renderer.gd")
 const ITEM_ATLAS_DB = preload("res://Scripts/ItemAtlasDB.gd")
 const ColourCycleModulation = preload("res://Scripts/colour_cycle_modulation.gd")
 const LavaVisual = preload("res://Scripts/lava_visual.gd")
+const AreaLockVisual = preload("res://Scripts/area_lock_visual.gd")
 const CameraPixelAlignment = preload("res://Scripts/camera_pixel_alignment.gd")
 const OverheadTextAlignment = preload("res://Scripts/ui/overhead_text_alignment.gd")
 
@@ -164,9 +165,9 @@ const MAX_CONNECTED_VARIANT_COMPONENT_CELLS := 8192
 const BLOCK_TEXTURE_SHADOW_NAME := "TextureShadow"
 const BLOCK_TEXTURE_SHADOW_OFFSET := Vector2(1.5, 1.5)
 const BLOCK_TEXTURE_SHADOW_ALPHA := 0.38
-const AREA_LOCK_OWNER_MODULATE := Color(0.58, 1.0, 0.58, 1.0)
-const AREA_LOCK_ACCESS_MODULATE := Color(1.0, 0.9, 0.38, 1.0)
-const AREA_LOCK_NO_ACCESS_MODULATE := Color(1.0, 0.48, 0.48, 1.0)
+const AREA_LOCK_OWNER_MODULATE := Color("26ed59")
+const AREA_LOCK_ACCESS_MODULATE := Color("ffe326")
+const AREA_LOCK_NO_ACCESS_MODULATE := Color("ff3442")
 const BLOCK_LIGHT_FX_NODE_NAME := "BlockLightFX"
 const DISPLAY_PREVIEW_LAYER_NAME := "DisplayItemPreviewLayer"
 const DISPLAY_PREVIEW_Z_INDEX := NORMAL_BLOCK_Z_INDEX - 1
@@ -1811,6 +1812,7 @@ func apply_area_lock_visual_modulation(visual: Sprite2D, block_type: String, gri
 	if visual == null:
 		return
 	visual.modulate = get_area_lock_visual_modulation(block_type, grid_pos, background)
+	AreaLockVisual.apply(visual, not background and grid_pos != NO_VARIANT_GRID_POS and is_area_lock_block_type(block_type))
 
 
 func is_waiting_for_server_sign_on() -> bool:
