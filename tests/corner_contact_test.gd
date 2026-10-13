@@ -50,7 +50,7 @@ func run():
 	var fixture_world := FixtureWorld.new()
 	root.add_child(fixture_world)
 	player.fixture_world = fixture_world
-	player.position = Vector2(22, -24)
+	player.position = Vector2(20, -24)
 	player.velocity = Vector2(0, 200)
 	await physics_frame
 	player.move_and_slide()
@@ -58,6 +58,7 @@ func run():
 	var floor_contact: bool = player.is_on_floor()
 	assert(floor_contact)
 	for frame in range(10):
+		assert(not load("res://Scripts/player_floor_support.gd").release_unsupported_edge(player, fixture_world))
 		player.velocity = Vector2(0, 20)
 		await physics_frame
 		player.move_and_slide()

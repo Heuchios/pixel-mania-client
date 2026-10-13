@@ -3,6 +3,7 @@ extends CharacterBody2D
 const RuntimeProfiler = preload("res://Scripts/runtime_profiler.gd")
 
 const PlayerShadowScript = preload("res://Scripts/player_shadow.gd")
+const FloorSupportScript = preload("res://Scripts/player_floor_support.gd")
 
 const SPEED = 150.0
 const JUMP_VELOCITY = -430.0
@@ -299,6 +300,7 @@ func run_player_movement_step(delta: float) -> void:
 		variable_jump_active = false
 		return
 	movement_surface_cache_active = true
+	FloorSupportScript.release_unsupported_edge(self, movement_world)
 	invalidate_movement_surface_cache()
 	var on_floor_before_move = is_on_floor()
 	var in_water_before_move = is_standing_on_water()
@@ -384,7 +386,7 @@ func run_player_movement_step(delta: float) -> void:
 	update_lava_rebound()
 	update_lava_fire_contact_particles()
 	update_springboard_bounce()
-	# Preserve valid edge landings; gravity takes over once real floor contact ends.
+	# Preserve supported edge landings; tiny overhangs release before the next step.
 	update_player_water_depth()
 	update_water_splash_particles(delta, in_water_before_move, vertical_velocity_before_move)
 	update_water_surface_contact_particles()
