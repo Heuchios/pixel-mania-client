@@ -6,6 +6,7 @@ const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 const EquipmentManagerScript = preload("res://Scripts/equipment_manager.gd")
 const PlayerAnimationManagerScript = preload("res://Scripts/player_animation_manager.gd")
 const PlayerShadowScript = preload("res://Scripts/player_shadow.gd")
+const GroundDustScript = preload("res://Scripts/player_ground_dust.gd")
 const PlayerWorldFadeFXScene = preload("res://Scenes/particles/PlayerWorldFadeFX.tscn")
 const MovementModeScript = preload("res://Scripts/networking/movement_mode.gd")
 const CameraPixelAlignment = preload("res://Scripts/camera_pixel_alignment.gd")
@@ -1837,6 +1838,23 @@ func _maybe_log_remote_movement_sync(remote_player, stats: Dictionary, accepted:
 	])
 
 
+func update_remote_ground_dust(remote_player: Node2D, target_position: Vector2, delta: float, enabled: bool, discontinuity: bool) -> void:
+	var effect = remote_player.get_node_or_null(GroundDustScript.NODE_NAME)
+	if not enabled:
+		if effect != null:
+			effect.reset_contact()
+		return
+	if effect == null:
+		effect = GroundDustScript.attach(remote_player)
+	var feet := target_position + Vector2(0.5, 7.0)
+	if world != null and is_instance_valid(world.player) and world.player.has_method("get_player_collision_rect_at"):
+		var rect: Rect2 = world.player.get_player_collision_rect_at(target_position)
+		feet = Vector2(rect.get_center().x, rect.end.y)
+	var in_water := bool(remote_player.get_meta("in_water", false)) or is_remote_position_on_water(target_position)
+	var allowed := not in_water and not bool(remote_player.get_meta("network_noclip_enabled", false)) and str(remote_player.get_meta("animation_state", "")) not in ["dead", "dead_spirit"]
+	effect.observe_contact(feet, bool(remote_player.get_meta("network_on_floor", true)), float(remote_player.get_meta("network_velocity_y", 0.0)), delta, allowed, discontinuity, float(remote_player.get_meta("remote_interpolation_delay_ms", INTERPOLATION_DELAY_MS)) / 1000.0)
+
+
 func update_remote_water_splash(remote_player, target_position: Vector2, had_position: bool, velocity_x: float, velocity_y: float, target_speed_hint: float):
 	if remote_player == null or not is_instance_valid(remote_player):
 		return
@@ -3032,6 +3050,7 @@ func handle_network_player_position(player_data: Dictionary):
 		update_remote_lava_fire_particles(remote_player, next_target_position, network_in_lava_fire)
 	else:
 		clear_remote_fishing_visual(remote_player)
+	update_remote_ground_dust(remote_player, next_target_position, float(snapshot_interval_msec) / 1000.0, remote_visual_active and not network_in_water and not network_in_lava_fire, should_snap_remote_position)
 	remote_player.set_meta("remote_name", remote_name)
 	remote_player.set_meta("remote_identity", remote_identity)
 	remote_player.set_meta("remote_role", remote_role)

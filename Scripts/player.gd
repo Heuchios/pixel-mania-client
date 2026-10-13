@@ -4,6 +4,7 @@ const RuntimeProfiler = preload("res://Scripts/runtime_profiler.gd")
 
 const PlayerShadowScript = preload("res://Scripts/player_shadow.gd")
 const FloorSupportScript = preload("res://Scripts/player_floor_support.gd")
+const GroundDustScript = preload("res://Scripts/player_ground_dust.gd")
 
 const SPEED = 150.0
 const JUMP_VELOCITY = -430.0
@@ -139,6 +140,7 @@ var coyote_timer = 0.0
 var variable_jump_active = false
 var variable_jump_release_velocity = JUMP_VELOCITY * JUMP_RELEASE_VELOCITY_FACTOR
 var player_shadow = null
+var ground_dust = null
 var last_slippery_surface_data: Dictionary = {}
 var airborne_slippery_surface_data: Dictionary = {}
 var cached_world_controller = null
@@ -192,6 +194,7 @@ func _ready():
 	cache_collision_shape()
 	_apply_player_visual_z_indices(false)
 	setup_player_shadow()
+	ground_dust = GroundDustScript.attach(self)
 
 
 func _process(_delta: float) -> void:
@@ -287,6 +290,8 @@ func run_player_movement_step(delta: float) -> void:
 	# Keep noclip gravity-free even if another lifecycle path resumes physics.
 	var movement_world = get_world_controller()
 	if movement_world != null and bool(movement_world.get("noclip_enabled")):
+		if is_instance_valid(ground_dust):
+			ground_dust.reset_contact()
 		velocity = Vector2.ZERO
 		jump_buffer_timer = 0.0
 		coyote_timer = 0.0
@@ -294,6 +299,8 @@ func run_player_movement_step(delta: float) -> void:
 		return
 	normalize_movement_runtime_state()
 	if is_player_dead_or_respawning():
+		if is_instance_valid(ground_dust):
+			ground_dust.reset_contact()
 		velocity = Vector2.ZERO
 		jump_buffer_timer = 0.0
 		coyote_timer = 0.0
@@ -362,6 +369,9 @@ func run_player_movement_step(delta: float) -> void:
 		released_airborne_corner_contact
 	)
 	trace_airborne_corner_recovery(airborne_corner_recovery)
+	if is_instance_valid(ground_dust):
+		var dust_rect := get_player_collision_rect_at(global_position)
+		ground_dust.observe_contact(Vector2(dust_rect.get_center().x, dust_rect.end.y), is_on_floor(), vertical_velocity_before_move_for_collision, delta, not in_water_before_move and not is_standing_on_water() and is_visible_in_tree())
 	if trace_release_followup_this_frame:
 		trace_player_collision_release_followup(collision_trace_slide_info, released_airborne_corner_contact)
 		collision_trace_release_followup_frames_left = maxi(0, collision_trace_release_followup_frames_left - 1)
