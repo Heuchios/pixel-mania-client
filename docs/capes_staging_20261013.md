@@ -33,3 +33,20 @@ Validation: `check_capes.js`, full backend `check:security`, rendered
 `capes_test.gd` (all poses, both facings, icons, collars, coexistence, cleanup and
 both bat colors), wing atlas migration, helmet layering and remote equipment
 performance checks. Render: `D:/Pixelmania/work/capes-preview.png`.
+
+## Verified deployment
+
+Staging runs `20261013-capes-atlas`, backend
+`d591f0c79ad6b8fe3ccfca4cac40304e9c264fa0` and client metadata
+`ab597707f2d8b2d92df1fd267b68f6040eebbcfa`. Runtime item registration commit is
+`e7607b8cbb244a76712b2c9dac64d46c13035bb4`; the subsequent backend commit includes
+wearable atlas metadata in the immutable validation package. The full security
+gate passed for the cape runtime, and release packaging checks pass for the final
+archive. The deployed `check_capes.js` passes, including every atlas region.
+Public deployment smoke checks pass; PostgreSQL authoritative/ready and Redis
+ready. Client version and minimum remain 1.2.25.
+
+Rollback is `20261013-capes-e7607b8` (same cape runtime, without the additional
+validation manifest); the pre-cape release is `20261012-recipes-5a11f5f`.
+Production was not deployed and published client binaries were not replaced.
+Restart the updated Godot editor/debug client to use the new cape artwork and FX.
