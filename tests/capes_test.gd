@@ -81,6 +81,11 @@ func run() -> void:
 			assert(neck.visible and neck.get_parent() == visual.get_node("Body"))
 			var head: Node2D = visual.get_node("Head")
 			assert(neck.z_index + neck.get_parent().z_index > head.z_index + visual.get_node("Head/BaseHeadAnimated").z_index, "Tall cape collars must draw in front of the face")
+			var rear_neck: AnimatedSprite2D = manager.get_wearable_part("cape_neck_behind")
+			assert(rear_neck.visible and rear_neck.position == neck.position)
+			assert(rear_neck.z_index + rear_neck.get_parent().z_index < head.z_index, "The right collar half must stay behind the face")
+			assert(neck.material != rear_neck.material)
+			assert(neck.material.get_shader_parameter("left_half") == true and rear_neck.material.get_shader_parameter("left_half") == false)
 			var neck_texture := neck.sprite_frames.get_frame_texture("idle", 0) as AtlasTexture
 			assert(neck_texture.region == Rect2(0, (entry.row - 24) * 32, 32, 32))
 			assert(not neck_texture.get_image().is_invisible())
@@ -131,11 +136,13 @@ func run() -> void:
 			necklace.visible = true
 			manager.update_equipped_back_visual("devil_wings", facing)
 			assert(not neck.visible and necklace.visible)
+			assert(not rear_neck.visible)
 			assert(cape.position == manager.get_wearable_part_base_position("back", Vector2.ZERO), "Swapping to wings must restore the editor anchor")
 			assert(manager.back_item_fx == null)
 			manager.update_equipped_back_visual(id, facing)
 			manager.hide_back_item()
 			assert(not neck.visible and not cape.visible and necklace.visible)
+			assert(not rear_neck.visible)
 			assert(manager.back_item_fx == null)
 			necklace.visible = false
 			manager.update_equipped_back_visual(id, facing)
@@ -146,6 +153,7 @@ func run() -> void:
 			manager.setup_wearable_animated_parts()
 			manager.update_equipped_back_visual(id, facing)
 			assert(cape.position == positioned_cape and neck.position == positioned_neck, "Rebinding the player must not accumulate cape offsets")
+			assert(rear_neck.visible and rear_neck.position == positioned_neck)
 			cape.set_process_internal(false)
 			# Two extra pose actors make the render show idle / jump / fall for each facing.
 			for animation in ["jump", "fall"]:

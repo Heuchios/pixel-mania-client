@@ -4,6 +4,7 @@ const AtlasTextureFactory = preload("res://Scripts/atlas_texture_factory.gd")
 const SelectedHandPreview = preload("res://Scripts/selected_hand_preview.gd")
 const SwordSlashTrail = preload("res://Scripts/sword_slash_trail.gd")
 const HairHatOcclusion = preload("res://Scripts/hair_hat_occlusion.gd")
+const CapeCollarHalf = preload("res://Assets/shaders/cape_collar_half.gdshader")
 
 var world = null
 var player = null
@@ -98,6 +99,7 @@ const DEFAULT_BACK_SCALE = 1.0
 const DEFAULT_BACK_Z_INDEX = -20
 const DEFAULT_BODY_LAYER_ANIMATED = Vector2(0, -8)
 const CAPE_NECK_Z_INDEX = 15 # Body (30) + collar (15) draws above the face/head (40).
+const CAPE_NECK_BEHIND_Z_INDEX = 3 # The far half stays above shirts and behind the face.
 const DEFAULT_HEAD_ANIMATED = DEFAULT_BODY_LAYER_ANIMATED
 const DEFAULT_BODY_ANIMATED = DEFAULT_BODY_LAYER_ANIMATED
 const DEFAULT_PANTS_ANIMATED = DEFAULT_BODY_LAYER_ANIMATED
@@ -369,7 +371,7 @@ func setup_wearable_part_node(part_key: String, node_name: String, parent_node, 
 
 	part.visible = false
 	part.centered = true
-	if part_key in ["back", "cape_neck"]:
+	if part_key in ["back", "cape_neck", "cape_neck_behind"]:
 		if not part.has_meta("equipment_editor_position"):
 			part.set_meta("equipment_editor_position", part.position)
 		part.position = part.get_meta("equipment_editor_position")
@@ -517,16 +519,24 @@ func ensure_cape_neck_node() -> void:
 	var body = player.get_node_or_null("PlayerVisual/Body") if player != null else null
 	if body == null:
 		return
-	var neck = body.get_node_or_null("CapeNeckAnimated")
-	if neck == null:
-		neck = AnimatedSprite2D.new()
-		neck.name = "CapeNeckAnimated"
-		var necklace = body.get_node_or_null("NecklaceAnimated")
-		neck.position = necklace.position if necklace != null else Vector2(1, -4)
-		body.add_child(neck)
-	neck.z_as_relative = true
-	neck.z_index = CAPE_NECK_Z_INDEX
-	setup_wearable_part_node("cape_neck", "PlayerVisual/Body/CapeNeckAnimated", null, Vector2(1, -4), CAPE_NECK_Z_INDEX)
+	for part_key in ["cape_neck", "cape_neck_behind"]:
+		var front: bool = part_key == "cape_neck"
+		var node_name: String = "CapeNeckAnimated" if front else "CapeNeckBehindAnimated"
+		var neck = body.get_node_or_null(node_name)
+		if neck == null:
+			neck = AnimatedSprite2D.new()
+			neck.name = node_name
+			var necklace = body.get_node_or_null("NecklaceAnimated")
+			neck.position = necklace.position if necklace != null else Vector2(1, -4)
+			body.add_child(neck)
+		neck.z_as_relative = true
+		neck.z_index = CAPE_NECK_Z_INDEX if front else CAPE_NECK_BEHIND_Z_INDEX
+		if not (neck.material is ShaderMaterial) or neck.material.shader != CapeCollarHalf:
+			var material := ShaderMaterial.new()
+			material.shader = CapeCollarHalf
+			neck.material = material
+		neck.material.set_shader_parameter("left_half", front)
+		setup_wearable_part_node(part_key, "PlayerVisual/Body/" + node_name, null, Vector2(1, -4), neck.z_index)
 
 
 func update_cape_neck_visual(back_item: String, item_data: Dictionary) -> void:
@@ -534,10 +544,11 @@ func update_cape_neck_visual(back_item: String, item_data: Dictionary) -> void:
 	if spec == null:
 		hide_wearable_part("cape_neck")
 		return
-	if set_wearable_part("cape_neck", back_item, {}, [spec], Vector2.ZERO, false, false, 1.0, 3):
-		var neck = get_wearable_part("cape_neck")
-		neck.z_index = CAPE_NECK_Z_INDEX
-		neck.position = get_wearable_part_base_position("cape_neck", Vector2(1, -4)) + get_vector_from_data(item_data.get("cape_neck_offset", [0, 0]), Vector2.ZERO)
+	for part_key in ["cape_neck", "cape_neck_behind"]:
+		if set_wearable_part(part_key, back_item, {}, [spec], Vector2.ZERO, false, false, 1.0, 3):
+			var neck = get_wearable_part(part_key)
+			neck.z_index = CAPE_NECK_Z_INDEX if part_key == "cape_neck" else CAPE_NECK_BEHIND_Z_INDEX
+			neck.position = get_wearable_part_base_position(part_key, Vector2(1, -4)) + get_vector_from_data(item_data.get("cape_neck_offset", [0, 0]), Vector2.ZERO)
 
 
 func hide_wearable_part(part_key: String):
@@ -547,6 +558,8 @@ func hide_wearable_part(part_key: String):
 
 	part.visible = false
 	wearable_part_item_ids.erase(part_key)
+	if part_key == "cape_neck":
+		hide_wearable_part("cape_neck_behind")
 	if part_key in ["hat", "beard", "hair"]:
 		refresh_head_cover_visibility()
 

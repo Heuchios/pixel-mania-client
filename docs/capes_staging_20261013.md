@@ -69,11 +69,17 @@ both facings and all poses, rebind, swap, and unequip. Existing wing atlas,
 repeated wing jump and remote equipment performance regressions pass. Full
 backend security and the updated cape registration check pass.
 
-Collars draw in front of the face: their relative Z is 15 under Body (30),
-giving effective player-relative Z 45 above Head (40). This is applied when
-creating and refreshing the collar, including player rebinds. The cape body
-stays behind the player. Rendered tests verify the actual collar/head ordering
-for all five capes and both facing directions.
+Collars use two complementary halves. The atlas-left half has relative Z 15
+under Body (30), giving player-relative Z 45 above Head (40). The atlas-right
+half has relative Z 3 (effective 33) behind the face. A shader clips each
+centered 32×32 canvas at its midpoint without changing or trimming the artwork.
+Both halves inherit player mirroring, share the same attachment offset, and
+hide together when the cape is removed. Player rebinds retain the two layers.
+The cape body stays behind the player.
+
+`cape_collar_render_test.gd` checks actual pixels for all five collars and both
+facings against an opaque face: zero mismatches; deliberately reversing the
+front half produces 242 wrong pixels. Cape equip/swap/rebind checks also pass.
 
 Final correction release: `20261013-cape-collars`, backend
 `bddbbab6b622aa9efbb66116b4991ef3ba6160ee`, client
