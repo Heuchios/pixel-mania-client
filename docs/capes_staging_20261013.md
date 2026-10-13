@@ -81,10 +81,32 @@ The cape body stays behind the player.
 facings against an opaque face: zero mismatches; deliberately reversing the
 front half produces 242 wrong pixels. Cape equip/swap/rebind checks also pass.
 
-Final correction release: `20261013-cape-collars`, backend
+Earlier correction release: `20261013-cape-collars`, backend
 `bddbbab6b622aa9efbb66116b4991ef3ba6160ee`, client
 `ff89e78bcd690bce4afa6994d504f58d64447cd8`. The deployed cape registration
 check and public smoke/health checks pass; PostgreSQL and Redis are ready.
 Client/minimum version remains 1.2.25. Rollback is
 `20261013-cape-alignment-bddbbab` (correct alignment/double jump, earlier collar
 layer). Restart the updated editor/debug client for the collar rendering change.
+
+## Video reference alignment
+
+The user supplied `preview_animation2.mp4` as the placement reference. Its eight
+seconds show the Dracula and Vampire idle animations. Frames were decoded at
+native resolution and aligned to the game's unchanged head pixels, avoiding
+screen zoom differences. The collar needed a further 2px right / 1px down shift;
+the cape body needed 1px left / 1px up. These adjustments apply consistently to
+all five capes and preserve the full source canvases, mirrored front/rear collar
+halves, double jump, and the authored jump/fall poses.
+
+The final collar offset is `[2, 8]` from the necklace editor anchor. The default
+back offset is `[-1, 12]`; hero fall uses the same offset, Vampire fall uses
+`[-1, 7]`, and Dracula fall uses `[-1, 15]`. The video does not show airborne
+movement, so jump/fall retain their prior attachment relationship with the same
+one-pixel body correction. Rendered lifecycle and pose checks cover all five
+capes in both directions; the source atlas remains unchanged.
+
+Split-collar release `20261013-collar-halves` was verified live with client
+`3d58c513a4985823deb16388beeeefec5a84fe26` and backend `bddbbab6b622` before this
+video adjustment. Its registration and smoke checks pass; PostgreSQL and Redis
+are ready, and client/minimum version remains 1.2.25.

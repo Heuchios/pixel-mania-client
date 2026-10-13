@@ -103,7 +103,8 @@ func run() -> void:
 				var cape_texture: Texture2D = cape.sprite_frames.get_frame_texture("idle", 0)
 				var cape_used: Rect2i = cape_texture.get_image().get_used_rect()
 				var cape_y: float = cape.to_global(Vector2(cape_used.position) - cape_texture.get_size() / 2.0).y
-				assert(is_equal_approx(collar_y, shoulder_y) and is_equal_approx(cape_y, shoulder_y), "The cape and collar must attach at the opaque body shoulder line")
+				assert(is_equal_approx(collar_y, shoulder_y + 4) and is_equal_approx(cape_y, shoulder_y - 4), "The reference places the collar one pixel below and cape one pixel above the shoulder line at 4x scale")
+				assert(data.cape_neck_offset == [2, 8] and data.back_pose_offsets.default == [-1, 12], "Preserve the reference's asymmetric jaw collar and centered cape")
 			var frames := cape.sprite_frames
 			for animation in ["idle", "walk", "jump", "fall"]:
 				var columns: Array = [1, 3, 5, 7] if animation in ["idle", "walk"] else ([9] if animation == "jump" else [11])

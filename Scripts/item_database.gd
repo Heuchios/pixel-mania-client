@@ -12155,18 +12155,18 @@ const ITEMS = {
 		"back_flip_with_facing": false,
 		"cape_neck_texture": "black_hero_cape_neck",
 		"cape_neck_offset": [
-			0,
-			7
+			2,
+			8
 		],
 		"order": 360,
 		"back_pose_offsets": {
 			"default": [
-				0,
-				13
+				-1,
+				12
 			],
 			"fall": [
-				0,
-				13
+				-1,
+				12
 			]
 		}
 	},
@@ -12213,18 +12213,18 @@ const ITEMS = {
 		"back_flip_with_facing": false,
 		"cape_neck_texture": "red_hero_cape_neck",
 		"cape_neck_offset": [
-			0,
-			7
+			2,
+			8
 		],
 		"order": 361,
 		"back_pose_offsets": {
 			"default": [
-				0,
-				13
+				-1,
+				12
 			],
 			"fall": [
-				0,
-				13
+				-1,
+				12
 			]
 		}
 	},
@@ -12271,18 +12271,18 @@ const ITEMS = {
 		"back_flip_with_facing": false,
 		"cape_neck_texture": "blue_hero_cape_neck",
 		"cape_neck_offset": [
-			0,
-			7
+			2,
+			8
 		],
 		"order": 362,
 		"back_pose_offsets": {
 			"default": [
-				0,
-				13
+				-1,
+				12
 			],
 			"fall": [
-				0,
-				13
+				-1,
+				12
 			]
 		}
 	},
@@ -12329,20 +12329,20 @@ const ITEMS = {
 		"back_flip_with_facing": false,
 		"cape_neck_texture": "vampire_cape_neck",
 		"cape_neck_offset": [
-			0,
-			7
+			2,
+			8
 		],
 		"order": 363,
 		"back_fx_scene": "res://Scenes/particles/VampireCapeBatsFX.tscn",
 		"back_fx_z_index": 1,
 		"back_pose_offsets": {
 			"default": [
-				0,
-				13
+				-1,
+				12
 			],
 			"fall": [
-				0,
-				8
+				-1,
+				7
 			]
 		}
 	},
@@ -12389,20 +12389,20 @@ const ITEMS = {
 		"back_flip_with_facing": false,
 		"cape_neck_texture": "dracula_cape_neck",
 		"cape_neck_offset": [
-			0,
-			7
+			2,
+			8
 		],
 		"order": 364,
 		"back_fx_scene": "res://Scenes/particles/DraculaCapeBatsFX.tscn",
 		"back_fx_z_index": 1,
 		"back_pose_offsets": {
 			"default": [
-				0,
-				13
+				-1,
+				12
 			],
 			"fall": [
-				0,
-				16
+				-1,
+				15
 			]
 		}
 	},
