@@ -79,6 +79,8 @@ func run() -> void:
 			cape.set_process_internal(false)
 			var neck: AnimatedSprite2D = manager.get_wearable_part("cape_neck")
 			assert(neck.visible and neck.get_parent() == visual.get_node("Body"))
+			var head: Node2D = visual.get_node("Head")
+			assert(neck.z_index + neck.get_parent().z_index > head.z_index + visual.get_node("Head/BaseHeadAnimated").z_index, "Tall cape collars must draw in front of the face")
 			var neck_texture := neck.sprite_frames.get_frame_texture("idle", 0) as AtlasTexture
 			assert(neck_texture.region == Rect2(0, (entry.row - 24) * 32, 32, 32))
 			assert(not neck_texture.get_image().is_invisible())

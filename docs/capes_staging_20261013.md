@@ -68,3 +68,9 @@ collar start to the body's actual shoulder line, then cover all five capes,
 both facings and all poses, rebind, swap, and unequip. Existing wing atlas,
 repeated wing jump and remote equipment performance regressions pass. Full
 backend security and the updated cape registration check pass.
+
+Collars draw in front of the face: their relative Z is 15 under Body (30),
+giving effective player-relative Z 45 above Head (40). This is applied when
+creating and refreshing the collar, including player rebinds. The cape body
+stays behind the player. Rendered tests verify the actual collar/head ordering
+for all five capes and both facing directions.

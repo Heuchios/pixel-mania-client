@@ -97,6 +97,7 @@ const DEFAULT_BACK_TARGET_WIDTH = 96.0
 const DEFAULT_BACK_SCALE = 1.0
 const DEFAULT_BACK_Z_INDEX = -20
 const DEFAULT_BODY_LAYER_ANIMATED = Vector2(0, -8)
+const CAPE_NECK_Z_INDEX = 15 # Body (30) + collar (15) draws above the face/head (40).
 const DEFAULT_HEAD_ANIMATED = DEFAULT_BODY_LAYER_ANIMATED
 const DEFAULT_BODY_ANIMATED = DEFAULT_BODY_LAYER_ANIMATED
 const DEFAULT_PANTS_ANIMATED = DEFAULT_BODY_LAYER_ANIMATED
@@ -522,9 +523,10 @@ func ensure_cape_neck_node() -> void:
 		neck.name = "CapeNeckAnimated"
 		var necklace = body.get_node_or_null("NecklaceAnimated")
 		neck.position = necklace.position if necklace != null else Vector2(1, -4)
-		neck.z_index = 3
 		body.add_child(neck)
-	setup_wearable_part_node("cape_neck", "PlayerVisual/Body/CapeNeckAnimated", null, Vector2(1, -4), 3)
+	neck.z_as_relative = true
+	neck.z_index = CAPE_NECK_Z_INDEX
+	setup_wearable_part_node("cape_neck", "PlayerVisual/Body/CapeNeckAnimated", null, Vector2(1, -4), CAPE_NECK_Z_INDEX)
 
 
 func update_cape_neck_visual(back_item: String, item_data: Dictionary) -> void:
@@ -534,6 +536,7 @@ func update_cape_neck_visual(back_item: String, item_data: Dictionary) -> void:
 		return
 	if set_wearable_part("cape_neck", back_item, {}, [spec], Vector2.ZERO, false, false, 1.0, 3):
 		var neck = get_wearable_part("cape_neck")
+		neck.z_index = CAPE_NECK_Z_INDEX
 		neck.position = get_wearable_part_base_position("cape_neck", Vector2(1, -4)) + get_vector_from_data(item_data.get("cape_neck_offset", [0, 0]), Vector2.ZERO)
 
 
