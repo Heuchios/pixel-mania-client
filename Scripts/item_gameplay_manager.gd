@@ -708,7 +708,7 @@ func try_drop_fixed_break_drops(block_type: String, drop_position: Vector2) -> b
 	if not (rules is Dictionary):
 		return false
 
-	var raw_loot_table = rules.get("loot_table", rules.get("weighted_drops", []))
+	var raw_loot_table = rules.get("loot_table", rules.get("weighted_drops", null))
 	if raw_loot_table is Array:
 		var loot_table: Array = raw_loot_table as Array
 		var weighted_drop: Dictionary = roll_weighted_break_drop(loot_table)
@@ -735,20 +735,12 @@ func try_drop_fixed_break_drops(block_type: String, drop_position: Vector2) -> b
 		if randf() > drop_chance:
 			continue
 
-		var item_id: String = str(fixed_drop.get("item_id", fixed_drop.get("item_type", ""))).strip_edges()
-		if item_id == "" or not world.item_database.has(item_id):
+		var drop: Dictionary = roll_weighted_break_drop(fixed_drop.loot_table) if fixed_drop.get("loot_table") is Array else get_break_drop_from_rule_entry(fixed_drop)
+		if drop.is_empty():
 			continue
-
-		var item_category: String = get_fixed_break_drop_category(
-			item_id,
-			str(fixed_drop.get("item_category", fixed_drop.get("category", "")))
-		)
-		if item_category == "":
-			continue
-
-		var amount: int = get_fixed_break_drop_amount(fixed_drop)
-		if amount <= 0:
-			continue
+		var item_id := str(drop.item_id)
+		var item_category := str(drop.item_category)
+		var amount := int(drop.amount)
 
 		world.create_item_drop(item_id, drop_position, item_category == "seed", item_category, 0.0, amount)
 

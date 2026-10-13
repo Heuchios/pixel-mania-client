@@ -385,6 +385,82 @@ const PRESTIGE_COLOURED_BLOCK_PACK_REWARDS = ["ps_blue_block", "ps_green_block",
 const ITEMS = {
 "composer_seed": {"category":"seed","display_name":"Composer Seed","grows_into":"composer","seed_box_icon":true,"plantable":true,"rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"grow_time":7800,"max_grow_time":7800,"recipe_tier":6},
 "composer": {"category":"block","display_name":"Composer 0%-49%","description":"Still working on it.","rarity":"uncommon","stack_limit":400,"tradeable":true,"dropable":true,"admin_grantable":true,"hidden":false,"placeable":true,"breakable":true,"block_health":4,"place_layer":"foreground","solid":false,"no_collision":true,"collidable":false,"collision_type":"none","platform_collision":false,"background_block":false,"seed":"composer_seed","recipe_tier":6,"atlas_coords":[1,20],"atlas_source_id":0,"texture":{"atlas":"res://image.png","cell":[1,20],"cell_size":[32,32]},"inventory_icon":{"atlas":"res://image.png","cell":[1,20],"cell_size":[32,32]},"composer_fill_atlas_coords":[[1,20],[2,20],[3,20]],"instance_tracked":true},
+  "sun_fragment": {
+  "category": "material",
+  "display_name": "Sun Fragment",
+  "description": "A rare material found when breaking Star Blocks.",
+  "rarity": "rare",
+  "stack_limit": 400,
+  "tradeable": true,
+  "dropable": true,
+  "admin_grantable": true,
+  "hidden": false,
+  "equipable": false,
+  "consumable": false,
+  "placeable": false,
+  "item_type": "material",
+  "instance_tracked": true,
+  "texture": {
+    "atlas": "res://Assets/items/material.png",
+    "cell": [
+      8,
+      2
+    ],
+    "cell_size": [
+      32,
+      32
+    ]
+  },
+  "inventory_icon": {
+    "atlas": "res://Assets/items/material.png",
+    "cell": [
+      8,
+      2
+    ],
+    "cell_size": [
+      32,
+      32
+    ]
+  }
+},
+  "moon_fragment": {
+  "category": "material",
+  "display_name": "Moon Fragment",
+  "description": "A rare material found when breaking Star Blocks.",
+  "rarity": "rare",
+  "stack_limit": 400,
+  "tradeable": true,
+  "dropable": true,
+  "admin_grantable": true,
+  "hidden": false,
+  "equipable": false,
+  "consumable": false,
+  "placeable": false,
+  "item_type": "material",
+  "instance_tracked": true,
+  "texture": {
+    "atlas": "res://Assets/items/material.png",
+    "cell": [
+      9,
+      2
+    ],
+    "cell_size": [
+      32,
+      32
+    ]
+  },
+  "inventory_icon": {
+    "atlas": "res://Assets/items/material.png",
+    "cell": [
+      9,
+      2
+    ],
+    "cell_size": [
+      32,
+      32
+    ]
+  }
+},
   "star_fragment": {
 	"category": "material",
 	"display_name": "Star Fragment",
@@ -29754,6 +29830,8 @@ const RECIPE_TIERS = {
 }
 
 const SPLICE_RECIPES = {
+  "moon_fragment+star_block_seed": "moon_seed",
+  "star_block_seed+sun_fragment": "sun_seed",
   "aqua_block_seed+building_brick_wall_seed": "aqua_wallpaper_seed",
   "aqua_block_seed+sale_sign_seed": "street_sign_seed",
   "barn_block_seed+green_block_seed": "green_pastel_block_seed",

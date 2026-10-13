@@ -845,5 +845,63 @@
     "consumable": false,
     "item_type": "material",
     "equipable": false
+  },
+  "sun_fragment": {
+    "category": "material",
+    "display_name": "Sun Fragment",
+    "texture": {
+      "atlas": "res://Assets/items/material.png",
+      "cell": [
+        8,
+        2
+      ],
+      "cell_size": [
+        32,
+        32
+      ]
+    },
+    "inventory_icon": {
+      "atlas": "res://Assets/items/material.png",
+      "cell": [
+        8,
+        2
+      ],
+      "cell_size": [
+        32,
+        32
+      ]
+    },
+    "consumable": false,
+    "item_type": "material",
+    "equipable": false
+  },
+  "moon_fragment": {
+    "category": "material",
+    "display_name": "Moon Fragment",
+    "texture": {
+      "atlas": "res://Assets/items/material.png",
+      "cell": [
+        9,
+        2
+      ],
+      "cell_size": [
+        32,
+        32
+      ]
+    },
+    "inventory_icon": {
+      "atlas": "res://Assets/items/material.png",
+      "cell": [
+        9,
+        2
+      ],
+      "cell_size": [
+        32,
+        32
+      ]
+    },
+    "consumable": false,
+    "item_type": "material",
+    "equipable": false
   }
 }

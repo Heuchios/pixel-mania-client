@@ -33,8 +33,14 @@ func _init() -> void:
 	assert(icon is AtlasTexture and icon.region == Rect2(32, 640, 32, 32))
 	assert(system.item_database.composer.no_collision)
 	assert(system.item_database.composer.composer_fill_atlas_coords == [[1,20],[2,20],[3,20]])
-	for planet in ["moon", "earth", "sun"]:
-		assert(not system.item_database.has(planet + "_fragment"))
+	for planet in ["moon", "sun"]:
+		var fragment: String = planet + "_fragment"
+		materials[fragment] = 1
+		system.planted_seeds[grid] = {"seed_type": "star_block_seed", "spliced": false, "mature": false}
+		assert(system.try_splice_seed_tree(grid, fragment, "material", materials))
+		assert(materials.get(fragment, 0) == 0)
+		assert(system.planted_seeds[grid].seed_type == planet + "_seed")
+	assert(not system.item_database.has("earth_fragment"))
 	system.free()
 	print("MATERIAL_SPLICING_CLIENT_PASS: consumption, replay, invalid material, maturity, Composer icon and deferred fragments")
 	quit()

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "design": "Live ITEM DATA numeric gem averages and break XP. Listed block/seed quantities roll uniformly and independently on breaks and harvests (0–3 = 25% each; 0–1 = 50% each), as explicitly requested. Tree gems/XP and growth times are retained. Missing/conflicting fields and special recovery behavior retain existing rules. Uniform block returns can exceed one block per break; no finite full-recycling yield is claimed.",
+  "design": "Live ITEM DATA numeric gem averages and break XP. Listed block/seed quantities roll uniformly and independently on breaks and harvests (0â€“3 = 25% each; 0â€“1 = 50% each), as explicitly requested. Tree gems/XP and growth times are retained. Missing/conflicting fields and special recovery behavior retain existing rules. Uniform block returns can exceed one block per break; no finite full-recycling yield is claimed.",
   "profiles": {
     "starter": {
       "tiers": [
@@ -14389,7 +14389,7 @@
       "tree_xp": 3,
       "seeds_per_cycle": null,
       "gems_per_cycle": null,
-      "break_details": "star_block_seed: 0–1 at 100.00%; star_block: 0–3 at 100.00%; gem: 7 at 100.00%; gem: 1 at 50.00%; star_fragment: 1 at 1.00%",
+      "break_details": "star_block_seed: 0–1 at 100.00%; star_block: 0–3 at 100.00%; gem: 7 at 100.00%; gem: 1 at 50.00%; One of [star_fragment, sun_fragment, moon_fragment], equal weights, at 1.00%",
       "tree_details": "star_block_seed: 0–1 at 100.00%; star_block: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 412",
       "growth_source": "Live SPLICING sheet, row 274 (2026-10-12)",

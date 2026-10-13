@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "design": "Live ITEM DATA numeric gem averages and break XP. Listed block/seed quantities roll uniformly and independently on breaks and harvests (0–3 = 25% each; 0–1 = 50% each), as explicitly requested. Tree gems/XP and growth times are retained. Missing/conflicting fields and special recovery behavior retain existing rules. Uniform block returns can exceed one block per break; no finite full-recycling yield is claimed.",
+  "design": "Live ITEM DATA numeric gem averages and break XP. Listed block/seed quantities roll uniformly and independently on breaks and harvests (0\u00e2\u20ac\u201c3 = 25% each; 0\u00e2\u20ac\u201c1 = 50% each), as explicitly requested. Tree gems/XP and growth times are retained. Missing/conflicting fields and special recovery behavior retain existing rules. Uniform block returns can exceed one block per break; no finite full-recycling yield is claimed.",
   "tier_growth_defaults": [
     30,
     120,
@@ -3659,10 +3659,27 @@
       "gem_mean": 7.5,
       "extra_break_drops": [
         {
-          "item_id": "star_fragment",
-          "item_category": "material",
-          "amount": 1,
-          "chance": 0.01
+          "chance": 0.01,
+          "loot_table": [
+            {
+              "item_id": "star_fragment",
+              "item_category": "material",
+              "amount": 1,
+              "weight": 1
+            },
+            {
+              "item_id": "sun_fragment",
+              "item_category": "material",
+              "amount": 1,
+              "weight": 1
+            },
+            {
+              "item_id": "moon_fragment",
+              "item_category": "material",
+              "amount": 1,
+              "weight": 1
+            }
+          ]
         }
       ],
       "extra_tree_drops": [],

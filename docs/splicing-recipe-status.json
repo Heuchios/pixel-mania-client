@@ -7453,15 +7453,16 @@
     ],
     "ids": [
       "star_block",
-      null,
+      "moon_fragment",
       "moon"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Moon fragment"
-    ],
-    "status": "deferred_by_user",
-    "exception": "Fragment and related recipe deferred until atlas artwork is available."
+    "status": "active",
+    "seeds": [
+      "star_block_seed",
+      "moon_fragment",
+      "moon_seed"
+    ]
   },
   {
     "row": 394,
@@ -7527,15 +7528,16 @@
     ],
     "ids": [
       "star_block",
-      null,
+      "sun_fragment",
       "sun"
     ],
     "method": "splicing",
-    "missing_items": [
-      "Sun fragment"
-    ],
-    "status": "deferred_by_user",
-    "exception": "Fragment and related recipe deferred until atlas artwork is available."
+    "status": "active",
+    "seeds": [
+      "star_block_seed",
+      "sun_fragment",
+      "sun_seed"
+    ]
   },
   {
     "row": 398,

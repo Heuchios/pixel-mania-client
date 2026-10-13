@@ -7,7 +7,7 @@ const CONTRACT = preload("res://Scripts/item_data_contract.gd")
 func _init() -> void:
 	var expected: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://docs/material-atlas.json"))
 	var items := CONTRACT.apply(DB.ITEMS.duplicate(true))
-	assert(expected.size() == 29)
+	assert(expected.size() == 31)
 	for id in expected:
 		var item: Dictionary = items[id]
 		assert(item.display_name == expected[id].display_name, id)
@@ -20,5 +20,5 @@ func _init() -> void:
 	assert(items.fertilizer.growth_reduction_seconds == 3600)
 	assert(items.super_fertilizer.growth_reduction_seconds == 14400)
 	assert(items.world_lock_key.world_lock_key and items.world_lock_key.instance_tracked)
-	print("Material atlas: all 29 icons, names, categories, and consumable flags passed.")
+	print("Material atlas: all 31 icons, names, categories, and consumable flags passed.")
 	quit()
