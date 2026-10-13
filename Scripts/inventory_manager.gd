@@ -405,7 +405,7 @@ func get_slot_texture_name(rarity: String, selected: bool, item_type: String = "
 		"common":    return "slot_common.png"
 		"uncommon":  return "slot_uncommon.png"
 		"rare":      return "slot_rare.png"
-		"epic":      return "slot_epic.png"
+		"epic", "ultra_rare": return "slot_epic.png"
 		"legendary": return "slot_legendary.png"
 		"currency":  return "slot_normal.png"
 		_:           return "slot_normal.png"
@@ -419,7 +419,7 @@ func get_rarity_fill_color(rarity: String, alpha: float = 0.98) -> Color:
 	match normalize_item_rarity(rarity):
 		"uncommon":  return Color(0.08, 0.45, 0.22, alpha)
 		"rare":      return Color(0.08, 0.28, 0.76, alpha)
-		"epic":      return Color(0.36, 0.13, 0.70, alpha)
+		"epic", "ultra_rare": return Color(0.36, 0.13, 0.70, alpha)
 		"legendary": return Color(0.84, 0.46, 0.05, alpha)
 		"currency":  return Color(0.03, 0.52, 0.62, alpha)
 		_:           return Color(0.10, 0.24, 0.34, alpha)
@@ -429,7 +429,7 @@ func get_rarity_border_color(rarity: String) -> Color:
 	match normalize_item_rarity(rarity):
 		"uncommon":  return Color(0.34, 0.95, 0.45, 1.0)
 		"rare":      return Color(0.26, 0.62, 1.0, 1.0)
-		"epic":      return Color(0.80, 0.46, 1.0, 1.0)
+		"epic", "ultra_rare": return Color(0.80, 0.46, 1.0, 1.0)
 		"legendary": return Color(1.0, 0.78, 0.18, 1.0)
 		"currency":  return Color(0.26, 1.0, 1.0, 1.0)
 		_:           return Color(0.48, 0.76, 0.88, 1.0)
@@ -4811,7 +4811,7 @@ func get_rarity_display_name(rarity: String) -> String:
 		"common":    return "Common"
 		"uncommon":  return "Uncommon"
 		"rare":      return "Rare"
-		"epic":      return "Epic"
+		"epic", "ultra_rare": return "Epic"
 		"legendary": return "Legendary"
 		"currency":  return "Currency"
 		_:           return rarity.capitalize()
@@ -4822,7 +4822,7 @@ func get_rarity_color(rarity: String) -> Color:
 		"common":    return Color(0.46, 0.88, 0.95, 0.65)
 		"uncommon":  return Color(0.35, 0.95, 0.45, 0.90)
 		"rare":      return Color(0.25, 0.55, 1.0, 0.95)
-		"epic":      return Color(0.72, 0.30, 1.0, 0.95)
+		"epic", "ultra_rare": return Color(0.72, 0.30, 1.0, 0.95)
 		"legendary": return Color(1.0, 0.66, 0.12, 0.98)
 		"currency":  return Color(0.15, 0.95, 1.0, 0.95)
 		_:           return Color(0.46, 0.88, 0.95, 0.65)
@@ -4945,7 +4945,7 @@ func get_rarity_letter_color(rarity: String) -> Color:
 		"common":    return Color(0.90, 0.94, 1.0, 1.0)
 		"uncommon":  return Color(0.55, 1.0, 0.55, 1.0)
 		"rare":      return Color(0.45, 0.78, 1.0, 1.0)
-		"epic":      return Color(0.92, 0.58, 1.0, 1.0)
+		"epic", "ultra_rare": return Color(0.92, 0.58, 1.0, 1.0)
 		"legendary": return Color(1.0, 0.80, 0.22, 1.0)
 		"currency":  return Color(0.45, 1.0, 1.0, 1.0)
 		_:           return Color.WHITE
@@ -6880,6 +6880,8 @@ func get_inventory_slot_style_key(rarity: String, selected: bool, hovered: bool)
 
 
 func is_inventory_item_equipped(item_type: String, category: String) -> bool:
+	if world.equipped_pet_item == item_type and item_type != "":
+		return true
 	if world == null:
 		return false
 	return (category == "tool" and world.equipped_tool == item_type) or (category == "back" and world.equipped_back_item == item_type) or (category == "hat" and world.equipped_hat_item == item_type) or (category == "hair" and world.equipped_hair_item == item_type) or (category == "eyewear" and world.equipped_eyewear_item == item_type) or (category == "beard" and world.equipped_beard_item == item_type) or (category == "shirt" and world.equipped_shirt_item == item_type) or (category == "pants" and world.equipped_pants_item == item_type) or (category == "shoes" and world.equipped_shoes_item == item_type) or (category == "ride" and world.equipped_ride_item == item_type) or (category == "body_accessory" and world.equipped_body_accessory_item == item_type)

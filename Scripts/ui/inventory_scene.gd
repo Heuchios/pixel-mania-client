@@ -2209,7 +2209,7 @@ func _slot_frame_file(rarity: String) -> String:
 			return "slot_uncommon.png"
 		"rare":
 			return "slot_rare.png"
-		"epic":
+		"epic", "ultra_rare":
 			return "slot_epic.png"
 		"legendary":
 			return "slot_legendary.png"
@@ -2472,7 +2472,7 @@ func _rarity_color(rarity: String) -> Color:
 			return Color(0.45, 1.0, 0.52, 1.0)
 		"rare":
 			return Color(0.40, 0.76, 1.0, 1.0)
-		"epic":
+		"epic", "ultra_rare":
 			return Color(0.92, 0.56, 1.0, 1.0)
 		"legendary":
 			return Color(1.0, 0.78, 0.22, 1.0)

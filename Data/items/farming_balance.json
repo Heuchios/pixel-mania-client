@@ -3657,31 +3657,6 @@
       "grow_seconds": 27000,
       "growth_source": "Live SPLICING sheet, row 274 (2026-10-12)",
       "gem_mean": 7.5,
-      "extra_break_drops": [
-        {
-          "chance": 0.01,
-          "loot_table": [
-            {
-              "item_id": "star_fragment",
-              "item_category": "material",
-              "amount": 1,
-              "weight": 1
-            },
-            {
-              "item_id": "sun_fragment",
-              "item_category": "material",
-              "amount": 1,
-              "weight": 1
-            },
-            {
-              "item_id": "moon_fragment",
-              "item_category": "material",
-              "amount": 1,
-              "weight": 1
-            }
-          ]
-        }
-      ],
       "extra_tree_drops": [],
       "tree_gem_mean": 6,
       "break_xp": 70,
@@ -3695,7 +3670,8 @@
       ],
       "sheet_rows": [
         412
-      ]
+      ],
+      "extra_break_drops": []
     },
     "anti_punch": {
       "name": "Anti-Punch",
@@ -5189,14 +5165,6 @@
       "grow_seconds": 100,
       "growth_source": "Live SPLICING sheet, row 14 (2026-10-12)",
       "gem_mean": 0.6,
-      "extra_break_drops": [
-        {
-          "item_id": "stick",
-          "item_category": "material",
-          "amount": 1,
-          "chance": 0.05
-        }
-      ],
       "extra_tree_drops": [],
       "tree_gem_mean": 0.8,
       "break_xp": 5,
@@ -5210,7 +5178,8 @@
       ],
       "sheet_rows": [
         136
-      ]
+      ],
+      "extra_break_drops": []
     },
     "wooden_wallpaper": {
       "name": "Wooden Wallpaper",
@@ -8143,6 +8112,28 @@
         572
       ],
       "source": "Live ITEM DATA row 572"
+    },
+    "incubator": {
+      "name": "Incubator",
+      "tier": null,
+      "balance_tier": 4,
+      "seed_id": "",
+      "mode": "special",
+      "source": "Golden Egg pet incubation and upgrades",
+      "break_rules": {
+        "seed_chance": 0,
+        "gem_range": [
+          0,
+          0
+        ],
+        "fixed_drops": [
+          {
+            "item_id": "incubator",
+            "item_category": "block",
+            "amount": 1
+          }
+        ]
+      }
     }
   }
 }

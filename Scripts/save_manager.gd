@@ -87,7 +87,8 @@ const PLAYER_LOADOUT_SAVE_KEYS = [
 	"equipped_shirt_item",
 	"equipped_pants_item",
 	"equipped_shoes_item",
-	"equipped_ride_item"
+	"equipped_ride_item",
+	"equipped_pet_item"
 ]
 const MAX_INVENTORY_STACK := 400
 const MAX_INVENTORY_STRING_LEN := 64
@@ -1929,6 +1930,7 @@ func get_player_save_data() -> Dictionary:
 		"equipped_shirt_item": str(world.equipped_shirt_item) if world.equipped_shirt_item != null else "",
 		"equipped_pants_item": str(world.equipped_pants_item) if world.equipped_pants_item != null else "",
 		"equipped_shoes_item": str(world.equipped_shoes_item) if world.equipped_shoes_item != null else "",
+		"equipped_pet_item": world.equipped_pet_item,
 		"equipped_ride_item": str(world.equipped_ride_item) if world.equipped_ride_item != null else ""
 	}
 
@@ -2604,6 +2606,7 @@ func apply_player_data(data: Dictionary, skip_hotbar_render: bool = false):
 		})
 		world.equipped_shoes_item = ""
 
+	world.equipped_pet_item = _safe_string(data.get("equipped_pet_item", ""), "", MAX_INVENTORY_STRING_LEN)
 	var loaded_equipped_ride_item = data.get("equipped_ride_item", world.equipped_ride_item)
 
 	if loaded_equipped_ride_item == null:
@@ -2788,6 +2791,7 @@ func apply_network_player_state(data: Dictionary):
 			"equipped_shirt_item": str(world.equipped_shirt_item) if world.equipped_shirt_item != null else "",
 			"equipped_pants_item": str(world.equipped_pants_item) if world.equipped_pants_item != null else "",
 			"equipped_shoes_item": str(world.equipped_shoes_item) if world.equipped_shoes_item != null else "",
+			"equipped_pet_item": world.equipped_pet_item,
 			"equipped_ride_item": str(world.equipped_ride_item) if world.equipped_ride_item != null else ""
 		}
 
@@ -2950,6 +2954,7 @@ func get_player_data_dedup_hash(player_data: Dictionary) -> int:
 		"equipped_shirt_item": _safe_string(player_data.get("equipped_shirt_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_pants_item": _safe_string(player_data.get("equipped_pants_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_shoes_item": _safe_string(player_data.get("equipped_shoes_item", ""), "", MAX_INVENTORY_STRING_LEN),
+		"equipped_pet_item": _safe_string(player_data.get("equipped_pet_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"equipped_ride_item": _safe_string(player_data.get("equipped_ride_item", ""), "", MAX_INVENTORY_STRING_LEN),
 		"inventory": player_data.get("inventory", {}) if player_data.get("inventory", null) is Dictionary else {},
 		"seed_inventory": player_data.get("seed_inventory", {}) if player_data.get("seed_inventory", null) is Dictionary else {},
@@ -3195,6 +3200,7 @@ func save_world():
 		"equipped_shirt_item": str(world.equipped_shirt_item) if world.equipped_shirt_item != null else "",
 		"equipped_pants_item": str(world.equipped_pants_item) if world.equipped_pants_item != null else "",
 		"equipped_shoes_item": str(world.equipped_shoes_item) if world.equipped_shoes_item != null else "",
+		"equipped_pet_item": world.equipped_pet_item,
 		"equipped_ride_item": str(world.equipped_ride_item) if world.equipped_ride_item != null else "",
 		"world_lock": world.get_world_lock_save_data() if world.has_method("get_world_lock_save_data") else {},
 		"area_locks": world.get_area_locks_save_data() if world.has_method("get_area_locks_save_data") else [],
@@ -3486,6 +3492,7 @@ func load_world():
 	if world.equipped_shoes_item != "" and (not world.shoes_inventory.has(world.equipped_shoes_item) or _safe_int(world.shoes_inventory[world.equipped_shoes_item], 0, 0, MAX_INVENTORY_STACK) <= 0):
 		world.equipped_shoes_item = ""
 
+	world.equipped_pet_item = _safe_string(data.get("equipped_pet_item", ""), "", MAX_INVENTORY_STRING_LEN)
 	var loaded_equipped_ride_item = data.get("equipped_ride_item", world.equipped_ride_item)
 	if loaded_equipped_ride_item == null:
 		loaded_equipped_ride_item = ""

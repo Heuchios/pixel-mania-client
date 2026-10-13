@@ -772,6 +772,8 @@ func _reset_player_hurt_modulate(sequence_id: int):
 
 
 func play_player_punch_animation():
+	if world.pet_system != null and world.pet_system.followers.has("local"):
+		world.pet_system.followers["local"].punch()
 	if not MovementMode.is_websocket():
 		return
 
@@ -3660,6 +3662,8 @@ func apply_remote_player_action_animation(remote_id: String, animation_state: St
 	var remote_player = remote_players.get(remote_id, null)
 	if remote_player == null or not is_instance_valid(remote_player):
 		return
+	if world.pet_system != null and world.pet_system.followers.has(remote_id):
+		world.pet_system.followers[remote_id].punch()
 	var previous_remote_animation_state := str(remote_player.get_meta("animation_state", "idle"))
 	remote_player.set_meta("facing", -1 if facing < 0 else 1)
 	remote_player.set_meta("remote_action_animation_state", animation_state)

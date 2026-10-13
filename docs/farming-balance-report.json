@@ -8401,6 +8401,61 @@
       "notes": "Special or non-growable item; reward details shown."
     },
     {
+      "id": "incubator",
+      "name": "Incubator",
+      "tier": null,
+      "balance_tier": 4,
+      "mode": "special",
+      "base_item": "",
+      "seed_id": "",
+      "grow_seconds": null,
+      "break_blocks": {
+        "min": 1,
+        "max": 1,
+        "mean": 1,
+        "chance": 1
+      },
+      "break_seeds": {
+        "min": 0,
+        "max": 0,
+        "mean": 0,
+        "chance": 0
+      },
+      "break_gems": {
+        "min": 0,
+        "max": 0,
+        "mean": 0,
+        "chance": 0
+      },
+      "tree_blocks": {
+        "min": 0,
+        "max": 0,
+        "mean": 0,
+        "chance": 0
+      },
+      "tree_seeds": {
+        "min": 0,
+        "max": 0,
+        "mean": 0,
+        "chance": 0
+      },
+      "tree_gems": {
+        "min": 0,
+        "max": 0,
+        "mean": 0,
+        "chance": 0
+      },
+      "break_xp": 3,
+      "tree_xp": 0,
+      "seeds_per_cycle": null,
+      "gems_per_cycle": null,
+      "break_details": "incubator: 1 at 100.00%",
+      "tree_details": "None",
+      "source": "Golden Egg pet incubation and upgrades",
+      "growth_source": "",
+      "notes": "Special or non-growable item; reward details shown."
+    },
+    {
       "id": "lamp",
       "name": "Lamp",
       "tier": 7,
@@ -14389,7 +14444,7 @@
       "tree_xp": 3,
       "seeds_per_cycle": null,
       "gems_per_cycle": null,
-      "break_details": "star_block_seed: 0–1 at 100.00%; star_block: 0–3 at 100.00%; gem: 7 at 100.00%; gem: 1 at 50.00%; One of [star_fragment, sun_fragment, moon_fragment], equal weights, at 1.00%",
+      "break_details": "star_block_seed: 0–1 at 100.00%; star_block: 0–3 at 100.00%; gem: 7 at 100.00%; gem: 1 at 50.00%",
       "tree_details": "star_block_seed: 0–1 at 100.00%; star_block: 0–3 at 100.00%; gem: 6 at 100.00%",
       "source": "Live ITEM DATA gem average, rows 412",
       "growth_source": "Live SPLICING sheet, row 274 (2026-10-12)",
@@ -17359,7 +17414,7 @@
       "tree_xp": 3,
       "seeds_per_cycle": null,
       "gems_per_cycle": null,
-      "break_details": "wooden_block_seed: 0–1 at 100.00%; wooden_block: 0–3 at 100.00%; gem: 1 at 60.00%; stick: 1 at 5.00%",
+      "break_details": "wooden_block_seed: 0–1 at 100.00%; wooden_block: 0–3 at 100.00%; gem: 1 at 60.00%",
       "tree_details": "wooden_block_seed: 0–1 at 100.00%; wooden_block: 0–3 at 100.00%; gem: 1 at 80.00%",
       "source": "Live ITEM DATA gem average, rows 136",
       "growth_source": "Live SPLICING sheet, row 14 (2026-10-12)",

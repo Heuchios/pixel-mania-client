@@ -24,6 +24,7 @@ const CATEGORY_CURRENCY = "currency"
 
 const RECIPES = {
 	STATION_CRAFTING: [
+{"id": "pet_incubator", "output": {"item_id": "incubator", "category": "block", "amount": 1}, "cost": [{"item_id": "wooden_block", "category": "block", "amount": 20}, {"item_id": "glass", "category": "block", "amount": 20}, {"item_id": "steel_block", "category": "block", "amount": 20}]},
   {
 	"id": "gasoline_from_crude_oil",
 	"output": {

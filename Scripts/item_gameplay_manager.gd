@@ -205,7 +205,9 @@ func toggle_equip_item(item_type: String, category: String):
 		world.show_notification(get_item_display_name(item_type, category) + " cannot be equipped.")
 		return
 
-	if category == "tool":
+	if world.item_database.get(item_type, {}).get("equipment_slot", "") == "pet":
+		world.pet_system.request("pet_equip", {"item_id": item_type})
+	elif category == "tool":
 		equip_tool(item_type)
 	elif category == "back":
 		equip_back_item(item_type)

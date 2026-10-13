@@ -44,6 +44,8 @@ func setup(world_ref):
 
 
 func use_selected_item_at_mouse():
+	if world.pet_system != null and world.pet_system.is_open():
+		return
 	if world.has_method("is_daily_rewards_open") and world.is_daily_rewards_open():
 		return
 	if world.is_magnet_machine_open():
@@ -365,6 +367,10 @@ func interact_with_grid(grid_pos: Vector2i):
 		world.open_generator_ui(grid_pos)
 		return
 
+	if block_type in ["incubator", "sashimi_table"]:
+		world.pet_system.open_station(grid_pos, block_type)
+		return
+
 	if is_crafting_station_block(block_type):
 		world.open_crafting_station(grid_pos)
 		return
@@ -676,6 +682,8 @@ func is_interactable_block(block_type: String) -> bool:
 	if world != null and world.has_method("is_entrance_gate_block") and world.is_entrance_gate_block(clean_type):
 		return true
 	if is_transformer_block(clean_type):
+		return true
+	if clean_type in ["incubator", "sashimi_table"]:
 		return true
 	if is_crafting_station_block(clean_type):
 		return true

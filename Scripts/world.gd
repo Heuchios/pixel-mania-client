@@ -502,6 +502,8 @@ func is_gem_currency(item_type: String, _category: String = "currency") -> bool:
 
 
 func get_stack_limit_for_item(item_type: String, category: String = "") -> int:
+	if item_type == "fish_chunk":
+		return 10000
 	if is_gem_currency(item_type, category):
 		return GEM_CURRENCY_CAP
 	if category == "fish" or str(item_database.get(item_type, {}).get("category", "")) == "fish":
@@ -1771,7 +1773,13 @@ func move_player_to_front():
 		parent_node.move_child(player, parent_node.get_child_count() - 1)
 
 
+var pet_system = null
+var equipped_pet_item := ""
+
 func _ready():
+	pet_system = preload("res://Scripts/pet_system.gd").new()
+	pet_system.world = self
+	add_child(pet_system)
 	_resolve_movement_mode_singleton()
 	if _is_custom_movement_world_export_launch():
 		_run_custom_movement_world_export()
@@ -2745,6 +2753,8 @@ func activate_floating_hud_button_at_point(point: Vector2) -> bool:
 
 
 func is_panel_ui_at_point(point: Vector2) -> bool:
+	if pet_system != null and pet_system.is_open():
+		return true
 	if is_daily_rewards_open():
 		return true
 	var ui_nodes: Array = [
@@ -8604,6 +8614,8 @@ func is_major_ui_open() -> bool:
 		return true
 	if has_method("is_oil_refinery_open") and is_oil_refinery_open():
 		return true
+	if pet_system != null and pet_system.is_open():
+		return true
 	if has_method("is_battery_charger_open") and is_battery_charger_open():
 		return true
 	if has_method("is_developer_panel_open") and is_developer_panel_open():
@@ -8690,6 +8702,8 @@ func is_movement_blocking_ui_open() -> bool:
 		return true
 	if has_method("is_oil_refinery_open") and is_oil_refinery_open():
 		return true
+	if pet_system != null and pet_system.is_open():
+		return true
 	if has_method("is_battery_charger_open") and is_battery_charger_open():
 		return true
 	if has_method("is_developer_panel_open") and is_developer_panel_open():
@@ -8755,6 +8769,8 @@ func is_gameplay_hud_blocked() -> bool:
 	if has_method("is_cctv_open") and is_cctv_open():
 		return true
 	if has_method("is_oil_refinery_open") and is_oil_refinery_open():
+		return true
+	if pet_system != null and pet_system.is_open():
 		return true
 	if has_method("is_battery_charger_open") and is_battery_charger_open():
 		return true

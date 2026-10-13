@@ -5175,6 +5175,9 @@ func handle_server_message(raw: String, wire_bytes: int = 0) -> void:
 			handle_world_route_redirect(data)
 		"inventory_transaction_result":
 			handle_inventory_transaction_result(data)
+			var pets_world = get_world_node()
+			if pets_world != null and pets_world.pet_system != null:
+				pets_world.pet_system.apply_result(data)
 		"iap_checkout_session_result":
 			handle_iap_checkout_session_result(data)
 		"iap_purchase_result":
@@ -7581,7 +7584,8 @@ func get_equipment_slots() -> Dictionary:
 		"shirt": "equipped_shirt_item",
 		"pants": "equipped_pants_item",
 		"shoes": "equipped_shoes_item",
-		"ride": "equipped_ride_item"
+		"ride": "equipped_ride_item",
+		"pet": "equipped_pet_item"
 	}
 
 	for slot_name in future_slot_properties.keys():

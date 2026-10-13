@@ -2254,6 +2254,9 @@ func apply_network_world_interaction_update(data: Dictionary):
 	if not _is_current_world_message(data):
 		return
 
+	if str(data.get("action", "")) == "incubator_state":
+		world.pet_system.apply_state(data)
+		return
 	var old_flag = world.applying_network_world_update
 	world.applying_network_world_update = true
 
