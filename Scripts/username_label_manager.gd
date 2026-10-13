@@ -20,7 +20,8 @@ const OUTLINE_SIZE = 2
 const GROWTH_FONT_SIZE = 17
 const GROWTH_OUTLINE_SIZE = 5
 const GROWTH_LABEL_GAP = 1.0
-const LOCAL_USERNAME_Z_INDEX = 73
+# Speech/notification boxes start at 72; names belong behind their backgrounds.
+const LOCAL_USERNAME_Z_INDEX = 71
 const LOCAL_GROWTH_LABEL_Z_INDEX = 74
 const TREE_TEXT_FADE_IN_SPEED = 8.0
 const TREE_TEXT_FADE_OUT_SPEED = 6.0

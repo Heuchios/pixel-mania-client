@@ -3928,27 +3928,42 @@ func setup_ui_layers():
 	if ui_layer == null:
 		return
 
-	ui_overhead_layer = ensure_ui_child_layer("OverheadLayer")
+	# Overhead text must stay behind every HUD/panel, including the hotbar's
+	# negative z index. Canvas ordering makes this independent of widget z.
+	var overhead_canvas := ui_layer.get_node_or_null("OverheadCanvasLayer") as CanvasLayer
+	if overhead_canvas == null:
+		overhead_canvas = CanvasLayer.new()
+		overhead_canvas.name = "OverheadCanvasLayer"
+		ui_layer.add_child(overhead_canvas)
+	overhead_canvas.layer = ui_layer.layer - 1
+	ui_overhead_layer = ensure_ui_child_layer("OverheadLayer", overhead_canvas)
 	ui_hud_layer = ensure_ui_child_layer("HudLayer")
 	ui_panel_layer = ensure_ui_child_layer("PanelLayer")
 	ui_modal_layer = ensure_ui_child_layer("ModalLayer")
 	ui_system_layer = ensure_ui_child_layer("SystemLayer")
 
 
-func ensure_ui_child_layer(layer_name: String) -> Control:
+func ensure_ui_child_layer(layer_name: String, parent_layer: Node = null) -> Control:
 	if ui_layer == null:
 		return null
 
-	var layer = ui_layer.get_node_or_null(layer_name)
+	var layer_parent: Node = parent_layer if parent_layer != null else ui_layer
+	var layer = layer_parent.get_node_or_null(layer_name)
+	if layer == null and layer_parent != ui_layer:
+		# Preserve existing labels if UI layers are set up again while in-world.
+		var old_layer = ui_layer.get_node_or_null(layer_name)
+		if old_layer is Control:
+			old_layer.reparent(layer_parent, false)
+			layer = old_layer
 	if layer != null and not (layer is Control):
-		ui_layer.remove_child(layer)
+		layer_parent.remove_child(layer)
 		layer.queue_free()
 		layer = null
 
 	if layer == null:
 		layer = Control.new()
 		layer.name = layer_name
-		ui_layer.add_child(layer)
+		layer_parent.add_child(layer)
 
 	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.z_as_relative = false
