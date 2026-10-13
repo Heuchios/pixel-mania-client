@@ -441,6 +441,7 @@ func refresh_live_from_world(source: Object) -> bool:
 		return false
 
 	inventory_source = source
+	var equipment_order_changed := false
 	for item_index in range(inventory_items.size()):
 		var item: Dictionary = inventory_items[item_index]
 		if _is_capacity_slot(item):
@@ -452,7 +453,9 @@ func refresh_live_from_world(source: Object) -> bool:
 			return false
 
 		item["count"] = count
-		item["equipped"] = _world_item_equipped(source, item_id, category)
+		var equipped := _world_item_equipped(source, item_id, category)
+		equipment_order_changed = equipment_order_changed or equipped != bool(item.get("equipped", false))
+		item["equipped"] = equipped
 		item["equipable"] = _resolve_item_equipable(source, item_id, category)
 		inventory_items[item_index] = item
 
@@ -461,8 +464,11 @@ func refresh_live_from_world(source: Object) -> bool:
 			selected_item = item
 		_refresh_slot_live(slot_key, item)
 
+	var filtered_items := _get_filtered_items()
+	if equipment_order_changed:
+		_sync_filtered_slot_order_and_layout(filtered_items)
 	_update_detail()
-	_update_footer(_get_filtered_items())
+	_update_footer(filtered_items)
 	return true
 
 
@@ -540,7 +546,13 @@ func refresh_item_live_from_world(source: Object, item_id: String, category: Str
 
 	var item: Dictionary = inventory_items[item_index]
 	item["count"] = count
-	item["equipped"] = _world_item_equipped(source, clean_item_id, clean_category)
+	var equipped := _world_item_equipped(source, clean_item_id, clean_category)
+	var equipment_order_changed := equipped != bool(item.get("equipped", false))
+	if equipment_order_changed:
+		# A swap also unequips the previous item; refresh both before reordering.
+		last_live_refresh_changed_structure = true
+		return refresh_live_from_world(source)
+	item["equipped"] = equipped
 	item["equipable"] = _resolve_item_equipable(source, clean_item_id, clean_category)
 	inventory_items[item_index] = item
 
@@ -604,9 +616,7 @@ func _build_world_inventory_item(source: Object, item_id: String, category: Stri
 		if seed_preview_layout is Dictionary and not seed_preview_layout.is_empty():
 			payload["seed_preview_layout"] = seed_preview_layout
 
-	var equipped_property: String = _equipped_property_for_category(category)
-	if equipped_property != "":
-		payload["equipped"] = str(source.get(equipped_property)) == item_id
+	payload["equipped"] = _world_item_equipped(source, item_id, category)
 
 	payload["lock_item"] = _is_lock_item(payload)
 	return payload
@@ -704,9 +714,7 @@ func _append_world_inventory(output: Array, source: Object, property_name: Strin
 			if seed_preview_layout is Dictionary and not seed_preview_layout.is_empty():
 				payload["seed_preview_layout"] = seed_preview_layout
 
-		var equipped_property: String = _equipped_property_for_category(category)
-		if equipped_property != "":
-			payload["equipped"] = str(source.get(equipped_property)) == item_id
+		payload["equipped"] = _world_item_equipped(source, item_id, category)
 
 		payload["lock_item"] = _is_lock_item(payload)
 		output.append(payload)
@@ -919,6 +927,13 @@ func _compare_inventory_items(a: Dictionary, b: Dictionary) -> bool:
 		var b_name: String = _item_display_name(b).to_lower()
 		if a_name != b_name:
 			return a_name < b_name
+
+	# Keep locks first, then the entire current outfit and held item together.
+	# Preserve the existing inventory order within each group.
+	var a_equipped := bool(a.get("equipped", false))
+	var b_equipped := bool(b.get("equipped", false))
+	if a_equipped != b_equipped:
+		return a_equipped
 
 	return _item_inventory_index(a) < _item_inventory_index(b)
 
@@ -2347,8 +2362,11 @@ func _world_item_count(source: Object, item_id: String, category: String) -> int
 
 
 func _world_item_equipped(source: Object, item_id: String, category: String) -> bool:
-	if source == null:
+	if source == null or item_id == "":
 		return false
+	# Pets share an existing inventory category rather than a dedicated bag.
+	if source.get("equipped_pet_item") == item_id:
+		return true
 	var equipped_property: String = _equipped_property_for_category(category)
 	return equipped_property != "" and str(source.get(equipped_property)) == item_id
 
