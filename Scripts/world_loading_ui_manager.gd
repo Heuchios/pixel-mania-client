@@ -803,15 +803,7 @@ func _apply_loading_progress_visuals() -> void:
 
 
 func _refresh_loading_version_label() -> void:
-	if world_loading_version_label == null or not is_instance_valid(world_loading_version_label):
-		return
-	var client_version := "1.0.4"
-	var network_manager := _get_network_manager()
-	if network_manager != null and network_manager.has_method("get_client_version"):
-		var reported_version := str(network_manager.call("get_client_version")).strip_edges()
-		if reported_version != "":
-			client_version = reported_version
-	world_loading_version_label.text = "Alpha-" + client_version
+	LoadingHandoff.refresh_version(world_loading_overlay, _get_network_manager())
 
 
 func is_overlay_visible() -> bool:

@@ -5,6 +5,11 @@ const Handoff = preload("res://Scripts/world_loading_handoff.gd")
 class Save extends RefCounted:
 	var waiting_for_server_world_state := true
 
+class VersionSource extends RefCounted:
+	var version := "9.8.7"
+	func get_client_version() -> String:
+		return version
+
 class World extends Node:
 	var save_manager := Save.new()
 	var input_manager = null
@@ -32,6 +37,17 @@ func run() -> void:
 	var canvas: CanvasLayer = lobby._find_loading_canvas(overlay)
 	var bar: Range = canvas.find_child("ProgressBar", true, false)
 	var percent: Label = canvas.find_child("ProgressPercent", true, false)
+	var version: Label = canvas.find_child("Version", true, false)
+	var expected_version: String = "Alpha-" + root.get_node("NetworkManager").get_client_version()
+	assert(version.visible and version.text == expected_version, "The lobby must show the actual client version before its first loading frame")
+	var version_source := VersionSource.new()
+	Handoff.refresh_version(canvas, version_source)
+	assert(version.text == "Alpha-9.8.7", "Loading labels follow the build source without hardcoded version numbers")
+	version_source.version = ""
+	Handoff.refresh_version(canvas, version_source)
+	assert(not version.visible and version.text == "", "An unavailable version cannot reveal the old template label")
+	Handoff.refresh_version(canvas)
+	assert(version.visible and version.text == expected_version)
 	var previous := bar.value
 	assert(previous == Handoff.INITIAL_PROGRESS)
 	for ratio in [0.0, 0.2, 0.75, 0.4, 1.0]:
@@ -64,6 +80,7 @@ func run() -> void:
 	world.add_child(manager)
 	manager.set_process(false)
 	manager.setup(world)
+	assert(version.text == expected_version, "World setup must retain the same client version as the lobby")
 	if backdrop != null:
 		backdrop.color = Color.BLUE
 		await process_frame
@@ -74,6 +91,7 @@ func run() -> void:
 	assert(manager.world_loading_scene_instance.get_instance_id() == overlay_id)
 	assert(bar.value == previous, "Adopting the lobby overlay must not flash 0%")
 	manager.begin_smooth_world_load("TEST", true)
+	assert(version.text == expected_version)
 	assert(bar.value == previous, "World setup continues the lobby's progress")
 	var operation: int = manager.loading_operation_id
 	manager.begin_smooth_world_load("TEST", true)

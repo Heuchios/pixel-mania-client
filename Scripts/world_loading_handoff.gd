@@ -10,6 +10,7 @@ static func begin(overlay: Node, canvas: Node, world_name: String) -> void:
 	if overlay == null or canvas == null:
 		return
 	overlay.set_meta(PENDING_WORLD_META, world_name.strip_edges().to_upper())
+	refresh_version(canvas)
 	write_progress(canvas, INITIAL_PROGRESS)
 	var root := canvas.get_node_or_null("Root") as Control
 	if root != null:
@@ -50,3 +51,20 @@ static func write_progress(canvas: Node, progress: float) -> void:
 	var label := canvas.find_child("ProgressPercent", true, false) as Label
 	if label != null:
 		label.text = str(roundi(progress)) + "%"
+
+
+static func refresh_version(canvas: Node, network_source: Object = null) -> void:
+	if not is_instance_valid(canvas):
+		return
+	var label := canvas.find_child("Version", true, false) as Label
+	if label == null:
+		return
+	var network := network_source
+	if network == null and canvas.is_inside_tree():
+		network = canvas.get_tree().root.get_node_or_null("NetworkManager")
+	var version := ""
+	if is_instance_valid(network) and network.has_method("get_client_version"):
+		version = str(network.call("get_client_version")).strip_edges()
+	# Never display an obsolete template version when no build source exists.
+	label.text = "Alpha-" + version if version != "" else ""
+	label.visible = version != ""
