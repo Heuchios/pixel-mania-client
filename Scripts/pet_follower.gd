@@ -1,6 +1,8 @@
 extends CharacterBody2D
 
 const Atlas = preload("res://Scripts/atlas_texture_factory.gd")
+const FOLLOW_DISTANCE := 26.0
+const RESET_DISTANCE := 64.0 # Two 32-pixel blocks from the player.
 ## Keep followers above world previews, fences (4020) and water (4050).
 ## UI remains on its own canvas above the world.
 const PET_WORLD_Z_INDEX := 4060
@@ -28,10 +30,13 @@ func _ready() -> void:
 	add_child(sprite)
 	for frame in range(8 if int(item.get("pet_row",0)) < 4 else (4 if int(item.get("pet_row",0)) == 4 else 5)):
 		frames.append(Atlas.load_texture({"atlas":"res://Assets/items/pets.png", "cell":[frame,int(item.get("pet_row",0))], "cell_size":[32,32]}))
-	global_position = target.global_position + Vector2(-36, 5)
+	global_position = get_follow_position()
 
 func punch() -> void:
 	punch_until = age + 0.25
+
+func get_follow_position() -> Vector2:
+	return target.global_position + Vector2(-facing * FOLLOW_DISTANCE, -20 if bool(item.get("pet_flying", false)) else 7)
 
 func _physics_process(delta: float) -> void:
 	if not is_instance_valid(target):
@@ -42,9 +47,10 @@ func _physics_process(delta: float) -> void:
 	var direction: float = signf(float(target.velocity.x)) if target is CharacterBody2D else facing
 	if direction != 0:
 		facing = direction
-	var goal := target.global_position + Vector2(-facing * 38, -20 if flying else 7)
-	if global_position.distance_to(goal) > 240:
+	var goal := get_follow_position()
+	if global_position.distance_to(target.global_position) > RESET_DISTANCE:
 		global_position = goal
+		velocity = Vector2.ZERO
 	var dx := goal.x - global_position.x
 	velocity.x = clampf(dx * 5, -180, 180) if absf(dx) > 8 else 0.0
 	if flying:
