@@ -17,6 +17,9 @@ walk, jump and fall behind the player. Ladybugs and robots fly. Pets also animat
 when their player punches; robots emit smoke during that animation. Other players
 receive the equipped pet through the existing equipment synchronization.
 
+Local and remote followers render above block visuals, vending/display previews,
+fences and water. UI panels remain above pets.
+
 At a Sashimi Table, select a fish and the number of chunks to chop. Each chunk
 consumes exactly 50 kg (500 inventory tenths). Partial kilograms are preserved.
 Fish Chunks stack to 10,000.

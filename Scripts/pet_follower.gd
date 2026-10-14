@@ -1,6 +1,9 @@
 extends CharacterBody2D
 
 const Atlas = preload("res://Scripts/atlas_texture_factory.gd")
+## Keep followers above world previews, fences (4020) and water (4050).
+## UI remains on its own canvas above the world.
+const PET_WORLD_Z_INDEX := 4060
 var target: Node2D
 var item: Dictionary = {}
 var sprite := Sprite2D.new()
@@ -11,6 +14,8 @@ var smoke_clock := 0.0
 var frames: Array[Texture2D] = []
 
 func _ready() -> void:
+	z_as_relative = false
+	z_index = PET_WORLD_Z_INDEX
 	collision_layer = 0
 	collision_mask = 1
 	var shape := CollisionShape2D.new()
