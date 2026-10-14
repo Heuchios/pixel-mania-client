@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 const Atlas = preload("res://Scripts/atlas_texture_factory.gd")
 const FOLLOW_DISTANCE := 26.0
-const RESET_DISTANCE := 64.0 # Two 32-pixel blocks from the player.
+const RESET_DISTANCE := 128.0 # Four 32-pixel blocks from the player.
 ## Keep followers above world previews, fences (4020) and water (4050).
 ## UI remains on its own canvas above the world.
 const PET_WORLD_Z_INDEX := 4060
@@ -30,10 +30,27 @@ func _ready() -> void:
 	add_child(sprite)
 	for frame in range(8 if int(item.get("pet_row",0)) < 4 else (4 if int(item.get("pet_row",0)) == 4 else 5)):
 		frames.append(Atlas.load_texture({"atlas":"res://Assets/items/pets.png", "cell":[frame,int(item.get("pet_row",0))], "cell_size":[32,32]}))
+	facing = get_target_facing()
 	global_position = get_follow_position()
+	sprite.flip_h = facing < 0
+	sprite.texture = frames[0]
 
 func punch() -> void:
 	punch_until = age + 0.25
+
+func get_target_facing() -> float:
+	# Remote actors are Node2D: their direction comes from received presence,
+	# rather than a CharacterBody2D velocity. Keep local idle turns in sync too.
+	var received_facing = target.get_meta("facing", 0)
+	if (received_facing is int or received_facing is float) and received_facing != 0:
+		return signf(float(received_facing))
+	if target is CharacterBody2D and absf(target.velocity.x) > 0.01:
+		return signf(target.velocity.x)
+	var visual := target.get_node_or_null("PlayerVisual") as Node2D
+	if visual != null and absf(visual.scale.x) > 0.01:
+		return signf(visual.scale.x)
+	return facing
+
 
 func get_follow_position() -> Vector2:
 	return target.global_position + Vector2(-facing * FOLLOW_DISTANCE, -20 if bool(item.get("pet_flying", false)) else 7)
@@ -44,9 +61,7 @@ func _physics_process(delta: float) -> void:
 		return
 	age += delta
 	var flying := bool(item.get("pet_flying", false))
-	var direction: float = signf(float(target.velocity.x)) if target is CharacterBody2D else facing
-	if direction != 0:
-		facing = direction
+	facing = get_target_facing()
 	var goal := get_follow_position()
 	if global_position.distance_to(target.global_position) > RESET_DISTANCE:
 		global_position = goal
