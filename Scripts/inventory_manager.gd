@@ -3788,6 +3788,9 @@ func _on_inventory_scene_primary_action_requested(item: Dictionary) -> void:
 		update_hotbar()
 		return
 
+	if try_convert_world_lock_stack(item_type, category):
+		return
+
 	_select_inventory_scene_item_for_gameplay(item_type, category)
 	if world != null and world.has_method("is_item_equipable") and world.is_item_equipable(item_type, category) and world.has_method("toggle_equip_item"):
 		world.toggle_equip_item(item_type, category)
