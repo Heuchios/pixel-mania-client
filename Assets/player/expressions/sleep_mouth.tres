@@ -1,0 +1,9 @@
+[gd_resource type="AtlasTexture" format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/player/expressions/emotes.png" id="1_atlas"]
+
+[resource]
+atlas = ExtResource("1_atlas")
+region = Rect2(109, 84, 6, 4)
+margin = Rect2(13, 13, 26, 28)
+filter_clip = true

@@ -1,0 +1,11 @@
+[gd_resource type="AnimationLibrary" format=3 uid="uid://cvcewyjft8kep"]
+
+[sub_resource type="Animation" id="Animation_sleep"]
+resource_name = "sleep"
+length = 2.88
+loop_mode = 1
+
+[resource]
+_data = {
+&"sleep": SubResource("Animation_sleep")
+}

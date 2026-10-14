@@ -125,8 +125,20 @@ func run() -> void:
 				fx.rng.seed = 12
 				var pose_before := cape.animation
 				for step in range(120): fx._process(1.0 / 60.0)
-				assert(fx.particles.size() > 0 and fx.particles.size() <= fx.MAX_BATS)
+				assert(fx.particles.is_empty(), "Idle or falling alone must not spawn cape bats")
 				assert(cape.animation == pose_before)
+				fx.set_moving(true)
+				for step in range(60): fx._process(1.0 / 60.0)
+				assert(fx.particles.is_empty(), "Walking must not spawn cape bats")
+				manager.restart_back_item_jump_animation()
+				assert(fx.particles.size() == fx.BURST_COUNT, "Accepted jumps release a short flock")
+				manager.restart_back_item_jump_animation()
+				assert(fx.particles.size() == fx.BURST_COUNT * 2, "The cape's air jump releases another flock")
+				manager.set_forced_animation_state("fall")
+				for step in range(120):
+					manager.update_back_item_animation(1.0 / 60.0)
+					fx._process(1.0 / 60.0)
+				assert(fx.particles.is_empty() and not fx.is_processing(), "Falling must let the jump bats finish without replenishing them")
 				assert(fx.bat_color.r > 0.9 if id == "dracula_cape" else fx.bat_color.r < 0.3)
 				manager.update_equipped_back_visual(id, facing)
 				assert(manager.back_item_fx == fx)
@@ -182,7 +194,7 @@ func run() -> void:
 		await process_frame
 		await RenderingServer.frame_post_draw
 		root.get_viewport().get_texture().get_image().save_png("D:/Pixelmania/work/capes-preview.png")
-	print("CAPES_PASS: five double jumps (third jump rejected), shoulder/collar anchors, 64x64 poses, both facings, necklace coexistence, rebind/swap/unequip, bounded purple/red bats")
+	print("CAPES_PASS: five double jumps (third jump rejected), shoulder/collar anchors, 64x64 poses, both facings, necklace coexistence, rebind/swap/unequip, purple/red bats only on jumps")
 	for actor in actors: actor.free()
 	source.free()
 	jump_probe.free()

@@ -68,6 +68,12 @@ region = Rect2(64, 71, 32, 25)
 margin = Rect2(0, 0, 0, 7)
 filter_clip = true
 
+[sub_resource type="AtlasTexture" id="Atlas_sleep_closed"]
+atlas = ExtResource("1_atlas")
+region = Rect2(128, 70, 32, 25)
+margin = Rect2(0, 0, 0, 7)
+filter_clip = true
+
 [sub_resource type="AtlasTexture" id="Atlas_underwater"]
 atlas = ExtResource("1_atlas")
 region = Rect2(224, 39, 32, 25)
@@ -176,6 +182,20 @@ animations = [{
 "loop": 1,
 "name": &"sad",
 "speed": 1.0
+}, {
+"frames": [{
+"duration": 1.8,
+"texture": SubResource("Atlas_sleep_closed")
+}, {
+"duration": 1.4,
+"texture": SubResource("Atlas_sleep_closed")
+}, {
+"duration": 0.4,
+"texture": SubResource("Atlas_sleep_closed")
+}],
+"loop": 1,
+"name": &"sleep",
+"speed": 1.25
 }, {
 "frames": [{
 "duration": 1.0,

@@ -6,6 +6,8 @@ const BODY_PART_TEXTURE_FOLDER = "res://Assets/player/body_parts/"
 const BODY_PART_FRAME_SEARCH_LIMIT = 8
 const BODY_LAYER_POSITION = Vector2(0, -8)
 const TYPING_INDICATOR_SCENE = preload("res://Scenes/player/chat_typing_indicator.tscn")
+const SLEEP_LIBRARY = preload("res://Assets/player/animations/sleep.tres")
+const SLEEP_MOUTH_TEXTURE = preload("res://Assets/player/expressions/sleep_mouth.tres")
 const NETWORK_ANIMATION_STATES = ["idle", "walk", "jump", "fall", "punch", "place_animation", "hurt", "dead", "dead_spirit"]
 const NON_MOVEMENT_OVERLAY_ANIMATIONS = ["hurt"]
 const DEAD_SPIRIT_EFFECT_DURATION = 3.0
@@ -298,8 +300,11 @@ func update_player_animation(delta: float, facing_direction: int):
 		return
 
 	var animation_name = get_player_animation_name()
-	update_movement_animation_player(animation_name)
-	update_face_expression_animation(animation_name)
+	# Sleep is presentation of the existing AFK presence, not a network action.
+	var expression_name := get_face_expression_animation_name(animation_name)
+	var sleeping := expression_name == "sleep"
+	update_movement_animation_player("sleep" if sleeping else animation_name)
+	update_face_expression_animation(animation_name, expression_name)
 
 	if use_layered_body:
 		play_layered_animation(animation_name)
@@ -342,8 +347,9 @@ func update_player_animation(delta: float, facing_direction: int):
 	update_facing(facing_direction)
 
 
-func update_face_expression_animation(movement_state: String):
-	var expression_name = get_face_expression_animation_name(movement_state)
+func update_face_expression_animation(movement_state: String, expression_name: String = ""):
+	if expression_name == "":
+		expression_name = get_face_expression_animation_name(movement_state)
 	var suppress_bubble: bool = expression_name in ["hurt", "dead", "dead_spirit"]
 	update_chat_typing_indicator(is_chat_typing_for_face_expression() and not suppress_bubble, "" if suppress_bubble else get_activity_bubble())
 	if update_dead_spirit_visual(expression_name):
@@ -594,6 +600,9 @@ func get_face_expression_animation_name(movement_state: String) -> String:
 	if movement_state == "fall":
 		return "fall"
 
+	if movement_state == "idle" and get_activity_bubble() == "afk" and not is_chat_typing_for_face_expression():
+		return "sleep"
+
 	return "idle"
 
 
@@ -718,6 +727,26 @@ func play_face_expression_animation(animation_name: String):
 		face_expression_animated.play(target_animation)
 	elif not face_expression_animated.is_playing() and face_expression_animated.sprite_frames.get_frame_count(target_animation) > 1:
 		face_expression_animated.play(target_animation)
+	update_sleep_mouth()
+
+
+func update_sleep_mouth() -> void:
+	# The atlas's two sleepy heads have different eye rows. Keep a single
+	# closed-eye face and replace only its mouth, below hair/beard/eyewear.
+	var mouth := face_expression_animated.get_node_or_null("SleepMouth") as Sprite2D
+	if mouth == null:
+		if face_expression_animated.animation != &"sleep":
+			return
+		mouth = Sprite2D.new()
+		mouth.name = "SleepMouth"
+		mouth.texture = SLEEP_MOUTH_TEXTURE
+		face_expression_animated.add_child(mouth)
+	if not face_expression_animated.frame_changed.is_connected(update_sleep_mouth):
+		face_expression_animated.frame_changed.connect(update_sleep_mouth)
+		face_expression_animated.animation_changed.connect(update_sleep_mouth)
+	mouth.centered = face_expression_animated.centered
+	mouth.offset = face_expression_animated.offset
+	mouth.visible = face_expression_animated.animation == &"sleep" and face_expression_animated.frame == 1
 
 
 func get_available_face_expression_animation_name(animation_name: String) -> String:
@@ -761,6 +790,8 @@ func update_movement_animation_player(animation_name: String):
 		target_animation = "dead_spirit"
 	elif animation_name == "idle":
 		target_animation = "idle"
+	elif animation_name == "sleep":
+		target_animation = "sleep"
 
 	if target_animation != "":
 		var target_player = get_movement_animation_player(target_animation)
@@ -839,6 +870,15 @@ func get_active_punch_animation_name() -> String:
 
 
 func get_movement_animation_player(animation_name: String):
+	if animation_name == "sleep" and is_instance_valid(player):
+		var sleep_player := player.get_node_or_null("SleepAnimationPlayer") as AnimationPlayer
+		if sleep_player == null:
+			sleep_player = AnimationPlayer.new()
+			sleep_player.name = "SleepAnimationPlayer"
+			sleep_player.add_animation_library("", SLEEP_LIBRARY)
+			player.add_child(sleep_player)
+		return sleep_player
+
 	if movement_animation_player != null and movement_animation_player.has_animation(animation_name):
 		return movement_animation_player
 
@@ -939,6 +979,7 @@ func get_all_movement_animation_players() -> Array:
 			add_movement_animation_player(players, movement_animation_player.get_node_or_null(node_name))
 
 	if player != null:
+		add_movement_animation_player(players, player.get_node_or_null("SleepAnimationPlayer"))
 		for node_name in ["walk", "Walk", "jump", "Jump", "fall", "Fall", "idle", "Idle", "punch", "Punch", "dead", "Dead", "dead_spirit", "DeadSpirit"]:
 			add_movement_animation_player(players, player.get_node_or_null(node_name))
 

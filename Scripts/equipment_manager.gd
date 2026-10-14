@@ -288,6 +288,7 @@ func setup_back_socket():
 	# This is the editor-placed back item position.
 	# Move BackSlot/BackItemAnimated in the 2D editor to tune wings/backpacks/capes.
 	if back_socket != null:
+		cache_equipment_editor_transform(back_socket)
 		back_socket_editor_position = back_socket.position
 		back_socket.visible = false
 
@@ -354,6 +355,7 @@ func setup_body_part_node(part_key: String, node_name: String, _default_position
 
 	part.visible = true
 	part.centered = true
+	cache_equipment_editor_transform(part)
 	wearable_body_part_nodes[part_key] = part
 	wearable_body_part_editor_positions[part_key] = part.position
 	return part
@@ -371,14 +373,36 @@ func setup_wearable_part_node(part_key: String, node_name: String, parent_node, 
 
 	part.visible = false
 	part.centered = true
-	if part_key in ["back", "cape_neck", "cape_neck_behind"]:
-		if not part.has_meta("equipment_editor_position"):
-			part.set_meta("equipment_editor_position", part.position)
-		part.position = part.get_meta("equipment_editor_position")
+	cache_equipment_editor_transform(part)
 	wearable_part_nodes[part_key] = part
 	wearable_part_editor_positions[part_key] = part.position
 	wearable_part_editor_scales[part_key] = part.scale if part.scale != Vector2.ZERO else Vector2.ONE
 	return part
+
+
+static func cache_equipment_editor_transform(part: Node2D) -> void:
+	# Item offsets and scales are applied to this baseline, including on cloned rigs.
+	if not part.has_meta("equipment_editor_position"):
+		part.set_meta("equipment_editor_position", part.position)
+	if not part.has_meta("equipment_editor_scale"):
+		part.set_meta("equipment_editor_scale", part.scale if part.scale != Vector2.ZERO else Vector2.ONE)
+	part.position = part.get_meta("equipment_editor_position")
+	part.scale = part.get_meta("equipment_editor_scale")
+
+
+static func restore_cloned_visual(node: Node) -> void:
+	# These visuals bind to one actor and must be recreated by its own managers.
+	for child in node.get_children():
+		if str(child.name) in ["SwordSlashTrail", "SelectedPlaceablePreview", "BackItemFX", "ChatTypingIndicator", "SleepMouth"]:
+			node.remove_child(child)
+			child.free()
+		else:
+			restore_cloned_visual(child)
+	if node is Node2D and node.has_meta("equipment_editor_position"):
+		cache_equipment_editor_transform(node)
+	if node is CanvasItem and node.material != null:
+		# Shader parameters for one player's worn items must not change another's.
+		node.material = node.material.duplicate()
 
 
 func ensure_pants_side_nodes():
@@ -1675,7 +1699,7 @@ func build_back_item_sprite_frames():
 		sprite_frames.remove_animation(animation_name)
 
 	var idle_fps = float(back_item_data.get("animation_fps", 6.0))
-	add_single_animation_to_sprite_frames(sprite_frames, "idle", idle_specs, idle_fps, true)
+	add_single_animation_to_sprite_frames(sprite_frames, "idle", idle_specs, float(back_item_data.get("idle_animation_fps", idle_fps)), true)
 	add_single_animation_to_sprite_frames(sprite_frames, "walk", idle_specs, idle_fps, true)
 	add_single_animation_to_sprite_frames(sprite_frames, "punch", idle_specs, idle_fps, false)
 

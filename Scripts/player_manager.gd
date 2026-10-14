@@ -4007,9 +4007,11 @@ func ensure_remote_player_shared_visual_pipeline(remote_player) -> bool:
 		if local_visual == null:
 			return false
 
-		player_visual = local_visual.duplicate()
+		# Runtime signal callbacks belong to the observer's managers, not this actor.
+		player_visual = local_visual.duplicate(Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS | Node.DUPLICATE_USE_INSTANTIATION)
 		player_visual.name = "PlayerVisual"
 		preload("res://Scripts/player_emotes.gd").restore_cloned_visual(world.player, player_visual)
+		EquipmentManagerScript.restore_cloned_visual(player_visual)
 		# Runtime trails hold actor-specific blade/animation bindings. Let the
 		# remote equipment manager build its own instead of cloning the observer's.
 		for child in player_visual.get_children():
@@ -4085,13 +4087,20 @@ func clone_remote_player_support_node(remote_player, node_name: String):
 	if source_node == null:
 		return
 
-	var node_clone = source_node.duplicate()
+	var node_clone = source_node.duplicate(Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS | Node.DUPLICATE_USE_INSTANTIATION)
 	node_clone.name = node_name
 	if node_clone is CanvasItem:
 		node_clone.z_as_relative = true
 		if node_name == "Sprite2D" or node_name == "DeadSpiritAnimated":
 			node_clone.visible = false
 	remote_player.add_child(node_clone)
+	if node_clone is AnimationPlayer:
+		# Apply authored rest transforms before equipment caches the clone's anchors.
+		node_clone.stop()
+		if node_clone.has_animation("RESET"):
+			node_clone.play("RESET")
+			node_clone.advance(0.0)
+			node_clone.stop()
 
 
 func setup_remote_visual_managers(remote_player):
