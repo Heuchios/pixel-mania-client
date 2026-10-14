@@ -135,7 +135,7 @@ func build_ui() -> void:
 	count.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	Style.apply_input(count.get_line_edit())
 	amount_row.add_child(count)
-	chunks = _button("Add Chunks", func(): request("sashimi_chop" if station_type == "sashimi_table" else "incubator_add_chunks", {"item_id":selected_id(),"amount":int(count.value)}))
+	chunks = _button("Add Chunks", submit_chunks)
 	amount_row.add_child(chunks)
 	upgrade = _button("Upgrade Pet", func(): request("incubator_upgrade"))
 	Style.apply_yellow_button(upgrade)
@@ -146,6 +146,26 @@ func build_ui() -> void:
 	remove = _button("Remove Pet & Chunks", func(): request("incubator_remove"))
 	content.add_child(remove)
 	overlay.hide()
+
+func chunk_amount_limit() -> int:
+	if station_type == "sashimi_table":
+		return maxi(0, int(world.fish_inventory.get(selected_id(), 0)) / 500)
+	var id := str(current.get("input_item", ""))
+	if id == "" or id == "golden_egg" or int(current.get("ready_at_ms", 0)) > 0:
+		return 0
+	var remaining := maxi(0, int(current.get("upgrade_cost", 0)) - int(current.get("chunks", 0)))
+	return mini(remaining, maxi(0, int(world.material_inventory.get("fish_chunk", 0))))
+
+func submit_chunks() -> void:
+	# SpinBox keeps edited text pending until it is explicitly applied or submitted.
+	count.apply()
+	var limit := chunk_amount_limit()
+	if limit <= 0:
+		refresh_ui()
+		return
+	var amount := clampi(int(count.value), 1, limit)
+	count.value = amount
+	request("sashimi_chop" if station_type == "sashimi_table" else "incubator_add_chunks", {"item_id":selected_id(), "amount":amount})
 
 func selected_id() -> String:
 	return str(selection.get_item_metadata(selection.selected)) if selection.selected >= 0 else ""
@@ -225,7 +245,10 @@ func refresh_ui() -> void:
 		input_slot.texture = Atlas.load_texture(world.item_database.get(selected_id(),{}).get("texture"))
 		output_slot.texture = Atlas.load_texture(world.item_database.fish_chunk.texture)
 	insert.disabled = id != "" or selection.item_count == 0
-	chunks.disabled = selection.item_count == 0 if sashimi else (id == "" or id == "golden_egg" or busy)
+	var available := chunk_amount_limit()
+	count.max_value = maxi(1, available)
+	count.editable = available > 0
+	chunks.disabled = available <= 0
 	upgrade.disabled = required <= 0 or int(current.get("chunks",0)) < required or busy
 	claim.disabled = not ready
 	remove.disabled = id == "" or busy
