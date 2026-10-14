@@ -313,7 +313,7 @@ func update_incubators() -> void:
 		if not overlays.has(pos):
 			visual = Sprite2D.new()
 			visual.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-			visual.position = Vector2(pos)*world.TILE_SIZE
+			visual.position = world.grid_to_world_center(pos)
 			visual.z_index = 5
 			world.add_child(visual)
 			var input := Sprite2D.new()

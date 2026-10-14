@@ -13,7 +13,8 @@ class TestWorld extends Node2D:
 	var player_manager = null
 	var in_world := true
 	var blocks := {Vector2i(2,3):{"type":"incubator"}}
-	const TILE_SIZE = 32
+	const BLOCK_SIZE = 32
+	func grid_to_world_center(pos: Vector2i) -> Vector2: return Vector2(pos * BLOCK_SIZE)
 	func update_all_ui(): pass
 	func show_notification(_message): pass
 	func get_mouse_grid_position() -> Vector2i: return Vector2i(2,3)
