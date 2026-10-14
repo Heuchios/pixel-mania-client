@@ -28,10 +28,27 @@ func _ready() -> void:
 	add_child(sprite)
 	for frame in range(8 if int(item.get("pet_row",0)) < 4 else (4 if int(item.get("pet_row",0)) == 4 else 5)):
 		frames.append(Atlas.load_texture({"atlas":"res://Assets/items/pets.png", "cell":[frame,int(item.get("pet_row",0))], "cell_size":[32,32]}))
-	global_position = target.global_position + Vector2(-36, 5)
+	facing = get_target_facing()
+	global_position = target.global_position + Vector2(-facing * 38, -20 if bool(item.get("pet_flying", false)) else 7)
+	sprite.flip_h = facing < 0
+	sprite.texture = frames[0]
 
 func punch() -> void:
 	punch_until = age + 0.25
+
+func get_target_facing() -> float:
+	# Remote actors are Node2D: their direction comes from received presence,
+	# rather than a CharacterBody2D velocity. Keep local idle turns in sync too.
+	var received_facing = target.get_meta("facing", 0)
+	if (received_facing is int or received_facing is float) and received_facing != 0:
+		return signf(float(received_facing))
+	if target is CharacterBody2D and absf(target.velocity.x) > 0.01:
+		return signf(target.velocity.x)
+	var visual := target.get_node_or_null("PlayerVisual") as Node2D
+	if visual != null and absf(visual.scale.x) > 0.01:
+		return signf(visual.scale.x)
+	return facing
+
 
 func _physics_process(delta: float) -> void:
 	if not is_instance_valid(target):
@@ -39,9 +56,7 @@ func _physics_process(delta: float) -> void:
 		return
 	age += delta
 	var flying := bool(item.get("pet_flying", false))
-	var direction: float = signf(float(target.velocity.x)) if target is CharacterBody2D else facing
-	if direction != 0:
-		facing = direction
+	facing = get_target_facing()
 	var goal := target.global_position + Vector2(-facing * 38, -20 if flying else 7)
 	if global_position.distance_to(goal) > 240:
 		global_position = goal

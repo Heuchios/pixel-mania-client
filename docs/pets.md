@@ -19,6 +19,8 @@ receive the equipped pet through the existing equipment synchronization.
 
 Local and remote followers render above block visuals, vending/display previews,
 fences and water. UI panels remain above pets.
+Followers use their owner's facing direction, including remote presence updates
+and idle turns, and spawn on the correct side at their walking/flying height.
 
 At a Sashimi Table, select a fish and the number of chunks to chop. Each chunk
 consumes exactly 50 kg (500 inventory tenths). Partial kilograms are preserved.
