@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 const Atlas = preload("res://Scripts/atlas_texture_factory.gd")
 const FOLLOW_DISTANCE := 26.0
-const RESET_DISTANCE := 192.0 # Six 32-pixel blocks from the player.
+const RESET_DISTANCE := 320.0 # Ten 32-pixel blocks from the player.
 ## Keep followers above world previews, fences (4020) and water (4050).
 ## UI remains on its own canvas above the world.
 const PET_WORLD_Z_INDEX := 4060

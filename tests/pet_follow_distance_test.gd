@@ -20,14 +20,14 @@ func run() -> void:
 		var goal := actor.global_position + Vector2(-26, -20 if id == "ladybug_pet" else 7)
 		assert(pet.global_position == goal)
 		# The boundary is measured from the player, including vertical/diagonal gaps.
-		for offset in [Vector2(-193, 0), Vector2(193, 0), Vector2(0, 193), Vector2(136, 136)]:
+		for offset in [Vector2(-321, 0), Vector2(321, 0), Vector2(0, 321), Vector2(227, 227)]:
 			pet.global_position = actor.global_position + offset
 			pet.velocity = Vector2(100, 520)
 			pet.age = 0
 			pet._physics_process(0)
 			assert(pet.global_position.distance_to(goal) < 1)
 			assert(pet.velocity == Vector2.ZERO)
-		pet.global_position = actor.global_position + Vector2(-192, 0)
+		pet.global_position = actor.global_position + Vector2(-320, 0)
 		pet._physics_process(0)
 		assert(pet.global_position.distance_to(goal) > 10)
 		actor.global_position += Vector2(300, 100)
@@ -35,5 +35,5 @@ func run() -> void:
 		assert(pet.global_position.distance_to(pet.get_follow_position()) < 1)
 		pet.free()
 	actor.free()
-	print("PET_FOLLOW_DISTANCE_PASS: closer ground/flying spawn, 6-block player radius, horizontal/vertical/diagonal recovery, boundary, player teleport and cleared velocity")
+	print("PET_FOLLOW_DISTANCE_PASS: closer ground/flying spawn, 10-block player radius, horizontal/vertical/diagonal recovery, boundary, player teleport and cleared velocity")
 	quit()
